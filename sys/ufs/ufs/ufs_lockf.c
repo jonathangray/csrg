@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lockf.c	8.1 (Berkeley) 06/11/93
+ *	@(#)ufs_lockf.c	8.2 (Berkeley) 01/04/94
  */
 
 #include <sys/param.h>
@@ -381,7 +381,6 @@ lf_getlock(lock, fl)
 	register struct flock *fl;
 {
 	register struct lockf *block;
-	off_t start, end;
 
 #ifdef LOCKF_DEBUG
 	if (lockf_debug & 1)
