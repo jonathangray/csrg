@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)sysexits.c	5.6 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)sysexits.c	6.1 (Berkeley) 12/21/92";
 #endif /* not lint */
 
 #include <sysexits.h>
