@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)mountd.8	5.4 (Berkeley) 06/25/90
+.\"	@(#)mountd.8	5.5 (Berkeley) 09/30/90
 .\"
 .TH MOUNTD 8 ""
 .UC 7
@@ -58,6 +58,9 @@ This should only be specified if there are clients such as PC's,
 that require it.
 The \fBexportsfile\fR argument specifies an alternate location
 for the exports file.
+Sending a SIGHUP signal to
+.I mountd
+will cause it to reread its exports file.
 .SH FILES
 /etc/exports
 .SH SEE ALSO
