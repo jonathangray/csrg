@@ -1,5 +1,12 @@
 Original BTL Ratfor System for 4.2
-/* @(#)r.y	1.1 (Berkeley) 12/15/82 */
+/*-
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ *
+ *	@(#)r.y	1.2 (Berkeley) 04/16/91
+ */
+
 %{
 extern int transfer;
 extern	int	indent;
