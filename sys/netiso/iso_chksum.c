@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)iso_chksum.c	7.6 (Berkeley) 08/28/91
+ *	@(#)iso_chksum.c	7.7 (Berkeley) 09/21/92
  */
 
 /***********************************************************
