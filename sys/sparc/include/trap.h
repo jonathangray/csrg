@@ -9,7 +9,7 @@
  * All advertising materials mentioning features or use of this software
  * must display the following acknowledgement:
  *	This product includes software developed by the University of
- *	California, Lawrence Berkeley Laboratories.
+ *	California, Lawrence Berkeley Laboratory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -39,9 +39,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)trap.h	7.2 (Berkeley) 07/21/92
+ *	@(#)trap.h	7.3 (Berkeley) 04/20/93
  *
- * from: $Header: trap.h,v 1.8 92/07/03 18:49:02 torek Exp $
+ * from: $Header: trap.h,v 1.9 92/11/26 02:04:47 torek Exp $
  */
 
 #ifndef	_MACHINE_TRAP_H
