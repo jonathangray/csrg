@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fcntl.h	5.6 (Berkeley) 10/23/90
+ *	@(#)fcntl.h	5.7 (Berkeley) 10/31/90
  */
 
 #ifndef F_DUPFD
@@ -103,12 +103,9 @@
 /* mask for file access modes */
 #define	O_ACCMODE	(O_RDONLY|O_WRONLY|O_RDWR)
 
+#ifndef KERNEL
 #if __STDC__ || c_plusplus
-#ifdef KERNEL
-#include "types.h"
-#else
 #include <sys/types.h>
-#endif
 extern int fcntl(int, int, int);
 extern int creat(const char *, mode_t);
 extern int open(const char *, int, ...);
@@ -116,6 +113,7 @@ extern int open(const char *, int, ...);
 extern int fcntl();
 extern int creat();
 extern int open();
+#endif
 #endif
 
 #endif /* !F_DUPFD */
