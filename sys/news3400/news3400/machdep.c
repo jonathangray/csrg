@@ -37,7 +37,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)machdep.c	7.8 (Berkeley) 03/09/93
+ *	@(#)machdep.c	7.9 (Berkeley) 03/10/93
  */
 
 /* from: Utah $Hdr: machdep.c 1.63 91/04/24$ */
@@ -75,6 +75,10 @@
 #include <machine/adrsmap.h>
 
 vm_map_t buffer_map;
+
+/* the following is used externally (sysctl_hw) */
+char	machine[] = "SONY";	/* cpu "architecture" */
+char	cpu_model[30];
 
 /*
  * Declare these as initialized data so we can patch them.
@@ -156,8 +160,10 @@ mach_init(x_boothowto, x_unkown, x_bootdev, x_maxmem)
 	 * Check to see if a mini-root was loaded into memory. It resides
 	 * at the start of the next page just after the end of BSS.
 	 */
-	if (boothowto & RB_MINIROOT)
+	if (boothowto & RB_MINIROOT) {
+		boothowto |= RB_DFLTROOT;
 		v += mfs_initminiroot(v);
+	}
 #endif
 
 	/*
