@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)lprm.c	5.7 (Berkeley) 07/21/92";
+static char sccsid[] = "@(#)lprm.c	5.8 (Berkeley) 8/6/92";
 #endif /* not lint */
 
 /*
@@ -68,11 +68,11 @@ static char sccsid[] = "@(#)lprm.c	5.7 (Berkeley) 07/21/92";
 /*
  * Stuff for handling job specifications
  */
-char	*user[MAXUSERS];	/* users to process */
-int	users;			/* # of users in user array */
-int	requ[MAXREQUESTS];	/* job number of spool entries */
-int	requests;		/* # of spool requests */
 char	*person;		/* name of person doing lprm */
+int	 requ[MAXREQUESTS];	/* job number of spool entries */
+int	 requests;		/* # of spool requests */
+char	*user[MAXUSERS];	/* users to process */
+int	 users;			/* # of users in user array */
 
 static char	luser[16];	/* buffer for person */
 
