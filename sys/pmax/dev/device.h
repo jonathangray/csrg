@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)device.h	7.1 (Berkeley) 01/07/92
+ *	@(#)device.h	7.2 (Berkeley) 02/29/92
  */
 
 /*
@@ -47,6 +47,7 @@ struct driver {
 	int	(*d_init)();	/* routine to probe & initialize device */
 	void	(*d_start)();	/* routine to start operation */
 	void	(*d_done)();	/* routine to call when operation complete */
+	void	(*d_intr)();	/* routine to call when interrupt is seen */
 };
 
 /*
@@ -57,6 +58,7 @@ struct pmax_ctlr {
 	struct driver	*pmax_driver;	/* controller driver routines */
 	int		pmax_unit;	/* controller number */
 	char		*pmax_addr;	/* address of controller */
+	int		pmax_pri;	/* interrupt priority */
 	int		pmax_flags;	/* flags */
 
 	int		pmax_alive;	/* true if init routine succeeded */
