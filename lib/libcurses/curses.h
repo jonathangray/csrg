@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)curses.h	5.18 (Berkeley) 10/27/92
+ *	@(#)curses.h	5.19 (Berkeley) 11/11/92
  */
 
 #ifndef _CURSES_H_
@@ -102,6 +102,7 @@ typedef struct {
 #define __FORCEPAINT	0x04		/* Force a repaint of the line */
 	u_int flags;
 	u_int hash;			/* Hash value for the line. */
+	size_t *firstchp, *lastchp;	/* First and last chngd columns ptrs */
 	size_t firstch, lastch;		/* First and last changed columns. */
 	__LDATA *line;			/* Pointer to the line text. */
 } __LINE;
