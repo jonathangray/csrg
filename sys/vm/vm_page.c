@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_page.c	7.4 (Berkeley) 05/07/91
+ *	@(#)vm_page.c	7.5 (Berkeley) 07/25/91
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -83,10 +83,6 @@ int		vm_page_bucket_count = 0;	/* How big is array? */
 int		vm_page_hash_mask;		/* Mask for hash function */
 simple_lock_data_t	bucket_lock;		/* lock for all buckets XXX */
 
-vm_size_t	page_size  = 4096;
-vm_size_t	page_mask  = 4095;
-int		page_shift = 12;
-
 queue_head_t	vm_page_queue_free;
 queue_head_t	vm_page_queue_active;
 queue_head_t	vm_page_queue_inactive;
@@ -98,17 +94,8 @@ long		first_page;
 long		last_page;
 vm_offset_t	first_phys_addr;
 vm_offset_t	last_phys_addr;
-
-int	vm_page_free_count;
-int	vm_page_active_count;
-int	vm_page_inactive_count;
-int	vm_page_wire_count;
-int	vm_page_laundry_count;
-
-int	vm_page_free_target = 0;
-int	vm_page_free_min = 0;
-int	vm_page_inactive_target = 0;
-int	vm_page_free_reserved = 0;
+vm_size_t	page_mask;
+int		page_shift;
 
 /*
  *	vm_set_page_size:
@@ -117,17 +104,18 @@ int	vm_page_free_reserved = 0;
  *	size.  Must be called before any use of page-size
  *	dependent functions.
  *
- *	Sets page_shift and page_mask from page_size.
+ *	Sets page_shift and page_mask from vm_stat.page_size.
  */
 void vm_set_page_size()
 {
-	page_mask = page_size - 1;
 
-	if ((page_mask & page_size) != 0)
+	if (vm_stat.page_size == 0)
+		vm_stat.page_size = DEFAULT_PAGE_SIZE;
+	page_mask = vm_stat.page_size - 1;
+	if ((page_mask & vm_stat.page_size) != 0)
 		panic("vm_set_page_size: page size not a power of two");
-
 	for (page_shift = 0; ; page_shift++)
-		if ((1 << page_shift) == page_size)
+		if ((1 << page_shift) == vm_stat.page_size)
 			break;
 }
 
@@ -254,7 +242,7 @@ vm_offset_t vm_page_startup(start, end, vaddr)
 	 *	of a page structure per page).
 	 */
 
-	vm_page_free_count = npages =
+	vm_stat.free_count = npages =
 		(end - start)/(PAGE_SIZE + sizeof(struct vm_page));
 
 	/*
@@ -555,7 +543,7 @@ vm_page_t vm_page_alloc(object, offset)
 
 	queue_remove_first(&vm_page_queue_free, mem, vm_page_t, pageq);
 
-	vm_page_free_count--;
+	vm_stat.free_count--;
 	simple_unlock(&vm_page_queue_free_lock);
 	splx(spl);
 
@@ -572,9 +560,9 @@ vm_page_t vm_page_alloc(object, offset)
 	 *	it doesn't really matter.
 	 */
 
-	if ((vm_page_free_count < vm_page_free_min) ||
-			((vm_page_free_count < vm_page_free_target) &&
-			(vm_page_inactive_count < vm_page_inactive_target)))
+	if ((vm_stat.free_count < vm_stat.free_min) ||
+			((vm_stat.free_count < vm_stat.free_target) &&
+			(vm_stat.inactive_count < vm_stat.inactive_target)))
 		thread_wakeup(&vm_pages_needed);
 	return(mem);
 }
@@ -594,13 +582,13 @@ void vm_page_free(mem)
 	if (mem->active) {
 		queue_remove(&vm_page_queue_active, mem, vm_page_t, pageq);
 		mem->active = FALSE;
-		vm_page_active_count--;
+		vm_stat.active_count--;
 	}
 
 	if (mem->inactive) {
 		queue_remove(&vm_page_queue_inactive, mem, vm_page_t, pageq);
 		mem->inactive = FALSE;
-		vm_page_inactive_count--;
+		vm_stat.inactive_count--;
 	}
 
 	if (!mem->fictitious) {
@@ -610,7 +598,7 @@ void vm_page_free(mem)
 		simple_lock(&vm_page_queue_free_lock);
 		queue_enter(&vm_page_queue_free, mem, vm_page_t, pageq);
 
-		vm_page_free_count++;
+		vm_stat.free_count++;
 		simple_unlock(&vm_page_queue_free_lock);
 		splx(spl);
 	}
@@ -634,16 +622,16 @@ void vm_page_wire(mem)
 		if (mem->active) {
 			queue_remove(&vm_page_queue_active, mem, vm_page_t,
 						pageq);
-			vm_page_active_count--;
+			vm_stat.active_count--;
 			mem->active = FALSE;
 		}
 		if (mem->inactive) {
 			queue_remove(&vm_page_queue_inactive, mem, vm_page_t,
 						pageq);
-			vm_page_inactive_count--;
+			vm_stat.inactive_count--;
 			mem->inactive = FALSE;
 		}
-		vm_page_wire_count++;
+		vm_stat.wire_count++;
 	}
 	mem->wire_count++;
 }
@@ -664,9 +652,9 @@ void vm_page_unwire(mem)
 	mem->wire_count--;
 	if (mem->wire_count == 0) {
 		queue_enter(&vm_page_queue_active, mem, vm_page_t, pageq);
-		vm_page_active_count++;
+		vm_stat.active_count++;
 		mem->active = TRUE;
-		vm_page_wire_count--;
+		vm_stat.wire_count--;
 	}
 }
 
@@ -695,8 +683,8 @@ void vm_page_deactivate(m)
 		queue_enter(&vm_page_queue_inactive, m, vm_page_t, pageq);
 		m->active = FALSE;
 		m->inactive = TRUE;
-		vm_page_active_count--;
-		vm_page_inactive_count++;
+		vm_stat.active_count--;
+		vm_stat.inactive_count++;
 		if (pmap_is_modified(VM_PAGE_TO_PHYS(m)))
 			m->clean = FALSE;
 		m->laundry = !m->clean;
@@ -719,7 +707,7 @@ void vm_page_activate(m)
 	if (m->inactive) {
 		queue_remove(&vm_page_queue_inactive, m, vm_page_t,
 						pageq);
-		vm_page_inactive_count--;
+		vm_stat.inactive_count--;
 		m->inactive = FALSE;
 	}
 	if (m->wire_count == 0) {
@@ -728,7 +716,7 @@ void vm_page_activate(m)
 
 		queue_enter(&vm_page_queue_active, m, vm_page_t, pageq);
 		m->active = TRUE;
-		vm_page_active_count++;
+		vm_stat.active_count++;
 	}
 }
 
