@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fifo_vnops.c	7.11 (Berkeley) 04/09/92
+ *	@(#)fifo_vnops.c	7.12 (Berkeley) 05/11/92
  */
 
 #include "param.h"
@@ -260,7 +260,7 @@ fifo_write(vp, uio, ioflag, cred)
 	if (ioflag & IO_NDELAY)
 		wso->so_state |= SS_NBIO;
 	VOP_UNLOCK(vp);
-	error = sosend(wso, (struct mbuf *)0, uio, 0, (struct mbuf *)0);
+	error = sosend(wso, (struct mbuf *)0, uio, 0, (struct mbuf *)0, 0);
 	VOP_LOCK(vp);
 	if (ioflag & IO_NDELAY)
 		wso->so_state &= ~SS_NBIO;
