@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mount.h	8.9 (Berkeley) 01/23/94
+ *	@(#)mount.h	8.10 (Berkeley) 01/28/94
  */
 
 #ifndef KERNEL
@@ -92,7 +92,8 @@ struct statfs {
 #define MOUNT_PROCFS	12	/* /proc Filesystem */
 #define MOUNT_AFS	13	/* Andrew Filesystem */
 #define MOUNT_CD9660	14	/* ISO9660 (aka CDROM) Filesystem */
-#define	MOUNT_MAXTYPE	14
+#define MOUNT_UNION	15	/* Union (translucent) Filesystem */
+#define	MOUNT_MAXTYPE	15
 
 #define INITMOUNTNAMES { \
 	"none",		/*  0 MOUNT_NONE */ \
@@ -110,7 +111,8 @@ struct statfs {
 	"procfs",	/* 12 MOUNT_PROCFS */ \
 	"afs",		/* 13 MOUNT_AFS */ \
 	"iso9660fs",	/* 14 MOUNT_CD9660 */ \
-	0,		/* 15 MOUNT_SPARE */ \
+	"union",	/* 15 MOUNT_CD9660 */ \
+	0,		/* 16 MOUNT_SPARE */ \
 }
 
 /*
