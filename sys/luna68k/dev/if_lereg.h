@@ -30,12 +30,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * from: hp300/dev/if_lereg.h	7.4 (Berkeley) 7/6/92
+ * from: hp300/dev/if_lereg.h	7.5 (Berkeley) 10/11/92
  *
- *	@(#)if_lereg.h	7.3 (Berkeley) 10/11/92
+ *	@(#)if_lereg.h	7.4 (Berkeley) 01/13/93
  */
 
-#include <hp/dev/iotypes.h>	/* XXX */
+#include <luna68k/dev/iotypes.h>	/* XXX */
 
 #define	LEID		21
 
