@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)res_debug.c	5.35 (Berkeley) 03/02/91
+ *	@(#)res_debug.c	5.36 (Berkeley) 03/06/91
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)res_debug.c	5.35 (Berkeley) 03/02/91";
+static char sccsid[] = "@(#)res_debug.c	5.36 (Berkeley) 03/06/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -46,8 +46,8 @@ static char sccsid[] = "@(#)res_debug.c	5.35 (Berkeley) 03/02/91";
 #include <string.h>
 
 void __fp_query();
-char *__p_class(), *__p_type();
-static char *p_cdname(), *p_rr(), *p_time();
+char *__p_class(), *__p_time(), *__p_type();
+static char *p_cdname(), *p_rr();
 
 char *_res_opcodes[] = {
 	"QUERY",
@@ -224,7 +224,7 @@ p_rr(cp, msg, file)
 	cp += sizeof(u_short);
 	fprintf(file,", class = %s", __p_class(class = _getshort(cp)));
 	cp += sizeof(u_short);
-	fprintf(file,", ttl = %s", p_time(_getlong(cp)));
+	fprintf(file,", ttl = %s", __p_time(_getlong(cp)));
 	cp += sizeof(u_long);
 	fprintf(file,", dlen = %d\n", dlen = _getshort(cp));
 	cp += sizeof(u_short);
@@ -284,13 +284,13 @@ p_rr(cp, msg, file)
 		cp = p_cdname(cp, msg, file);
 		fprintf(file,"\n\tserial = %ld", _getlong(cp));
 		cp += sizeof(u_long);
-		fprintf(file,"\n\trefresh = %s", p_time(_getlong(cp)));
+		fprintf(file,"\n\trefresh = %s", __p_time(_getlong(cp)));
 		cp += sizeof(u_long);
-		fprintf(file,"\n\tretry = %s", p_time(_getlong(cp)));
+		fprintf(file,"\n\tretry = %s", __p_time(_getlong(cp)));
 		cp += sizeof(u_long);
-		fprintf(file,"\n\texpire = %s", p_time(_getlong(cp)));
+		fprintf(file,"\n\texpire = %s", __p_time(_getlong(cp)));
 		cp += sizeof(u_long);
-		fprintf(file,"\n\tmin = %s\n", p_time(_getlong(cp)));
+		fprintf(file,"\n\tmin = %s\n", __p_time(_getlong(cp)));
 		cp += sizeof(u_long);
 		break;
 
@@ -472,8 +472,8 @@ __p_class(class)
 /*
  * Return a mnemonic for a time to live
  */
-static char *
-p_time(value)
+char *
+__p_time(value)
 	u_long value;
 {
 	int secs, mins, hours;
