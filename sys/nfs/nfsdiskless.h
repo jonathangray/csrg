@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsdiskless.h	7.2 (Berkeley) 01/14/92
+ *	@(#)nfsdiskless.h	7.3 (Berkeley) 02/06/92
  */
 
 /*
@@ -60,4 +60,5 @@ struct nfs_diskless {
 	u_char		root_fh[NFS_FHSIZE];	/* File handle of root dir */
 	struct sockaddr_in root_saddr;		/* Address of root server */
 	char		root_hostnam[MNAMELEN];	/* Host name for mount pt */
+	char		my_hostnam[MAXHOSTNAMELEN]; /* Client host name */
 };
