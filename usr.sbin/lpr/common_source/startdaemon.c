@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1983, 1993
+ * Copyright (c) 1983, 1993, 1994
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)startdaemon.c	8.1 (Berkeley) 06/06/93";
+static char sccsid[] = "@(#)startdaemon.c	8.2 (Berkeley) 04/17/94";
 #endif /* not lint */
 
 
@@ -67,6 +67,7 @@ startdaemon(printer)
 		perr("socket");
 		return(0);
 	}
+	memset(&un, 0, sizeof(un));
 	un.sun_family = AF_UNIX;
 	strcpy(un.sun_path, _PATH_SOCKETNAME);
 #ifndef SUN_LEN
