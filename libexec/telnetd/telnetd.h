@@ -30,12 +30,18 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)telnetd.h	5.2 (Berkeley) 06/01/90
+ *	@(#)telnetd.h	5.3 (Berkeley) 03/01/91
  */
 
 
 #include "defs.h"
 #include "ext.h"
+
+#ifdef	DIAGNOSTICS
+#define	DIAG(a,b)	if (diagnostic & (a)) b
+#else
+#define	DIAG(a,b)
+#endif
 
 /* other external variables */
 extern	char **environ;
