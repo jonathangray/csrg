@@ -2,6 +2,9 @@
  * Copyright (c) 1992 The Regents of the University of California.
  * All rights reserved.
  *
+ * This code is derived from software contributed to Berkeley by
+ * Chris Torek and Darren F. Provine.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -30,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)shapes.c	5.1 (Berkeley) 12/22/92
+ *	@(#)shapes.c	5.2 (Berkeley) 12/23/92
  */
 
 /*
