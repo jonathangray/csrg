@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)socket.h	8.5 (Berkeley) 05/02/95
+ *	@(#)socket.h	8.6 (Berkeley) 05/03/95
  */
 
 #ifndef _SYS_SOCKET_H_
@@ -187,7 +187,7 @@ struct sockproto {
 
 #define CTL_NET_NAMES { \
 	{ 0, 0 }, \
-	{ "unix", CTLTYPE_NODE }, \
+	{ "local", CTLTYPE_NODE }, \
 	{ "inet", CTLTYPE_NODE }, \
 	{ "implink", CTLTYPE_NODE }, \
 	{ "pup", CTLTYPE_NODE }, \
