@@ -7,10 +7,6 @@
  * Agreement and your Software Agreement with AT&T (Western Electric).
  */
 
-#ifndef lint
-static char sccsid[] = "@(#)awk.g.y	4.3 (Berkeley) 04/17/91";
-#endif /* not lint */
-
 %token	FIRSTTOKEN	/*must be first*/
 %token	FINAL FATAL
 %token	LT LE GT GE EQ NE
@@ -44,6 +40,10 @@ static char sccsid[] = "@(#)awk.g.y	4.3 (Berkeley) 04/17/91";
 %token	LASTTOKEN	/* has to be last */
 
 %{
+#ifndef lint
+static char sccsid[] = "@(#)awk.g.y	4.4 (Berkeley) 04/27/91";
+#endif /* not lint */
+
 #include "awk.def"
 #ifndef	DEBUG	
 #	define	PUTS(x)
