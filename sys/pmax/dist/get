@@ -31,7 +31,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)get	7.2 (Berkeley) 05/24/93
+#	@(#)get	8.1 (Berkeley) 06/10/93
 #
 
 # Shell script to build a mini-root file system in preparation for building
