@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)rz.c	8.1 (Berkeley) 06/10/93
+ *	@(#)rz.c	7.10 (Berkeley) 07/29/93
  */
 
 /*
@@ -66,7 +66,6 @@
 extern int splbio();
 extern void splx();
 extern int physio();
-extern char *readdisklabel();
 
 int	rzprobe();
 void	rzstrategy(), rzstart(), rzdone();
@@ -663,6 +662,58 @@ rzdone(unit, error, resid, status)
 	}
 }
 
+/*
+ * Read or constuct a disklabel
+ */
+void
+rzgetinfo(dev)
+	dev_t dev;
+{
+	register int unit = rzunit(dev);
+	register struct rz_softc *sc = &rz_softc[unit];
+	register struct disklabel *lp = &sc->sc_label;
+	register int i;
+	char *msg;
+	int part;
+	extern char *readdisklabel();
+
+	part = rzpart(dev);
+	sc->sc_flags |= RZF_HAVELABEL;
+
+	lp->d_type = DTYPE_SCSI;
+	lp->d_secsize = DEV_BSIZE;
+	lp->d_secpercyl = 1 << sc->sc_bshift;
+	lp->d_npartitions = MAXPARTITIONS;
+	lp->d_partitions[part].p_offset = 0;
+	lp->d_partitions[part].p_size = sc->sc_blks;
+
+	/*
+	 * Now try to read the disklabel
+	 */
+	msg = readdisklabel(dev, rzstrategy, lp);
+	if (msg == NULL)
+		return;
+
+	printf("rz%d: WARNING: %s\n", unit, msg);
+	sc->sc_label.d_magic = DISKMAGIC;
+	sc->sc_label.d_magic2 = DISKMAGIC;
+	sc->sc_label.d_type = DTYPE_SCSI;
+	sc->sc_label.d_subtype = 0;
+	sc->sc_label.d_typename[0] = '\0';
+	sc->sc_label.d_secsize = DEV_BSIZE;
+	sc->sc_label.d_secperunit = sc->sc_blks;
+	sc->sc_label.d_npartitions = MAXPARTITIONS;
+	sc->sc_label.d_bbsize = BBSIZE;
+	sc->sc_label.d_sbsize = SBSIZE;
+	for (i = 0; i < MAXPARTITIONS; i++) {
+		sc->sc_label.d_partitions[i].p_size =
+			rzdefaultpart[i].nblocks;
+		sc->sc_label.d_partitions[i].p_offset =
+			rzdefaultpart[i].strtblk;
+	}
+	sc->sc_label.d_partitions[RAWPART].p_size = sc->sc_blks;
+}
+
 int
 rzopen(dev, flags, mode, p)
 	dev_t dev;
@@ -673,7 +724,6 @@ rzopen(dev, flags, mode, p)
 	register struct rz_softc *sc = &rz_softc[unit];
 	register struct disklabel *lp;
 	register int i;
-	char *err_msg;
 	int part;
 	u_long mask;
 
@@ -682,37 +732,10 @@ rzopen(dev, flags, mode, p)
 
 	/* try to read disk label and partition table information */
 	part = rzpart(dev);
-	lp = &sc->sc_label;
-	if (!(sc->sc_flags & RZF_HAVELABEL)) {
-		sc->sc_flags |= RZF_HAVELABEL;
-		lp->d_secsize = DEV_BSIZE;
-		lp->d_secpercyl = 1 << sc->sc_bshift;
-		lp->d_npartitions = MAXPARTITIONS;
-		lp->d_partitions[part].p_offset = 0;
-		lp->d_partitions[part].p_size = sc->sc_blks;
-		if (err_msg = readdisklabel(dev, rzstrategy, lp)) {
-			printf("rz%d: %s\n", unit, err_msg);
-			sc->sc_label.d_magic = DISKMAGIC;
-			sc->sc_label.d_magic2 = DISKMAGIC;
-			sc->sc_label.d_type = DTYPE_SCSI;
-			sc->sc_label.d_subtype = 0;
-			sc->sc_label.d_typename[0] = '\0';
-			sc->sc_label.d_secsize = DEV_BSIZE;
-			sc->sc_label.d_secperunit = sc->sc_blks;
-			sc->sc_label.d_npartitions = MAXPARTITIONS;
-			sc->sc_label.d_bbsize = BBSIZE;
-			sc->sc_label.d_sbsize = SBSIZE;
-			for (i = 0; i < MAXPARTITIONS; i++) {
-				sc->sc_label.d_partitions[i].p_size =
-					rzdefaultpart[i].nblocks;
-				sc->sc_label.d_partitions[i].p_offset =
-					rzdefaultpart[i].strtblk;
-			}
-			sc->sc_label.d_partitions[RAWPART].p_size =
-				sc->sc_blks;
-		}
-	}
+	if (!(sc->sc_flags & RZF_HAVELABEL))
+		rzgetinfo(dev);
 
+	lp = &sc->sc_label;
 	if (part >= lp->d_npartitions || lp->d_partitions[part].p_size == 0)
 		return (ENXIO);
 	/*
@@ -925,10 +948,19 @@ rzsize(dev)
 	register int part = rzpart(dev);
 	register struct rz_softc *sc = &rz_softc[unit];
 
-	if (unit >= NRZ || !(sc->sc_flags & RZF_ALIVE) ||
-	    part >= sc->sc_label.d_npartitions)
+	if (unit >= NRZ || !(sc->sc_flags & RZF_ALIVE))
 		return (-1);
 
+	/*
+	 * We get called very early on (via swapconf)
+	 * without the device being open so we need to
+	 * read the disklabel here.
+	 */
+	if (!(sc->sc_flags & RZF_HAVELABEL))
+		rzgetinfo(dev);
+
+	if (part >= sc->sc_label.d_npartitions)
+		return (-1);
 	return (sc->sc_label.d_partitions[part].p_size);
 }
 
