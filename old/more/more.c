@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)more.c	5.26 (Berkeley) 04/18/91";
+static char sccsid[] = "@(#)more.c	5.27 (Berkeley) 03/29/92";
 #endif /* not lint */
 
 /*
@@ -1496,7 +1496,7 @@ initterm ()
     struct winsize win;
 
 retry:
-    if (!(no_tty = gtty(fileno(stdout), &otty))) {
+    if (!(no_tty = ioctl(fileno(stdout), TIOCGETP, &otty))) {
 	if (ioctl(fileno(stdout), TIOCLGET, &lmode) < 0) {
 	    perror("TIOCLGET");
 	    exit(1);
@@ -1591,8 +1591,8 @@ retry:
 	if ((shell = getenv("SHELL")) == NULL)
 	    shell = "/bin/sh";
     }
-    no_intty = gtty(fileno(stdin), &otty);
-    gtty(fileno(stderr), &otty);
+    no_intty = ioctl(fileno(stdin), TIOCGETP, &otty);
+    (void)ioctl(fileno(stderr), TIOCGETP, &otty);
     savetty = otty;
     ospeed = otty.sg_ospeed;
     slow_tty = ospeed < B1200;
