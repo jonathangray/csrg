@@ -30,14 +30,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_ether.c	7.15 (Berkeley) 10/02/91
+ *	@(#)if_ether.c	7.16 (Berkeley) 12/17/91
  */
 
 /*
  * Ethernet address resolution protocol.
  * TODO:
- *	run at splnet (add ARP protocol intr.)
- *	link entries onto hash chains, keep free list
  *	add "inuse/lock" bit (or ref. count) along with valid bit
  */
 
@@ -128,6 +126,8 @@ arp_rtrequest(req, rt, sa)
 	switch (req) {
 	case RTM_ADD:
 	case RTM_RESOLVE:
+		if ((rt->rt_flags & RTF_HOST) == 0) /* Route to IF? XXX*/
+			rt->rt_flags |= RTF_CLONING;
 		if (rt->rt_flags & RTF_CLONING) {
 			/*
 			 * Case 1: This route should come from a route to iface.
