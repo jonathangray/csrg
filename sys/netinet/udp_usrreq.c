@@ -30,17 +30,15 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)udp_usrreq.c	7.19 (Berkeley) 11/27/90
+ *	@(#)udp_usrreq.c	7.20 (Berkeley) 04/20/91
  */
 
 #include "param.h"
-#include "user.h"
 #include "malloc.h"
 #include "mbuf.h"
 #include "protosw.h"
 #include "socket.h"
 #include "socketvar.h"
-#include "errno.h"
 #include "stat.h"
 
 #include "../net/if.h"
