@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)fflush.c	5.3 (Berkeley) 10/04/92";
+static char sccsid[] = "@(#)fflush.c	5.4 (Berkeley) 05/21/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <errno.h>
