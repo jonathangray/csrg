@@ -38,12 +38,12 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)sleep.c	8.1 (Berkeley) 05/31/93";
+static char sccsid[] = "@(#)sleep.c	8.2 (Berkeley) 04/01/94";
 #endif /* not lint */
 
-#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 void usage __P((void));
 
@@ -74,6 +74,7 @@ main(argc, argv)
 void
 usage()
 {
+
 	(void)fprintf(stderr, "usage: sleep seconds\n");
 	exit(1);
 }
