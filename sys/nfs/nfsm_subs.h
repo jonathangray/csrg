@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsm_subs.h	8.1 (Berkeley) 06/10/93
+ *	@(#)nfsm_subs.h	7.16 (Berkeley) 06/16/93
  */
 
 /*
@@ -91,19 +91,7 @@ extern struct mbuf *nfsm_reqh();
 		if (t1 >= (s)) { \
 			(a) = (c)(dpos); \
 			dpos += (s); \
-		} else if (error = nfsm_disct(&md, &dpos, (s), t1, TRUE, &cp2)) { \
-			m_freem(mrep); \
-			goto nfsmout; \
-		} else { \
-			(a) = (c)cp2; \
-		} }
-
-#define	nfsm_dissecton(a,c,s) \
-		{ t1 = mtod(md, caddr_t)+md->m_len-dpos; \
-		if (t1 >= (s)) { \
-			(a) = (c)(dpos); \
-			dpos += (s); \
-		} else if (error = nfsm_disct(&md, &dpos, (s), t1, FALSE, &cp2)) { \
+		} else if (error = nfsm_disct(&md, &dpos, (s), t1, &cp2)) { \
 			m_freem(mrep); \
 			goto nfsmout; \
 		} else { \
