@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)getNAME.c	8.1 (Berkeley) 06/18/93";
+static char sccsid[] = "@(#)getNAME.c	5.8 (Berkeley) 06/30/93";
 #endif /* not lint */
 
 /*
@@ -149,7 +149,7 @@ getfrom(pathname)
 	trimln(headbuf);
 	if (tocrc)
 		doname(name);
-	if (!intro)
+	if (!tocrc && !intro)
 		printf("%s\t", headbuf);
 	linbuf[0] = '\0';
 	for (;;) {
