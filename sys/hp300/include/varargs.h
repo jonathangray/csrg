@@ -30,8 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)varargs.h	5.2 (Berkeley) 05/13/90
+ *	@(#)varargs.h	5.3 (Berkeley) 04/03/91
  */
+
+#ifndef _VARARGS_H_
+#define	_VARARGS_H_
 
 #include <stdarg.h>
 
@@ -41,3 +44,5 @@
 #undef	va_start
 #define	va_start(ap) \
 	ap = (char *)&va_alist
+
+#endif /* !_VARARGS_H_ */
