@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)init_main.c	8.7 (Berkeley) 12/13/93
+ *	@(#)init_main.c	8.8 (Berkeley) 12/30/93
  */
 
 #include <sys/param.h>
@@ -240,7 +240,7 @@ main(framep)
 		panic("cannot mount root");
 
 	/* Get the vnode for '/'.  Set fdp->fd_fd.fd_cdir to reference it. */
-	if (VFS_ROOT(rootfs, &rootvnode))
+	if (VFS_ROOT(mountlist.tqh_first, &rootvnode))
 		panic("cannot find root vnode");
 	fdp->fd_fd.fd_cdir = rootvnode;
 	VREF(fdp->fd_fd.fd_cdir);
