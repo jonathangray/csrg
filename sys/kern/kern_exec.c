@@ -11,7 +11,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_exec.c	8.6 (Berkeley) 01/21/94
+ *	@(#)kern_exec.c	8.7 (Berkeley) 08/11/94
  */
 
 #include <sys/param.h>
@@ -95,7 +95,7 @@ execve(p, uap, retval)
 	if (error = namei(&nd))
 		return (error);
 	vp = nd.ni_vp;
-	LEASE_CHECK(vp, p, cred, LEASE_READ);
+	VOP_LEASE(vp, p, cred, LEASE_READ);
 	VOP_LOCK(vp);
 	indir = 0;
 	uid = cred->cr_uid;
@@ -289,7 +289,7 @@ execve(p, uap, retval)
 		if (error = namei(&nd))
 			return (error);
 		vp = nd.ni_vp;
-		LEASE_CHECK(vp, p, cred, LEASE_READ);
+		VOP_LEASE(vp, p, cred, LEASE_READ);
 		VOP_LOCK(vp);
 		if (error = VOP_GETATTR(vp, &vattr, cred, p))
 			goto bad;
