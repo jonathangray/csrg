@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsm_subs.h	7.15 (Berkeley) 03/30/93
+ *	@(#)nfsm_subs.h	8.1 (Berkeley) 06/10/93
  */
 
 /*
