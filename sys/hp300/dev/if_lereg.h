@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_lereg.h	7.1 (Berkeley) 05/08/90
+ *	@(#)if_lereg.h	7.2 (Berkeley) 08/08/91
  */
 
 #define	LEID		21
@@ -40,8 +40,8 @@
 #define	LERBUF		8
 #define	LERBUFLOG2	3
 #define	LE_RLEN		(LERBUFLOG2 << 13)
-#define	LETBUF		1
-#define	LETBUFLOG2	0
+#define	LETBUF		2
+#define	LETBUFLOG2	1
 #define	LE_TLEN		(LETBUFLOG2 << 13)
 
 #define vu_char		volatile u_char
