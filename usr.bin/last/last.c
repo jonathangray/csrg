@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)last.c	5.17 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)last.c	5.18 (Berkeley) 03/01/91";
 #endif /* not lint */
 
 /*
@@ -144,7 +144,6 @@ main(argc, argv)
  * wtmp --
  *	read through the wtmp file
  */
-static
 wtmp()
 {
 	register struct utmp	*bp;		/* current structure */
@@ -152,11 +151,11 @@ wtmp()
 	struct stat	stb;			/* stat of file for size */
 	long	bl, delta,			/* time difference */
 		lseek(), time();
-	int	bytes, wfd,
-		onintr();
+	int	bytes, wfd;
 	char	*ct, *crmsg,
 		*asctime(), *ctime(), *strcpy();
 	TTY	*addtty();
+	void	onintr();
 
 	if ((wfd = open(file, O_RDONLY, 0)) < 0 || fstat(wfd, &stb) == -1) {
 		perror(file);
@@ -251,7 +250,6 @@ wtmp()
  * want --
  *	see if want this entry
  */
-static
 want(bp, check)
 	register struct utmp *bp;
 	int check;
@@ -293,7 +291,6 @@ want(bp, check)
  * addarg --
  *	add an entry to a linked list of arguments
  */
-static
 addarg(type, arg)
 	int type;
 	char *arg;
@@ -315,7 +312,7 @@ addarg(type, arg)
  * addtty --
  *	add an entry to a linked list of ttys
  */
-static TTY *
+TTY *
 addtty(ttyname)
 	char *ttyname;
 {
@@ -338,7 +335,6 @@ addtty(ttyname)
  *	has a domain attached that is the same as the current domain, rip
  *	off the domain suffix since that's what login(1) does.
  */
-static
 hostconv(arg)
 	char *arg;
 {
@@ -364,7 +360,7 @@ hostconv(arg)
  * ttyconv --
  *	convert tty to correct name.
  */
-static char *
+char *
 ttyconv(arg)
 	char *arg;
 {
@@ -397,7 +393,7 @@ ttyconv(arg)
  * onintr --
  *	on interrupt, we inform the user how far we've gotten
  */
-static
+void
 onintr(signo)
 	int signo;
 {
