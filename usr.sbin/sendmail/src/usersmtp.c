@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)usersmtp.c	6.9 (Berkeley) 02/18/93 (with SMTP)";
+static char sccsid[] = "@(#)usersmtp.c	6.10 (Berkeley) 02/18/93 (with SMTP)";
 #else
-static char sccsid[] = "@(#)usersmtp.c	6.9 (Berkeley) 02/18/93 (without SMTP)";
+static char sccsid[] = "@(#)usersmtp.c	6.10 (Berkeley) 02/18/93 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -213,7 +213,7 @@ smtpmailfrom(m, mci, e)
 
 	mci->mci_state = MCIS_ACTIVE;
 
-	expand("\001<", buf, &buf[sizeof buf - 1], e);
+	expand("\201<", buf, &buf[sizeof buf - 1], e);
 	if (e->e_from.q_mailer == LocalMailer ||
 	    !bitnset(M_FROMPATH, m->m_flags))
 	{
@@ -571,7 +571,8 @@ reply(m, mci, e, timeout)
 			nmessage(Arpa_Info, "%s", SmtpReplyBuffer);
 
 		/* if continuation is required, we can go on */
-		if (SmtpReplyBuffer[3] == '-' || !isdigit(SmtpReplyBuffer[0]))
+		if (SmtpReplyBuffer[3] == '-' ||
+		    !(isascii(SmtpReplyBuffer[0]) && isdigit(SmtpReplyBuffer[0])))
 			continue;
 
 		/* decode the reply code */
