@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)bt_open.c	5.5 (Berkeley) 02/22/91";
+static char sccsid[] = "@(#)bt_open.c	5.6 (Berkeley) 02/23/91";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -360,7 +360,7 @@ bt_get(tree, key, data, flag)
 	BTREE tree;
 	DBT *key;
 	DBT *data;
-	int flag;
+	u_long flag;
 {
 	BTREE_P t = (BTREE_P) tree;
 	BTHEADER *h;
@@ -427,7 +427,7 @@ bt_put(tree, key, data, flag)
 	BTREE tree;
 	DBT *key;
 	DBT *data;
-	int flag;
+	u_long flag;
 {
 	BTREE_P t = (BTREE_P) tree;
 	BTITEM *item;
@@ -477,7 +477,7 @@ int
 bt_delete(tree, key, flags)
 	BTREE tree;
 	DBT *key;
-	int flags;
+	u_long flags;
 {
 	BTREE_P t = (BTREE_P) tree;
 	BTHEADER *h;
@@ -623,7 +623,7 @@ bt_seq(tree, key, data, flags)
 	BTREE tree;
 	DBT *key;
 	DBT *data;
-	int flags;
+	u_long flags;
 {
 	BTREE_P t = (BTREE_P) tree;
 	BTHEADER *h;
