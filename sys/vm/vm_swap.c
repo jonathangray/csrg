@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_swap.c	7.22 (Berkeley) 05/14/92
+ *	@(#)vm_swap.c	7.23 (Berkeley) 07/03/92
  */
 
 #include <sys/param.h>
@@ -108,7 +108,6 @@ void
 swstrategy(bp)
 	register struct buf *bp;
 {
-	USES_VOP_STRATEGY;
 	int sz, off, seg, index;
 	register struct swdevt *sp;
 
@@ -216,7 +215,6 @@ swfree(p, index)
 	struct proc *p;
 	int index;
 {
-	USES_VOP_OPEN;
 	register struct swdevt *sp;
 	register struct swdevt *sp;
 	register swblk_t vsbase;
