@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	6.26 (Berkeley) 02/24/93";
+static char sccsid[] = "@(#)deliver.c	6.27 (Berkeley) 02/26/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -132,7 +132,8 @@ deliver(e, firstto)
 	{
 		for (; to != NULL; to = to->q_next)
 		{
-			if (bitset(QDONTSEND, to->q_flags) || to->q_mailer != m)
+			if (bitset(QDONTSEND|QQUEUEUP, to->q_flags) ||
+			    to->q_mailer != m)
 				continue;
 			to->q_flags |= QQUEUEUP|QDONTSEND;
 			e->e_to = to->q_paddr;
@@ -256,7 +257,7 @@ deliver(e, firstto)
 			break;
 
 		/* if already sent or not for this host, don't send */
-		if (bitset(QDONTSEND, to->q_flags) ||
+		if (bitset(QDONTSEND|QQUEUEUP, to->q_flags) ||
 		    to->q_mailer != firstto->q_mailer ||
 		    strcmp(hostsignature(to->q_mailer, to->q_host, e), firstsig) != 0)
 			continue;
