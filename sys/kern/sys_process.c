@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)sys_process.c	7.30 (Berkeley) 07/10/92
+ *	@(#)sys_process.c	7.31 (Berkeley) 07/15/92
  */
 
 #define IPCREG
@@ -180,7 +180,7 @@ procxmt(p)
 			int rv;
 
 			sa = trunc_page((vm_offset_t)ipc.ip_addr);
-			ea = round_page((vm_offset_t)ipc.ip_addr+sizeof(int)-1);
+			ea = round_page((vm_offset_t)ipc.ip_addr+sizeof(int));
 			rv = vm_map_protect(&p->p_vmspace->vm_map, sa, ea,
 					VM_PROT_DEFAULT, FALSE);
 			if (rv == KERN_SUCCESS) {
