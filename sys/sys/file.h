@@ -30,13 +30,15 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)file.h	8.1 (Berkeley) 06/02/93
+ *	@(#)file.h	8.2 (Berkeley) 08/20/94
  */
 
 #include <sys/fcntl.h>
 #include <sys/unistd.h>
 
 #ifdef KERNEL
+#include <sys/queue.h>
+
 struct proc;
 struct uio;
 
@@ -45,8 +47,7 @@ struct uio;
  * One entry for each open kernel vnode and socket.
  */
 struct file {
-	struct	file *f_filef;	/* list of active files */
-	struct	file **f_fileb;	/* list of active files */
+	LIST_ENTRY(file) f_list;/* list of active files */
 	short	f_flag;		/* see fcntl.h */
 #define	DTYPE_VNODE	1	/* file */
 #define	DTYPE_SOCKET	2	/* communications endpoint */
@@ -69,8 +70,9 @@ struct file {
 	caddr_t	f_data;		/* vnode or socket */
 };
 
-extern struct file *filehead;	/* head of list of open files */
-extern int maxfiles;		/* kernel limit on number of open files */
-extern int nfiles;		/* actual number of open files */
+LIST_HEAD(filelist, file);
+extern struct filelist filehead;	/* head of list of open files */
+extern int maxfiles;			/* kernel limit on number of open files */
+extern int nfiles;			/* actual number of open files */
 
 #endif /* KERNEL */
