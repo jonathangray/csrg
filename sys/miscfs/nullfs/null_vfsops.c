@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)null_vfsops.c	1.6 (Berkeley) 07/11/92
+ *	@(#)null_vfsops.c	7.1 (Berkeley) 07/12/92
  *
  * @(#)lofs_vfsops.c	1.2 (Berkeley) 6/18/92
  * $Id: lofs_vfsops.c,v 1.9 1992/05/30 10:26:24 jsp Exp jsp $
@@ -53,7 +53,7 @@
 #include <sys/mount.h>
 #include <sys/namei.h>
 #include <sys/malloc.h>
-#include <nullfs/null.h>
+#include <miscfs/nullfs/null.h>
 
 /*
  * Mount null layer
