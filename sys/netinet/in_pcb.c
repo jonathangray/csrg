@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)in_pcb.c	7.27 (Berkeley) 05/31/93
+ *	@(#)in_pcb.c	7.28 (Berkeley) 06/04/93
  */
 
 #include <sys/param.h>
@@ -53,11 +53,11 @@
 #include <netinet/ip.h>
 #include <netinet/in_pcb.h>
 #include <netinet/in_var.h>
-
 #include <netinet/ip_var.h>
 
 struct	in_addr zeroin_addr;
 
+int
 in_pcballoc(so, head)
 	struct socket *so;
 	struct inpcb *head;
@@ -75,7 +75,8 @@ in_pcballoc(so, head)
 	so->so_pcb = (caddr_t)inp;
 	return (0);
 }
-	
+
+int
 in_pcbbind(inp, nam)
 	register struct inpcb *inp;
 	struct mbuf *nam;
@@ -156,6 +157,7 @@ in_pcbbind(inp, nam)
  * If don't have a local address for this socket yet,
  * then pick one.
  */
+int
 in_pcbconnect(inp, nam)
 	register struct inpcb *inp;
 	struct mbuf *nam;
@@ -222,7 +224,7 @@ in_pcbconnect(inp, nam)
 		if (ro->ro_rt && !(ro->ro_rt->rt_ifp->if_flags & IFF_LOOPBACK))
 			ia = ifatoia(ro->ro_rt->rt_ifa);
 		if (ia == 0) {
-			int fport = sin->sin_port;
+			u_short fport = sin->sin_port;
 
 			sin->sin_port = 0;
 			ia = ifatoia(ifa_ifwithdstaddr(sintosa(sin)));
@@ -273,6 +275,7 @@ in_pcbconnect(inp, nam)
 	return (0);
 }
 
+int
 in_pcbdisconnect(inp)
 	struct inpcb *inp;
 {
@@ -283,6 +286,7 @@ in_pcbdisconnect(inp)
 		in_pcbdetach(inp);
 }
 
+int
 in_pcbdetach(inp)
 	struct inpcb *inp;
 {
@@ -299,6 +303,7 @@ in_pcbdetach(inp)
 	FREE(inp, M_PCB);
 }
 
+int
 in_setsockaddr(inp, nam)
 	register struct inpcb *inp;
 	struct mbuf *nam;
@@ -314,6 +319,7 @@ in_setsockaddr(inp, nam)
 	sin->sin_addr = inp->inp_laddr;
 }
 
+int
 in_setpeeraddr(inp, nam)
 	struct inpcb *inp;
 	struct mbuf *nam;
@@ -340,18 +346,20 @@ in_setpeeraddr(inp, nam)
  *
  * Must be called at splnet.
  */
-in_pcbnotify(head, dst, fport, laddr, lport, cmd, notify)
+int
+in_pcbnotify(head, dst, fport_arg, laddr, lport_arg, cmd, notify)
 	struct inpcb *head;
 	struct sockaddr *dst;
-	u_short fport, lport;
+	u_int fport_arg, lport_arg;
 	struct in_addr laddr;
-	int cmd, (*notify)();
+	int cmd;
+	void (*notify) __P((struct inpcb *, int));
 {
+	extern u_char inetctlerrmap[];
 	register struct inpcb *inp, *oinp;
 	struct in_addr faddr;
+	u_short fport = fport_arg, lport = lport_arg;
 	int errno;
-	int in_rtchange();
-	extern u_char inetctlerrmap[];
 
 	if ((unsigned)cmd > PRC_NCMDS || dst->sa_family != AF_INET)
 		return;
@@ -396,6 +404,7 @@ in_pcbnotify(head, dst, fport, laddr, lport, cmd, notify)
  * routing information.  If the route was created dynamically
  * (by a redirect), time to try a default gateway again.
  */
+int
 in_losing(inp)
 	struct inpcb *inp;
 {
@@ -427,8 +436,10 @@ in_losing(inp)
  * After a routing change, flush old routing
  * and allocate a (hopefully) better one.
  */
-in_rtchange(inp)
+void
+in_rtchange(inp, errno)
 	register struct inpcb *inp;
+	int errno;
 {
 	if (inp->inp_route.ro_rt) {
 		rtfree(inp->inp_route.ro_rt);
@@ -441,14 +452,15 @@ in_rtchange(inp)
 }
 
 struct inpcb *
-in_pcblookup(head, faddr, fport, laddr, lport, flags)
+in_pcblookup(head, faddr, fport_arg, laddr, lport_arg, flags)
 	struct inpcb *head;
 	struct in_addr faddr, laddr;
-	u_short fport, lport;
+	u_int fport_arg, lport_arg;
 	int flags;
 {
 	register struct inpcb *inp, *match = 0;
 	int matchwild = 3, wildcard;
+	u_short fport = fport_arg, lport = lport_arg;
 
 	for (inp = head->inp_next; inp != head; inp = inp->inp_next) {
 		if (inp->inp_lport != lport)
