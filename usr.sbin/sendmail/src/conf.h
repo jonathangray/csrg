@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.11 (Berkeley) 07/21/93
+ *	@(#)conf.h	8.12 (Berkeley) 07/21/93
  */
 
 /*
@@ -211,6 +211,7 @@
 #ifdef oldBSD43
 # define NEEDVPRINTF	1	/* need a replacement for vprintf(3) */
 # define NEEDGETOPT	1	/* need a replacement for getopt(3) */
+# define ARBPTR_T	char *
 # ifndef LA_TYPE
 #  define LA_TYPE	LA_FLOAT
 # endif
@@ -354,6 +355,11 @@
 # ifndef EX_CONFIG
 # define EX_CONFIG	78	/* configuration error */
 # endif
+
+/* type of arbitrary pointer */
+#ifndef ARBPTR_T
+# define ARBPTR_T	void *
+#endif
 
 #ifndef __P
 # include "cdefs.h"
