@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_proc.c	8.1 (Berkeley) 06/10/93
+ *	@(#)kern_proc.c	8.2 (Berkeley) 09/21/93
  */
 
 #include <sys/param.h>
@@ -131,14 +131,14 @@ inferior(p)
  */
 struct proc *
 pfind(pid)
-	register pid;
+	register pid_t pid;
 {
-	register struct proc *p = pidhash[PIDHASH(pid)];
+	register struct proc *p;
 
-	for (; p; p = p->p_hash)
+	for (p = pidhash[PIDHASH(pid)]; p != NULL; p = p->p_hash)
 		if (p->p_pid == pid)
 			return (p);
-	return ((struct proc *)0);
+	return (NULL);
 }
 
 /*
@@ -148,12 +148,13 @@ struct pgrp *
 pgfind(pgid)
 	register pid_t pgid;
 {
-	register struct pgrp *pgrp = pgrphash[PIDHASH(pgid)];
+	register struct pgrp *pgrp;
 
-	for (; pgrp; pgrp = pgrp->pg_hforw)
+	for (pgrp = pgrphash[PIDHASH(pgid)];
+	    pgrp != NULL; pgrp = pgrp->pg_hforw)
 		if (pgrp->pg_id == pgid)
 			return (pgrp);
-	return ((struct pgrp *)0);
+	return (NULL);
 }
 
 /*
@@ -170,7 +171,7 @@ enterpgrp(p, pgid, mksess)
 	int n;
 
 #ifdef DIAGNOSTIC
-	if (pgrp && mksess)	/* firewalls */
+	if (pgrp != NULL && mksess)	/* firewalls */
 		panic("enterpgrp: setsid into non-empty pgrp");
 	if (SESS_LEADER(p))
 		panic("enterpgrp: session leader attempted setpgrp");
