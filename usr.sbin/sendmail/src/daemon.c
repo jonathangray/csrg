@@ -39,9 +39,9 @@
 
 #ifndef lint
 #ifdef DAEMON
-static char sccsid[] = "@(#)daemon.c	6.45 (Berkeley) 05/07/93 (with daemon mode)";
+static char sccsid[] = "@(#)daemon.c	6.46 (Berkeley) 05/11/93 (with daemon mode)";
 #else
-static char sccsid[] = "@(#)daemon.c	6.45 (Berkeley) 05/07/93 (without daemon mode)";
+static char sccsid[] = "@(#)daemon.c	6.46 (Berkeley) 05/11/93 (without daemon mode)";
 #endif
 #endif /* not lint */
 
@@ -271,8 +271,10 @@ makeconnection(host, port, mci, usesecureport)
 		if (p != NULL)
 		{
 			*p = '\0';
+#ifdef NETINET
 			hid = inet_addr(&host[1]);
 			if (hid == -1)
+#endif
 			{
 				/* try it as a host name (avoid MX lookup) */
 				hp = gethostbyname(&host[1]);
@@ -286,8 +288,10 @@ makeconnection(host, port, mci, usesecureport)
 			usrerr("553 Invalid numeric domain spec \"%s\"", host);
 			return (EX_NOHOST);
 		}
-		addr.sin.sin_family = AF_INET;
+#ifdef NETINET
+		addr.sin.sin_family = AF_INET;		/*XXX*/
 		addr.sin.sin_addr.s_addr = hid;
+#endif
 	}
 	else
 	{
@@ -345,10 +349,12 @@ gothostent:
 
 	switch (addr.sa.sa_family)
 	{
+#ifdef NETINET
 	  case AF_INET:
 		addr.sin.sin_port = port;
 		addrlen = sizeof (struct sockaddr_in);
 		break;
+#endif
 
 #ifdef NETISO
 	  case AF_ISO:
