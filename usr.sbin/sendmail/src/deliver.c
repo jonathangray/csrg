@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	8.71 (Berkeley) 02/06/94";
+static char sccsid[] = "@(#)deliver.c	8.72 (Berkeley) 02/07/94";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1943,7 +1943,7 @@ logdelivery(m, mci, stat, ctladdr, e)
 		extern SOCKADDR CurHostAddr;
 # endif
 
-		sprintf(buf, ", relay=%s", mci->mci_host);
+		sprintf(buf, "relay=%s", mci->mci_host);
 
 # ifdef DAEMON
 		(void) strcat(buf, " [");
@@ -1956,7 +1956,7 @@ logdelivery(m, mci, stat, ctladdr, e)
 		char *p = macvalue('h', e);
 
 		if (p != NULL && p[0] != '\0')
-			sprintf(buf, ", relay=%s", p);
+			sprintf(buf, "relay=%s", p);
 	}
 	if (buf[0] != '\0')
 		syslog(LOG_INFO, "%s: %s", e->e_id, buf);
