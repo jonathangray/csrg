@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	8.5 (Berkeley) 02/13/94
+ *	@(#)nfs_vnops.c	8.6 (Berkeley) 06/04/94
  */
 
 /*
@@ -1540,6 +1540,9 @@ nfs_readdir(ap)
 		struct vnode *a_vp;
 		struct uio *a_uio;
 		struct ucred *a_cred;
+		int *a_eofflag;
+		u_long *a_cookies;
+		int a_ncookies;
 	} */ *ap;
 {
 	register struct vnode *vp = ap->a_vp;
@@ -1547,6 +1550,13 @@ nfs_readdir(ap)
 	register struct uio *uio = ap->a_uio;
 	int tresid, error;
 	struct vattr vattr;
+
+	/*
+	 * We don't allow exporting NFS mounts, and currently local requests
+	 * do not need cookies.
+	 */
+	if (ap->a_ncookies)
+		panic("nfs_readdir: not hungry");
 
 	if (vp->v_type != VDIR)
 		return (EPERM);
