@@ -35,14 +35,12 @@
  *
  * from: $Hdr: kb_ctrl.c,v 4.300 91/06/09 06:14:49 root Rel41 $ SONY
  *
- *	@(#)kb_ctrl.c	7.2 (Berkeley) 12/17/92
+ *	@(#)kb_ctrl.c	7.3 (Berkeley) 03/09/93
  */
 
 /*
  *	Keyboard driver
  */
-
-#include <machine/fix_machine_type.h>
 
 #ifdef IPC_MRX
 #include <sys/ioctl.h>
@@ -91,10 +89,7 @@ kbd_open(chan)
 {
 	register int i;
 
-#ifdef news700
-	scc_open(chan);
-#endif
-#if defined(news1700) || defined(news1200) || defined(news3400)
+#if defined(news3400)
 	kbm_open(chan);
 #endif
 	return (0);
@@ -105,13 +100,6 @@ kbd_read(chan, buf, n)
 	char *buf;
 	int n;
 {
-#ifdef news700
-	register int i;
-
-	for (i = n; i > 0; i--)
-		*buf++ = scc_getc(chan);
-	return (n);
-#endif
 #if defined(news1700) || defined(news1200)
 
 	return (kbd_read_raw(chan, buf, n));
@@ -123,19 +111,8 @@ kbd_write(chan, buf, n)
 	char *buf;
 	int n;
 {
-#ifdef news700
-	register int i;
 
-	for (i = 0; i < n; i++) {
-		scc_putc(SCC_KEYBOARD, *buf++);
-#ifndef NO_PRE_EMPT
-		if (i % 4 == 0) PRE_EMPT;
-#endif
-	}
-	return (n);
-#endif /* news700 */
-#if defined(news1700) || defined(news1200) || defined(news3400)
-
+#if defined(news3400)
 	return (kbm_write(SCC_KEYBOARD, buf, n));
 #endif
 }
@@ -218,11 +195,8 @@ kbd_bell(n)
 	register int n;
 {
 
-#if defined(news1700) || defined(news1200) || defined(news3400)
+#if defined(news3400)
 	(void) kbm_write(SCC_KEYBOARD, NULL, n);
-#endif
-#ifdef news700
-	kbd_bell_scc(n);
 #endif
 	return (0);
 }
@@ -253,7 +227,7 @@ kb_softint()
 	extern int tty00_is_console;
 
 	while ((code = xgetc(SCC_KEYBOARD)) >= 0) {
-#if defined(news1200) || defined(news3200)		/* BEGIN reiko */
+#if defined(news3200)		/* BEGIN reiko */
 		if ((code & 0x7f) == KEY_EISUU) {
 			int up = code & OFF;
 			static int kana = 0;
@@ -297,10 +271,6 @@ kb_softint()
 #include "config.h"
 #include "kbms.h"
 
-#ifdef news1800
-#include "scc.h"
-#endif
-
 static struct buffer *kbd_buf;
 static int port_kbd_intr;
 static int port_kbd_back;
@@ -317,17 +287,6 @@ keyboard(chan)
 	int kb_intr();
 
 	Xkb_intr = kb_intr;
-#endif
-
-#ifdef news1800
-	int scc_input(), scc_output();
-
-	if (scc_open(SCC_KEYBOARD) < 0)
-		return;
-	proc_create("scc_kbread", scc_input, 601, 512, SCC_KEYBOARD);
-	proc_create("scc_kbwrite", scc_output, 601, 512, SCC_KEYBOARD);
-	while (scc_std_ports[SCC_KEYBOARD][0] == 0)
-		proc_sleep_self(100);
 #endif
 	kb_ioctl = kbd_ioctl;
 	kb_read = kbd_read;
@@ -356,11 +315,6 @@ kbd_ctrl()
 	*(char *)KEYBD_RESET = 0;
 	*(char *)KEYBD_INTE = 1;
 #endif
-#ifdef news1800
-	count = 1;
-	msg_send(scc_std_ports[SCC_KEYBOARD][0], ports[0],
-		&count, sizeof (count), 0);
-#endif
 
 	kbd_buf = buffer_alloc(32);
 	(void) spl0();
@@ -378,11 +332,6 @@ kbd_ctrl()
 					kbd_encode(*addr);
 				addr++;
 			}
-#ifdef news1800
-			count = 1;
-			msg_send(scc_std_ports[SCC_KEYBOARD][0], ports[select],
-			    &count, sizeof (count), 0);
-#endif
 		} else if (select == 1) {	/* ESC [ 6 n */
 			msg_recv(ports[select], NULL, &addr, &count, 0);
 			put(kbd_buf, addr, count);
@@ -400,20 +349,12 @@ kbd_output()
 {
 	char *addr;
 	int from, len;
-#ifdef news1800
-	register int subport;
-
-	subport = port_create("port_kbd_write");
-#endif
 
 	(void) spl0();
 	for (;;) {
 		msg_recv(STDPORT, &from, &addr, &len, 0);
 #ifdef news3800
 		len = kbd_write(0, addr, len);
-#endif
-#ifdef news1800
-		len = kbd_write(subport, addr, len);
 #endif
 		msg_send(from, STDPORT, &len, sizeof(len), 0);
 	}
@@ -423,11 +364,6 @@ kbd_io()
 {
 	struct kb_ctrl_req *req;
 	int from, reply;
-#ifdef news1800
-	register int sub_port;
-
-	sub_port = port_create("port_kbd_sub");
-#endif
 
 	(void) spl0();
 	for (;;) {
@@ -435,11 +371,7 @@ kbd_io()
 		if (req->kb_func == KIOCCHTBL || req->kb_func == KIOCOYATBL)
 			kbd_ioctl(0, req->kb_func, req->kb_arg);
 		else
-#ifdef news1800
-			kbd_ioctl(sub_port, req->kb_func, &req->kb_arg);
-#else
 			kbd_ioctl(0, req->kb_func, &req->kb_arg);
-#endif
 		reply = req->kb_arg;
 		msg_send(from, STDPORT, &reply, sizeof(reply), 0);
 	}
@@ -470,9 +402,6 @@ kbd_write(chan, buf, n)
 	char *buf;
 	int n;
 {
-#ifdef news1800
-	return (scc_write(chan, SCC_KEYBOARD, buf, n));
-#endif
 
 #ifdef news3800
 	*(char *)BEEP_FREQ = ~(n & 1);
@@ -552,11 +481,7 @@ kbd_ioctl(chan, cmd, argp)
 		return (kbd_string(cmd, (Pfk_string *)argp));
 
 	case KIOCBELL:
-#ifdef news1800
-		return (kbd_bell(*argp, chan));
-#else
 		return (kbd_bell(*argp));
-#endif
 
 	case KIOCBACK:
 		if (argp == NULL)
@@ -614,13 +539,8 @@ kbd_ioctl(chan, cmd, argp)
 	}
 }
 
-#ifdef news1800
-kbd_bell_scc(n, port)
-	register int n, port;
-#else
 kbd_bell_scc(n)
 	register int n;
-#endif
 {
 	register int i;
 	static char bell_data[] = {
@@ -632,11 +552,7 @@ kbd_bell_scc(n)
 
 	while (n > 0) {
 		i = min(n, sizeof (bell_data));
-#ifdef news1800
-		(void) kbd_write(port, bell_data, i);
-#else
 		(void) kbd_write(0, bell_data, i);
-#endif
 		n -= i;
 	}
 }
