@@ -102,7 +102,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)config.y	5.14 (Berkeley) 07/01/91
+ *	@(#)config.y	5.15 (Berkeley) 09/07/91
  */
 
 #include "config.h"
@@ -154,6 +154,12 @@ Config_spec:
 		} else if (!strcmp($2, "i386")) {
 			machine = MACHINE_I386;
 			machinename = "i386";
+		} else if (!strcmp($2, "mips")) {
+			machine = MACHINE_MIPS;
+			machinename = "mips";
+		} else if (!strcmp($2, "pmax")) {
+			machine = MACHINE_PMAX;
+			machinename = "pmax";
 		} else
 			yyerror("Unknown machine type");
 	      } |
