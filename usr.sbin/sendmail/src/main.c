@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.98 (Berkeley) 04/08/95";
+static char sccsid[] = "@(#)main.c	8.99 (Berkeley) 04/09/95";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -1695,6 +1695,7 @@ testmodeline(line, e)
 			p = "";
 		if (strcasecmp(&line[1], "mx") == 0)
 		{
+#if NAMED_BIND
 			/* look up MX records */
 			int nmx;
 			int i;
@@ -1705,6 +1706,9 @@ testmodeline(line, e)
 			printf("%d MX records:\n", nmx);
 			for (i = 0; i < nmx; i++)
 				printf("\t%s\n", mxhosts[i]);
+#else
+			printf("No MX code compiled in\n");
+#endif
 		}
 		else
 		{
