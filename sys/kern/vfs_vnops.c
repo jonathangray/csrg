@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_vnops.c	8.8 (Berkeley) 03/22/95
+ *	@(#)vfs_vnops.c	8.9 (Berkeley) 04/02/95
  */
 
 #include <sys/param.h>
@@ -279,6 +279,8 @@ vn_write(fp, uio, cred)
 		ioflag |= IO_APPEND;
 	if (fp->f_flag & FNONBLOCK)
 		ioflag |= IO_NDELAY;
+	if (fp->f_flag & O_FSYNC)
+		ioflag |= IO_SYNC;
 	VOP_LEASE(vp, uio->uio_procp, cred, LEASE_WRITE);
 	VOP_LOCK(vp);
 	uio->uio_offset = fp->f_offset;
