@@ -30,7 +30,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)READ_ME	8.45 (Berkeley) 01/04/94
+#	@(#)READ_ME	8.46 (Berkeley) 01/08/94
 #
 
 This directory contains the source files for sendmail.
@@ -471,15 +471,6 @@ OSF/1
 	Also, the enclosed makefile removed /usr/sbin/smtpd; if you need
 	it, just create the link to the sendmail binary.
 
-HP-UX 9.x
-	I've had at least one report that the sendmail daemon dies
-	every day during the run of calendar(1) from cron(8) and
-	occassionally during SMTP server processes if and only if you
-	compile in the code that calls getusershell(3).  If you are
-	having this problem, compile with -DHASGETUSERSHELL=0 to
-	turn it off, and please send e-mail to sendmail@CS.Berkeley.EDU
-	so we can try to track this down.
-
 NeXT
 	If you are compiling on NeXT, you will have to create an empty
 	file "unistd.h" and create a file "dirent.h" containing:
@@ -751,4 +742,4 @@ version.c	The version number and information about this
 
 Eric Allman
 
-(Version 8.45, last update 01/04/94 07:51:35)
+(Version 8.46, last update 01/08/94 17:54:38)
