@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)ffs_alloc.c	7.3 (Berkeley) 06/05/87
+ *	@(#)ffs_alloc.c	7.4 (Berkeley) 09/09/87
  */
 
 #include "param.h"
