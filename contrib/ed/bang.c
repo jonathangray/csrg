@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)bang.c	5.4 (Berkeley) 03/18/93";
+static char sccsid[] = "@(#)bang.c	5.5 (Berkeley) 04/28/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -85,8 +85,10 @@ bang(inputt, errnum)
 			l_shellcmd[l_cnt] = '\0';
 			break;
 		} else
-			if ((ss == '!') && (l_esc == 0))
+			if ((ss == '!') && (l_esc == 0)) {
 				l_cnt = l_cnt_last_pos;
+				printf("%s\n", l_shellcmd);
+			}
 			else
 				if ((ss == '%') && (l_esc == 0)) {
 					l_shellcmd[l_cnt] = '\0';
