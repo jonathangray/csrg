@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.82 (Berkeley) 02/04/95
+ *	@(#)sendmail.h	8.83 (Berkeley) 02/05/95
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.82		02/04/95";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.83		02/05/95";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -189,7 +189,9 @@ struct mailer
 {
 	char	*m_name;	/* symbolic name of this mailer */
 	char	*m_mailer;	/* pathname of the mailer to use */
-	char	*m_mtstype;	/* type of this MTS */
+	char	*m_mtatype;	/* type of this MTA */
+	char	*m_addrtype;	/* type for addresses */
+	char	*m_diagtype;	/* type for diagnostics */
 	BITMAP	m_flags;	/* status flags, see below */
 	short	m_mno;		/* mailer number internally */
 	char	**m_argv;	/* template argument vector */
@@ -403,7 +405,6 @@ ENVELOPE
 	char		*e_msgboundary;	/* MIME-style message part boundary */
 	char		*e_origrcpt;	/* original recipient (one only) */
 	char		*e_envid;	/* envelope id from MAIL FROM: line */
-	char		*e_omts;	/* OMTS parameter from MAIL FROM: */
 	time_t		e_dtime;	/* time of last delivery attempt */
 	int		e_ntries;	/* number of delivery attempts */
 	dev_t		e_dfdev;	/* df file's device, for crash recov */
