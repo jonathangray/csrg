@@ -31,7 +31,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)vgrind.sh	5.8 (Berkeley) 8/3/92
+#       @(#)vgrind.sh	5.9 (Berkeley) 09/15/92
 #
 
 set voptions=
