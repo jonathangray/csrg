@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.93 (Berkeley) 03/03/94
+ *	@(#)conf.h	8.94 (Berkeley) 03/03/94
  */
 
 /*
@@ -599,7 +599,7 @@ extern void		*malloc();
 # define ERRLIST_PREDEFINED	/* don't declare sys_errlist */
 # define GIDSET_T	gid_t	/* from <linux/types.h> */
 # ifndef LA_TYPE
-#  define LA_TYPE	LA_PROC
+#  define LA_TYPE	LA_PROCSTR
 # endif
 # define SFS_TYPE	SFS_VFS		/* use <sys/vfs.h> statfs() impl */
 # include <sys/sysmacros.h>
