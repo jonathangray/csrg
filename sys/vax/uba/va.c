@@ -1,4 +1,4 @@
-/*	va.c	3.2	5/8/80	*/
+/*	va.c	3.4	%H%	*/
 
 #ifdef ERNIE
 #include "../h/param.h"
