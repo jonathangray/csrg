@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)cmds.c	5.15 (Berkeley) 03/04/91";
+static char sccsid[] = "@(#)cmds.c	5.16 (Berkeley) 07/31/91";
 #endif /* not lint */
 
 #include "tip.h"
@@ -125,6 +125,7 @@ transfer(buf, fd, eofchars)
 	register int cnt, eof;
 	time_t start;
 	sig_t f;
+	char r;
 
 	pwrite(FD, buf, size(buf));
 	quit = 0;
@@ -134,7 +135,8 @@ transfer(buf, fd, eofchars)
 	/*
 	 * finish command
 	 */
-	pwrite(FD, "\r", 1);
+	r = '\r';
+	pwrite(FD, &r, 1);
 	do
 		read(FD, &c, 1); 
 	while ((c&0177) != '\n');
