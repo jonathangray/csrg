@@ -30,14 +30,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)limits.h	8.1 (Berkeley) 05/04/95
+ *	@(#)limits.h	8.2 (Berkeley) 05/04/95
  */
 
 #define	CHAR_BIT	8		/* number of bits in a char */
 #define	MB_LEN_MAX	6		/* Allow 31 bit UTF2 */
 
 
-#define	CLK_TCK		60		/* ticks per second */
+#define	CLK_TCK		64		/* ticks per second */
 
 /*
  * According to ANSI (section 2.2.4.2), the values below must be usable by
