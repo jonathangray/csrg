@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)find.c	5.5 (Berkeley) 05/05/92";
+static char sccsid[] = "@(#)find.c	5.6 (Berkeley) 06/01/92";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -165,14 +165,7 @@ find_execute(plan, paths)
 			(void)fprintf(stderr, "find: %s: %s\n", 
 			    entry->fts_path, strerror(errno));
 			continue;
-		case FTS_SL:
-			if (entry->fts_level == FTS_ROOTLEVEL) {
-				(void)fts_set(tree, entry, FTS_FOLLOW);
-				continue;
-			}
-			break;
 		}
-
 #define	BADCH	" \t\n\\'\""
 		if (isxargs && strpbrk(entry->fts_path, BADCH)) {
 			(void)fflush(stdout);
