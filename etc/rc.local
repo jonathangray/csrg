@@ -1,7 +1,7 @@
 #
 # site-specific startup actions, daemons
 #
-#	@(#)rc.local	5.4 (Berkeley) 12/14/90
+#	@(#)rc.local	8.1 (Berkeley) 06/09/93
 #
 
 T=/tmp/_motd
