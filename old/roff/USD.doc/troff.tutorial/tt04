@@ -2,7 +2,7 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)tt04	8.1 (Berkeley) 06/08/93
+.\"	@(#)tt04	8.2 (Berkeley) 05/21/94
 .\"
 .NH
 Indents and Line Lengths
@@ -139,8 +139,8 @@ command:
 \s36\v'2'P\v'-2'\s0ater noster qui est in caelis sanctificetur
 nomen tuum;
 adveniat regnum tuum;
-'in -.3i
 fiat voluntas tua,
+'in -.3i
 sicut in caelo, et in terra. ...
 Amen.
 .ll +0.3i
