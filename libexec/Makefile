@@ -1,7 +1,7 @@
-#	@(#)Makefile	5.8 (Berkeley) 07/23/92
+#	@(#)Makefile	5.9 (Berkeley) 08/06/92
 
-SUBDIR=	bugfiler comsat fingerd ftpd getNAME getty mail.local \
-	makekey rexecd rlogind rshd talkd telnetd tftpd uucpd
+SUBDIR=	bugfiler comsat fingerd ftpd getNAME getty kpasswdd lfs_cleanerd \
+	mail.local makekey rexecd rlogind rshd talkd telnetd tftpd uucpd
 
 #KERBEROS=kpasswdd 
 
