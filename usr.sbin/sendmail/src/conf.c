@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.145 (Berkeley) 03/31/95";
+static char sccsid[] = "@(#)conf.c	8.146 (Berkeley) 03/31/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -2822,7 +2822,7 @@ sm_gethostbyaddr(addr, len, type)
 
 struct passwd *
 sm_getpwnam(user)
-	const char *user;
+	char *user;
 {
 	return getpwnam(user);
 }
