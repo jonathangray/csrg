@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)stty.c	5.28 (Berkeley) 06/05/91";
+static char sccsid[] = "@(#)stty.c	5.29 (Berkeley) 09/10/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -129,6 +129,7 @@ args:	argc -= optind;
 			speed = atoi(*argv);
 			cfsetospeed(&i.t, speed);
 			cfsetispeed(&i.t, speed);
+			i.set = 1;
 			continue;
 		}
 
