@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_syscalls.c	7.35 (Berkeley) 10/11/92
+ *	@(#)nfs_syscalls.c	7.36 (Berkeley) 11/01/92
  */
 
 #include <sys/param.h>
@@ -370,6 +370,7 @@ nfssvc_nfsd(nsd, argp, p)
 		nd->nd_procp = p;
 		nd->nd_cr.cr_ref = 1;
 		insque(nd, &nfsd_head);
+		nd->nd_nqlflag = NQL_NOVAL;
 		nfs_numnfsd++;
 	}
 	/*
