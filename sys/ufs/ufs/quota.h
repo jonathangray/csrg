@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)quota.h	8.2 (Berkeley) 07/08/94
+ *	@(#)quota.h	8.3 (Berkeley) 08/19/94
  */
 
 #ifndef _QUOTA_
@@ -114,8 +114,8 @@ struct dqblk {
  * used entries.
  */
 struct dquot {
-	struct	dquot *dq_forw, **dq_back;	/* hash list */
-	struct	dquot *dq_freef, **dq_freeb;	/* free list */
+	LIST_ENTRY(dquot) dq_hash;	/* hash list */
+	TAILQ_ENTRY(dquot) dq_freelist;	/* free list */
 	u_int16_t dq_flags;		/* flags, see below */
 	u_int16_t dq_cnt;		/* count of active references */
 	u_int16_t dq_spare;		/* unused spare padding */
