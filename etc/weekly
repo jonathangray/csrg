@@ -1,6 +1,6 @@
 #!/bin/sh -
 #
-#	@(#)weekly	5.17 (Berkeley) 01/09/92
+#	@(#)weekly	5.18 (Berkeley) 06/02/92
 #
 
 PATH=/bin:/sbin:/usr/sbin:/usr/bin:/usr/libexec
