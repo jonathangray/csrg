@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)trap.h	8.2 (Berkeley) 05/04/95
+ *	@(#)trap.h	8.3 (Berkeley) 06/05/95
  */
 
 extern int pendingsigs;
@@ -41,7 +41,6 @@ extern int pendingsigs;
 int trapcmd __P((int, char **));
 void clear_traps __P((void)); 
 long setsignal __P((int)); 
-sig_t getsigaction __P((int));
 void ignoresig __P((int));
 void onsig __P((int));
 void dotrap __P((void));
