@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode_pager.c	7.6 (Berkeley) 07/25/91
+ *	@(#)vnode_pager.c	7.7 (Berkeley) 12/14/91
  */
 
 /*
@@ -264,7 +264,7 @@ vnode_pager_haspage(pager, offset)
 	 * Assumes that the vnode has whole page or nothing.
 	 */
 	err = VOP_BMAP(vnp->vnp_vp,
-		       offset / vnp->vnp_vp->v_mount->mnt_stat.f_bsize,
+		       offset / vnp->vnp_vp->v_mount->mnt_stat.f_iosize,
 		       (struct vnode **)0, &bn);
 	if (err) {
 #ifdef DEBUG
