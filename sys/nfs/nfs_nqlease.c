@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_nqlease.c	7.1 (Berkeley) 01/07/92
+ *	@(#)nfs_nqlease.c	7.2 (Berkeley) 01/14/92
  */
 
 /*
@@ -201,7 +201,8 @@ nqsrv_getlease(vp, duration, flags, nd, nam, cachablep, frev, cred)
 		lhp = &nqfhead[NQFHHASH(fh.fh_fid.fid_data)];
 		for (lp = lhp->th_chain[0]; lp != (struct nqlease *)lhp;
 			lp = lp->lc_fhnext)
-			if (QUADEQ(fh.fh_fsid, lp->lc_fsid) &&
+			if (fh.fh_fsid.val[0] == lp->lc_fsid.val[0] &&
+			    fh.fh_fsid.val[1] == lp->lc_fsid.val[1] &&
 			    !bcmp(fh.fh_fid.fid_data, lp->lc_fiddata,
 				  fh.fh_fid.fid_len - sizeof (long))) {
 				/* Found it */
@@ -779,7 +780,8 @@ nqnfsrv_vacated(nfsd, mrep, md, dpos, cred, nam, mrq)
 		lhp = &nqfhead[NQFHHASH(fhp->fh_fid.fid_data)];
 		for (lp = lhp->th_chain[0]; lp != (struct nqlease *)lhp;
 			lp = lp->lc_fhnext)
-			if (QUADEQ(fhp->fh_fsid, lp->lc_fsid) &&
+			if (fhp->fh_fsid.val[0] == lp->lc_fsid.val[0] &&
+			    fhp->fh_fsid.val[1] == lp->lc_fsid.val[1] &&
 			    !bcmp(fhp->fh_fid.fid_data, lp->lc_fiddata,
 				  MAXFIDSZ)) {
 				/* Found it */
