@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)param.h	5.9 (Berkeley) 02/19/92
+ *	@(#)param.h	5.10 (Berkeley) 05/20/92
  */
 
 /*
@@ -143,12 +143,7 @@
 #define i386_btop(x)		((unsigned)(x) >> PGSHIFT)
 #define i386_ptob(x)		((unsigned)(x) << PGSHIFT)
 
-#ifdef KERNEL
-#ifndef LOCORE
-int	cpuspeed;
-#endif
-#define	DELAY(n)	{ register int N = cpuspeed * (n); while (--N > 0); }
-
-#else
+#ifndef KERNEL
+/* DELAY is in locore.s for the kernel */
 #define	DELAY(n)	{ register int N = (n); while (--N > 0); }
 #endif
