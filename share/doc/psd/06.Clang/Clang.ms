@@ -2,7 +2,7 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)Clang.ms	6.4 (Berkeley) 06/05/93
+.\"	@(#)Clang.ms	8.1 (Berkeley) 06/08/93
 .\"
 .nr Cl 2
 .TL
