@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsrvcache.h	8.1 (Berkeley) 06/10/93
+ *	@(#)nfsrvcache.h	8.2 (Berkeley) 08/18/94
  */
 
 /*
@@ -43,10 +43,8 @@
 #define	NFSRVCACHESIZ	256
 
 struct nfsrvcache {
-	struct	nfsrvcache *rc_forw;		/* Hash chain links */
-	struct	nfsrvcache **rc_back;		/* Hash chain links */
-	struct	nfsrvcache *rc_next;		/* Lru list */
-	struct	nfsrvcache **rc_prev;		/* Lru list */
+	TAILQ_ENTRY(nfsrvcache) rc_lru;		/* LRU chain */
+	LIST_ENTRY(nfsrvcache) rc_hash;		/* Hash chain */
 	u_long	rc_xid;				/* rpc id number */
 	union {
 		struct mbuf *ru_repmb;		/* Reply mbuf list OR */
