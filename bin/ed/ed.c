@@ -1,5 +1,5 @@
 #ifndef lint
-static char sccsid[] = "@(#)ed.c	4.5.1.1 (Berkeley) 08/12/86";
+static char sccsid[] = "@(#)ed.c	4.6 (Berkeley) 07/22/88";
 #endif
 
 /*
@@ -66,7 +66,7 @@ int	col;
 char	*globp;
 int	tfile	= -1;
 int	tline;
-char	*tfname;
+char	tfname[] = "/tmp/eXXXXX";
 char	*loc1;
 char	*loc2;
 char	*locs;
@@ -135,7 +135,7 @@ char **argv;
 		globp = "r";
 	}
 	zero = (int *)malloc(nlall*sizeof(int));
-	tfname = mktemp("/tmp/eXXXXX");
+	mktemp(tfname);
 	init();
 	if (((int)oldintr&01) == 0)
 		signal(SIGINT, onintr);
