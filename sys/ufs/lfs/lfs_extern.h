@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_extern.h	7.6 (Berkeley) 12/31/91
+ *	@(#)lfs_extern.h	7.7 (Berkeley) 01/10/92
  */
 
 struct fid;
@@ -48,7 +48,7 @@ int	 lfs_blkatoff __P((struct vnode *, off_t, char **, struct buf **));
 int	 lfs_bmap __P((VNODE *, daddr_t, VNODE **, daddr_t *));
 int	 lfs_bmaparray __P((VNODE *, daddr_t, daddr_t *, INDIR *, int *));
 int	 lfs_bwrite __P((BUF *));
-int	 lfs_fhtovp __P((struct mount *, struct fid *, struct vnode **));
+int	 lfs_fhtovp __P((struct mount *, struct fid *, int, struct vnode **));
 int	 lfs_fsync
 	     __P((struct vnode *, int, struct ucred *, int, struct proc *));
 DINODE	*lfs_ifind __P((struct lfs *, ino_t, void *));
