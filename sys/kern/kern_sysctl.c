@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sysctl.c	8.3 (Berkeley) 01/06/94
+ *	@(#)kern_sysctl.c	8.4 (Berkeley) 04/14/94
  */
 
 /*
@@ -528,7 +528,7 @@ sysctl_file(where, sizep)
 	}
 	if (error = copyout((caddr_t)&filehead, where, sizeof(filehead)))
 		return (error);
-	buflen += sizeof(filehead);
+	buflen -= sizeof(filehead);
 	where += sizeof(filehead);
 
 	/*
