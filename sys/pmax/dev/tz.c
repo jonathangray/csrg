@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tz.c	7.3 (Berkeley) 03/29/92
+ *	@(#)tz.c	7.4 (Berkeley) 04/19/92
  *
  * from: $Header: /sprite/src/kernel/dev/RCS/devSCSITape.c,
  *	v 8.14 89/07/31 17:26:13 mendel Exp $ SPRITE (Berkeley)
@@ -362,11 +362,8 @@ tzdone(unit, error, resid, status)
 #endif
 
 		if (error || (status & SCSI_STATUS_CHECKCOND)) {
-#ifdef DEBUG
-			if (tzdebug)
-				printf("tz%d: error reading sense data: error %d scsi status 0x%x\n",
-					unit, error, status);
-#endif
+			printf("tz%d: error reading sense data: error %d scsi status 0x%x\n",
+				unit, error, status);
 			/*
 			 * We got an error during the REQUEST_SENSE,
 			 * fill in no sense for data.
