@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1991, 1993
+ * Copyright (c) 1991, 1993, 1995
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_alloc.c	8.6 (Berkeley) 05/08/95
+ *	@(#)lfs_alloc.c	8.7 (Berkeley) 05/14/95
  */
 
 #include <sys/param.h>
@@ -46,6 +46,7 @@
 #include <ufs/ufs/quota.h>
 #include <ufs/ufs/inode.h>
 #include <ufs/ufs/ufsmount.h>
+#include <ufs/ufs/ufs_extern.h>
 
 #include <ufs/lfs/lfs.h>
 #include <ufs/lfs/lfs_extern.h>
@@ -172,6 +173,7 @@ lfs_vcreate(mp, ino, vpp)
 
 	/* Initialize the inode. */
 	MALLOC(ip, struct inode *, sizeof(struct inode), M_LFSNODE, M_WAITOK);
+	lockinit(&ip->i_lock, PINOD, "lfsinode", 0, 0);
 	(*vpp)->v_data = ip;
 	ip->i_vnode = *vpp;
 	ip->i_devvp = ump->um_devvp;
