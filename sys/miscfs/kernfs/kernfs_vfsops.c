@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kernfs_vfsops.c	8.6 (Berkeley) 02/22/95
+ *	@(#)kernfs_vfsops.c	8.6 (Berkeley) 02/23/95
  */
 
 /*
@@ -188,7 +188,7 @@ kernfs_unmount(mp, mntflags, p)
 	/*
 	 * And blow it away for future re-use
 	 */
-	vgone(rootvp);
+	VOP_REVOKE(rootvp, 0);
 	/*
 	 * Finally, throw away the kernfs_mount structure
 	 */
