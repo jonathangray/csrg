@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode.h	7.65 (Berkeley) 02/02/93
+ *	@(#)vnode.h	7.66 (Berkeley) 03/05/93
  */
 
 #ifndef KERNEL
@@ -134,7 +134,13 @@ struct vattr {
 	dev_t		va_rdev;	/* device the special file represents */
 	u_quad_t	va_bytes;	/* bytes of disk space held by file */
 	u_quad_t	va_filerev;	/* file modification number */
+	u_int		va_cflags;	/* operations flags, see below */
 };
+
+/*
+ * Flags for va_cflags.
+ */
+#define	VA_UTIMES_NULL	0x01		/* utimes argument was NULL */
 
 /*
  * Flags for ioflag.
