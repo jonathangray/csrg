@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)usersmtp.c	8.7 (Berkeley) 07/28/93 (with SMTP)";
+static char sccsid[] = "@(#)usersmtp.c	8.8 (Berkeley) 08/14/93 (with SMTP)";
 #else
-static char sccsid[] = "@(#)usersmtp.c	8.7 (Berkeley) 07/28/93 (without SMTP)";
+static char sccsid[] = "@(#)usersmtp.c	8.8 (Berkeley) 08/14/93 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -319,7 +319,7 @@ smtpmailfrom(m, mci, e)
 		printf("smtpmailfrom: CurHost=%s\n", CurHostName);
 
 	/* set up appropriate options to include */
-	if (bitset(MCIF_SIZE, mci->mci_flags))
+	if (bitset(MCIF_SIZE, mci->mci_flags) && e->e_msgsize > 0)
 		sprintf(optbuf, " SIZE=%ld", e->e_msgsize);
 	else
 		strcpy(optbuf, "");
