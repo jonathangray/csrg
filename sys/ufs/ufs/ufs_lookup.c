@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lookup.c	7.37 (Berkeley) 01/22/92
+ *	@(#)ufs_lookup.c	7.38 (Berkeley) 02/03/92
  */
 
 #include <sys/param.h>
@@ -89,7 +89,7 @@ int	dirchk = 0;
  * NOTE: (LOOKUP | LOCKPARENT) currently returns the parent inode unlocked.
  */
 int
-ufs_lookup(dvp, vpp, cnp)   /* converted to CN */
+ufs_lookup(dvp, vpp, cnp)
 	struct vnode *dvp;
 	struct vnode **vpp;
 	struct componentname *cnp;
@@ -604,8 +604,7 @@ printf("ufs_dirbadentry: jumping out: reclen: %d namlen %d ino %d name %s\n",
  * indicate how the space for the new entry is to be obtained.
  */
 int
-ufs_direnter(ip, dvp, cnp)   /* converted to CN.  */
-/* old: ufs_direnter(ip, ndp) */
+ufs_direnter(ip, dvp, cnp)
 	struct inode *ip;
 	struct vnode *dvp;
 	register struct componentname *cnp;
@@ -746,10 +745,9 @@ ufs_direnter(ip, dvp, cnp)   /* converted to CN.  */
  * to the size of the previous entry.
  */
 int
-ufs_dirremove(dvp, cnp)   /* converted to CN.  */
+ufs_dirremove(dvp, cnp)
 	struct vnode *dvp;
 	struct componentname *cnp;
-/* old: ufs_dirremove(ndp) */
 {
 	register struct inode *dp;
 	struct direct *ep;
