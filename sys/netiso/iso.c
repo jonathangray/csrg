@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)iso.c	7.15 (Berkeley) 07/30/91
+ *	@(#)iso.c	7.16 (Berkeley) 09/03/91
  */
 
 /***********************************************************
@@ -890,7 +890,8 @@ struct mbuf	*m;			/* data for set, buffer for get */
 		default:
 			error = EOPNOTSUPP;
 	}
-
+	if (cmd == PRCO_SETOPT)
+		m_freem(m);
 	return error;
 }
 #endif ISO
