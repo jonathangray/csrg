@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1992 Regents of the University of California.
+ * Copyright (c) 1992, 1993 Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tuba_subr.c	7.11 (Berkeley) 11/25/92
+ *	@(#)tuba_subr.c	7.12 (Berkeley) 02/12/93
  */
 
 #include <sys/param.h>
@@ -239,7 +239,8 @@ tuba_tcpinput(m, src, dst)
 	unsigned long sum, lindex, findex;
 	register struct tcpiphdr *ti;
 	register struct inpcb *inp;
-	struct mbuf *om = 0;
+	caddr_t optp = NULL;
+	int optlen;
 	int len, tlen, off;
 	register struct tcpcb *tp = 0;
 	int tiflags;
@@ -248,6 +249,8 @@ tuba_tcpinput(m, src, dst)
 	short ostate;
 	struct in_addr laddr;
 	int dropsocket = 0, iss = 0;
+	u_long tiwin, ts_val, ts_ecr;
+	int ts_present = 0;
 
 	if ((m->m_flags & M_PKTHDR) == 0)
 		panic("tuba_tcpinput");
