@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)newaliases.1	8.2 (Berkeley) 02/03/94
+.\"     @(#)newaliases.1	8.3 (Berkeley) 02/22/94
 .\"
 .Dd 
 .Dt NEWALIASES 1
@@ -43,15 +43,21 @@
 .Nm Newaliases
 rebuilds the random access data base for the mail aliases file
 .Pa /etc/aliases .
-It must be run each time
-.Pa /etc/aliases
-is changed in order
+It must be run each time this file is changed in order
 for the change to take effect.
 .Pp
 .Nm Newaliases
-is completely equivalent to
-.Pa /usr/sbin/sendmail
-.Fl bi .
+is identical to
+.Dq Li "sendmail \-bi" .
+.Pp
+The
+.Nm newaliases
+utility exits 0 on success, and >0 if an error occurs.
+.Sh FILES
+.Bl -tag -width /etc/aliases -compact
+.It Pa /etc/aliases
+The mail aliases file
+.El
 .Sh SEE ALSO
 .Xr aliases 5 ,
 .Xr sendmail 8
