@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ring.h	5.3 (Berkeley) 12/18/92
+ *	@(#)ring.h	5.4 (Berkeley) 05/20/93
  */
 
 #if defined(P)
