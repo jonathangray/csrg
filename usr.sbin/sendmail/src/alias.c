@@ -55,15 +55,15 @@ ERROR: DBM is no longer supported -- use NDBM instead.
 #ifndef lint
 #ifdef NEWDB
 #ifdef NDBM
-static char sccsid[] = "@(#)alias.c	6.7 (Berkeley) 02/12/93 (with NEWDB and NDBM)";
+static char sccsid[] = "@(#)alias.c	6.8 (Berkeley) 02/14/93 (with NEWDB and NDBM)";
 #else
-static char sccsid[] = "@(#)alias.c	6.7 (Berkeley) 02/12/93 (with NEWDB)";
+static char sccsid[] = "@(#)alias.c	6.8 (Berkeley) 02/14/93 (with NEWDB)";
 #endif
 #else
 #ifdef NDBM
-static char sccsid[] = "@(#)alias.c	6.7 (Berkeley) 02/12/93 (with NDBM)";
+static char sccsid[] = "@(#)alias.c	6.8 (Berkeley) 02/14/93 (with NDBM)";
 #else
-static char sccsid[] = "@(#)alias.c	6.7 (Berkeley) 02/12/93 (without NEWDB or NDBM)";
+static char sccsid[] = "@(#)alias.c	6.8 (Berkeley) 02/14/93 (without NEWDB or NDBM)";
 #endif
 #endif
 #endif /* not lint */
@@ -170,6 +170,10 @@ alias(a, sendq, e)
 		printf("%s (%s, %s) aliased to %s\n",
 		    a->q_paddr, a->q_host, a->q_user, p);
 	message(Arpa_Info, "aliased to %s", p);
+#ifdef LOG
+	if (LogLevel >= 10)
+		syslog(LOG_INFO, "%s: alias %s => %s", e->e_id, a->q_paddr, p);
+#endif
 	AliasLevel++;
 	a->q_child = sendto(p, 1, a, 0);
 	AliasLevel--;
@@ -322,7 +326,8 @@ initaliases(aliasfile, init, e)
 		AliasDBMptr = dbm_open(aliasfile, O_RDONLY, DBMMODE);
 		if (AliasDBMptr == NULL)
 		{
-			syserr("initaliases: cannot open %s", buf);
+			syserr("initaliases: cannot open DBM database %s.{pag,dir}",
+				aliasfile);
 			NoAlias = TRUE;
 			return;
 		}
@@ -743,7 +748,7 @@ readaliases(aliasfile, init, e)
 					   R_NOOVERWRITE);
 			if (putstat > 0)
 			{
-				usrerr("Warning: duplicate alias name %s",
+				usrerr("050 Warning: duplicate alias name %s",
 					al.q_user);
 				putstat = dbp->put(dbp, &key.dbt,
 						   &content.dbt, 0);
@@ -758,7 +763,7 @@ readaliases(aliasfile, init, e)
 						    DBM_INSERT);
 				if (putstat > 0)
 				{
-					usrerr("Warning: duplicate alias name %s",
+					usrerr("050 Warning: duplicate alias name %s",
 						al.q_user);
 					putstat = dbm_store(dbmp, key.dbm,
 							content.dbm, DBM_REPLACE);
