@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)route.c	5.33 (Berkeley) 04/24/91";
+static char sccsid[] = "@(#)route.c	5.34 (Berkeley) 04/25/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -525,6 +525,12 @@ newroute(argc, argv)
 			case K_REJECT:
 				flags |= RTF_REJECT;
 				break;
+			case K_PROTO1:
+				flags |= RTF_PROTO1;
+				break;
+			case K_PROTO2:
+				flags |= RTF_PROTO2;
+				break;
 			case K_CLONING:
 				flags |= RTF_CLONING;
 				break;
@@ -956,7 +962,7 @@ char *msgtypes[] = {
 char metricnames[] =
 "\010rttvar\7rtt\6ssthresh\5sendpipe\4recvpipe\3expire\2hopcount\1mtu";
 char routeflags[] = 
-"\1UP\2GATEWAY\3HOST\4REJECT\5DYNAMIC\6MODIFIED\7DONE\010MASK_PRESENT\011CLONING\012XRESOLVE";
+"\1UP\2GATEWAY\3HOST\4REJECT\5DYNAMIC\6MODIFIED\7DONE\010MASK_PRESENT\011CLONING\012XRESOLVE\013LLINFO\017PROTO2\020PROTO1";
 
 
 void
