@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty_compat.c	7.12 (Berkeley) 02/15/92
+ *	@(#)tty_compat.c	7.13 (Berkeley) 03/09/92
  */
 
 /* 
@@ -79,7 +79,9 @@ static int compatspcodes[16] = {
 /*ARGSUSED*/
 ttcompat(tp, com, data, flag)
 	register struct tty *tp;
+	int com;
 	caddr_t data;
+	int flag;
 {
 
 	switch (com) {
