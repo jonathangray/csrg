@@ -32,12 +32,13 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)io.c	5.6 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)io.c	5.7 (Berkeley) 02/04/91";
 #endif /* not lint */
 
 # include	<curses.h>
 # include	<ctype.h>
 # include	<signal.h>
+# include	<stdarg.h>
 # include	"deck.h"
 # include	"cribbage.h"
 # include	"cribcur.h"
@@ -373,12 +374,15 @@ int		Mpos = 0;
 static int	Newpos = 0;
 
 /* VARARGS1 */
-msg(fmt, args)
-char	*fmt;
-int	args;
+msg(fmt)
+	char *fmt;
 {
-    doadd(fmt, &args);
-    endmsg();
+	va_list ap;
+
+	va_start(ap, fmt);
+	(void)vsprintf(Msgbuf[Newpos], fmt, ap);
+	va_end(ap);
+	endmsg();
 }
 
 /*
@@ -386,11 +390,14 @@ int	args;
  *	Add things to the current message
  */
 /* VARARGS1 */
-addmsg(fmt, args)
-char	*fmt;
-int	args;
+addmsg(fmt)
+	char *fmt;
 {
-    doadd(fmt, &args);
+	va_list ap;
+
+	va_start(ap, fmt);
+	(void)vsprintf(Msgbuf[Newpos], fmt, ap);
+	va_end(ap);
 }
 
 /*
@@ -446,6 +453,7 @@ endmsg()
     wrefresh(Msgwin);
 }
 
+#ifdef notdef
 /*
  * doadd:
  *	Perform an add onto the message buffer
@@ -466,6 +474,7 @@ int	*args;
     putc('\0', &junk);
     Newpos = strlen(Msgbuf);
 }
+#endif
 
 /*
  * do_wait:
