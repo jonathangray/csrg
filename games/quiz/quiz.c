@@ -1,5 +1,12 @@
+/*-
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ */
 
-static char sccsid[] = "	quiz.c	4.7	91/02/28	";
+#ifndef lint
+static char sccsid[] = "@(#)quiz.c	4.8 (Berkeley) 04/08/91";
+#endif /* not lint */
 
 #include <stdio.h>
 #include <signal.h>
