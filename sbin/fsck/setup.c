@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)setup.c	5.41 (Berkeley) 07/16/92";
+static char sccsid[] = "@(#)setup.c	5.42 (Berkeley) 11/15/92";
 #endif /* not lint */
 
 #define DKTYPENAMES
@@ -81,6 +81,7 @@ setup(dev)
 	struct fs proto;
 
 	havesb = 0;
+	fswritefd = -1;
 	if (stat(dev, &statb) < 0) {
 		printf("Can't stat %s: %s\n", dev, strerror(errno));
 		return (0);
