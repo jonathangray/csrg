@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_alloc.c	7.44 (Berkeley) 05/15/92
+ *	@(#)lfs_alloc.c	7.45 (Berkeley) 05/15/92
  */
 
 #include <sys/param.h>
@@ -57,10 +57,6 @@ extern u_long nextgennumber;
 int
 lfs_valloc (ap)
 	struct vop_valloc_args *ap;
-#define pvp (ap->a_pvp)
-#define notused (ap->a_mode)
-#define cred (ap->a_cred)
-#define vpp (ap->a_vpp)
 {
 	struct lfs *fs;
 	struct buf *bp;
@@ -76,7 +72,7 @@ lfs_valloc (ap)
 	printf("lfs_valloc\n");
 #endif
 	/* Get the head of the freelist. */
-	fs = VTOI(pvp)->i_lfs;
+	fs = VTOI(ap->a_pvp)->i_lfs;
 	new_ino = fs->lfs_free;
 #ifdef ALLOCPRINT
 	printf("lfs_ialloc: allocate inode %d\n", new_ino);
@@ -102,7 +98,7 @@ printf("Extending ifile: blkno = %d\n", blkno);
 		if (!bp) {
 			uprintf("\n%s: no inodes left\n", fs->lfs_fsmnt);
 			log(LOG_ERR, "uid %d on %s: out of inodes\n",
-			    cred->cr_uid, fs->lfs_fsmnt);
+			    ap->a_cred->cr_uid, fs->lfs_fsmnt);
 			return (ENOSPC);
 		}
 		i = (blkno - fs->lfs_segtabsz - fs->lfs_cleansz) *
@@ -128,9 +124,9 @@ printf("Extending ifile: blocks = %d size = %d\n", ip->i_blocks, ip->i_size);
 	}
 
 	/* Create a vnode to associate with the inode. */
-	if (error = lfs_vcreate(pvp->v_mount, new_ino, &vp))
+	if (error = lfs_vcreate(ap->a_pvp->v_mount, new_ino, &vp))
 		return (error);
-	*vpp = vp;
+	*ap->a_vpp = vp;
 	ip = VTOI(vp);
 	VREF(ip->i_devvp);
 
@@ -150,10 +146,6 @@ printf("Extending ifile: blocks = %d size = %d\n", ip->i_blocks, ip->i_size);
 	++fs->lfs_nfiles;
 	return (0);
 }
-#undef pvp
-#undef notused
-#undef cred
-#undef vpp
 
 /* Create a new vnode/inode pair and initialize what fields we can. */
 int
@@ -204,9 +196,6 @@ lfs_vcreate(mp, ino, vpp)
 int
 lfs_vfree (ap)
 	struct vop_vfree_args *ap;
-#define vp (ap->a_pvp)
-#define notused1 (ap->a_ino)
-#define notused2 (ap->a_mode)
 {
 	SEGUSE *sup;
 	struct buf *bp;
@@ -216,7 +205,7 @@ lfs_vfree (ap)
 	daddr_t old_iaddr;
 	ino_t ino;
 
-	ip = VTOI(vp);
+	ip = VTOI(ap->a_pvp);
 #ifdef VERBOSE
 	printf("lfs_vfree: free %d\n", ip->i_number);
 #endif
@@ -252,8 +241,5 @@ lfs_vfree (ap)
 	--fs->lfs_nfiles;
 	return (0);
 }
-#undef vp
-#undef notused1
-#undef notused2
 
 
