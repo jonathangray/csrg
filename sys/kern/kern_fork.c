@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_fork.c	7.37 (Berkeley) 07/07/92
+ *	@(#)kern_fork.c	7.38 (Berkeley) 07/10/92
  */
 
 #include "param.h"
@@ -46,10 +46,13 @@
 #include "acct.h"
 #include "ktrace.h"
 
+struct fork_args {
+	int	dummy;
+};
 /* ARGSUSED */
 fork(p, uap, retval)
 	struct proc *p;
-	struct args *uap;
+	struct fork_args *uap;
 	int retval[];
 {
 
@@ -59,7 +62,7 @@ fork(p, uap, retval)
 /* ARGSUSED */
 vfork(p, uap, retval)
 	struct proc *p;
-	struct args *uap;
+	struct fork_args *uap;
 	int retval[];
 {
 
