@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)a.out.h	5.7 (Berkeley) 07/23/91
+ *	@(#)a.out.h	5.8 (Berkeley) 09/06/91
  */
 
 #ifndef	_AOUT_H_
@@ -38,7 +38,7 @@
 
 #include <sys/exec.h>
 
-#if defined(hp300) || defined(i386)
+#if defined(hp300) || defined(i386) || defined(mips)
 #define	__LDPGSZ	4096
 #endif
 #if defined(tahoe) || defined(vax)
@@ -51,6 +51,7 @@
 	    (ex).a_magic != ZMAGIC)
 
 /* Address of the bottom of the text segment. */
+#ifndef mips
 #define N_TXTADDR(X)	0
 
 /* Address of the bottom of the data segment. */
@@ -84,6 +85,9 @@ struct relocation_info {
 			r_extern :  1,	/* 1 if need to add symbol to value */
 				 :  4;	/* reserved */
 };
+#else /* mips */
+#define N_TXTADDR(X)	0x400000
+#endif /* mips */
 
 #define _AOUT_INCLUDE_
 #include <nlist.h>
