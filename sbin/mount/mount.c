@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)mount.c	8.21 (Berkeley) 07/14/94";
+static char sccsid[] = "@(#)mount.c	8.22 (Berkeley) 04/26/95";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -176,7 +176,7 @@ main(argc, argv)
 			if ((mntsize = getmntinfo(&mntbuf, MNT_NOWAIT)) == 0)
 				err(1, "getmntinfo");
 			for (i = 0; i < mntsize; i++) {
-				if (badvfstype(mntbuf[i].f_type, vfslist))
+				if (badvfsname(mntbuf[i].f_fstypename, vfslist))
 					continue;
 				prmount(&mntbuf[i]);
 			}
@@ -441,19 +441,6 @@ badvfsname(vfsname, vfslist)
 		++vfslist;
 	}
 	return (!skipvfs);
-}
-
-int
-badvfstype(vfstype, vfslist)
-	int vfstype;
-	const char **vfslist;
-{
-static const char *vfsnames[] = INITMOUNTNAMES;
-
-	if ((vfstype < 0) || (vfstype > MOUNT_MAXTYPE))
-		return (0);
-
-	return (badvfsname(vfsnames[vfstype], vfslist));
 }
 
 const char **
