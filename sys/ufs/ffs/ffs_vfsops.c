@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vfsops.c	7.84 (Berkeley) 02/02/93
+ *	@(#)ffs_vfsops.c	7.85 (Berkeley) 04/28/93
  */
 
 #include <sys/param.h>
@@ -366,7 +366,7 @@ ffs_mountfs(devvp, mp, p)
 	int ronly;
 	extern struct vnode *rootvp;
 
-	if (error = VOP_OPEN(devvp, ronly ? FREAD : FREAD|FWRITE, NOCRED, p))
+	if (error = VOP_OPEN(devvp, ronly ? FREAD : FREAD|FWRITE, FSCRED, p))
 		return (error);
 	if (VOP_IOCTL(devvp, DIOCGPART, (caddr_t)&dpart, FREAD, NOCRED, p) != 0)
 		size = DEV_BSIZE;
