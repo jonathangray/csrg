@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)inetd.c	5.27 (Berkeley) 03/04/91";
+static char sccsid[] = "@(#)inetd.c	5.28 (Berkeley) 03/28/91";
 #endif /* not lint */
 
 /*
@@ -321,7 +321,7 @@ main(argc, argv, envp)
 			    if (debug && dofork)
 				setsid();
 			    if (dofork)
-				for (tmpint = getdtablesize(); --tmpint > 2; )
+				for (tmpint = maxsock; --tmpint > 2; )
 					if (tmpint != ctrl)
 						close(tmpint);
 			    if (sep->se_bi)
