@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	6.10 (Berkeley) 02/23/93
+ *	@(#)conf.h	6.11 (Berkeley) 03/17/93
  */
 
 /*
@@ -39,6 +39,7 @@
 */
 
 # include <sys/param.h>
+# include <fcntl.h>
 
 /*
 **  Table sizes, etc....
@@ -175,4 +176,10 @@ struct utsname
 
 #ifndef STDERR_FILENO
 #define STDERR_FILENO	2
+#endif
+
+#ifdef LOCKF
+#define LOCK_SH		0x01	/* shared lock */
+#define LOCK_EX		0x02	/* exclusive lock */
+#define LOCK_NB		0x04	/* non-blocking lock */
 #endif
