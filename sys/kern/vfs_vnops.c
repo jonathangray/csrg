@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_vnops.c	7.44 (Berkeley) 07/06/92
+ *	@(#)vfs_vnops.c	7.45 (Berkeley) 07/07/92
  */
 
 #include "param.h"
@@ -368,7 +368,7 @@ vn_ioctl(fp, com, data, p)
 		if (com == FIONREAD) {
 			if (error = VOP_GETATTR(vp, &vattr, p->p_ucred, p))
 				return (error);
-			*(off_t *)data = vattr.va_size - fp->f_offset;
+			*(int *)data = vattr.va_size - fp->f_offset;
 			return (0);
 		}
 		if (com == FIONBIO || com == FIOASYNC)	/* XXX */
