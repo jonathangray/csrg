@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vfsops.c	7.78 (Berkeley) 09/22/92
+ *	@(#)ffs_vfsops.c	7.79 (Berkeley) 09/24/92
  */
 
 #include <sys/param.h>
@@ -462,15 +462,12 @@ ffs_sync(mp, waitfor, cred, p)
 	struct ucred *cred;
 	struct proc *p;
 {
-	extern int syncprt;
 	register struct vnode *vp;
 	register struct inode *ip;
 	register struct ufsmount *ump = VFSTOUFS(mp);
 	register struct fs *fs;
 	int error, allerror = 0;
 
-	if (syncprt)
-		ufs_bufstats();
 	fs = ump->um_fs;
 	/*
 	 * Write back modified superblock.
