@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)expand.c	5.5 (Berkeley) 07/10/92";
+static char sccsid[] = "@(#)expand.c	5.6 (Berkeley) 07/15/92";
 #endif /* not lint */
 
 /*
@@ -293,7 +293,7 @@ lose:
  */
 expari()
 	{
-	char *p, *start = stackblock();
+	char *p, *start;
 	int result;
 
 	/*
@@ -307,7 +307,8 @@ expari()
 	 * characters have to be processed left to right.  
 	 */
 	CHECKSTRSPACE(8, expdest);
-	USTPUTC('\0', expdest);
+	USTPUTC('\0', expdest); 
+	start = stackblock();
 	p = expdest;
 	while (*p != CTLARI && p >= start)
 		--p;
@@ -589,9 +590,9 @@ numvar:
 			STPUTC(*p++, expdest);
 		break;
 	case '-':
-		for (i = 0 ; optchar[i] ; i++) {
-			if (optval[i])
-				STPUTC(optchar[i], expdest);
+		for (i = 0 ; i < NOPTS ; i++) {
+			if (optlist[i].val)
+				STPUTC(optlist[i].letter, expdest);
 		}
 		break;
 	case '@':
@@ -748,7 +749,7 @@ expandmeta(str, flag)
 		savelastp = exparg.lastp;
 		INTOFF;
 		if (expdir == NULL)
-			expdir = ckmalloc(1024); /* I hope this is big enough */
+			expdir = ckmalloc(strlen(str->text)); /* XXX - */
 		expmeta(expdir, str->text);
 		ckfree(expdir);
 		expdir = NULL;
@@ -757,14 +758,10 @@ expandmeta(str, flag)
 			/* 
 			 * no matches 
 			 */
-#ifdef PUTBACK_ZFLAG
-			if (! zflag) { ...
-#endif
-
 nometa:
-				*exparg.lastp = str;
-				rmescapes(str->text);
-				exparg.lastp = &str->next;
+			*exparg.lastp = str;
+			rmescapes(str->text);
+			exparg.lastp = &str->next;
 		} else {
 			*exparg.lastp = NULL;
 			*savelastp = sp = expsort(*savelastp);
