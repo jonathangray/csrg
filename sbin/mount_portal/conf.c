@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.c	1.2 (Berkeley) 07/12/92
+ *	@(#)conf.c	5.1 (Berkeley) 07/13/92
  *
  * $Id: conf.c,v 1.2 1992/05/27 07:09:27 jsp Exp jsp $
  */
