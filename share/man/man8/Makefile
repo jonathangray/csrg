@@ -9,7 +9,7 @@
 # software without specific prior written permission. This software
 # is provided ``as is'' without express or implied warranty.
 #
-#	@(#)Makefile	5.1 (Berkeley) 05/05/88
+#	@(#)Makefile	5.2 (Berkeley) 05/05/88
 #
 MDIR=	/usr/man/cat8
 SRCS=	XNSrouted.8 \
