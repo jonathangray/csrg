@@ -30,8 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)endian.h	7.9 (Berkeley) 12/19/91
+ *	@(#)endian.h	7.10 (Berkeley) 05/07/93
  */
+
+#ifndef _ENDIAN_H_
+#define	_ENDIAN_H_
 
 /*
  * Define _NOQUAD if the compiler does NOT support 64-bit integers.
@@ -86,3 +89,4 @@ __END_DECLS
 #define	HTONS(x)	(x) = htons((u_short)x)
 #endif
 #endif /* ! _POSIX_SOURCE */
+#endif /* !_ENDIAN_H_ */
