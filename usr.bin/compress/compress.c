@@ -42,7 +42,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)compress.c	5.19 (Berkeley) 03/18/91";
+static char sccsid[] = "@(#)compress.c	5.20 (Berkeley) 03/01/92";
 #endif /* not lint */
 
 /*
@@ -810,7 +810,7 @@ code_int  code;
 	}
 	offset = 0;
 	(void)fflush( stdout );
-	if( ferror( stdout ) )
+	if( ferror( stdout ) || (fclose( stdout ) == EOF) )
 		writeerr();
 #ifdef DEBUG
 	if ( verbose )
@@ -936,6 +936,8 @@ decompress() {
 	offset += nwritten;
 	n -= nwritten;
     }
+    if ((zcat_flg == 0) && (close(fileno(stdout)) == -1))
+	writeerr();
 }
 
 /*-
