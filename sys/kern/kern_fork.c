@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_fork.c	7.29 (Berkeley) 05/15/91
+ *	@(#)kern_fork.c	7.30 (Berkeley) 09/06/91
  */
 
 #include "param.h"
@@ -87,7 +87,7 @@ fork1(p1, isvfork, retval)
 				count++;
 	}
 	/*
-	 * Although process entries are dynamically entries,
+	 * Although process entries are dynamically created,
 	 * we still keep a global limit on the maximum number
 	 * we will create.  Don't allow a nonprivileged user
 	 * to exceed its current limit or to bring us within one
