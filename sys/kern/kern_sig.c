@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sig.c	8.5 (Berkeley) 01/21/94
+ *	@(#)kern_sig.c	8.6 (Berkeley) 03/18/94
  */
 
 #define	SIGPROP		/* include signal properties table */
@@ -1113,8 +1113,8 @@ sigexit(p, signum)
 }
 
 /*
- * Dump core, into a file named "core.progname".
- * Do not drop core if the process was setuid/setgid.
+ * Dump core, into a file named "progname.core", unless the process was
+ * setuid/setgid.
  */
 coredump(p)
 	register struct proc *p;
@@ -1123,9 +1123,9 @@ coredump(p)
 	register struct pcred *pcred = p->p_cred;
 	register struct ucred *cred = pcred->pc_ucred;
 	register struct vmspace *vm = p->p_vmspace;
+	struct nameidata nd;
 	struct vattr vattr;
 	int error, error1;
-	struct nameidata nd;
 	char name[MAXCOMLEN+6];		/* progname.core */
 
 	if (pcred->p_svuid != pcred->p_ruid || pcred->p_svgid != pcred->p_rgid)
