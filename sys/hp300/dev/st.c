@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: st.c 1.8 90/10/14$
  *
- *      @(#)st.c	7.2 (Berkeley) 03/17/91
+ *      @(#)st.c	7.3 (Berkeley) 05/04/91
  */
 
 /*
@@ -78,18 +78,16 @@
 #include "param.h"
 #include "systm.h"
 #include "buf.h"
-#include "errno.h"
-#include "device.h"
 #include "scsireg.h"
 #include "file.h"
 #include "tty.h"
-#include "user.h"
 #include "proc.h"
 #include "mtio.h"
 #include "ioctl.h"
-#include "uio.h"
 #include "kernel.h"
+#include "tprintf.h"
 
+#include "device.h"
 #include "stvar.h"
 
 #define ADD_DELAY
@@ -124,7 +122,7 @@ struct	st_softc {
 	short	sc_tapeid;	/* tape drive id */
 	char	sc_datalen[32];	/* additional data length on some commands */
 	short	sc_tticntdwn;	/* interrupts between TTi display updates */
-	caddr_t	sc_ctty;
+	tpr_t	sc_ctty;
 	struct	buf *sc_bp;
 	u_char	sc_cmd;
 } st_softc[NST];
@@ -376,9 +374,10 @@ failed:
 	return(-1);
 }
 
-stopen(dev, flag)
+stopen(dev, flag, type, p)
 	dev_t dev;
-	int flag;
+	int flag, type;
+	struct proc *p;
 {
 	register struct st_softc *sc = &st_softc[UNIT(dev)];
 	register struct st_xsense *xsense;
@@ -627,8 +626,7 @@ retryselect:
 		return(EACCES);
 	}
 
-	sc->sc_ctty = (caddr_t)(u.u_procp->p_flag&SCTTY ? 
-			u.u_procp->p_session->s_ttyvp : 0);
+	sc->sc_ctty = tprintf_open(p);
 	/* save total number of blocks on tape */
 	sc->sc_numblks = mode.md.numblk2 << 16 |
 			 mode.md.numblk1 << 8 |
@@ -685,7 +683,7 @@ stclose(dev, flag)
 	stxsense(sc->sc_dq.dq_ctlr, sc->sc_dq.dq_slave, sc->sc_punit, sc);
 
 	sc->sc_flags &= ~(STF_OPEN|STF_WMODE|STF_WRTTN);
-	sc->sc_ctty = NULL;
+	tprintf_close(sc->sc_ctty);
 	return(0);	/* XXX */
 }
 
