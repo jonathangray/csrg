@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kgdb_stub.c	7.11 (Berkeley) 06/05/92
+ *	@(#)kgdb_stub.c	7.12 (Berkeley) 06/22/92
  */
 /*
  * "Stub" to allow remote cpu to debug over a serial line using gdb.
@@ -453,6 +453,7 @@ kgdb_trap(int type, struct frame *frame)
 				if (!kgdb_acc(addr, len, B_WRITE))
 					chgkprot(addr, len, B_WRITE);
 				kgdb_copy(&inbuffer[4], addr, len);
+				ICIA();
 			}
 			break;
 
