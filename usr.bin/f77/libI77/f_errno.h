@@ -1,5 +1,5 @@
 /*
-char id_f_errno[] = "@(#)f_errno.h	1.5";
+char id_f_errno[] = "@(#)f_errno.h	1.6";
  *
  * f77 I/O error definitions
  */
