@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)util.c	8.72 (Berkeley) 05/28/95";
+static char sccsid[] = "@(#)util.c	8.73 (Berkeley) 05/30/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1718,11 +1718,15 @@ shorten_hostname(host)
 	register char *p;
 	char *mydom;
 	int i;
+	bool canon = FALSE;
 
 	/* strip off final dot */
 	p = &host[strlen(host) - 1];
 	if (*p == '.')
+	{
 		*p = '\0';
+		canon = TRUE;
+	}
 
 	/* see if there is any domain at all -- if not, we are done */
 	p = strchr(host, '.');
@@ -1734,7 +1738,7 @@ shorten_hostname(host)
 	if (mydom == NULL)
 		mydom = "";
 	i = strlen(++p);
-	if (strncasecmp(p, mydom, i) == 0 &&
+	if ((canon ? strcasecmp(p, mydom) : strncasecmp(p, mydom, i)) == 0 &&
 	    (mydom[i] == '.' || mydom[i] == '\0'))
 		*--p = '\0';
 }
