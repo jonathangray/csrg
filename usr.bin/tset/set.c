@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)set.c	5.1 (Berkeley) 12/22/91";
+static char sccsid[] = "@(#)set.c	5.2 (Berkeley) 12/24/91";
 #endif /* not lint */
 
 #include <termios.h>
@@ -171,13 +171,13 @@ set_control_chars()
 	}
 	if (erasechar < 0)
 		erasechar = (bs_char != 0) ? bs_char : CTRL('h');
-  
+
 	if (mode.c_cc[VERASE] == 0 || erasechar != 0)
 		mode.c_cc[VERASE] = erasechar ? erasechar : CERASE;
-  
+
 	if (mode.c_cc[VINTR] == 0 || intrchar != 0)
 		 mode.c_cc[VINTR] = intrchar ? intrchar : CINTR;
-  
+
 	if (mode.c_cc[VKILL] == 0 || killchar != 0)
 		mode.c_cc[VKILL] = killchar ? killchar : CKILL;
 }
@@ -213,7 +213,7 @@ set_conversions(usingupper)
 		mode.c_cflag |= PARENB;
 		mode.c_cflag |= PARODD;
 	}
-  
+
 #ifdef ONLCR
 	mode.c_oflag |= ONLCR;
 #endif
@@ -262,7 +262,7 @@ set_init()
 			settle = 1;
 		}
 	}
-  
+
 	if (settle) {
 		(void)putc('\r', stderr);
 		(void)fflush(stderr);
