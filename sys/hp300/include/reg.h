@@ -72,6 +72,16 @@ int ipcreg[NIPCREG] =
 	{D0,D1,D2,D3,D4,D5,D6,D7,A0,A1,A2,A3,A4,A5,A6,A7};
 #endif
 
+/*
+ * Register set accessible via /proc/$pid/reg
+ */
+struct reg {
+        int     r_regs[16];	/* numbered as above */
+	int	r_pc;
+	int	r_sr;
+};
+
+
 #ifdef KERNEL
 /*
  * Due to a mental lapse somewhere down the line, wait returns its values
