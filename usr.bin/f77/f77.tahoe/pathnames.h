@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)pathnames.h	5.5 (Berkeley) 04/12/91
+ *	@(#)pathnames.h	5.6 (Berkeley) 11/15/91
  */
 
 /*
@@ -38,9 +38,9 @@
 #ifdef INLINE
 #define	PASS2INAME	"/usr/libexec/if1"
 #endif
-#define	PASS2OPT	"/usr/libexec/c2"
-#define	ASMNAME		"/usr/bin/as"
-#define	LDNAME		"/usr/bin/ld"
+#define	PASS2OPT	"/usr/old/libexec/c2"
+#define	ASMNAME		"/usr/old/bin/as"
+#define	LDNAME		"/usr/old/bin/ld"
 #define	CATNAME		"/bin/cat"
 #define	FOOTNAME	"/usr/lib/crt0.o"
 #define	PROFFOOT	"/usr/lib/mcrt0.o"
