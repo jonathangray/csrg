@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	7.88 (Berkeley) 07/12/92
+ *	@(#)ffs_vnops.c	7.89 (Berkeley) 07/12/92
  */
 
 #include <sys/param.h>
@@ -44,11 +44,12 @@
 #include <sys/conf.h>
 #include <sys/mount.h>
 #include <sys/vnode.h>
-#include <sys/specdev.h>
-#include <sys/fifo.h>
 #include <sys/malloc.h>
 
 #include <vm/vm.h>
+
+#include <miscfs/specfs/specdev.h>
+#include <miscfs/fifofs/fifo.h>
 
 #include <ufs/ufs/lockf.h>
 #include <ufs/ufs/quota.h>
