@@ -35,7 +35,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)cpp.sh	6.2 (Berkeley) 03/08/91
+#	@(#)cpp.sh	6.3 (Berkeley) 03/19/91
 #
 # Transitional front end to CCCP to make it behave like (Reiser) CCP:
 #	specifies -traditional
@@ -47,7 +47,8 @@ NSI=no
 ARGS=""
 INCS=""
 
-for A do
+for A
+do
 	case $A in
 	-nostdinc)
 		NSI=yes
