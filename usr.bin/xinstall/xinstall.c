@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)xinstall.c	5.27 (Berkeley) 06/28/92";
+static char sccsid[] = "@(#)xinstall.c	5.28 (Berkeley) 06/29/92";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -199,8 +199,8 @@ install(from_name, to_name, isdir)
 		err("%s: %s", to_name, strerror(serrno));
 	}
 
-	/* Always preserve the flags. */
-	if (fchflags(to_fd, from_sb.st_flags)) {
+	/* Always preserve the flags, except for the dump flag. */
+	if (fchflags(to_fd, from_sb.st_flags & ~NODUMP)) {
 		serrno = errno;
 		(void)unlink(to_name);
 		err("%s: %s", to_name, strerror(serrno));
