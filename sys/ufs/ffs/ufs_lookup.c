@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lookup.c	8.1 (Berkeley) 06/11/93
+ *	@(#)ufs_lookup.c	8.2 (Berkeley) 09/21/93
  */
 
 #include <sys/param.h>
@@ -263,7 +263,7 @@ searchloop:
 		 * directory. Complete checks can be run by patching
 		 * "dirchk" to be true.
 		 */
-		ep = (struct direct *)(bp->b_un.b_addr + entryoffsetinblock);
+		ep = (struct direct *)((char *)bp->b_data + entryoffsetinblock);
 		if (ep->d_reclen == 0 ||
 		    dirchk && ufs_dirbadentry(vdp, ep, entryoffsetinblock)) {
 			int i;
@@ -382,7 +382,7 @@ searchloop:
 				enduseful = slotoffset + slotsize;
 		}
 		dp->i_endoff = roundup(enduseful, DIRBLKSIZ);
-		dp->i_flag |= IUPD|ICHG;
+		dp->i_flag |= IUPDATE | ICHANGE;
 		/*
 		 * We return with the directory locked, so that
 		 * the parameters we set up above will still be
@@ -418,7 +418,7 @@ found:
 	if (entryoffsetinblock + DIRSIZ(FSFMT(vdp), ep) > dp->i_size) {
 		ufs_dirbad(dp, dp->i_offset, "i_size too small");
 		dp->i_size = entryoffsetinblock + DIRSIZ(FSFMT(vdp), ep);
-		dp->i_flag |= IUPD|ICHG;
+		dp->i_flag |= IUPDATE | ICHANGE;
 	}
 
 	/*
@@ -683,7 +683,7 @@ ufs_direnter(ip, dvp, cnp)
 			panic("ufs_direnter: frag size");
 		else if (!error) {
 			dp->i_size = roundup(dp->i_size, DIRBLKSIZ);
-			dp->i_flag |= ICHG;
+			dp->i_flag |= ICHANGE;
 		}
 		return (error);
 	}
@@ -753,7 +753,7 @@ ufs_direnter(ip, dvp, cnp)
 	}
 	bcopy((caddr_t)&newdir, (caddr_t)ep, (u_int)newentrysize);
 	error = VOP_BWRITE(bp);
-	dp->i_flag |= IUPD|ICHG;
+	dp->i_flag |= IUPDATE | ICHANGE;
 	if (!error && dp->i_endoff && dp->i_endoff < dp->i_size)
 		error = VOP_TRUNCATE(dvp, (off_t)dp->i_endoff, IO_SYNC,
 		    cnp->cn_cred, cnp->cn_proc);
@@ -792,7 +792,7 @@ ufs_dirremove(dvp, cnp)
 			return (error);
 		ep->d_ino = 0;
 		error = VOP_BWRITE(bp);
-		dp->i_flag |= IUPD|ICHG;
+		dp->i_flag |= IUPDATE | ICHANGE;
 		return (error);
 	}
 	/*
@@ -803,7 +803,7 @@ ufs_dirremove(dvp, cnp)
 		return (error);
 	ep->d_reclen += dp->i_reclen;
 	error = VOP_BWRITE(bp);
-	dp->i_flag |= IUPD|ICHG;
+	dp->i_flag |= IUPDATE | ICHANGE;
 	return (error);
 }
 
@@ -828,7 +828,7 @@ ufs_dirrewrite(dp, ip, cnp)
 	if (vdp->v_mount->mnt_maxsymlinklen > 0)
 		ep->d_type = IFTODT(ip->i_mode);
 	error = VOP_BWRITE(bp);
-	dp->i_flag |= IUPD|ICHG;
+	dp->i_flag |= IUPDATE | ICHANGE;
 	return (error);
 }
 
