@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_domain.c	7.10 (Berkeley) 10/11/92
+ *	@(#)uipc_domain.c	7.11 (Berkeley) 11/18/92
  */
 
 #include <sys/param.h>
@@ -64,9 +64,6 @@ domaininit()
 #endif
 #ifdef ISO
 	ADDDOMAIN(iso);
-#endif
-#ifdef RMP
-	ADDDOMAIN(rmp);
 #endif
 #ifdef CCITT
 	ADDDOMAIN(ccitt);
