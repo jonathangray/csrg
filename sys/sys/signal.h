@@ -1,9 +1,36 @@
 /*
  * Copyright (c) 1982, 1986, 1989 Regents of the University of California.
- * All rights reserved.  The Berkeley software License Agreement
- * specifies the terms and conditions for redistribution.
+ * All rights reserved.
  *
- *	@(#)signal.h	7.7 (Berkeley) 02/23/90
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ *
+ *	@(#)signal.h	7.8 (Berkeley) 05/26/90
  */
 
 #ifndef	NSIG
@@ -64,12 +91,27 @@
 
 #ifndef _POSIX_SOURCE
 typedef	void (*sig_t)();
-#endif	/* _POSIX_SOURCE */
+#endif
+
 #ifndef KERNEL
 void	(*signal())();
-#endif /* KERNEL */
+#endif
 
 typedef unsigned int sigset_t;
+
+#ifdef __STDC__
+int sigemptyset(sigset_t *);
+int sigfillset(sigset_t *);
+int sigaddset(sigset_t *, int);
+int sigdelset(sigset_t *, int);
+int sigismember(const sigset_t *, int);
+#else
+int sigemptyset();
+int sigfillset();
+int sigaddset();
+int sigdelset();
+int sigismember();
+#endif
 
 #define sigemptyset(set)	( *(set) = 0 )
 #define sigfillset(set)		( *(set) = ~(sigset_t)0 )
@@ -88,7 +130,7 @@ struct	sigaction {
 #ifndef _POSIX_SOURCE
 #define SA_ONSTACK	0x0001	/* take signal on signal stack */
 #define SA_RESTART	0x0002	/* do not restart system on signal return */
-#endif	/* _POSIX_SOURCE */
+#endif
 #define SA_NOCLDSTOP	0x0004	/* do not generate SIGCHLD on child stop */
 
 /*
@@ -169,5 +211,19 @@ struct	sigcontext {
 	    ((p)->p_flag&STRC) == 0 && ((p)->p_sig &~ (p)->p_sigmask) == 0) ? \
 	    0 : issig())
 
+#endif /* KERNEL */
+
+#ifdef __STDC__
+int kill(pid_t, int);
+int sigaction(int, const struct sigaction *, struct sigaction *);
+int sigprocmask(int, const sigset_t *, sigset_t *);
+int sigpending(sigset_t *);
+int sigsuspend(const sigset_t *);
+#else
+int kill();
+int sigaction();
+int sigprocmask();
+int sigpending();
+int sigsuspend();
 #endif
-#endif
+#endif /* NSIG */
