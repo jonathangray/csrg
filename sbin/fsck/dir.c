@@ -1,5 +1,5 @@
 #ifndef lint
-static char version[] = "@(#)dir.c	3.10 (Berkeley) 02/15/85";
+static char version[] = "@(#)dir.c	3.11 (Berkeley) 05/31/85";
 #endif
 
 #include <sys/param.h>
