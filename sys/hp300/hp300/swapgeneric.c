@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)swapgeneric.c	7.5 (Berkeley) 05/07/91
+ *	@(#)swapgeneric.c	7.6 (Berkeley) 06/05/92
  */
 
 #include "sys/param.h"
@@ -39,7 +39,7 @@
 #include "sys/systm.h"
 #include "sys/reboot.h"
 
-#include "../dev/device.h"
+#include "hp/dev/device.h"
 
 /*
  * Generic configuration;  all in one
