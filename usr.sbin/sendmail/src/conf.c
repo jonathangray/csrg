@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	5.29 (Berkeley) 10/03/91";
+static char sccsid[] = "@(#)conf.c	5.30 (Berkeley) 11/20/91";
 #endif /* not lint */
 
 # include <sys/ioctl.h>
@@ -427,18 +427,7 @@ rlsesigs()
 **		none.
 */
 
-#ifndef sun
-
-getla()
-{
-	double avenrun[3];
-
-	if (getloadavg(avenrun, sizeof(avenrun) / sizeof(avenrun[0])) < 0)
-		return (0);
-	return ((int) (avenrun[0] + 0.5));
-}
-
-#else /* sun */
+#ifdef sun
 
 #include <nlist.h>
 
@@ -477,7 +466,27 @@ getla()
 	return ((int) (avenrun[0] + FSCALE/2) >> FSHIFT);
 }
 
-#endif /* sun */
+#else
+#ifdef ultrix
+
+getla()
+{
+	return (0);
+}
+
+#else
+
+getla()
+{
+	double avenrun[3];
+
+	if (getloadavg(avenrun, sizeof(avenrun) / sizeof(avenrun[0])) < 0)
+		return (0);
+	return ((int) (avenrun[0] + 0.5));
+}
+
+#endif
+#endif
 /*
 **  SHOULDQUEUE -- should this message be queued or sent?
 **
