@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vfsops.c	7.30 (Berkeley) 05/04/91
+ *	@(#)nfs_vfsops.c	7.31 (Berkeley) 05/06/91
  */
 
 #include "param.h"
@@ -223,8 +223,6 @@ nfs_mountroot()
 		swapdev_vp = vp;
 		VREF(vp);
 		swdevt[0].sw_vp = vp;
-		VREF(vp);
-		argdev_vp = vp;
 	}
 
 	/*
