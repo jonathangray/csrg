@@ -31,13 +31,14 @@
  * SUCH DAMAGE.
  *
  * from tahoe:	in_cksum.c	1.2	86/01/05
- *	@(#)in_cksum.c	7.1 (Berkeley) 02/05/92
+ *	@(#)in_cksum.c	7.2 (Berkeley) 10/11/92
  */
 
-#include "param.h"
-#include "sys/mbuf.h"
-#include "netinet/in.h"
-#include "netinet/in_systm.h"
+#include <sys/param.h>
+#include <sys/mbuf.h>
+
+#include <netinet/in.h>
+#include <netinet/in_systm.h>
 
 /*
  * Checksum routine for Internet Protocol family headers.
