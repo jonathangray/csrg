@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.123 (Berkeley) 04/21/95
+ *	@(#)sendmail.h	8.124 (Berkeley) 04/22/95
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.123		04/21/95";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.124		04/22/95";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -795,6 +795,12 @@ EXTERN int		NoRecipientAction;
 #define NRA_ADD_APPARENTLY_TO	2	/* add Apparently-To: header */
 #define NRA_ADD_BCC		3	/* add empty Bcc: header */
 #define NRA_ADD_TO_UNDISCLOSED	4	/* add To: undisclosed:; header */
+
+
+/* flags to putxline */
+#define PXLF_NOTHINGSPECIAL	0	/* no special mapping */
+#define PXLF_MAPFROM		0x0001	/* map From_ to >From_ */
+#define PXLF_STRIP8BIT		0x0002	/* strip 8th bit *e
 /*
 **  Additional definitions
 */
@@ -863,6 +869,7 @@ struct prival
 
 #define M87F_OUTER		0	/* outer context */
 #define M87F_NO8BIT		0x0001	/* can't have 8-bit in this section */
+#define M87F_DIGEST		0x0002	/* processing multipart/digest */
 
 
 /*
