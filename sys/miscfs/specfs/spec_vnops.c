@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)spec_vnops.c	8.8 (Berkeley) 11/21/94
+ *	@(#)spec_vnops.c	8.9 (Berkeley) 01/03/95
  */
 
 #include <sys/param.h>
@@ -156,7 +156,7 @@ spec_open(ap)
 			 * When running in very secure mode, do not allow
 			 * opens for writing of any disk character devices.
 			 */
-			if (securelevel >= 2 && isdisk(dev, VCHR))
+			if (securelevel >= 2 && cdevsw[maj].d_type == D_DISK)
 				return (EPERM);
 			/*
 			 * When running in secure mode, do not allow opens
@@ -174,7 +174,7 @@ spec_open(ap)
 					return (EPERM);
 			}
 		}
-		if (istty(dev))
+		if (cdevsw[maj].d_type == D_TTY)
 			vp->v_flag |= VISTTY;
 		VOP_UNLOCK(vp);
 		error = (*cdevsw[maj].d_open)(dev, ap->a_mode, S_IFCHR, ap->a_p);
@@ -189,7 +189,7 @@ spec_open(ap)
 		 * opens for writing of any disk block devices.
 		 */
 		if (securelevel >= 2 && ap->a_cred != FSCRED &&
-		    (ap->a_mode & FWRITE) && isdisk(dev, VBLK))
+		    (ap->a_mode & FWRITE) && bdevsw[maj].d_type == D_DISK)
 			return (EPERM);
 		/*
 		 * Do not allow opens of block devices that are
@@ -388,7 +388,7 @@ spec_ioctl(ap)
 
 	case VBLK:
 		if (ap->a_command == 0 && (int)ap->a_data == B_TAPE)
-			if (bdevsw[major(dev)].d_flags & B_TAPE)
+			if (bdevsw[major(dev)].d_type == D_TAPE)
 				return (0);
 			else
 				return (1);
