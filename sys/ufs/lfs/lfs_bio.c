@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_bio.c	5.2 (Berkeley) 10/02/91
+ *	@(#)lfs_bio.c	5.3 (Berkeley) 10/09/91
  */
 
 #ifdef LOGFS
@@ -49,6 +49,7 @@
  * use reassignbuf to move the buffer from the clean list to the dirty one,
  * then unlock the buffer.
  */
+void
 lfs_bwrite(bp)
 	register BUF *bp;
 {
