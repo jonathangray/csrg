@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.8 (Berkeley) 07/20/93";
+static char sccsid[] = "@(#)main.c	8.9 (Berkeley) 07/22/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -988,15 +988,6 @@ main(argc, argv, envp)
 	/*
 	**  Do basic system initialization and set the sender
 	*/
-
-	/* make sendmail immune from process group signals */
-# ifdef _POSIX_JOB_CONTROL
-	(void) setpgid(0, getpid());
-# else
-#  ifndef SYSTEM5
-	(void) setpgrp(0, getpid());
-#  endif
-# endif
 
 	initsys(CurEnv);
 	setsender(from, CurEnv, NULL, FALSE);
