@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_usrreq.c	7.17 (Berkeley) 10/11/92
+ *	@(#)tcp_usrreq.c	7.18 (Berkeley) 01/08/93
  */
 
 #include <sys/param.h>
@@ -187,6 +187,10 @@ tcp_usrreq(so, req, m, nam, control)
 			error = ENOBUFS;
 			break;
 		}
+		/* Compute window scaling to request.  */
+		while (tp->request_r_scale < TCP_MAX_WINSHIFT &&
+		    (TCP_MAXWIN << tp->request_r_scale) < so->so_rcv.sb_hiwat)
+			tp->request_r_scale++;
 		soisconnecting(so);
 		tcpstat.tcps_connattempt++;
 		tp->t_state = TCPS_SYN_SENT;
@@ -346,14 +350,24 @@ tcp_ctloutput(op, so, level, optname, mp)
 	int level, optname;
 	struct mbuf **mp;
 {
-	int error = 0;
-	struct inpcb *inp = sotoinpcb(so);
-	register struct tcpcb *tp = intotcpcb(inp);
+	int error = 0, s;
+	struct inpcb *inp;
+	register struct tcpcb *tp;
 	register struct mbuf *m;
 	register int i;
 
-	if (level != IPPROTO_TCP)
-		return (ip_ctloutput(op, so, level, optname, mp));
+	s = splnet();
+	inp = sotoinpcb(so);
+	if (inp == NULL) {
+		splx(s);
+		return (ECONNRESET);
+	}
+	if (level != IPPROTO_TCP) {
+		error = ip_ctloutput(op, so, level, optname, mp);
+		splx(s);
+		return (error);
+	}
+	tp = intotcpcb(inp);
 
 	switch (op) {
 
@@ -402,6 +416,7 @@ tcp_ctloutput(op, so, level, optname, mp)
 		}
 		break;
 	}
+	splx(s);
 	return (error);
 }
 #endif
