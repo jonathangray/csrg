@@ -30,8 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)unistd.h	5.9 (Berkeley) 03/06/91
+ *	@(#)unistd.h	5.10 (Berkeley) 04/03/91
  */
+
+#ifndef _UNISTD_H_
+#define	_UNISTD_H_
 
 #include <sys/cdefs.h>
 #include <sys/types.h>
@@ -178,3 +181,5 @@ int	 vfork __P((void));
 
 #endif /* !_POSIX_SOURCE */
 __END_DECLS
+
+#endif /* !_UNISTD_H_ */
