@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)printjob.c	8.5 (Berkeley) 04/28/95";
+static char sccsid[] = "@(#)printjob.c	8.6 (Berkeley) 04/28/95";
 #endif /* not lint */
 
 
@@ -54,6 +54,7 @@ static char sccsid[] = "@(#)printjob.c	8.5 (Berkeley) 04/28/95";
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/file.h>
 
 #include <pwd.h>
 #include <unistd.h>
@@ -248,7 +249,7 @@ again:
 			if (ofilter > 0) {
 				kill(ofilter, SIGCONT);	/* to be sure */
 				(void) close(ofd);
-				while ((i = wait(0)) > 0 && i != ofilter)
+				while ((i = wait(NULL)) > 0 && i != ofilter)
 					;
 				ofilter = 0;
 			}
@@ -1089,7 +1090,7 @@ sendmail(user, bombed)
 	}
 	(void) close(p[0]);
 	(void) close(p[1]);
-	wait(&s);
+	wait(NULL);
 	syslog(LOG_INFO, "mail sent to user %s about job %s on printer %s (%s)",
 		user, *jobname ? jobname : "<unknown>", printer, cp);
 }
@@ -1457,7 +1458,7 @@ setty()
 #include <varargs.h>
 #endif
 
-void
+static void
 #if __STDC__
 pstatus(const char *msg, ...)
 #else
