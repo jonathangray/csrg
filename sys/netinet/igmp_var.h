@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)igmp_var.h	7.2 (Berkeley) 01/08/93
+ *	@(#)igmp_var.h	8.1 (Berkeley) 06/10/93
  */
 
 /*
