@@ -31,7 +31,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)makewhatis.sed	5.5 (Berkeley) 04/17/91
+#	@(#)makewhatis.sed	5.6 (Berkeley) 09/26/91
 #
 
 /(\([a-zA-Z0-9]*\).*UNIX Programmer's Manual/ {
@@ -56,6 +56,7 @@
 	x
 	s;\n;;g
 	/-/!d
+	s;.;;g
 	s;\([a-z][A-z]\)-[	 ][	 ]*;\1;
 	s;\([a-zA-Z0-9,]\)[	 ][	 ]*;\1 ;g
 	s;[^a-zA-Z0-9]*\([a-zA-Z0-9]*\)[^a-zA-Z0-9]*\(.*\) - \(.*\);\2 (\1) - \3;
