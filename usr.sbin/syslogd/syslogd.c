@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)syslogd.c	5.48 (Berkeley) 05/16/92";
+static char sccsid[] = "@(#)syslogd.c	5.49 (Berkeley) 02/10/93";
 #endif /* not lint */
 
 /*
@@ -70,28 +70,30 @@ static char sccsid[] = "@(#)syslogd.c	5.48 (Berkeley) 05/16/92";
 #define TIMERINTVL	30		/* interval for checking flush, mark */
 
 #include <sys/param.h>
-#include <sys/errno.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <sys/socket.h>
-#include <sys/file.h>
 #include <sys/msgbuf.h>
 #include <sys/uio.h>
 #include <sys/un.h>
 #include <sys/time.h>
 #include <sys/resource.h>
-#include <sys/signal.h>
 
 #include <netinet/in.h>
 #include <netdb.h>
+#include <arpa/inet.h>
 
-#include <utmp.h>
-#include <setjmp.h>
-#include <stdio.h>
 #include <ctype.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <setjmp.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <utmp.h>
 #include "pathnames.h"
 
 #define SYSLOG_NAMES
@@ -184,12 +186,27 @@ int	Initialized = 0;	/* set when we have initialized ourselves */
 int	MarkInterval = 20 * 60;	/* interval between marks in seconds */
 int	MarkSeq = 0;		/* mark sequence number */
 
-extern	int errno;
-extern	char *ctime(), *index(), *calloc();
+void  cfline __P((char *, struct filed *));
+char *cvthname __P((struct sockaddr_in *));
+void  daemon __P((int, int));
+int   decode __P((char *, CODE *));
+void  die __P((int));
+void  domark __P((int));
+void  fprintlog __P((struct filed *, int, char *));
+void  init __P((int));
+void  logerror __P((char *));
+void  logmsg __P((int, char *, char *, int));
+void  printline __P((char *, char *));
+void  printsys __P((char *));
+void  reapchild __P((int));
+char *ttymsg __P((struct iovec *, int, char *, int));
+void  usage __P((void));
+void  wallmsg __P((struct filed *, struct iovec *));
 
+int
 main(argc, argv)
 	int argc;
-	char **argv;
+	char *argv[];
 {
 	register int i;
 	register char *p;
@@ -199,9 +216,6 @@ main(argc, argv)
 	FILE *fp;
 	int ch;
 	char line[MSG_BSIZE + 1];
-	extern int optind;
-	extern char *optarg;
-	void die(), domark(), init(), reapchild();
 
 	while ((ch = getopt(argc, argv, "df:m:p:")) != EOF)
 		switch((char)ch) {
@@ -260,6 +274,7 @@ main(argc, argv)
 		die(0);
 	}
 	finet = socket(AF_INET, SOCK_DGRAM, 0);
+	inetm = 0;
 	if (finet >= 0) {
 		struct servent *sp;
 
@@ -297,7 +312,7 @@ main(argc, argv)
 
 	dprintf("off & running....\n");
 
-	init();
+	init(0);
 	(void) signal(SIGHUP, init);
 
 	for (;;) {
@@ -341,8 +356,6 @@ main(argc, argv)
 			i = recvfrom(finet, line, MAXLINE, 0,
 			    (struct sockaddr *) &frominet, &len);
 			if (i > 0) {
-				extern char *cvthname();
-
 				line[i] = '\0';
 				printline(cvthname(&frominet), line);
 			} else if (i < 0 && errno != EINTR)
@@ -351,6 +364,7 @@ main(argc, argv)
 	}
 }
 
+void
 usage()
 {
 	(void) fprintf(stderr,
@@ -362,7 +376,7 @@ usage()
  * Take a raw input line, decode the message, and print the message
  * on the appropriate log files.
  */
-
+void
 printline(hname, msg)
 	char *hname;
 	char *msg;
@@ -412,7 +426,7 @@ printline(hname, msg)
 /*
  * Take a raw input line from /dev/klog, split and format similar to syslog().
  */
-
+void
 printsys(msg)
 	char *msg;
 {
@@ -454,7 +468,7 @@ time_t	now;
  * Log a message to the appropriate log files, users, etc. based on
  * the priority.
  */
-
+void
 logmsg(pri, msg, from, flags)
 	int pri;
 	char *msg, *from;
@@ -464,7 +478,6 @@ logmsg(pri, msg, from, flags)
 	int fac, prilev;
 	int omask, msglen;
 	char *timestamp;
-	time_t time();
 
 	dprintf("logmsg: pri %o, flags %x, from %s, msg %s\n",
 	    pri, flags, from, msg);
@@ -564,6 +577,7 @@ logmsg(pri, msg, from, flags)
 	(void) sigsetmask(omask);
 }
 
+void
 fprintlog(f, flags, msg)
 	register struct filed *f;
 	int flags;
@@ -695,7 +709,7 @@ fprintlog(f, flags, msg)
  *	Write the specified message to either the entire
  *	world, or a list of approved users.
  */
-
+void
 wallmsg(f, iov)
 	register struct filed *f;
 	struct iovec *iov;
@@ -704,7 +718,7 @@ wallmsg(f, iov)
 	register FILE *uf;
 	register int i;
 	struct utmp ut;
-	char *p, *ttymsg();
+	char *p;
 
 	if (reenter++)
 		return;
@@ -718,7 +732,7 @@ wallmsg(f, iov)
 		if (ut.ut_name[0] == '\0')
 			continue;
 		if (f->f_type == F_WALL) {
-			if (p = ttymsg(iov, 6, ut.ut_line, 1, 60*5)) {
+			if (p = ttymsg(iov, 6, ut.ut_line, 60*5)) {
 				errno = 0;	/* already in msg */
 				logerror(p);
 			}
@@ -730,7 +744,7 @@ wallmsg(f, iov)
 				break;
 			if (!strncmp(f->f_un.f_uname[i], ut.ut_name,
 			    UT_NAMESIZE)) {
-				if (p = ttymsg(iov, 6, ut.ut_line, 1, 60*5)) {
+				if (p = ttymsg(iov, 6, ut.ut_line, 60*5)) {
 					errno = 0;	/* already in msg */
 					logerror(p);
 				}
@@ -743,7 +757,8 @@ wallmsg(f, iov)
 }
 
 void
-reapchild()
+reapchild(signo)
+	int signo;
 {
 	union wait status;
 
@@ -760,7 +775,6 @@ cvthname(f)
 {
 	struct hostent *hp;
 	register char *p;
-	extern char *inet_ntoa();
 
 	dprintf("cvthname(%s)\n", inet_ntoa(f->sin_addr));
 
@@ -781,10 +795,10 @@ cvthname(f)
 }
 
 void
-domark()
+domark(signo)
+	int signo;
 {
 	register struct filed *f;
-	time_t time();
 
 	now = time((time_t *)NULL);
 	MarkSeq += TIMERINTVL;
@@ -808,22 +822,25 @@ domark()
 /*
  * Print syslogd errors some place.
  */
+void
 logerror(type)
 	char *type;
 {
-	char buf[100], *strerror();
+	char buf[100];
 
 	if (errno)
-		(void) sprintf(buf, "syslogd: %s: %s", type, strerror(errno));
+		(void) snprintf(buf,
+		    sizeof(buf), "syslogd: %s: %s", type, strerror(errno));
 	else
-		(void) sprintf(buf, "syslogd: %s", type);
+		(void) snprintf(buf, sizeof(buf), "syslogd: %s", type);
 	errno = 0;
 	dprintf("%s\n", buf);
 	logmsg(LOG_SYSLOG|LOG_ERR, buf, LocalHostName, ADDDATE);
 }
 
 void
-die(sig)
+die(signo)
+	int signo;
 {
 	register struct filed *f;
 	char buf[100];
@@ -833,9 +850,9 @@ die(sig)
 		if (f->f_prevcount)
 			fprintlog(f, 0, (char *)NULL);
 	}
-	if (sig) {
-		dprintf("syslogd: exiting on signal %d\n", sig);
-		(void) sprintf(buf, "exiting on signal %d", sig);
+	if (signo) {
+		dprintf("syslogd: exiting on signal %d\n", signo);
+		(void) sprintf(buf, "exiting on signal %d", signo);
 		errno = 0;
 		logerror(buf);
 	}
@@ -846,9 +863,9 @@ die(sig)
 /*
  *  INIT -- Initialize syslogd from configuration table
  */
-
 void
-init()
+init(signo)
+	int signo;
 {
 	register int i;
 	register FILE *cf;
@@ -952,7 +969,7 @@ init()
 /*
  * Crack a configuration file line
  */
-
+void
 cfline(line, f)
 	char *line;
 	register struct filed *f;
@@ -1097,7 +1114,7 @@ cfline(line, f)
 /*
  *  Decode a symbolic name to a numeric value
  */
-
+int
 decode(name, codetab)
 	char *name;
 	CODE *codetab;
