@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsproto.h	7.9 (Berkeley) 01/14/92
+ *	@(#)nfsproto.h	7.10 (Berkeley) 02/06/92
  */
 
 /*
