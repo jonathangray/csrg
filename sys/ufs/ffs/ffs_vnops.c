@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	7.71 (Berkeley) 03/26/92
+ *	@(#)ffs_vnops.c	7.72 (Berkeley) 04/13/92
  */
 
 #include <sys/param.h>
@@ -205,8 +205,8 @@ ffs_read(vp, uio, ioflag, cred)
 	struct buf *bp;
 	daddr_t lbn, bn, rablock;
 	off_t diff;
-	int error = 0;
-	long size, rasize, n, on;
+	int rasize, error = 0;
+	long size, n, on;
 
 #ifdef DIAGNOSTIC
 	int type;
