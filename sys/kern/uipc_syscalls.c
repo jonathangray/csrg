@@ -28,7 +28,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_syscalls.c	8.4 (Berkeley) 02/21/94
+ *	@(#)uipc_syscalls.c	8.5 (Berkeley) 06/04/94
  */
 
 #include <sys/param.h>
