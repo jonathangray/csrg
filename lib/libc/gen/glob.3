@@ -31,7 +31,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)glob.3	8.1 (Berkeley) 06/09/93
+.\"     @(#)glob.3	8.2 (Berkeley) 01/05/94
 .\"
 .Dd 
 .Dt GLOB 3
@@ -411,7 +411,7 @@ A rough equivalent of
 can be obtained with the
 following code:
 .Bd -literal -offset indent
-GLOB_t g;
+glob_t g;
 
 g.gl_offs = 2;
 glob("*.c", GLOB_DOOFFS, NULL, &g);
