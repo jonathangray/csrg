@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)cmp.c	5.5 (Berkeley) 10/27/91";
+static char sccsid[] = "@(#)cmp.c	5.6 (Berkeley) 10/28/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -136,6 +136,6 @@ static void
 usage()
 {
 	(void)fprintf(stderr,
-	    "usage: cmp [-ls] file1 file2 [skip1 [skip2]]\n");
+	    "usage: cmp [-l | s] file1 file2 [skip1 [skip2]]\n");
 	exit(2);
 }
