@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dinode.h	8.7 (Berkeley) 01/02/95
+ *	@(#)dinode.h	8.8 (Berkeley) 03/21/95
  */
 
 /*
