@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)bpf_compat.h	7.1 (Berkeley) 06/10/93
+ *	@(#)bpf_compat.h	8.1 (Berkeley) 06/10/93
  */
 
 /* from: $Header: bpf_compat.h,v 1.1 92/05/22 15:33:20 mccanne Exp $ (LBL) */
