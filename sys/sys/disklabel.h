@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)disklabel.h	7.22 (Berkeley) 11/10/92
+ *	@(#)disklabel.h	7.23 (Berkeley) 12/21/92
  */
 
 /*
@@ -184,6 +184,8 @@ struct disklabel {
 #define	DTYPE_SCSI		4		/* SCSI */
 #define	DTYPE_ESDI		5		/* ESDI interface */
 #define	DTYPE_ST506		6		/* ST506 etc. */
+#define	DTYPE_HPIB		7		/* CS/80 on HP-IB */
+#define	DTYPE_HPFL		8		/* HP Fiber-link */
 #define	DTYPE_FLOPPY		10		/* floppy */
 
 #ifdef DKTYPENAMES
@@ -195,8 +197,8 @@ static char *dktypenames[] = {
 	"SCSI",
 	"ESDI",
 	"ST506",
-	"type 7",
-	"type 8",
+	"HP-IB",
+	"HP-FL",
 	"type 9",
 	"floppy",
 	0
