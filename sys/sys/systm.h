@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)systm.h	8.4 (Berkeley) 02/23/94
+ *	@(#)systm.h	8.5 (Berkeley) 01/09/95
  */
 
 /*
@@ -112,6 +112,7 @@ int	enxio __P((void));
 int	eopnotsupp __P((void));
 int	seltrue __P((dev_t dev, int which, struct proc *p));
 void	*hashinit __P((int count, int type, u_long *hashmask));
+int	nosys __P((struct proc *, void *, register_t *));
 
 #ifdef __GNUC__
 volatile void	panic __P((const char *, ...));
