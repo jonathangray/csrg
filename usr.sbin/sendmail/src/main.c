@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.38 (Berkeley) 11/27/93";
+static char sccsid[] = "@(#)main.c	8.39 (Berkeley) 11/27/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -340,10 +340,9 @@ main(argc, argv, envp)
 
 		if (tTd(0, 4))
 			printf("canonical name: %s\n", jbuf);
-		p = newstr(jbuf);
 		define('w', newstr(jbuf), CurEnv);	/* must be new string */
-		define('j', p, CurEnv);
-		setclass('w', p);
+		define('j', newstr(jbuf), CurEnv);
+		setclass('w', jbuf);
 
 		p = strchr(jbuf, '.');
 		if (p != NULL)
