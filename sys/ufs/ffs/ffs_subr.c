@@ -30,12 +30,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_subr.c	8.4 (Berkeley) 03/21/95
+ *	@(#)ffs_subr.c	8.5 (Berkeley) 03/21/95
  */
 
 #include <sys/param.h>
 #ifndef KERNEL
-typedef u_int32_t ufs_daddr_t;
+#include <ufs/ufs/dinode.h>
 #include <ufs/ffs/fs.h>
 #else
 
