@@ -9,7 +9,7 @@
  * All advertising materials mentioning features or use of this software
  * must display the following acknowledgement:
  *	This product includes software developed by the University of
- *	California, Lawrence Berkeley Laboratories.
+ *	California, Lawrence Berkeley Laboratory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -39,9 +39,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)zsreg.h	7.2 (Berkeley) 07/21/92
+ *	@(#)zsreg.h	7.3 (Berkeley) 04/20/93
  *
- * from: $Header: zsreg.h,v 1.6 92/06/17 05:35:53 torek Exp $ (LBL)
+ * from: $Header: zsreg.h,v 1.7 92/11/26 01:27:18 torek Exp $ (LBL)
  */
 
 /*
