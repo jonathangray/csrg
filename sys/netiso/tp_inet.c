@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_inet.c	7.11 (Berkeley) 10/11/92
+ *	@(#)tp_inet.c	7.12 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -684,5 +684,5 @@ dump_inaddr(addr)
 {
 	printf("INET: port 0x%x; addr 0x%x\n", addr->sin_port, addr->sin_addr);
 }
-#endif ARGO_DEBUG
-#endif INET
+#endif /* ARGO_DEBUG */
+#endif /* INET */
