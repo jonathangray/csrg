@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	8.20 (Berkeley) 08/11/94
+ *	@(#)vfs_syscalls.c	8.21 (Berkeley) 08/14/94
  */
 
 #include <sys/param.h>
@@ -346,6 +346,10 @@ sync(p, uap, retval)
 	int asyncflag;
 
 	for (mp = mountlist.tqh_first; mp != NULL; mp = nmp) {
+		/*
+		 * Get the next pointer in case we hang on vfs_busy
+		 * while we are being unmounted.
+		 */
 		nmp = mp->mnt_list.tqe_next;
 		/*
 		 * The lock check below is to avoid races with mount
@@ -358,6 +362,11 @@ sync(p, uap, retval)
 			VFS_SYNC(mp, MNT_NOWAIT, p->p_ucred, p);
 			if (asyncflag)
 				mp->mnt_flag |= MNT_ASYNC;
+			/*
+			 * Get the next pointer again, as the next filesystem
+			 * might have been unmounted while we were sync'ing.
+			 */
+			nmp = mp->mnt_list.tqe_next;
 			vfs_unbusy(mp);
 		}
 	}
