@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_malloc.c	7.33.1.1 (Berkeley) 05/20/92
+ *	@(#)kern_malloc.c	7.34 (Berkeley) 10/09/92
  */
 
 #include "param.h"
@@ -139,6 +139,7 @@ malloc(size, type, flags)
 	copysize = 1 << indx < MAX_COPY ? 1 << indx : MAX_COPY;
 #endif
 	if (kbp->kb_next == NULL) {
+		kbp->kb_last = NULL;
 		if (size > MAXALLOCSAVE)
 			allocsize = roundup(size, CLBYTES);
 		else
@@ -363,8 +364,12 @@ free(addr, type)
 		wakeup((caddr_t)ksp);
 	ksp->ks_inuse--;
 #endif
-	((caddr_t *)addr)[2] = kbp->kb_next;
-	kbp->kb_next = addr;
+	if (kbp->kb_next == NULL)
+		kbp->kb_next = addr;
+	else
+		((struct freelist *)kbp->kb_last)->next = addr;
+	freep->next = NULL;
+	kbp->kb_last = addr;
 	OUT;
 	splx(s);
 }
