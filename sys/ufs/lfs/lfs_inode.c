@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_inode.c	7.36 (Berkeley) 12/05/90
+ *	@(#)lfs_inode.c	7.37 (Berkeley) 02/01/91
  */
 
 #include "param.h"
@@ -139,6 +139,7 @@ loop:
 	ip->i_devvp = 0;
 	ip->i_mode = 0;
 	ip->i_diroff = 0;
+	ip->i_lockf = 0;
 #ifdef QUOTA
 	for (i = 0; i < MAXQUOTAS; i++)
 		ip->i_dquot[i] = NODQUOT;
