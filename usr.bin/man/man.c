@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)man.c	8.3 (Berkeley) 01/02/94";
+static char sccsid[] = "@(#)man.c	8.4 (Berkeley) 01/02/94";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -84,13 +84,17 @@ main(argc, argv)
 	size_t len;
 	int ch, f_cat, f_how, found;
 	char **ap, *cmd, *machine, *p, *p_add, *p_path, *pager, *slashp;
-	char buf[MAXPATHLEN * 2];
+	char *conffile, buf[MAXPATHLEN * 2];
 
+	conffile = NULL;
 	f_cat = f_how = 0;
-	while ((ch = getopt(argc, argv, "-acfhkM:m:P:w")) != EOF)
+	while ((ch = getopt(argc, argv, "-aC:cfhkM:m:P:w")) != EOF)
 		switch (ch) {
 		case 'a':
 			f_all = 1;
+			break;
+		case 'C':
+			conffile = optarg;
 			break;
 		case 'c':
 		case '-':		/* Deprecated. */
@@ -138,7 +142,7 @@ main(argc, argv)
 			pager = _PATH_PAGER;
 
 	/* Read the configuration file. */
-	config();
+	config(conffile);
 
 	/* If there's no _default list, create an empty one. */
 	if ((defp = getlist("_default")) == NULL)
@@ -757,6 +761,6 @@ static void
 usage()
 {
 	(void)fprintf(stderr,
-	    "usage: man [-ac] [-M path] [-m path] [section] title ...\n");
+    "usage: man [-ac] [-C file] [-M path] [-m path] [section] title ...\n");
 	exit(1);
 }
