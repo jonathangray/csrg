@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ns.c	7.7 (Berkeley) 06/28/90
+ *	@(#)ns.c	7.8 (Berkeley) 06/27/91
  */
 
 #include "param.h"
