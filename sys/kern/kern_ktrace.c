@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_ktrace.c	7.17 (Berkeley) 05/13/92
+ *	@(#)kern_ktrace.c	7.17 (Berkeley) 05/14/92
  */
 
 #ifdef KTRACE
