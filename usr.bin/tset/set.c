@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)set.c	5.2 (Berkeley) 12/24/91";
+static char sccsid[] = "@(#)set.c	5.3 (Berkeley) 12/01/92";
 #endif /* not lint */
 
 #include <termios.h>
@@ -165,7 +165,7 @@ set_control_chars()
 	else
 		bs_char = 0;
 
-	if (erasechar == 0 && !tgetflag("os") && mode.c_cc[VERASE] == CERASE) {
+	if (erasechar == 0 && !tgetflag("os") && mode.c_cc[VERASE] != CERASE) {
 		if (tgetflag("bs") || bs_char != 0)
 			erasechar = -1;
 	}
