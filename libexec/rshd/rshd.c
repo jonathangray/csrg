@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)rshd.c	5.34 (Berkeley) 06/29/90";
+static char sccsid[] = "@(#)rshd.c	5.35 (Berkeley) 09/27/90";
 #endif /* not lint */
 
 /* From:
@@ -367,7 +367,7 @@ doit(fromp)
 			error("Can't make pipe.\n");
 			exit(1);
 		}
-#ifdef	KERBEROS
+#if defined(KERBEROS) && defined(CRYPT)
 		if (encrypt) {
 			if (pipe(pv1) < 0) {
 				error("Can't make 2nd pipe.\n");
@@ -385,7 +385,7 @@ doit(fromp)
 			exit(1);
 		}
 		if (pid) {
-#ifdef	KERBEROS
+#if defined(KERBEROS) && defined(CRYPT)
 			if (encrypt) {
 				static char msg[] = SECURE_MESSAGE;
 				(void) close(pv1[1]);
@@ -406,7 +406,7 @@ doit(fromp)
 				nfd = pv[0];
 			else
 				nfd = s;
-#ifdef	KERBEROS
+#if defined(KERBEROS) && defined(CRYPT)
 			if (encrypt) {
 				FD_ZERO(&writeto);
 				FD_SET(pv2[0], &writeto);
@@ -422,7 +422,7 @@ doit(fromp)
 			nfd++;
 			do {
 				ready = readfrom;
-#ifdef	KERBEROS
+#if defined(KERBEROS) && defined(CRYPT)
 				if (encrypt) {
 					wready = writeto;
 					if (select(nfd, &ready,
@@ -436,7 +436,7 @@ doit(fromp)
 						break;
 				if (FD_ISSET(s, &ready)) {
 					int	ret;
-#ifdef	KERBEROS
+#if defined(KERBEROS) && defined(CRYPT)
 					if (encrypt)
 						ret = des_read(s, &sig, 1);
 					else
@@ -454,7 +454,7 @@ doit(fromp)
 						shutdown(s, 1+1);
 						FD_CLR(pv[0], &readfrom);
 					} else {
-#ifdef	KERBEROS
+#if defined(KERBEROS) && defined(CRYPT)
 						if (encrypt)
 							(void)
 							  des_write(s, buf, cc);
@@ -464,8 +464,7 @@ doit(fromp)
 							  write(s, buf, cc);
 					}
 				}
-#ifdef	KERBEROS
-
+#if defined(KERBEROS) && defined(CRYPT)
 				if (encrypt && FD_ISSET(pv1[0], &ready)) {
 					errno = 0;
 					cc = read(pv1[0], buf, sizeof(buf));
@@ -488,7 +487,7 @@ doit(fromp)
 #endif
 
 			} while (FD_ISSET(s, &readfrom) ||
-#ifdef	KERBEROS
+#if defined(KERBEROS) && defined(CRYPT)
 			    (encrypt && FD_ISSET(pv1[0], &readfrom)) ||
 #endif
 			    FD_ISSET(pv[0], &readfrom));
@@ -496,7 +495,7 @@ doit(fromp)
 		}
 		setpgrp(0, getpid());
 		(void) close(s); (void) close(pv[0]);
-#ifdef	KERBEROS
+#if defined(KERBEROS) && defined(CRYPT)
 		if (encrypt) {
 			close(pv1[0]); close(pv2[0]);
 			dup2(pv1[1], 1);
