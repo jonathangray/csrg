@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ct.c	7.3 (Berkeley) 05/04/91
+ *	@(#)ct.c	7.4 (Berkeley) 06/05/92
  */
 
 #include "ct.h"
@@ -56,8 +56,8 @@
 #include "tprintf.h"
 #include "proc.h"
 
+#include "hp/dev/device.h"
 #include "ctreg.h"
-#include "device.h"
 
 /* number of eof marks to remember */
 #define EOFS	128
