@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1983 Eric P. Allman
- * Copyright (c) 1988 Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1988, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)collect.c	6.20 (Berkeley) 06/03/93";
+static char sccsid[] = "@(#)collect.c	8.1 (Berkeley) 06/07/93";
 #endif /* not lint */
 
 # include <errno.h>
