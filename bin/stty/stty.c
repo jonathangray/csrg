@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)stty.c	5.25 (Berkeley) 06/03/91";
+static char sccsid[] = "@(#)stty.c	5.26 (Berkeley) 06/04/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -69,7 +69,7 @@ main(argc, argv)
 	struct winsize win;
 	struct termios t;
 	enum FMT fmt;
-	int ch, ctl, ldisc, tmp;
+	int ch, ctl, ldisc, set, tmp, wset;
 
 	ctl = STDIN_FILENO;
 	fmt = NOTSET;
@@ -123,10 +123,11 @@ args:	argc -= optind;
 	
 #define	CHK(s)	(**argv == s[0] && !strcmp(*argv, s))
 
-	for (; *argv; ++argv) {
+	for (set = wset = 0; *argv; ++argv) {
 		if (CHK("-nl")) {
 			t.c_iflag |= ICRNL;
 			t.c_oflag |= ONLCR;
+			set = 1;
 			continue;
 		}
 		if (CHK("all")) {
@@ -140,6 +141,7 @@ args:	argc -= optind;
 			t.c_oflag |= OPOST;
 			t.c_lflag |= ISIG|IEXTEN;
 			t.c_lflag &= ~ICANON;
+			set = 1;
 			continue;
 		}
 		if (CHK("cols")) {
@@ -151,6 +153,7 @@ args:	argc -= optind;
 			if (!*++argv)
 				err("option requires an argument -- columns");
 columns:		win.ws_col = atoi(*argv);
+			wset = 1;
 			continue;
 		}
 		if (CHK("cooked"))
@@ -162,6 +165,7 @@ columns:		win.ws_col = atoi(*argv);
 			t.c_lflag &= ~ECHOPRT;
 			t.c_lflag |= ECHOE|ECHOKE|ECHOCTL;
 			t.c_iflag &= ~IXANY;
+			set = 1;
 			continue;
 		}
 		if (CHK("everything")) {
@@ -173,7 +177,7 @@ columns:		win.ws_col = atoi(*argv);
 			ioctl(ctl, TIOCEXT, &tmp);
 			continue;
 		}
-		if (CHK("extrpc")) {
+		if (CHK("extproc")) {
 			tmp = 1;
 			ioctl(ctl, TIOCEXT, &tmp);
 			continue;
@@ -182,6 +186,7 @@ columns:		win.ws_col = atoi(*argv);
 			if (!*++argv)
 				err("option requires an argument -- ispeed");
 			cfsetispeed(&t, atoi(*argv));
+			set = 1;
 			continue;
 		}
 		if (CHK("new"))
@@ -189,6 +194,7 @@ columns:		win.ws_col = atoi(*argv);
 		if (CHK("nl")) {
 			t.c_iflag &= ~ICRNL;
 			t.c_oflag &= ~ONLCR;
+			set = 1;
 			continue;
 		}
 		if (CHK("old"))
@@ -197,6 +203,7 @@ columns:		win.ws_col = atoi(*argv);
 			if (!*++argv)
 				err("option requires an argument -- ospeed");
 			cfsetospeed(&t, atoi(*argv));
+			set = 1;
 			continue;
 		}
 		if (CHK("-raw"))
@@ -205,12 +212,14 @@ columns:		win.ws_col = atoi(*argv);
 			cfmakeraw(&t);
 			t.c_cflag &= ~(CSIZE|PARENB);
 			t.c_cflag |= CS8;
+			set = 1;
 			continue;
 		}
 		if (CHK("rows")) {
 			if (!*++argv)
 				err("option requires an argument -- rows");
 			win.ws_row = atoi(*argv);
+			wset = 1;
 			continue;
 		}
 		if (CHK("sane")) {
@@ -221,6 +230,7 @@ reset:			t.c_cflag = TTYDEF_CFLAG | (t.c_cflag & CLOCAL);
 #define	LKEEP	(ECHOKE|ECHOE|ECHOK|ECHOPRT|ECHOCTL|ALTWERASE|TOSTOP|NOFLSH)
 			t.c_lflag = TTYDEF_LFLAG | (t.c_lflag & LKEEP);
 			t.c_oflag = TTYDEF_OFLAG;
+			set = 1;
 			continue;
 		}
 		if (CHK("size")) {
@@ -242,24 +252,28 @@ tty:			tmp = TTYDISC;
 			if (CHK(mp->name)) {
 				t.c_cflag &= ~mp->unset;
 				t.c_cflag |= mp->set;
+				set = 1;
 				goto next;
 			}
 		for (mp = imodes; mp->name; ++mp)
 			if (CHK(mp->name)) {
 				t.c_iflag &= ~mp->unset;
 				t.c_iflag |= mp->set;
+				set = 1;
 				goto next;
 			}
 		for (mp = lmodes; mp->name; ++mp)
 			if (CHK(mp->name)) {
 				t.c_lflag &= ~mp->unset;
 				t.c_lflag |= mp->set;
+				set = 1;
 				goto next;
 			}
 		for (mp = omodes; mp->name; ++mp)
 			if (CHK(mp->name)) {
 				t.c_oflag &= ~mp->unset;
 				t.c_oflag |= mp->set;
+				set = 1;
 				goto next;
 			}
 		for (cp = cchars1; cp->name; ++cp) {
@@ -282,6 +296,7 @@ ccfound:		if (!*++argv)
 				    (*argv)[1] & 037;
 			else
 				t.c_cc[cp->sub] = **argv;
+			set = 1;
 			goto next;
 		}
 
@@ -299,9 +314,9 @@ ccfound:		if (!*++argv)
 next:		continue;
 	}
 
-	if (tcsetattr(ctl, 0, &t) < 0)
+	if (set && tcsetattr(ctl, 0, &t) < 0)
 		err("tcsetattr: %s", strerror(errno));
-	if (ioctl(ctl, TIOCSWINSZ, &win) < 0)
+	if (wset && ioctl(ctl, TIOCSWINSZ, &win) < 0)
 		warn("TIOCSWINSZ: %s", strerror(errno));
 	exit(0);
 }
