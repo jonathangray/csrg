@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)send.2	6.9 (Berkeley) 05/01/91
+.\"     @(#)send.2	6.10 (Berkeley) 05/04/92
 .\"
 .Dd 
 .Dt SEND 2
@@ -124,7 +124,7 @@ if an error occurred.
 and
 .Fn sendmsg
 fail if:
-.Bl -tag -width [EWOULDBLOCK]
+.Bl -tag -width [EMSGSIZE]
 .It Bq Er EBADF
 An invalid descriptor was specified.
 .It Bq Er ENOTSOCK
@@ -136,7 +136,7 @@ An invalid user space address was specified for a parameter.
 .It Bq Er EMSGSIZE
 The socket requires that message be sent atomically,
 and the size of the message to be sent made this impossible.
-.It Bq Er EWOULDBLOCK
+.It Bq Er EAGAIN
 The socket is marked non-blocking and the requested operation
 would block.
 .It Bq Er ENOBUFS
