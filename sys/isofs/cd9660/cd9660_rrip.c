@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cd9660_rrip.c	8.3 (Berkeley) 06/01/94
+ *	@(#)cd9660_rrip.c	8.4 (Berkeley) 06/14/94
  */
 
 #include <sys/param.h>
@@ -384,11 +384,10 @@ cd9660_rrip_device(p,ana)
 	high = isonum_733(p->dev_t_high_l);
 	low  = isonum_733(p->dev_t_low_l);
 	
-	if ( high == 0 ) {
-		ana->inop->inode.iso_rdev = makedev( major(low), minor(low) );
-	} else {
-		ana->inop->inode.iso_rdev = makedev( high, minor(low) );
-	}
+	if (high == 0)
+		ana->inop->inode.iso_rdev = makedev(major(low), minor(low));
+	else
+		ana->inop->inode.iso_rdev = makedev(high, minor(low));
 	ana->fields &= ~ISO_SUSP_DEVICE;
 	return ISO_SUSP_DEVICE;
 }
@@ -431,8 +430,6 @@ cd9660_rrip_stop(p,ana)
 	ISO_SUSP_HEADER *p;
 	ISO_RRIP_ANALYZE *ana;
 {
-	/* stop analyzing */
-	ana->fields = 0;
 	return ISO_SUSP_STOP;
 }
 
@@ -509,6 +506,13 @@ cd9660_rrip_loop(isodir,ana,table)
 				if (!ana->fields)
 					break;
 			}
+			if (result&ISO_SUSP_STOP) {
+				result &= ~ISO_SUSP_STOP;
+				break;
+			}
+			/* plausibility check */
+			if (isonum_711(phead->length) < sizeof(*phead))
+				break;
 			/*
 			 * move to next SUSP
 			 * Hopefully this works with newer versions, too
@@ -516,7 +520,7 @@ cd9660_rrip_loop(isodir,ana,table)
 			phead = (ISO_SUSP_HEADER *)((char *)phead + isonum_711(phead->length));
 		}
 		
-		if ( ana->fields && ana->iso_ce_len ) {
+		if (ana->fields && ana->iso_ce_len) {
 			if (ana->iso_ce_blk >= ana->imp->volume_space_size
 			    || ana->iso_ce_off + ana->iso_ce_len > ana->imp->logical_block_size
 			    || bread(ana->imp->im_devvp,
@@ -533,7 +537,7 @@ cd9660_rrip_loop(isodir,ana,table)
 		brelse(bp);
 	/*
 	 * If we don't find the Basic SUSP stuffs, just set default value
-	 *   ( attribute/time stamp )
+	 *   (attribute/time stamp)
 	 */
 	for (ptable = table; ptable->func2; ptable++)
 		if (!(ptable->result&result))
@@ -542,6 +546,9 @@ cd9660_rrip_loop(isodir,ana,table)
 	return result;
 }
 
+/*
+ * Get Attributes.
+ */
 static RRIP_TABLE rrip_table_analyze[] = {
 	{ "PX", cd9660_rrip_attr,	cd9660_rrip_defattr,	ISO_SUSP_ATTR },
 	{ "TF", cd9660_rrip_tstamp,	cd9660_rrip_deftstamp,	ISO_SUSP_TSTAMP },
@@ -568,9 +575,7 @@ cd9660_rrip_analyze(isodir,inop,imp)
 }
 
 /* 
- * Get Alternate Name from 'AL' record 
- * If either no AL record or 0 length, 
- *    it will be return the translated ISO9660 name,
+ * Get Alternate Name.
  */
 static RRIP_TABLE rrip_table_getname[] = {
 	{ "NM", cd9660_rrip_altname,	cd9660_rrip_defname,	ISO_SUSP_ALTNAME },
@@ -615,9 +620,7 @@ cd9660_rrip_getname(isodir,outbuf,outlen,inump,imp)
 }
 
 /* 
- * Get Symbolic Name from 'SL' record 
- *
- * Note: isodir should contains SL record!
+ * Get Symbolic Link.
  */
 static RRIP_TABLE rrip_table_getsymname[] = {
 	{ "SL", cd9660_rrip_slink,	0,			ISO_SUSP_SLINK },
@@ -656,7 +659,7 @@ static RRIP_TABLE rrip_table_extref[] = {
 
 /*
  * Check for Rock Ridge Extension and return offset of its fields.
- * Note: We require the ER field.
+ * Note: We insist on the ER field.
  */
 int
 cd9660_rrip_offset(isodir,imp)
