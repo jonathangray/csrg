@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)raw_cb.c	7.11 (Berkeley) 06/28/90
+ *	@(#)raw_cb.c	7.12 (Berkeley) 01/30/92
  */
 
 #include "param.h"
@@ -46,8 +46,6 @@
 #include "route.h"
 #include "raw_cb.h"
 #include "../netinet/in.h"
-
-#include "machine/mtpr.h"
 
 /*
  * Routines to manage the raw protocol control blocks. 
