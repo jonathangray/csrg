@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1990, 1993
+ * Copyright (c) 1990, 1993, 1995
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fifo_vnops.c	8.5 (Berkeley) 02/06/95
+ *	@(#)fifo_vnops.c	8.6 (Berkeley) 02/06/95
  */
 
 #include <sys/param.h>
@@ -336,6 +336,7 @@ fifo_bmap(ap)
 		daddr_t  a_bn;
 		struct vnode **a_vpp;
 		daddr_t *a_bnp;
+		int *a_runp;
 	} */ *ap;
 {
 
