@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_subs.c	8.1 (Berkeley) 06/16/93
+ *	@(#)nfs_subs.c	8.2 (Berkeley) 12/30/93
  */
 
 /*
@@ -87,7 +87,6 @@ u_long nfs_vers, nfs_prog, nfs_true, nfs_false;
 static u_long nfs_xid = 0;
 enum vtype ntov_type[7] = { VNON, VREG, VDIR, VBLK, VCHR, VLNK, VNON };
 extern struct proc *nfs_iodwant[NFS_MAXASYNCDAEMON];
-extern struct queue_entry nfs_bufq;
 extern struct nfsreq nfsreqh;
 extern int nqnfs_piggy[NFS_NPROCS];
 extern struct nfsrtt nfsrtt;
@@ -603,7 +602,7 @@ nfs_init()
 	/* Ensure async daemons disabled */
 	for (i = 0; i < NFS_MAXASYNCDAEMON; i++)
 		nfs_iodwant[i] = (struct proc *)0;
-	queue_init(&nfs_bufq);
+	TAILQ_INIT(&nfs_bufq);
 	nfs_xdrneg1 = txdr_unsigned(-1);
 	nfs_nhinit();			/* Init the nfsnode table */
 	nfsrv_init(0);			/* Init server data structures */
