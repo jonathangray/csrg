@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty.c	7.44 (Berkeley) 05/28/91
+ *	@(#)tty.c	7.45 (Berkeley) 08/02/91
  */
 
 #include "param.h"
@@ -1226,7 +1226,8 @@ ttycheckoutq(tp, wait)
 
 	hiwat = tp->t_hiwat;
 	s = spltty();
-	oldsig = curproc->p_sig;
+	if (wait)
+		oldsig = curproc->p_sig;
 	if (tp->t_outq.c_cc > hiwat + 200)
 		while (tp->t_outq.c_cc > hiwat) {
 			ttstart(tp);
