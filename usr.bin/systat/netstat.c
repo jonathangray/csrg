@@ -1,23 +1,27 @@
-/*
- * Copyright (c) 1980 Regents of the University of California.
- * All rights reserved.  The Berkeley software License Agreement
- * specifies the terms and conditions for redistribution.
+/*-
+ * Copyright (c) 1980, 1992 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)netstat.c	5.6 (Berkeley) 06/26/91";
-#endif not lint
+static char sccsid[] = "@(#)netstat.c	5.7 (Berkeley) 07/23/92";
+#endif /* not lint */
 
 /*
  * netstat
  */
-#include "systat.h"
 
+#include <sys/param.h>
 #include <sys/socket.h>
 #include <sys/socketvar.h>
 #include <sys/mbuf.h>
 #include <sys/protosw.h>
 
+#include <netinet/in.h>
 #include <net/route.h>
 #include <netinet/in_systm.h>
 #include <netinet/ip.h>
@@ -35,7 +39,18 @@ static char sccsid[] = "@(#)netstat.c	5.6 (Berkeley) 06/26/91";
 #include <netinet/tcp_debug.h>
 #include <netinet/udp.h>
 #include <netinet/udp_var.h>
+
+#include <netdb.h>
+#include <stdlib.h>
+#include <string.h>
+#include <nlist.h>
 #include <paths.h>
+#include "systat.h"
+#include "extern.h"
+
+static void enter __P((struct inpcb *, struct socket *, int, char *));
+static char *inetname __P((struct in_addr));
+static void inetprint __P((struct in_addr *, int, char *));
 
 #define	streq(a,b)	(strcmp(a,b)==0)
 #define	YMAX(w)		((w)->_maxy-1)
@@ -75,6 +90,7 @@ static	int lastrow = 1;
 static	void enter(), inetprint();
 static	char *inetname();
 
+void
 closenetstat(w)
         WINDOW *w;
 {
@@ -104,9 +120,13 @@ static struct nlist nlst[] = {
 	{ "" },
 };
 
+int
 initnetstat()
 {
-	kvm_nlist(nlst);
+	if (kvm_nlist(kd, nlst)) {
+		nlisterr(nlst);
+		return(0);
+	}
 	if (nlst[X_TCB].n_value == 0) {
 		error("No symbols in namelist");
 		return(0);
@@ -116,6 +136,7 @@ initnetstat()
 	return(1);
 }
 
+void
 fetchnetstat()
 {
 	register struct inpcb *prev, *next;
@@ -230,6 +251,8 @@ enter(inp, so, state, proto)
 #define	SNDCC	RCVCC+7
 #define	STATE	SNDCC+7
 
+
+void
 labelnetstat()
 {
 	if (nlst[X_TCB].n_type == 0)
@@ -243,6 +266,7 @@ labelnetstat()
 	mvwaddstr(wnd, 0, STATE, "(state)"); 
 }
 
+void
 shownetstat()
 {
 	register struct netinfo *p, *q;
@@ -384,6 +408,7 @@ inetname(in)
 	return (line);
 }
 
+int
 cmdnetstat(cmd, args)
 	char *cmd, *args;
 {
