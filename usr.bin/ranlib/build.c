@@ -35,20 +35,22 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)build.c	5.5 (Berkeley) 05/04/93";
+static char sccsid[] = "@(#)build.c	5.6 (Berkeley) 05/19/93";
 #endif /* not lint */
 
 #include <sys/types.h>
 #include <sys/errno.h>
 #include <sys/stat.h>
-#include <fcntl.h>
+
 #include <a.out.h>
-#include <dirent.h>
-#include <unistd.h>
 #include <ar.h>
+#include <dirent.h>
+#include <fcntl.h>
 #include <ranlib.h>
 #include <stdio.h>
-#include <archive.h>
+#include <unistd.h>
+
+#include "archive.h"
 
 extern CHDR chdr;			/* converted header */
 extern char *archive;			/* archive name */
@@ -63,7 +65,12 @@ typedef struct _rlib {
 RLIB *rhead, **pnext;
 
 FILE *fp;
-static void rexec(), symobj();
+
+long symcnt;				/* symbol count */
+long tsymlen;				/* total string length */
+
+static void rexec __P((int, int));
+static void symobj __P((void));
 
 build()
 {
@@ -79,6 +86,7 @@ build()
 
 	/* Read through the archive, creating list of symbols. */
 	pnext = &rhead;
+	symcnt = tsymlen = 0;
 	while(get_arobj(afd)) {
 		if (!strcmp(chdr.name, RANLIBMAG)) {
 			skip_arobj(afd);
@@ -105,9 +113,6 @@ build()
 	close_archive(afd);
 	return(0);
 }
-
-long symcnt;				/* symbol count */
-long tsymlen;				/* total string length */
 
 /*
  * rexec
