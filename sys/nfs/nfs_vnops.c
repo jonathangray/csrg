@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	8.8 (Berkeley) 08/05/94
+ *	@(#)nfs_vnops.c	8.9 (Berkeley) 08/11/94
  */
 
 /*
@@ -88,6 +88,7 @@ struct vnodeopv_entry_desc nfsv2_vnodeop_entries[] = {
 	{ &vop_setattr_desc, nfs_setattr },	/* setattr */
 	{ &vop_read_desc, nfs_read },		/* read */
 	{ &vop_write_desc, nfs_write },		/* write */
+	{ &vop_lease_desc, nfs_lease_check },	/* lease */
 	{ &vop_ioctl_desc, nfs_ioctl },		/* ioctl */
 	{ &vop_select_desc, nfs_select },	/* select */
 	{ &vop_mmap_desc, nfs_mmap },		/* mmap */
@@ -140,6 +141,7 @@ struct vnodeopv_entry_desc spec_nfsv2nodeop_entries[] = {
 	{ &vop_setattr_desc, nfs_setattr },	/* setattr */
 	{ &vop_read_desc, nfsspec_read },	/* read */
 	{ &vop_write_desc, nfsspec_write },	/* write */
+	{ &vop_lease_desc, spec_lease_check },	/* lease */
 	{ &vop_ioctl_desc, spec_ioctl },	/* ioctl */
 	{ &vop_select_desc, spec_select },	/* select */
 	{ &vop_mmap_desc, spec_mmap },		/* mmap */
@@ -190,6 +192,7 @@ struct vnodeopv_entry_desc fifo_nfsv2nodeop_entries[] = {
 	{ &vop_setattr_desc, nfs_setattr },	/* setattr */
 	{ &vop_read_desc, nfsfifo_read },	/* read */
 	{ &vop_write_desc, nfsfifo_write },	/* write */
+	{ &vop_lease_desc, fifo_lease_check },	/* lease */
 	{ &vop_ioctl_desc, fifo_ioctl },	/* ioctl */
 	{ &vop_select_desc, fifo_select },	/* select */
 	{ &vop_mmap_desc, fifo_mmap },		/* mmap */
