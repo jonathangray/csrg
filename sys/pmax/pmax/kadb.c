@@ -33,18 +33,18 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kadb.c	7.4 (Berkeley) 04/19/92
+ *	@(#)kadb.c	7.5 (Berkeley) 10/11/92
  */
 
 /*
  * Define machine dependent primitives for kdb.
  */
 
-#include "kdb/defs.h"
+#include <kdb/defs.h>
 #undef SP
-#include "machine/reg.h"
-#include "machine/trap.h"
-#include "machine/mips_opcode.h"
+#include <machine/reg.h>
+#include <machine/trap.h>
+#include <machine/mips_opcode.h>
 
 REGLIST	kdbreglist[] = {
 	/* register_name, address */
