@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_nqlease.c	7.8 (Berkeley) 07/02/92
+ *	@(#)nfs_nqlease.c	7.9 (Berkeley) 07/03/92
  */
 
 /*
@@ -166,9 +166,6 @@ nqsrv_getlease(vp, duration, flags, nd, nam, cachablep, frev, cred)
 	u_quad_t *frev;
 	struct ucred *cred;
 {
-	USES_VOP_GETATTR;
-	USES_VOP_LOCK;
-	USES_VOP_UNLOCK;
 	register struct nqlease *lp;
 	register struct nqhost *lph;
 	struct nqlease *tlp = (struct nqlease *)0;
@@ -704,7 +701,6 @@ nqnfsrv_getlease(nfsd, mrep, md, dpos, cred, nam, mrq)
 	struct ucred *cred;
 	struct mbuf *nam, **mrq;
 {
-	USES_VOP_GETATTR;
 	register struct nfsv2_fattr *fp;
 	struct vattr va;
 	register struct vattr *vap = &va;
@@ -1023,7 +1019,6 @@ nqnfs_clientd(nmp, cred, ncd, flag, argp, p)
 	caddr_t argp;
 	struct proc *p;
 {
-	USES_VOP_FSYNC;
 	register struct nfsnode *np;
 	struct vnode *vp;
 	int error, vpid;
