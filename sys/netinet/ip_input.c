@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ip_input.c	7.23 (Berkeley) 10/11/92
+ *	@(#)ip_input.c	7.24 (Berkeley) 01/08/93
  */
 
 #include <sys/param.h>
@@ -201,6 +201,9 @@ next:
 		ipstat.ips_badsum++;
 		goto bad;
 	}
+	if (ip->ip_v != IPVERSION) {
+		goto bad;
+	}
 
 	/*
 	 * Convert fields to host representation.
@@ -272,7 +275,6 @@ next:
 				goto ours;
 		}
 	}
-#ifdef MULTICAST
 	if (IN_MULTICAST(ntohl(ip->ip_dst.s_addr))) {
 		struct in_multi *inm;
 #ifdef MROUTING
@@ -293,6 +295,7 @@ next:
 			 */
 			ip->ip_id = htons(ip->ip_id);
 			if (ip_mforward(m, m->m_pkthdr.rcvif) != 0) {
+				ipstat.ips_cantforward++;
 				m_freem(m);
 				goto next;
 			}
@@ -305,6 +308,7 @@ next:
 			 */
 			if (ip->ip_p == IPPROTO_IGMP)
 				goto ours;
+			ipstat.ips_forward++;
 		}
 #endif
 		/*
@@ -313,12 +317,12 @@ next:
 		 */
 		IN_LOOKUP_MULTI(ip->ip_dst, m->m_pkthdr.rcvif, inm);
 		if (inm == NULL) {
+			ipstat.ips_cantforward++;
 			m_freem(m);
 			goto next;
 		}
 		goto ours;
 	}
-#endif
 	if (ip->ip_dst.s_addr == (u_long)INADDR_BROADCAST)
 		goto ours;
 	if (ip->ip_dst.s_addr == INADDR_ANY)
@@ -384,8 +388,7 @@ found:
 			ip = ip_reass((struct ipasfrag *)ip, fp);
 			if (ip == 0)
 				goto next;
-			else
-				ipstat.ips_reassembled++;
+			ipstat.ips_reassembled++;
 			m = dtom(ip);
 		} else
 			if (fp)
@@ -730,7 +733,10 @@ ip_dooptions(m)
 			    (caddr_t)(cp + off), sizeof(struct in_addr));
 			cp[IPOPT_OFFSET] += sizeof(struct in_addr);
 			forward = 1;
-			forward = 1;
+			/*
+			 * Let ip_intr's mcast routing check handle mcast pkts
+			 */
+			forward = !IN_MULTICAST(ntohl(ip->ip_dst.s_addr));
 			break;
 
 		case IPOPT_RR:
@@ -810,10 +816,12 @@ ip_dooptions(m)
 	if (forward) {
 		ip_forward(m, 1);
 		return (1);
-	} else
-		return (0);
+	}
+	return (0);
 bad:
+	ip->ip_len -= ip->ip_hl << 2;   /* XXX icmp_error adds in hdr length */
 	icmp_error(m, type, code);
+	ipstat.ips_badoptions++;
 	return (1);
 }
 
@@ -1016,6 +1024,7 @@ ip_forward(m, srcrt)
 	int error, type = 0, code;
 	struct mbuf *mcopy;
 	struct in_addr dest;
+	struct ifnet *destifp;
 
 	dest.s_addr = 0;
 #ifdef DIAGNOSTIC
@@ -1109,7 +1118,7 @@ ip_forward(m, srcrt)
 		}
 	}
 
-	error = ip_output(m, (struct mbuf *)0, &ipforward_rt, IP_FORWARDING);
+	error = ip_output(m, (struct mbuf *)0, &ipforward_rt, IP_FORWARDING, 0);
 	if (error)
 		ipstat.ips_cantforward++;
 	else {
@@ -1124,6 +1133,8 @@ ip_forward(m, srcrt)
 	}
 	if (mcopy == NULL)
 		return;
+	destifp = NULL;
+
 	switch (error) {
 
 	case 0:				/* forwarded, but need redirect */
@@ -1142,6 +1153,8 @@ ip_forward(m, srcrt)
 	case EMSGSIZE:
 		type = ICMP_UNREACH;
 		code = ICMP_UNREACH_NEEDFRAG;
+		if (ipforward_rt.ro_rt)
+			destifp = ipforward_rt.ro_rt->rt_ifp;
 		ipstat.ips_cantfrag++;
 		break;
 
@@ -1150,5 +1163,5 @@ ip_forward(m, srcrt)
 		code = 0;
 		break;
 	}
-	icmp_error(mcopy, type, code, dest);
+	icmp_error(mcopy, type, code, dest, destifp);
 }
