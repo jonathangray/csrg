@@ -32,9 +32,10 @@ divert(-1)
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-VERSIONID(@(#)hpux9.m4	2.1 (Berkeley) 12/09/91)
+VERSIONID(@(#)hpux9.m4	2.2 (Berkeley) 07/14/92)
 #
 
 define(`_HPUX_')dnl
+define(`LOCAL_MAILER_FLAGS', `')dnl
 
 divert(0)
