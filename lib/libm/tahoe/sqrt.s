@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 1987 Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1987, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -33,7 +33,7 @@
 	.data
 	.align	2
 _sccsid:
-.asciz	"@(#)sqrt.s	5.6	(ucb.elefunt)	10/09/90"
+.asciz	"@(#)sqrt.s	8.1	(ucb.elefunt)	06/04/93"
 
 /*
  * double sqrt(arg)   revised August 15,1982
