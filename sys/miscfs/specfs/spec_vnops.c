@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)spec_vnops.c	7.49 (Berkeley) 07/12/92
+ *	@(#)spec_vnops.c	7.50 (Berkeley) 10/08/92
  */
 
 #include <sys/param.h>
@@ -408,8 +408,8 @@ spec_fsync(ap)
 	 */
 loop:
 	s = splbio();
-	for (bp = vp->v_dirtyblkhd; bp; bp = nbp) {
-		nbp = bp->b_blockf;
+	for (bp = vp->v_dirtyblkhd.le_next; bp; bp = nbp) {
+		nbp = bp->b_vnbufs.qe_next;
 		if ((bp->b_flags & B_BUSY))
 			continue;
 		if ((bp->b_flags & B_DELWRI) == 0)
@@ -427,7 +427,7 @@ loop:
 			sleep((caddr_t)&vp->v_numoutput, PRIBIO + 1);
 		}
 #ifdef DIAGNOSTIC
-		if (vp->v_dirtyblkhd) {
+		if (vp->v_dirtyblkhd.le_next) {
 			vprint("spec_fsync: dirty", vp);
 			goto loop;
 		}
