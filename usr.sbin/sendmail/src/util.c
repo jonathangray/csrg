@@ -8,7 +8,7 @@
 # include "sendmail.h"
 # include "conf.h"
 
-SCCSID(@(#)util.c	4.5		03/11/84);
+SCCSID(@(#)util.c	4.6		08/11/84);
 
 /*
 **  STRIPQUOTES -- Strip quotes & quote bits from a string.
@@ -669,8 +669,13 @@ sfgets(buf, siz, fp)
 	/* clean up the books and exit */
 	LineNumber++;
 	if (p == NULL)
+	{
 		buf[0] = '\0';
-	return (p);
+		return (NULL);
+	}
+	for (p = buf; *p != '\0'; p++)
+		*p &= ~0200;
+	return (buf);
 }
 
 static
