@@ -6,14 +6,14 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)sys.c	7.19 (Berkeley) 05/24/93
+ *	@(#)sys.c	7.20 (Berkeley) 05/24/93
  */
 
 #include <sys/param.h>
 #include <sys/reboot.h>
 
 #include <ufs/ufs/dir.h>
-#include <stand/saio.h>
+#include <stand.att/saio.h>
 
 struct iob iob[SOPEN_MAX];
 int errno;
