@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.13 (Berkeley) 07/27/93";
+static char sccsid[] = "@(#)conf.c	8.14 (Berkeley) 08/06/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1148,7 +1148,6 @@ char	**nargv,
 	static char	*place = EMSG;	/* option letter processing */
 	static char	atend = 0;
 	register char	*oli;		/* option letter list index */
-	char	*index();
 
 	if (atend) {
 		atend = 0;
@@ -1165,7 +1164,7 @@ char	**nargv,
 			return(EOF);
 		}
 	}				/* option letter okay? */
-	if ((optopt = (int)*place++) == (int)':' || !(oli = index(ostr,optopt))) {
+	if ((optopt = (int)*place++) == (int)':' || !(oli = strchr(ostr,optopt))) {
 		if(!*place) ++optind;
 		tell(": illegal option -- ");
 	}
