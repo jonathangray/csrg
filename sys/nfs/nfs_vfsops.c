@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vfsops.c	8.9 (Berkeley) 05/10/95
+ *	@(#)nfs_vfsops.c	8.10 (Berkeley) 05/10/95
  */
 
 #include <sys/param.h>
