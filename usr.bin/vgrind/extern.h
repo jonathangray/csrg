@@ -1,6 +1,7 @@
 /*
- * Copyright (c) 1992 The Regents of the University of California.
+ * Copyright (c) 1980 The Regents of the University of California.
  * All rights reserved.
+ *
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)extern.h	1.2 (Berkeley) 8/3/92
+ *      @(#)extern.h	1.3 (Berkeley) 09/15/92
  */
 
 typedef int boolean;
