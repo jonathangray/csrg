@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_ethersubr.c	7.23 (Berkeley) 02/25/93
+ *	@(#)if_ethersubr.c	7.24 (Berkeley) 03/22/93
  */
 
 #include <sys/param.h>
@@ -241,16 +241,6 @@ ether_output(ifp, m0, dst, rt0)
 #endif LLC_DEBUG
 		} break;
 #endif/* LLC */	
-#ifdef RMP
-	case AF_RMP:
-		/*
-		 *  This is IEEE 802.3 -- the Ethernet `type' field is
-		 *  really a `length' field.
-		 */
-		type = m->m_len;
- 		bcopy((caddr_t)dst->sa_data, (caddr_t)edst, sizeof(edst));
-		break;
-#endif
 
 	case AF_UNSPEC:
 		eh = (struct ether_header *)dst->sa_data;
