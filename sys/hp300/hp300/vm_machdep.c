@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: vm_machdep.c 1.18 89/08/23$
  *
- *	@(#)vm_machdep.c	7.2 (Berkeley) 05/16/90
+ *	@(#)vm_machdep.c	7.3 (Berkeley) 05/25/90
  */
 
 #include "param.h"
@@ -45,7 +45,6 @@
 #include "user.h"
 #include "proc.h"
 #include "cmap.h"
-#include "mount.h"
 #include "vm.h"
 #include "text.h"
 #include "malloc.h"
@@ -583,11 +582,6 @@ vunmapbuf(bp)
 		addr += NBPG;
 		pte++;
 	}
-#if 0
-	/* 0 is a valid (and common) user space addr */
-	if (bp->b_saveaddr == NULL)
-		panic("vunmapbuf: null saveaddr");
-#endif
 	bp->b_un.b_addr = bp->b_saveaddr;
 	bp->b_saveaddr = NULL;
 }
