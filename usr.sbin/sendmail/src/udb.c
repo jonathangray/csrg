@@ -34,9 +34,9 @@
 
 #ifndef lint
 #ifdef USERDB
-static char sccsid [] = "@(#)udb.c	6.2 (Berkeley) 01/20/93 (with USERDB)";
+static char sccsid [] = "@(#)udb.c	6.3 (Berkeley) 01/28/93 (with USERDB)";
 #else
-static char sccsid [] = "@(#)udb.c	6.2 (Berkeley) 01/20/93 (without USERDB)";
+static char sccsid [] = "@(#)udb.c	6.3 (Berkeley) 01/28/93 (without USERDB)";
 #endif
 #endif
 
@@ -183,8 +183,6 @@ udbexpand(a, sendq, e)
 	for (up = UdbEnts; !breakout; up++)
 	{
 		char *user;
-		struct timeval timeout;
-		fd_set fdset;
 
 		/*
 		**  Select action based on entry type.
