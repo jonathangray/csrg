@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)forward.c	5.6 (Berkeley) 03/04/92";
+static char sccsid[] = "@(#)forward.c	5.6 (Berkeley) 05/14/92";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -195,18 +195,19 @@ rlines(fp, off, sbp)
 {
 	register off_t size;
 	register char *p;
+	char *start;
 
 	if (!(size = sbp->st_size))
 		return;
 
-	if ((p = mmap(NULL,
+	if ((start = mmap(NULL,
 	    size, PROT_READ, MAP_FILE, fileno(fp), (off_t)0)) == (caddr_t)-1) {
 		err(0, "%s", strerror(errno));
 		return;
 	}
 
 	/* Last char is special, ignore whether newline or not. */
-	for (p += size - 1; --size;)
+	for (p = start + size - 1; --size;)
 		if (*--p == '\n' && !--off) {
 			++p;
 			break;
@@ -217,6 +218,10 @@ rlines(fp, off, sbp)
 	WR(p, size);
 	if (fseek(fp, sbp->st_size, SEEK_SET) == -1) {
 		ierr();
+		return;
+	}
+	if (munmap(start, size)) {
+		err(0, "%s", strerror(errno));
 		return;
 	}
 }
