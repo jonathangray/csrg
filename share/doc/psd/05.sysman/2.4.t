@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)2.4.t	8.4 (Berkeley) 05/26/94
+.\"	@(#)2.4.t	8.5 (Berkeley) 06/01/94
 .\"
 .Sh 2 "Terminals and Devices
 .Sh 3 "Terminals
@@ -62,8 +62,8 @@ as the controlling terminal for its session using the ioctl
 ioctl(fd, TIOCSCTTY, NULL);
 int fd;
 .DE
-.Fn
 Only a session leader may acquire a controlling terminal.
+.ne 1i
 .Sh 4 "Terminal input
 .PP
 Terminals are handled according to the underlying communication
@@ -154,6 +154,7 @@ These include converting the carriage return character to the
 two character return-linefeed sequence,
 inserting delays after certain standard control characters,
 and expanding tabs.
+.pl +1
 .Sh 3 "Structured devices
 .PP
 Structured devices are typified by disks and magnetic
@@ -162,6 +163,7 @@ The system performs read-modify-write type buffering actions on block
 devices to allow them to be read and written in random access
 fashion like ordinary files.
 Filesystems are normally mounted on block devices.
+.pl -1
 .Sh 3 "Unstructured devices
 .PP
 Unstructured devices are those devices which
