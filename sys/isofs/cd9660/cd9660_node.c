@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cd9660_node.c	8.2 (Berkeley) 01/23/94
+ *	@(#)cd9660_node.c	8.3 (Berkeley) 06/14/94
  */
 
 #include <sys/param.h>
@@ -585,7 +585,7 @@ struct timeval *pu;
 		
 		/* timezone offset is unreliable on some disks */
 		if (-48 <= tz && tz <= 52)
-			crtime += tz * 15 * 60;
+			crtime -= tz * 15 * 60;
 	}
 	pu->tv_sec  = crtime;
 	pu->tv_usec = 0;
