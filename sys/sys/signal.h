@@ -30,18 +30,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)signal.h	7.13 (Berkeley) 10/31/90
+ *	@(#)signal.h	7.14 (Berkeley) 12/16/90
  */
 
 #ifndef	NSIG
 #define NSIG	32		/* counting 0; could be 33 (mask is 1-32) */
 
 #ifndef _POSIX_SOURCE
-#ifdef KERNEL
-#include "machine/trap.h"	/* codes for SIGILL, SIGFPE */
-#else
 #include <machine/trap.h>	/* codes for SIGILL, SIGFPE */
-#endif
 #endif /* _POSIX_SOURCE */
 
 #define	SIGHUP	1	/* hangup */
