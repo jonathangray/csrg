@@ -41,7 +41,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)quota.c	8.2 (Berkeley) 11/22/94";
+static char sccsid[] = "@(#)quota.c	8.3 (Berkeley) 04/27/95";
 #endif /* not lint */
 
 /*
@@ -51,13 +51,15 @@ static char sccsid[] = "@(#)quota.c	8.2 (Berkeley) 11/22/94";
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <sys/queue.h>
+
 #include <ufs/ufs/quota.h>
-#include <stdio.h>
-#include <fstab.h>
+
 #include <ctype.h>
-#include <pwd.h>
-#include <grp.h>
 #include <errno.h>
+#include <fstab.h>
+#include <grp.h>
+#include <pwd.h>
+#include <stdio.h>
 
 char *qfname = QUOTAFILENAME;
 char *qfextension[] = INITQFNAMES;
@@ -424,7 +426,7 @@ getprivs(id, quotatype)
 				free(qup);
 				continue;
 			}
-			lseek(fd, (long)(id * sizeof(struct dqblk)), L_SET);
+			lseek(fd, (off_t)(id * sizeof(struct dqblk)), L_SET);
 			switch (read(fd, &qup->dqblk, sizeof(struct dqblk))) {
 			case 0:			/* EOF */
 				/*
