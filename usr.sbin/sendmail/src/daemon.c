@@ -38,9 +38,9 @@
 
 #ifndef lint
 #ifdef DAEMON
-static char sccsid[] = "@(#)daemon.c	8.48.1.3 (Berkeley) 02/28/95 (with daemon mode)";
+static char sccsid[] = "@(#)daemon.c	8.71 (Berkeley) 02/28/95 (with daemon mode)";
 #else
-static char sccsid[] = "@(#)daemon.c	8.48.1.3 (Berkeley) 02/28/95 (without daemon mode)";
+static char sccsid[] = "@(#)daemon.c	8.71 (Berkeley) 02/28/95 (without daemon mode)";
 #endif
 #endif /* not lint */
 
@@ -599,6 +599,7 @@ getauthinfo(fd)
 	int i;
 	EVENT *ev;
 	int nleft;
+	char ibuf[MAXNAME + 1];
 	int ibuf[MAXNAME + 1];
 	static char hbuf[MAXNAME * 2 + 2];
 	extern char *hostnamebyanyaddr();
