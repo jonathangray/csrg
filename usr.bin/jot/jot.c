@@ -1,7 +1,7 @@
 /* Copyright (c) 1983 Regents of the University of California */
 
 #ifndef lint
-static char sccsid[] = "@(#)jot.c	4.1	(Berkeley)	07/08/83";
+static char sccsid[] = "@(#)jot.c	4.2	(Berkeley)	11/19/83";
 #endif not lint
 
 /*
