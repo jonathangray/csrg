@@ -30,8 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stdarg.h	7.2 (Berkeley) 12/05/92
+ *	@(#)stdarg.h	7.3 (Berkeley) 01/21/93
  */
+
+#ifndef _STDARG_H_
+#define	_STDARG_H_
 
 typedef char *va_list;
 
@@ -53,3 +56,5 @@ typedef char *va_list;
 #endif
 
 #define	va_end(ap)
+
+#endif /* !_STDARG_H_ */
