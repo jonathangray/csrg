@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.39 (Berkeley) 10/17/93
+ *	@(#)conf.h	8.40 (Berkeley) 10/17/93
  */
 
 /*
@@ -174,6 +174,7 @@
 			/* Solaris 2.x (a.k.a. SunOS 5.x) */
 #  define SYSTEM5	1	/* use System V definitions */
 #  define setreuid(r, e)	seteuid(e)
+#  include <sys/sysmacros.h>
 #  include <sys/time.h>
 #  define gethostbyname	__switch_gethostbyname	/* get working version */
 #  define gethostbyaddr	__switch_gethostbyaddr	/* get working version */
