@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vfsops.c	7.27 (Berkeley) 04/16/91
+ *	@(#)nfs_vfsops.c	7.28 (Berkeley) 04/16/91
  */
 
 #include "param.h"
@@ -458,10 +458,11 @@ nfs_unmount(mp, mntflags, p)
 	int flags = 0;
 	int error;
 
-	if (mntflags & MNT_FORCE)
-		return (EINVAL);
-	if (mntflags & MNT_FORCE)
+	if (mntflags & MNT_FORCE) {
+		if (mp == rootfs)
+			return (EINVAL);
 		flags |= FORCECLOSE;
+	}
 	nmp = VFSTONFS(mp);
 	/*
 	 * Clear out the buffer cache
