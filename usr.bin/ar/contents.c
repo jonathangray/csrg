@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)contents.c	5.4 (Berkeley) 03/11/91";
+static char sccsid[] = "@(#)contents.c	5.5 (Berkeley) 03/11/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -45,9 +45,11 @@ static char sccsid[] = "@(#)contents.c	5.4 (Berkeley) 03/11/91";
 #include <unistd.h>
 #include <tzfile.h>
 #include <dirent.h>
-#include <stdio.h>
 #include <ar.h>
+#include <stdio.h>
+#include <string.h>
 #include "archive.h"
+#include "extern.h"
 
 extern CHDR chdr;			/* converted header */
 extern char *archive;			/* archive name */
@@ -61,7 +63,6 @@ contents(argv)
 	register char **argv;
 {
 	register int afd, all;
-	int eval;
 	struct tm *tp;
 	char *file, buf[25];
 	
@@ -70,11 +71,8 @@ contents(argv)
 	for (all = !*argv; get_header(afd);) {
 		if (all)
 			file = chdr.name;
-		else {
-			file = *argv;
-			if (!files(argv))
-				goto next;
-		}
+		else if (!(file = files(argv)))
+			goto next;
 		if (options & AR_V) {
 			(void)strmode(chdr.mode, buf);
 			(void)printf("%s %6d/%-6d %8ld ",
@@ -88,8 +86,11 @@ contents(argv)
 			break;
 next:		skipobj(afd);
 	} 
-	eval = 0;
-	ORPHANS;
 	close_archive(afd);
-	return(eval);
+
+	if (*argv) {
+		orphans(argv);
+		return(1);
+	}
+	return(0);
 }
