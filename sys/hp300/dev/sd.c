@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sd.c	7.1 (Berkeley) 05/08/90
+ *	@(#)sd.c	7.2 (Berkeley) 05/15/90
  */
 
 /*
@@ -775,7 +775,7 @@ sdsize(dev)
 
 #include "machine/pte.h"
 #include "machine/vmparam.h"
-#include "../h/vmmac.h"
+#include "../sys/vmmac.h"
 
 /*
  * Non-interrupt driven, non-dma dump routine.
