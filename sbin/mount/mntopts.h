@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mntopts.h	8.3 (Berkeley) 03/27/94
+ *	@(#)mntopts.h	8.4 (Berkeley) 06/16/94
  */
 
 struct mntopt {
@@ -51,14 +51,16 @@ struct mntopt {
 /* Control flags. */
 #define MOPT_FORCE		{ "force",	1, MNT_FORCE }
 #define MOPT_UPDATE		{ "update",	0, MNT_UPDATE }
-
-/* Support for old-style "ro", "rw" flags. */
 #define MOPT_RO			{ "ro",		0, MNT_RDONLY }
 #define MOPT_RW			{ "rw",		1, MNT_RDONLY }
 
+/* This is parsed by mount(8), but is ignored by specific mount_*(8)s. */
+#define MOPT_AUTO		{ "auto",	0, 0 }
+
 #define MOPT_FSTAB_COMPAT						\
 	MOPT_RO,							\
-	MOPT_RW
+	MOPT_RW,							\
+	MOPT_AUTO
 
 /* Standard options which all mounts can understand. */
 #define MOPT_STDOPTS							\
