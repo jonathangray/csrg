@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)headers.c	8.49 (Berkeley) 03/14/95";
+static char sccsid[] = "@(#)headers.c	8.50 (Berkeley) 03/14/95";
 #endif /* not lint */
 
 # include <errno.h>
@@ -190,7 +190,7 @@ chompheader(line, def, e)
 				char *oldg = macvalue('g', e);
 
 				define('g', p, e);
-				expand(fancy, buf, &buf[sizeof buf], e);
+				expand(fancy, buf, sizeof buf, e);
 				define('g', oldg, e);
 				fvalue = buf;
 			}
@@ -413,7 +413,7 @@ eatheader(e, full)
 		/* do early binding */
 		if (bitset(H_DEFAULT, h->h_flags))
 		{
-			expand(h->h_value, buf, &buf[sizeof buf], e);
+			expand(h->h_value, buf, sizeof buf, e);
 			if (buf[0] != '\0')
 			{
 				h->h_value = newstr(buf);
@@ -1027,7 +1027,7 @@ putheader(mci, h, e)
 		p = h->h_value;
 		if (bitset(H_DEFAULT, h->h_flags))
 		{
-			expand(p, buf, &buf[sizeof buf], e);
+			expand(p, buf, sizeof buf, e);
 			p = buf;
 			if (p == NULL || *p == '\0')
 			{
