@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.52 (Berkeley) 04/15/91
+ *	@(#)vfs_subr.c	7.53 (Berkeley) 04/19/91
  */
 
 /*
@@ -639,7 +639,7 @@ void vclean(vp, flags)
 	(*(origops->vn_unlock))(vp);
 	if (active) {
 		if (flags & DOCLOSE)
-			(*(origops->vn_close))(vp, 0, NOCRED, p);
+			(*(origops->vn_close))(vp, IO_NDELAY, NOCRED, p);
 		(*(origops->vn_inactive))(vp, p);
 	}
 	/*
