@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)buf.h	7.13 (Berkeley) 01/09/92
+ *	@(#)buf.h	7.14 (Berkeley) 01/14/92
  */
 
 /*
@@ -149,7 +149,7 @@ void	biodone __P((struct buf *));
 int	biowait __P((struct buf *));
 int	bread __P((struct vnode *, daddr_t, int,
 	    struct ucred *, struct buf **));
-int	breada __P((struct vnode *, daddr_t, int, daddr_t, int,
+int	breadn __P((struct vnode *, daddr_t, int, daddr_t *, int *, int,
 	    struct ucred *, struct buf **));
 int	brelse __P((struct buf *));
 void	bufinit __P((void));
