@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_serv.c	7.34 (Berkeley) 02/21/91
+ *	@(#)nfs_serv.c	7.35 (Berkeley) 03/04/91
  */
 
 /*
@@ -588,7 +588,7 @@ nfsrv_create(mrep, md, dpos, cred, xid, mrq, repstat)
 			vap->va_type = VREG;
 		vap->va_mode = nfstov_mode(*p);
 		rdev = fxdr_unsigned(long, *(p+3));
-		if (vap->va_type == VREG) {
+		if (vap->va_type == VREG || vap->va_type == VSOCK) {
 			if (error = VOP_CREATE(ndp, vap))
 				nfsm_reply(0);
 		} else if (vap->va_type == VCHR || vap->va_type == VBLK ||
