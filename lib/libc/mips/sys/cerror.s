@@ -37,12 +37,14 @@
 #include "SYS.h"
 
 #if defined(LIBC_SCCS) && !defined(lint)
-	ASMSTR("@(#)cerror.s	8.1 (Berkeley) 06/04/93")
+	ASMSTR("@(#)cerror.s	5.2 (Berkeley) 06/16/93")
 #endif /* LIBC_SCCS and not lint */
 
 	.globl	errno
 LEAF(_cerror)
+	.set	noreorder
 	sw	v0, errno
 	li	v0, -1
 	j	ra
+	li	v1, -1
 END(_cerror)
