@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)am.h	1.2 (Berkeley) 6/25/91
+ *	@(#)am.h	5.5 (Berkeley) 08/01/92
  *
  * $Id: am.h,v 5.2.2.1 1992/02/09 15:09:54 jsp beta $
  *
