@@ -1,51 +1,30 @@
-#
-# $Id: Makefile,v 5.2 90/06/23 22:21:10 jsp Rel $
-#
-# Copyright (c) 1990 Jan-Simon Pendry
-# Copyright (c) 1990 Imperial College of Science, Technology & Medicine
-# Copyright (c) 1990 The Regents of the University of California.
-# All rights reserved.
-#
-# This code is derived from software contributed to Berkeley by
-# Jan-Simon Pendry at Imperial College, London.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
-# are met:
-# 1. Redistributions of source code must retain the above copyright
-#    notice, this list of conditions and the following disclaimer.
-# 2. Redistributions in binary form must reproduce the above copyright
-#    notice, this list of conditions and the following disclaimer in the
-#    documentation and/or other materials provided with the distribution.
-# 3. All advertising materials mentioning features or use of this software
-#    must display the following acknowledgement:
-#	This product includes software developed by the University of
-#	California, Berkeley and its contributors.
-# 4. Neither the name of the University nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
-# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-# ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
-# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-# OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-# SUCH DAMAGE.
-#
-#	@(#)Makefile	5.1 (Berkeley) 06/29/90
+#	@(#)Makefile	5.2 (Berkeley) 07/25/90
 
-MKARG = -f ../Makefile.top PROG=amd
-SHELL = /bin/sh
+PROG=	amd
+MAN8=	amd.0
+SRCS=	afs_ops.c am_ops.c clock.c util.c efs_ops.c mapc.c info_file.c \
+	info_hes.c info_ndbm.c info_passwd.c info_nis.c map.c srvr_afs.c \
+	srvr_nfs.c mntfs.c misc_rpc.c mount_fs.c mount_xdr.c mtab.c \
+	mtab_aix.c mtab_bsd.c mtab_file.c mtab_ultrix.c nfs_ops.c \
+	nfs_prot_svc.c nfs_start.c nfs_subr.c nfs_prot_xdr.c opts.c \
+	pfs_ops.c rpc_fwd.c sched.c sfs_ops.c amq_svc.c amq_subr.c \
+	umount_fs.c host_ops.c ufs_ops.c ifs_ops.c amd.c get_args.c \
+	rcs_info.c restart.c
+OBJS+=	vers.${PROG}.o
+LDADD+=	-lrpc
+CFLAGS+=-I${.CURDIR}/../rpcx
+CFLAGS+=-I${.CURDIR}/../config
+CFLAGS+=-I${.CURDIR}/../include
+CFLAGS+=-DARCH_REP=\"${MACHINE}\"
+CFLAGS+=-DOS_REP=\"bsd44\"
+CFLAGS+=-DOS_HDR=\"os-bsd44.h\"
+CFLAGS+=${CONFIG}
+CLEANFILES+=vers.${PROG}.c vers.${PROG}.o
 
-amd: FRC
-	@${MAKE} ${MKARG} $@
+vers.${PROG}.c: /tmp
+	@d=${.CURDIR}/ sh ${.CURDIR}/../config/newvers.sh ${PROG}
 
-install count clean lint: FRC
-	@${MAKE} ${MKARG} $@
-
-FRC:
+.PATH: ${.CURDIR}/../rpcx ${.CURDIR}/../config
+.include "Makefile.config"
+.include "../../Makefile.inc"
+.include <bsd.prog.mk>
