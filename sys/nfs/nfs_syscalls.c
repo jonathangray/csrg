@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_syscalls.c	7.30 (Berkeley) 03/16/92
+ *	@(#)nfs_syscalls.c	7.30.1.1 (Berkeley) 03/16/92
  */
 
 #include "param.h"
