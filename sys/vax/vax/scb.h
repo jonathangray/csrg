@@ -1,4 +1,4 @@
-/*	scb.h	4.5	83/08/01	*/
+/*	scb.h	6.1	83/08/01	*/
 
 /*
  * VAX System control block layout
