@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)mount_umap.c	8.4 (Berkeley) 06/14/94";
+static char sccsid[] = "@(#)mount_umap.c	8.5 (Berkeley) 04/26/95";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -104,7 +104,7 @@ main(argc, argv)
 			gmapfile = optarg;
 			break;
 		case 'o':
-			getmntopts(optarg, mopts, &mntflags);
+			getmntopts(optarg, mopts, &mntflags, 0);
 			break;
 		case 'u':
 			mapfile = optarg;
@@ -218,7 +218,7 @@ main(argc, argv)
 	args.gnentries = gnentries;
 	args.gmapdata = gmapdata;
 
-	if (mount(MOUNT_UMAP, argv[1], mntflags, &args))
+	if (mount("umap", argv[1], mntflags, &args))
 		err(1, NULL);
 	exit(0);
 }
