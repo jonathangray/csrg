@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.6.1.1 (Berkeley) 10/21/90
+#	@(#)Makefile	8.1 (Berkeley) 06/06/93
 
 PROG=	rlogin
 SRCS=	rlogin.c
