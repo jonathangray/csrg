@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	1.2 (Berkeley) 01/14/93
+ *	@(#)extern.h	1.3 (Berkeley) 01/16/93
  */
 
 /*
@@ -196,7 +196,6 @@ int set_dest __P((register ARCHD *, char *, int));
 /*
  * pax.c
  */
-extern char copyright[];
 extern int act;
 extern FSUB *frmt;
 extern int cflag;
