@@ -14,7 +14,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.14 (Berkeley) 11/12/92";
+static char sccsid[] = "@(#)main.c	5.15 (Berkeley) 05/12/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -33,7 +33,6 @@ static struct nlist namelist[] = {
 	{ "_stathz" },
 	{ "" }
 };
-n
 static int     dellave;
 
 kvm_t *kd;
@@ -122,7 +121,6 @@ main(argc, argv)
 	dellave = 0.0;
 
 	signal(SIGALRM, display);
-	sigtstpdfl = signal(SIGTSTP, suspend);
 	display(0);
 	noecho();
 	crmode();
