@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 1989, 1993
+ * Copyright (c) 1989, 1993, 1994
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)slcompress.c	8.1 (Berkeley) 06/10/93
+ *	@(#)slcompress.c	8.2 (Berkeley) 04/16/94
  */
 
 /*
@@ -83,6 +83,7 @@ sl_compress_init(comp)
 	comp->last_cs = &tstate[0];
 	comp->last_recv = 255;
 	comp->last_xmit = 255;
+	comp->flags = SLF_TOSS;
 }
 
 
