@@ -1,7 +1,6 @@
-#	@(#)Makefile	5.4 (Berkeley) 03/01/92
+#	@(#)Makefile	5.5 (Berkeley) 06/02/93
 
 PROG=	df
-SRCS=	df.c getbsize.c
 CFLAGS+=-DCOMPAT_43
 BINGRP=	operator
 BINMODE=2555
