@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mfsnode.h	7.11 (Berkeley) 05/27/92
+ *	@(#)mfsnode.h	7.12 (Berkeley) 06/25/92
  */
 
 /*
@@ -63,7 +63,6 @@ struct mfsnode {
 #define mfs_write ((int (*) __P((struct  vop_write_args *)))mfs_badop)
 #define mfs_select ((int (*) __P((struct  vop_select_args *)))mfs_badop)
 #define mfs_mmap ((int (*) __P((struct  vop_mmap_args *)))mfs_badop)
-#define mfs_fsync ((int (*) __P((struct  vop_fsync_args *)))mfs_badop)
 #define mfs_seek ((int (*) __P((struct  vop_seek_args *)))mfs_badop)
 #define mfs_remove ((int (*) __P((struct  vop_remove_args *)))mfs_badop)
 #define mfs_link ((int (*) __P((struct  vop_link_args *)))mfs_badop)
