@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cpu.h	5.3 (Berkeley) 05/06/91
+ *	@(#)cpu.h	5.4 (Berkeley) 05/09/91
  */
 
 /*
@@ -46,7 +46,7 @@
  * definitions of cpu-dependent requirements
  * referenced in generic code
  */
-#undef	COPY_SIGCODE		/* copy sigcode above user stack in exec */
+#undef	COPY_SIGCODE		/* don't copy sigcode above user stack in exec */
 
 /*
  * function vs. inline configuration;
@@ -54,9 +54,9 @@
  * rather than inline or machine-dependent implementations
  */
 #define	NEED_MINMAX		/* need {,i,l,ul}{min,max} functions */
-#define	NEED_FFS		/* don't need ffs function */
-#define	NEED_BCMP		/* don't need bcmp function */
-#define	NEED_STRLEN		/* don't need strlen function */
+#define	NEED_FFS		/* need ffs function */
+#define	NEED_BCMP		/* need bcmp function */
+#define	NEED_STRLEN		/* need strlen function */
 
 #define	cpu_exec(p)	/* nothing */
 
