@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_timer.c	7.6 (Berkeley) 08/30/91
+ *	@(#)tp_timer.c	7.7 (Berkeley) 09/05/91
  */
 
 /***********************************************************
@@ -101,6 +101,7 @@ struct	Ecallout *TP_callfree;
 struct	Ecallout *TP_callout; 
 struct	tp_ref *tp_ref;
 int		N_TPREF = 100;
+struct	tp_refinfo tp_refinfo;
 
 extern int tp_maxrefopen;  /* highest ref # of an open tp connection */
 
@@ -123,6 +124,8 @@ if (x == 0) panic("tp_timerinit"); bzero((caddr_t)x, s);}
 	 */
 	GETME(TP_callout, struct Ecallout *, 2 * N_TPREF);
 	GETME(tp_ref, struct tp_ref *, 1 +  N_TPREF);
+	tp_refinfo.tpr_base = tp_ref;
+	tp_refinfo.tpr_size = N_TPREF;  /* XXX: There will be a better way */
 
 	TP_callfree = TP_callout + ((2 * N_TPREF) - 1);
 	for (e = TP_callfree; e > TP_callout; e--)
