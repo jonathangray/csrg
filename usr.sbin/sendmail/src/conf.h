@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.13 (Berkeley) 07/21/93
+ *	@(#)conf.h	8.14 (Berkeley) 07/22/93
  */
 
 /*
@@ -230,6 +230,7 @@
 
 #ifdef _SCO_unix_
 # define SYSTEM5	1	/* include all the System V defines */
+# define HASSTATFS	1	/* has the statfs(2) syscall */
 # define FORK		fork
 # define MAXPATHLEN	PATHSIZE
 # define LA_TYPE	LA_ZERO
