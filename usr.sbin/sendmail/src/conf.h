@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.47 (Berkeley) 11/11/93
+ *	@(#)conf.h	8.48 (Berkeley) 11/12/93
  */
 
 /*
