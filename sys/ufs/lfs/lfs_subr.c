@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_subr.c	8.3 (Berkeley) 03/21/95
+ *	@(#)lfs_subr.c	8.4 (Berkeley) 05/08/95
  */
 
 #include <sys/param.h>
@@ -69,7 +69,7 @@ lfs_blkatoff(ap)
 	ip = VTOI(ap->a_vp);
 	fs = ip->i_lfs;
 	lbn = lblkno(fs, ap->a_offset);
-	bsize = blksize(fs);
+	bsize = blksize(fs, ip, lbn);
 
 	*ap->a_bpp = NULL;
 	if (error = bread(ap->a_vp, lbn, bsize, NOCRED, &bp)) {
