@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)msgs.1	6.5 (Berkeley) 06/11/90
+.\"     @(#)msgs.1	6.6 (Berkeley) 07/24/90
 .\"
 .Dd 
 .Dt MSGS 1
@@ -123,7 +123,7 @@ The
 .Fl s
 option is used for setting up the posting of messages.  The line
 .Pp
-.Dl msgs: /usr/ucb/msgs \-s"
+.Dl msgs: \&"\&| /usr/ucb/msgs \-s\&"
 .Pp
 should be included in
 .Pa /etc/aliases
@@ -184,6 +184,7 @@ file, useful for reviews of recent messages.
 .Tp Fl p
 causes long messages to be piped through
 .Xr more  1  .
+.Tp
 .Pp
 Within
 .Nm msgs
@@ -191,11 +192,13 @@ you can also go to any specific message by typing its number when
 .Nm msgs
 requests input as to what to do.
 .Sh ENVIRONMENT
-.Nm Msgs uses the
+.Nm Msgs
+uses the
 .Ev HOME
 and
 .Ev TERM
-environment variables.
+environment variables for the default home directory and
+terminal type.
 .Sh FILES
 .Dw /usr/msgs/*
 .Di L
