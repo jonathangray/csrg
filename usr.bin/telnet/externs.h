@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)externs.h	5.2 (Berkeley) 03/01/91
+ *	@(#)externs.h	5.3 (Berkeley) 03/22/91
  */
 
 #ifndef	BSD
@@ -96,6 +96,7 @@ extern int errno;		/* outside this world */
 
 extern int
     autologin,		/* Autologin enabled */
+    skiprc,		/* Don't process the ~/.telnetrc file */
     eight,		/* use eight bit mode (binary in and/or out */
     flushout,		/* flush output */
     connected,		/* Are we connected to the other side? */
