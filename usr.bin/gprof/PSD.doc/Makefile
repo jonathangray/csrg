@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.3 (Berkeley) 06/30/90
+#	@(#)Makefile	5.4 (Berkeley) 11/12/92
 
 DIR=	papers/gprof
 SRCS=	header.me abstract.me intro.me profiling.me gathering.me \
