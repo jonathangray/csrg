@@ -1,4 +1,4 @@
-/*	pdma.h	3.1	%H%	*/
+/*	pdma.h	3.2	06/07/80	*/
 
 struct pdma
 {
