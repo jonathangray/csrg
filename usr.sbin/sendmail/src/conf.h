@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.173 (Berkeley) 05/27/95
+ *	@(#)conf.h	8.174 (Berkeley) 05/27/95
  */
 
 /*
@@ -76,10 +76,6 @@ struct rusage;	/* forward declaration to get gcc to shut up in wait.h */
 # define MAXMIMEARGS	20		/* max args in Content-Type: */
 # define MAXMIMENESTING	20		/* max MIME multipart nesting */
 # define QUEUESEGSIZE	1000		/* increment for queue size */
-
-# ifndef MAXQUEUESIZE
-#  define MAXQUEUESIZE	40000		/* max # of jobs we will run at once */
-# endif
 
 /**********************************************************************
 **  Compilation options.
