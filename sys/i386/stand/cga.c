@@ -33,10 +33,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cga.c	7.3 (Berkeley) 04/28/91
+ *	@(#)cga.c	7.4 (Berkeley) 10/11/92
  */
 
-#include "param.h"
+#include <sys/param.h>
 
 #define	COL		80
 #define	ROW		25
