@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_pcb.h	7.23 (Berkeley) 10/11/92
+ *	@(#)tp_pcb.h	7.24 (Berkeley) 10/17/92
  */
 
 /***********************************************************
@@ -73,9 +73,9 @@ SOFTWARE.
 #ifndef  __TP_PCB__
 #define  __TP_PCB__
 
-#include <netiso/netiso/tp_param.h>
-#include <netiso/netiso/tp_timer.h>
-#include <netiso/netiso/tp_user.h>
+#include <netiso/tp_param.h>
+#include <netiso/tp_timer.h>
+#include <netiso/tp_user.h>
 #ifndef sblock
 #include <sys/socketvar.h>
 #endif sblock
