@@ -3,7 +3,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)style.h	4.4 (Berkeley) 04/17/91
+ *	@(#)style.h	8.1 (Berkeley) 06/06/93
  */
 
 extern int part;
