@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)restore.h	5.11 (Berkeley) 06/30/92
+ *	@(#)restore.h	5.12 (Berkeley) 08/09/92
  */
 
 #include <sys/param.h>
@@ -157,6 +157,11 @@ extern char *malloc();
 extern char *calloc();
 extern char *realloc();
 extern long lseek();
+
+/*
+ * Flags to setdirmodes.
+ */
+#define FORCE	0x0001
 
 /*
  * Useful macros
