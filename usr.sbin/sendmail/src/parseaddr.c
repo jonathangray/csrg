@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	6.59 (Berkeley) 05/28/93";
+static char sccsid[] = "@(#)parseaddr.c	6.60 (Berkeley) 06/05/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -264,8 +264,6 @@ allocaddr(a, copyf, paddr, delimptr)
 	char *paddr;
 	char *delimptr;
 {
-	register MAILER *m = a->q_mailer;
-
 	if (tTd(24, 4))
 		printf("allocaddr(copyf=%d, paddr=%s)\n", copyf, paddr);
 
@@ -1302,7 +1300,6 @@ backup:
 			char **hbrvp, **ubrvp;
 			char **xpvp;
 			int trsize;
-			char *olddelimchar;
 			char *replac;
 			int endtoken;
 			STAB *map;
