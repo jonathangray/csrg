@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)btree.h	5.14 (Berkeley) 05/16/93
+ *	@(#)btree.h	5.15 (Berkeley) 05/22/93
  */
 
 #include <mpool.h>
@@ -287,7 +287,7 @@ typedef struct BTREE {
 	int	bt_fd;			/* tree file descriptor */
 
 	pgno_t	bt_free;		/* next free page */
-	indx_t	bt_psize;		/* page size */
+	u_long	bt_psize;		/* page size */
 	indx_t	bt_ovflsize;		/* cut-off for key/data overflow */
 	int	bt_lorder;		/* byte order */
 					/* sorted order */
