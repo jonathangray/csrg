@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_alloc.c	7.45 (Berkeley) 05/15/92
+ *	@(#)lfs_alloc.c	7.46 (Berkeley) 06/23/92
  */
 
 #include <sys/param.h>
@@ -174,6 +174,7 @@ lfs_vcreate(mp, ino, vpp)
 	/* Initialize the inode. */
 	MALLOC(ip, struct inode *, sizeof(struct inode), M_LFSNODE, M_WAITOK);
 	(*vpp)->v_data = ip;
+	(*vpp)->v_flag |= VDIROP;
 	ip->i_vnode = *vpp;
 	ip->i_devvp = ump->um_devvp;
 	ip->i_flag = 0;
@@ -241,5 +242,3 @@ lfs_vfree (ap)
 	--fs->lfs_nfiles;
 	return (0);
 }
-
-
