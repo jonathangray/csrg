@@ -30,12 +30,16 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.1 (Berkeley) 07/21/92
+ *	@(#)extern.h	5.3 (Berkeley) 8/6/92
  */
 
-void	doabort __P((int, char **));
+#include <sys/cdefs.h>
+
+
+__BEGIN_DECLS
 void	clean __P((int, char **));
 void	disable __P((int, char **));
+void	doabort __P((int, char **));
 void	down __P((int, char **));
 void	enable __P((int, char **));
 void	help __P((int, char **));
@@ -46,6 +50,7 @@ void	status __P((int, char **));
 void	stop __P((int, char **));
 void	topq __P((int, char **));
 void	up __P((int, char **));
+__END_DECLS
 
 extern int NCMDS;
 extern struct cmd cmdtab[];
