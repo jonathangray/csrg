@@ -33,13 +33,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)rune.h	8.1 (Berkeley) 06/27/93
+ *	@(#)rune.h	5.3 (Berkeley) 06/27/93
  */
 
 #ifndef	_RUNE_H_
 #define	_RUNE_H_
 
 #include <runetype.h>
+#include <stdio.h>
 
 #define	_PATH_LOCALE	"/usr/share/locale"
 
