@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.5 (Berkeley) 08/31/94";
+static char sccsid[] = "@(#)main.c	8.6 (Berkeley) 10/09/94";
 #endif /* not lint */
 
 /*
@@ -118,6 +118,7 @@ main(argc, argv)
 		verbose++;
 	cpend = 0;	/* no pending replies */
 	proxy = 0;	/* proxy not active */
+	passivemode = 0; /* passive mode not active */
 	crflag = 1;	/* strip c.r. on ascii gets */
 	sendport = -1;	/* not using ports */
 	/*
