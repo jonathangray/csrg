@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pm.c	7.3 (Berkeley) 03/07/92
+ *	@(#)pm.c	7.4 (Berkeley) 03/15/92
  *
  *  devGraphics.c --
  *
@@ -688,6 +688,7 @@ pmclose(dev, flag)
 	dev_t dev;
 	int flag;
 {
+	int s;
 
 	if (!GraphicsOpen)
 		return (EBADF);
@@ -695,6 +696,11 @@ pmclose(dev, flag)
 	GraphicsOpen = 0;
 	if (!isMono)
 		InitColorMap();
+	s = spltty();
+	dcDivertXInput = (void (*)())0;
+	dcMouseEvent = (void (*)())0;
+	dcMouseButtons = (void (*)())0;
+	splx(s);
 	ScreenInit();
 	vmUserUnmap();
 	bzero((caddr_t)MACH_UNCACHED_FRAME_BUFFER_ADDR,
@@ -709,6 +715,7 @@ pmioctl(dev, cmd, data, flag)
 	caddr_t data;
 {
 	register PCCRegs *pcc = (PCCRegs *)MACH_CURSOR_REG_ADDR;
+	int s;
 
 	switch (cmd) {
 	case QIOCGINFO:
@@ -801,15 +808,19 @@ pmioctl(dev, cmd, data, flag)
 		break;
 
 	case QIOKERNLOOP:
+		s = spltty();
 		dcDivertXInput = pmKbdEvent;
 		dcMouseEvent = pmMouseEvent;
 		dcMouseButtons = pmMouseButtons;
+		splx(s);
 		break;
 
 	case QIOKERNUNLOOP:
+		s = spltty();
 		dcDivertXInput = (void (*)())0;
 		dcMouseEvent = (void (*)())0;
 		dcMouseButtons = (void (*)())0;
+		splx(s);
 		break;
 
 	case QIOVIDEOON:
