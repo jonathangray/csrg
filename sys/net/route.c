@@ -30,32 +30,30 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)route.c	7.19 (Berkeley) 02/19/91
+ *	@(#)route.c	7.20 (Berkeley) 04/20/91
  */
-#include "machine/reg.h"
- 
 #include "param.h"
 #include "systm.h"
-#include "user.h"
 #include "proc.h"
 #include "mbuf.h"
 #include "socket.h"
 #include "socketvar.h"
 #include "domain.h"
 #include "protosw.h"
-#include "errno.h"
 #include "ioctl.h"
 
 #include "if.h"
 #include "af.h"
 #include "route.h"
 #include "raw_cb.h"
+
 #include "../netinet/in.h"
 #include "../netinet/in_var.h"
 
 #include "../netns/ns.h"
 #include "machine/mtpr.h"
 #include "netisr.h"
+
 #define	SA(p) ((struct sockaddr *)(p))
 
 int	rttrash;		/* routes not in table but not freed */
@@ -65,6 +63,7 @@ int	rthashsize = RTHASHSIZ;	/* for netstat, etc. */
 static int rtinits_done = 0;
 struct radix_node_head *ns_rnhead, *in_rnhead;
 struct radix_node *rn_match(), *rn_delete(), *rn_addroute();
+
 rtinitheads()
 {
 	if (rtinits_done == 0 &&
@@ -226,9 +225,10 @@ done:
 /*
 * Routing table ioctl interface.
 */
-rtioctl(req, data)
+rtioctl(req, data, p)
 	int req;
 	caddr_t data;
+	struct proc *p;
 {
 #ifndef COMPAT_43
 	return (EOPNOTSUPP);
@@ -244,7 +244,7 @@ rtioctl(req, data)
 	else
 		return (EINVAL);
 
-	if (error = suser(u.u_cred, &u.u_acflag))
+	if (error = suser(p->p_ucred, &p->p_acflag))
 		return (error);
 #if BYTE_ORDER != BIG_ENDIAN
 	if (entry->rt_dst.sa_family == 0 && entry->rt_dst.sa_len < 16) {
