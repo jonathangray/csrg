@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)iso_pcb.c	8.2 (Berkeley) 06/30/94
+ *	@(#)iso_pcb.c	8.3 (Berkeley) 07/19/94
  */
 
 /***********************************************************
@@ -228,7 +228,7 @@ iso_pcbbind(isop, nam)
 		register char *cp;
 noname:
 		cp = TSEL(isop->isop_laddr);
-		isop->isop_laddr.siso_tlen = 2;
+		isop->isop_laddr->siso_tlen = 2;
 	IFDEBUG(D_ISO)
 		printf("iso_pcbbind noname\n");
 	ENDDEBUG
