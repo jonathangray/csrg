@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	5.28 (Berkeley) 03/12/91";
+static char sccsid[] = "@(#)conf.c	5.29 (Berkeley) 10/03/91";
 #endif /* not lint */
 
 # include <sys/ioctl.h>
@@ -171,6 +171,7 @@ setdefaults()
 	DefUid = 1;
 	DefGid = 1;
 	CheckpointInterval = 10;
+	MaxHopCount = MAXHOP;
 	setdefuser();
 }
 
