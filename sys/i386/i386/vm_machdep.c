@@ -35,12 +35,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_machdep.c	7.2 (Berkeley) 05/10/91
+ *	@(#)vm_machdep.c	7.3 (Berkeley) 05/13/91
  */
 
 /*
  *	Utah $Hdr: vm_machdep.c 1.16.1.1 89/06/23$
  */
+
 #include "param.h"
 #include "systm.h"
 #include "proc.h"
@@ -113,6 +114,8 @@ cpu_fork(p1, p2)
 	return (0);
 }
 
+extern struct proc *npxproc;
+
 #ifdef notyet
 /*
  * cpu_exit is called as the last action during exit.
@@ -134,6 +137,9 @@ cpu_exit(p)
 {
 	static struct pcb nullpcb;	/* pcb to overwrite on last swtch */
 
+	/* free cporcessor (if we have it) */
+	if( p == npxproc) npxproc =0;
+
 	/* move to inactive space and stack, passing arg accross */
 	p = swtch_to_inactive(p);
 
@@ -150,11 +156,15 @@ cpu_exit(p)
 	register struct proc *p;
 {
 	
-	(void) vm_map_remove(&p->p_vmspace->vm_map, VM_MIN_ADDRESS,
-		    VM_MAXUSER_ADDRESS);
+	/* free coprocessor (if we have it) */
+	if( p == npxproc) npxproc =0;
+
+	curproc = p;
 	swtch();
 }
+
 cpu_wait(p) struct proc *p; {
+
 	/* drop per-process resources */
 	vmspace_free(p->p_vmspace);
 	kmem_free(kernel_map, (vm_offset_t)p->p_addr, ctob(UPAGES));
