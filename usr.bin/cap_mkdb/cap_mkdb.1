@@ -1,9 +1,6 @@
 .\" Copyright (c) 1992 The Regents of the University of California.
 .\" All rights reserved.
 .\"
-.\" This code is derived from software contributed to Berkeley by
-.\" Casey Leedom of Lawrence Livermore National Laboratory.
-.\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
 .\" are met:
@@ -32,13 +29,13 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)cap_mkdb.1	1.2 (Berkeley) 8/11/92
+.\"	@(#)cap_mkdb.1	5.1 (Berkeley) 09/02/92
 .\"
-.Dd "August 11, 1992"
+.Dd ""
 .Dt CAP_MKDB 1
 .Os
 .Sh NAME
-.Nm Cap_mkdb
+.Nm cap_mkdb
 .Nd create capability database
 .Pp
 .Sh SYNOPSIS
@@ -49,44 +46,27 @@
 .Pp
 .Sh DESCRIPTION
 .Nm Cap_mkdb 
-builds a hash table database out of a 
+builds a hashed database out of the
 .Xr getcap 3 
-logical database constructed by the concatenation of each 
-.Ar file 
-specified.  
-.Pp
-The utility builds a hash database whose name is formed 
-by the concatenation of the database basename (see
-.Fl f
-option)
-and
-.Nm .db 
-which can then be used for record access.
-The resulting database allows much faster access of the capability records by 
-the  
+logical database constructed by the concatenation of the specified
+files .
+The hashed database is stored into a file named by the basename
+of the first file argument and the string
+.Dq .db .
+The
 .Xr getcap 3
-routines than the corresponding ASCII file access routines.
+routines can access the database in this form much more quickly
+than they can the original text file.
 .Pp
-.Sh OPTIONS
-.Bl -tag -width indent-two
+The options are as follows:
+.Bl -tag -width XXXXXX -indent
 .It Fl f Ar outfile
-Specify database basename.  Default is
-.Ar file1 .
-.Pp
-.Sh EXIT VALUES
-.Nm Cap_mkdb 
-exits with status 0 on success and 1 on failure.
-.Pp
-.Sh FILES
-.Bl -tag -width Pa -compact
-.It Pa ./file1.db
-Default database name.
-.It Pa ./outfile.db
-Created with 
-.Fl f 
-option.
+Specify a different database basename.
 .El
 .Pp
+The
+.Nm cap_mkdb 
+utility exits 0 on success and >0 if an error occurs.
 .Sh SEE ALSO
 .Xr dbopen 3 ,
 .Xr getcap 3 ,
