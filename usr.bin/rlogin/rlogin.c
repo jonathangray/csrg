@@ -1,4 +1,4 @@
-/*-
+/*
  * Copyright (c) 1983, 1990 The Regents of the University of California.
  * All rights reserved.
  *
@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)rlogin.c	5.28 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)rlogin.c	5.29 (Berkeley) 06/27/90";
 #endif /* not lint */
 
 /*
@@ -59,6 +59,8 @@ static char sccsid[] = "@(#)rlogin.c	5.28 (Berkeley) 06/01/90";
 #include <sys/wait.h>
 
 #include <netinet/in.h>
+#include <netinet/in_systm.h>
+#include <netinet/ip.h>
 #include <netdb.h>
 
 #include <sgtty.h>
@@ -284,6 +286,9 @@ try_connect:
 	    setsockopt(rem, SOL_SOCKET, SO_DEBUG, &one, sizeof(one)) < 0)
 		(void)fprintf(stderr, "rlogin: setsockopt: %s.\n",
 		    strerror(errno));
+	one = IPTOS_LOWDELAY;
+	if (setsockopt(rem, IPPROTO_IP, IP_TOS, (char *)&one, sizeof(int)) < 0)
+		perror("rlogin: setsockopt TOS (ignored)");
 
 	(void)setuid(uid);
 	doit(omask);
