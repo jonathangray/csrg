@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_balloc.c	7.17 (Berkeley) 04/21/92
+ *	@(#)ffs_balloc.c	7.18 (Berkeley) 05/04/92
  */
 
 #include <sys/param.h>
@@ -39,6 +39,8 @@
 #include <sys/proc.h>
 #include <sys/file.h>
 #include <sys/vnode.h>
+
+#include <vm/vm.h>
 
 #include <ufs/ufs/quota.h>
 #include <ufs/ufs/inode.h>
