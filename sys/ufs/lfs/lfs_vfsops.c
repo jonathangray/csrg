@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vfsops.c	8.3 (Berkeley) 12/30/93
+ *	@(#)lfs_vfsops.c	8.4 (Berkeley) 01/04/94
  */
 
 #include <sys/param.h>
@@ -398,7 +398,6 @@ lfs_sync(mp, waitfor, cred, p)
 	struct ucred *cred;
 	struct proc *p;
 {
-	extern int syncprt;
 	int error;
 
 	/* All syncs must be checkpoints until roll-forward is implemented. */
