@@ -23,7 +23,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.23 (Berkeley) 11/18/88";
+static char sccsid[] = "@(#)main.c	5.24 (Berkeley) 12/05/88";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -586,7 +586,7 @@ main(argc, argv, envp)
 			(void) fflush(stdout);
 			if (fgets(buf, sizeof buf, stdin) == NULL)
 				finis();
-			for (p = buf; isspace(*p); *p++)
+			for (p = buf; isspace(*p); p++)
 				continue;
 			q = p;
 			while (*p != '\0' && !isspace(*p))
