@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)tset.c	5.14 (Berkeley) 06/18/90";
+static char sccsid[] = "@(#)tset.c	5.15 (Berkeley) 03/02/91";
 #endif /* not lint */
 
 /*
@@ -579,7 +579,7 @@ char	*argv[];
 	char		bs_char;
 	int		csh;
 	int		settle;
-	int		setmode();
+	void		setmode();
 	extern char	PC;
 # ifdef	V6
 	extern int	ospeed;
@@ -1442,6 +1442,7 @@ settabs()
 	return 0;
 }
 
+void
 setmode(flag)
 int	flag;
 /* flag serves several purposes:
