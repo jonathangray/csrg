@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)subr_rmap.c	7.9 (Berkeley) 05/11/91
+ *	@(#)subr_rmap.c	7.10 (Berkeley) 05/13/92
  */
 
 #include "param.h"
@@ -48,6 +48,7 @@
  * The map itself is initialized with size elements free
  * starting at addr.
  */
+void
 rminit(mp, size, addr, name, mapsize)
 	register struct map *mp;
 	long size, addr;
@@ -146,6 +147,7 @@ rmalloc(mp, size)
  * the frred space into the correct location in the map, and coalescing
  * it with free space on either side if they adjoin.
  */
+void
 rmfree(mp, size, addr)
 	struct map *mp;
 	long size, addr;
