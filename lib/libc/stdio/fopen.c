@@ -1,4 +1,4 @@
-/* @(#)fopen.c	4.2 (Berkeley) 03/09/81 */
+/* @(#)fopen.c	4.3 (Berkeley) 05/26/83 */
 #include	<stdio.h>
 #include	<errno.h>
 
