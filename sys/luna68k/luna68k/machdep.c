@@ -41,7 +41,7 @@
  *
  * from: hp300/hp300/machdep.c	7.28 (Berkeley) 6/5/92
  *
- *	@(#)machdep.c	7.1 (Berkeley) 06/15/92
+ *	@(#)machdep.c	7.2 (Berkeley) 06/16/92
  */
 
 #include "param.h"
@@ -697,6 +697,7 @@ boot(howto)
 			printf("giving up\n");
 		else
 			printf("done\n");
+
 		/*
 		 * If we've been adjusting the clock, the todr
 		 * will be out of synch; adjust it now.
@@ -708,6 +709,7 @@ boot(howto)
 		printf("halted\n\n");
 		asm("	stop	#0x2700");
 	} else {
+		printf("\r\n\n");
 		if (howto & RB_DUMP)
 			dumpsys();
 		doboot();
