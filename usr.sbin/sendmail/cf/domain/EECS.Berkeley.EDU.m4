@@ -33,6 +33,6 @@ divert(-1)
 # SUCH DAMAGE.
 #
 divert(0)
-VERSIONID(`@(#)EECS.Berkeley.EDU.m4	2.3 (Berkeley) 12/20/92')
+VERSIONID(`@(#)EECS.Berkeley.EDU.m4	6.1 (Berkeley) 12/21/92')
 DOMAIN(Berkeley)dnl
 MASQUERADE_AS(EECS.Berkeley.EDU)dnl
