@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsnode.h	7.32 (Berkeley) 02/02/93
+ *	@(#)nfsnode.h	7.33 (Berkeley) 03/19/93
  */
 
 /*
@@ -78,7 +78,6 @@ struct nfsnode {
 	struct	sillyrename n_silly;	/* Silly rename struct */
 	struct	timeval n_atim;		/* Special file times */
 	struct	timeval n_mtim;
-	long	n_spare[2];		/* Up to a power of 2 */
 };
 
 /*
