@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_conf.c	8.1 (Berkeley) 06/10/93
+ *	@(#)vfs_conf.c	8.2 (Berkeley) 09/05/93
  */
 
 #include <sys/param.h>
@@ -51,7 +51,7 @@ int (*mountroot)() = ffs_mountroot;
  * These define the root filesystem and device.
  */
 struct mount *rootfs;
-struct vnode *rootdir;
+struct vnode *rootvnode;
 
 /*
  * Set up the filesystem operations for vnodes.
