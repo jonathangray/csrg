@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)swab.c	5.6 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)swab.c	5.7 (Berkeley) 06/24/90";
 #endif /* LIBC_SCCS and not lint */
 
 #include <string.h>
@@ -43,9 +43,12 @@ static char sccsid[] = "@(#)swab.c	5.6 (Berkeley) 06/01/90";
 void
 swab(from, to, n)
 	register char *from, *to;
-	register int n;
+	register size_t n;
 {
 	register unsigned long temp;
+
+	if (!n)
+		return;
 
 	n >>= 1; n++;
 #define	STEP	temp = *from++,*to++ = *from++,*to++ = temp
