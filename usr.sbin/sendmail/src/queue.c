@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef QUEUE
-static char sccsid[] = "@(#)queue.c	6.26 (Berkeley) 03/16/93 (with queueing)";
+static char sccsid[] = "@(#)queue.c	6.27 (Berkeley) 03/17/93 (with queueing)";
 #else
-static char sccsid[] = "@(#)queue.c	6.26 (Berkeley) 03/16/93 (without queueing)";
+static char sccsid[] = "@(#)queue.c	6.27 (Berkeley) 03/17/93 (without queueing)";
 #endif
 #endif /* not lint */
 
@@ -48,7 +48,6 @@ static char sccsid[] = "@(#)queue.c	6.26 (Berkeley) 03/16/93 (without queueing)"
 # include <signal.h>
 # include <errno.h>
 # include <pwd.h>
-# include <fcntl.h>
 # ifndef MAXNAMLEN
 # include <dirent.h>
 # endif
@@ -135,9 +134,7 @@ queueup(e, queueall, announce)
 		/* get a locked tf file */
 		for (i = 100; --i >= 0; )
 		{
-# ifdef LOCKF
-			struct flock lfd;
-# endif
+			extern bool lockfile();
 
 			fd = open(tf, O_CREAT|O_WRONLY|O_EXCL, FileMode);
 			if (fd < 0)
@@ -147,19 +144,10 @@ queueup(e, queueall, announce)
 				syserr("queueup: cannot create temp file %s", tf);
 				return;
 			}
-# ifdef LOCKF
-			lfd.l_type = F_WRLCK;
-			lfd.l_whence = lfd.l_start = lfd.l_len = 0;
-			if (fcntl(fd, F_SETLK, &lfd) >= 0)
+
+			if (lockfile(fd, tf, LOCK_EX|LOCK_NB))
 				break;
-			if (errno != EACCES && errno != EAGAIN)
-				syserr("cannot lockf(%s)", tf);
-# else
-			if (flock(fd, LOCK_EX|LOCK_NB) >= 0)
-				break;
-			if (errno != EWOULDBLOCK)
-				syserr("cannot flock(%s)", tf);
-# endif
+
 			close(fd);
 		}
 
@@ -892,9 +880,7 @@ readqf(e)
 	extern char *fgetfolded();
 	extern long atol();
 	extern ADDRESS *setctluser();
-# ifdef LOCKF
-	struct flock lfd;
-# endif
+	extern bool lockfile();
 	extern ADDRESS *sendto();
 
 	/*
@@ -934,28 +920,15 @@ readqf(e)
 		return FALSE;
 	}
 
-# ifdef LOCKF
-	lfd.l_type = F_WRLCK;
-	lfd.l_whence = lfd.l_start = lfd.l_len = 0;
-	if (fcntl(fileno(qfp), F_SETLK, &lfd) < 0)
-# else
-	if (flock(fileno(qfp), LOCK_EX|LOCK_NB) < 0)
-# endif
+	if (!lockfile(fileno(qfp), qf, LOCK_EX|LOCK_NB))
 	{
-		if (errno == EWOULDBLOCK)
-		{
-			/* being processed by another queuer */
-			if (Verbose)
-				printf("%s: locked\n", e->e_id);
+		/* being processed by another queuer */
+		if (Verbose)
+			printf("%s: locked\n", e->e_id);
 # ifdef LOG
-			if (LogLevel > 19)
-				syslog(LOG_DEBUG, "%s: locked", e->e_id);
+		if (LogLevel > 19)
+			syslog(LOG_DEBUG, "%s: locked", e->e_id);
 # endif /* LOG */
-		}
-		else
-		{
-			syserr("%s: flock failure", e->e_id);
-		}
 		(void) fclose(qfp);
 		return FALSE;
 	}
@@ -1141,10 +1114,8 @@ printqueue()
 		auto time_t submittime = 0;
 		long dfsize = -1;
 		char message[MAXLINE];
-# ifdef LOCKF
-		struct flock lfd;
-# endif
 		extern bool shouldqueue();
+		extern bool lockfile();
 
 		f = fopen(w->w_name, "r");
 		if (f == NULL)
@@ -1153,13 +1124,7 @@ printqueue()
 			continue;
 		}
 		printf("%7s", w->w_name + 2);
-# ifdef LOCKF
-		lfd.l_type = F_RDLCK;
-		lfd.l_whence = lfd.l_start = lfd.l_len = 0;
-		if (fcntl(fileno(f), F_GETLK, &lfd) < 0 || lfd.l_type != F_UNLCK)
-# else
-		if (flock(fileno(f), LOCK_SH|LOCK_NB) < 0)
-# endif
+		if (!lockfile(fileno(f), w->w_name, LOCK_SH|LOCK_NB))
 			printf("*");
 		else if (shouldqueue(w->w_pri, w->w_ctime))
 			printf("X");
@@ -1250,10 +1215,11 @@ queuename(e, type)
 	register ENVELOPE *e;
 	char type;
 {
-	static char buf[MAXNAME];
 	static int pid = -1;
 	static char c1 = 'A';
 	static char c2 = 'A';
+	static char buf[MAXNAME];
+	extern bool lockfile();
 
 	if (e->e_id == NULL)
 	{
@@ -1272,9 +1238,6 @@ queuename(e, type)
 		while (c1 < '~' || c2 < 'Z')
 		{
 			int i;
-# ifdef LOCKF
-			struct flock lfd;
-# endif
 
 			if (c2 >= 'Z')
 			{
@@ -1295,13 +1258,7 @@ queuename(e, type)
 					qf, QueueDir);
 				exit(EX_UNAVAILABLE);
 			}
-# ifdef LOCKF
-			lfd.l_type = F_WRLCK;
-			lfd.l_whence = lfd.l_start = lfd.l_len = 0;
-			if (fcntl(i, F_SETLK, &lfd) >= 0)
-# else
-			if (flock(i, LOCK_EX|LOCK_NB) >= 0)
-# endif
+			if (lockfile(i, qf, LOCK_EX|LOCK_NB))
 			{
 				e->e_lockfp = fdopen(i, "w");
 				break;
