@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lstInt.h	5.3 (Berkeley) 06/01/90
+ *	@(#)lstInt.h	5.4 (Berkeley) 12/28/90
  */
 
 /*-
@@ -87,7 +87,7 @@ typedef struct	{
  * PAlloc (var, ptype) --
  *	Allocate a pointer-typedef structure 'ptype' into the variable 'var'
  */
-#define	PAlloc(var,ptype)	var = (ptype) Malloc (sizeof (*var))
+#define	PAlloc(var,ptype)	var = (ptype) malloc (sizeof (*var))
 
 /*
  * LstValid (l) --
