@@ -32,7 +32,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)rm.1	8.3 (Berkeley) 07/29/94
+.\"	@(#)rm.1	8.4 (Berkeley) 10/18/94
 .\"
 .Dd 
 .Dt RM 1
@@ -100,7 +100,9 @@ that directory is skipped.
 Equivalent to
 .Fl R .
 .It Fl W
-Removes a whiteout.
+Attempts to undelete the named files.
+Currently, this option can only be used to recover
+files covered by whiteouts.
 .El
 .Pp
 The
