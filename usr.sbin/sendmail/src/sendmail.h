@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	6.4 (Berkeley) 01/09/93
+ *	@(#)sendmail.h	6.5 (Berkeley) 01/10/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	6.4		01/09/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	6.5		01/10/93";
 # endif lint
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -487,6 +487,7 @@ struct symtab
 		char		*sv_alias;	/* alias */
 		MAPCLASS	sv_mapclass;	/* mapping function class */
 		MAP		sv_map;		/* mapping function */
+		char		*sv_hostsig;	/* host signature */
 		MCI		sv_mci;		/* mailer connection info */
 	}	s_value;
 };
@@ -501,6 +502,7 @@ typedef struct symtab	STAB;
 # define ST_ALIAS	4	/* an alias */
 # define ST_MAPCLASS	5	/* mapping function class */
 # define ST_MAP		6	/* mapping function */
+# define ST_HOSTSIG	7	/* host signature */
 # define ST_MCI		16	/* mailer connection info (offset) */
 
 # define s_class	s_value.sv_class
