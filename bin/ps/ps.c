@@ -138,6 +138,7 @@ main(argc, argv)
 		case 'j':
 			parsefmt(jfmt);
 			fmt = 1;
+			jfmt[0] = '\0';
 			break;
 		case 'L': 
 			showkey();
@@ -145,6 +146,7 @@ main(argc, argv)
 		case 'l':
 			parsefmt(lfmt);
 			fmt = 1;
+			lfmt[0] = '\0';
 			break;
 		case 'M':
 			memf = optarg;
@@ -159,6 +161,7 @@ main(argc, argv)
 			parsefmt(o1);
 			parsefmt(optarg);
 			parsefmt(o2);
+			o1[0] = o2[0] = '\0';
 			fmt = 1;
 			break;
 		case 'o':
@@ -202,11 +205,13 @@ main(argc, argv)
 			parsefmt(ufmt);
 			sortby = SORTCPU;
 			fmt = 1;
+			ufmt[0] = '\0';
 			break;
 		case 'v':
 			parsefmt(vfmt);
 			sortby = SORTMEM;
 			fmt = 1;
+			vfmt[0] = '\0';
 			break;
 		case 'W':
 			swapf = optarg;
