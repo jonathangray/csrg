@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 1988, 1993 Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1988, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)if_llc.h	7.3 (Berkeley) 02/25/93
+ *      @(#)if_llc.h	8.1 (Berkeley) 06/10/93
  */
 
 /*
