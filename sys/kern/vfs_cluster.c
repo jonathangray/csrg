@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_cluster.c	7.35 (Berkeley) 03/19/91
+ *	@(#)vfs_cluster.c	7.36 (Berkeley) 04/15/91
  */
 
 #include "param.h"
