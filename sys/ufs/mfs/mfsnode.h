@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mfsnode.h	7.10 (Berkeley) 05/14/92
+ *	@(#)mfsnode.h	7.11 (Berkeley) 05/27/92
  */
 
 /*
