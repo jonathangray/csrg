@@ -33,22 +33,22 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_quota.c	7.11 (Berkeley) 06/21/91
+ *	@(#)ufs_quota.c	7.12 (Berkeley) 11/01/91
  */
-#include "param.h"
-#include "kernel.h"
-#include "systm.h"
-#include "namei.h"
-#include "malloc.h"
-#include "file.h"
-#include "proc.h"
-#include "vnode.h"
-#include "mount.h"
+#include <sys/param.h>
+#include <sys/kernel.h>
+#include <sys/systm.h>
+#include <sys/namei.h>
+#include <sys/malloc.h>
+#include <sys/file.h>
+#include <sys/proc.h>
+#include <sys/vnode.h>
+#include <sys/mount.h>
 
-#include "fs.h"
-#include "quota.h"
-#include "inode.h"
-#include "ufsmount.h"
+#include <ufs/ufs/quota.h>
+#include <ufs/ufs/inode.h>
+#include <ufs/ufs/ufsmount.h>
+#include <ufs/ufs/ufs_extern.h>
 
 /*
  * Quota name to error message mapping.
@@ -63,6 +63,7 @@ static char *quotatypes[] = INITQFNAMES;
  * MAXQUOTAS value in quotas.h should be increased, and the
  * additional dquots set up here.
  */
+int
 getinoquota(ip)
 	register struct inode *ip;
 {
@@ -95,6 +96,7 @@ getinoquota(ip)
 /*
  * Update disk usage, and take corrective action.
  */
+int
 chkdq(ip, change, cred, flags)
 	register struct inode *ip;
 	long change;
@@ -154,6 +156,7 @@ chkdq(ip, change, cred, flags)
  * Check for a valid change to a users allocation.
  * Issue an error message if appropriate.
  */
+int
 chkdqchg(ip, change, cred, type)
 	struct inode *ip;
 	long change;
@@ -170,7 +173,8 @@ chkdqchg(ip, change, cred, type)
 		if ((dq->dq_flags & DQ_BLKS) == 0 &&
 		    ip->i_uid == cred->cr_uid) {
 			uprintf("\n%s: write failed, %s disk limit reached\n",
-			    ip->i_fs->fs_fsmnt, quotatypes[type]);
+			    ITOV(ip)->v_mount->mnt_stat.f_mntonname,
+			    quotatypes[type]);
 			dq->dq_flags |= DQ_BLKS;
 		}
 		return (EDQUOT);
@@ -185,16 +189,17 @@ chkdqchg(ip, change, cred, type)
 			    VFSTOUFS(ITOV(ip)->v_mount)->um_btime[type];
 			if (ip->i_uid == cred->cr_uid)
 				uprintf("\n%s: warning, %s %s\n",
-				    ip->i_fs->fs_fsmnt, quotatypes[type],
-				    "disk quota exceeded");
+				    ITOV(ip)->v_mount->mnt_stat.f_mntonname,
+				    quotatypes[type], "disk quota exceeded");
 			return (0);
 		}
 		if (time.tv_sec > dq->dq_btime) {
 			if ((dq->dq_flags & DQ_BLKS) == 0 &&
 			    ip->i_uid == cred->cr_uid) {
 				uprintf("\n%s: write failed, %s %s\n",
-				    ip->i_fs->fs_fsmnt, quotatypes[type],
-				    "disk quota exceeded too long");
+				    ITOV(ip)->v_mount->mnt_stat.f_mntonname,
+				    quotatypes[type],
+				    "disk quota exceeded for too long");
 				dq->dq_flags |= DQ_BLKS;
 			}
 			return (EDQUOT);
@@ -206,6 +211,7 @@ chkdqchg(ip, change, cred, type)
 /*
  * Check the inode limit, applying corrective action.
  */
+int
 chkiq(ip, change, cred, flags)
 	register struct inode *ip;
 	long change;
@@ -265,6 +271,7 @@ chkiq(ip, change, cred, flags)
  * Check for a valid change to a users allocation.
  * Issue an error message if appropriate.
  */
+int
 chkiqchg(ip, change, cred, type)
 	struct inode *ip;
 	long change;
@@ -281,7 +288,8 @@ chkiqchg(ip, change, cred, type)
 		if ((dq->dq_flags & DQ_INODS) == 0 &&
 		    ip->i_uid == cred->cr_uid) {
 			uprintf("\n%s: write failed, %s inode limit reached\n",
-			    ip->i_fs->fs_fsmnt, quotatypes[type]);
+			    ITOV(ip)->v_mount->mnt_stat.f_mntonname,
+			    quotatypes[type]);
 			dq->dq_flags |= DQ_INODS;
 		}
 		return (EDQUOT);
@@ -296,16 +304,17 @@ chkiqchg(ip, change, cred, type)
 			    VFSTOUFS(ITOV(ip)->v_mount)->um_itime[type];
 			if (ip->i_uid == cred->cr_uid)
 				uprintf("\n%s: warning, %s %s\n",
-				    ip->i_fs->fs_fsmnt, quotatypes[type],
-				    "inode quota exceeded");
+				    ITOV(ip)->v_mount->mnt_stat.f_mntonname,
+				    quotatypes[type], "inode quota exceeded");
 			return (0);
 		}
 		if (time.tv_sec > dq->dq_itime) {
 			if ((dq->dq_flags & DQ_INODS) == 0 &&
 			    ip->i_uid == cred->cr_uid) {
 				uprintf("\n%s: write failed, %s %s\n",
-				    ip->i_fs->fs_fsmnt, quotatypes[type],
-				    "inode quota exceeded too long");
+				    ITOV(ip)->v_mount->mnt_stat.f_mntonname,
+				    quotatypes[type],
+				    "inode quota exceeded for too long");
 				dq->dq_flags |= DQ_INODS;
 			}
 			return (EDQUOT);
@@ -316,10 +325,10 @@ chkiqchg(ip, change, cred, type)
 
 #ifdef DIAGNOSTIC
 /*
- * On filesystems with quotas enabled,
- * it is an error for a file to change size and not
- * to have a dquot structure associated with it.
+ * On filesystems with quotas enabled, it is an error for a file to change
+ * size and not to have a dquot structure associated with it.
  */
+void
 chkdquot(ip)
 	register struct inode *ip;
 {
@@ -336,7 +345,7 @@ chkdquot(ip)
 		}
 	}
 }
-#endif /* DIAGNOSTIC */
+#endif
 
 /*
  * Code to process quotactl commands.
@@ -345,6 +354,7 @@ chkdquot(ip)
 /*
  * Q_QUOTAON - set up a quota file for a particular file system.
  */
+int
 quotaon(p, mp, type, fname)
 	struct proc *p;
 	struct mount *mp;
@@ -424,6 +434,7 @@ again:
 /*
  * Q_QUOTAOFF - turn off disk quotas for a filesystem.
  */
+int
 quotaoff(p, mp, type)
 	struct proc *p;
 	struct mount *mp;
@@ -476,6 +487,7 @@ again:
 /*
  * Q_GETQUOTA - return current values in a dqblk structure.
  */
+int
 getquota(mp, id, type, addr)
 	struct mount *mp;
 	u_long id;
@@ -495,6 +507,7 @@ getquota(mp, id, type, addr)
 /*
  * Q_SETQUOTA - assign an entire dqblk structure.
  */
+int
 setquota(mp, id, type, addr)
 	struct mount *mp;
 	u_long id;
@@ -553,6 +566,7 @@ setquota(mp, id, type, addr)
 /*
  * Q_SETUSE - set current inode and block usage.
  */
+int
 setuse(mp, id, type, addr)
 	struct mount *mp;
 	u_long id;
@@ -598,6 +612,7 @@ setuse(mp, id, type, addr)
 /*
  * Q_SYNC - sync quota files to disk.
  */
+int
 qsync(mp)
 	struct mount *mp;
 {
@@ -667,6 +682,7 @@ long numdquot, desireddquot = DQUOTINC;
 /*
  * Initialize the quota system.
  */
+void
 dqinit()
 {
 	register union dqhead *dhp;
@@ -688,6 +704,7 @@ dqinit()
  * Obtain a dquot structure for the specified identifier and quota file
  * reading the information from the file if necessary.
  */
+int
 dqget(vp, id, ump, type, dqp)
 	struct vnode *vp;
 	u_long id;
@@ -818,6 +835,7 @@ dqget(vp, id, ump, type, dqp)
 /*
  * Obtain a reference to a dquot.
  */
+void
 dqref(dq)
 	struct dquot *dq;
 {
@@ -828,6 +846,7 @@ dqref(dq)
 /*
  * Release a reference to a dquot.
  */
+void
 dqrele(vp, dq)
 	struct vnode *vp;
 	register struct dquot *dq;
@@ -857,6 +876,7 @@ dqrele(vp, dq)
 /*
  * Update the disk quota in the quota file.
  */
+int
 dqsync(vp, dq)
 	struct vnode *vp;
 	register struct dquot *dq;
@@ -907,6 +927,7 @@ dqsync(vp, dq)
 /*
  * Flush all entries from the cache for a particular vnode.
  */
+void
 dqflush(vp)
 	register struct vnode *vp;
 {
