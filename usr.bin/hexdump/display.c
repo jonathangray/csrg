@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)display.c	5.13 (Berkeley) 07/14/92";
+static char sccsid[] = "@(#)display.c	5.14 (Berkeley) 03/04/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -99,7 +99,7 @@ display()
 		for (pr = endfu->nextpr; pr; pr = pr->nextpr)
 			switch(pr->flags) {
 			case F_ADDRESS:
-				(void)printf(pr->fmt, eaddress);
+				(void)printf(pr->fmt, (quad_t)eaddress);
 				break;
 			case F_TEXT:
 				(void)printf(pr->fmt);
@@ -124,7 +124,7 @@ print(pr, bp)
 
 	switch(pr->flags) {
 	case F_ADDRESS:
-		(void)printf(pr->fmt, address);
+		(void)printf(pr->fmt, (quad_t)address);
 		break;
 	case F_BPAD:
 		(void)printf(pr->fmt, "");
