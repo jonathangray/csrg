@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_eon.c	7.20 (Berkeley) 04/06/93
+ *	@(#)if_eon.c	7.21 (Berkeley) 06/05/93
  */
 
 /***********************************************************
@@ -117,7 +117,6 @@ int						eonioctl();
 int						eonattach();
 int						eoninit();
 void						eonrtrequest();
-extern 	int				ip_output();
 struct ifnet			eonif[1];
 
 eonprotoinit() {
@@ -432,7 +431,7 @@ send:
 		dump_buf(ei, sizeof(struct eon_iphdr));
 	ENDDEBUG
 
-	error = ip_output(m, (struct mbuf *)0, ro, 0);
+	error = ip_output(m, (struct mbuf *)0, ro, 0, NULL);
 	m = 0;
 	if (error) {
 		ifp->if_oerrors++;
