@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if.c	7.20 (Berkeley) 07/06/92
+ *	@(#)if.c	7.21 (Berkeley) 07/07/92
  */
 
 #include "param.h"
@@ -51,6 +51,7 @@
 #include "ether.h"
 
 int	ifqmaxlen = IFQ_MAXLEN;
+void	if_slowtimo __P((void *arg));
 
 /*
  * Network interface utility routines.
@@ -66,7 +67,7 @@ ifinit()
 	for (ifp = ifnet; ifp; ifp = ifp->if_next)
 		if (ifp->if_snd.ifq_maxlen == 0)
 			ifp->if_snd.ifq_maxlen = ifqmaxlen;
-	if_slowtimo();
+	if_slowtimo(0);
 }
 
 #ifdef vax
@@ -387,7 +388,9 @@ if_qflush(ifq)
  * from softclock, we decrement timers (if set) and
  * call the appropriate interface routine on expiration.
  */
-if_slowtimo()
+void
+if_slowtimo(arg)
+	void *arg;
 {
 	register struct ifnet *ifp;
 	int s = splimp();
@@ -399,7 +402,7 @@ if_slowtimo()
 			(*ifp->if_watchdog)(ifp->if_unit);
 	}
 	splx(s);
-	timeout(if_slowtimo, (caddr_t)0, hz / IFNET_SLOWHZ);
+	timeout(if_slowtimo, (void *)0, hz / IFNET_SLOWHZ);
 }
 
 /*
