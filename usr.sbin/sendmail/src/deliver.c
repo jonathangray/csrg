@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	8.6 (Berkeley) 07/20/93";
+static char sccsid[] = "@(#)deliver.c	8.7 (Berkeley) 07/22/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1583,7 +1583,7 @@ giveresponse(stat, m, mci, e)
 		(void) strcpy(buf, SysExMsg[i] + 1);
 #ifdef NAMED_BIND
 		if (h_errno == TRY_AGAIN)
-			statmsg = errstring(h_errno+MAX_ERRNO);
+			statmsg = errstring(h_errno+E_DNSBASE);
 		else
 #endif
 		{
@@ -1610,7 +1610,7 @@ giveresponse(stat, m, mci, e)
 #ifdef NAMED_BIND
 	else if (stat == EX_NOHOST && h_errno != 0)
 	{
-		statmsg = errstring(h_errno + MAX_ERRNO);
+		statmsg = errstring(h_errno + E_DNSBASE);
 		(void) sprintf(buf, "%s (%s)", SysExMsg[i], statmsg);
 		statmsg = buf;
 	}
