@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)mount_portal.c	8.2 (Berkeley) 03/27/94";
+static char sccsid[] = "@(#)mount_portal.c	8.3 (Berkeley) 03/27/94";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -84,7 +84,7 @@ int sig;
 }
 
 int
-main(c, argv)
+main(argc, argv)
 	int argc;
 	char *argv[];
 {
