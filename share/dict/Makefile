@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.1.1.1 (Berkeley) 05/07/91
+#	@(#)Makefile	8.1 (Berkeley) 06/05/93
 
 # Missing: connectives, words
 
