@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_alloc.c	7.36 (Berkeley) 05/15/92
+ *	@(#)ffs_alloc.c	7.37 (Berkeley) 06/04/92
  */
 
 #include <sys/param.h>
@@ -316,6 +316,7 @@ ffs_valloc (ap)
 {
 	USES_VOP_VFREE;
 	USES_VOP_VGET;
+	register struct vnode *pvp = ap->a_pvp;
 	register struct inode *pip;
 	register struct fs *fs;
 	register struct inode *ip;
@@ -323,7 +324,7 @@ ffs_valloc (ap)
 	int cg, error;
 	
 	*ap->a_vpp = NULL;
-	pip = VTOI(ap->a_pvp);
+	pip = VTOI(pvp);
 	fs = pip->i_fs;
 	if (fs->fs_cstotal.cs_nifree == 0)
 		goto noinodes;
@@ -338,9 +339,9 @@ ffs_valloc (ap)
 	ino = (ino_t)ffs_hashalloc(pip, cg, (long)ipref, ap->a_mode, ffs_ialloccg);
 	if (ino == 0)
 		goto noinodes;
-	error = FFS_VGET(ap->a_pvp->v_mount, ino, ap->a_vpp);
+	error = FFS_VGET(pvp->v_mount, ino, ap->a_vpp);
 	if (error) {
-		VOP_VFREE(ap->a_pvp, ino, ap->a_mode);
+		VOP_VFREE(pvp, ino, ap->a_mode);
 		return (error);
 	}
 	ip = VTOI(*ap->a_vpp);
