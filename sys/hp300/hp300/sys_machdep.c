@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sys_machdep.c	7.10 (Berkeley) 10/11/92
+ *	@(#)sys_machdep.c	7.11 (Berkeley) 12/27/92
  */
 
 #include <sys/param.h>
@@ -140,7 +140,8 @@ cachectl(req, addr, len)
 		    (req & ~CC_EXTPURGE) != CC_PURGE && len > 2*NBPG)
 			doall = 1;
 #ifdef HPUXCOMPAT
-		if ((curproc->p_flag & SHPUX) && len != 16 && len != NBPG)
+		if ((curproc->p_md.md_flags & MDP_HPUX) &&
+		    len != 16 && len != NBPG)
 			doall = 1;
 #endif
 		if (!doall) {
