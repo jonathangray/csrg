@@ -71,6 +71,14 @@ struct pcb {
 	int	pcb_cmap2;	/* XXX temporary PTE - will prefault instead */
 };
 
+/*
+ * The pcb is augmented with machine-dependent additional data for
+ * core dumps. For the i386: ???
+ */
+struct md_coredump {
+        int     pad;		/* XXX? -- cgd */
+};
+
 #ifdef KERNEL
 struct pcb *curpcb;		/* our current running pcb */
 #endif
