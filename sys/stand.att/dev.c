@@ -30,12 +30,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dev.c	7.15 (Berkeley) 10/11/92
+ *	@(#)dev.c	7.16 (Berkeley) 05/24/93
  */
 
 #include <sys/param.h>
 #include <setjmp.h>
-#include <stand/saio.h>
+#include <stand.att/saio.h>
 
 /*
  * NB: the value "io->i_dev", used to offset the devsw[] array in the
