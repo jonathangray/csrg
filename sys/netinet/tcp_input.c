@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_input.c	8.9 (Berkeley) 05/01/95
+ *	@(#)tcp_input.c	8.10 (Berkeley) 05/02/95
  */
 
 #ifndef TUBA_INCLUDE
@@ -87,10 +87,7 @@ extern u_long sb_max;
 	if ((ti)->ti_seq == (tp)->rcv_nxt && \
 	    (tp)->seg_next == (struct tcpiphdr *)(tp) && \
 	    (tp)->t_state == TCPS_ESTABLISHED) { \
-		if ((ti)->ti_flags & TH_PUSH) \
-			tp->t_flags |= TF_ACKNOW; \
-		else \
-			tp->t_flags |= TF_DELACK; \
+		tp->t_flags |= TF_DELACK; \
 		(tp)->rcv_nxt += (ti)->ti_len; \
 		flags = (ti)->ti_flags & TH_FIN; \
 		tcpstat.tcps_rcvpack++;\
@@ -503,10 +500,7 @@ findpcb:
 			m->m_len -= sizeof(struct tcpiphdr)+off-sizeof(struct tcphdr);
 			sbappend(&so->so_rcv, m);
 			sorwakeup(so);
-			if (ti->ti_flags & TH_PUSH)
-				tp->t_flags |= TF_ACKNOW;
-			else
-				tp->t_flags |= TF_DELACK;
+			tp->t_flags |= TF_DELACK;
 			return;
 		}
 	}
