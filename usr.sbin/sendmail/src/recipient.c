@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recipient.c	6.16 (Berkeley) 02/23/93";
+static char sccsid[] = "@(#)recipient.c	6.17 (Berkeley) 02/23/93";
 #endif /* not lint */
 
 # include <sys/types.h>
@@ -328,7 +328,7 @@ recipient(a, sendq, e)
 	if (tTd(29, 7))
 		printf("at trylocaluser %s\n", a->q_user);
 
-	if (bitset(QDONTSEND, a->q_flags))
+	if (bitset(QDONTSEND|QVERIFIED, a->q_flags))
 		return (a);
 
 	if (m == InclMailer)
@@ -399,7 +399,7 @@ recipient(a, sendq, e)
 # endif
 
 	/* if it was an alias or a UDB expansion, just return now */
-	if (bitset(QDONTSEND, a->q_flags))
+	if (bitset(QDONTSEND|QVERIFIED, a->q_flags))
 		return (a);
 
 	/*
