@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	8.36 (Berkeley) 04/12/94 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	8.37 (Berkeley) 04/13/94 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	8.36 (Berkeley) 04/12/94 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	8.37 (Berkeley) 04/13/94 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -412,7 +412,11 @@ smtp(e)
 						usrerr("501 SIZE requires a value");
 						/* NOTREACHED */
 					}
-					msize = atol(vp);
+# ifdef __STDC__
+					msize = strtoul(vp, (char **) NULL, 10);
+# else
+					msize = strtol(vp, (char **) NULL, 10);
+# endif
 				}
 				else if (strcasecmp(kp, "body") == 0)
 				{
