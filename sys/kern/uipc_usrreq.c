@@ -28,7 +28,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_usrreq.c	8.3 (Berkeley) 01/04/94
+ *	@(#)uipc_usrreq.c	8.4 (Berkeley) 08/11/94
  */
 
 #include <sys/param.h>
@@ -410,7 +410,7 @@ unp_bind(unp, nam, p)
 	VATTR_NULL(&vattr);
 	vattr.va_type = VSOCK;
 	vattr.va_mode = ACCESSPERMS;
-	LEASE_CHECK(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
+	VOP_LEASE(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
 	if (error = VOP_CREATE(nd.ni_dvp, &nd.ni_vp, &nd.ni_cnd, &vattr))
 		return (error);
 	vp = nd.ni_vp;
