@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)vba.c	1.11 (Berkeley) 11/24/87
+ *	@(#)vba.c	1.11.1.1 (Berkeley) 11/24/87
  */
 
 /*
