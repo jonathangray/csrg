@@ -36,9 +36,9 @@
 
 #ifndef lint
 #if NAMED_BIND
-static char sccsid[] = "@(#)domain.c	8.38 (Berkeley) 05/19/95 (with name server)";
+static char sccsid[] = "@(#)domain.c	8.39 (Berkeley) 05/19/95 (with name server)";
 #else
-static char sccsid[] = "@(#)domain.c	8.38 (Berkeley) 05/19/95 (without name server)";
+static char sccsid[] = "@(#)domain.c	8.39 (Berkeley) 05/19/95 (without name server)";
 #endif
 #endif /* not lint */
 
@@ -339,9 +339,9 @@ punt:
 				*bp = '\0';
 				buflen--;
 			}
+			nmx = 1;
 		}
 		bp++;
-		nmx = 1;
 	}
 
 	/* if we have a default lowest preference, include that */
