@@ -2,7 +2,7 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)ss4	8.1 (Berkeley) 06/08/93
+.\"	@(#)ss4	8.2 (Berkeley) 06/01/94
 .\"
 .SH
 4: How the Parser Works
@@ -100,6 +100,7 @@ refers to
 refers to
 .I state
 34.
+.ne 1i
 .PP
 Suppose the rule being reduced is
 .DS
