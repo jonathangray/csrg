@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_exit.c	7.52 (Berkeley) 02/04/93
+ *	@(#)kern_exit.c	7.53 (Berkeley) 05/11/93
  */
 
 #include <sys/param.h>
@@ -273,7 +273,7 @@ struct wait_args {
 };
 
 #ifdef COMPAT_43
-#ifdef hp300
+#if defined(hp300) || defined(luna68k)
 #include <machine/frame.h>
 #define GETPS(rp)	((struct frame *)(rp))->f_sr
 #else
