@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)5.t	6.8 (Berkeley) 07/12/93
+.\"	@(#)5.t	6.9 (Berkeley) 07/12/93
 .\"
 .ds lq ``
 .ds rq ''
@@ -200,6 +200,7 @@ consequently the
 .Pn /etc/netstart
 file contains lines of the form
 .DS
+.ft CW
 /sbin/ifconfig le0 netmask 0xffffff00 128.32.1.7
 .DE
 This specifies that for interface ``le0'', the upper 24 bits of
@@ -283,6 +284,7 @@ gateway and depend on the gateway to provide ICMP routing
 redirect information to dynamically create a routing data
 base.  This is done by adding an entry of the form
 .DS
+.ft CW
 /sbin/route add default \fIsmart-gateway\fP 1
 .DE
 to
@@ -342,20 +344,20 @@ their routes via default gateways and redirects.
 The generation of redirects may be disabled with the configuration option
 IPSENDREDIRECTS=0 or at boot time by using the command:
 .DS
+.ft CW
 sysctl -w net.inet.ip.redirect=0
 .DE
 in environments where it may cause difficulties.
 .NH 2
-Network data bases
+Network databases
 .PP
 Several data files are used by the network library routines
 and server programs.  Most of these files are host independent
 and updated only rarely.
 .br
 .ne 1i
-.DS
 .TS
-l l l.
+lfC l l.
 File	Manual reference	Use
 _
 /etc/hosts	\fIhosts\fP\|(5)	local host names
@@ -370,7 +372,6 @@ _
 /etc/hosts.lpd	\fIlpd\fP\|(8)	list of hosts allowed to access printers
 /etc/inetd.conf	\fIinetd\fP\|(8)	list of servers started by \fIinetd\fP
 .TE
-.DE
 The files distributed are set up for Internet hosts.
 Local networks and hosts should be added to describe the local
 configuration; the Berkeley entries may serve as examples
@@ -393,17 +394,16 @@ by the command file
 .Pn /etc/rc
 or by the Internet daemon (see below).
 These include the following:
-.DS
 .TS
-l l l.
+lfC l l.
 Program	Server	Started by
 _
-/usr/sbin/syslogd	error logging server	/etc/rc
-/usr/sbin/named	Internet name server	/etc/rc
-/sbin/routed	routing table management daemon	/etc/rc
-/usr/sbin/rwhod	system status daemon	/etc/rc
-/usr/sbin/timed	time synchronization daemon	/etc/rc
-/usr/sbin/sendmail	SMTP server	/etc/rc
+/usr/sbin/syslogd	error logging server	\f(CW/etc/rc\fP
+/usr/sbin/named	Internet name server	\f(CW/etc/rc\fP
+/sbin/routed	routing table management daemon	\f(CW/etc/rc\fP
+/usr/sbin/rwhod	system status daemon	\f(CW/etc/rc\fP
+/usr/sbin/timed	time synchronization daemon	\f(CW/etc/rc\fP
+/usr/sbin/sendmail	SMTP server	\f(CW/etc/rc\fP
 /usr/libexec/rshd	shell server	inetd
 /usr/libexec/rexecd	exec server	inetd
 /usr/libexec/rlogind	login server	inetd
@@ -412,7 +412,6 @@ _
 /usr/libexec/fingerd	Finger server	inetd
 /usr/libexec/tftpd	TFTP server	inetd
 .TE
-.DE
 Consult the manual pages and accompanying documentation (particularly
 for named and sendmail) for details about their operation.
 .PP
@@ -434,6 +433,7 @@ The value of \fIroutedflags\fP is used to provide host-specific options to
 .Xr routed .
 For example,
 .DS
+.ft CW
 routedflags=-q
 rwhod=NO
 .DE
@@ -446,6 +446,7 @@ To have other network servers started as well,
 commands of the following sort should be placed in the site-dependent file
 .Pn /etc/rc.local .
 .DS
+.ft CW
 if [ -f /usr/sbin/timed ]; then
 	/usr/sbin/timed & echo -n ' timed'			>/dev/console
 f\&i
@@ -479,6 +480,7 @@ and their servers are listed as ``internal.''
 For example, an entry for the file
 transfer protocol server would appear as
 .DS
+.ft CW
 ftp	stream	tcp	nowait	root	/usr/libexec/ftpd	ftpd
 .DE
 Consult
@@ -520,6 +522,7 @@ network are considered trusted, so the
 .Pn hosts.equiv
 file is of the form:
 .DS
+.ft CW
 vangogh.CS.Berkeley.EDU
 picasso.CS.Berkeley.EDU
 okeeffe.CS.Berkeley.EDU
