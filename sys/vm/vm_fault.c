@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_fault.c	7.4 (Berkeley) 03/27/91
+ *	@(#)vm_fault.c	7.5 (Berkeley) 04/20/91
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -67,13 +67,10 @@
  */
 
 #include "param.h"
-#include "../vm/vm_param.h"
-#include "../vm/vm_map.h"
-#include "../vm/vm_object.h"
-#include "../vm/vm_page.h"
-#include "../vm/pmap.h"
-#include "../vm/vm_statistics.h"
-#include "../vm/vm_pageout.h"
+
+#include "vm.h"
+#include "vm_page.h"
+#include "vm_pageout.h"
 
 /*
  *	vm_fault:
@@ -174,7 +171,7 @@ vm_fault(map, vaddr, fault_type, change_wiring)
 	if (wired)
 		fault_type = prot;
 
-	first_m = VM_PAGE_NULL;
+	first_m = NULL;
 
    	/*
 	 *	Make a reference to this object to
@@ -236,7 +233,7 @@ vm_fault(map, vaddr, fault_type, change_wiring)
 
 	while (TRUE) {
 		m = vm_page_lookup(object, offset);
-		if (m != VM_PAGE_NULL) {
+		if (m != NULL) {
 			/*
 			 *	If the page is being brought in,
 			 *	wait for it and then retry.
@@ -327,7 +324,7 @@ vm_fault(map, vaddr, fault_type, change_wiring)
 			break;
 		}
 
-		if (((object->pager != vm_pager_null) &&
+		if (((object->pager != NULL) &&
 				(!change_wiring || wired))
 		    || (object == first_object)) {
 
@@ -338,14 +335,14 @@ vm_fault(map, vaddr, fault_type, change_wiring)
 
 			m = vm_page_alloc(object, offset);
 
-			if (m == VM_PAGE_NULL) {
+			if (m == NULL) {
 				UNLOCK_AND_DEALLOCATE;
 				VM_WAIT;
 				goto RetryFault;
 			}
 		}
 
-		if ((object->pager != vm_pager_null) &&
+		if ((object->pager != NULL) &&
 				(!change_wiring || wired)) {
 			int rv;
 
@@ -430,7 +427,7 @@ vm_fault(map, vaddr, fault_type, change_wiring)
 
 		offset += object->shadow_offset;
 		next_object = object->shadow;
-		if (next_object == VM_OBJECT_NULL) {
+		if (next_object == NULL) {
 			/*
 			 *	If there's no object left, fill the page
 			 *	in the top object with zeros.
@@ -444,7 +441,7 @@ vm_fault(map, vaddr, fault_type, change_wiring)
 				m = first_m;
 				vm_object_lock(object);
 			}
-			first_m = VM_PAGE_NULL;
+			first_m = NULL;
 
 			vm_page_zero_fill(m);
 			vm_stat.zero_fill_count++;
@@ -590,10 +587,10 @@ vm_fault(map, vaddr, fault_type, change_wiring)
 	 *	copied to the copy-object, we have to copy it there.
 	 */
     RetryCopy:
-	if (first_object->copy != VM_OBJECT_NULL) {
-		vm_object_t		copy_object = first_object->copy;
-		vm_offset_t		copy_offset;
-		vm_page_t		copy_m;
+	if (first_object->copy != NULL) {
+		vm_object_t copy_object = first_object->copy;
+		vm_offset_t copy_offset;
+		vm_page_t copy_m;
 
 		/*
 		 *	We only need to copy if we want to write it.
@@ -626,7 +623,7 @@ vm_fault(map, vaddr, fault_type, change_wiring)
 			copy_offset = first_offset
 				- copy_object->shadow_offset;
 			copy_m = vm_page_lookup(copy_object, copy_offset);
-			if (page_exists = (copy_m != VM_PAGE_NULL)) {
+			if (page_exists = (copy_m != NULL)) {
 				if (copy_m->busy) {
 #ifdef DOTHREADS
 					int	wait_result;
@@ -683,7 +680,7 @@ vm_fault(map, vaddr, fault_type, change_wiring)
 				 */
 				copy_m = vm_page_alloc(copy_object,
 								copy_offset);
-				if (copy_m == VM_PAGE_NULL) {
+				if (copy_m == NULL) {
 					/*
 					 *	Wait for a page, then retry.
 					 */
@@ -695,7 +692,7 @@ vm_fault(map, vaddr, fault_type, change_wiring)
 					goto RetryFault;
 				}
 
-			 	if (copy_object->pager != vm_pager_null) {
+			 	if (copy_object->pager != NULL) {
 					vm_object_unlock(object);
 					vm_object_unlock(copy_object);
 					UNLOCK_MAP;
@@ -1043,12 +1040,12 @@ void vm_fault_copy_entry(dst_map, src_map, dst_entry, src_entry)
 		vm_object_lock(dst_object);
 		do {
 			dst_m = vm_page_alloc(dst_object, dst_offset);
-			if (dst_m == VM_PAGE_NULL) {
+			if (dst_m == NULL) {
 				vm_object_unlock(dst_object);
 				VM_WAIT;
 				vm_object_lock(dst_object);
 			}
-		} while (dst_m == VM_PAGE_NULL);
+		} while (dst_m == NULL);
 
 		/*
 		 *	Find the page in the source object, and copy it in.
@@ -1057,7 +1054,7 @@ void vm_fault_copy_entry(dst_map, src_map, dst_entry, src_entry)
 		 */
 		vm_object_lock(src_object);
 		src_m = vm_page_lookup(src_object, dst_offset + src_offset);
-		if (src_m == VM_PAGE_NULL)
+		if (src_m == NULL)
 			panic("vm_fault_copy_wired: page missing");
 
 		vm_page_copy(src_m, dst_m);
