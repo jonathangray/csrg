@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 1992, 1993
+ * Copyright (c) 1992, 1993, 1994
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,14 +32,13 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)tty.c	8.2 (Berkeley) 01/02/94";
+static char sccsid[] = "@(#)tty.c	8.3 (Berkeley) 05/04/94";
 #endif /* not lint */
 
-#include <sys/ioctl.h>
-
-#include <curses.h>
 #include <termios.h>
 #include <unistd.h>
+
+#include "curses.h"
 
 /*
  * In general, curses should leave tty hardware settings alone (speed, parity,
