@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uio.h	8.3 (Berkeley) 02/21/94
+ *	@(#)uio.h	8.4 (Berkeley) 02/21/94
  */
 
 #ifndef _SYS_UIO_H_
@@ -78,8 +78,8 @@ struct uio {
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-int	readv __P((int, const struct iovec *, int));
-int	writev __P((int, const struct iovec *, int));
+ssize_t	readv __P((int, const struct iovec *, int));
+ssize_t	writev __P((int, const struct iovec *, int));
 __END_DECLS
 #endif /* !KERNEL */
 #endif /* !_SYS_UIO_H_ */
