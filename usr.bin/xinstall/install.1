@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)install.1	6.8 (Berkeley) 06/24/90
+.\"     @(#)install.1	6.9 (Berkeley) 07/24/90
 .\"
 .Dd 
 .Dt INSTALL 1
@@ -43,9 +43,12 @@
 .Op.Fl m Ar mode
 .Op Fl o Ar owner
 .Op Fl g Ar group
-.Ar file1 file2 ;
-or
-.if n .br
+.Ar file1 file2
+.Nm install
+.Op Fl cs
+.Op.Fl m Ar mode
+.Op Fl o Ar owner
+.Op Fl g Ar group
 .Ar file1
 \&...
 .Ar fileN directory
@@ -84,7 +87,7 @@ number of systems and binary types.
 refuses to move a file onto itself.
 .Pp
 Installing
-.Pa dev/null
+.Pa /dev/null
 creates an empty file.
 .Pp
 Upon successful completion a value of 0 is returned.
