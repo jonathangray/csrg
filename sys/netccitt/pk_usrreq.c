@@ -38,7 +38,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pk_usrreq.c	7.18 (Berkeley) 12/08/92
+ *	@(#)pk_usrreq.c	7.19 (Berkeley) 12/08/92
  */
 
 #include <sys/param.h>
@@ -52,6 +52,7 @@
 #include <sys/stat.h>
 
 #include <net/if.h>
+#include <net/if_types.h>
 #include <net/route.h>
 
 #include <netccitt/x25.h>
