@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)savemail.c	8.62 (Berkeley) 03/31/95";
+static char sccsid[] = "@(#)savemail.c	8.63 (Berkeley) 04/13/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -85,6 +85,7 @@ savemail(e, sendbody)
 	auto ADDRESS *q = NULL;
 	register char *p;
 	MCI mcibuf;
+	int sfflags;
 	char buf[MAXLINE+1];
 	extern char *ttypath();
 	typedef int (*fnptr)();
@@ -336,38 +337,19 @@ savemail(e, sendbody)
 				else if ((pw = sm_getpwnam(e->e_from.q_user)) != NULL)
 					p = pw->pw_dir;
 			}
-			if (p == NULL)
+			if (p == NULL || e->e_dfp == NULL)
 			{
-				/* no local directory */
+				/* no local directory or no data file */
 				state = ESM_MAIL;
 				break;
 			}
-			if (e->e_dfp != NULL)
-			{
-				bool oldverb = Verbose;
 
-				/* we have a home directory; open dead.letter */
-				define('z', p, e);
-				expand("\201z/dead.letter", buf, sizeof buf, e);
-				Verbose = TRUE;
-				message("Saving message in %s", buf);
-				Verbose = oldverb;
-				e->e_to = buf;
-				q = NULL;
-				(void) sendtolist(buf, &e->e_from, &q, 0, e);
-				if (q != NULL &&
-				    !bitset(QBADADDR, q->q_flags) &&
-				    deliver(e, q) == 0)
-					state = ESM_DONE;
-				else
-					state = ESM_MAIL;
-			}
-			else
-			{
-				/* no data file -- try mailing back */
-				state = ESM_MAIL;
-			}
-			break;
+			/* we have a home directory; open dead.letter */
+			define('z', p, e);
+			expand("\201z/dead.letter", buf, sizeof buf, e);
+			sfflags = SFF_NOSLINK|SFF_CREAT|SFF_REGONLY|SFF_RUNASREALUID;
+			e->e_to = buf;
+			goto writefile;
 
 		  case ESM_USRTMP:
 			/*
@@ -388,16 +370,17 @@ savemail(e, sendbody)
 
 			strcpy(buf, _PATH_VARTMP);
 			strcat(buf, "dead.letter");
-			if (!writable(buf, NULLADDR, SFF_NOSLINK|SFF_CREAT))
+			sfflags = SFF_NOSLINK|SFF_CREAT|SFF_REGONLY;
+
+  writefile:
+			if (!writable(buf, q, sfflags) ||
+			    (fp = safefopen(buf, O_WRONLY|O_CREAT|O_APPEND,
+					    FileMode, sfflags)) == NULL)
 			{
-				state = ESM_PANIC;
-				break;
-			}
-			fp = safefopen(buf, O_WRONLY|O_CREAT|O_APPEND,
-					FileMode, SFF_NOSLINK|SFF_REGONLY);
-			if (fp == NULL)
-			{
-				state = ESM_PANIC;
+				if (state == ESM_USRTMP)
+					state = ESM_PANIC;
+				else
+					state = ESM_MAIL;
 				break;
 			}
 
@@ -412,7 +395,19 @@ savemail(e, sendbody)
 			(*e->e_putbody)(&mcibuf, e, NULL);
 			putline("\n", &mcibuf);
 			(void) fflush(fp);
-			state = ferror(fp) ? ESM_PANIC : ESM_DONE;
+			if (!ferror(fp))
+			{
+				bool oldverb = Verbose;
+
+				Verbose = TRUE;
+				message("Saved message in %s", buf);
+				Verbose = oldverb;
+				state = ESM_DONE;
+			}
+			else if (state == ESM_USRTMP)
+				state = ESM_PANIC;
+			else
+				state = ESM_MAIL;
 			(void) xfclose(fp, "savemail", buf);
 			break;
 
@@ -510,6 +505,8 @@ returntosender(msg, returnq, sendbody, e)
 	ee->e_msgsize = ERRORFUDGE;
 	if (sendbody)
 		ee->e_msgsize += e->e_msgsize;
+	else
+		ee->e_flags |= EF_NO_BODY_RETN;
 	initsys(ee);
 	for (q = returnq; q != NULL; q = q->q_next)
 	{
@@ -951,7 +948,8 @@ errbody(mci, e, separator)
 	putline("", mci);
 	if (bitset(EF_HAS_DF, e->e_parent->e_flags))
 	{
-		sendbody = !bitset(EF_NO_BODY_RETN, e->e_parent->e_flags);
+		sendbody = !bitset(EF_NO_BODY_RETN, e->e_parent->e_flags) &&
+			   !bitset(EF_NO_BODY_RETN, e->e_flags);
 
 		if (e->e_msgboundary == NULL)
 		{
@@ -966,7 +964,7 @@ errbody(mci, e, separator)
 			(void) sprintf(buf, "--%s", e->e_msgboundary);
 			putline(buf, mci);
 			(void) sprintf(buf, "Content-Type: message/rfc822%s",
-				mci, sendbody ? "" : "-headers");
+				sendbody ? "" : "-headers");
 			putline(buf, mci);
 		}
 		putline("", mci);
