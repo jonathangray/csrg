@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)err.c	5.12 (Berkeley) 12/15/91";
+static char sccsid[] = "@(#)err.c	5.13 (Berkeley) 01/05/92";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -351,7 +351,7 @@ errstring(errno)
 # endif SMTP
 
 # ifdef DAEMON
-# ifdef VMUNIX
+# ifdef ETIMEDOUT
 	/*
 	**  Handle special network error codes.
 	**
@@ -391,8 +391,8 @@ errstring(errno)
 		(void) sprintf(buf, "Host Name Lookup Failure");
 		return (buf);
 	}
-# endif VMUNIX
-# endif DAEMON
+# endif
+# endif
 
 	if (errno > 0 && errno < sys_nerr)
 		return (sys_errlist[errno]);
