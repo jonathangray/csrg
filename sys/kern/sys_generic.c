@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sys_generic.c	7.28 (Berkeley) 04/16/91
+ *	@(#)sys_generic.c	7.29 (Berkeley) 05/06/91
  */
 
 #include "param.h"
@@ -473,7 +473,7 @@ ioctl(p, uap, retval)
 	return (error);
 }
 
-int	nselcoll;
+int	selwait, nselcoll;
 
 /*
  * Select system call.
