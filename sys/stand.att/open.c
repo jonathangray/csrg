@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)open.c	7.6 (Berkeley) 05/24/93
+ *	@(#)open.c	8.1 (Berkeley) 06/11/93
  */
 
 #include <sys/param.h>
