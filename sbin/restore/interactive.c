@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)interactive.c	5.15 (Berkeley) 10/05/92";
+static char sccsid[] = "@(#)interactive.c	5.16 (Berkeley) 10/06/92";
 #endif /* not lint */
 
 #include "restore.h"
@@ -684,6 +684,7 @@ printlist(name, ino, basename)
 
 	if ((dirp = rst_opendir(name)) == NULL) {
 		single.fnum = ino;
+		single.finotype = DT_UNKNOWN;
 		single.fname = savename(name + strlen(basename) + 1);
 		alist.head = &single;
 		alist.last = alist.head + 1;
