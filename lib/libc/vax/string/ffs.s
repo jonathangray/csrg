@@ -4,9 +4,9 @@
  * specifies the terms and conditions for redistribution.
  */
 
-#ifndef lint
-	.asciz	"@(#)ffs.s	5.3 (Berkeley) 02/26/86"
-#endif not lint
+#ifdef LIBC_SCCS
+	.asciz	"@(#)ffs.s	5.3 (Berkeley) 03/09/86"
+#endif LIBC_SCCS
 
 /* bit = ffs(value) */
 
