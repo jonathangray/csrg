@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef NAMED_BIND
-static char sccsid[] = "@(#)domain.c	5.34 (Berkeley) 06/23/92 (with name server)";
+static char sccsid[] = "@(#)domain.c	5.35 (Berkeley) 09/23/92 (with name server)";
 #else
-static char sccsid[] = "@(#)domain.c	5.34 (Berkeley) 06/23/92 (without name server)";
+static char sccsid[] = "@(#)domain.c	5.35 (Berkeley) 09/23/92 (without name server)";
 #endif
 #endif /* not lint */
 
@@ -112,10 +112,11 @@ getmxrr(host, mxhosts, localhost, rcode)
 			goto punt;
 	nmx = 0;
 	seenlocal = 0;
-	buflen = sizeof(hostbuf);
+	buflen = sizeof(hostbuf) - 1;
 	bp = hostbuf;
 	ancount = ntohs(hp->ancount);
-	while (--ancount >= 0 && cp < eom && nmx < MAXMXHOSTS) {
+	while (--ancount >= 0 && cp < eom && nmx < MAXMXHOSTS)
+	{
 		if ((n = dn_expand((u_char *)&answer,
 		    eom, cp, (u_char *)bp, buflen)) < 0)
 			break;
@@ -123,7 +124,8 @@ getmxrr(host, mxhosts, localhost, rcode)
 		GETSHORT(type, cp);
  		cp += sizeof(u_short) + sizeof(u_long);
 		GETSHORT(n, cp);
-		if (type != T_MX)  {
+		if (type != T_MX)
+		{
 			if (tTd(8, 1) || _res.options & RES_DEBUG)
 				printf("unexpected answer type %d, size %d\n",
 				    type, n);
@@ -131,11 +133,12 @@ getmxrr(host, mxhosts, localhost, rcode)
 			continue;
 		}
 		GETSHORT(pref, cp);
-		if ((n = dn_expand((u_char *)&answer,
-		    eom, cp, (u_char *)bp, buflen)) < 0)
+		if ((n = dn_expand((u_char *)&answer, eom, cp,
+				   (u_char *)bp, buflen)) < 0)
 			break;
 		cp += n;
-		if (!strcasecmp(bp, localhost)) {
+		if (!strcasecmp(bp, localhost))
+		{
 			if (seenlocal == 0 || pref < localpref)
 				localpref = pref;
 			seenlocal = 1;
@@ -143,9 +146,15 @@ getmxrr(host, mxhosts, localhost, rcode)
 		}
 		prefer[nmx] = pref;
 		mxhosts[nmx++] = bp;
-		n = strlen(bp) + 1;
+		n = strlen(bp);
 		bp += n;
-		buflen -= n;
+		if (bp[-1] != '.')
+		{
+			*bp++ = '.';
+			n++;
+		}
+		*bp++ = '\0';
+		buflen -= n + 1;
 	}
 	if (nmx == 0) {
 punt:		mxhosts[0] = strcpy(hostbuf, host);
