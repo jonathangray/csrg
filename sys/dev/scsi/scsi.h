@@ -39,9 +39,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)scsi.h	5.2 (Berkeley) 07/23/92
+ *	@(#)scsi.h	5.3 (Berkeley) 02/01/93
  *
- * from: $Header: scsi.h,v 1.3 92/05/15 11:24:02 torek Exp $ (LBL)
+ * from: $Header: scsi.h,v 1.5 93/02/01 19:19:15 torek Exp $ (LBL)
  */
 
 /*
