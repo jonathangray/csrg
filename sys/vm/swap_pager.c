@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: swap_pager.c 1.4 91/04/30$
  *
- *	@(#)swap_pager.c	7.10 (Berkeley) 07/03/92
+ *	@(#)swap_pager.c	7.11 (Berkeley) 07/08/92
  */
 
 /*
@@ -408,7 +408,7 @@ swap_pager_putpage(pager, m, sync)
 #endif
 	if (pager == NULL) {
 		(void) swap_pager_clean(NULL, B_WRITE);
-		return;
+		return (VM_PAGER_OK);		/* ??? */
 	}
 	flags = B_WRITE;
 	if (!sync)
@@ -712,7 +712,7 @@ swap_pager_clean(m, rw)
 #ifdef DEBUG
 	/* save panic time state */
 	if ((swpagerdebug & SDB_ANOMPANIC) && panicstr)
-		return;
+		return (FALSE);			/* ??? */
 	if (swpagerdebug & SDB_FOLLOW)
 		printf("swpg_clean(%x, %d)\n", m, rw);
 #endif
