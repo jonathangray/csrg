@@ -1,5 +1,5 @@
 #
-#	@(#)Makefile	4.3 05/31/87
+#	@(#)Makefile	4.4 06/18/87
 #
 DESTDIR =
 SRCS = \
