@@ -32,16 +32,19 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)dir.c	8.6 (Berkeley) 03/21/95";
+static char sccsid[] = "@(#)dir.c	8.7 (Berkeley) 04/27/95";
 #endif /* not lint */
 
 #include <sys/param.h>
 #include <sys/time.h>
+
 #include <ufs/ufs/dinode.h>
 #include <ufs/ufs/dir.h>
 #include <ufs/ffs/fs.h>
-#include <stdlib.h>
+
+#include <err.h>
 #include <string.h>
+
 #include "fsck.h"
 
 char	*lfname = "lost+found";
@@ -56,12 +59,19 @@ struct	odirtemplate odirhead = {
 	0, DIRBLKSIZ - 12, 2, ".."
 };
 
-struct direct	*fsck_readdir();
-struct bufarea	*getdirblk();
+static int chgino __P((struct inodesc *));
+static int dircheck __P((struct inodesc *, struct direct *));
+static int expanddir __P((struct dinode *dp, char *name));
+static void freedir __P((ino_t ino, ino_t parent));
+static struct direct *fsck_readdir __P((struct inodesc *));
+static struct bufarea *getdirblk __P((ufs_daddr_t blkno, long size));
+static int lftempname __P((char *bufp, ino_t ino));
+static int mkentry __P((struct inodesc *));
 
 /*
  * Propagate connected state through the tree.
  */
+void
 propagate()
 {
 	register struct inoinfo **inpp, *inp;
@@ -87,6 +97,7 @@ propagate()
 /*
  * Scan each entry in a directory block.
  */
+int
 dirscan(idesc)
 	register struct inodesc *idesc;
 {
@@ -97,7 +108,7 @@ dirscan(idesc)
 	char dbuf[DIRBLKSIZ];
 
 	if (idesc->id_type != DATA)
-		errexit("wrong type to dirscan %d\n", idesc->id_type);
+		errx(EEXIT, "wrong type to dirscan %d", idesc->id_type);
 	if (idesc->id_entryno == 0 &&
 	    (idesc->id_filesize & (DIRBLKSIZ - 1)) != 0)
 		idesc->id_filesize = roundup(idesc->id_filesize, DIRBLKSIZ);
@@ -148,7 +159,7 @@ dirscan(idesc)
 /*
  * get next entry in a directory.
  */
-struct direct *
+static struct direct *
 fsck_readdir(idesc)
 	register struct inodesc *idesc;
 {
@@ -210,6 +221,7 @@ dpok:
  * Verify that a directory entry is valid.
  * This is a superset of the checks made in the kernel.
  */
+static int
 dircheck(idesc, dp)
 	struct inodesc *idesc;
 	register struct direct *dp;
@@ -253,6 +265,7 @@ dircheck(idesc, dp)
 	return (1);
 }
 
+void
 direrror(ino, errmesg)
 	ino_t ino;
 	char *errmesg;
@@ -261,6 +274,7 @@ direrror(ino, errmesg)
 	fileerror(ino, ino, errmesg);
 }
 
+void
 fileerror(cwd, ino, errmesg)
 	ino_t cwd, ino;
 	char *errmesg;
@@ -284,9 +298,10 @@ fileerror(cwd, ino, errmesg)
 		pfatal("NAME=%s\n", pathbuf);
 }
 
+void
 adjust(idesc, lcnt)
 	register struct inodesc *idesc;
-	short lcnt;
+	int lcnt;
 {
 	register struct dinode *dp;
 
@@ -314,6 +329,7 @@ adjust(idesc, lcnt)
 	}
 }
 
+static int
 mkentry(idesc)
 	struct inodesc *idesc;
 {
@@ -358,6 +374,7 @@ mkentry(idesc)
 	return (ALTERED|STOP);
 }
 
+static int
 chgino(idesc)
 	struct inodesc *idesc;
 {
@@ -373,6 +390,7 @@ chgino(idesc)
 	return (ALTERED|STOP);
 }
 
+int
 linkup(orphan, parentdir)
 	ino_t orphan;
 	ino_t parentdir;
@@ -480,6 +498,7 @@ linkup(orphan, parentdir)
 /*
  * fix an entry in a directory.
  */
+int
 changeino(dir, name, newnum)
 	ino_t dir;
 	char *name;
@@ -500,6 +519,7 @@ changeino(dir, name, newnum)
 /*
  * make an entry in a directory
  */
+int
 makeentry(parent, ino, name)
 	ino_t parent, ino;
 	char *name;
@@ -535,6 +555,7 @@ makeentry(parent, ino, name)
 /*
  * Attempt to expand the size of a directory
  */
+static int
 expanddir(dp, name)
 	register struct dinode *dp;
 	char *name;
@@ -591,6 +612,7 @@ bad:
 /*
  * allocate a new directory
  */
+ino_t
 allocdir(parent, request, mode)
 	ino_t parent, request;
 	int mode;
@@ -646,6 +668,7 @@ allocdir(parent, request, mode)
 /*
  * free a directory inode
  */
+static void
 freedir(ino, parent)
 	ino_t ino, parent;
 {
@@ -662,6 +685,7 @@ freedir(ino, parent)
 /*
  * generate a temporary name for the lost+found directory.
  */
+static int
 lftempname(bufp, ino)
 	char *bufp;
 	ino_t ino;
@@ -688,7 +712,7 @@ lftempname(bufp, ino)
  * Get a directory block.
  * Insure that it is held until another is requested.
  */
-struct bufarea *
+static struct bufarea *
 getdirblk(blkno, size)
 	ufs_daddr_t blkno;
 	long size;
