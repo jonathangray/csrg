@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty_tb.c	7.7 (Berkeley) 05/09/91
+ *	@(#)tty_tb.c	7.8 (Berkeley) 10/11/92
  */
 
 #include "tb.h"
@@ -40,9 +40,9 @@
  * Line discipline for RS232 tablets;
  * supplies binary coordinate data.
  */
-#include "param.h"
-#include "tablet.h"
-#include "tty.h"
+#include <sys/param.h>
+#include <sys/tablet.h>
+#include <sys/tty.h>
 
 /*
  * Tablet configuration table.
