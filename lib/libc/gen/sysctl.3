@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)sysctl.3	8.1 (Berkeley) 06/04/93
+.\"	@(#)sysctl.3	8.2 (Berkeley) 06/01/94
 .\"
 .Dd ""
 .Dt SYSCTL 3
@@ -203,6 +203,7 @@ The machine class.
 The machine model
 .It Li HW_NCPU
 The number of cpus.
+.ne 1i
 .It Li HW_BYTEORDER
 The byteorder (4,321, or 1,234).
 .It Li HW_PHYSMEM
@@ -256,6 +257,7 @@ information.
 .It KERN\_VERSION	string	no
 .It KERN\_VNODE	struct vnode	no
 .El
+.ne 1i
 .Pp
 .Bl -tag -width "123456"
 .It Li KERN_ARGMAX
@@ -371,6 +373,7 @@ describing destination of calls and their counts.
 .It Li GPROF_GMONPARAM
 Structure giving the sizes of the above arrays.
 .El
+.ne 1i
 .It Li KERN_SAVED_IDS
 Returns 1 if saved set-group and saved set-user ID is available.
 .It Li KERN_SECURELVL
@@ -433,6 +436,7 @@ Get or set various global information about the internet protocols.
 The third level name is the protocol.
 The fourth level name is the variable name.
 The currently defined protocols and names are:
+.ne 1i
 .Bl -column "Protocol nameXXXXXX" "Variable nameXXX" "integerXXX" -offset indent
 .It Pa Protocol name	Variable name	Type	Changeable
 .It ip	forwarding	integer	yes
@@ -550,6 +554,7 @@ The version of POSIX 1003.2 with which the system attempts to comply.
 .It Li USER_RE_DUP_MAX
 The maximum number of repeated occurrences of a regular expression
 permitted when using interval notation.
+.ne 1i
 .It Li USER_STREAM_MAX
 The minimum maximum number of streams that a process may have open
 at any one time.
