@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.88 (Berkeley) 11/14/92
+ *	@(#)vfs_subr.c	7.89 (Berkeley) 12/01/92
  */
 
 /*
@@ -918,9 +918,10 @@ void vgone(vp)
 		vp->v_specinfo = NULL;
 	}
 	/*
-	 * If it is on the freelist, move it to the head of the list.
+	 * If it is on the freelist and not already at the head,
+	 * move it to the head of the list.
 	 */
-	if (vp->v_freeb) {
+	if (vp->v_freeb && vfreeh != vp) {
 		if (vq = vp->v_freef)
 			vq->v_freeb = vp->v_freeb;
 		else
