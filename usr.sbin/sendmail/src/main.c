@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.96 (Berkeley) 04/02/95";
+static char sccsid[] = "@(#)main.c	8.97 (Berkeley) 04/07/95";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -270,6 +270,9 @@ main(argc, argv, envp)
 #if defined(ultrix)
 # define OPTIONS	"B:b:C:cd:e:F:f:h:IiM:mnO:o:p:q:r:sTtvX:"
 #endif
+#if defined(sony_news)
+# define OPTIONS	"B:b:C:cd:E:e:F:f:h:IiJ:mnO:o:p:q:r:sTtvX:"
+#endif
 #ifndef OPTIONS
 # define OPTIONS	"B:b:C:cd:e:F:f:h:IimnO:o:p:q:r:sTtvX:"
 #endif
@@ -280,9 +283,33 @@ main(argc, argv, envp)
 		  case 'd':
 			tTflag(optarg);
 			setbuf(stdout, (char *) NULL);
-			printf("Version %s\n", Version);
 			break;
 		}
+	}
+
+	if (tTd(0, 1))
+	{
+		int ll;
+		extern char *CompileOptions[];
+
+		printf("Version %s", Version);
+		av = CompileOptions;
+		ll = 100;
+		while (*av != NULL)
+		{
+			if (ll + strlen(*av) > 63)
+			{
+				putchar('\n');
+				ll = 0;
+			}
+			if (ll == 0)
+				putchar('\t');
+			else
+				putchar(' ');
+			printf("%s", *av);
+			ll += strlen(*av++) + 1;
+		}
+		putchar('\n');
 	}
 
 	InChannel = stdin;
@@ -639,6 +666,12 @@ main(argc, argv, envp)
 		  case 'x':	/* random flag that OSF/1 & AIX mailx passes */
 			break;
 # endif
+# if defined(sony_news)
+		  case 'E':
+		  case 'J':	/* ignore flags for Japanese code conversion
+				   impremented on Sony NEWS */
+			break;
+# endif
 
 		  default:
 			ExitStat = EX_USAGE;
@@ -731,6 +764,7 @@ main(argc, argv, envp)
 		else
 			*evp++ = newstr(tzbuf);
 	}
+	tzset();
 
 	if (ConfigLevel > MAXCONFIGLEVEL)
 	{
@@ -1516,7 +1550,11 @@ obsolete(argv)
 		/* skip over options that do have a value */
 		op = strchr(OPTIONS, ap[1]);
 		if (op != NULL && *++op == ':' && ap[2] == '\0' &&
-		    ap[1] != 'd' && argv[1] != NULL && argv[1][0] != '-')
+		    ap[1] != 'd' &&
+#if defined(sony_news)
+		    ap[1] != 'E' && ap[1] != 'J' &&
+#endif
+		    argv[1] != NULL && argv[1][0] != '-')
 		{
 			argv++;
 			continue;
@@ -1539,6 +1577,16 @@ obsolete(argv)
 		/* if -d doesn't have an argument, use 0-99.1 */
 		if (ap[1] == 'd' && ap[2] == '\0')
 			*argv = "-d0-99.1";
+
+# if defined(sony_news)
+		/* if -E doesn't have an argument, use -EC */
+		if (ap[1] == 'E' && ap[2] == '\0')
+			*argv = "-EC";
+
+		/* if -J doesn't have an argument, use -JJ */
+		if (ap[1] == 'J' && ap[2] == '\0')
+			*argv = "-JJ";
+# endif
 	}
 }
 /*
@@ -1581,6 +1629,11 @@ auth_warning(e, msg, va_alist)
 		vsprintf(p, msg, ap);
 		VA_END;
 		addheader("X-Authentication-Warning", buf, &e->e_header);
+#if LOG
+		if (LogLevel > 3)
+			syslog(LOG_INFO, "%s: Authentication-Warning: %s",
+				e->e_id == NULL ? "[NOQUEUE]" : e->e_id, buf);
+#endif
 	}
 }
 /*
