@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_vnops.c	7.24 (Berkeley) 08/22/90
+ *	@(#)vfs_vnops.c	7.25 (Berkeley) 12/05/90
  */
 
 #include "param.h"
@@ -160,9 +160,7 @@ vn_writechk(vp)
 	 * the vnode, try to free it up once.  If
 	 * we fail, we can't allow writing.
 	 */
-	if (vp->v_flag & VTEXT)
-		xrele(vp);
-	if (vp->v_flag & VTEXT)
+	if ((vp->v_flag & VTEXT) && !vnode_pager_uncache(vp))
 		return (ETXTBSY);
 	return (0);
 }
