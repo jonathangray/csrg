@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_malloc.c	7.31 (Berkeley) 03/13/92
+ *	@(#)kern_malloc.c	7.32 (Berkeley) 03/14/92
  */
 
 #include "param.h"
@@ -171,7 +171,6 @@ malloc(size, type, flags)
 		 */
 		savedlist = kbp->kb_next;
 		rp = kbp->kb_next; /* returned while blocked in vmemall */
-		kbp->kb_next = va + (npg * NBPG) - allocsize;
 		for (cp = kbp->kb_next; cp >= va; cp -= allocsize) {
 			((caddr_t *)cp)[2] = (cp > va ? cp - allocsize : rp);
 			if (indx == 7) {
