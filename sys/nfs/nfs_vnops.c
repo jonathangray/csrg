@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	7.96 (Berkeley) 10/08/92
+ *	@(#)nfs_vnops.c	7.97 (Berkeley) 10/09/92
  */
 
 /*
@@ -2062,7 +2062,7 @@ nfs_doio(bp)
 	if (bp->b_flags & B_PHYS) {
 		if (bp->b_flags & B_DIRTY)
 			uiop->uio_procp = pageproc;
-		cr = crcopy(uiop->uio_procp->p_ucred);
+		cr = crdup(uiop->uio_procp->p_ucred);
 		/* mapping was already done by vmapbuf */
 		io.iov_base = bp->b_un.b_addr;
 
