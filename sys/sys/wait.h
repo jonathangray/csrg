@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)wait.h	7.9 (Berkeley) 06/28/90
+ *	@(#)wait.h	7.10 (Berkeley) 10/12/90
  */
 
 /*
@@ -137,3 +137,15 @@ union wait {
 
 #define	WSTOPPED	_WSTOPPED
 #endif /* _POSIX_SOURCE */
+
+#if __STDC__ || c_plusplus
+pid_t wait(int *);
+pid_t waitpid(pid_t, int *, int);
+pid_t wait3(int *, int, struct rusage *);
+pid_t wait4(pid_t, int *, int, struct rusage *);
+#else
+pid_t wait();
+pid_t waitpid();
+pid_t wait3();
+pid_t wait4();
+#endif
