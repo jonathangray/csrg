@@ -1,7 +1,7 @@
 /*-
  * Copyright (c) 1992 Keith Muller.
- * Copyright (c) 1992 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1992, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Keith Muller of the University of California, San Diego.
@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pat_rep.h	1.1 (Berkeley) 12/13/92
+ *	@(#)pat_rep.h	8.1 (Berkeley) 05/31/93
  */
 
 /*
