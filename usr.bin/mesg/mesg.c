@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)mesg.c	4.6 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)mesg.c	4.7 (Berkeley) 03/01/91";
 #endif /* not lint */
 
 /*
@@ -94,7 +94,6 @@ main(argc, argv)
 	/*NOTREACHED*/
 }
 
-static
 newmode(m)
 	u_short m;
 {
