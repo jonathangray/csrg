@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)tcsetattr.3	8.2 (Berkeley) 12/11/93
+.\"	@(#)tcsetattr.3	8.3 (Berkeley) 01/02/94
 .\"
 .Dd ""
 .Dt TCSETATTR 3
@@ -54,7 +54,7 @@
 .Fn cfgetospeed "struct termios *t"
 .Ft int
 .Fn cfsetospeed "struct termios *t" "speed_t speed"
-.Ft void
+.Ft int
 .Fn cfsetspeed "struct termios *t" "speed_t speed"
 .Ft void
 .Fn cfmakeraw "struct termios *t"
