@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)keyword.c	5.11 (Berkeley) 03/01/92";
+static char sccsid[] = "@(#)keyword.c	5.12 (Berkeley) 06/05/92";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -55,13 +55,8 @@ static char sccsid[] = "@(#)keyword.c	5.11 (Berkeley) 03/01/92";
 #include <sys/kinfo_proc.h>
 #endif
 
-int	command(), cputime(), evar(), logname(), longtname(), lstarted(),
-	maxrss(), p_rssize(), pagein(), pcpu(), pmem(), pri(), pvar(),
-	rssize(), runame(), rvar(), started(), state(), tdev(), tname(),
-	tsize(), ucomm(), uname(), uvar(), vsize(), wchan();
-#ifndef NEWVM
-int	trss();
-#endif
+static VAR *findvar __P((char *));
+static int  vcmp __P((const void *, const void *));
 
 #ifdef NOTINUSE
 int	utime(), stime(), ixrss(), idrss(), isrss();
@@ -262,6 +257,7 @@ VAR var[] = {
 	{""},
 };
 
+void
 showkey()
 {
 	extern int termwidth;
@@ -283,6 +279,7 @@ showkey()
 	(void) printf("\n");
 }
 
+void
 parsefmt(p)
 	char *p;
 {
@@ -290,7 +287,6 @@ parsefmt(p)
 	register VAR *v;
 	register char *cp;
 	register struct varent *vent;
-	static VAR *findvar();
 
 #define	FMTSEP	" \t,\n"
 	while (p && *p) {
@@ -329,8 +325,7 @@ findvar(p)
 		*hp++ = '\0';
 
 	key.name = p;
-	v = (VAR *)bsearch(&key, var,
-		sizeof(var)/sizeof(VAR) - 1, sizeof(VAR), vcmp);
+	v = bsearch(&key, var, sizeof(var)/sizeof(VAR) - 1, sizeof(VAR), vcmp);
 
 	if (v && v->alias) {
 		if (hp) {
@@ -350,8 +345,9 @@ findvar(p)
 	return(v);
 }
 
+static int
 vcmp(a, b)
-        VAR *a, *b;
+        const void *a, *b;
 {
-        return(strcmp(a->name, b->name));
+        return(strcmp(((VAR *)a)->name, ((VAR *)b)->name));
 }
