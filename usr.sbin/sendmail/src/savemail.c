@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)savemail.c	8.32 (Berkeley) 07/03/94";
+static char sccsid[] = "@(#)savemail.c	8.33 (Berkeley) 07/23/94";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -401,8 +401,7 @@ savemail(e)
 				mcibuf.mci_flags |= MCIF_7BIT;
 
 			putfromline(&mcibuf, e);
-			(*e->e_puthdr)(&mcibuf, e);
-			putline("\n", &mcibuf);
+			(*e->e_puthdr)(&mcibuf, e->e_header, e);
 			(*e->e_putbody)(&mcibuf, e, NULL);
 			putline("\n", &mcibuf);
 			(void) fflush(fp);
@@ -511,7 +510,7 @@ returntosender(msg, returnq, sendbody, e)
 			parseaddr(q->q_paddr, q, RF_COPYPARSE, '\0', NULL, e);
 
 		if (q->q_alias == NULL)
-			addheader("To", q->q_paddr, ee);
+			addheader("To", q->q_paddr, &ee->e_header);
 	}
 
 # ifdef LOG
@@ -528,13 +527,13 @@ returntosender(msg, returnq, sendbody, e)
 	addheader("Subject", msg, ee);
 	if (SendMIMEErrors)
 	{
-		addheader("MIME-Version", "1.0", ee);
+		addheader("MIME-Version", "1.0", &ee->e_header);
 		(void) sprintf(buf, "%s.%ld/%s",
 			ee->e_id, curtime(), MyHostName);
 		ee->e_msgboundary = newstr(buf);
 		(void) sprintf(buf, "multipart/mixed; boundary=\"%s\"",
 					ee->e_msgboundary);
-		addheader("Content-Type", buf, ee);
+		addheader("Content-Type", buf, &ee->e_header);
 	}
 
 	/* fake up an address header for the from person */
@@ -577,6 +576,7 @@ returntosender(msg, returnq, sendbody, e)
 **	Parameters:
 **		mci -- the mailer connection information.
 **		e -- the envelope we are working in.
+**		separator -- any possible MIME separator.
 **
 **	Returns:
 **		none
@@ -585,9 +585,10 @@ returntosender(msg, returnq, sendbody, e)
 **		Outputs the body of an error message.
 */
 
-errbody(mci, e)
+errbody(mci, e, separator)
 	register MCI *mci;
 	register ENVELOPE *e;
+	char *separator;
 {
 	register FILE *xfile;
 	char *p;
@@ -595,6 +596,11 @@ errbody(mci, e)
 	bool printheader;
 	char buf[MAXLINE];
 
+	if (bitset(MCIF_INHEADER, mci->mci_flags))
+	{
+		putline("", mci);
+		mci->mci_flags &= ~MCIF_INHEADER;
+	}
 	if (e->e_parent == NULL)
 	{
 		syserr("errbody: null parent");
@@ -748,12 +754,14 @@ errbody(mci, e)
 			putline("Content-Type: message/rfc822", mci);
 			putline("", mci);
 		}
-		putheader(mci, e->e_parent);
-		putline("", mci);
+		putheader(mci, e->e_parent->e_header, e->e_parent);
 		if (SendBody)
 			putbody(mci, e->e_parent, e->e_msgboundary);
 		else
+		{
+			putline("", mci);
 			putline("   ----- Message body suppressed -----", mci);
+		}
 	}
 	else
 	{
