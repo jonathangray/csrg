@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)csh.h	5.21 (Berkeley) 02/12/92
+ *	@(#)csh.h	5.22 (Berkeley) 05/15/92
  */
 
 /*
@@ -89,10 +89,6 @@ FILE *cshin, *cshout, *csherr;
 
 #define	isdir(d)	((d.st_mode & S_IFMT) == S_IFDIR)
 
-#define SIGN_EXTEND_CHAR(a) \
-	((a) & 0x80 ? ((int) (a)) | 0xffffff00 : ((int) a) & 0x000000ff)
-
-
 typedef int bool;
 
 #define	eq(a, b)	(Strcmp(a, b) == 0)
@@ -147,8 +143,8 @@ struct rusage ru0;
  */
 Char   *doldol;			/* Character pid for $$ */
 int	backpid;		/* Pid of the last background process */
-int     uid;			/* Invokers uid */
-int     gid;			/* Invokers gid */
+int     uid, euid;		/* Invokers uid */
+int     gid, egid;		/* Invokers gid */
 time_t  chktim;			/* Time mail last checked */
 int     shpgrp;			/* Pgrp of shell */
 int     tpgrp;			/* Terminal process group */
