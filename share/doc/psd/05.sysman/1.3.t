@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)1.3.t	8.5 (Berkeley) 05/26/94
+.\"	@(#)1.3.t	8.6 (Berkeley) 05/29/94
 .\"
 .Sh 2 "Signals
 .PP
@@ -221,7 +221,7 @@ pid_t pgrp; int signo;
 Unless the process sending the signal is privileged,
 it must have the same effective user id as the process receiving the signal.
 .PP
-Signals are also sent implicitly from a terminal device to the
+Signals also are sent implicitly from a terminal device to the
 process group associated with the terminal when certain input characters
 are typed.
 .Sh 3 "Protecting critical sections
