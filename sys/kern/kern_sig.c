@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sig.c	7.48 (Berkeley) 07/03/92
+ *	@(#)kern_sig.c	7.49 (Berkeley) 07/07/92
  */
 
 #define	SIGPROP		/* include signal properties table */
@@ -530,7 +530,7 @@ killpg1(cp, signo, pgid, all)
 		/* 
 		 * broadcast 
 		 */
-		for (p = allproc; p != NULL; p = p->p_nxt) {
+		for (p = (struct proc *)allproc; p != NULL; p = p->p_nxt) {
 			if (p->p_pid <= 1 || p->p_flag&SSYS || 
 			    p == cp || !CANSIGNAL(cp, pc, p, signo))
 				continue;
