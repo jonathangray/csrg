@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)bt_put.c	5.1 (Berkeley) 01/23/91";
+static char sccsid[] = "@(#)bt_put.c	5.2 (Berkeley) 02/18/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -106,7 +106,10 @@ _bt_insert(t, item, key, data, flag)
 		if (_bt_split(t) == RET_ERROR)
 			return (RET_ERROR);
 
-		/* okay, try again */
+		/* okay, try again (empty the stack first, though) */
+		while (_bt_pop((BTREE) t) != P_NONE)
+			continue;
+
 		return (bt_put((BTREE) t, key, data, flag));
 	}
 
