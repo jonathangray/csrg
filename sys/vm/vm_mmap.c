@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: vm_mmap.c 1.6 91/10/21$
  *
- *	@(#)vm_mmap.c	7.19 (Berkeley) 02/10/93
+ *	@(#)vm_mmap.c	7.20 (Berkeley) 02/20/93
  */
 
 /*
