@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	5.5 (Berkeley) 03/04/91
+ *	@(#)pathnames.h	5.6 (Berkeley) 03/04/91
  */
 
 #include <paths.h>
@@ -39,7 +39,7 @@
 #define	_PATH_SCCSBDIFF	"/usr/local/bin/bdiff"
 #define	_PATH_SCCSCOMB	"/usr/local/bin/comb"
 #define	_PATH_SCCSDELTA	"/usr/local/bin/delta"
-#define	_PATH_SCCSDIFF	"/usr/local/bin/diff"
+#define	_PATH_SCCSDIFF	"/usr/local/bin/sccsdiff"
 #define	_PATH_SCCSGET	"/usr/local/bin/get"
 #define	_PATH_SCCSHELP	"/usr/local/bin/help"
 #define	_PATH_SCCSPRS	"/usr/local/bin/prs"
