@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_resource.c	8.6 (Berkeley) 08/22/94
+ *	@(#)kern_resource.c	8.7 (Berkeley) 01/09/95
  */
 
 #include <sys/param.h>
@@ -356,6 +356,7 @@ getrlimit(p, uap, retval)
  * Transform the running time and tick information in proc p into user,
  * system, and interrupt time usage.
  */
+void
 calcru(p, up, sp, ip)
 	register struct proc *p;
 	register struct timeval *up;
@@ -438,6 +439,7 @@ getrusage(p, uap, retval)
 	    sizeof (struct rusage)));
 }
 
+void
 ruadd(ru, ru2)
 	register struct rusage *ru, *ru2;
 {
