@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)machdep.c	8.4 (Berkeley) 01/12/94
+ *	@(#)machdep.c	8.5 (Berkeley) 01/13/94
  *
  * from: $Header: machdep.c,v 1.44 93/10/31 05:28:36 torek Exp $
  */
@@ -541,7 +541,8 @@ boot(howto)
 
 	fb_unblank();
 	boothowto = howto;
-	if ((howto & RB_NOSYNC) == 0 && waittime < 0 && rootfs) {
+	if ((howto & RB_NOSYNC) == 0 &&
+	    waittime < 0 && mountlist.tqh_first != NULL) {
 		register struct buf *bp;
 		int iter, nbusy;
 #if 1
