@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_syscalls.c	7.16 (Berkeley) 07/23/92
+ *	@(#)lfs_syscalls.c	7.17 (Berkeley) 08/01/92
  */
 
 #include <sys/param.h>
@@ -165,9 +165,14 @@ lfs_markv(p, uap, retval)
 	}
 
 	for (inop = start; cnt--; ++inop) {
-		LFS_IENTRY(ifp, fs, inop->ii_inode, bp);
-		daddr = ifp->if_daddr;
-		brelse(bp);
+		if (inop->ii_inode == LFS_IFILE_INUM)
+			daddr = fs->lfs_idaddr;
+		else {
+			LFS_IENTRY(ifp, fs, inop->ii_inode, bp);
+			daddr = ifp->if_daddr;
+			brelse(bp);
+		}
+
 		if (daddr != inop->ii_daddr)
 			continue;
 		/*
@@ -282,7 +287,7 @@ lfs_segclean(p, uap, retval)
 	fs->lfs_bfree += (sup->su_nsums * LFS_SUMMARY_SIZE / DEV_BSIZE) +
 	    sup->su_ninos * btodb(fs->lfs_bsize);
 	sup->su_flags &= ~SEGUSE_DIRTY;
-	sup->su_nbytes = 0;
+	sup->su_nbytes -= sup->su_nsums * LFS_SUMMARY_SIZE;
 	sup->su_ninos = 0;
 	sup->su_nsums = 0;
 	LFS_UBWRITE(bp);
@@ -291,11 +296,6 @@ lfs_segclean(p, uap, retval)
 	++cip->clean;
 	--cip->dirty;
 	LFS_UBWRITE(bp);
-	/*
-	 * Count all the blocks in the segment as being free again.
-	 */
-	fs->lfs_bfree += fs->lfs_ssize;
-
 	return (0);
 }
 
