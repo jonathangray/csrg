@@ -30,10 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty.h	7.13 (Berkeley) 02/15/92
+ *	@(#)tty.h	7.14 (Berkeley) 02/17/92
  */
 
 #include <sys/termios.h>
+#include <sys/select.h>			/* for struct selinfo */
 
 /*
  * Clists are character lists, which is a variable length linked list
