@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_prf.c	7.37 (Berkeley) 03/08/92
+ *	@(#)subr_prf.c	7.38 (Berkeley) 03/11/92
  */
 
 #include <sys/param.h>
@@ -411,7 +411,8 @@ reswitch:	switch (ch = *(u_char *)fmt++) {
 						putchar(n, flags, tp);
 					tmp = 1;
 				} else
-					for (; *p > ' '; ++p);
+					for (; *p > ' '; ++p)
+						continue;
 			}
 			if (tmp)
 				putchar('>', flags, tp);
