@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.84 (Berkeley) 02/23/95";
+static char sccsid[] = "@(#)main.c	8.55.1.4 (Berkeley) 02/28/95";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -326,7 +326,10 @@ main(argc, argv, envp)
 	if (tTd(8, 8))
 	{
 		res_init();
+	{
+		res_init();
 		_res.options |= RES_DEBUG;
+	}
 	}
 #endif
 
@@ -509,7 +512,7 @@ main(argc, argv, envp)
 				ExitStat = EX_USAGE;
 				break;
 			}
-			from = newstr(denlstring(optarg));
+			from = newstr(denlstring(optarg, TRUE));
 			if (strcmp(RealUserName, from) != 0)
 				warn_f_flag = j;
 			break;
@@ -675,6 +678,15 @@ main(argc, argv, envp)
 	*/
 
 #if NAMED_BIND
+	if (!bitset(RES_INIT, _res.options))
+		res_init();
+#endif
+
+	/*
+	**  Initialize name server if it is going to be used.
+	*/
+
+#if NAMED_BIND
 	if (UseNameServer && !bitset(RES_INIT, _res.options))
 		res_init();
 #endif
@@ -768,7 +780,7 @@ main(argc, argv, envp)
 
 	/* full names can't have newlines */
 	if (FullName != NULL && strchr(FullName, '\n') != NULL)
-		FullName = newstr(denlstring(FullName));
+		FullName = newstr(denlstring(FullName, TRUE));
 
 	/* do heuristic mode adjustment */
 	if (Verbose)
