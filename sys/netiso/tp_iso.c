@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_iso.c	7.14 (Berkeley) 10/11/92
+ *	@(#)tp_iso.c	7.15 (Berkeley) 11/25/92
  */
 
 /***********************************************************
@@ -465,7 +465,6 @@ tpclnp_input(m, src, dst, clnp_len, ce_bit)
 	struct sockaddr_iso *src, *dst;
 	int clnp_len, ce_bit;
 {
-	int s = splnet();
 	struct mbuf *tp_inputprep();
 	int tp_input(), cltp_input(), (*input)() = tp_input;
 
@@ -481,10 +480,21 @@ tpclnp_input(m, src, dst, clnp_len, ce_bit)
 	 * First, strip off the Clnp header. leave the mbuf there for the
 	 * pullup that follows.
 	 */
-
 	m->m_len -= clnp_len;
 	m->m_data += clnp_len;
-
+	m->m_pkthdr.len -= clnp_len;
+	/* XXXX: should probably be in clnp_input */
+	switch (dst->siso_data[dst->siso_nlen - 1]) {
+#ifdef TUBA
+	case ISOPROTO_TCP:
+		return (tuba_tcpinput(m, src, dst));
+#endif
+	case 0:
+		if (m->m_len == 0 && (m = m_pullup(m, 1)) == 0)
+			return 0;
+		if (*(mtod(m, u_char *)) == ISO10747_IDRP)
+			return (idrp_input(m, src, dst));
+	}
 	m = tp_inputprep(m);
 	if (m == 0)
 		return 0;
@@ -520,7 +530,6 @@ tpclnp_input(m, src, dst, clnp_len, ce_bit)
 		}
 	ENDDEBUG
 
-	splx(s);
 	return 0;
 }
 
