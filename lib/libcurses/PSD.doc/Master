@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)Master	8.2 (Berkeley) 06/05/93
+.\"	@(#)Master	6.7 (Berkeley) 06/07/93
 .\"
 .ds Ln Screen Package
 .so macros
@@ -46,8 +46,8 @@
 .bp
 .so appen.A
 .pn 2
-.oh '\*(Ln''PS1:18-%'
-.eh 'PS1:18-%''\*(Ln'
+.oh '\*(Ln''PS1:19-%'
+.eh 'PS1:19-%''\*(Ln'
 .bp
 .bi Contents
 .sp
