@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs.h	7.5 (Berkeley) 12/14/91
+ *	@(#)lfs.h	7.6 (Berkeley) 12/14/91
  */
 
 typedef struct buf	BUF;
@@ -192,8 +192,6 @@ struct ifile {
 typedef struct _cleanerinfo {
 	u_long	clean;			/* K: number of clean segments */
 	u_long	dirty;			/* K: number of dirty segments */
-	u_long	last_seg;		/* K: index of last seg written */
-	time_t	last_time;		/* K: timestamp of last seg written */
 } CLEANERINFO;
 
 #define	CLEANSIZE_SU(fs) \
