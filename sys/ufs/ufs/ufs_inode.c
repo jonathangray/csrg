@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_inode.c	7.44 (Berkeley) 12/19/91
+ *	@(#)ufs_inode.c	7.45 (Berkeley) 05/13/92
  */
 
 #include <sys/param.h>
