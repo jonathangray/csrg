@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.128 (Berkeley) 04/25/95
+ *	@(#)sendmail.h	8.129 (Berkeley) 04/25/95
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.128		04/25/95";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.129		04/25/95";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -921,6 +921,7 @@ union bigsockaddr
 
 #define VENDOR_BERKELEY	1	/* Berkeley-native configuration file */
 #define VENDOR_SUN	2	/* Sun-native configuration file */
+#define VENDOR_HP	3	/* Hewlett-Packard specific config syntax */
 
 EXTERN int	VendorCode;	/* vendor-specific operation enhancements */
 /*
