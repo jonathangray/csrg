@@ -37,20 +37,21 @@
  *
  * from: Utah $Hdr: vm_unix.c 1.1 89/11/07$
  *
- *	@(#)vm_unix.c	7.2 (Berkeley) 04/20/91
+ *	@(#)vm_unix.c	7.3 (Berkeley) 05/04/92
  */
 
 /*
  * Traditional sbrk/grow interface to VM
  */
-#include "param.h"
-#include "systm.h"
-#include "proc.h"
-#include "resourcevar.h"
+#include <sys/param.h>
+#include <sys/systm.h>
+#include <sys/proc.h>
+#include <sys/resourcevar.h>
 
-#include "vm.h"
+#include <vm/vm.h>
 
 /* ARGSUSED */
+int
 obreak(p, uap, retval)
 	struct proc *p;
 	struct args {
@@ -92,6 +93,7 @@ obreak(p, uap, retval)
  * Enlarge the "stack segment" to include the specified
  * stack pointer for the process.
  */
+int
 grow(p, sp)
 	struct proc *p;
 	unsigned sp;
@@ -120,6 +122,7 @@ grow(p, sp)
 }
 
 /* ARGSUSED */
+int
 ovadvise(p, uap, retval)
 	struct proc *p;
 	struct args {
