@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	8.25 (Berkeley) 05/14/95
+ *	@(#)ufs_vnops.c	8.26 (Berkeley) 05/22/95
  */
 
 #include <sys/param.h>
@@ -1984,9 +1984,9 @@ ufs_vinit(mntp, specops, fifoops, vpp)
 		if (nvp = checkalias(vp, ip->i_rdev, mntp)) {
 			/*
 			 * Discard unneeded vnode, but save its inode.
+			 * Note that the lock is carried over in the inode
+			 * to the replacement vnode.
 			 */
-			ufs_ihashrem(ip);
-			VOP_UNLOCK(vp, 0, p);
 			nvp->v_data = vp->v_data;
 			vp->v_data = NULL;
 			vp->v_op = spec_vnodeop_p;
@@ -1997,7 +1997,6 @@ ufs_vinit(mntp, specops, fifoops, vpp)
 			 */
 			vp = nvp;
 			ip->i_vnode = vp;
-			ufs_ihashins(ip);
 		}
 		break;
 	case VFIFO:
