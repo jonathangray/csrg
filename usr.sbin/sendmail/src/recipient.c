@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recipient.c	6.20 (Berkeley) 03/01/93";
+static char sccsid[] = "@(#)recipient.c	6.21 (Berkeley) 03/01/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -110,14 +110,14 @@ sendto(list, copyf, ctladdr, qflags)
 
 	for (p = list; *p != '\0'; )
 	{
+		auto char *delimptr;
 		register ADDRESS *a;
-		extern char *DelimChar;		/* defined in prescan */
 
 		/* parse the address */
 		while ((isascii(*p) && isspace(*p)) || *p == ',')
 			p++;
-		a = parseaddr(p, (ADDRESS *) NULL, 1, delimiter, e);
-		p = DelimChar;
+		a = parseaddr(p, (ADDRESS *) NULL, 1, delimiter, &delimptr, e);
+		p = delimptr;
 		if (a == NULL)
 			continue;
 		a->q_next = al;
