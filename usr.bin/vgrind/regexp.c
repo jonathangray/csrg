@@ -32,17 +32,23 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)regexp.c	5.3 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)regexp.c	5.4 (Berkeley) 8/3/92";
 #endif /* not lint */
 
 #include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
+#include "extern.h"
 
-typedef int	boolean;
-#define TRUE	1
 #define FALSE	0
+#define TRUE	!(FALSE)
 #define NIL	0
 
-boolean l_onecase;	/* true if upper and lower equivalent */
+static void	expconv __P((void));
+
+boolean	 _escaped;	/* true if we are currently _escaped */
+char	*_start;	/* start of string */
+boolean	 l_onecase;	/* true if upper and lower equivalent */
 
 #define makelower(c) (isupper((c)) ? tolower((c)) : (c))
 
@@ -51,6 +57,7 @@ boolean l_onecase;	/* true if upper and lower equivalent */
  *		if l_onecase is set.
  */
 
+int
 STRNCMP(s1, s2, len)
 	register char *s1,*s2;
 	register int len;
@@ -129,9 +136,8 @@ STRNCMP(s1, s2, len)
 #define ALT 8
 #define OPER 16
 
-char *ure;		/* pointer current position in unconverted exp */
-char *ccre;		/* pointer to current position in converted exp*/
-char *malloc();
+static char *ccre;	/* pointer to current position in converted exp*/
+static char *ure;	/* pointer current position in unconverted exp */
 
 char *
 convexp(re)
@@ -159,6 +165,7 @@ convexp(re)
     return (cre);
 }
 
+static void
 expconv()
 {
     register char *cs;		/* pointer to current symbol in converted exp */
@@ -249,7 +256,7 @@ expconv()
 	    OCNT(cs) = ccre - cs;		/* offset to next symbol */
 	    break;
 
-	/* return from a recursion */
+	/* reurn from a recursion */
 	case ')':
 	    if (acs != NIL) {
 		do {
@@ -328,9 +335,6 @@ expconv()
  *	The value returned is the pointer to the first non \a 
  *	character matched.
  */
-
-boolean _escaped;		/* true if we are currently _escaped */
-char *_start;			/* start of string */
 
 char *
 expmatch (s, re, mstring)
