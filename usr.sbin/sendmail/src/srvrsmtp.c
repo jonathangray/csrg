@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	8.4 (Berkeley) 07/16/93 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	8.5 (Berkeley) 07/17/93 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	8.4 (Berkeley) 07/16/93 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	8.5 (Berkeley) 07/17/93 (without SMTP)";
 #endif
 #endif /* not lint */
 
