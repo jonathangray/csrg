@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)icmp_var.h	7.5 (Berkeley) 06/28/90
+ *	@(#)icmp_var.h	7.6 (Berkeley) 01/08/93
  */
 
 /*
@@ -39,17 +39,17 @@
  */
 struct	icmpstat {
 /* statistics related to icmp packets generated */
-	int	icps_error;		/* # of calls to icmp_error */
-	int	icps_oldshort;		/* no error 'cuz old ip too short */
-	int	icps_oldicmp;		/* no error 'cuz old was icmp */
-	int	icps_outhist[ICMP_MAXTYPE + 1];
+	u_long	icps_error;		/* # of calls to icmp_error */
+	u_long	icps_oldshort;		/* no error 'cuz old ip too short */
+	u_long	icps_oldicmp;		/* no error 'cuz old was icmp */
+	u_long	icps_outhist[ICMP_MAXTYPE + 1];
 /* statistics related to input messages processed */
- 	int	icps_badcode;		/* icmp_code out of range */
-	int	icps_tooshort;		/* packet < ICMP_MINLEN */
-	int	icps_checksum;		/* bad checksum */
-	int	icps_badlen;		/* calculated bound mismatch */
-	int	icps_reflect;		/* number of responses */
-	int	icps_inhist[ICMP_MAXTYPE + 1];
+ 	u_long	icps_badcode;		/* icmp_code out of range */
+	u_long	icps_tooshort;		/* packet < ICMP_MINLEN */
+	u_long	icps_checksum;		/* bad checksum */
+	u_long	icps_badlen;		/* calculated bound mismatch */
+	u_long	icps_reflect;		/* number of responses */
+	u_long	icps_inhist[ICMP_MAXTYPE + 1];
 };
 
 #ifdef KERNEL
