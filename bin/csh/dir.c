@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)dir.c	5.19 (Berkeley) 03/08/93";
+static char sccsid[] = "@(#)dir.c	5.20 (Berkeley) 05/22/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -117,7 +117,7 @@ dinit(hp)
 	    /*
 	     * use PWD if we have it (for subshells)
 	     */
-	    if (cwd = getenv("PWD")) {
+	    if ((cwd = getenv("PWD")) != NULL) {
 		if (stat(cwd, &shp) != -1 && swd.st_dev == shp.st_dev &&
 		    swd.st_ino == shp.st_ino)
 		    tcp = cwd;
@@ -397,13 +397,13 @@ dgoto(cp)
 	for (p = cp; *p++;)
 	    continue;
 	dp = (Char *) xmalloc((size_t)((cwdlen + (p - cp) + 1) * sizeof(Char)));
-	for (p = dp, q = dcwd->di_name; *p++ = *q++;)
+	for (p = dp, q = dcwd->di_name; (*p++ = *q++) != '\0';)
 	    continue;
 	if (cwdlen)
 	    p[-1] = '/';
 	else
 	    p--;		/* don't add a / after root */
-	for (q = cp; *p++ = *q++;)
+	for (q = cp; (*p++ = *q++) != '\0';)
 	    continue;
 	xfree((ptr_t) cp);
 	cp = dp;
@@ -451,10 +451,10 @@ dfollow(cp)
 	Char    buf[MAXPATHLEN];
 
 	for (cdp = c->vec; *cdp; cdp++) {
-	    for (dp = buf, p = *cdp; *dp++ = *p++;)
+	    for (dp = buf, p = *cdp; (*dp++ = *p++) != '\0';)
 		continue;
 	    dp[-1] = '/';
-	    for (p = cp; *dp++ = *p++;)
+	    for (p = cp; (*dp++ = *p++) != '\0';)
 		continue;
 	    if (chdir(short2str(buf)) >= 0) {
 		printd = 1;
@@ -514,7 +514,7 @@ dopushd(v, t)
 	/* NOTREACHED */
 	return;
     }
-    else if (dp = dfind(*v)) {
+    else if ((dp = dfind(*v)) != NULL) {
 	char   *tmp;
 
 	if (chdir(tmp = short2str(dp->di_name)) < 0)
@@ -666,7 +666,7 @@ dcanon(cp, p)
 	while (*++p == '/')	/* flush extra slashes */
 	    continue;
 	if (p != ++sp)
-	    for (p1 = sp, p2 = p; *p1++ = *p2++;)
+	    for (p1 = sp, p2 = p; (*p1++ = *p2++) != '\0';)
 		continue;
 	p = sp;			/* save start of component */
 	slash = 0;
@@ -684,7 +684,7 @@ dcanon(cp, p)
 		*sp = '\0';
 	else if (sp[0] == '.' && sp[1] == 0) {
 	    if (slash) {
-		for (p1 = sp, p2 = p + 1; *p1++ = *p2++;)
+		for (p1 = sp, p2 = p + 1; (*p1++ = *p2++) != '\0';)
 		    continue;
 		p = --sp;
 	    }
@@ -734,11 +734,11 @@ dcanon(cp, p)
 		    /*
 		     * Copy new path into newcp
 		     */
-		    for (p2 = cp; *p1++ = *p2++;)
+		    for (p2 = cp; (*p1++ = *p2++) != '\0';)
 			continue;
-		    for (p1--, p2 = link; *p1++ = *p2++;)
+		    for (p1--, p2 = link; (*p1++ = *p2++) != '\0';)
 			continue;
-		    for (p1--, p2 = p; *p1++ = *p2++;)
+		    for (p1--, p2 = p; (*p1++ = *p2++) != '\0';)
 			continue;
 		    /*
 		     * Restart canonicalization at expanded "/xxx".
@@ -754,9 +754,9 @@ dcanon(cp, p)
 		    /*
 		     * Copy new path into newcp
 		     */
-		    for (p2 = link; *p1++ = *p2++;)
+		    for (p2 = link; (*p1++ = *p2++) != '\0';)
 			continue;
-		    for (p1--, p2 = p; *p1++ = *p2++;)
+		    for (p1--, p2 = p; (*p1++ = *p2++) != '\0';)
 			continue;
 		    /*
 		     * Restart canonicalization at beginning
@@ -772,7 +772,7 @@ dcanon(cp, p)
 		while (*--sp != '/')
 		    continue;
 	    if (slash) {
-		for (p1 = sp + 1, p2 = p + 1; *p1++ = *p2++;)
+		for (p1 = sp + 1, p2 = p + 1; (*p1++ = *p2++) != '\0';)
 		    continue;
 		p = sp;
 	    }
@@ -825,11 +825,11 @@ dcanon(cp, p)
 		    /*
 		     * Copy new path into newcp
 		     */
-		    for (p2 = cp; *p1++ = *p2++;)
+		    for (p2 = cp; (*p1++ = *p2++) != '\0';)
 			continue;
-		    for (p1--, p2 = link; *p1++ = *p2++;)
+		    for (p1--, p2 = link; (*p1++ = *p2++) != '\0';)
 			continue;
-		    for (p1--, p2 = p; *p1++ = *p2++;)
+		    for (p1--, p2 = p; (*p1++ = *p2++) != '\0';)
 			continue;
 		    /*
 		     * Restart canonicalization at expanded "/xxx".
@@ -845,9 +845,9 @@ dcanon(cp, p)
 		    /*
 		     * Copy new path into newcp
 		     */
-		    for (p2 = link; *p1++ = *p2++;)
+		    for (p2 = link; (*p1++ = *p2++) != '\0';)
 			continue;
-		    for (p1--, p2 = p; *p1++ = *p2++;)
+		    for (p1--, p2 = p; (*p1++ = *p2++) != '\0';)
 			continue;
 		    /*
 		     * Restart canonicalization at beginning
@@ -897,7 +897,7 @@ dcanon(cp, p)
 		sp = (Char *) - 1;
 		break;
 	    }
-	    if (sp = Strrchr(p2, '/'))
+	    if ((sp = Strrchr(p2, '/')) != NULL)
 		*sp = '\0';
 	}
 	/*
