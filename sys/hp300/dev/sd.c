@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sd.c	8.6 (Berkeley) 01/09/95
+ *	@(#)sd.c	8.7 (Berkeley) 05/10/95
  */
 
 /*
@@ -65,7 +65,7 @@ static char rcsid[] = "$Header: /sys.lite/hp300/dev/RCS/sd.c,v 1.2 1994/01/10 18
 #endif
 
 #include <vm/vm_param.h>
-#include <vm/lock.h>
+#include <sys/lock.h>
 #include <vm/vm_prot.h>
 #include <vm/pmap.h>
 
