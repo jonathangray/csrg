@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	5.34 (Berkeley) 07/11/92
+ *	@(#)sendmail.h	5.35 (Berkeley) 07/19/92
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	5.34		07/11/92";
+static char SmailSccsId[] =	"@(#)sendmail.h	5.35		07/19/92";
 # endif lint
 # else  _DEFINE
 # define EXTERN extern
@@ -120,8 +120,8 @@ struct address
 	char		*q_host;	/* host name */
 	struct mailer	*q_mailer;	/* mailer to use */
 	u_short		q_flags;	/* status flags, see below */
-	short		q_uid;		/* user-id of receiver (if known) */
-	short		q_gid;		/* group-id of receiver (if known) */
+	uid_t		q_uid;		/* user-id of receiver (if known) */
+	gid_t		q_gid;		/* group-id of receiver (if known) */
 	char		*q_home;	/* home dir (local mailer only) */
 	char		*q_fullname;	/* full name if known */
 	char		*q_fullname;	/* full name of this person */
