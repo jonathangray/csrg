@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	7.76 (Berkeley) 05/14/92
+ *	@(#)ffs_vnops.c	7.77 (Berkeley) 05/15/92
  */
 
 #include <sys/param.h>
@@ -102,7 +102,7 @@ struct vnodeopv_entry_desc ffs_vnodeop_entries[] = {
 	{ &vop_vfree_desc, ffs_vfree },		/* vfree */
 	{ &vop_truncate_desc, ffs_truncate },		/* truncate */
 	{ &vop_update_desc, ffs_update },		/* update */
-	{ &vop_bwrite_desc, bwrite },
+	{ &vop_bwrite_desc, vn_bwrite },
 	{ (struct vnodeop_desc*)NULL, (int(*)())NULL }
 };
 struct vnodeopv_desc ffs_vnodeop_opv_desc =
@@ -150,7 +150,7 @@ struct vnodeopv_entry_desc ffs_specop_entries[] = {
 	{ &vop_vfree_desc, spec_vfree },		/* vfree */
 	{ &vop_truncate_desc, spec_truncate },		/* truncate */
 	{ &vop_update_desc, ffs_update },		/* update */
-	{ &vop_bwrite_desc, bwrite },
+	{ &vop_bwrite_desc, vn_bwrite },
 	{ (struct vnodeop_desc*)NULL, (int(*)())NULL }
 };
 struct vnodeopv_desc ffs_specop_opv_desc =
@@ -199,7 +199,7 @@ struct vnodeopv_entry_desc ffs_fifoop_entries[] = {
 	{ &vop_vfree_desc, fifo_vfree },		/* vfree */
 	{ &vop_truncate_desc, fifo_truncate },		/* truncate */
 	{ &vop_update_desc, ffs_update },		/* update */
-	{ &vop_bwrite_desc, bwrite },
+	{ &vop_bwrite_desc, vn_bwrite },
 	{ (struct vnodeop_desc*)NULL, (int(*)())NULL }
 };
 struct vnodeopv_desc ffs_fifoop_opv_desc =
