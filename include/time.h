@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)time.h	8.1 (Berkeley) 06/02/93
+ *	@(#)time.h	8.2 (Berkeley) 01/04/94
  */
 
 #ifndef _TIME_H_
@@ -70,6 +70,8 @@ struct tm {
 	long	tm_gmtoff;	/* offset from CUT in seconds */
 	char	*tm_zone;	/* timezone abbreviation */
 };
+
+#include <machine/limits.h>	/* Include file containing CLK_TCK. */
 
 #include <sys/cdefs.h>
 
