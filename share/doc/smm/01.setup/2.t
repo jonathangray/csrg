@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)2.t	6.20 (Berkeley) 07/15/93
+.\"	@(#)2.t	6.21 (Berkeley) 07/16/93
 .\"
 .ds lq ``
 .ds rq ''
@@ -1452,7 +1452,7 @@ lw(2i) l.
 \fB#\fP \fIcd /\fP	(make / the current directory)
 \fB#\fP \fIumount /dev/\*(Dk#p\fP	(unmount from tmp mount point)
 (ignore ``fstab'' error message)
-\fB#\fP \fIrm -r /usr/*	(remove excess bootstrap binaries)
+\fB#\fP \fIrm -r /usr/*\fP	(remove excess bootstrap binaries)
 \fB#\fP \fImount /dev/\*(Dk#p /usr\fP	(remount /usr)
 .TE
 .DE
