@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)init.c	6.4 (Berkeley) 07/25/91";
+static char sccsid[] = "@(#)init.c	6.5 (Berkeley) 07/25/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -585,6 +585,7 @@ single_user()
 		return (state_func_t) single_user;
 	}
 
+	requested_transition = 0;
 	do {
 		if ((wpid = waitpid(-1, &status, WUNTRACED)) != -1)
 			collect_child(wpid);
@@ -599,7 +600,10 @@ single_user()
 			kill(pid, SIGCONT);
 			wpid = -1;
 		}
-	} while (wpid != pid);
+	} while (wpid != pid && !requested_transition);
+
+	if (requested_transition)
+		return (state_func_t) requested_transition;
 
 	if (!WIFEXITED(status)) {
 		if (WTERMSIG(status) == SIGKILL) { 
@@ -1030,6 +1034,7 @@ void
 transition_handler(sig)
 	int sig;
 {
+
 	switch (sig) {
 	case SIGHUP:
 		requested_transition = clean_ttys;
