@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)insertln.c	5.15 (Berkeley) 02/18/93";
+static char sccsid[] = "@(#)insertln.c	5.16 (Berkeley) 02/18/93";
 #endif	/* not lint */
 
 #include <curses.h>
@@ -48,7 +48,6 @@ winsertln(win)
 {
 
 	register int y, i;
-	register char *end;
 	register __LINE *temp;
 
 #ifdef DEBUG
