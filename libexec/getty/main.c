@@ -38,26 +38,29 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.18 (Berkeley) 03/29/92";
+static char sccsid[] = "@(#)main.c	5.19 (Berkeley) 05/17/93";
 #endif /* not lint */
 
 #define USE_OLD_TTY
 
 #include <sys/param.h>
 #include <sys/stat.h>
-#include <signal.h>
+
+#include <ctype.h>
+#include <ctype.h>
 #include <fcntl.h>
-#include <sgtty.h>
-#include <time.h>
-#include <ctype.h>
 #include <setjmp.h>
-#include <syslog.h>
-#include <unistd.h>
-#include <ctype.h>
+#include <sgtty.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
+#include <syslog.h>
+#include <time.h>
+#include <unistd.h>
+
 #include "gettytab.h"
 #include "pathnames.h"
+#include "extern.h"
 
 struct	sgttyb tmode = {
 	0, 0, CERASE, CKILL, 0
@@ -134,11 +137,20 @@ interrupt()
 	longjmp(intrupt, 1);
 }
 
+static int	getname __P((void));
+static void	oflush __P((void));
+static void	prompt __P((void));
+static void	putchr __P((int));
+static void	putf __P((char *));
+static void	putpad __P((char *));
+static void	puts __P((char *));
+
+int
 main(argc, argv)
 	int argc;
-	char **argv;
+	char *argv[];
 {
-	extern	char **environ;
+	extern char **environ;
 	char *tname;
 	long allflags;
 	int repcnt = 0;
@@ -285,6 +297,7 @@ main(argc, argv)
 	}
 }
 
+static int
 getname()
 {
 	register int c;
@@ -370,6 +383,7 @@ short	tmspc10[] = {
 	0, 2000, 1333, 909, 743, 666, 500, 333, 166, 83, 55, 41, 20, 10, 5, 15
 };
 
+static void
 putpad(s)
 	register char *s;
 {
@@ -411,6 +425,7 @@ putpad(s)
 		putchr(*PC);
 }
 
+static void
 puts(s)
 	register char *s;
 {
@@ -421,7 +436,9 @@ puts(s)
 char	outbuf[OBUFSIZ];
 int	obufcnt = 0;
 
+static void
 putchr(cc)
+	int cc;
 {
 	char c;
 
@@ -439,6 +456,7 @@ putchr(cc)
 		write(STDOUT_FILENO, &c, 1);
 }
 
+static void
 oflush()
 {
 	if (obufcnt)
@@ -446,6 +464,7 @@ oflush()
 	obufcnt = 0;
 }
 
+static void
 prompt()
 {
 
@@ -454,6 +473,7 @@ prompt()
 		putchr('\n');
 }
 
+static void
 putf(cp)
 	register char *cp;
 {
@@ -469,7 +489,7 @@ putf(cp)
 		switch (*++cp) {
 
 		case 't':
-			slash = rindex(ttyn, '/');
+			slash = strrchr(ttyn, '/');
 			if (slash == (char *) 0)
 				puts(ttyn);
 			else
