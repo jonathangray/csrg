@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)signal.h	8.1 (Berkeley) 06/10/93
+ *	@(#)signal.h	8.2 (Berkeley) 05/03/95
  */
 
 /*
@@ -41,6 +41,9 @@
  */
 
 typedef int sig_atomic_t;
+
+#if !defined(_POSIX_SOURCE) && !defined(_ANSI_SOURCE)
+#include <machine/trap.h>	/* codes for SIGILL, SIGFPE */
 
 /*
  * Information pushed on stack when a signal is delivered.
@@ -58,3 +61,4 @@ struct	sigcontext {
 	int	sc_fpregs[33];	/* fp regs 0 to 31 and csr */
 	int	sc_fpc_eir;	/* floating point exception instruction reg */
 };
+#endif
