@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)ioctl.h	7.4 (Berkeley) 05/27/87
+ *	@(#)ioctl.h	7.5 (Berkeley) 11/07/87
  */
 
 /*
