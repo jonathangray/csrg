@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: uipc_shm.c 1.11 92/04/23$
  *
- *	@(#)sysv_shm.c	7.18 (Berkeley) 07/09/92
+ *	@(#)sysv_shm.c	7.19 (Berkeley) 07/10/92
  */
 
 /*
@@ -101,11 +101,12 @@ shminit()
 /*
  * Entry point for all SHM calls
  */
+struct shmsys_args {
+	u_int which;
+};
 shmsys(p, uap, retval)
 	struct proc *p;
-	struct args {
-		u_int which;
-	} *uap;
+	struct shmsys_args *uap;
 	int *retval;
 {
 
@@ -117,13 +118,14 @@ shmsys(p, uap, retval)
 /*
  * Get a shared memory segment
  */
+struct shmget_args {
+	key_t key;
+	int size;
+	int shmflg;
+};
 shmget(p, uap, retval)
 	struct proc *p;
-	register struct args {
-		key_t key;
-		int size;
-		int shmflg;
-	} *uap;
+	register struct shmget_args *uap;
 	int *retval;
 {
 	register struct shmid_ds *shp;
@@ -210,14 +212,15 @@ shmget(p, uap, retval)
 /*
  * Shared memory control
  */
+struct shmctl_args {
+	int shmid;
+	int cmd;
+	caddr_t buf;
+};
 /* ARGSUSED */
 shmctl(p, uap, retval)
 	struct proc *p;
-	register struct args {
-		int shmid;
-		int cmd;
-		caddr_t buf;
-	} *uap;
+	register struct shmctl_args *uap;
 	int *retval;
 {
 	register struct shmid_ds *shp;
@@ -267,13 +270,14 @@ shmctl(p, uap, retval)
 /*
  * Attach to shared memory segment.
  */
+struct shmat_args {
+	int	shmid;
+	caddr_t	shmaddr;
+	int	shmflg;
+};
 shmat(p, uap, retval)
 	struct proc *p;
-	register struct args {
-		int	shmid;
-		caddr_t	shmaddr;
-		int	shmflg;
-	} *uap;
+	register struct shmat_args *uap;
 	int *retval;
 {
 	register struct shmid_ds *shp;
@@ -349,12 +353,13 @@ shmat(p, uap, retval)
 /*
  * Detach from shared memory segment.
  */
+struct shmdt_args {
+	caddr_t	shmaddr;
+};
 /* ARGSUSED */
 shmdt(p, uap, retval)
 	struct proc *p;
-	struct args {
-		caddr_t	shmaddr;
-	} *uap;
+	struct shmdt_args *uap;
 	int *retval;
 {
 	register struct shmdesc *shmd;
