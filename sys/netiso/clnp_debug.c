@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)clnp_debug.c	7.10 (Berkeley) 10/11/92
+ *	@(#)clnp_debug.c	7.11 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -90,7 +90,7 @@ struct addr_osinet u_osinet = {
 	{0x00, 0x04},
 	{0x00, 0x02, 0x00, 0x01, 0x23, 0x42, 0x78, 0x20, 0x01, 0x05, 0x00}
 };
-#endif notdef
+#endif /* notdef */
 struct addr_rfc986 u_rfc986 = {
 	{0x00, 0x06},
 	{0x01, 0xc0, 0x0c, 0x0c, 0xab, 0x11}
@@ -129,7 +129,7 @@ main()
 	a.isoa_len = 9;
 	printf("type bad idi: %s\n", clnp_iso_addrp(&a));
 }
-#endif	TESTDEBUG
+#endif	/* TESTDEBUG */
 
 unsigned int	clnp_debug;
 static char letters[] = "0123456789abcdef";
@@ -228,7 +228,7 @@ struct iso_addr *isoa;
 				cp = clnp_hexp(&o986->o986_inetaddr[3], 1, cp);
 				*cp++ = DELIM;
 				cp = clnp_hexp(&o986->o986_upid, 1, cp);
-#endif vax
+#endif /* vax */
 			}
 			
 		} break;
@@ -237,7 +237,7 @@ struct iso_addr *isoa;
 			*cp++ = '?';
 			break;
 	}
-#endif notdef
+#endif /* notdef */
 	*cp = (char)0;
 	
 	return(iso_addr_b);
@@ -257,4 +257,4 @@ register struct sockaddr_iso *s;
 	return (iso_addr_b);
 }
 
-#endif	ARGO_DEBUG
+#endif	/* ARGO_DEBUG */
