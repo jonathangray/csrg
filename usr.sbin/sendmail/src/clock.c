@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)clock.c	8.9 (Berkeley) 12/28/94";
+static char sccsid[] = "@(#)clock.c	8.10 (Berkeley) 02/23/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -65,7 +65,7 @@ static void tick __P((int));
 EVENT *
 setevent(intvl, func, arg)
 	time_t intvl;
-	int (*func)();
+	void (*func)();
 	int arg;
 {
 	register EVENT **evp;
@@ -117,6 +117,7 @@ setevent(intvl, func, arg)
 **		arranges for event ev to not happen.
 */
 
+void
 clrevent(ev)
 	register EVENT *ev;
 {
@@ -182,7 +183,7 @@ tick(arg)
 	while ((ev = EventQueue) != NULL &&
 	       (ev->ev_time <= now || ev->ev_pid != mypid))
 	{
-		int (*f)();
+		void (*f)();
 		int arg;
 		int pid;
 
@@ -251,7 +252,7 @@ tick(arg)
 */
 
 static bool	SleepDone;
-static int	endsleep();
+static void	endsleep();
 
 #ifndef SLEEP_T
 # define SLEEP_T	unsigned int
@@ -269,7 +270,7 @@ sleep(intvl)
 		pause();
 }
 
-static
+static void
 endsleep()
 {
 	SleepDone = TRUE;
