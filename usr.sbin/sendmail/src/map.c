@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)map.c	8.9 (Berkeley) 08/23/93";
+static char sccsid[] = "@(#)map.c	8.10 (Berkeley) 08/28/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -838,6 +838,10 @@ db_map_close(map)
 */
 
 # ifdef NIS
+
+# ifndef YPERR_BUSY
+#  define YPERR_BUSY	16
+# endif
 
 /*
 **  NIS_MAP_OPEN -- open DBM map
