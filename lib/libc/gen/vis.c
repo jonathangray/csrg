@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)vis.c	8.1 (Berkeley) 06/04/93";
+static char sccsid[] = "@(#)vis.c	5.7 (Berkeley) 07/19/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -171,14 +171,16 @@ strvisx(dst, src, len, flag)
 	register size_t len;
 	int flag;
 {
-	char *start = dst;
+	int c;
+	char *start;
 
-	while (len > 1) {
-		dst = vis(dst, *src, flag, *(src+1));
-		len--;
+	for (start = dst; len > 1; len--) {
+		c = *src;
+		dst = vis(dst, c, flag, *++src);
 	}
 	if (len)
 		dst = vis(dst, *src, flag, '\0');
+	*dst = '\0';
 
 	return (dst - start);
 }
