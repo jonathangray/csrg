@@ -33,7 +33,7 @@
  *
  * from: hp300/hp300/swapgeneric.c	7.8 (Berkeley) 10/11/92
  *
- *	@(#)swapgeneric.c	8.1 (Berkeley) 06/10/93
+ *	@(#)swapgeneric.c	7.6 (Berkeley) 06/16/93
  */
 
 #include <sys/param.h>
@@ -56,7 +56,7 @@ int	nswap;
 
 struct	swdevt swdevt[] = {
 	{ -1,	1,	0 },
-	{ 0,	0,	0 },
+	{ NODEV,0,	0 },
 };
 
 int	dmmin, dmmax, dmtext;
