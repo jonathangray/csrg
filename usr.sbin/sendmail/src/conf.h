@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	6.32 (Berkeley) 05/22/93
+ *	@(#)conf.h	6.33 (Berkeley) 05/27/93
  */
 
 /*
@@ -121,7 +121,7 @@
 # define HASUNAME	1	/* use System V uname system call */
 # endif
 
-#if defined(sun) && !defined(BSD)
+#if defined(sun) && !defined(BSD) && !defined(SOLARIS)
 # include <vfork.h>
 #endif
 
