@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.51 (Berkeley) 12/11/93";
+static char sccsid[] = "@(#)conf.c	8.52 (Berkeley) 12/16/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1279,9 +1279,9 @@ char	*optarg;		/* argument associated with option */
 		fputc(optopt,stderr);fputc('\n',stderr);return(BADCH);}
 
 getopt(nargc,nargv,ostr)
-int	nargc;
-char	**nargv,
-	*ostr;
+	int		nargc;
+	char *const	*nargv;
+	const char	*ostr;
 {
 	static char	*place = EMSG;	/* option letter processing */
 	static char	atend = 0;
