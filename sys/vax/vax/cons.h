@@ -14,3 +14,5 @@
 #define	TXCS_RDY	0x80		/* transmitter ready for next char */
 #define	TXDB_DATA	0xff		/* transmitter byte */
 #define	TXDB_ID		0xf00		/* channel id */
+#define	TXDB_AUTOR	0xf03		/* auto-restart command */
+#define	TXDB_BOOT	0xf04		/* boot command */
