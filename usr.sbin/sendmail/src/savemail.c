@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)savemail.c	6.28 (Berkeley) 04/01/93";
+static char sccsid[] = "@(#)savemail.c	6.29 (Berkeley) 04/05/93";
 #endif /* not lint */
 
 # include <pwd.h>
@@ -246,8 +246,7 @@ savemail(e)
 				state = ESM_POSTMASTER;
 				break;
 			}
-			if (returntosender(e->e_message != NULL ? e->e_message :
-					   "Unable to deliver mail",
+			if (returntosender(e->e_message,
 					   q, (e->e_class >= 0), e) == 0)
 			{
 				state = ESM_DONE;
@@ -270,8 +269,7 @@ savemail(e)
 				state = ESM_USRTMP;
 				break;
 			}
-			if (returntosender(e->e_message != NULL ? e->e_message :
-					   "Unable to deliver mail",
+			if (returntosender(e->e_message,
 					   q, (e->e_class >= 0), e) == 0)
 			{
 				state = ESM_DONE;
@@ -410,6 +408,9 @@ returntosender(msg, returnq, sendbody, e)
 	ENVELOPE errenvelope;
 	static int returndepth;
 	register ADDRESS *q;
+
+	if (msg == NULL)
+		msg = "Unable to deliver mail";
 
 	if (tTd(6, 1))
 	{
