@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)externs.h	8.1 (Berkeley) 06/06/93
+ *	@(#)externs.h	8.2 (Berkeley) 12/15/93
  */
 
 #ifndef	BSD
@@ -44,8 +44,10 @@
 #define BSD 43
 #endif
 
-#if (BSD > 43 || defined(SYSV_TERMIO)) && !defined(USE_TERMIO)
-# define USE_TERMIO
+#ifndef	USE_TERMIO
+# if BSD > 43 || defined(SYSV_TERMIO)
+#  define USE_TERMIO
+# endif
 #endif
 
 #include <stdio.h>
