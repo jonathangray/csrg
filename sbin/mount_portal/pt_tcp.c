@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pt_tcp.c	8.2 (Berkeley) 01/14/94
+ *	@(#)pt_tcp.c	8.3 (Berkeley) 03/27/94
  *
  * $Id: pt_tcp.c,v 1.1 1992/05/25 21:43:09 jsp Exp jsp $
  */
@@ -49,6 +49,7 @@
 #include <sys/syslog.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <netdb.h>
 
 #include "portald.h"
