@@ -3,7 +3,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	5.4 (Berkeley) 10/13/86
+#	@(#)Makefile	5.5 (Berkeley) 06/02/87
 #
 #
 CFILES=	y.tab.c main.c lex.yy.c mkioconf.c mkmakefile.c \
