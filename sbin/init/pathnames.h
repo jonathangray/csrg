@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	6.1 (Berkeley) 07/02/91
+ *	@(#)pathnames.h	6.2 (Berkeley) 03/02/92
  */
 
 #include <paths.h>
