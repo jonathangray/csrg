@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)savemail.c	8.67 (Berkeley) 04/22/95";
+static char sccsid[] = "@(#)savemail.c	8.68 (Berkeley) 04/23/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -695,35 +695,45 @@ errbody(mci, e, separator)
 	printheader = TRUE;
 	for (q = e->e_parent->e_sendqueue; q != NULL; q = q->q_next)
 	{
-		if (bitset(QBADADDR|QREPORT|QRELAYED|QEXPLODED, q->q_flags))
+		if (bitset(QBADADDR, q->q_flags))
 		{
-			strcpy(buf, q->q_paddr);
-			if (bitset(QBADADDR, q->q_flags))
-				strcat(buf, "  (unrecoverable error)");
-			else if (!bitset(QPRIMARY, q->q_flags))
+			if (!bitset(QPINGONFAILURE, q->q_flags))
 				continue;
-			else if (bitset(QRELAYED, q->q_flags))
-				strcat(buf, "  (relayed to non-DSN-aware mailer)");
-			else if (bitset(QSENT, q->q_flags))
-				strcat(buf, "  (successfully delivered)");
-			else if (bitset(QEXPLODED, q->q_flags))
-				strcat(buf, "  (expanded by mailing list)");
+			p = "unrecoverable error";
+		}
+		else if (!bitset(QPRIMARY, q->q_flags))
+			continue;
+		else if (bitset(QRELAYED, q->q_flags))
+			p = "relayed to non-DSN-aware mailer";
+		else if (bitset(QDELIVERED, q->q_flags))
+		{
+			if (bitset(QEXPANDED, q->q_flags))
+				p = "successfully delivered to mailing list";
 			else
-				strcat(buf, "  (transient failure)");
-			if (printheader)
-			{
-				putline("   ----- The following addresses have delivery notifications -----",
-					mci);
-				printheader = FALSE;
-			}
+				p = "successfully delivered to mailbox";
+		}
+		else if (bitset(QEXPANDED, q->q_flags))
+			p = "expanded by alias";
+		else if (bitset(QDELAYED, q->q_flags))
+			p = "transient failure";
+		else
+			continue;
+
+		if (printheader)
+		{
+			putline("   ----- The following addresses have delivery notifications -----",
+				mci);
+			printheader = FALSE;
+		}
+
+		sprintf(buf, "%s  (%s)", q->q_paddr, p);
+		putline(buf, mci);
+		if (q->q_alias != NULL)
+		{
+			strcpy(buf, "    (expanded from: ");
+			strcat(buf, q->q_alias->q_paddr);
+			strcat(buf, ")");
 			putline(buf, mci);
-			if (q->q_alias != NULL)
-			{
-				strcpy(buf, "    (expanded from: ");
-				strcat(buf, q->q_alias->q_paddr);
-				strcat(buf, ")");
-				putline(buf, mci);
-			}
 		}
 	}
 	if (!printheader)
@@ -742,11 +752,16 @@ errbody(mci, e, separator)
 	}
 	else
 	{
-		putline("   ----- Transcript of session follows -----\n", mci);
+		printheader = TRUE;
 		if (e->e_xfp != NULL)
 			(void) fflush(e->e_xfp);
 		while (fgets(buf, sizeof buf, xfile) != NULL)
+		{
+			if (printheader)
+				putline("   ----- Transcript of session follows -----\n", mci);
+			printheader = FALSE;
 			putline(buf, mci);
+		}
 		(void) xfclose(xfile, "errbody xscript", p);
 	}
 	errno = 0;
@@ -761,7 +776,7 @@ errbody(mci, e, separator)
 		putline("", mci);
 		(void) sprintf(buf, "--%s", e->e_msgboundary);
 		putline(buf, mci);
-		putline("Content-Type: message/X-delivery-status-04 (Draft of 20 January 1995)", mci);
+		putline("Content-Type: message/X-delivery-status-04a (Draft of 04 April 1995)", mci);
 		putline("", mci);
 
 		/*
@@ -777,12 +792,11 @@ errbody(mci, e, separator)
 		}
 
 		/* Reporting-MTA: is us (required) */
-		p = e->e_parent->e_from.q_mailer->m_mtatype;
-		if (p == NULL)
-			p = "dns";
-		(void) sprintf(buf, "Reporting-MTA: %s; %s", p,
+		(void) sprintf(buf, "Reporting-MTA: dns; %s",
 			xtextify(MyHostName));
 		putline(buf, mci);
+
+		/* DSN-Gateway: not relevant since we are not translating */
 
 		/* Received-From-MTA: shows where we got this message from */
 		if (RealHostName != NULL)
@@ -811,17 +825,21 @@ errbody(mci, e, separator)
 			char *action;
 
 			if (bitset(QBADADDR, q->q_flags))
-				action = "failure";
+				action = "failed";
 			else if (!bitset(QPRIMARY, q->q_flags))
 				continue;
+			else if (bitset(QDELIVERED, q->q_flags))
+			{
+				if (bitset(QEXPANDED, q->q_flags))
+					action = "delivered (to mailing list)";
+				else
+					action = "delivered (to mailbox)";
+			}
 			else if (bitset(QRELAYED, q->q_flags))
-				action = "relayed";
-			else if (bitset(QEXPLODED, q->q_flags))
-				action = "delivered (to mailing list)";
-			else if (bitset(QSENT, q->q_flags) &&
-				 bitnset(M_LOCALMAILER, q->q_mailer->m_flags))
-				action = "delivered (final delivery)";
-			else if (bitset(QREPORT, q->q_flags))
+				action = "relayed (to non-DSN-aware mailer)";
+			else if (bitset(QEXPANDED, q->q_flags))
+				action = "expanded (to multi-recipient alias)";
+			else if (bitset(QDELAYED, q->q_flags))
 				action = "delayed";
 			else
 				continue;
@@ -915,7 +933,7 @@ errbody(mci, e, separator)
 				if (p == NULL)
 					p = "smtp";
 				(void) sprintf(buf, "Diagnostic-Code: %s; %s",
-					p, q->q_rstatus);
+					p, xtextify(q->q_rstatus));
 				putline(buf, mci);
 			}
 
@@ -926,14 +944,14 @@ errbody(mci, e, separator)
 				arpadate(ctime(&q->q_statdate)));
 			putline(buf, mci);
 
-			/* Expiry-Date: -- for delayed messages only */
+			/* Will-Retry-Until: -- for delayed messages only */
 			if (bitset(QQUEUEUP, q->q_flags) &&
 			    !bitset(QBADADDR, q->q_flags))
 			{
 				time_t xdate;
 
 				xdate = e->e_ctime + TimeOuts.to_q_return[e->e_timeoutclass];
-				sprintf(buf, "Expiry-Date: %s",
+				sprintf(buf, "Will-Retry-Until: %s",
 					arpadate(ctime(&xdate)));
 				putline(buf, mci);
 			}
@@ -1090,8 +1108,7 @@ xtextify(t)
 		register int c = (*p & 0xff);
 
 		/* ASCII dependence here -- this is the way the spec words it */
-		if ((c < ' ' || c > '~' || c == '+' || c == '\\' || c == '(') &&
-		    c != '\t')
+		if (c < '!' || c > '~' || c == '+' || c == '\\' || c == '(')
 			nbogus++;
 		l++;
 	}
