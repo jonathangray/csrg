@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_socket.c	8.2 (Berkeley) 09/23/93
+ *	@(#)nfs_socket.c	8.3 (Berkeley) 01/12/94
  */
 
 /*
@@ -864,7 +864,7 @@ nfs_request(vp, mrest, procnum, procp, cred, mrp, mdp, dposp)
 	struct nfsmount *nmp;
 	struct mbuf *md, *mheadend;
 	struct nfsreq *reph;
-	struct nfsnode *tp, *np;
+	struct nfsnode *np;
 	time_t reqtime, waituntil;
 	caddr_t dpos, cp2;
 	int t1, nqlflag, cachable, s, error = 0, mrest_len, auth_len, auth_type;
