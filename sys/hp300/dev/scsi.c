@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)scsi.c	7.4 (Berkeley) 02/05/91
+ *	@(#)scsi.c	7.5 (Berkeley) 05/04/91
  */
 
 /*
@@ -67,10 +67,8 @@ static char rcsid[] = "$Header: scsi.c,v 1.4 91/01/17 12:50:18 mike Exp $";
 #define	SCSI_INIT_WAIT	50000	/* wait per step (both) during init */
 
 extern void isrlink();
-extern void printf();
 extern void _insque();
 extern void _remque();
-extern void bzero();
 
 int	scsiinit(), scsigo(), scsiintr(), scsixfer();
 void	scsistart(), scsidone(), scsifree(), scsireset();
