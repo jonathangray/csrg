@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ioctl.h	7.20 (Berkeley) 02/05/92
+ *	@(#)ioctl.h	7.21 (Berkeley) 07/08/92
  */
 
 #ifndef	_IOCTL_H_
@@ -76,7 +76,7 @@ struct ttysize {
 #define	IOC_INOUT	(IOC_IN|IOC_OUT)
 #define	IOC_DIRMASK	(IOC_IN|IOC_OUT|IOC_VOID)
 
-#define _IOC(inout,group,num,len) \
+#define	_IOC(inout,group,num,len) \
 	(inout | ((len & IOCPARM_MASK) << 16) | ((group) << 8) | (num))
 #define	_IO(g,n)	_IOC(IOC_VOID,	(g), (n), 0)
 #define	_IOR(g,n,t)	_IOC(IOC_OUT,	(g), (n), sizeof(t))
@@ -149,9 +149,9 @@ struct ttysize {
 #define	TIOCSCTTY	_IO('t', 97)		/* become controlling tty */
 #define	TIOCEXT		_IOW('t', 96, int)	/* pty: external processing */
 #define	TIOCSIG		_IO('t', 95)		/* pty: generate signal */
-#define TIOCDRAIN	_IO('t', 94)		/* wait till output drained */
+#define	TIOCDRAIN	_IO('t', 94)		/* wait till output drained */
 
-#define TTYDISC		0		/* termios tty line discipline */
+#define	TTYDISC		0		/* termios tty line discipline */
 #define	TABLDISC	3		/* tablet discipline */
 #define	SLIPDISC	4		/* serial IP discipline */
 
@@ -201,6 +201,9 @@ struct ttysize {
 #define	OSIOCGARP	_IOWR('i',31, struct arpreq)	/* get arp entry */
 #define	SIOCGARP	_IOWR('i',38, struct arpreq)	/* get arp entry */
 #define	SIOCDARP	_IOW('i', 32, struct arpreq)	/* delete arp entry */
+
+#define	SIOCADDMULTI	_IOW('i', 49, struct ifreq)	/* add m'cast addr */
+#define	SIOCDELMULTI	_IOW('i', 50, struct ifreq)	/* del m'cast addr */
 
 #ifndef KERNEL
 
