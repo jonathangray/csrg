@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)term.h	5.1 (Berkeley) 06/22/92
+ *	@(#)term.h	5.2 (Berkeley) 06/22/92
  */
 
 /*
@@ -42,7 +42,7 @@
 #ifndef _h_el_term
 #define _h_el_term
 
-#include "editline.h"
+#include "histedit.h"
 
 typedef struct {
     coord_t t_size;			/* # lines and cols	*/
