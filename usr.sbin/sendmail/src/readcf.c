@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	8.19 (Berkeley) 01/22/94";
+static char sccsid[] = "@(#)readcf.c	8.20 (Berkeley) 02/08/94";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -600,6 +600,12 @@ fileclass(class, filename, fmt, safe, optional)
 	struct stat stbuf;
 	char buf[MAXLINE];
 
+	if (filename[0] == '|')
+	{
+		syserr("fileclass: pipes (F%c%s) not supported due to security problems",
+			class, filename);
+		return;
+	}
 	if (stat(filename, &stbuf) < 0)
 	{
 		if (!optional)
