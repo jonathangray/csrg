@@ -5,7 +5,7 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)implement.ms	6.5 (Berkeley) 04/17/91
+.\"	@(#)implement.ms	6.6 (Berkeley) 06/05/93
 .\"
 .ds UU UUCP
 .ds Uu U\s-2UCP\s+2
@@ -13,7 +13,7 @@
 .TL
 Installation and Operation of \*(UU
 .br
-4.3BSD Edition
+4.4BSD Edition
 .AU
 D. A. Nowitz
 .AI
@@ -45,8 +45,8 @@ only to the extent that they affect administration of 4.3BSD systems.
 Revised August 24, 1986
 .AE
 .LP
-.OH 'Installation and Operation of UUCP''SMM:9-%'
-.EH 'SMM:9-%''Installation and Operation of UUCP'
+.OH 'Installation and Operation of UUCP''SMM:14-%'
+.EH 'SMM:14-%''Installation and Operation of UUCP'
 .ne 5
 .NH
 \*(UU OVERVIEW
