@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.4 (Berkeley) 06/25/90
+#	@(#)Makefile	5.5 (Berkeley) 01/14/91
 
 PROG=	iostat
 MAN8=	iostat.0
