@@ -207,7 +207,7 @@ setconnmode(force)
 {
 #ifdef	ENCRYPTION
     static int enc_passwd = 0;
-#endif
+#endif	/* ENCRYPTION */
     register int newmode;
 
     newmode = getconnmode()|(force?MODE_FORCE:0);
@@ -227,7 +227,7 @@ setconnmode(force)
 	    enc_passwd = 0;
 	}
     }
-#endif
+#endif	/* ENCRYPTION */
 
 }
 
