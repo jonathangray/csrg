@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)1.t	6.4 (Berkeley) 04/17/91
+.\"	@(#)1.t	6.5 (Berkeley) 06/06/93
 .\"
 .\".ds RH Introduction
 .ne 2i
@@ -38,7 +38,7 @@
 INTRODUCTION
 .PP
 .I Config
-is a tool used in building 4.3BSD system images (the UNIX kernel).
+is a tool used in building 4.4BSD system images (the UNIX kernel).
 It takes a file describing a system's tunable parameters and
 hardware support, and generates a collection
 of files which are then used to build a copy of UNIX appropriate
