@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	6.24 (Berkeley) 04/27/93
+ *	@(#)conf.h	6.25 (Berkeley) 04/27/93
  */
 
 /*
@@ -39,6 +39,7 @@
 */
 
 # include <sys/param.h>
+# include <sys/stat.h>
 # include <fcntl.h>
 
 /*
