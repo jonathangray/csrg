@@ -37,7 +37,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)machdep.c	7.12 (Berkeley) 05/24/93
+ *	@(#)machdep.c	7.13 (Berkeley) 05/30/93
  */
 
 /* from: Utah $Hdr: machdep.c 1.63 91/04/24$ */
@@ -795,12 +795,16 @@ cpu_sysctl(name, namelen, oldp, oldlenp, newp, newlen, p)
 	size_t newlen;
 	struct proc *p;
 {
+	extern dev_t consdev;
 
 	/* all sysctl names at this level are terminal */
 	if (namelen != 1)
 		return (ENOTDIR);		/* overloaded */
 
 	switch (name[0]) {
+	case CPU_CONSDEV:
+		return (sysctl_rdstruct(oldp, oldlenp, newp, &consdev,
+		    sizeof consdev));
 	default:
 		return (EOPNOTSUPP);
 	}
