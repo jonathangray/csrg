@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ip_output.c	7.23 (Berkeley) 11/12/90
+ *	@(#)ip_output.c	7.24 (Berkeley) 10/02/91
  */
 
 #include "param.h"
@@ -378,7 +378,7 @@ ip_ctloutput(op, so, level, optname, mp)
 	int error = 0;
 
 	if (level != IPPROTO_IP)
-		error = EINVAL;
+		goto freeit;
 	else switch (op) {
 
 	case PRCO_SETOPT:
@@ -431,6 +431,7 @@ ip_ctloutput(op, so, level, optname, mp)
 			break;
 #undef OPTSET
 
+		freeit:
 		default:
 			error = EINVAL;
 			break;
