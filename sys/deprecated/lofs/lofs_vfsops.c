@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lofs_vfsops.c	8.1 (Berkeley) 06/10/93
+ *	@(#)lofs_vfsops.c	8.2 (Berkeley) 01/05/94
  *
  * $Id: lofs_vfsops.c,v 1.9 1992/05/30 10:26:24 jsp Exp jsp $
  */
@@ -56,6 +56,7 @@
 /*
  * Mount loopback copy of existing name space
  */
+int
 lofs_mount(mp, path, data, ndp, p)
 	struct mount *mp;
 	char *path;
@@ -70,17 +71,11 @@ lofs_mount(mp, path, data, ndp, p)
 	struct lofsmount *amp;
 	u_int size;
 
-#ifdef LOFS_DIAGNOSTIC
-	printf("lofs_mount(mp = %x)\n", mp);
-#endif
-
 	/*
 	 * Update is a no-op
 	 */
-	if (mp->mnt_flag & MNT_UPDATE) {
+	if (mp->mnt_flag & MNT_UPDATE)
 		return (EOPNOTSUPP);
-		/* return VFS_MOUNT(VFSTOLOFS(mp)->looped_vfs, path, data, ndp, p);*/
-	}
 
 	/*
 	 * Get argument
@@ -100,9 +95,6 @@ lofs_mount(mp, path, data, ndp, p)
 	 * Sanity check on target vnode
 	 */
 	vp = ndp->ni_vp;
-#ifdef LOFS_DIAGNOSTIC
-	printf("vp = %x, check for VDIR...\n", vp);
-#endif
 	vrele(ndp->ni_dvp);
 	ndp->ni_dvp = 0;
 
@@ -110,10 +102,6 @@ lofs_mount(mp, path, data, ndp, p)
 		vput(vp);
 		return (EINVAL);
 	}
-
-#ifdef LOFS_DIAGNOSTIC
-	printf("mp = %x\n", mp);
-#endif
 
 	amp = (struct lofsmount *) malloc(sizeof(struct lofsmount),
 				M_UFSMNT, M_WAITOK);	/* XXX */
@@ -158,10 +146,6 @@ lofs_mount(mp, path, data, ndp, p)
 	(void) copyinstr(args.target, mp->mnt_stat.f_mntfromname, MNAMELEN - 1, 
 	    &size);
 	bzero(mp->mnt_stat.f_mntfromname + size, MNAMELEN - size);
-#ifdef LOFS_DIAGNOSTIC
-	printf("lofs_mount: target %s, alias at %s\n",
-		mp->mnt_stat.f_mntfromname, mp->mnt_stat.f_mntonname);
-#endif
 	return (0);
 }
 
@@ -170,18 +154,20 @@ lofs_mount(mp, path, data, ndp, p)
  * on the underlying filesystem will have been called
  * when that filesystem was mounted.
  */
+int
 lofs_start(mp, flags, p)
 	struct mount *mp;
 	int flags;
 	struct proc *p;
 {
+
 	return (0);
-	/* return VFS_START(VFSTOLOFS(mp)->looped_vfs, flags, p); */
 }
 
 /*
  * Free reference to looped FS
  */
+int
 lofs_unmount(mp, mntflags, p)
 	struct mount *mp;
 	int mntflags;
@@ -191,10 +177,6 @@ lofs_unmount(mp, mntflags, p)
 	int error;
 	int flags = 0;
 	extern int doforce;
-
-#ifdef LOFS_DIAGNOSTIC
-	printf("lofs_unmount(mp = %x)\n", mp);
-#endif
 
 	if (mntflags & MNT_FORCE) {
 		/* lofs can never be rootfs so don't check for it */
@@ -213,16 +195,6 @@ lofs_unmount(mp, mntflags, p)
 	if (error = vflush(mp, rootvp, flags))
 		return (error);
 
-#ifdef LOFS_DIAGNOSTIC
-	/*
-	 * Flush any remaining vnode references
-	 */
-	lofs_flushmp(mp);
-#endif
-
-#ifdef LOFS_DIAGNOSTIC
-	vprint("alias root of target", rootvp);
-#endif	 
 	/*
 	 * Release reference on underlying root vnode
 	 */
@@ -236,21 +208,15 @@ lofs_unmount(mp, mntflags, p)
 	 */
 	free(mp->mnt_data, M_UFSMNT);	/* XXX */
 	mp->mnt_data = 0;
-	return 0;
+	return (0);
 }
 
+int
 lofs_root(mp, vpp)
 	struct mount *mp;
 	struct vnode **vpp;
 {
 	struct vnode *vp;
-
-#ifdef LOFS_DIAGNOSTIC
-	printf("lofs_root(mp = %x, vp = %x->%x)\n", mp,
-			VFSTOLOFS(mp)->rootvp,
-			LOFSVP(VFSTOLOFS(mp)->rootvp)
-			);
-#endif
 
 	/*
 	 * Return locked reference to root.
@@ -259,9 +225,10 @@ lofs_root(mp, vpp)
 	VREF(vp);
 	VOP_LOCK(vp);
 	*vpp = vp;
-	return 0;
+	return (0);
 }
 
+int
 lofs_quotactl(mp, cmd, uid, arg, p)
 	struct mount *mp;
 	int cmd;
@@ -269,9 +236,10 @@ lofs_quotactl(mp, cmd, uid, arg, p)
 	caddr_t arg;
 	struct proc *p;
 {
-	return VFS_QUOTACTL(VFSTOLOFS(mp)->looped_vfs, cmd, uid, arg, p);
+	return (VFS_QUOTACTL(VFSTOLOFS(mp)->looped_vfs, cmd, uid, arg, p));
 }
 
+int
 lofs_statfs(mp, sbp, p)
 	struct mount *mp;
 	struct statfs *sbp;
@@ -279,13 +247,6 @@ lofs_statfs(mp, sbp, p)
 {
 	int error;
 	struct statfs mstat;
-
-#ifdef LOFS_DIAGNOSTIC
-	printf("lofs_statfs(mp = %x, vp = %x->%x)\n", mp,
-			VFSTOLOFS(mp)->rootvp,
-			LOFSVP(VFSTOLOFS(mp)->rootvp)
-			);
-#endif
 
 	bzero(&mstat, sizeof(mstat));
 
@@ -311,6 +272,7 @@ lofs_statfs(mp, sbp, p)
 	return (0);
 }
 
+int
 lofs_sync(mp, waitfor)
 struct mount *mp;
 int waitfor;
@@ -322,6 +284,7 @@ int waitfor;
  * LOFS flat namespace lookup.
  * Currently unsupported.
  */
+int
 lofs_vget(mp, ino, vpp)
 	struct mount *mp;
 	ino_t ino;
@@ -331,6 +294,7 @@ lofs_vget(mp, ino, vpp)
 	return (EOPNOTSUPP);
 }
 
+int
 lofs_fhtovp(mp, fhp, nam, vpp, exflagsp, credanonp)
 	register struct mount *mp;
 	struct fid *fhp;
@@ -339,17 +303,16 @@ lofs_fhtovp(mp, fhp, nam, vpp, exflagsp, credanonp)
 	int *exflagsp;
 	struct ucred **credanonp;
 {
-	return VFS_FHTOVP(VFSTOLOFS(mp)->looped_vfs, fhp, nam, vpp, exflagsp, credanonp);
+	return (VFS_FHTOVP(VFSTOLOFS(mp)->looped_vfs, fhp, nam, vpp, exflagsp, credanonp));
 }
 
+int
 lofs_vptofh(vp, fhp)
 	struct vnode *vp;
 	struct fid *fhp;
 {
-	return VFS_VPTOFH(LOFSVP(vp), fhp);
+	return (VFS_VPTOFH(LOFSVP(vp), fhp));
 }
-
-int lofs_init __P((void));
 
 struct vfsops lofs_vfsops = {
 	lofs_mount,
