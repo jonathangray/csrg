@@ -3,7 +3,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)4.def.h	4.3 (Berkeley) 04/16/91
+ *	@(#)4.def.h	8.1 (Berkeley) 06/06/93
  */
 
 #define YESTAB	TRUE
