@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	5.36 (Berkeley) 05/10/92";
+static char sccsid[] = "@(#)readcf.c	5.37 (Berkeley) 05/25/92";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -66,6 +66,9 @@ static char sccsid[] = "@(#)readcf.c	5.36 (Berkeley) 05/10/92";
 **		Oxvalue		Set option x to value.
 **		Pname=value	Set precedence name to value.
 **		Vversioncode	Version level of configuration syntax.
+**		Kmapname mapclass arguments....
+**				Define keyed lookup of a given class.
+**				Arguments are class dependent.
 **
 **	Parameters:
 **		cfname -- control file name.
@@ -94,6 +97,7 @@ readcf(cfname)
 	char pvpbuf[PSBUFSIZE];
 	extern char *fgetfolded();
 	extern char *munchstring();
+	extern void makemapentry();
 
 	FileName = cfname;
 	LineNumber = 0;
@@ -338,6 +342,10 @@ readcf(cfname)
 
 		  case 'V':		/* configuration syntax version */
 			ConfigLevel = atoi(&buf[1]);
+			break;
+
+		  case 'K':
+			makemapentry(&buf[1]);
 			break;
 
 		  default:
@@ -1023,4 +1031,71 @@ setclass(class, word)
 
 	s = stab(word, ST_CLASS, ST_ENTER);
 	setbitn(class, s->s_class);
+}
+/*
+**  MAKEMAPENTRY -- create a map entry
+**
+**	Parameters:
+**		line -- the config file line
+**
+**	Returns:
+**		TRUE if it successfully entered the map entry.
+**		FALSE otherwise (usually syntax error).
+**
+**	Side Effects:
+**		Enters the map into the dictionary.
+*/
+
+void
+makemapentry(line)
+	char *line;
+{
+	register char *p;
+	char *mapname;
+	char *classname;
+	register STAB *map;
+	STAB *class;
+
+	for (p = line; isspace(*p); p++)
+		continue;
+	if (!isalnum(*p))
+	{
+		syserr("readcf: config K line: no map name");
+		return;
+	}
+
+	mapname = p;
+	while (isalnum(*++p))
+		continue;
+	if (*p != '\0')
+		*p++ = '\0';
+	while (isspace(*p))
+		p++;
+	if (!isalnum(*p))
+	{
+		syserr("readcf: config K line, map %s: no map class", mapname);
+		return;
+	}
+	classname = p;
+	while (isalnum(*++p))
+		continue;
+	if (*p != '\0')
+		*p++ = '\0';
+	while (isspace(*p))
+		p++;
+
+	/* look up the class */
+	class = stab(classname, ST_MAPCLASS, ST_FIND);
+	if (class == NULL)
+	{
+		syserr("readcf: map %s: class %s not available", mapname, classname);
+		return;
+	}
+
+	/* enter the map */
+	map = stab(mapname, ST_MAP, ST_ENTER);
+	map->s_map.map_class = &class->s_mapclass;
+
+	if ((*class->s_mapclass.map_init)(&map->s_map, p))
+		map->s_map.map_flags |= MF_VALID;
 }
