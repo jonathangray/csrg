@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)mount.c	5.50 (Berkeley) 07/19/92";
+static char sccsid[] = "@(#)mount.c	5.51 (Berkeley) 11/15/92";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -63,7 +63,7 @@ static char sccsid[] = "@(#)mount.c	5.50 (Berkeley) 07/19/92";
 #define	SETTYPE(type) \
 	(!strcmp(type, FSTAB_RW) || !strcmp(type, FSTAB_RQ))
 
-int fake, verbose, updateflg, mnttype;
+int debug, force, verbose, updateflg, mnttype;
 char *mntname, **envp;
 char **vfslist, **makevfslist();
 static void prmount();
@@ -87,13 +87,16 @@ main(argc, argv, arge)
 	type = NULL;
 	mnttype = MOUNT_UFS;
 	mntname = "ufs";
-	while ((ch = getopt(argc, argv, "afrwuvt:o:")) != EOF)
+	while ((ch = getopt(argc, argv, "adfrwuvt:o:")) != EOF)
 		switch((char)ch) {
 		case 'a':
 			all = 1;
 			break;
+		case 'd':
+			debug = 1;
+			break;
 		case 'f':
-			fake = 1;
+			force = 1;
 			break;
 		case 'r':
 			type = FSTAB_RO;
@@ -144,7 +147,7 @@ main(argc, argv, arge)
 	}
 
 	if (argc == 0) {
-		if (verbose || fake || type)
+		if (verbose || debug || type)
 			usage();
 		if ((mntsize = getmntinfo(&mntbuf, MNT_NOWAIT)) == 0) {
 			(void) fprintf(stderr,
@@ -266,6 +269,8 @@ mountfs(spec, name, flags, type, options, mntopts)
 		getstdopts(options, &flags);
 	if (type)
 		getstdopts(type, &flags);
+	if (force)
+		flags |= MNT_FORCE;
 	switch (mnttype) {
 	case MOUNT_LFS:
 	case MOUNT_UFS:
@@ -306,7 +311,7 @@ mountfs(spec, name, flags, type, options, mntopts)
 				(void)printf(" %s", argv[i]);
 			(void)printf("\n");
 		}
-		if (fake)
+		if (debug)
 			break;
 		if (pid = vfork()) {
 			if (pid == -1) {
@@ -328,7 +333,7 @@ mountfs(spec, name, flags, type, options, mntopts)
 		/* NOTREACHED */
 
 	}
-	if (!fake && mount(mnttype, name, flags, argp)) {
+	if (!debug && mount(mnttype, name, flags, argp)) {
 		(void) fprintf(stderr, "%s on %s: ", spec, name);
 		switch (errno) {
 		case EMFILE:
