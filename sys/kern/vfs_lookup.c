@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_lookup.c	7.36 (Berkeley) 02/21/92
+ *	@(#)vfs_lookup.c	7.37 (Berkeley) 02/21/92
  */
 
 #include "param.h"
@@ -408,13 +408,12 @@ dirloop:
 	 * Check to see if the vnode has been mounted on;
 	 * if so find the root of the mounted file system.
 	 */
-mntloop:
 	while (dp->v_type == VDIR && (mp = dp->v_mountedhere) &&
 	       (cnp->cn_flags & NOCROSSMOUNT) == 0) {
 		if (mp->mnt_flag & MNT_MLOCK) {
 			mp->mnt_flag |= MNT_MWAIT;
 			sleep((caddr_t)mp, PVFS);
-			goto mntloop;
+			continue;
 		}
 		if (error = VFS_ROOT(dp->v_mountedhere, &tdp))
 			goto bad2;
