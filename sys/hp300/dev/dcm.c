@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * from: $Hdr: dcm.c 1.26 91/01/21$
+ * from Utah: $Hdr: dcm.c 1.29 92/01/21$
  *
- *	@(#)dcm.c	7.17 (Berkeley) 02/15/92
+ *	@(#)dcm.c	7.18 (Berkeley) 06/05/92
  */
 
 /*
@@ -63,7 +63,7 @@
 #include "sys/syslog.h"
 #include "sys/time.h"
 
-#include "device.h"
+#include "hp/dev/device.h"
 #include "dcmreg.h"
 #include "machine/cpu.h"
 #include "../hp300/isr.h"
@@ -1133,7 +1133,7 @@ dcmsetischeme(brd, flags)
 /*
  * Following are all routines needed for DCM to act as console
  */
-#include "../hp300/cons.h"
+#include "hp/dev/cons.h"
 
 dcmcnprobe(cp)
 	struct consdev *cp;
