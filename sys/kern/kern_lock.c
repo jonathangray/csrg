@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_lock.c	8.10 (Berkeley) 05/14/95
+ *	@(#)kern_lock.c	8.11 (Berkeley) 05/14/95
  */
 
 #include <sys/param.h>
@@ -288,7 +288,7 @@ lockmgr(lkp, flags, interlkp, p)
 		/* fall into exclusive request */
 
 	case LK_EXCLUSIVE:
-		if (lkp->lk_lockholder == pid) {
+		if (lkp->lk_lockholder == pid && pid != LK_KERNPROC) {
 			/*
 			 *	Recursive lock.
 			 */
@@ -418,6 +418,11 @@ lockmgr_printinfo(lkp)
 }
 
 #if defined(DEBUG) && NCPUS == 1
+#include <sys/kernel.h>
+#include <vm/vm.h>
+#include <sys/sysctl.h>
+int lockpausetime = 1;
+struct ctldebug debug2 = { "lockpausetime", &lockpausetime };
 /*
  * Simple lock functions so that the debugger can see from whence
  * they are being called.
@@ -435,8 +440,16 @@ simple_lock(alp)
 	__volatile struct simplelock *alp;
 {
 
-	if (alp->lock_data == 1)
-		panic("simple_lock: lock held");
+	if (alp->lock_data == 1) {
+		if (lockpausetime == -1)
+			panic("simple_lock: lock held");
+		if (lockpausetime > 0) {
+			printf("simple_lock: lock held...");
+			tsleep(&lockpausetime, PCATCH | PPAUSE, "slock",
+			    lockpausetime * hz);
+			printf(" continuing\n");
+		}
+	}
 	alp->lock_data = 1;
 }
 
@@ -445,8 +458,16 @@ simple_lock_try(alp)
 	__volatile struct simplelock *alp;
 {
 
-	if (alp->lock_data == 1)
-		panic("simple_lock: lock held");
+	if (alp->lock_data == 1) {
+		if (lockpausetime == -1)
+			panic("simple_lock_try: lock held");
+		if (lockpausetime > 0) {
+			printf("simple_lock_try: lock held...");
+			tsleep(&lockpausetime, PCATCH | PPAUSE, "slock",
+			    lockpausetime * hz);
+			printf(" continuing\n");
+		}
+	}
 	alp->lock_data = 1;
 	return (1);
 }
@@ -456,8 +477,16 @@ simple_unlock(alp)
 	__volatile struct simplelock *alp;
 {
 
-	if (alp->lock_data == 0)
-		panic("simple_lock: lock not held");
+	if (alp->lock_data == 0) {
+		if (lockpausetime == -1)
+			panic("simple_unlock: lock not held");
+		if (lockpausetime > 0) {
+			printf("simple_unlock: lock not held...");
+			tsleep(&lockpausetime, PCATCH | PPAUSE, "sunlock",
+			    lockpausetime * hz);
+			printf(" continuing\n");
+		}
+	}
 	alp->lock_data = 0;
 }
 #endif /* DEBUG && NCPUS == 1 */
