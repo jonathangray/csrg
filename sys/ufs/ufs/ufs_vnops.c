@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	8.14 (Berkeley) 10/26/94
+ *	@(#)ufs_vnops.c	8.15 (Berkeley) 01/02/95
  */
 
 #include <sys/param.h>
@@ -69,8 +69,8 @@ static int ufs_chown
 	__P((struct vnode *, uid_t, gid_t, struct ucred *, struct proc *));
 
 union _qcvt {
-	quad_t qcvt;
-	long val[2];
+	int64_t qcvt;
+	int32_t val[2];
 };
 #define SETHIGH(q, h) { \
 	union _qcvt tmp; \
