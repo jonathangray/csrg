@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mfs_vfsops.c	8.9 (Berkeley) 05/10/95
+ *	@(#)mfs_vfsops.c	8.10 (Berkeley) 05/20/95
  */
 
 #include <sys/param.h>
@@ -114,23 +114,19 @@ mfs_mountroot()
 	mfsp->mfs_buflist = (struct buf *)0;
 	if (error = ffs_mountfs(rootvp, mp, p)) {
 		mp->mnt_vfc->vfc_refcount--;
+		vfs_unbusy(mp, p);
 		free(mp, M_MOUNT);
 		free(mfsp, M_MFSNODE);
 		return (error);
 	}
-	if (error = vfs_lock(mp)) {
-		(void)ffs_unmount(mp, 0, p);
-		mp->mnt_vfc->vfc_refcount--;
-		free(mp, M_MOUNT);
-		free(mfsp, M_MFSNODE);
-		return (error);
-	}
+	simple_lock(&mountlist_slock);
 	CIRCLEQ_INSERT_TAIL(&mountlist, mp, mnt_list);
+	simple_unlock(&mountlist_slock);
 	ump = VFSTOUFS(mp);
 	fs = ump->um_fs;
 	(void) copystr(mp->mnt_stat.f_mntonname, fs->fs_fsmnt, MNAMELEN - 1, 0);
 	(void)ffs_statfs(mp, &mp->mnt_stat, p);
-	vfs_unlock(mp);
+	vfs_unbusy(mp, p);
 	inittodr((time_t)0);
 	return (0);
 }
@@ -192,11 +188,7 @@ mfs_mount(mp, path, data, ndp, p)
 			flags = WRITECLOSE;
 			if (mp->mnt_flag & MNT_FORCE)
 				flags |= FORCECLOSE;
-			if (vfs_busy(mp))
-				return (EBUSY);
-			error = ffs_flushfiles(mp, flags, p);
-			vfs_unbusy(mp);
-			if (error)
+			if (error = ffs_flushfiles(mp, flags, p))
 				return (error);
 		}
 		if (fs->fs_ronly && (mp->mnt_flag & MNT_WANTRDWR))
