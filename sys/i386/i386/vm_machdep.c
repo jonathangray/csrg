@@ -21,7 +21,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)vm_machdep.c	5.4 (Berkeley) 11/18/90
+ *	@(#)vm_machdep.c	5.5 (Berkeley) 11/25/90
  */
 
 /*
@@ -106,7 +106,7 @@ newptes(pte, v, size)
 #ifdef lint
 	pte = pte;
 #endif
-	tlbflush();
+	load_cr3(u.u_pcb.pcb_ptd);
 }
 
 /*
@@ -138,7 +138,7 @@ chgprot(addr, tprot)
 	}
 	*(u_int *)pte &= ~PG_PROT;
 	*(u_int *)pte |= tprot;
-	tlbflush();
+	load_cr3(u.u_pcb.pcb_ptd);
 	return (1);
 }
 
@@ -152,7 +152,7 @@ settprot(tprot)
 		ptaddr[i] &= ~PG_PROT;
 		ptaddr[i] |= tprot;
 	}
-	tlbflush();
+	load_cr3(u.u_pcb.pcb_ptd);
 }
 
 /*
@@ -185,7 +185,7 @@ setptlr(region, nlen)
 		*(u_int *)pte++ = 0;
 	} while (--change);
 	/* short cut newptes */
-	tlbflush();
+	load_cr3(u.u_pcb.pcb_ptd);
 }
 
 /*
@@ -206,7 +206,7 @@ physaccess(pte, paddr, size, prot)
 		page += NBPG;
 		pte++;
 	}
-	tlbflush();
+	load_cr3(u.u_pcb.pcb_ptd);
 }
 
 /*
@@ -231,7 +231,7 @@ pagemove(from, to, size)
 		to += NBPG;
 		size -= NBPG;
 	}
-	tlbflush();
+	load_cr3(u.u_pcb.pcb_ptd);
 }
 
 /*
@@ -509,7 +509,7 @@ vmapbuf(bp)
 		iopte++, pte++;
 		a++;
 	}
-	tlbflush();
+	load_cr3(u.u_pcb.pcb_ptd);
 }
 
 /*
@@ -549,5 +549,5 @@ vunmapbuf(bp)
 		a = ((bp - swbuf) * CLSIZE) * KLMAX;
 		bp->b_un.b_addr = (caddr_t)ctob(dptov(&proc[2], a));
 	}
-	tlbflush();
+	load_cr3(u.u_pcb.pcb_ptd);
 }
