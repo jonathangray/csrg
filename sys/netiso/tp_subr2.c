@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_subr2.c	7.21 (Berkeley) 10/11/92
+ *	@(#)tp_subr2.c	7.22 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -430,7 +430,7 @@ tp_netcmd( tpcb, cmd )
 		printf("tp_netcmd(0x%x, 0x%x) NOT IMPLEMENTED\n", tpcb, cmd);
 		break;
 	}
-#else TPCONS
+#else /* TPCONS */
 	printf("tp_netcmd(): X25 NOT CONFIGURED!!\n");
 #endif
 }
@@ -720,9 +720,9 @@ tp0_stash( tpcb, e )
 {
 #ifndef lint
 #define E e->ATTR(DT_TPDU)
-#else lint
+#else /* lint */
 #define E e->ev_union.EV_DT_TPDU
-#endif lint
+#endif /* lint */
 
 	register struct sockbuf *sb = &tpcb->tp_sock->so_rcv;
 	register struct isopcb *isop = (struct isopcb *)tpcb->tp_npcb;
@@ -820,7 +820,7 @@ tp_setup_perf(tpcb)
 	}
 	return 0;
 }
-#endif TP_PERF_MEAS
+#endif /* TP_PERF_MEAS */
 
 #ifdef ARGO_DEBUG
 dump_addr (addr)
@@ -834,7 +834,7 @@ dump_addr (addr)
 		case AF_ISO:
 			dump_isoaddr((struct sockaddr_iso *)addr);
 			break;
-#endif ISO
+#endif /* ISO */
 		default:
 			printf("BAD AF: 0x%x\n", addr->sa_family);
 			break;
@@ -877,7 +877,4 @@ int		len;
 		printf("\n");
 	}
 }
-
-
-#endif ARGO_DEBUG
-
+#endif /* ARGO_DEBUG */
