@@ -30,11 +30,34 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm.h	7.2 (Berkeley) 08/28/91
+ *	@(#)vm.h	7.3 (Berkeley) 05/04/92
  */
 
 #ifndef VM_H
 #define VM_H
+
+typedef int vm_inherit_t;		/* XXX: inheritance codes */
+
+union vm_map_object;
+typedef union vm_map_object vm_map_object_t;
+
+struct vm_map_entry;
+typedef struct vm_map_entry *vm_map_entry_t;
+
+struct vm_map;
+typedef struct vm_map *vm_map_t;
+
+struct vm_object;
+typedef struct vm_object *vm_object_t;
+
+struct vm_page;
+typedef struct vm_page  *vm_page_t;
+
+struct pager_struct;
+typedef struct pager_struct *vm_pager_t;
+
+#include <sys/vmmeter.h>
+
 #include <vm/vm_param.h>
 #include <vm/lock.h>
 #include <vm/queue.h>
@@ -43,7 +66,7 @@
 #include <vm/vm_map.h>
 #include <vm/vm_object.h>
 #include <vm/pmap.h>
-#include <sys/vmmeter.h>
+#include <vm/vm_extern.h>
 
 /*
  * Shareable process virtual address space.
@@ -66,9 +89,4 @@ struct vmspace {
 	caddr_t	vm_daddr;	/* user virtual address of data XXX */
 	caddr_t vm_maxsaddr;	/* user VA at max stack growth */
 };
-
-struct	vmspace *vmspace_alloc __P((vm_offset_t min, vm_offset_t max,
-			int pageable));
-struct	vmspace *vmspace_fork __P((struct vmspace *));
-void	vmspace_free __P((struct vmspace *));
 #endif /* VM_H */
