@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_domain.c	7.15 (Berkeley) 04/17/93
+ *	@(#)uipc_domain.c	7.16 (Berkeley) 04/27/93
  */
 
 #include <sys/param.h>
@@ -40,6 +40,8 @@
 #include <sys/mbuf.h>
 #include <sys/time.h>
 #include <sys/kernel.h>
+#include <sys/proc.h>
+#include <vm/vm.h>
 #include <sys/sysctl.h>
 
 #define	ADDDOMAIN(x)	{ \
