@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mount.h	7.32 (Berkeley) 05/31/92
+ *	@(#)mount.h	7.33 (Berkeley) 06/20/92
  */
 
 #ifndef KERNEL
@@ -99,6 +99,7 @@ struct mount {
 	struct vnode	*mnt_vnodecovered;	/* vnode we mounted on */
 	struct vnode	*mnt_mounth;		/* list of vnodes this mount */
 	int		mnt_flag;		/* flags */
+	int		mnt_maxsymlinklen;	/* max size of short symlink */
 	struct statfs	mnt_stat;		/* cache of filesystem stats */
 	qaddr_t		mnt_data;		/* private data */
 };
