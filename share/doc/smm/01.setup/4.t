@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)4.t	6.15 (Berkeley) 07/16/93
+.\"	@(#)4.t	6.16 (Berkeley) 07/20/93
 .\"
 .ds LH "Installing/Operating \*(4B
 .ds CF \*(Dy
@@ -84,7 +84,7 @@ ufs		local filesystems broken down as follows
 	lfs	log-based filesystem
 	mfs	memory based filesystem
 nfs		Sun-compatible network filesystem
-miscfs		miscellaneous filesystems
+miscfs		miscellaneous filesystems broken down as follows
 	deadfs	where rejected vnodes go to die
 	fdesc	access to per-process file descriptors
 	fifofs	IEEE Std1003.1 FIFOs
