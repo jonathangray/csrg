@@ -1,4 +1,4 @@
-#	@(#)Files.misc	8.2 (Berkeley) 06/19/94
+#	@(#)Files.misc	8.3 (Berkeley) 12/04/94
 praliases/Makefile
 praliases/Makefile.dist
 praliases/praliases.c
