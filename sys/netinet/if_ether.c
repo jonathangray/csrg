@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_ether.c	7.19 (Berkeley) 01/31/92
+ *	@(#)if_ether.c	7.20 (Berkeley) 02/25/92
  */
 
 /*
@@ -126,8 +126,9 @@ arp_rtrequest(req, rt, sa)
 	switch (req) {
 	case RTM_ADD:
 	case RTM_RESOLVE:
-		if ((rt->rt_flags & RTF_HOST) == 0) /* Route to IF? XXX*/
-			rt->rt_flags |= RTF_CLONING;
+		if ((rt->rt_flags & RTF_HOST) == 0 &&
+		    SIN(rt_mask(rt))->sin_addr.s_addr != 0xffffffff)
+			rt->rt_flags |= RTF_CLONING; /* Route to IF? XXX*/
 		if (rt->rt_flags & RTF_CLONING) {
 			/*
 			 * Case 1: This route should come from a route to iface.
