@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_subr2.c	7.10 (Berkeley) 06/28/91
+ *	@(#)tp_subr2.c	7.11 (Berkeley) 07/18/91
  */
 
 /***********************************************************
@@ -527,10 +527,10 @@ tp_route_to( m, tpcb, channel)
 #ifdef TPCONS
 	if (lcp) {
 		struct isopcb *isop = (struct isopcb *)lcp->lcd_upnext,
-			*isop_new = (struct isopcb *)tpcb->tp_sock->so_pcb;
+			*isop_new = (struct isopcb *)tpcb->tp_npcb;
 		remque(isop_new);
 		free(isop_new, M_PCB);
-		tpcb->tp_sock->so_pcb = (caddr_t)isop;
+		tpcb->tp_npcb = (caddr_t)isop;
 		if (isop->isop_refcnt == 0) {
 			extern struct isopcb tp_isopcb;
 			remque(isop);
@@ -542,7 +542,7 @@ tp_route_to( m, tpcb, channel)
 		isop->isop_refcnt++;
 	} else
 #endif
-		error = (tpcb->tp_nlproto->nlp_pcbconn)(tpcb->tp_sock->so_pcb, m);
+		error = (tpcb->tp_nlproto->nlp_pcbconn)(tpcb->tp_npcb, m);
 	if( error )
 		goto done;
 
