@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)cmds.c	5.23 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)cmds.c	5.24 (Berkeley) 09/28/90";
 #endif /* not lint */
 
 /*
@@ -72,6 +72,38 @@ jmp_buf jabort;
 char *dotrans(), *domap();
 
 /*
+ * `Another' gets another argument, and stores the new argc and argv.
+ * It reverts to the top level (via main.c's intr()) on EOF/error.
+ *
+ * Returns false if no new arguments have been added.
+ */
+another(pargc, pargv, prompt)
+	int *pargc;
+	char ***pargv;
+	char *prompt;
+{
+	int len = strlen(line), ret;
+	extern sig_t intr();
+
+	if (len >= sizeof(line) - 3) {
+		printf("sorry, arguments too long\n");
+		intr();
+	}
+	printf("(%s) ", prompt);
+	line[len++] = ' ';
+	if (fgets(&line[len], sizeof(line) - len, stdin) == NULL)
+		intr();
+	len += strlen(&line[len]);
+	if (len > 0 && line[len - 1] == '\n')
+		line[len - 1] = '\0';
+	makeargv();
+	ret = margc > *pargc;
+	*pargc = margc;
+	*pargv = margv;
+	return (ret);
+}
+
+/*
  * Connect to peer server and
  * auto-login, if possible.
  */
@@ -88,15 +120,9 @@ setpeer(argc, argv)
 		code = -1;
 		return;
 	}
-	if (argc < 2) {
-		(void) strcat(line, " ");
-		printf("(to) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc > 3) {
+	if (argc < 2)
+		(void) another(&argc, &argv, "to");
+	if (argc < 2 || argc > 3) {
 		printf("usage: %s host-name [port]\n", argv[0]);
 		code = -1;
 		return;
@@ -203,6 +229,7 @@ struct	types {
  * Set transfer type.
  */
 settype(argc, argv)
+	int argc;
 	char *argv[];
 {
 	register struct types *p;
@@ -318,6 +345,7 @@ settenex()
  */
 /*ARGSUSED*/
 setmode(argc, argv)
+	int argc;
 	char *argv[];
 {
 
@@ -330,6 +358,7 @@ setmode(argc, argv)
  */
 /*ARGSUSED*/
 setform(argc, argv)
+	int argc;
 	char *argv[];
 {
 
@@ -342,6 +371,7 @@ setform(argc, argv)
  */
 /*ARGSUSED*/
 setstruct(argc, argv)
+	int argc;
 	char *argv[];
 {
 
@@ -365,30 +395,14 @@ put(argc, argv)
 		argv[2] = argv[1];
 		loc++;
 	}
-	if (argc < 2) {
-		(void) strcat(line, " ");
-		printf("(local-file) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 2) {
+	if (argc < 2 && !another(&argc, &argv, "local-file"))
+		goto usage;
+	if (argc < 3 && !another(&argc, &argv, "remote-file")) {
 usage:
-		printf("usage:%s local-file remote-file\n", argv[0]);
+		printf("usage: %s local-file remote-file\n", argv[0]);
 		code = -1;
 		return;
 	}
-	if (argc < 3) {
-		(void) strcat(line, " ");
-		printf("(remote-file) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 3) 
-		goto usage;
 	oldargv1 = argv[1];
 	oldargv2 = argv[2];
 	if (!globulize(&argv[1])) {
@@ -427,16 +441,8 @@ mput(argc, argv)
 	char *tp;
 	void mabort();
 
-	if (argc < 2) {
-		(void) strcat(line, " ");
-		printf("(local-files) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 2) {
-		printf("usage:%s local-files\n", argv[0]);
+	if (argc < 2 && !another(&argc, &argv, "local-files")) {
+		printf("usage: %s local-files\n", argv[0]);
 		code = -1;
 		return;
 	}
@@ -562,30 +568,14 @@ get(argc, argv)
 		argv[2] = argv[1];
 		loc++;
 	}
-	if (argc < 2) {
-		(void) strcat(line, " ");
-		printf("(remote-file) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 2) {
+	if (argc < 2 && !another(&argc, &argv, "remote-file"))
+		goto usage;
+	if (argc < 3 && !another(&argc, &argv, "local-file")) {
 usage:
 		printf("usage: %s remote-file [ local-file ]\n", argv[0]);
 		code = -1;
 		return;
 	}
-	if (argc < 3) {
-		(void) strcat(line, " ");
-		printf("(local-file) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 3) 
-		goto usage;
 	oldargv1 = argv[1];
 	oldargv2 = argv[2];
 	if (!globulize(&argv[2])) {
@@ -652,16 +642,8 @@ mget(argc, argv)
 	char *cp, *tp, *tp2, tmpbuf[MAXPATHLEN];
 	void mabort();
 
-	if (argc < 2) {
-		(void) strcat(line, " ");
-		printf("(remote-files) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 2) {
-		printf("usage:%s remote-files\n", argv[0]);
+	if (argc < 2 && !another(&argc, &argv, "remote-files")) {
+		printf("usage: %s remote-files\n", argv[0]);
 		code = -1;
 		return;
 	}
@@ -789,6 +771,7 @@ onoff(bool)
  */
 /*ARGSUSED*/
 status(argc, argv)
+	int argc;
 	char *argv[];
 {
 	int i;
@@ -933,6 +916,7 @@ setglob()
  */
 /*VARARGS*/
 setdebug(argc, argv)
+	int argc;
 	char *argv[];
 {
 	int val;
@@ -960,19 +944,12 @@ setdebug(argc, argv)
  * on remote machine.
  */
 cd(argc, argv)
+	int argc;
 	char *argv[];
 {
 
-	if (argc < 2) {
-		(void) strcat(line, " ");
-		printf("(remote-directory) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 2) {
-		printf("usage:%s remote-directory\n", argv[0]);
+	if (argc < 2 && !another(&argc, &argv, "remote-directory")) {
+		printf("usage: %s remote-directory\n", argv[0]);
 		code = -1;
 		return;
 	}
@@ -988,6 +965,7 @@ cd(argc, argv)
  * on local machine.
  */
 lcd(argc, argv)
+	int argc;
 	char *argv[];
 {
 	char buf[MAXPATHLEN];
@@ -996,7 +974,7 @@ lcd(argc, argv)
 	if (argc < 2)
 		argc++, argv[1] = home;
 	if (argc != 2) {
-		printf("usage:%s local-directory\n", argv[0]);
+		printf("usage: %s local-directory\n", argv[0]);
 		code = -1;
 		return;
 	}
@@ -1017,19 +995,12 @@ lcd(argc, argv)
  * Delete a single file.
  */
 delete(argc, argv)
+	int argc;
 	char *argv[];
 {
 
-	if (argc < 2) {
-		(void) strcat(line, " ");
-		printf("(remote-file) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 2) {
-		printf("usage:%s remote-file\n", argv[0]);
+	if (argc < 2 && !another(&argc, &argv, "remote-file")) {
+		printf("usage: %s remote-file\n", argv[0]);
 		code = -1;
 		return;
 	}
@@ -1049,16 +1020,8 @@ mdelete(argc, argv)
 	char *cp;
 	void mabort();
 
-	if (argc < 2) {
-		(void) strcat(line, " ");
-		printf("(remote-files) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 2) {
-		printf("usage:%s remote-files\n", argv[0]);
+	if (argc < 2 && !another(&argc, &argv, "remote-files")) {
+		printf("usage: %s remote-files\n", argv[0]);
 		code = -1;
 		return;
 	}
@@ -1091,33 +1054,18 @@ mdelete(argc, argv)
  * Rename a remote file.
  */
 renamefile(argc, argv)
+	int argc;
 	char *argv[];
 {
 
-	if (argc < 2) {
-		(void) strcat(line, " ");
-		printf("(from-name) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 2) {
+	if (argc < 2 && !another(&argc, &argv, "from-name"))
+		goto usage;
+	if (argc < 3 && !another(&argc, &argv, "to-name")) {
 usage:
 		printf("%s from-name to-name\n", argv[0]);
 		code = -1;
 		return;
 	}
-	if (argc < 3) {
-		(void) strcat(line, " ");
-		printf("(to-name) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 3) 
-		goto usage;
 	if (command("RNFR %s", argv[1]) == CONTINUE)
 		(void) command("RNTO %s", argv[2]);
 }
@@ -1127,6 +1075,7 @@ usage:
  * of remote files.
  */
 ls(argc, argv)
+	int argc;
 	char *argv[];
 {
 	char *cmd;
@@ -1167,31 +1116,19 @@ mls(argc, argv)
 	char *cmd, mode[1], *dest;
 	void mabort();
 
-	if (argc < 2) {
-		(void) strcat(line, " ");
-		printf("(remote-files) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 3) {
-		(void) strcat(line, " ");
-		printf("(local-file) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 3) {
-		printf("usage:%s remote-files local-file\n", argv[0]);
+	if (argc < 2 && !another(&argc, &argv, "remote-files"))
+		goto usage;
+	if (argc < 3 && !another(&argc, &argv, "local-file")) {
+usage:
+		printf("usage: %s remote-files local-file\n", argv[0]);
 		code = -1;
 		return;
 	}
 	dest = argv[argc - 1];
 	argv[argc - 1] = NULL;
 	if (strcmp(dest, "-") && *dest != '|')
-		if (!globulize(&dest) || !confirm("output to local-file:", dest)) {
+		if (!globulize(&dest) ||
+		    !confirm("output to local-file:", dest)) {
 			code = -1;
 			return;
 	}
@@ -1285,15 +1222,9 @@ user(argc, argv)
 	char acct[80], *getpass();
 	int n, aflag = 0;
 
-	if (argc < 2) {
-		(void) strcat(line, " ");
-		printf("(username) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc > 4) {
+	if (argc < 2)
+		(void) another(&argc, &argv, "username");
+	if (argc < 2 || argc > 4) {
 		printf("usage: %s username [password] [account]\n", argv[0]);
 		code = -1;
 		return (0);
@@ -1347,18 +1278,11 @@ pwd()
  * Make a directory.
  */
 makedir(argc, argv)
+	int argc;
 	char *argv[];
 {
 
-	if (argc < 2) {
-		(void) strcat(line, " ");
-		printf("(directory-name) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 2) {
+	if (argc < 2 && !another(&argc, &argv, "directory-name")) {
 		printf("usage: %s directory-name\n", argv[0]);
 		code = -1;
 		return;
@@ -1374,18 +1298,11 @@ makedir(argc, argv)
  * Remove a directory.
  */
 removedir(argc, argv)
+	int argc;
 	char *argv[];
 {
 
-	if (argc < 2) {
-		(void) strcat(line, " ");
-		printf("(directory-name) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 2) {
+	if (argc < 2 && !another(&argc, &argv, "directory-name")) {
 		printf("usage: %s directory-name\n", argv[0]);
 		code = -1;
 		return;
@@ -1401,64 +1318,56 @@ removedir(argc, argv)
  * Send a line, verbatim, to the remote machine.
  */
 quote(argc, argv)
+	int argc;
 	char *argv[];
 {
-	int i;
-	char buf[BUFSIZ];
 
-	if (argc < 2) {
-		(void) strcat(line, " ");
-		printf("(command line to send) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 2) {
+	if (argc < 2 && !another(&argc, &argv, "command line to send")) {
 		printf("usage: %s line-to-send\n", argv[0]);
 		code = -1;
 		return;
 	}
-	(void) strcpy(buf, argv[1]);
-	for (i = 2; i < argc; i++) {
-		(void) strcat(buf, " ");
-		(void) strcat(buf, argv[i]);
-	}
-	if (command(buf) == PRELIM) {
-		while (getreply(0) == PRELIM);
-	}
+	quote1("", argc, argv);
 }
 
 /*
  * Send a SITE command to the remote machine.  The line
- * is sent almost verbatim to the remote machine, the
- * first argument is changed to SITE.
+ * is sent verbatim to the remote machine, except that the
+ * word "SITE" is added at the front.
  */
-
 site(argc, argv)
+	int argc;
 	char *argv[];
 {
-	int i;
-	char buf[BUFSIZ];
 
-	if (argc < 2) {
-		(void) strcat(line, " ");
-		printf("(arguments to SITE command) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 2) {
+	if (argc < 2 && !another(&argc, &argv, "arguments to SITE command")) {
 		printf("usage: %s line-to-send\n", argv[0]);
 		code = -1;
 		return;
 	}
-	(void) strcpy(buf, "SITE ");
-	(void) strcat(buf, argv[1]);
-	for (i = 2; i < argc; i++) {
-		(void) strcat(buf, " ");
-		(void) strcat(buf, argv[i]);
+	quote1("SITE ", argc, argv);
+}
+
+/*
+ * Turn argv[1..argc) into a space-separated string, then prepend initial text.
+ * Send the result as a one-line command and get response.
+ */
+quote1(initial, argc, argv)
+	char *initial;
+	int argc;
+	char **argv;
+{
+	register int i, len;
+	char buf[BUFSIZ];		/* must be >= sizeof(line) */
+
+	(void) strcpy(buf, initial);
+	if (argc > 1) {
+		len = strlen(buf);
+		len += strlen(strcpy(&buf[len], argv[1]));
+		for (i = 2; i < argc; i++) {
+			buf[len++] = ' ';
+			len += strlen(strcpy(&buf[len], argv[i]));
+		}
 	}
 	if (command(buf) == PRELIM) {
 		while (getreply(0) == PRELIM);
@@ -1466,30 +1375,23 @@ site(argc, argv)
 }
 
 do_chmod(argc, argv)
+	int argc;
 	char *argv[];
 {
-	if (argc == 2) {
+
+	if (argc < 2 && !another(&argc, &argv, "mode"))
+		goto usage;
+	if (argc < 3 && !another(&argc, &argv, "file-name")) {
+usage:
 		printf("usage: %s mode file-name\n", argv[0]);
 		code = -1;
 		return;
 	}
-	if (argc < 3) {
-		(void) strcat(line, " ");
-		printf("(mode and file-name) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc != 3) {
-		printf("usage: %s mode file-name\n", argv[0]);
-		code = -1;
-		return;
-	}
-	(void)command("SITE CHMOD %s %s", argv[1], argv[2]);
+	(void) command("SITE CHMOD %s %s", argv[1], argv[2]);
 }
 
 do_umask(argc, argv)
+	int argc;
 	char *argv[];
 {
 	int oldverbose = verbose;
@@ -1500,6 +1402,7 @@ do_umask(argc, argv)
 }
 
 idle(argc, argv)
+	int argc;
 	char *argv[];
 {
 	int oldverbose = verbose;
@@ -1513,6 +1416,7 @@ idle(argc, argv)
  * Ask the other side for help.
  */
 rmthelp(argc, argv)
+	int argc;
 	char *argv[];
 {
 	int oldverbose = verbose;
@@ -1569,7 +1473,8 @@ confirm(cmd, file)
 		return (1);
 	printf("%s %s? ", cmd, file);
 	(void) fflush(stdout);
-	(void) gets(line);
+	if (fgets(line, sizeof line, stdin) == NULL)
+		return (0);
 	return (*line != 'n' && *line != 'N');
 }
 
@@ -1669,16 +1574,8 @@ doproxy(argc,argv)
 	sig_t oldintr;
 	void proxabort();
 
-	if (argc < 2) {
-		(void) strcat(line, " ");
-		printf("(command) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 2) {
-		printf("usage:%s command\n", argv[0]);
+	if (argc < 2 && !another(&argc, &argv, "command")) {
+		printf("usage: %s command\n", argv[0]);
 		code = -1;
 		return;
 	}
@@ -1802,15 +1699,7 @@ setnmap(argc, argv)
 		code = mapflag;
 		return;
 	}
-	if (argc < 3) {
-		(void) strcat(line, " ");
-		printf("(mapout) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 3) {
+	if (argc < 3 && !another(&argc, &argv, "mapout")) {
 		printf("Usage: %s [mapin mapout]\n",argv[0]);
 		code = -1;
 		return;
@@ -2042,15 +1931,7 @@ macdef(argc, argv)
 		code = -1;
 		return;
 	}
-	if (argc < 2) {
-		(void) strcat(line, " ");
-		printf("(macro name) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc != 2) {
+	if (argc < 2 && !another(&argc, &argv, "macro name")) {
 		printf("Usage: %s macro_name\n",argv[0]);
 		code = -1;
 		return;
@@ -2102,19 +1983,12 @@ macdef(argc, argv)
  * get size of file on remote machine
  */
 sizecmd(argc, argv)
+	int argc;
 	char *argv[];
 {
 
-	if (argc < 2) {
-		(void) strcat(line, " ");
-		printf("(filename) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 2) {
-		printf("usage:%s filename\n", argv[0]);
+	if (argc < 2 && !another(&argc, &argv, "filename")) {
+		printf("usage: %s filename\n", argv[0]);
 		code = -1;
 		return;
 	}
@@ -2125,20 +1999,13 @@ sizecmd(argc, argv)
  * get last modification time of file on remote machine
  */
 modtime(argc, argv)
+	int argc;
 	char *argv[];
 {
 	int overbose;
 
-	if (argc < 2) {
-		(void) strcat(line, " ");
-		printf("(filename) ");
-		(void) gets(&line[strlen(line)]);
-		makeargv();
-		argc = margc;
-		argv = margv;
-	}
-	if (argc < 2) {
-		printf("usage:%s filename\n", argv[0]);
+	if (argc < 2 && !another(&argc, &argv, "filename")) {
+		printf("usage: %s filename\n", argv[0]);
 		code = -1;
 		return;
 	}
@@ -2161,6 +2028,7 @@ modtime(argc, argv)
  * show status on remote machine
  */
 rmtstatus(argc, argv)
+	int argc;
 	char *argv[];
 {
 	(void) command(argc > 1 ? "STAT %s" : "STAT" , argv[1]);
