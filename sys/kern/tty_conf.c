@@ -30,13 +30,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty_conf.c	7.7 (Berkeley) 02/05/92
+ *	@(#)tty_conf.c	7.8 (Berkeley) 02/15/92
  */
 
 #include "param.h"
 #include "systm.h"
 #include "buf.h"
 #include "ioctl.h"
+#include "proc.h"
 #include "tty.h"
 #include "conf.h"
 
