@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_extern.h	7.3 (Berkeley) 11/08/91
+ *	@(#)ffs_extern.h	7.4 (Berkeley) 01/13/92
  */
 
 struct buf;
@@ -54,7 +54,7 @@ int	ffs_blkfree __P((struct inode *, daddr_t, off_t));
 daddr_t	ffs_blkpref __P((struct inode *, daddr_t, int, daddr_t *));
 int	ffs_bmap __P((struct vnode *, daddr_t, struct vnode **, daddr_t *));
 void	ffs_clrblock __P((struct fs *, u_char *, daddr_t));
-int	ffs_fhtovp __P((struct mount *, struct fid *, struct vnode **));
+int	ffs_fhtovp __P((struct mount *, struct fid *, int, struct vnode **));
 void	ffs_fragacct __P((struct fs *, int, long [], int));
 int	ffs_fsync
 	    __P((struct vnode *, int, struct ucred *, int, struct proc *));
