@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)umap_vfsops.c	8.3 (Berkeley) 01/21/94
+ *	@(#)umap_vfsops.c	8.4 (Berkeley) 02/22/95
  *
  * @(#)null_vfsops.c       1.5 (Berkeley) 7/10/92
  */
