@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)rtsock.c	7.34 (Berkeley) 03/05/93
+ *	@(#)rtsock.c	7.35 (Berkeley) 03/05/93
  */
 
 #include <sys/param.h>
@@ -135,9 +135,8 @@ route_output(m, so)
 	struct ifaddr *ifaof_ifpforaddr(), *ifa_ifwithroute();
 
 #define senderr(e) { error = e; goto flush;}
-	if (m == 0 || m->m_len < sizeof(long))
-		return (ENOBUFS);
-	if ((m = m_pullup(m, sizeof(long))) == 0)
+	if (m == 0 || ((m->m_len < sizeof(long)) &&
+		       (m = m_pullup(m, sizeof(long))) == 0))
 		return (ENOBUFS);
 	if ((m->m_flags & M_PKTHDR) == 0)
 		panic("route_output");
