@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)bwtwo.c	7.2 (Berkeley) 07/21/92
+ *	@(#)bwtwo.c	7.3 (Berkeley) 10/11/92
  *
  * from: $Header: bwtwo.c,v 1.13 92/06/17 06:59:29 torek Exp $
  */
@@ -52,20 +52,20 @@
 
 #include "bwtwo.h"
 
-#include "sys/param.h"
-#include "sys/device.h"
-#include "sys/fbio.h"
-#include "sys/ioctl.h"
-#include "sys/malloc.h"
-#include "sys/mman.h"
-#include "sys/tty.h"
+#include <sys/param.h>
+#include <sys/device.h>
+#include <sys/fbio.h>
+#include <sys/ioctl.h>
+#include <sys/malloc.h>
+#include <sys/mman.h>
+#include <sys/tty.h>
 
-#include "machine/autoconf.h"
-#include "machine/pmap.h"
-#include "machine/fbvar.h"
+#include <machine/autoconf.h>
+#include <machine/pmap.h>
+#include <machine/fbvar.h>
 
-#include "bwtworeg.h"
-#include "sbusvar.h"
+#include <sparc/sbus/bwtworeg.h>
+#include <sparc/sbus/sbusvar.h>
 
 /* per-display variables */
 struct bwtwo_softc {
