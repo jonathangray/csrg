@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.4 (Berkeley) 01/03/95
+ *	@(#)conf.h	8.5 (Berkeley) 01/09/95
  */
 
 /*
@@ -63,8 +63,8 @@ struct bdevsw {
 				     struct proc *p));
 	int	(*d_close)	__P((dev_t dev, int fflag, int devtype,
 				     struct proc *p));
-	int	(*d_strategy)	__P((struct buf *bp));
-	int	(*d_ioctl)	__P((dev_t dev, int cmd, caddr_t data,
+	void	(*d_strategy)	__P((struct buf *bp));
+	int	(*d_ioctl)	__P((dev_t dev, u_long cmd, caddr_t data,
 				     int fflag, struct proc *p));
 	int	(*d_dump)	();	/* parameters vary by architecture */
 	int	(*d_psize)	__P((dev_t dev));
@@ -85,14 +85,14 @@ struct cdevsw {
 				     struct proc *));
 	int	(*d_read)	__P((dev_t dev, struct uio *uio, int ioflag));
 	int	(*d_write)	__P((dev_t dev, struct uio *uio, int ioflag));
-	int	(*d_ioctl)	__P((dev_t dev, int cmd, caddr_t data,
+	int	(*d_ioctl)	__P((dev_t dev, u_long cmd, caddr_t data,
 				     int fflag, struct proc *p));
 	int	(*d_stop)	__P((struct tty *tp, int rw));
 	int	(*d_reset)	__P((int uban));	/* XXX */
 	struct	tty *d_ttys;
 	int	(*d_select)	__P((dev_t dev, int which, struct proc *p));
 	int	(*d_mmap)	__P(());
-	int	(*d_strategy)	__P((struct buf *bp));
+	void	(*d_strategy)	__P((struct buf *bp));
 	int	d_type;
 };
 
@@ -104,6 +104,9 @@ extern char devopn[], devio[], devwait[], devin[], devout[];
 extern char devioc[], devcls[];
 #endif
 
+/*
+ * Line discipline switch table
+ */
 struct linesw {
 	int	(*l_open)	__P((dev_t dev, struct tty *tp));
 	int	(*l_close)	__P((struct tty *tp, int flag));
@@ -111,7 +114,7 @@ struct linesw {
 				     int flag));
 	int	(*l_write)	__P((struct tty *tp, struct uio *uio,
 				     int flag));
-	int	(*l_ioctl)	__P((struct tty *tp, int cmd, caddr_t data,
+	int	(*l_ioctl)	__P((struct tty *tp, u_long cmd, caddr_t data,
 				     int flag, struct proc *p));
 	int	(*l_rint)	__P((int c, struct tty *tp));
 	int	(*l_start)	__P((struct tty *tp));
@@ -122,6 +125,9 @@ struct linesw {
 extern struct linesw linesw[];
 #endif
 
+/*
+ * Swap device table
+ */
 struct swdevt {
 	dev_t	sw_dev;
 	int	sw_flags;
@@ -134,7 +140,7 @@ struct swdevt {
 };
 #define	SW_FREED	0x01
 #define	SW_SEQUENTIAL	0x02
-#define sw_freed	sw_flags	/* XXX compat */
+#define	sw_freed	sw_flags	/* XXX compat */
 
 #ifdef KERNEL
 extern struct swdevt swdevt[];
