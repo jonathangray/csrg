@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_input.c	8.3 (Berkeley) 01/04/94
+ *	@(#)tcp_input.c	8.4 (Berkeley) 01/11/94
  */
 
 #ifndef TUBA_INCLUDE
@@ -1536,7 +1536,7 @@ tcp_xmit_timer(tp, rtt)
 int
 tcp_mss(tp, offer)
 	register struct tcpcb *tp;
-	u_short offer;
+	u_int offer;
 {
 	struct route *ro;
 	register struct rtentry *rt;
