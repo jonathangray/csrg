@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)ftp.c	5.34 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)ftp.c	5.35 (Berkeley) 06/27/90";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -43,6 +43,8 @@ static char sccsid[] = "@(#)ftp.c	5.34 (Berkeley) 06/01/90";
 #include <sys/file.h>
 
 #include <netinet/in.h>
+#include <netinet/in_systm.h>
+#include <netinet/ip.h>
 #include <arpa/ftp.h>
 #include <arpa/telnet.h>
 
@@ -77,7 +79,7 @@ hookup(host, port)
 	int port;
 {
 	register struct hostent *hp = 0;
-	int s,len;
+	int s, len, tos;
 	static char hostnamebuf[80];
 
 	bzero((char *)&hisctladdr, sizeof (hisctladdr));
@@ -139,6 +141,11 @@ hookup(host, port)
 		code = -1;
 		goto bad;
 	}
+#ifdef IP_TOS
+	tos = IPTOS_LOWDELAY;
+	if (setsockopt(s, IPPROTO_IP, IP_TOS, (char *)&tos, sizeof(int)) < 0)
+		perror("Notice: set type-of-service failed: %m");
+#endif
 	cin = fdopen(s, "r");
 	cout = fdopen(s, "w");
 	if (cin == NULL || cout == NULL) {
@@ -1001,6 +1008,11 @@ noport:
 	}
 	if (tmpno)
 		sendport = 1;
+#ifdef IP_TOS
+	on = IPTOS_THROUGHPUT;
+	if (setsockopt(data, IPPROTO_IP, IP_TOS, (char *)&on, sizeof(int)) < 0)
+		perror("Notice: set type-of-service failed: %m");
+#endif
 	return (0);
 bad:
 	(void) close(data), data = -1;
@@ -1014,7 +1026,7 @@ dataconn(lmode)
 	char *lmode;
 {
 	struct sockaddr_in from;
-	int s, fromlen = sizeof (from);
+	int s, fromlen = sizeof (from), tos;
 
 	s = accept(data, (struct sockaddr *) &from, &fromlen);
 	if (s < 0) {
@@ -1024,6 +1036,11 @@ dataconn(lmode)
 	}
 	(void) close(data);
 	data = s;
+#ifdef IP_TOS
+	tos = IPTOS_THROUGHPUT;
+	if (setsockopt(s, IPPROTO_IP, IP_TOS, (char *)&tos, sizeof(int)) < 0)
+		perror("Notice: set type-of-service failed: %m");
+#endif
 	return (fdopen(data, lmode));
 }
 
