@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	7.58 (Berkeley) 09/05/90
+ *	@(#)vfs_syscalls.c	7.59 (Berkeley) 09/18/90
  */
 
 #include "param.h"
@@ -1457,6 +1457,10 @@ rename(p, uap, retval)
 			goto out;
 		} else if (fvp->v_type != VDIR && tvp->v_type == VDIR) {
 			error = EISDIR;
+			goto out;
+		}
+		if (fvp->v_mount != tvp->v_mount) {
+			error = EXDEV;
 			goto out;
 		}
 	}
