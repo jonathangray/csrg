@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)time.h	7.4 (Berkeley) 06/28/90
+ *	@(#)time.h	7.5 (Berkeley) 02/05/91
  */
 
-#ifndef _TIME_
-#define _TIME_
+#ifndef _SYS_TIME_H_
+#define _SYS_TIME_H_
 
 /*
  * Structure returned by gettimeofday(2) system call,
@@ -85,4 +85,4 @@ struct	itimerval {
 #include <time.h>
 #endif
 
-#endif /* _TIME_ */
+#endif /* !_SYS_TIME_H_ */
