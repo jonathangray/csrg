@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)csh.1	6.17 (Berkeley) 06/07/91
+.\"     @(#)csh.1	6.18 (Berkeley) 07/30/91
 .\"
 .Dd 
 .Dt CSH 1
@@ -495,7 +495,7 @@ The basic word designators are:
 .It \&0
 first (command) word
 .It Ar n
-.Ar n Ns \'th
+.Ar n Ns 'th
 argument
 .It \*(ua
 first argument,  i.e. `1'
@@ -503,7 +503,7 @@ first argument,  i.e. `1'
 last argument
 .It %
 word matched by (immediately preceding)
-.No \&? Ns Ar s Ns \?
+.No \&? Ns Ar s Ns \&?
 search
 .It Ar \&x\-y
 range of words
@@ -577,9 +577,8 @@ uses the previous string either from a
 or from a
 contextual scan string
 .Ar s
-in `!?
-.Ar s
-\?'.
+in
+.No \&`!? Ns Ar s Ns \e?' .
 The trailing delimiter in the substitution may be omitted if a newline
 follows immediately as may the trailing `?' in a contextual scan.
 .Pp
