@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fifo_vnops.c	8.2 (Berkeley) 01/04/94
+ *	@(#)fifo_vnops.c	8.3 (Berkeley) 06/15/94
  */
 
 #include <sys/param.h>
@@ -147,13 +147,13 @@ fifo_open(ap)
 	if ((fip = vp->v_fifoinfo) == NULL) {
 		MALLOC(fip, struct fifoinfo *, sizeof(*fip), M_VNODE, M_WAITOK);
 		vp->v_fifoinfo = fip;
-		if (error = socreate(AF_UNIX, &rso, SOCK_STREAM, 0)) {
+		if (error = socreate(AF_LOCAL, &rso, SOCK_STREAM, 0)) {
 			free(fip, M_VNODE);
 			vp->v_fifoinfo = NULL;
 			return (error);
 		}
 		fip->fi_readsock = rso;
-		if (error = socreate(AF_UNIX, &wso, SOCK_STREAM, 0)) {
+		if (error = socreate(AF_LOCAL, &wso, SOCK_STREAM, 0)) {
 			(void)soclose(rso);
 			free(fip, M_VNODE);
 			vp->v_fifoinfo = NULL;
@@ -240,8 +240,8 @@ fifo_read(ap)
 		rso->so_state |= SS_NBIO;
 	startresid = uio->uio_resid;
 	VOP_UNLOCK(ap->a_vp);
-	error = soreceive(rso, (struct mbuf **)0, uio, (int *)0,
-		(struct mbuf **)0, (struct mbuf **)0);
+	error = soreceive(rso, (struct mbuf **)0, uio, (struct mbuf **)0,
+	    (struct mbuf **)0, (int *)0);
 	VOP_LOCK(ap->a_vp);
 	/*
 	 * Clear EOF indication after first such return.
