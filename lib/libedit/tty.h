@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty.h	5.1 (Berkeley) 06/22/92
+ *	@(#)tty.h	5.2 (Berkeley) 06/22/92
  */
 
 /*
@@ -42,7 +42,7 @@
 #ifndef _h_el_tty
 #define _h_el_tty
 
-#include "editline.h"
+#include "histedit.h"
 #include <termios.h>
 
 /* Define our own since everyone gets it wrong! */
