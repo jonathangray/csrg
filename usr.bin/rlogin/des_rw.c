@@ -32,9 +32,10 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)des_rw.c	5.5 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)des_rw.c	5.6 (Berkeley) 09/27/90";
 #endif /* not lint */
 
+#if defined(KERBEROS) && defined(CRYPT)
 #include <sys/param.h>
 #include <kerberosIV/des.h>
 #include <kerberosIV/krb.h>
@@ -183,3 +184,4 @@ des_write(fd, buf, len)
 	(void) write(fd, des_outbuf, roundup(len,8));
 	return(len);
 }
+#endif /* KERBEROS && CRYPT */
