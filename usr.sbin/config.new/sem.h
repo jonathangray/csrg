@@ -39,9 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sem.h	5.1 (Berkeley) 01/12/93
- *
- * from: $Header: sem.h,v 1.5 93/01/12 03:57:14 torek Exp $
+ *	@(#)sem.h	5.2 (Berkeley) 04/18/93
  */
 
 void		enddefs __P((const char *));
