@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)trap.c	8.1 (Berkeley) 06/11/93
+ *	@(#)trap.c	8.2 (Berkeley) 09/05/93
  */
 
 /*
@@ -289,7 +289,7 @@ out:
 #endif
 		}
 	}
-	curpri = p->p_pri;
+	curpriority = p->p_pri;
 	curpcb->pcb_flags &= ~FM_TRAP;	/* used by sendsig */
 }
 
@@ -406,7 +406,7 @@ done:
 #endif
 		}
 	}
-	curpri = p->p_pri;
+	curpriority = p->p_pri;
 #ifdef KTRACE
 	if (KTRPOINT(p, KTR_SYSRET))
 		ktrsysret(p->p_tracep, code, error, rval[0]);
