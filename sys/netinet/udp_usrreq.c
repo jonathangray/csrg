@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)udp_usrreq.c	7.29 (Berkeley) 04/07/93
+ *	@(#)udp_usrreq.c	7.30 (Berkeley) 04/18/93
  */
 
 #include <sys/param.h>
@@ -70,7 +70,6 @@ int	udpcksum = 1;
 #else
 int	udpcksum = 0;		/* XXX */
 #endif
-int	udp_ttl = UDP_TTL;
 
 struct	sockaddr_in udp_in = { sizeof(udp_in), AF_INET };
 
@@ -491,7 +490,7 @@ udp_usrreq(so, req, m, addr, control)
 		error = soreserve(so, udp_sendspace, udp_recvspace);
 		if (error)
 			break;
-		((struct inpcb *) so->so_pcb)->inp_ip.ip_ttl = udp_ttl;
+		((struct inpcb *) so->so_pcb)->inp_ip.ip_ttl = ip_defttl;
 		break;
 
 	case PRU_DETACH:
