@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)igmp_var.h	8.1 (Berkeley) 06/10/93
+ *	@(#)igmp_var.h	7.3 (Berkeley) 07/19/93
  */
 
 /*
@@ -78,7 +78,7 @@ struct igmpstat igmpstat;
 	)
 
 void	igmp_init __P(());
-void	igmp_input __P((struct mbuf *, struct ifnet *));
+void	igmp_input __P((struct mbuf *, int));
 void	igmp_joingroup __P((struct in_multi *));
 void	igmp_leavegroup __P((struct in_multi *));
 void	igmp_fasttimo __P(());
