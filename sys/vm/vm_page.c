@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_page.c	7.8 (Berkeley) 08/28/91
+ *	@(#)vm_page.c	7.9 (Berkeley) 08/29/91
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
