@@ -1,4 +1,4 @@
-#	@(#)Makefile.inc	5.8.1.1 (Berkeley) 05/07/91
+#	@(#)Makefile.inc	5.9 (Berkeley) 05/07/91
 
 # sys sources
 .PATH: ${.CURDIR}/${MACHINE}/sys ${.CURDIR}/sys
@@ -35,11 +35,11 @@ CLEANFILES+=${ASM} ${PSEUDO} ${POBJS}
 
 ${ASM}: ${.CURDIR}/${MACHINE}/SYS.h /usr/include/sys/syscall.h
 	@echo creating ${.PREFIX}.o ${.PREFIX}.po
-	@printf '#include "SYS.h"\nSYSCALL(${.PREFIX})\n' | \
+	@printf '#include "SYS.h"\nRSYSCALL(${.PREFIX})\n' | \
 	    ${CPP} ${CFLAGS:M-[ID]*} ${AINC} | ${AS} -o ${.PREFIX}.o
 	@${LD} -x -r ${.PREFIX}.o
 	@mv a.out ${.PREFIX}.o
-	@printf '#include "SYS.h"\nSYSCALL(${.PREFIX})\n' | \
+	@printf '#include "SYS.h"\nRSYSCALL(${.PREFIX})\n' | \
 	    ${CPP} -DPROF ${CFLAGS:M-[ID]*} ${AINC} | ${AS} -o ${.PREFIX}.po
 	@${LD} -x -r ${.PREFIX}.po
 	@mv a.out ${.PREFIX}.po
