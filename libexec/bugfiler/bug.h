@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)bug.h	5.9 (Berkeley) 06/01/90
+ *	@(#)bug.h	5.10 (Berkeley) 02/25/91
  */
 
 #define BUGS_HOME	"owner-bugs@ucbvax.Berkeley.EDU"
@@ -86,8 +86,6 @@ extern HEADER	mailhead[];
 #define APPAR_TO_TAG	9		/* "Apparently-To:" offset */
 
 /* so sizeof doesn't return 0 */
-#include <sys/param.h>
-#include <sys/dir.h>
 extern char	bfr[MAXBSIZE],			/* general I/O buffer */
 		dir[MAXNAMLEN],			/* subject and folder */
 		folder[MAXNAMLEN],
