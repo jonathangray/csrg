@@ -23,7 +23,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)pccons.c	5.3 (Berkeley) 11/08/90
+ *	@(#)pccons.c	5.4 (Berkeley) 11/18/90
  */
 
 /*
@@ -37,7 +37,7 @@
 #include "proc.h"
 #include "tty.h"
 #include "uio.h"
-#include "machine/isa/device.h"
+#include "machine/isa/isa_device.h"
 #include "callout.h"
 #include "systm.h"
 #include "kernel.h"
