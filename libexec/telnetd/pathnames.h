@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	5.4 (Berkeley) 06/01/90
+ *	@(#)pathnames.h	5.5 (Berkeley) 06/28/90
  */
 
 #if BSD > 43
@@ -45,3 +45,7 @@
 # define	_PATH_LOGIN	"/bin/login"
 
 #endif
+
+#ifdef BFTPDAEMON
+#define		BFTPPATH	"/usr/ucb/bftp"
+#endif  /* BFTPDAEMON */
