@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)db.h	5.19 (Berkeley) 11/11/92
+ *	@(#)db.h	5.20 (Berkeley) 11/18/92
  */
 
 #ifndef _DB_H_
@@ -69,6 +69,9 @@ typedef struct {
 #define	R_SETCURSOR	10		/* put (RECNO) */
 
 typedef enum { DB_BTREE, DB_HASH, DB_RECNO } DBTYPE;
+
+#define	__USE_OPEN_FLAGS \
+	(O_CREAT|O_EXCL|O_EXLOCK|O_RDONLY|O_RDWR|O_SHLOCK|O_TRUNC)
 
 /* Access method description structure. */
 typedef struct __db {
