@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	8.7 (Berkeley) 06/16/94
+ *	@(#)nfs_vnops.c	8.8 (Berkeley) 08/05/94
  */
 
 /*
@@ -910,10 +910,7 @@ nfs_writerpc(vp, uiop, cred, ioflags)
 		if (nmp->nm_flag & NFSMNT_NQNFS) {
 			txdr_hyper(&uiop->uio_offset, tl);
 			tl += 2;
-			if (ioflags & IO_APPEND)
-				*tl++ = txdr_unsigned(1);
-			else
-				*tl++ = 0;
+			*tl++ = 0;
 		} else {
 			*++tl = txdr_unsigned(uiop->uio_offset);
 			tl += 2;
