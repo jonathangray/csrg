@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)namei.h	8.2 (Berkeley) 01/04/94
+ *	@(#)namei.h	8.3 (Berkeley) 07/28/94
  */
 
 #ifndef _SYS_NAMEI_H_
@@ -131,6 +131,8 @@ struct nameidata {
 #define MAKEENTRY	0x04000	/* entry is to be added to name cache */
 #define ISLASTCN	0x08000	/* this is last component of pathname */
 #define ISSYMLINK	0x10000	/* symlink needs interpretation */
+#define	ISWHITEOUT	0x20000	/* found whiteout */
+#define	DOWHITEOUT	0x40000	/* do whiteouts */
 #define PARAMASK	0xfff00	/* mask of parameter descriptors */
 /*
  * Initialization of an nameidata structure.
