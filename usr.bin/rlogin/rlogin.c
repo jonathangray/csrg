@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)rlogin.c	5.33.1.1 (Berkeley) 08/20/91";
+static char sccsid[] = "@(#)rlogin.c	5.34 (Berkeley) 03/20/92";
 #endif /* not lint */
 
 /*
@@ -176,6 +176,7 @@ main(argc, argv)
 			dflag = 1;
 			break;
 		case 'e':
+			noescape = 0;
 			escapechar = getescape(optarg);
 			break;
 #ifdef KERBEROS
