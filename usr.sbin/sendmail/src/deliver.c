@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	8.100 (Berkeley) 10/15/94";
+static char sccsid[] = "@(#)deliver.c	8.101 (Berkeley) 10/16/94";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1077,6 +1077,8 @@ tryhost:
 					mci_dump(mci, FALSE);
 				}
 				CurHostName = mci->mci_host;
+				message("Using cached connection to %s via %s...",
+					hostbuf, m->m_name);
 				break;
 			}
 			mci->mci_mailer = m;
@@ -1085,7 +1087,7 @@ tryhost:
 
 			/* try the connection */
 			setproctitle("%s %s: %s", e->e_id, hostbuf, "user open");
-			message("Connecting to %s (%s)...",
+			message("Connecting to %s via %s...",
 				hostbuf, m->m_name);
 			i = makeconnection(hostbuf, port, mci,
 				bitnset(M_SECURE_PORT, m->m_flags));
@@ -1129,6 +1131,10 @@ tryhost:
 	}
 	else
 	{
+		if (host == NULL || host[0] == '\0')
+			message("Connecting to %s...", m->m_name);
+		else
+			message("Connecting to %s via %s...", host, m->m_name);
 		if (TrafficLogFile != NULL)
 		{
 			char **av;
