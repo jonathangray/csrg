@@ -1,23 +1,46 @@
-/*
- * Copyright (c) 1983, 1989 Regents of the University of California.
- * All rights reserved.  The Berkeley software License Agreement
- * specifies the terms and conditions for redistribution.
+/*-
+ * Copyright (c) 1983, 1989, 1992 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)vmstat.c	5.17 (Berkeley) 08/28/91";
-#endif not lint
+static char sccsid[] = "@(#)vmstat.c	5.18 (Berkeley) 07/23/92";
+#endif /* not lint */
 
 /*
  * Cursed vmstat -- from Robert Elz.
  */
 
-#include "systat.h"
-
-#include <ctype.h>
-#include <utmp.h>
-
-#include <vm/vm.h>
+#include <sys/param.h>
+#include <sys/dkstat.h>
 #include <sys/buf.h>
 #include <sys/stat.h>
 #include <sys/time.h>
@@ -25,66 +48,17 @@ static char sccsid[] = "@(#)vmstat.c	5.17 (Berkeley) 08/28/91";
 #include <sys/proc.h>
 #include <sys/namei.h>
 #include <sys/kinfo.h>
+#include <vm/vm.h>
 
+#include <signal.h>
+#include <nlist.h>
+#include <ctype.h>
+#include <utmp.h>
 #include <paths.h>
-
-static	int ut;
-
-WINDOW *
-openkre()
-{
-
-	ut = open(_PATH_UTMP, O_RDONLY);
-	if (ut < 0)
-		error("No utmp");
-	return (stdscr);
-}
-
-closekre(w)
-	WINDOW *w;
-{
-
-	(void) close(ut);
-	if (w == NULL)
-		return;
-	wclear(w);
-	wrefresh(w);
-}
-
-float	cputime();
-struct	utmp utmp;
-
-static struct nlist nlst[] = {
-#define X_CPTIME	0
-	{ "_cp_time" },
-#define X_CNT		1
-	{ "_cnt" },
-#define X_TOTAL		2
-	{ "_total" },
-#define X_VMSTAT	3
-	{ "_vm_stat" },
-#define	X_DK_BUSY	4
-	{ "_dk_busy" },
-#define	X_DK_TIME	5
-	{ "_dk_time" },
-#define	X_DK_XFER	6
-	{ "_dk_xfer" },
-#define	X_DK_WDS	7
-	{ "_dk_wds" },
-#define	X_DK_SEEK	8
-	{ "_dk_seek" },
-#define	X_NCHSTATS	9
-	{ "_nchstats" },
-#define	X_INTRNAMES	10
-	{ "_intrnames" },
-#define	X_EINTRNAMES	11
-	{ "_eintrnames" },
-#define	X_INTRCNT	12
-	{ "_intrcnt" },
-#define	X_EINTRCNT	13
-	{ "_eintrcnt" },
-	{ "" },
-};
+#include <string.h>
+#include <stdlib.h>
+#include "systat.h"
+#include "extern.h"
 
 static struct Info {
 	long	time[CPUSTATES];
@@ -106,6 +80,18 @@ static struct Info {
 #define	nchtotal s.nchstats
 #define	oldnchtotal s1.nchstats
 
+static	enum state { BOOT, TIME, RUN } state = TIME;
+
+static void allocinfo __P((struct Info *));
+static void copyinfo __P((struct Info *, struct Info *));
+static float cputime __P((int));
+static void dinfo __P((int, int));
+static void getinfo __P((struct Info *, enum state));
+static void putint __P((int, int, int, int));
+static void putfloat __P((double, int, int, int, int, int));
+static int ucount __P((void));
+
+static	int ut;
 static	char buf[26];
 static	time_t t;
 static	double etime;
@@ -115,11 +101,61 @@ static	long *intrloc;
 static	char **intrname;
 static	int nextintsrow;
 
-static	enum state { BOOT, TIME, RUN } state = TIME;
+struct	utmp utmp;
 
-static void putint(), putfloat(), putrate();
-static void getinfo(), allocinfo(), copyinfo(), dinfo();
-static int ucount();
+
+WINDOW *
+openkre()
+{
+
+	ut = open(_PATH_UTMP, O_RDONLY);
+	if (ut < 0)
+		error("No utmp");
+	return (stdscr);
+}
+
+void
+closekre(w)
+	WINDOW *w;
+{
+
+	(void) close(ut);
+	if (w == NULL)
+		return;
+	wclear(w);
+	wrefresh(w);
+}
+
+
+static struct nlist nlst[] = {
+#define X_CPTIME	0
+	{ "_cp_time" },
+#define X_CNT		1
+	{ "_cnt" },
+#define X_TOTAL		2
+	{ "_total" },
+#define	X_DK_BUSY	3
+	{ "_dk_busy" },
+#define	X_DK_TIME	4
+	{ "_dk_time" },
+#define	X_DK_XFER	5
+	{ "_dk_xfer" },
+#define	X_DK_WDS	6
+	{ "_dk_wds" },
+#define	X_DK_SEEK	7
+	{ "_dk_seek" },
+#define	X_NCHSTATS	8
+	{ "_nchstats" },
+#define	X_INTRNAMES	9
+	{ "_intrnames" },
+#define	X_EINTRNAMES	10
+	{ "_eintrnames" },
+#define	X_INTRCNT	11
+	{ "_intrcnt" },
+#define	X_EINTRCNT	12
+	{ "_eintrcnt" },
+	{ "" },
+};
 
 /*
  * These constants define where the major pieces are laid out
@@ -153,6 +189,7 @@ static int ucount();
 #define	MAXDRIVES	DK_NDRIVE	 /* max # to display */
 #endif
 
+int
 initkre()
 {
 	char *intrnamebuf, *cp;
@@ -160,13 +197,16 @@ initkre()
 	static int once = 0;
 
 	if (nlst[0].n_type == 0) {
-		kvm_nlist(nlst);
+		if (kvm_nlist(kd, nlst)) {
+			nlisterr(nlst);
+			return(0);
+		}
 		if (nlst[0].n_type == 0) {
 			error("No namelist");
 			return(0);
 		}
 	}
-	hertz = phz ? phz : hz;
+	hertz = stathz ? stathz : hz;
 	if (! dkinit())
 		return(0);
 	if (dk_ndrive && !once) {
@@ -187,7 +227,7 @@ initkre()
 			nlst[X_INTRCNT].n_value) / sizeof (long);
 		intrloc = (long *) calloc(nintr, sizeof (long));
 		intrname = (char **) calloc(nintr, sizeof (long));
-		intrnamebuf = malloc(nlst[X_EINTRNAMES].n_value -
+		intrnamebuf = (char *) malloc(nlst[X_EINTRNAMES].n_value -
 			nlst[X_INTRNAMES].n_value);
 		if (intrnamebuf == 0 || intrname == 0 || intrloc == 0) {
 			error("Out of memory\n");
@@ -217,6 +257,7 @@ initkre()
 	return(1);
 }
 
+void
 fetchkre()
 {
 	time_t now;
@@ -227,6 +268,7 @@ fetchkre()
 	getinfo(&s, state);
 }
 
+void
 labelkre()
 {
 	register i, j;
@@ -311,6 +353,7 @@ labelkre()
 static	char cpuchar[CPUSTATES] = { '=' , '>', '-', ' ' };
 static	char cpuorder[CPUSTATES] = { CP_SYS, CP_USER, CP_NICE, CP_IDLE };
 
+void
 showkre()
 {
 	float f1, f2;
@@ -367,7 +410,11 @@ showkre()
 
 	psiz = 0;
 	f2 = 0.0;
-	for (c = 0; c < CPUSTATES; c++) {
+
+	/* 
+	 * Last CPU state not calculated yet.
+	 */
+	for (c = 0; c < CPUSTATES - 1; c++) {
 		i = cpuorder[c];
 		f1 = cputime(i);
 		f2 += f1;
@@ -437,7 +484,7 @@ showkre()
 	PUTRATE(Cnt.v_syscall, GENSTATROW + 1, GENSTATCOL + 10, 5);
 	PUTRATE(Cnt.v_intr, GENSTATROW + 1, GENSTATCOL + 15, 5);
 	PUTRATE(Cnt.v_soft, GENSTATROW + 1, GENSTATCOL + 20, 5);
-	PUTRATE(Cnt.v_faults, GENSTATROW + 1, GENSTATCOL + 25, 5);
+/*	PUTRATE(Cnt.v_faults, GENSTATROW + 1, GENSTATCOL + 25, 5);*/
 	mvprintw(DISKROW, DISKCOL + 5, "                              ");
 	for (i = 0, c = 0; i < dk_ndrive && c < MAXDRIVES; i++)
 		if (dk_select[i]) {
@@ -456,6 +503,7 @@ showkre()
 #undef nz
 }
 
+int
 cmdkre(cmd, args)
 	char *cmd, *args;
 {
@@ -514,16 +562,6 @@ cputime(indx)
 }
 
 static void
-putrate(r, or, l, c, w)
-	int r, or, l, c, w;
-{
-
-	if (state == RUN || state == TIME)
-		r -= or;
-	putint((int)((float)r/etime + 0.5), l, c, w);
-}
-
-static void
 putint(n, l, c, w)
 	int n, l, c, w;
 {
@@ -546,7 +584,7 @@ putint(n, l, c, w)
 
 static void
 putfloat(f, l, c, w, d, nz)
-	float f;
+	double f;
 	int l, c, w, d, nz;
 {
 	char b[128];
