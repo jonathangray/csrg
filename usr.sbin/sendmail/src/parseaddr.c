@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	8.34 (Berkeley) 07/03/94";
+static char sccsid[] = "@(#)parseaddr.c	8.35 (Berkeley) 08/17/94";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -292,7 +292,7 @@ allocaddr(a, flags, paddr)
 	char *paddr;
 {
 	if (tTd(24, 4))
-		printf("allocaddr(flags=%o, paddr=%s)\n", flags, paddr);
+		printf("allocaddr(flags=%x, paddr=%s)\n", flags, paddr);
 
 	a->q_paddr = paddr;
 
@@ -1608,7 +1608,7 @@ buildaddr(tv, a, flags, e)
 
 	if (tTd(24, 5))
 	{
-		printf("buildaddr, flags=%o, tv=", flags);
+		printf("buildaddr, flags=%x, tv=", flags);
 		printav(tv);
 	}
 
