@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_param.h	7.7 (Berkeley) 02/04/93
+ *	@(#)vm_param.h	7.8 (Berkeley) 04/18/93
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -105,9 +105,9 @@ extern int		page_shift;
 #define	VM_MAXID	 3		/* number of valid vm ids */
 
 #define CTL_VM_NAMES { \
-	"unspec", \
-	"vmmeter", \
-	"loadavg", \
+	{ 0, 0 }, \
+	{ "vmmeter", CTLTYPE_STRUCT }, \
+	{ "loadavg", CTLTYPE_STRUCT }, \
 }
 
 /* 
