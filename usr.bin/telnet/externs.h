@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)externs.h	1.23 (Berkeley) 06/15/90
+ *	@(#)externs.h	1.24 (Berkeley) 06/20/90
  */
 
 #ifndef	BSD
@@ -86,6 +86,9 @@ extern int
     dontlecho,		/* do we suppress local echoing right now? */
     crmod,
     netdata,		/* Print out network data flow */
+#ifdef	KERBEROS
+    kerberized,		/* Try to use Kerberos */
+#endif
     prettydump,		/* Print "netdata" output in user readable format */
 #if	defined(unix)
 #if	defined(TN3270)
