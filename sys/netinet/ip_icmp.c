@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ip_icmp.c	7.21 (Berkeley) 04/07/93
+ *	@(#)ip_icmp.c	7.22 (Berkeley) 04/18/93
  */
 
 #include <sys/param.h>
@@ -57,6 +57,8 @@
  * routines to turnaround packets back to the originator, and
  * host table maintenance routines.
  */
+
+int	icmpmaskrepl = 0;
 #ifdef ICMPPRINTFS
 int	icmpprintfs = 0;
 #endif
@@ -316,6 +318,8 @@ icmp_input(m, hlen)
 		
 	case ICMP_MASKREQ:
 #define	satosin(sa)	((struct sockaddr_in *)(sa))
+		if (icmpmaskrepl == 0)
+			break;
 		/*
 		 * We are not able to respond with all ones broadcast
 		 * unless we receive it over a point-to-point interface.
@@ -567,4 +571,27 @@ iptime()
 	microtime(&atv);
 	t = (atv.tv_sec % (24*60*60)) * 1000 + atv.tv_usec / 1000;
 	return (htonl(t));
+}
+
+icmp_sysctl(name, namelen, oldp, oldlenp, newp, newlen)
+	int *name;
+	u_int namelen;
+	void *oldp;
+	size_t *oldlenp;
+	void *newp;
+	size_t newlen;
+{
+	extern int ip_ttl;
+
+	/* all sysctl names at this level are terminal */
+	if (namelen != 1)
+		return (ENOTDIR);
+
+	switch (name[0]) {
+	case ICMPCTL_MASKREPL:
+		return (sysctl_int(oldp, oldlenp, newp, newlen, &icmpmaskrepl));
+	default:
+		return (ENOPROTOOPT);
+	}
+	/* NOTREACHED */
 }
