@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vnops.c	7.85 (Berkeley) 06/23/92
+ *	@(#)lfs_vnops.c	7.86 (Berkeley) 07/05/92
  */
 
 #include <sys/param.h>
@@ -97,7 +97,6 @@ struct vnodeopv_entry_desc lfs_vnodeop_entries[] = {
 	{ &vop_islocked_desc, ufs_islocked },		/* islocked */
 	{ &vop_advlock_desc, ufs_advlock },		/* advlock */
 	{ &vop_blkatoff_desc, lfs_blkatoff },		/* blkatoff */
-	{ &vop_vget_desc, lfs_vget },			/* vget */
 	{ &vop_valloc_desc, lfs_valloc },		/* valloc */
 	{ &vop_vfree_desc, lfs_vfree },			/* vfree */
 	{ &vop_truncate_desc, lfs_truncate },		/* truncate */
@@ -145,7 +144,6 @@ struct vnodeopv_entry_desc lfs_specop_entries[] = {
 	{ &vop_islocked_desc, ufs_islocked },		/* islocked */
 	{ &vop_advlock_desc, spec_advlock },		/* advlock */
 	{ &vop_blkatoff_desc, spec_blkatoff },		/* blkatoff */
-	{ &vop_vget_desc, spec_vget },			/* vget */
 	{ &vop_valloc_desc, spec_valloc },		/* valloc */
 	{ &vop_vfree_desc, lfs_vfree },			/* vfree */
 	{ &vop_truncate_desc, spec_truncate },		/* truncate */
@@ -194,7 +192,6 @@ struct vnodeopv_entry_desc lfs_fifoop_entries[] = {
 	{ &vop_islocked_desc, ufs_islocked },		/* islocked */
 	{ &vop_advlock_desc, fifo_advlock },		/* advlock */
 	{ &vop_blkatoff_desc, fifo_blkatoff },		/* blkatoff */
-	{ &vop_vget_desc, fifo_vget },			/* vget */
 	{ &vop_valloc_desc, fifo_valloc },		/* valloc */
 	{ &vop_vfree_desc, lfs_vfree },			/* vfree */
 	{ &vop_truncate_desc, fifo_truncate },		/* truncate */
@@ -211,7 +208,12 @@ struct vnodeopv_desc lfs_fifoop_opv_desc =
  */
 /* ARGSUSED */
 lfs_read(ap)
-	struct vop_read_args *ap;
+	struct vop_read_args /* {
+		struct vnode *a_vp;
+		struct uio *a_uio;
+		int a_ioflag;
+		struct ucred *a_cred;
+	} */ *ap;
 {
 	register struct uio *uio = ap->a_uio;
 	register struct inode *ip = VTOI(ap->a_vp);
@@ -274,10 +276,13 @@ lfs_read(ap)
  * Vnode op for writing.
  */
 lfs_write(ap)
-	struct vop_write_args *ap;
+	struct vop_write_args /* {
+		struct vnode *a_vp;
+		struct uio *a_uio;
+		int a_ioflag;
+		struct ucred *a_cred;
+	} */ *ap;
 {
-	USES_VOP_TRUNCATE;
-	USES_VOP_UPDATE;
 	register struct vnode *vp = ap->a_vp;
 	register struct uio *uio = ap->a_uio;
 	struct proc *p = uio->uio_procp;
@@ -367,7 +372,8 @@ lfs_write(ap)
 			ip->i_mode &= ~(ISUID|ISGID);
 	} while (error == 0 && uio->uio_resid > 0 && n != 0);
 	if (error && (ioflag & IO_UNIT)) {
-		(void)VOP_TRUNCATE(vp, osize, ioflag & IO_SYNC, ap->a_cred);
+		(void)VOP_TRUNCATE(vp, osize, ioflag & IO_SYNC, ap->a_cred,
+		    uio->uio_procp);
 		uio->uio_offset -= resid - uio->uio_resid;
 		uio->uio_resid = resid;
 	}
@@ -381,17 +387,17 @@ lfs_write(ap)
  */
 /* ARGSUSED */
 lfs_fsync(ap)
-	struct vop_fsync_args *ap;
+	struct vop_fsync_args /* {
+		struct vnode *a_vp;
+		struct ucred *a_cred;
+		int a_waitfor;
+		struct proc *a_p;
+	} */ *ap;
 {
-	USES_VOP_UPDATE;
-	struct inode *ip;
 
 #ifdef VERBOSE
 	printf("lfs_fsync\n");
 #endif
-	ip = VTOI(ap->a_vp);
-	if (ap->a_fflags & FWRITE)
-		ip->i_flag |= ICHG;
 	return (VOP_UPDATE(ap->a_vp, &time, &time, ap->a_waitfor == MNT_WAIT));
 }
 
@@ -401,11 +407,10 @@ lfs_fsync(ap)
  */
 int
 lfs_inactive(ap)
-	struct vop_inactive_args *ap;
+	struct vop_inactive_args /* {
+		struct vnode *a_vp;
+	} */ *ap;
 {
-	USES_VOP_TRUNCATE;
-	USES_VOP_UPDATE;
-	USES_VOP_VFREE;
 	extern int prtactive;
 	register struct vnode *vp = ap->a_vp;
 	register struct inode *ip;
@@ -432,7 +437,7 @@ lfs_inactive(ap)
 		if (!getinoquota(ip))
 			(void)chkiq(ip, -1, NOCRED, 0);
 #endif
-		error = VOP_TRUNCATE(vp, (off_t)0, 0, NOCRED);
+		error = VOP_TRUNCATE(vp, (off_t)0, 0, NOCRED, NULL);
 		mode = ip->i_mode;
 		ip->i_mode = 0;
 		ip->i_rdev = 0;
@@ -480,7 +485,13 @@ lfs_inactive(ap)
 
 int
 lfs_symlink(ap)
-	struct vop_symlink_args *ap;
+	struct vop_symlink_args /* {
+		struct vnode *a_dvp;
+		struct vnode **a_vpp;
+		struct componentname *a_cnp;
+		struct vattr *a_vap;
+		char *a_target;
+	} */ *ap;
 {
 	int ret;
 
@@ -493,7 +504,12 @@ lfs_symlink(ap)
 
 int
 lfs_mknod(ap)
-	struct vop_mknod_args *ap;
+	struct vop_mknod_args /* {
+		struct vnode *a_dvp;
+		struct vnode **a_vpp;
+		struct componentname *a_cnp;
+		struct vattr *a_vap;
+	} */ *ap;
 {
 	int ret;
 
@@ -506,7 +522,12 @@ lfs_mknod(ap)
 
 int
 lfs_create(ap)
-	struct vop_create_args *ap;
+	struct vop_create_args /* {
+		struct vnode *a_dvp;
+		struct vnode **a_vpp;
+		struct componentname *a_cnp;
+		struct vattr *a_vap;
+	} */ *ap;
 {
 	int ret;
 
@@ -519,7 +540,12 @@ lfs_create(ap)
 
 int
 lfs_mkdir(ap)
-	struct vop_mkdir_args *ap;
+	struct vop_mkdir_args /* {
+		struct vnode *a_dvp;
+		struct vnode **a_vpp;
+		struct componentname *a_cnp;
+		struct vattr *a_vap;
+	} */ *ap;
 {
 	int ret;
 
@@ -532,7 +558,11 @@ lfs_mkdir(ap)
 
 int
 lfs_remove(ap)
-	struct vop_remove_args *ap;
+	struct vop_remove_args /* {
+		struct vnode *a_dvp;
+		struct vnode *a_vp;
+		struct componentname *a_cnp;
+	} */ *ap;
 {
 	int ret;
 
@@ -546,7 +576,12 @@ lfs_remove(ap)
 
 int
 lfs_rmdir(ap)
-	struct vop_rmdir_args *ap;
+	struct vop_rmdir_args /* {
+		struct vnodeop_desc *a_desc;
+		struct vnode *a_dvp;
+		struct vnode *a_vp;
+		struct componentname *a_cnp;
+	} */ *ap;
 {
 	int ret;
 
@@ -560,7 +595,11 @@ lfs_rmdir(ap)
 
 int
 lfs_link(ap)
-	struct vop_link_args *ap;
+	struct vop_link_args /* {
+		struct vnode *a_vp;
+		struct vnode *a_tdvp;
+		struct componentname *a_cnp;
+	} */ *ap;
 {
 	int ret;
 
@@ -573,7 +612,14 @@ lfs_link(ap)
 
 int
 lfs_rename(ap)
-	struct vop_rename_args *ap;
+	struct vop_rename_args  /* {
+		struct vnode *a_fdvp;
+		struct vnode *a_fvp;
+		struct componentname *a_fcnp;
+		struct vnode *a_tdvp;
+		struct vnode *a_tvp;
+		struct componentname *a_tcnp;
+	} */ *ap;
 {
 	int ret;
 
