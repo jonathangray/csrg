@@ -36,7 +36,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)scsi.c	7.8 (Berkeley) 10/11/92
+ *	@(#)scsi.c	8.1 (Berkeley) 06/10/93
  */
 
 /*
