@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_serv.c	7.31 (Berkeley) 01/08/91
+ *	@(#)nfs_serv.c	7.32 (Berkeley) 01/10/91
  */
 
 /*
@@ -791,11 +791,7 @@ nfsrv_rename(mrep, md, dpos, cred, xid, mrq, repstat)
 		error = EINVAL;
 out:
 	if (!error) {
-		VREF(ndp->ni_cdir);
-		VREF(tond.ni_cdir);
 		error = VOP_RENAME(ndp, &tond);
-		vrele(ndp->ni_cdir);
-		vrele(tond.ni_cdir);
 	} else {
 		VOP_ABORTOP(&tond);
 		if (tdvp == tvp)
