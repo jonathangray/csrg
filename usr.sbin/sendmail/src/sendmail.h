@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.107 (Berkeley) 03/27/95
+ *	@(#)sendmail.h	8.108 (Berkeley) 03/29/95
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.107		03/27/95";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.108		03/29/95";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -754,7 +754,6 @@ EXTERN char	OpMode;		/* operation mode, see below */
 
 /* values for e_sendmode -- send modes */
 #define SM_DELIVER	'i'		/* interactive delivery */
-#define SM_QUICKD	'j'		/* deliver w/o queueing */
 #define SM_FORK		'b'		/* deliver in background */
 #define SM_QUEUE	'q'		/* queue, don't deliver */
 #define SM_VERIFY	'v'		/* verify only (used internally) */
