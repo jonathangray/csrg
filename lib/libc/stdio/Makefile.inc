@@ -1,4 +1,4 @@
-#	@(#)Makefile.inc	5.9 (Berkeley) 12/03/92
+#	@(#)Makefile.inc	5.10 (Berkeley) 04/27/93
 
 # stdio sources
 .PATH: ${.CURDIR}/stdio
