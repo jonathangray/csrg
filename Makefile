@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.7 (Berkeley) 05/31/93
+#	@(#)Makefile	8.1 (Berkeley) 06/09/93
 
 SUBDIR=	bin contrib games include kerberosIV lib libexec sbin share \
 	usr.bin usr.sbin
