@@ -38,7 +38,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_bio.c	8.9 (Berkeley) 01/25/94
+ *	@(#)vfs_bio.c	8.10 (Berkeley) 02/04/94
  */
 
 #include <sys/param.h>
@@ -520,7 +520,7 @@ loop:
 		bp->b_flags |= B_BUSY;
 		splx(s);
 		if (bp->b_bcount != size) {
-			printf("getblk: stray size");
+			printf("getblk: stray size\n");
 			bp->b_flags |= B_INVAL;
 			VOP_BWRITE(bp);
 			goto loop;
