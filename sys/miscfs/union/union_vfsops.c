@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_vfsops.c	8.8 (Berkeley) 04/24/94
+ *	@(#)union_vfsops.c	8.9 (Berkeley) 04/29/94
  */
 
 /*
@@ -360,12 +360,6 @@ union_root(mp, vpp)
 	struct union_mount *um = MOUNTTOUNIONMOUNT(mp);
 	int error;
 	int loselock;
-
-#ifdef UNION_DIAGNOSTIC
-	printf("union_root(mp = %x, lvp = %x, uvp = %x)\n", mp,
-			um->um_lowervp,
-			um->um_uppervp);
-#endif
 
 	/*
 	 * Return locked reference to root.
