@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dinode.h	8.6 (Berkeley) 09/13/94
+ *	@(#)dinode.h	8.7 (Berkeley) 01/02/95
  */
 
 /*
@@ -69,7 +69,7 @@ struct dinode {
 		u_int16_t oldids[2];	/*   4: Ffs: old user and group ids. */
 		ino_t	  inumber;	/*   4: Lfs: inode number. */
 	} di_u;
-	u_quad_t	di_size;	/*   8: File byte count. */
+	u_int64_t	di_size;	/*   8: File byte count. */
 	struct timespec	di_atime;	/*  16: Last access time. */
 	struct timespec	di_mtime;	/*  24: Last modified time. */
 	struct timespec	di_ctime;	/*  32: Last inode change time. */
