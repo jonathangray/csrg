@@ -1,5 +1,5 @@
 /*
- * $Id: mk-amd-map.c,v 5.2 90/06/23 22:20:10 jsp Rel $
+ * $Id: mk-amd-map.c,v 5.2.1.2 91/03/17 17:37:27 jsp Alpha $
  *
  * Copyright (c) 1990 Jan-Simon Pendry
  * Copyright (c) 1990 Imperial College of Science, Technology & Medicine
@@ -37,7 +37,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mk-amd-map.c	5.2 (Berkeley) 03/07/91
+ *	@(#)mk-amd-map.c	5.3 (Berkeley) 03/17/91
  */
 
 /*
@@ -53,21 +53,18 @@ char copyright[] = "\
 #endif /* not lint */
 
 #ifndef lint
-static char rcsid[] = "$Id: mk-amd-map.c,v 5.2 90/06/23 22:20:10 jsp Rel $";
-static char sccsid[] = "@(#)mk-amd-map.c	5.2 (Berkeley) 03/07/91";
+static char rcsid[] = "$Id: mk-amd-map.c,v 5.2.1.2 91/03/17 17:37:27 jsp Alpha $";
+static char sccsid[] = "@(#)mk-amd-map.c	5.3 (Berkeley) 03/17/91";
 #endif /* not lint */
 
 #include "am.h"
 
-#ifdef OS_HAS_GDBM
-#define HAS_DATABASE
-#include "gdbm.h"
-#endif /* OS_HAS_GDBM */
+#ifndef SIGINT
+#include <signal.h>
+#endif
 
-#ifndef HAS_DATABASE
 #ifdef OS_HAS_NDBM
 #define HAS_DATABASE
-#define	USE_NDBM
 #include <ndbm.h>
 
 #define create_database(name) dbm_open(name, O_RDWR|O_CREAT, 0444)
@@ -85,7 +82,6 @@ char *k, *v;
 }
 
 #endif /* OS_HAS_NDBM */
-#endif /* !OS_HAS_DATABASE */
 
 #ifdef HAS_DATABASE
 #include <fcntl.h>
@@ -190,12 +186,13 @@ voidp db;
 			fprintf(stderr, "Can't interpolate %s\n", kp);
 			errs++;
 		} else if (*cp) {
-#ifdef DEBUG
-			printf("%s\t%s\n", kp, cp);
-#endif /* DEBUG */
-			if (store_data(db, kp, cp) < 0) {
-				fprintf(stderr, "Could store %s -> %s\n", kp, cp);
-				errs++;
+			if (db) {
+				if (store_data(db, kp, cp) < 0) {
+					fprintf(stderr, "Could store %s -> %s\n", kp, cp);
+					errs++;
+				}
+			} else {
+				printf("%s\t%s\n", kp, cp);
 			}
 		} else {
 			fprintf(stderr, "%s: line %d has no value field", map, line_no);
@@ -217,7 +214,7 @@ again:
 	return errs;
 }
 
-static int xremove(f)
+static int remove_file(f)
 char *f;
 {
 	if (unlink(f) < 0 && errno != ENOENT)
@@ -233,18 +230,32 @@ char *argv[];
 	char *map;
 	int rc = 0;
 	DBM *mapd;
-	static char maptmp[] = "dbmXXXXXX";
+	char *maptmp = "dbmXXXXXX";
 	char maptpag[16], maptdir[16];
 	char *mappag, *mapdir;
 	int len;
 	char *sl;
+	int printit = 0;
+	int usage = 0;
+	int ch;
+	extern int optind;
 
-	if (argc != 2) {
-		fputs("Usage: mk-amd-map file-map\n", stderr);
+	while ((ch = getopt(argc, argv, "p")) != EOF)
+	switch (ch) {
+	case 'p':
+		printit = 1;
+		break;
+	default:
+		usage++;
+		break;
+	}
+
+	if (usage || optind != (argc - 1)) {
+		fputs("Usage: mk-amd-map [-p] file-map\n", stderr);
 		exit(1);
 	}
 
-	map = argv[1];
+	map = argv[optind];
 	sl = strrchr(map, '/');
 	if (sl) {
 		*sl = '\0';
@@ -255,63 +266,73 @@ char *argv[];
 		}
 		map = sl + 1;
 	}
-#ifdef USE_NDBM
-	len = strlen(map);
-	mappag = (char *) malloc(len + 5);
-	mapdir = (char *) malloc(len + 5);
-	if (!mappag || !mapdir) {
-		perror("malloc");
-		exit(1);
+
+	if (!printit) {
+		len = strlen(map);
+		mappag = (char *) malloc(len + 5);
+		mapdir = (char *) malloc(len + 5);
+		if (!mappag || !mapdir) {
+			perror("mk-amd-map: malloc");
+			exit(1);
+		}
+		mktemp(maptmp);
+		sprintf(maptpag, "%s.pag", maptmp);
+		sprintf(maptdir, "%s.dir", maptmp);
+		if (remove_file(maptpag) < 0 || remove_file(maptdir) < 0) {
+			fprintf(stderr, "Can't remove existing temporary files; %s and", maptpag);
+			perror(maptdir);
+			exit(1);
+		}
 	}
-	mktemp(maptmp);
-	sprintf(maptpag, "%s.pag", maptmp);
-	sprintf(maptdir, "%s.dir", maptmp);
-	if (xremove(maptpag) < 0 || xremove(maptdir) < 0) {
-		fprintf(stderr, "Can't remove existing temporary files; %s and", maptpag);
-		perror(maptdir);
-		exit(1);
-	}
-#endif /* USE_NDBM */
+
 	mapf =  fopen(map, "r");
-	if (mapf)
+	if (mapf && !printit)
 		mapd = create_database(maptmp);
 	else
 		mapd = 0;
+
 #ifndef DEBUG
 	signal(SIGINT, SIG_IGN);
-#endif /* DEBUG */
-	if (mapd) {
+#endif
+
+	if (mapd || printit) {
 		int error = read_file(mapf, map, mapd);
 		(void) fclose(mapf);
-		if (error) {
-			fprintf(stderr, "Error creating ndbm map for %s\n", map);
-			rc = 1;
+		if (printit) {
+			if (error) {
+				fprintf(stderr, "Error creating ndbm map for %s\n", map);
+				rc = 1;
+			}
+		} else {
+			if (error) {
+				fprintf(stderr, "Error reading source file  %s\n", map);
+				rc = 1;
+			} else {
+				sprintf(mappag, "%s.pag", map);
+				sprintf(mapdir, "%s.dir", map);
+				if (rename(maptpag, mappag) < 0) {
+					fprintf(stderr, "Couldn't rename %s to ", maptpag);
+					perror(mappag);
+					/* Throw away the temporary map */
+					unlink(maptpag);
+					unlink(maptdir);
+					rc = 1;
+				} else if (rename(maptdir, mapdir) < 0) {
+					fprintf(stderr, "Couldn't rename %s to ", maptdir);
+					perror(mapdir);
+					/* Put the .pag file back */
+					rename(mappag, maptpag);
+					/* Throw away remaining part of original map */
+					unlink(mapdir);
+					fprintf(stderr,
+						"WARNING: existing map \"%s.{dir,pag}\" destroyed\n",
+						map);
+					rc = 1;
+				}
+			}
 		}
-#ifdef USE_NDBM
-		sprintf(mappag, "%s.pag", map);
-		sprintf(mapdir, "%s.dir", map);
-		if (rename(maptpag, mappag) < 0) {
-			fprintf(stderr, "Couldn't rename %s to ", maptpag);
-			perror(mappag);
-			/* Throw away the temporary map */
-			unlink(maptpag);
-			unlink(maptdir);
-			rc = 1;
-		} else if (rename(maptdir, mapdir) < 0) {
-			fprintf(stderr, "Couldn't rename %s to ", maptdir);
-			perror(mapdir);
-			/* Put the .pag file back */
-			rename(mappag, maptpag);
-			/* Throw away remaining part of original map */
-			unlink(mapdir);
-			fprintf(stderr, "WARNING: existing map \"%s.{dir,pag}\" destroyed\n", map);
-			rc = 1;
-		}
-#endif /* USE_NDBM */
 	} else {
-#ifdef USE_NDBM
 		fprintf(stderr, "Can't open \"%s.{dir,pag}\" for ", map);
-#endif /* USE_NDBM */
 		perror("writing");
 		rc = 1;
 	}
@@ -320,7 +341,34 @@ char *argv[];
 #else
 main()
 {
-	fputs("This system does not support hashed database files\n", stderr);
-	exit(0);
+	fputs("mk-amd-map: This system does not support hashed database files\n", stderr);
+	exit(1);
 }
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
 #endif /* HAS_DATABASE */
