@@ -6,7 +6,7 @@
 # include "sendmail.h"
 # include <sys/stat.h>
 
-SCCSID(@(#)main.c	3.94		08/08/82);
+SCCSID(@(#)main.c	3.95		08/17/82);
 
 /*
 **  SENDMAIL -- Post mail to a set of destinations.
@@ -300,7 +300,12 @@ main(argc, argv)
 			if (p[2] == '\0')
 				QueueDir = "mqueue";
 			else
-				QueueDir = &p[2];
+			{
+				if (strlen(&p[2]) > 50)
+					syserr("Absurd length Queue path");
+				else
+					QueueDir = &p[2];
+			}
 			break;
 
 		  case 'T':	/* set timeout interval */
@@ -585,7 +590,7 @@ main(argc, argv)
 	**		to dispose of them.
 	*/
 
-	if (ExitStat != EX_OK)
+	if (ExitStat != EX_OK && Mode != MD_VERIFY)
 		finis();
 
 	if (Mode == MD_FORK)
