@@ -1,0 +1,102 @@
+.\" Copyright (c) 1983 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"	@(#)sigprocmask.2	6.1 (Berkeley) 07/01/90
+.\"
+.TH SIGPROCMASK 2 ""
+.UC 7
+.SH NAME
+sigprocmask \- manipulate current signal mask
+.SH SYNOPSIS
+.nf
+.B #include <signal.h>
+
+.B sigprocmask(how, set, oset);
+.B int how;
+.B sigset_t *set, *oset;
+
+.B mask = sigmask(signum)
+.SH DESCRIPTION
+The
+.I sigsetmask
+function examines and/or the current signal mask (those signals
+that are blocked from delivery).
+Signals are blocked if they are members of the current signal mask set.
+.PP
+If
+.I set
+is not null, the action of
+.I sigsetmask
+depends on the value of the parameter
+.IR how .
+The signal mask is changed as a function of the specified
+.I set
+and the current mask.
+The function is specified by
+.I how
+using one of the following values from <signal.h>:
+.IP SIG_BLOCK \w'SIG_SETMASK\0\0'u
+The new mask is the union of the current mask and the specified
+.IR set .
+.IP SIG_UNBLOCK \w'SIG_SETMASK\0\0'u
+The new mask is the intersection of the current mask
+and the complement of the specified
+.IR set .
+.IP SIG_SETMASK \w'SIG_SETMASK\0\0'u
+The current mask is replaced by the specified
+.IR set .
+.PP
+If
+.I oset
+is not null,
+the previous value of the signal mask.
+When
+.I set
+is null, this provides a way to examine the signal mask without changing it.
+.PP
+The system
+quietly disallows SIGKILL or SIGSTOP to be blocked.
+.SH "RETURN VALUE
+A 0 value indicated that the call succeeded.  A \-1 return value
+indicates an error occurred and
+.I errno
+is set to indicated the reason.
+.SH ERRORS
+The
+.I sigprocmask
+call will fail and the signal mask will be unchanged if one
+of the following occurs:
+.TP 15
+[EINVAL]
+.I how
+has a value other than those listed here.
+.SH "SEE ALSO"
+kill(2), sigaction(2), sigsetops(2), sigsuspend(2)
