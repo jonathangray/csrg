@@ -3,7 +3,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)conp.h	4.4 (Berkeley) 04/17/91
+ *	@(#)conp.h	8.1 (Berkeley) 06/06/93
  */
 
 #define SLENG 250
