@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)resource.h	8.1 (Berkeley) 06/02/93
+ *	@(#)resource.h	7.10 (Berkeley) 06/14/93
  */
 
 #ifndef _RESOURCE_H_
@@ -89,7 +89,7 @@ struct	rusage {
 
 #define	RLIM_NLIMITS	9		/* number of resource limits */
 
-#define	RLIM_INFINITY	(((quad_t)1 << 63) - 1)
+#define	RLIM_INFINITY	(((u_quad_t)1 << 63) - 1)
 
 struct orlimit {
 	long	rlim_cur;		/* current (soft) limit */
