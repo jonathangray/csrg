@@ -1,4 +1,4 @@
-#	Makefile (Berkeley) 04/09/84
+#	Makefile (Berkeley) 05/03/84
 #
 ALL=	routed
 OBJS=	af.o if.o input.o main.o output.o startup.o tables.o timer.o \
