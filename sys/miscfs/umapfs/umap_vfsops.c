@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)umap_vfsops.c	8.7 (Berkeley) 05/10/95
+ *	@(#)umap_vfsops.c	8.8 (Berkeley) 05/14/95
  *
  * @(#)null_vfsops.c       1.5 (Berkeley) 7/10/92
  */
@@ -45,6 +45,7 @@
 
 #include <sys/param.h>
 #include <sys/systm.h>
+#include <sys/proc.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/vnode.h>
@@ -163,7 +164,7 @@ umapfs_mount(mp, path, data, ndp, p)
 	/*
 	 * Unlock the node (either the lower or the alias)
 	 */
-	VOP_UNLOCK(vp);
+	VOP_UNLOCK(vp, 0, p);
 	/*
 	 * Make sure the node alias worked
 	 */
@@ -271,6 +272,7 @@ umapfs_root(mp, vpp)
 	struct mount *mp;
 	struct vnode **vpp;
 {
+	struct proc *p = curproc;	/* XXX */
 	struct vnode *vp;
 
 #ifdef UMAPFS_DIAGNOSTIC
@@ -285,7 +287,7 @@ umapfs_root(mp, vpp)
 	 */
 	vp = MOUNTTOUMAPMOUNT(mp)->umapm_rootvp;
 	VREF(vp);
-	VOP_LOCK(vp);
+	vn_lock(vp, LK_EXCLUSIVE | LK_RETRY, p);
 	*vpp = vp;
 	return (0);
 }
