@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fpu_add.c	7.2 (Berkeley) 07/21/92
+ *	@(#)fpu_add.c	7.3 (Berkeley) 10/11/92
  *
  * from: $Header: fpu_add.c,v 1.3 92/06/17 18:11:43 mccanne Exp $
  */
@@ -50,12 +50,12 @@
  * To subtract, negate y and call add.
  */
 
-#include "sys/types.h"
+#include <sys/types.h>
 
-#include "machine/reg.h"
+#include <machine/reg.h>
 
-#include "fpu_arith.h"
-#include "fpu_emu.h"
+#include <sparc/fpu/fpu_arith.h>
+#include <sparc/fpu/fpu_emu.h>
 
 struct fpn *
 fpu_add(fe)
