@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vfsops.c	7.80 (Berkeley) 10/07/92
+ *	@(#)ffs_vfsops.c	7.81 (Berkeley) 10/08/92
  */
 
 #include <sys/param.h>
@@ -501,7 +501,7 @@ loop:
 			continue;
 		ip = VTOI(vp);
 		if ((ip->i_flag & (IMOD|IACC|IUPD|ICHG)) == 0 &&
-		    vp->v_dirtyblkhd == NULL)
+		    vp->v_dirtyblkhd.le_next == NULL)
 			continue;
 		if (vget(vp))
 			goto loop;
