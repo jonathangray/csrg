@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)clock.h	7.1 (Berkeley) 06/05/86
+ *	@(#)clock.h	7.2 (Berkeley) 12/06/86
  */
 
 /*
