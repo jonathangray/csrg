@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)unix.c	5.14 (Berkeley) 07/07/92";
+static char sccsid[] = "@(#)unix.c	5.15 (Berkeley) 02/19/93";
 #endif /* not lint */
 
 /*
@@ -60,8 +60,8 @@ struct proc;
 
 static	void unixdomainpr __P((struct socket *, caddr_t));
 
-struct	file *file, *fileNFILE;
-int	nfiles;
+static struct	file *file, *fileNFILE;
+static int	nfiles;
 extern	kvm_t *kvmd;
 
 void
@@ -127,7 +127,8 @@ unixdomainpr(so, soaddr)
 	    unp->unp_vnode, unp->unp_conn,
 	    unp->unp_refs, unp->unp_nextref);
 	if (m)
-		printf(" %.*s", m->m_len - (int)sizeof(sa->sun_family),
+		printf(" %.*s",
+		    m->m_len - (int)(sizeof(*sa) - sizeof(sa->sun_path)),
 		    sa->sun_path);
 	putchar('\n');
 }
