@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: rd_compat.c 1.1 92/12/21$
  *
- *	@(#)rd_compat.c	7.1 (Berkeley) 12/27/92
+ *	@(#)rd_compat.c	7.2 (Berkeley) 03/09/93
  */
 
 /*
@@ -280,6 +280,8 @@ rdmakedisklabel(unit, lp)
 		pi->p_fsize = 1024;
 		if (dcount == 1 || dcount == 3)
 			pi->p_fstype = FS_SWAP;
+		else if (dcount == 2)
+			pi->p_fstype = FS_BOOT;
 		else
 			pi->p_fstype = FS_BSDFFS;
 		pi->p_frag = 8;
