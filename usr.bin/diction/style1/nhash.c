@@ -1,6 +1,12 @@
+/*-
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ */
+
 #ifndef lint
-static char nhash_sccsid[] = "@(#)nhash.c	4.3	(Berkeley)	91/02/02";
-#endif not lint
+static char sccsid[] = "@(#)nhash.c	4.4 (Berkeley) 04/17/91";
+#endif /* not lint */
 
 struct dict {
 	char *entry;
