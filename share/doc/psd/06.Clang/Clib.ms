@@ -2,7 +2,7 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)Clib.ms	8.1 (Berkeley) 06/08/93
+.\"	@(#)Clib.ms	8.2 (Berkeley) 06/01/94
 .\"
 .so /k3/unx/MACROS/cmac1
 .CH 3 "C LIBRARIES"
