@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parser.c	8.6 (Berkeley) 05/04/95";
+static char sccsid[] = "@(#)parser.c	8.7 (Berkeley) 05/16/95";
 #endif /* not lint */
 
 #include <stdlib.h>
@@ -1152,8 +1152,10 @@ parsesub: {
 		if (c == '{') {
 			c = pgetc();
 			if (c == '#') {
-				subtype = VSLENGTH;
-				c = pgetc();
+				if ((c = pgetc()) == '}')
+					c = '#';
+				else
+					subtype = VSLENGTH;
 			}
 			else
 				subtype = 0;
