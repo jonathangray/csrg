@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_syscalls.c	7.14 (Berkeley) 07/02/92
+ *	@(#)lfs_syscalls.c	7.14 (Berkeley) 07/03/92
  */
 
 #include <sys/param.h>
@@ -73,9 +73,6 @@ lfs_markv(p, uap, retval)
 	} *uap;
 	int *retval;
 {
-	USES_VOP_BMAP;
-	USES_VOP_BWRITE;
-	USES_VOP_VGET;
 	BLOCK_INFO *blkp;
 	IFILE *ifp;
 	INODE_INFO *inop;
@@ -132,7 +129,7 @@ lfs_markv(p, uap, retval)
 		 * earlier than the segment in which the block was found then
 		 * they have to be valid, skip other checks.
 		 */
-		if (LFS_VGET(mntp, blkp->bi_inode, &vp))
+		if (VFS_VGET(mntp, blkp->bi_inode, &vp))
 			continue;
 		ip = VTOI(vp);
 
@@ -181,7 +178,7 @@ lfs_markv(p, uap, retval)
 		 * lfs_vget that takes the copy and uses it instead of reading
 		 * from disk, if it's not already in the cache.
 		 */
-		if (!LFS_VGET(mntp, inop->ii_inode, &vp)) {
+		if (!VFS_VGET(mntp, inop->ii_inode, &vp)) {
 			VTOI(vp)->i_flag |= IMOD;
 			vput(vp);
 		}	
@@ -208,8 +205,6 @@ lfs_bmapv(p, uap, retval)
 	} *uap;
 	int *retval;
 {
-	USES_VOP_BMAP;
-	USES_VOP_VGET;
 	BLOCK_INFO *blkp;
 	struct mount *mntp;
 	struct vnode *vp;
@@ -234,7 +229,7 @@ lfs_bmapv(p, uap, retval)
 	}
 
 	for (step = cnt; step--; ++blkp) {
-		if (LFS_VGET(mntp, blkp->bi_inode, &vp))
+		if (VFS_VGET(mntp, blkp->bi_inode, &vp))
 			daddr = LFS_UNUSED_DADDR;
 		else {
 			if (VOP_BMAP(vp, blkp->bi_lbn, NULL, &daddr))
