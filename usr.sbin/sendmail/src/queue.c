@@ -5,10 +5,10 @@
 # include <errno.h>
 
 # ifndef QUEUE
-SCCSID(@(#)queue.c	3.57		12/05/82	(no queueing));
+SCCSID(@(#)queue.c	3.58		12/13/82	(no queueing));
 # else QUEUE
 
-SCCSID(@(#)queue.c	3.57		12/05/82);
+SCCSID(@(#)queue.c	3.58		12/13/82);
 
 /*
 **  Work queue.
