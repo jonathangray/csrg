@@ -2,10 +2,10 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)ms	6.2 (Berkeley) 04/17/91
+.\"	@(#)ms	6.3 (Berkeley) 06/05/93
 .\"
-.EH 'USD:20-%''Using the \-ms Macros with Troff and Nroff'
-.OH 'Using the \-ms Macros with Troff and Nroff''USD:20-%'
+.EH 'USD:17-%''Using the \-ms Macros with Troff and Nroff'
+.OH 'Using the \-ms Macros with Troff and Nroff''USD:17-%'
 .\".RP
 ....TM 76-1274-16 39199 39199-11
 ....ND October 8, 1976
