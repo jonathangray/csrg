@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	6.38 (Berkeley) 03/06/93";
+static char sccsid[] = "@(#)deliver.c	6.39 (Berkeley) 03/06/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1147,11 +1147,11 @@ giveresponse(stat, m, mci, e)
 	*/
 
 	if (stat == EX_OK || stat == EX_TEMPFAIL)
-		message(&statmsg[4]);
+		message(&statmsg[4], errstring(errno));
 	else
 	{
 		Errors++;
-		usrerr(statmsg);
+		usrerr(statmsg, errstring(errno));
 	}
 
 	/*
