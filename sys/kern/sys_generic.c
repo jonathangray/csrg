@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sys_generic.c	7.23 (Berkeley) 07/22/90
+ *	@(#)sys_generic.c	7.24 (Berkeley) 08/24/90
  */
 
 #include "param.h"
@@ -50,6 +50,7 @@
 /*
  * Read system call.
  */
+/* ARGSUSED */
 read(p, uap, retval)
 	struct proc *p;
 	register struct args {
@@ -102,6 +103,7 @@ read(p, uap, retval)
 /*
  * Scatter read system call.
  */
+/* ARGSUSED */
 readv(p, uap, retval)
 	struct proc *p;
 	register struct args {
