@@ -29,11 +29,11 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)getdirentries.2	6.4 (Berkeley) 03/10/91
+.\"	@(#)getdirentries.2	6.5 (Berkeley) 07/23/91
 .\"
 .Dd 
 .Dt GETDIRENTRIES 2
-.Os BSD 4.4
+.Os
 .Sh NAME
 .Nm getdirentries
 .Nd "get directory entries in a filesystem independent format"
@@ -139,12 +139,15 @@ or
 .Fa basep
 point outside the allocated address space.
 .It EIO
-An I/O error occurred while reading from or writing to the file system.
+An
+.Tn I/O
+error occurred while reading from or writing to the file system.
 .El
 .Sh SEE ALSO
 .Xr open 2 ,
 .Xr lseek 2
 .Sh HISTORY
 The
-.Nm
-function call is currently under development.
+.Nm getdirentries
+function call is
+.Ud .
