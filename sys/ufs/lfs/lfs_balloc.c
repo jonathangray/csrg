@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_balloc.c	7.23 (Berkeley) 12/06/91
+ *	@(#)lfs_balloc.c	7.24 (Berkeley) 12/15/91
  */
 
 #include <sys/param.h>
@@ -49,7 +49,7 @@
 #include <ufs/lfs/lfs.h>
 #include <ufs/lfs/lfs_extern.h>
 
-static int lfs_getlbns __P((struct vnode *, daddr_t, INDIR *, int *));
+int lfs_getlbns __P((struct vnode *, daddr_t, INDIR *, int *));
 
 /*
  * Bmap converts a the logical block number of a file to its physical block
