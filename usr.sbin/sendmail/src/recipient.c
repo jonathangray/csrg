@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recipient.c	8.63 (Berkeley) 02/11/95";
+static char sccsid[] = "@(#)recipient.c	8.44.1.3 (Berkeley) 02/14/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -123,7 +123,7 @@ sendto(list, copyf, ctladdr, qflags)
 	al = NULL;
 	naddrs = 0;
 
-	if (buf == NULL)
+	if (bufp == NULL)
 	{
 		bufp = buf;
 		buflen = sizeof buf - 1;
