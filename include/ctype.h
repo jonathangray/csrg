@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ctype.h	5.8 (Berkeley) 05/26/93
+ *	@(#)ctype.h	5.9 (Berkeley) 05/27/93
  */
 
 #ifndef	_CTYPE_H_
@@ -98,18 +98,14 @@ __END_DECLS
 
 #if defined(_USE_CTYPE_INLINE_)
 static inline int
-__istype(c, f)
-	_BSD_RUNE_T_ c;
-	unsigned long f;
+__istype(_BSD_RUNE_T_ c, unsigned long f)
 {
 	return((((c & _CRMASK) ? ___runetype(c) :
 	    _CurrentRuneLocale->runetype[c]) & f) ? 1 : 0);
 }
 
 static inline int
-__isctype(c, f)
-	_BSD_RUNE_T_ c;
-	unsigned long f;
+__isctype(_BSD_RUNE_T_ c, unsigned long f)
 {
 	return((((c & _CRMASK) ? 0 :
 	    _DefaultRuneLocale.runetype[c]) & f) ? 1 : 0);
@@ -117,16 +113,14 @@ __isctype(c, f)
 
 #if !defined(_ANSI_LIBRARY)	/* _ANSI_LIBRARY: for lib/libc/gen/isctype.c. */
 static inline _BSD_RUNE_T_
-toupper(c)
-	_BSD_RUNE_T_ c;
+toupper(_BSD_RUNE_T_ c)
 {
 	return((c & _CRMASK) ?
 	    ___toupper(c) : _CurrentRuneLocale->mapupper[c]);
 }
 
 static inline _BSD_RUNE_T_
-tolower(c)
-	_BSD_RUNE_T_ c;
+tolower(_BSD_RUNE_T_ c)
 {
 	return((c & _CRMASK) ?
 	    ___tolower(c) : _CurrentRuneLocale->maplower[c]);
