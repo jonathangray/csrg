@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_output.c	7.13 (Berkeley) 09/03/91
+ *	@(#)tp_output.c	7.14 (Berkeley) 10/02/91
  */
 
 /***********************************************************
@@ -176,18 +176,6 @@ tp_consistency( tpcb, cmd, param )
 			error = EINVAL; goto done;
 	}
 	IFDEBUG(D_SETPARAMS)
-		printf("winsize 0x%x\n",  param->p_winsize );
-	ENDDEBUG
-	if( (param->p_winsize < 128 ) || 
-		(param->p_winsize < param->p_tpdusize ) ||
-		(param->p_winsize > ((1+SB_MAX)>>2 /* 1/4 of the max */)) ) {
-			error = EINVAL; goto done;
-	} else {
-		if( tpcb->tp_state == TP_CLOSED )
-			soreserve(tpcb->tp_sock, (u_long)param->p_winsize,
-						(u_long)param->p_winsize);
-	}
-	IFDEBUG(D_SETPARAMS)
 		printf("use_csum 0x%x\n",  param->p_use_checksum );
 		printf("xtd_format 0x%x\n",  param->p_xtd_format );
 		printf("xpd_service 0x%x\n",  param->p_xpd_service );
@@ -310,7 +298,7 @@ tp_consistency( tpcb, cmd, param )
 		if (!tpcb->tp_xtd_format || !param->p_xtd_format)
 			tpcb->tp_xtd_format = 0;
 	}
-
+	tpcb->tp_l_tpdusize = 1 << tpcb->tp_tpdusize;
 done:
 
 	IFTRACE(D_CONN)
