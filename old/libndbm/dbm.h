@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dbm.h	5.4 (Berkeley) 06/01/90
+ *	@(#)dbm.h	5.5 (Berkeley) 03/12/91
  */
 
 #ifndef NULL
@@ -48,7 +48,7 @@
 
 #define PBLKSIZ 1024
 
-#include <ndbm.h>
+#include "ndbm.h"
 
 datum	fetch();
 datum	firstkey();
