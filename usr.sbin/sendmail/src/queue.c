@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef QUEUE
-static char sccsid[] = "@(#)queue.c	8.41.1.1 (Berkeley) 02/10/95 (with queueing)";
+static char sccsid[] = "@(#)queue.c	8.63 (Berkeley) 02/23/95 (with queueing)";
 #else
-static char sccsid[] = "@(#)queue.c	8.41.1.1 (Berkeley) 02/10/95 (without queueing)";
+static char sccsid[] = "@(#)queue.c	8.63 (Berkeley) 02/23/95 (without queueing)";
 #endif
 #endif /* not lint */
 
@@ -488,6 +488,7 @@ printctladdr(a, tfp)
 
 ENVELOPE	QueueEnvelope;		/* the queue run envelope */
 
+void
 runqueue(forkflag)
 	bool forkflag;
 {
