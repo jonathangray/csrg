@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)in.c	7.23 (Berkeley) 02/20/92
+ *	@(#)in.c	7.24 (Berkeley) 03/11/92
  */
 
 #include "param.h"
@@ -293,14 +293,14 @@ in_control(so, cmd, data, ifp)
 			bzero((caddr_t)oia, sizeof *oia);
 			if (ia = in_ifaddr) {
 				for ( ; ia->ia_next; ia = ia->ia_next)
-					;
+					continue;
 				ia->ia_next = oia;
 			} else
 				in_ifaddr = oia;
 			ia = oia;
 			if (ifa = ifp->if_addrlist) {
 				for ( ; ifa->ifa_next; ifa = ifa->ifa_next)
-					;
+					continue;
 				ifa->ifa_next = (struct ifaddr *) ia;
 			} else
 				ifp->if_addrlist = (struct ifaddr *) ia;
