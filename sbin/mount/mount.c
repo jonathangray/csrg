@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)mount.c	8.3 (Berkeley) 01/12/94";
+static char sccsid[] = "@(#)mount.c	8.4 (Berkeley) 01/23/94";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -438,6 +438,8 @@ getstdopts(options, flagp)
 
 	(void)strcpy(optbuf, options);
 	for (opt = strtok(optbuf, ","); opt; opt = strtok((char *)NULL, ",")) {
+		if (opt[0] == '-')
+			continue;
 		if (opt[0] == 'n' && opt[1] == 'o') {
 			negative++;
 			opt += 2;
@@ -494,6 +496,7 @@ getstdopts(options, flagp)
 				*flagp &= ~MNT_UNION;
 			continue;
 		}
+		(void) fprintf(stderr, "mount: %s: unknown option\n", opt);
 	}
 }
 
