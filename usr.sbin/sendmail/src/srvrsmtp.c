@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	8.44 (Berkeley) 08/07/94 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	8.45 (Berkeley) 11/04/94 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	8.44 (Berkeley) 08/07/94 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	8.45 (Berkeley) 11/04/94 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -468,6 +468,15 @@ smtp(e)
 							vp);
 						/* NOTREACHED */
 					}
+				}
+				else if (strcasecmp(kp, "envid") == 0)
+				{
+					if (vp == NULL)
+					{
+						usrerr("501 ENVID requires a value");
+						/* NOTREACHED */
+					}
+					e->e_envid = newstr(vp);
 				}
 				else
 				{
