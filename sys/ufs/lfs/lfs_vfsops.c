@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vfsops.c	8.13 (Berkeley) 05/08/95
+ *	@(#)lfs_vfsops.c	8.14 (Berkeley) 05/08/95
  */
 
 #include <sys/param.h>
@@ -285,7 +285,6 @@ lfs_mountfs(devvp, mp, p)
 	mp->mnt_stat.f_fsid.val[1] = lfs_mount_type;
 	mp->mnt_maxsymlinklen = fs->lfs_maxsymlinklen;
 	mp->mnt_flag |= MNT_LOCAL;
-	ump->um_relvp = NULL;
 	ump->um_mountp = mp;
 	ump->um_dev = dev;
 	ump->um_devvp = devvp;
