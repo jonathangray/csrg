@@ -3,13 +3,13 @@
 # include <sys/mx.h>
 
 #ifndef DAEMON
-SCCSID(@(#)daemon.c	3.11		05/06/82	(w/o daemon mode));
+SCCSID(@(#)daemon.c	3.12		05/22/82	(w/o daemon mode));
 #else
 
 # include <sys/socket.h>
 # include <net/in.h>
 
-SCCSID(@(#)daemon.c	3.11		05/06/82	(with daemon mode));
+SCCSID(@(#)daemon.c	3.12		05/22/82	(with daemon mode));
 
 /*
 **  DAEMON.C -- routines to use when running as a daemon.
