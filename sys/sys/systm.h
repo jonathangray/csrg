@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)systm.h	7.27 (Berkeley) 03/03/93
+ *	@(#)systm.h	8.1 (Berkeley) 06/02/93
  */
 
 /*
