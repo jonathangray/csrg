@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)unistd.h	5.11 (Berkeley) 04/21/91
+ *	@(#)unistd.h	5.12 (Berkeley) 05/18/91
  */
 
 #ifndef _UNISTD_H_
@@ -115,9 +115,9 @@ char	*brk __P((const char *));
 int	 chflags __P((const char *, long));
 int	 chroot __P((const char *));
 char	*crypt __P((const char *, const char *));
-void	 des_cipher __P((const char *, char *, long, int));
-void	 des_setkey __P((const char *key));
-void	 encrypt __P((char *, int));
+int	 des_cipher __P((const char *, char *, long, int));
+int	 des_setkey __P((const char *key));
+int	 encrypt __P((char *, int));
 void	 endusershell __P((void));
 int	 exect __P((const char *, char * const *, char * const *));
 int	 fchdir __P((int));
@@ -159,7 +159,7 @@ int	 seteuid __P((uid_t));
 int	 setgroups __P((int, const int *));
 void	 sethostid __P((long));
 int	 sethostname __P((const char *, int));
-void	 setkey __P((const char *));
+int	 setkey __P((const char *));
 int	 setlogin __P((const char *));
 void	*setmode __P((const char *));
 int	 setpgrp __P((pid_t pid, pid_t pgrp));	/* obsoleted by setpgid() */
