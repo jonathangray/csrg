@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)fstat.c	5.28 (Berkeley) 04/18/91";
+static char sccsid[] = "@(#)fstat.c	5.29 (Berkeley) 04/23/91";
 #endif /* not lint */
 
 /*
@@ -82,14 +82,14 @@ static char sccsid[] = "@(#)fstat.c	5.28 (Berkeley) 04/18/91";
 #include <netinet/ip.h>
 #include <netinet/in_pcb.h>
 
+#include <errno.h>
 #include <kvm.h>
-#include <paths.h>
-#include <ctype.h>
 #include <nlist.h>
 #include <pwd.h>
-#include <string.h>
 #include <stdio.h>
-
+#include <paths.h>
+#include <ctype.h>
+#include <string.h>
 
 #define	TEXT	-1
 #define	CDIR	-2
@@ -132,9 +132,9 @@ int maxfiles;
 #define ALLOC_OFILES(d)	\
 	if ((d) > maxfiles) { \
 		free(ofiles); \
-		ofiles = (struct file **)malloc((d) * sizeof(struct file *)); \
+		ofiles = malloc((d) * sizeof(struct file *)); \
 		if (ofiles == NULL) { \
-			fprintf(stderr, "fstat: out of memory\n"); \
+			fprintf(stderr, "fstat: %s\n", strerror(errno)); \
 			exit(1); \
 		} \
 		maxfiles = (d); \
@@ -145,30 +145,41 @@ int maxfiles;
  */
 #define KVM_READ(kaddr, paddr, len) (kvm_read((kaddr), (paddr), (len)) == (len))
 
-extern int errno;
-off_t lseek();
-
-
 main(argc, argv)
 	int argc;
 	char **argv;
 {
-	register struct passwd *passwd;
-	int what = KINFO_PROC_ALL, arg = 0;
-	struct proc *p;
 	extern char *optarg;
 	extern int optind;
-	int ch;
-	char *malloc();
+	register struct passwd *passwd;
+	struct proc *p;
+	int arg, ch, what;
 
-
-	while ((ch = getopt(argc, argv, "p:u:fnv")) != EOF)
+	arg = 0;
+	what = KINFO_PROC_ALL;
+	while ((ch = getopt(argc, argv, "fnp:u:v")) != EOF)
 		switch((char)ch) {
+		case 'c':
+			/* NOTYET: set count to optarg. */
+			usage();
+		case 'f':
+			fsflg = 1;
+			break;
+		case 'M':
+			/* NOTYET: set kernel to optarg. */
+			usage();
+		case 'N':
+			/* NOTYET: set memory to optarg. */
+			usage();
+		case 'n':
+			nflg = 1;
+			break;
 		case 'p':
 			if (pflg++)
 				usage();
 			if (!isdigit(*optarg)) {
-				fputs("fstat: -p option requires a process id.\n", stderr);
+				fprintf(stderr,
+				    "fstat: -p requires a process id\n");
 				usage();
 			}
 			what = KINFO_PROC_PID;
@@ -185,15 +196,12 @@ main(argc, argv)
 			what = KINFO_PROC_UID;
 			arg = passwd->pw_uid;
 			break;
-		case 'f':
-			fsflg++;
-			break;
-		case 'n':
-			nflg++;
-			break;
 		case 'v':
-			vflg++;
+			vflg = 1;
 			break;
+		case 'w':
+			/* NOTYET: set wait interval to optarg. */
+			usage();
 		case '?':
 		default:
 			usage();
@@ -208,7 +216,7 @@ main(argc, argv)
 			exit(1);
 	}
 
-	ALLOC_OFILES(256);	/* reverse space for file pointers */
+	ALLOC_OFILES(256);	/* reserve space for file pointers */
 
 	if (fsflg && !checkfile) {	
 		/* -f with no files means use wd */
@@ -233,12 +241,13 @@ main(argc, argv)
 		exit(1);
 	}
 	if (nflg)
-fputs("USER     CMD          PID   FD  DEV    INUM       MODE SZ|DV", stdout);
+		printf("%s",
+"USER     CMD          PID   FD  DEV    INUM       MODE SZ|DV");
 	else
-fputs("USER     CMD          PID   FD MOUNT      INUM MODE         SZ|DV",
-	    stdout);
+		printf("%s",
+"USER     CMD          PID   FD MOUNT      INUM MODE         SZ|DV");
 	if (checkfile && fsflg == 0)
-		fputs(" NAME\n", stdout);	
+		printf(" NAME\n");
 	else
 		putchar('\n');
 
@@ -256,16 +265,16 @@ int	Pid;
 #define PREFIX(i) printf("%-8.8s %-10s %5d", Uname, Comm, Pid); \
 	switch(i) { \
 	case TEXT: \
-		fputs(" text", stdout); \
+		printf(" text"); \
 		break; \
 	case CDIR: \
-		fputs("   wd", stdout); \
+		printf("   wd"); \
 		break; \
 	case RDIR: \
-		fputs(" root", stdout); \
+		printf(" root"); \
 		break; \
 	case TRACE: \
-		fputs("   tr", stdout); \
+		printf("   tr"); \
 		break; \
 	default: \
 		printf(" %4d", i); \
