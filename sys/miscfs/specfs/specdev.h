@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)specdev.h	7.5 (Berkeley) 11/05/91
+ *	@(#)specdev.h	7.6 (Berkeley) 02/04/92
  */
 
 /*
@@ -73,6 +73,7 @@ struct vnode *speclisth[SPECHSZ];
  * Prototypes for special file operations on vnodes.
  */
 struct	nameidata;
+struct	componentname;
 struct	ucred;
 struct	flock;
 struct	buf;
@@ -82,18 +83,19 @@ int	spec_badop(),
 	spec_ebadf();
 
 int	spec_lookup __P((
-		struct vnode *vp,
-		struct nameidata *ndp,
-		struct proc *p));
+		struct vnode *dvp,
+		struct vnode **vpp,
+		struct componentname *cnp));
 #define spec_create ((int (*) __P(( \
-		struct nameidata *ndp, \
-		struct vattr *vap, \
-		struct proc *p))) spec_badop)
+		struct vnode *dvp, \
+ 		struct vnode **vpp, \
+		struct componentname *cnp, \
+		struct vattr *vap))) spec_badop)
 #define spec_mknod ((int (*) __P(( \
-		struct nameidata *ndp, \
-		struct vattr *vap, \
-		struct ucred *cred, \
-		struct proc *p))) spec_badop)
+		struct vnode *dvp, \
+		struct vnode **vpp, \
+		struct componentname *cnp, \
+		struct vattr *vap))) spec_badop)
 int	spec_open __P((
 		struct vnode *vp,
 		int mode,
@@ -159,28 +161,35 @@ int	spec_select __P((
 		off_t newoff, \
 		struct ucred *cred))) spec_badop)
 #define spec_remove ((int (*) __P(( \
-		struct nameidata *ndp, \
-		struct proc *p))) spec_badop)
+		struct vnode *dvp, \
+	        struct vnode *vp, \
+		struct componentname *cnp))) spec_badop)
 #define spec_link ((int (*) __P(( \
-		struct vnode *vp, \
-		struct nameidata *ndp, \
-		struct proc *p))) spec_badop)
+		register struct vnode *vp, \
+		struct vnode *tdvp, \
+		struct componentname *cnp))) spec_badop)
 #define spec_rename ((int (*) __P(( \
-		struct nameidata *fndp, \
-		struct nameidata *tdnp, \
-		struct proc *p))) spec_badop)
+		struct vnode *fdvp, \
+	        struct vnode *fvp, \
+		struct componentname *fcnp, \
+		struct vnode *tdvp, \
+		struct vnode *tvp, \
+		struct componentname *tcnp))) spec_badop)
 #define spec_mkdir ((int (*) __P(( \
-		struct nameidata *ndp, \
-		struct vattr *vap, \
-		struct proc *p))) spec_badop)
+		struct vnode *dvp, \
+		struct vnode **vpp, \
+		struct componentname *cnp, \
+		struct vattr *vap))) spec_badop)
 #define spec_rmdir ((int (*) __P(( \
-		struct nameidata *ndp, \
-		struct proc *p))) spec_badop)
+		struct vnode *dvp, \
+		struct vnode *vp, \
+		struct componentname *cnp))) spec_badop)
 #define spec_symlink ((int (*) __P(( \
-		struct nameidata *ndp, \
+		struct vnode *dvp, \
+		struct vnode **vpp, \
+		struct componentname *cnp, \
 		struct vattr *vap, \
-		char *target, \
-		struct proc *p))) spec_badop)
+		char *target))) spec_badop)
 #define spec_readdir ((int (*) __P(( \
 		struct vnode *vp, \
 		struct uio *uio, \
@@ -191,7 +200,8 @@ int	spec_select __P((
 		struct uio *uio, \
 		struct ucred *cred))) spec_badop)
 #define spec_abortop ((int (*) __P(( \
-		struct nameidata *ndp))) spec_badop)
+		struct vnode *dvp, \
+		struct componentname *cnp))) spec_badop)
 #define spec_inactive ((int (*) __P(( \
 		struct vnode *vp, \
 		struct proc *p))) nullop)
