@@ -1,4 +1,8 @@
-.\"	@(#)lex.ms	6.2 (Berkeley) 05/01/87
+.\" This module is believed to contain source code proprietary to AT&T.
+.\" Use and redistribution is subject to the Berkeley Software License
+.\" Agreement and your Software Agreement with AT&T (Western Electric).
+.\"
+.\"	@(#)lex.ms	6.3 (Berkeley) 04/17/91
 .\"
 .EH 'PS1:16-%''Lex \- A Lexical Analyzer Generator'
 .OH 'Lex \- A Lexical Analyzer Generator''PS1:16-%'
