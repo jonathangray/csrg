@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)portal_vnops.c	8.4 (Berkeley) 01/04/94
+ *	@(#)portal_vnops.c	8.5 (Berkeley) 01/05/94
  *
  * $Id: portal_vnops.c,v 1.4 1992/05/30 10:05:24 jsp Exp jsp $
  */
@@ -348,7 +348,7 @@ portal_open(ap)
 #ifdef PORTAL_DIAGNOSTIC
 	printf("portal_open: sending data to server\n");
 #endif
-	error = sosend(so, (struct sockaddr *) 0, &auio,
+	error = sosend(so, (struct mbuf *) 0, &auio,
 			(struct mbuf *) 0, (struct mbuf *) 0, 0);
 	if (error)
 		goto bad;
