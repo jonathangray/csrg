@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_readwrite.c	8.4 (Berkeley) 01/04/94
+ *	@(#)ufs_readwrite.c	8.5 (Berkeley) 01/11/94
  */
 
 #ifdef LFS_READWRITE
@@ -38,7 +38,9 @@
 #define	FS			struct lfs
 #define	I_FS			i_lfs
 #define	READ			lfs_read
+#define	READ_S			"lfs_read"
 #define	WRITE			lfs_write
+#define	WRITE_S			"lfs_write"
 #define	fs_bsize		lfs_bsize
 #define	fs_maxfilesize		lfs_maxfilesize
 #else
@@ -46,7 +48,9 @@
 #define	FS			struct fs
 #define	I_FS			i_fs
 #define	READ			ffs_read
+#define	READ_S			"ffs_read"
 #define	WRITE			ffs_write
+#define	WRITE_S			"ffs_write"
 #endif
 
 /*
@@ -79,13 +83,13 @@ READ(ap)
 
 #ifdef DIAGNOSTIC
 	if (uio->uio_rw != UIO_READ)
-		panic("%s: mode", READ);
+		panic("%s: mode", READ_S);
 
 	if (vp->v_type == VLNK) {
 		if ((int)ip->i_size < vp->v_mount->mnt_maxsymlinklen)
-			panic("%s: short symlink", READ);
+			panic("%s: short symlink", READ_S);
 	} else if (vp->v_type != VREG && vp->v_type != VDIR)
-		panic("%s: type", READ);
+		panic("%s: type %d", READ_S, vp->v_type);
 #endif
 	fs = ip->I_FS;
 	if ((u_quad_t)uio->uio_offset > fs->fs_maxfilesize)
@@ -183,7 +187,7 @@ WRITE(ap)
 
 #ifdef DIAGNOSTIC
 	if (uio->uio_rw != UIO_WRITE)
-		panic("%s: mode", WRITE);
+		panic("%s: mode", WRITE_S);
 #endif
 
 	switch (vp->v_type) {
@@ -197,10 +201,10 @@ WRITE(ap)
 		break;
 	case VDIR:
 		if ((ioflag & IO_SYNC) == 0)
-			panic("%s: nonsync dir write", WRITE);
+			panic("%s: nonsync dir write", WRITE_S);
 		break;
 	default:
-		panic("%s: type", WRITE);
+		panic("%s: type", WRITE_S);
 	}
 
 	fs = ip->I_FS;
