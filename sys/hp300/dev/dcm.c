@@ -37,7 +37,7 @@
  *
  * from: $Hdr: dcm.c 1.17 89/10/01$
  *
- *	@(#)dcm.c	7.7 (Berkeley) 06/27/90
+ *	@(#)dcm.c	7.8 (Berkeley) 06/30/90
  */
 
 /*
@@ -278,7 +278,7 @@ dcmopen(dev, flag)
 {
 	register struct tty *tp;
 	register int unit, brd;
-	int error;
+	int error = 0;
 
 	unit = UNIT(dev);
 	brd = BOARD(unit);
