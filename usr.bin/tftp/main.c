@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.9 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)main.c	5.10 (Berkeley) 03/01/91";
 #endif /* not lint */
 
 /* Many bug fixes are from Jim Guyton <guyton@rand-unix> */
@@ -73,7 +73,7 @@ int	margc;
 char	*margv[20];
 char	*prompt = "tftp";
 jmp_buf	toplevel;
-int	intr();
+void	intr();
 struct	servent *sp;
 
 int	quit(), help(), setverbose(), settrace(), status();
@@ -142,7 +142,7 @@ main(argc, argv)
 	}
 	bzero((char *)&sin, sizeof (sin));
 	sin.sin_family = AF_INET;
-	if (bind(f, &sin, sizeof (sin)) < 0) {
+	if (bind(f, (struct sockaddr *)&sin, sizeof (sin)) < 0) {
 		perror("tftp: bind");
 		exit(1);
 	}
@@ -510,6 +510,7 @@ status(argc, argv)
 		rexmtval, maxtimeout);
 }
 
+void
 intr()
 {
 	signal(SIGALRM, SIG_IGN);
