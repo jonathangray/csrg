@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kgdb_stub.c	7.15 (Berkeley) 12/16/92
+ *	@(#)kgdb_stub.c	7.16 (Berkeley) 12/27/92
  */
 
 /*
@@ -47,7 +47,7 @@
  */
 #ifdef KGDB
 #ifndef lint
-static char rcsid[] = "$Header: kgdb_stub.c,v 1.2 92/07/23 19:37:50 mccanne Exp $";
+static char rcsid[] = "$Header: /usr/src/sys/hp300/hp300/RCS/kgdb_stub.c,v 1.5 92/12/20 15:49:01 mike Exp $";
 #endif
 
 #include <sys/param.h>
@@ -300,11 +300,25 @@ kgdb_copy(register u_char *src, register u_char *dst, register u_int nbytes)
 		*dst++ = *src++;
 }
 
-#define regs_to_gdb(fp, regs) \
-	(kgdb_copy((u_char *)((fp)->f_regs), (u_char *)(regs), REGISTER_BYTES))
+/*
+ * There is a short pad word between SP (A7) and SR which keeps the
+ * kernel stack long word aligned (note that this is in addition to
+ * the stack adjust short that we treat as the upper half of a longword
+ * SR).  We must skip this when copying into and out of gdb.
+ */
+static inline void
+regs_to_gdb(struct frame *fp, u_long *regs)
+{
+	kgdb_copy((u_char *)fp->f_regs, (u_char *)regs, 16*4);
+	kgdb_copy((u_char *)&fp->f_stackadj, (u_char *)&regs[GDB_SR], 2*4);
+}
 
-#define gdb_to_regs(fp, regs) \
-	(kgdb_copy((u_char *)(regs), (u_char *)((fp)->f_regs), REGISTER_BYTES))
+static inline void
+gdb_to_regs(struct frame *fp, u_long *regs)
+{
+	kgdb_copy((u_char *)regs, (u_char *)fp->f_regs, 16*4);
+	kgdb_copy((u_char *)&regs[GDB_SR], (u_char *)&fp->f_stackadj, 2*4);
+}
 
 static u_long reg_cache[NUM_REGS];
 static u_char inbuffer[SL_RPCSIZE+1];
