@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)map.c	6.8 (Berkeley) 04/04/93";
+static char sccsid[] = "@(#)map.c	6.9 (Berkeley) 04/14/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -103,6 +103,7 @@ dbm_map_init(map, mapname, args)
 **			in place if desired.
 **		av -- arguments from the config file (can be interpolated
 **			into the final result).
+**		statp -- pointer to status word (out-parameter).
 **
 **	Returns:
 **		A pointer to the rewritten result.
@@ -110,11 +111,12 @@ dbm_map_init(map, mapname, args)
 */
 
 char *
-dbm_map_lookup(map, buf, bufsiz, av)
+dbm_map_lookup(map, buf, bufsiz, av, statp)
 	MAP *map;
 	char buf[];
 	int bufsiz;
 	char **av;
+	int *statp;
 {
 	datum key, val;
 
@@ -244,6 +246,7 @@ hash_map_init(map, mapname, args)
 **			in place if desired.
 **		av -- arguments from the config file (can be interpolated
 **			into the final result).
+**		statp -- pointer to status word (out-parameter).
 **
 **	Returns:
 **		A pointer to the rewritten result.
@@ -251,11 +254,12 @@ hash_map_init(map, mapname, args)
 */
 
 char *
-db_map_lookup(map, buf, bufsiz, av)
+db_map_lookup(map, buf, bufsiz, av, statp)
 	MAP *map;
 	char buf[];
 	int bufsiz;
 	char **av;
+	int *statp;
 {
 	DBT key, val;
 
@@ -418,6 +422,7 @@ nis_map_init(map, mapname, args)
 **			in place if desired.
 **		av -- arguments from the config file (can be interpolated
 **			into the final result).
+**		statp -- pointer to status word (out-parameter).
 **
 **	Returns:
 **		A pointer to the rewritten result.
@@ -425,11 +430,12 @@ nis_map_init(map, mapname, args)
 */
 
 char *
-nis_map_lookup(map, buf, bufsiz, av)
+nis_map_lookup(map, buf, bufsiz, av, statp)
 	MAP *map;
 	char buf[];
 	int bufsiz;
 	char **av;
+	int *statp;
 {
 	char *vp;
 	auto int vsize;
