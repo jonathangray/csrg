@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)err.c	6.6 (Berkeley) 02/23/93";
+static char sccsid[] = "@(#)err.c	6.7 (Berkeley) 03/06/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -142,7 +142,7 @@ usrerr(fmt, va_alist)
 		return;
 
 	VA_START(fmt);
-	fmtmsg(MsgBuf, CurEnv->e_to, "501", errno, fmt, ap);
+	fmtmsg(MsgBuf, CurEnv->e_to, "501", 0, fmt, ap);
 	VA_END;
 	puterrmsg(MsgBuf);
 
