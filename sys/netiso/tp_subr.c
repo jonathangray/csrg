@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_subr.c	7.20 (Berkeley) 10/11/92
+ *	@(#)tp_subr.c	7.21 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -468,7 +468,7 @@ tp_send(tpcb)
 #ifdef TP_PERF_MEAS
 	int			 			send_start_time = ticks;
 	SeqNum					oldnxt = tpcb->tp_sndnxt; 
-#endif TP_PERF_MEAS
+#endif /* TP_PERF_MEAS */
 
 	idle = (tpcb->tp_snduna == tpcb->tp_sndnew);
 	if (idle) {
@@ -610,7 +610,7 @@ send:
 					TPsbsend, &elapsed, newseq, tpcb->tp_Nwindow, npkts);
 		}
 	ENDPERF
-#endif TP_PERF_MEAS
+#endif /* TP_PERF_MEAS */
 
 
 	IFTRACE(D_DATA)
@@ -729,9 +729,9 @@ tp_stash(tpcb, e)
 									/* 1--> ack each tpdu */
 #ifndef lint
 #define E e->ATTR(DT_TPDU)
-#else lint
+#else /* lint */
 #define E e->ev_union.EV_DT_TPDU
-#endif lint
+#endif /* lint */
 
 	if ( E.e_eot ) {
 		register struct mbuf *n = E.e_data;
