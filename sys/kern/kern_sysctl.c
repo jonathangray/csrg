@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sysctl.c	7.44 (Berkeley) 06/04/93
+ *	@(#)kern_sysctl.c	8.1 (Berkeley) 06/10/93
  */
 
 /*
