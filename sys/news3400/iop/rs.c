@@ -35,7 +35,7 @@
  *
  * from: $Hdr: rs.c,v 4.300 91/06/09 06:43:03 root Rel41 $ SONY
  *
- *	@(#)rs.c	7.3 (Berkeley) 12/17/92
+ *	@(#)rs.c	7.4 (Berkeley) 03/09/93
  */
 
 /*	rs.c	6.1	83/07/29	*/
@@ -46,8 +46,6 @@
  * RS driver
  *
  */
-#include <machine/fix_machine_type.h>
-
 #if NBK > 0
 #include "bk.h"
 #endif
