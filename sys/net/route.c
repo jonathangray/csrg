@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)route.c	7.26 (Berkeley) 12/19/91
+ *	@(#)route.c	7.27 (Berkeley) 01/30/92
  */
 #include "param.h"
 #include "systm.h"
@@ -53,8 +53,6 @@
 #ifdef NS
 #include "../netns/ns.h"
 #endif
-#include "machine/mtpr.h"
-#include "netisr.h"
 
 #define	SA(p) ((struct sockaddr *)(p))
 
@@ -137,16 +135,23 @@ rtfree(rt)
 		IFAFREE(ifa);
 	}
 }
-
+int ifafree_verbose;
 void
 ifafree(ifa)
 	register struct ifaddr *ifa;
 {
 	if (ifa == 0)
 		panic("ifafree");
+	/* for now . . . . */
+	if (ifafree_verbose) {
+	    if (ifa->ifa_refcnt < 0)
+		    printf("ifafree: would panic\n");
+	    if (ifa->ifa_refcnt == 0)
+		    printf("ifafree((caddr_t)ifa, M_IFADDR)\n");
+	    if (ifa->ifa_flags & IFA_ROUTE)
+		    printf("ifafree: has route \n");
+	}
 	ifa->ifa_refcnt--;
-	if (ifa->ifa_refcnt <= 0 && (ifa->ifa_flags & IFA_ROUTE) == 0)
-		free((caddr_t)ifa, M_IFADDR);
 }
 
 /*
