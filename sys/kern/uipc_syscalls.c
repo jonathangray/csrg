@@ -28,7 +28,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_syscalls.c	8.2 (Berkeley) 08/10/93
+ *	@(#)uipc_syscalls.c	8.3 (Berkeley) 01/04/94
  */
 
 #include <sys/param.h>
@@ -359,7 +359,6 @@ sendto(p, uap, retval)
 {
 	struct msghdr msg;
 	struct iovec aiov;
-	int error;
 
 	msg.msg_name = uap->to;
 	msg.msg_namelen = uap->tolen;
