@@ -1,4 +1,4 @@
-#	@(#)Makefile	6.2 (Berkeley) 05/11/90
+#	@(#)Makefile	6.3 (Berkeley) 01/14/91
 
 PROG=	showmount
 DPADD=	${LIBRPC}
