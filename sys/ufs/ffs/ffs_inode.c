@@ -14,7 +14,7 @@
  * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *	@(#)ffs_inode.c	7.16 (Berkeley) 10/29/89
+ *	@(#)ffs_inode.c	7.17 (Berkeley) 11/03/89
  */
 
 #include "param.h"
