@@ -278,8 +278,9 @@ macro() {
 		else if (t == EOF) {
 			if (sp > -1)
 				oops("unexpected end of input", "");
-			if (--ilevel < 0)
+			if (ilevel <= 0)
 				break;			/* all done thanks.. */
+			--ilevel;
 			(void) fclose(infile[ilevel+1]);
 			bufbase = bbase[ilevel];
 			continue;
