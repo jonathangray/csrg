@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)inode.c	8.3 (Berkeley) 02/27/94";
+static char sccsid[] = "@(#)inode.c	8.4 (Berkeley) 04/18/94";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -145,17 +145,16 @@ iblock(idesc, ilevel, isize)
 	for (ap = bp->b_un.b_indir; ap < aplim; ap++) {
 		if (*ap) {
 			idesc->id_blkno = *ap;
-			if (ilevel == 0) {
+			if (ilevel == 0)
 				n = (*func)(idesc);
-			} else {
+			else
 				n = iblock(idesc, ilevel, isize);
-				isize -= sizepb;
-			}
 			if (n & STOP) {
 				bp->b_flags &= ~B_INUSE;
 				return (n);
 			}
 		}
+		isize -= sizepb;
 	}
 	bp->b_flags &= ~B_INUSE;
 	return (KEEPON);
