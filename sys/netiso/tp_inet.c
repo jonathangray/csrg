@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_inet.c	7.8 (Berkeley) 05/06/91
+ *	@(#)tp_inet.c	7.9 (Berkeley) 07/18/91
  */
 
 /***********************************************************
@@ -638,7 +638,7 @@ void
 tpin_quench(inp)
 	struct inpcb *inp;
 {
-	tp_quench((struct tp_pcb *)inp->inp_socket->so_tpcb, PRC_QUENCH);
+	tp_quench((struct tp_pcb *)inp->inp_socket->so_pcb, PRC_QUENCH);
 }
 
 /*
