@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)scc.c	7.2 (Berkeley) 12/20/92
+ *	@(#)scc.c	7.3 (Berkeley) 03/23/93
  */
 
 /* 
@@ -213,23 +213,32 @@ sccprobe(cp)
 	 */
 	if (cn_tab.cn_screen) {
 		if (cn_tab.cn_kbdgetc == sccGetc) {
-			if (cp->pmax_unit == 0) {
+			if (cp->pmax_unit == 1) {
 				s = spltty();
 				ctty.t_dev = makedev(SCCDEV, SCCKBD_PORT);
 				cterm.c_cflag = CS8;
 				cterm.c_ospeed = cterm.c_ispeed = 4800;
 				(void) sccparam(&ctty, &cterm);
-				DELAY(1000);
+				DELAY(10000);
+#ifdef notyet
+				/*
+				 * For some reason doing this hangs the 3min
+				 * during booting. Fortunately the keyboard
+				 * works ok without it.
+				 */
 				KBDReset(ctty.t_dev, sccPutc);
+#endif
+				DELAY(10000);
 				splx(s);
-			} else if (cp->pmax_unit == 1) {
+			} else if (cp->pmax_unit == 0) {
 				s = spltty();
 				ctty.t_dev = makedev(SCCDEV, SCCMOUSE_PORT);
 				cterm.c_cflag = CS8 | PARENB | PARODD;
 				cterm.c_ospeed = cterm.c_ispeed = 4800;
 				(void) sccparam(&ctty, &cterm);
-				DELAY(1000);
+				DELAY(10000);
 				MouseInit(ctty.t_dev, sccPutc, sccGetc);
+				DELAY(10000);
 				splx(s);
 			}
 		}
@@ -977,13 +986,13 @@ sccGetc(dev)
 		SCC_READ_REG(regs, line, SCC_RR0, value);
 		if (value & SCC_RR0_RX_AVAIL) {
 			SCC_READ_REG(regs, line, SCC_RR1, value);
+			SCC_READ_DATA(regs, line, c);
 			if (value & (SCC_RR1_PARITY_ERR | SCC_RR1_RX_OVERRUN |
 				SCC_RR1_FRAME_ERR)) {
 				SCC_WRITE_REG(regs, line, SCC_WR0, SCC_RESET_ERROR);
 				SCC_WRITE_REG(regs, SCC_CHANNEL_A, SCC_WR0,
 					SCC_RESET_HIGHEST_IUS);
 			} else {
-				SCC_READ_DATA(regs, line, c);
 				SCC_WRITE_REG(regs, SCC_CHANNEL_A, SCC_WR0,
 					SCC_RESET_HIGHEST_IUS);
 				splx(s);
