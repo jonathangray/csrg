@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hist.h	5.1 (Berkeley) 06/22/92
+ *	@(#)hist.h	5.2 (Berkeley) 06/22/92
  */
 
 /*
@@ -42,8 +42,7 @@
 #ifndef _h_el_hist
 #define _h_el_hist
 
-#include "editline.h"
-#include "history.h"
+#include "histedit.h"
 
 typedef const HistEvent *	(*hist_fun_t) __P((ptr_t, int, ...));
 
