@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vfsops.c	7.62 (Berkeley) 11/01/91
+ *	@(#)lfs_vfsops.c	7.63 (Berkeley) 11/01/91
  */
 
 #include <sys/param.h>
@@ -51,13 +51,13 @@
 #include "disklabel.h"
 #include "stat.h"
 
-#include <ufs/quota.h>
-#include <ufs/inode.h>
-#include <ufs/ufsmount.h>
-#include <ufs/ufs_extern.h>
+#include <ufs/ufs/quota.h>
+#include <ufs/ufs/inode.h>
+#include <ufs/ufs/ufsmount.h>
+#include <ufs/ufs/ufs_extern.h>
 
-#include <lfs/lfs.h>
-#include <lfs/lfs_extern.h>
+#include <ufs/lfs/lfs.h>
+#include <ufs/lfs/lfs_extern.h>
 
 static int lfs_mountfs __P((struct vnode *, struct mount *, struct proc *));
 
@@ -73,11 +73,6 @@ struct vfsops lfs_vfsops = {
 	ufs_vptofh,
 	lfs_init,
 };
-
-/*
- * Flag to allow forcible unmounting.
- */
-extern int doforce;
 
 int
 lfs_mountroot()
@@ -100,7 +95,7 @@ lfs_mount(mp, path, data, ndp, p)
 	struct vnode *devvp;
 	struct ufs_args args;
 	struct ufsmount *ump;
-	register LFS *fs;					/* LFS */
+	register struct lfs *fs;				/* LFS */
 	u_int size;
 	int error;
 
@@ -207,7 +202,7 @@ lfs_mountfs(devvp, mp, p)
 	struct proc *p;
 {
 	extern struct vnode *rootvp;
-	register LFS *fs;
+	register struct lfs *fs;
 	register struct ufsmount *ump;
 	struct inode *ip;
 	struct vnode *vp;
@@ -248,9 +243,9 @@ lfs_mountfs(devvp, mp, p)
 
 	/* Allocate the mount structure, copy the superblock into it. */
 	ump = (struct ufsmount *)malloc(sizeof *ump, M_UFSMNT, M_WAITOK);
-	ump->um_lfs = malloc(sizeof(LFS), M_SUPERBLK, M_WAITOK);
-	bcopy(bp->b_un.b_addr, ump->um_lfs, sizeof(LFS));
-	if (sizeof(LFS) < LFS_SBPAD)			/* XXX why? */
+	ump->um_lfs = malloc(sizeof(struct lfs), M_SUPERBLK, M_WAITOK);
+	bcopy(bp->b_un.b_addr, ump->um_lfs, sizeof(struct lfs));
+	if (sizeof(struct lfs) < LFS_SBPAD)			/* XXX why? */
 		bp->b_flags |= B_INVAL;
 	brelse(bp);
 	bp = NULL;
@@ -332,8 +327,8 @@ out:
 		brelse(bp);
 	(void)VOP_CLOSE(devvp, ronly ? FREAD : FREAD|FWRITE, NOCRED, p);
 	if (ump) {
-		free((caddr_t)ump->um_lfs, M_SUPERBLK);
-		free((caddr_t)ump, M_UFSMNT);
+		free(ump->um_lfs, M_SUPERBLK);
+		free(ump, M_UFSMNT);
 		mp->mnt_data = (qaddr_t)0;
 	}
 	return (error);
@@ -347,8 +342,9 @@ lfs_unmount(mp, mntflags, p)
 	int mntflags;
 	struct proc *p;
 {
+	extern int doforce;
 	register struct ufsmount *ump;
-	register LFS *fs;					/* LFS */
+	register struct lfs *fs;				/* LFS */
 	int i, error, ronly, flags = 0;
 	int ndirty;						/* LFS */
 
@@ -399,7 +395,7 @@ lfs_statfs(mp, sbp, p)
 	register struct statfs *sbp;
 	struct proc *p;
 {
-	register LFS *fs;
+	register struct lfs *fs;
 	register struct ufsmount *ump;
 
 	ump = VFSTOUFS(mp);
