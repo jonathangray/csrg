@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.4 (Berkeley) 07/16/93";
+static char sccsid[] = "@(#)main.c	8.5 (Berkeley) 07/18/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -99,6 +99,7 @@ ADDRESS		NullAddress =	/* a null address */
 char		*UserEnviron[MAXUSERENVIRON + 1];
 				/* saved user environment */
 char		RealUserName[256];	/* the actual user id on this host */
+char		*CommandLineArgs;	/* command line args for pid file */
 
 /*
 **  Pointers for setproctitle.
@@ -237,6 +238,20 @@ main(argc, argv, envp)
 
 	/* our real uid will have to be root -- we will trash this later */
 	setuid((uid_t) 0);
+
+	/* save command line arguments */
+	i = 0;
+	for (av = argv; *av != NULL; )
+		i += strlen(*av++) + 1;
+	CommandLineArgs = xalloc(i);
+	p = CommandLineArgs;
+	for (av = argv; *av != NULL; )
+	{
+		if (av != argv)
+			*p++ = ' ';
+		strcpy(p, *av++);
+		p += strlen(p);
+	}
 
 	/* Handle any non-getoptable constructions. */
 	obsolete(argv);
