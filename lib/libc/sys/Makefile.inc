@@ -1,4 +1,6 @@
-#	@(#)Makefile.inc	5.9 (Berkeley) 05/07/91
+#	@(#)Makefile.inc	5.9.1.1 (Berkeley) 05/07/91
+
+# Missing: profil.0, ptrace.0
 
 # sys sources
 .PATH: ${.CURDIR}/${MACHINE}/sys ${.CURDIR}/sys
