@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	5.32 (Berkeley) 05/29/92
+ *	@(#)sendmail.h	5.30.1.2 (Berkeley) 05/29/92
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	5.32		05/29/92";
+static char SmailSccsId[] =	"@(#)sendmail.h	5.30.1.2		05/29/92";
 # endif lint
 # else  _DEFINE
 # define EXTERN extern
@@ -404,6 +404,12 @@ MCONINFO
 
 /* flag bits */
 #define MCIF_VALID	00001		/* this entry is valid */
+#define MCIF_TEMP	00002		/* don't cache this connection */
+
+/* states */
+#define MCIS_CLOSED	0		/* no traffic on this connection */
+#define MCIS_OPEN	1		/* open, no protocol sent */
+#define MCIS_SSD	2		/* service shutting down */
 /*
 **  Mapping functions
 **
