@@ -1,4 +1,4 @@
-.\"	@(#)Cover.curlic	1.1 (Berkeley) 02/13/95
+.\"	@(#)Cover.curlic	1.2 (Berkeley) 02/13/95
 .\" use psroff -ms -Plz Cover.curlic
 .\"
 .so HEADERS
