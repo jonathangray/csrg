@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	6.57 (Berkeley) 04/18/93";
+static char sccsid[] = "@(#)main.c	6.58 (Berkeley) 04/26/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -1412,11 +1412,7 @@ disconnect(fulldrop, e)
 	/* drop our controlling TTY completely if possible */
 	if (fulldrop)
 	{
-#ifdef SYSTEM5
-		(void) setpgrp();
-#else
 		(void) setsid();
-#endif
 #ifdef TIOCNOTTY
 		fd = open("/dev/tty", 2);
 		if (fd >= 0)
