@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty_pty.c	7.21 (Berkeley) 05/30/91
+ *	@(#)tty_pty.c	7.22 (Berkeley) 02/05/92
  */
 
 /*
@@ -559,7 +559,6 @@ ptyioctl(dev, cmd, data, flag)
 	register struct pt_ioctl *pti = &pt_ioctl[minor(dev)];
 	register u_char *cc = tp->t_cc;
 	int stop, error;
-	extern ttyinput();
 
 	/*
 	 * IF CONTROLLER STTY THEN MUST FLUSH TO PREVENT A HANG.
@@ -746,26 +745,6 @@ ptyioctl(dev, cmd, data, flag)
 	error = (*linesw[tp->t_line].l_ioctl)(tp, cmd, data, flag);
 	if (error < 0)
 		 error = ttioctl(tp, cmd, data, flag);
-	/*
-	 * Since we use the tty queues internally,
-	 * pty's can't be switched to disciplines which overwrite
-	 * the queues.  We can't tell anything about the discipline
-	 * from here...
-	 *
-	 * Nb: this is not really good enough, the line disc open routine
-	 * may have done anything at all, no guarantees that close
-	 * will fix it.  This also has the effect of losing the
-	 * previous discipline, which an error on a TIOCSETD shouldn't
-	 * do...  Sometime it should be done via an explicit check
-	 * for TIOCSETD, then check to see what linesw[new_number].l_rint
-	 * really is.
-	 */
-	if (linesw[tp->t_line].l_rint != ttyinput) {
-		(*linesw[tp->t_line].l_close)(tp, flag);
-		tp->t_line = TTYDISC;
-		(void)(*linesw[tp->t_line].l_open)(dev, tp, flag);
-		error = ENOTTY;
-	}
 
 	if (error < 0) {
 		if (pti->pt_flags & PF_UCNTL &&
