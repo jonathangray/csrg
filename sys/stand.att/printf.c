@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)printf.c	5.4 (Berkeley) 05/04/91
+ *	@(#)printf.c	5.5 (Berkeley) 05/05/91
  */
 
 /*
@@ -57,6 +57,7 @@
  */
 
 #include <sys/cdefs.h>
+#include <sys/types.h>
 
 /*
  * Note that stdarg.h and the ANSI style va_start macro is used for both
@@ -174,7 +175,8 @@ kprintn(ul, base)
 	unsigned long ul;
 	int base;
 {
-	char *p, buf[11];			/* hold 2^32 in base 8 */
+					/* hold a long in base 8 */
+	char *p, buf[(sizeof(long) * NBBY / 3) + 1];
 
 	p = buf;
 	do {
