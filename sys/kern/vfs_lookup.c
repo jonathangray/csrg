@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_lookup.c	7.39 (Berkeley) 05/14/92
+ *	@(#)vfs_lookup.c	7.40 (Berkeley) 07/03/92
  */
 
 #include "param.h"
@@ -72,8 +72,6 @@ int
 namei(ndp)
 	register struct nameidata *ndp;
 {
-	USES_VOP_READLINK;
-	USES_VOP_UNLOCK;
 	register struct filedesc *fdp;	/* pointer to file descriptor state */
 	register char *cp;		/* pointer into pathname argument */
 	register struct vnode *dp;	/* the directory we are searching */
@@ -244,9 +242,6 @@ int
 lookup(ndp)
 	register struct nameidata *ndp;
 {
-	USES_VOP_LOCK;
-	USES_VOP_LOOKUP;
-	USES_VOP_UNLOCK;
 	register char *cp;		/* pointer into pathname argument */
 	register struct vnode *dp = 0;	/* the directory we are searching */
 	struct vnode *tdp;		/* saved dp */
