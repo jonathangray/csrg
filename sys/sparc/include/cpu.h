@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cpu.h	7.2 (Berkeley) 07/21/92
+ *	@(#)cpu.h	7.3 (Berkeley) 10/11/92
  *
  * from: $Header: cpu.h,v 1.10 92/07/09 03:10:54 torek Exp $ (LBL)
  */
@@ -47,8 +47,8 @@
 #ifndef _CPU_H_
 #define _CPU_H_
 
-#include "machine/psl.h"
-#include "../sparc/intreg.h"
+#include <machine/psl.h>
+#include <sparc/sparc/intreg.h>
 
 /*
  * Exported definitions unique to SPARC cpu support.
