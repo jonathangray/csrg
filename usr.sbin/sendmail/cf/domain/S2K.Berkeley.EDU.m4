@@ -33,6 +33,6 @@ divert(-1)
 # SUCH DAMAGE.
 #
 divert(0)
-VERSIONID(`@(#)S2K.Berkeley.EDU.m4	2.2 (Berkeley) 12/20/92')
+VERSIONID(`@(#)S2K.Berkeley.EDU.m4	6.1 (Berkeley) 12/21/92')
 DOMAIN(cs.exposed)dnl
 MASQUERADE_AS(postgres.Berkeley.EDU)dnl
