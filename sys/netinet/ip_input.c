@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ip_input.c	7.18 (Berkeley) 05/03/91
+ *	@(#)ip_input.c	7.19 (Berkeley) 05/25/91
  */
 
 #include "param.h"
@@ -864,7 +864,7 @@ ip_srcroute()
 	if (ipprintfs)
 		printf(" hops %X", ntohl(*mtod(m, struct in_addr *)));
 	if (ipprintfs)
-		printf(" hops %X", ntohl(mtod(m, struct in_addr *)->s_addr));
+		printf(" hops %lx", ntohl(mtod(m, struct in_addr *)->s_addr));
 #endif
 
 	/*
@@ -884,7 +884,7 @@ ip_srcroute()
 	while (p >= ip_srcrt.route) {
 #ifdef DIAGNOSTIC
 		if (ipprintfs)
-			printf(" %X", ntohl(q->s_addr));
+			printf(" %lx", ntohl(q->s_addr));
 #endif
 		*q++ = *p--;
 	}
@@ -901,7 +901,7 @@ ip_srcroute()
 	*q = ip_srcrt.dst;
 #ifdef DIAGNOSTIC
 	if (ipprintfs)
-		printf(" %X\n", ntohl(q->s_addr));
+		printf(" %lx\n", ntohl(q->s_addr));
 #endif
 	return (m);
 }
