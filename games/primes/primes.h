@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)primes.h	8.2 (Berkeley) 03/01/94
+ *	@(#)primes.h	8.3 (Berkeley) 03/21/94
  */
 
 /*
