@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_descrip.c	8.3 (Berkeley) 01/04/94
+ *	@(#)kern_descrip.c	8.4 (Berkeley) 01/06/94
  */
 
 #include <sys/param.h>
@@ -663,7 +663,7 @@ fdcopy(p)
 		 * allowing the table to shrink.
 		 */
 		i = newfdp->fd_nfiles;
-		while (i > 2 * NDEXTENT && i >= newfdp->fd_lastfile * 2)
+		while (i > 2 * NDEXTENT && i > newfdp->fd_lastfile * 2)
 			i /= 2;
 		MALLOC(newfdp->fd_ofiles, struct file **, i * OFILESIZE,
 		    M_FILEDESC, M_WAITOK);
