@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)refresh.c	5.27 (Berkeley) 01/11/93";
+static char sccsid[] = "@(#)refresh.c	5.28 (Berkeley) 01/11/93";
 #endif /* not lint */
 
 #include <curses.h>
@@ -660,7 +660,7 @@ scrolln(win, starts, startw, curs, bot, top)
 		mvcur(oy, ox, top, 0);
 		/* Scroll up the block */
 		if (DL)
-			tputs(tscroll(DL, n), 0, __cputchar);
+			tputs(__tscroll(DL, n), 0, __cputchar);
 		else
 			for(i = 0; i < n; i++)
 				tputs(dl, 0, __cputchar);
@@ -670,7 +670,7 @@ scrolln(win, starts, startw, curs, bot, top)
 		 */
 		mvcur(top, 0, bot - n + 1, 0);
 		if (AL)
-			tputs(tscroll(AL, n), 0, __cputchar);
+			tputs(__tscroll(AL, n), 0, __cputchar);
 		else
 			for(i = 0; i < n; i++)
 				tputs(al, 0, __cputchar);
@@ -679,7 +679,7 @@ scrolln(win, starts, startw, curs, bot, top)
 		/* Preserve the bottom lines */
 		mvcur(oy, ox, bot + n + 1, 0);	/* n < 0 */
 		if (DL)
-			tputs(tscroll(DL, -n), 0, __cputchar);
+			tputs(__tscroll(DL, -n), 0, __cputchar);
 		else
 		       	for(i = n; i < 0; i++)
 				tputs(dl, 0, __cputchar);
@@ -687,7 +687,7 @@ scrolln(win, starts, startw, curs, bot, top)
 
 		/* Scroll the block down */
 		if (AL)
-			tputs(tscroll(AL, -n), 0, __cputchar);
+			tputs(__tscroll(AL, -n), 0, __cputchar);
 		else
 			for(i = n; i < 0; i++)
 				tputs(al, 0, __cputchar);
