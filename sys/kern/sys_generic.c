@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sys_generic.c	8.6 (Berkeley) 06/04/94
+ *	@(#)sys_generic.c	8.6 (Berkeley) 07/07/94
  */
 
 #include <sys/param.h>
@@ -158,15 +158,11 @@ readv(p, uap, retval)
 		goto done;
 	auio.uio_resid = 0;
 	for (i = 0; i < uap->iovcnt; i++) {
-		if (iov->iov_len < 0) {
+		if (auio.uio_resid + iov->iov_len < auio.uio_resid) {
 			error = EINVAL;
 			goto done;
 		}
 		auio.uio_resid += iov->iov_len;
-		if (auio.uio_resid < 0) {
-			error = EINVAL;
-			goto done;
-		}
 		iov++;
 	}
 #ifdef KTRACE
@@ -307,15 +303,11 @@ writev(p, uap, retval)
 		goto done;
 	auio.uio_resid = 0;
 	for (i = 0; i < uap->iovcnt; i++) {
-		if (iov->iov_len < 0) {
+		if (auio.uio_resid + iov->iov_len < auio.uio_resid) {
 			error = EINVAL;
 			goto done;
 		}
 		auio.uio_resid += iov->iov_len;
-		if (auio.uio_resid < 0) {
-			error = EINVAL;
-			goto done;
-		}
 		iov++;
 	}
 #ifdef KTRACE
