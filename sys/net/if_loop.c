@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_loop.c	7.14 (Berkeley) 01/30/92
+ *	@(#)if_loop.c	7.15 (Berkeley) 01/30/92
  */
 
 /*
@@ -51,20 +51,20 @@
 #include "route.h"
 
 #ifdef	INET
-#include "../netinet/in.h"
-#include "../netinet/in_systm.h"
-#include "../netinet/in_var.h"
-#include "../netinet/ip.h"
+#include "netinet/in.h"
+#include "netinet/in_systm.h"
+#include "netinet/in_var.h"
+#include "netinet/ip.h"
 #endif
 
 #ifdef NS
-#include "../netns/ns.h"
-#include "../netns/ns_if.h"
+#include "netns/ns.h"
+#include "netns/ns_if.h"
 #endif
 
 #ifdef ISO
-#include "../netiso/iso.h"
-#include "../netiso/iso_var.h"
+#include "netiso/iso.h"
+#include "netiso/iso_var.h"
 #endif
 
 #define	LOMTU	(1024+512)
