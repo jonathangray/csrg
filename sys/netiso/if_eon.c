@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_eon.c	7.16 (Berkeley) 06/27/91
+ *	@(#)if_eon.c	7.17 (Berkeley) 12/19/91
  */
 
 /***********************************************************
@@ -197,7 +197,6 @@ eonioctl(ifp, cmd, data)
 			ifp->if_flags |= IFF_UP;
 			if (ifa->ifa_addr->sa_family != AF_LINK)
 				ifa->ifa_rtrequest = eonrtrequest;
-			ifa->ifa_llinfolen = sizeof(struct eon_llinfo);
 		}
 		break;
 	}
