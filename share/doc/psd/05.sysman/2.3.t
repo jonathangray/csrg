@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)2.3.t	8.4 (Berkeley) 05/26/94
+.\"	@(#)2.3.t	8.5 (Berkeley) 05/29/94
 .\"
 .Sh 2 "Interprocess communications
 .Sh 3 "Interprocess communication primitives
@@ -338,7 +338,7 @@ struct cmsghdr {
 	u_int	cmsg_len;	/* data byte count, including hdr */
 	int	cmsg_level;	/* originating protocol */
 	int	cmsg_type;	/* protocol-specific type */
-	u_char	cmsg_data[];	/* variable length type specific data */
+	u_char	cmsg_data[\|];	/* variable length type specific data */
 };
 .TE
 .DE
