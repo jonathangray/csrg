@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)vfs_cluster.c	7.1.1.1 (Berkeley) 04/02/87
+ *	@(#)vfs_cluster.c	7.2 (Berkeley) 04/02/87
  */
 
 #include "../machine/pte.h"
@@ -561,6 +561,9 @@ biodone(bp)
 
 /*
  * Insure that no part of a specified block is in an incore buffer.
+#ifdef SECSIZE
+ * "size" is given in device blocks (the units of b_blkno).
+#endif SECSIZE
 #ifdef SECSIZE
  * "size" is given in device blocks (the units of b_blkno).
 #endif SECSIZE
