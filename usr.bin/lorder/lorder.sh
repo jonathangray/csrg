@@ -31,7 +31,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)lorder.sh	5.3 (Berkeley) 04/12/91
+#	@(#)lorder.sh	5.4 (Berkeley) 03/08/93
 #
 
 PATH=/bin:/usr/bin
@@ -70,12 +70,12 @@ nm -go $* | sed "
 		d
 	}
 	/ [TD] / {
-		s/:.* [TD]//
+		s/:.* [TD] / /
 		w $S
 		d
 	}
 	/ U / {
-		s/:.* U//
+		s/:.* U / /
 		w $R
 	}
 	d
