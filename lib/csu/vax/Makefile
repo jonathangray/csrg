@@ -3,7 +3,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	5.4 (Berkeley) 09/05/85
+#	@(#)Makefile	5.5 (Berkeley) 06/06/87
 #
 #	crt0	Normal C run time startoff
 #	mcrt0	C run time start off for profiling, ``prof'' conventions
