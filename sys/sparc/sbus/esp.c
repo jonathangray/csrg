@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)esp.c	7.2 (Berkeley) 07/21/92
+ *	@(#)esp.c	7.3 (Berkeley) 07/23/92
  *
  * from: $Header: esp.c,v 1.22 92/06/17 06:59:33 torek Exp $ (LBL)
  *
@@ -75,8 +75,8 @@
 #include "sys/device.h"
 #include "sys/malloc.h"
 
-#include "scsi/scsi.h"
-#include "scsi/scsivar.h"
+#include "dev/scsi/scsi.h"
+#include "dev/scsi/scsivar.h"
 
 #include "machine/autoconf.h"
 #include "machine/cpu.h"
