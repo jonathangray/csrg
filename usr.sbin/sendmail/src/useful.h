@@ -30,16 +30,18 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)useful.h	6.4 (Berkeley) 04/18/93
+ *	@(#)useful.h	6.5 (Berkeley) 04/18/93
  */
 
 # include <sys/types.h>
 
 /* support for ANSI prototypes (or not, as the case may be) */
-#if defined(__STDC__) && defined(_FORGIVING_CC_) && !defined(__P)
-#define __P(protos)	protos
-#else
-#define __P(protos)	()
+#ifndef __P
+# if defined(__STDC__) && defined(_FORGIVING_CC_)
+#  define __P(protos)	protos
+# else
+#  define __P(protos)	()
+# endif
 #endif
 
 /* support for bool type */
