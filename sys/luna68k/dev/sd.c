@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sd.c	7.6 (Berkeley) 03/17/93
+ *	@(#)sd.c	7.7 (Berkeley) 05/02/93
  */
 
 /*
@@ -302,10 +302,6 @@ sdstrategy(bp)
 	register daddr_t bn;
 	register int sz, s;
 
-#ifdef DEBUG
-	printf("sdstrategy: bp->b_blkno = %d, bp->bcount = %d\n",
-	       bp->b_blkno, bp->b_bcount);
-#endif
 	bn = bp->b_blkno;
 	sz = howmany(bp->b_bcount, DEV_BSIZE);
 
@@ -337,9 +333,6 @@ sdstrategy(bp)
 
 	disksort(dp, bp);
 
-#ifdef DEBUG
-	printf("sdstrategy: dp->b_active = %d\n", dp->b_active);
-#endif
 	if (dp->b_active == 0) {			/*  */
 		dp->b_active = 1;
 		sdustart(unit);
@@ -450,10 +443,6 @@ sdintr(unit, stat)
 	register struct scsi_queue *dq = &sc->sc_dq;
 	register struct buf *bp = dq->dq_bp;
 	int cond;
-
-#ifdef DEBUG
-	printf("sdintr(unit = %d, stat = %d)\n", unit, stat);
-#endif
 
 	if (stat == SC_IO_TIMEOUT) {
 		printf("sdintr: sd%d timeout error\n", unit, stat);
