@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)rlogind.c	5.55 (Berkeley) 06/29/92";
+static char sccsid[] = "@(#)rlogind.c	5.56 (Berkeley) 07/01/92";
 #endif /* not lint */
 
 /*
@@ -184,8 +184,7 @@ doit(f, fromp)
 	int authenticated = 0;
 #endif
 	register struct hostent *hp;
-	register char *hostname;
-	char remotehost[2 * MAXHOSTNAMELEN + 1];
+	char hostname[2 * MAXHOSTNAMELEN + 1];
 	char c;
 
 	alarm(60);
