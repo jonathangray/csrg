@@ -35,14 +35,13 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)skeleton.c	5.5 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)skeleton.c	5.6 (Berkeley) 01/27/91";
 #endif /* not lint */
 
 #include "defs.h"
 
-/*  The three line banner used here should be replaced with a one line	*/
-/*  #ident directive if the target C compiler supports #ident		*/
-/*  directives.								*/
+/*  The banner used here should be replaced with an #ident directive	*/
+/*  if the target C compiler supports #ident directives.		*/
 /*									*/
 /*  If the skeleton is changed, the banner should be changed so that	*/
 /*  the altered version can easily be distinguished from the original.	*/
@@ -50,7 +49,27 @@ static char sccsid[] = "@(#)skeleton.c	5.5 (Berkeley) 06/01/90";
 char *banner[] =
 {
     "#ifndef lint",
-    "char yysccsid[] = \"@(#)yaccpar	1.4 (Berkeley) 02/25/90\";",
+    "static char yysccsid[] = \"@(#)yaccpar	1.8 (Berkeley) 01/20/90\";",
+    "#endif",
+    "#define YYBYACC 1",
+    0
+};
+
+
+char *tables[] =
+{
+    "extern short yylhs[];",
+    "extern short yylen[];",
+    "extern short yydefred[];",
+    "extern short yydgoto[];",
+    "extern short yysindex[];",
+    "extern short yyrindex[];",
+    "extern short yygindex[];",
+    "extern short yytable[];",
+    "extern short yycheck[];",
+    "#if YYDEBUG",
+    "extern char *yyname[];",
+    "extern char *yyrule[];",
     "#endif",
     0
 };
@@ -60,11 +79,16 @@ char *header[] =
 {
     "#define yyclearin (yychar=(-1))",
     "#define yyerrok (yyerrflag=0)",
-    "#ifndef YYSTACKSIZE",
+    "#ifdef YYSTACKSIZE",
+    "#ifndef YYMAXDEPTH",
+    "#define YYMAXDEPTH YYSTACKSIZE",
+    "#endif",
+    "#else",
     "#ifdef YYMAXDEPTH",
     "#define YYSTACKSIZE YYMAXDEPTH",
     "#else",
-    "#define YYSTACKSIZE 300",
+    "#define YYSTACKSIZE 500",
+    "#define YYMAXDEPTH 500",
     "#endif",
     "#endif",
     "int yydebug;",
@@ -75,9 +99,9 @@ char *header[] =
     "YYSTYPE *yyvsp;",
     "YYSTYPE yyval;",
     "YYSTYPE yylval;",
-    "#define yystacksize YYSTACKSIZE",
     "short yyss[YYSTACKSIZE];",
     "YYSTYPE yyvs[YYSTACKSIZE];",
+    "#define yystacksize YYSTACKSIZE",
     0
 };
 
@@ -238,7 +262,7 @@ char *trailer[] =
     "    yym = yylhs[yyn];",
     "    if (yystate == 0 && yym == 0)",
     "    {",
-    "#ifdef YYDEBUG",
+    "#if YYDEBUG",
     "        if (yydebug)",
     "            printf(\"yydebug: after reduction, shifting from state 0 to\\",
     " state %d\\n\", YYFINAL);",
@@ -268,7 +292,7 @@ char *trailer[] =
     "        yystate = yytable[yyn];",
     "    else",
     "        yystate = yydgoto[yym];",
-    "#ifdef YYDEBUG",
+    "#if YYDEBUG",
     "    if (yydebug)",
     "        printf(\"yydebug: after reduction, shifting from state %d \\",
     "to state %d\\n\", *yyssp, yystate);",
@@ -295,10 +319,12 @@ write_section(section)
 char *section[];
 {
     register int i;
+    register FILE *fp;
 
+    fp = code_file;
     for (i = 0; section[i]; ++i)
     {
 	++outline;
-	fprintf(output_file, "%s\n", section[i]);
+	fprintf(fp, "%s\n", section[i]);
     }
 }
