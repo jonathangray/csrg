@@ -3,16 +3,22 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	5.2.2.1 (Berkeley) 05/31/85
+#	@(#)Makefile	7.11 (Berkeley) 05/31/85
 #
 #
 # Copyright (c) 1980 Regents of the University of California.
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	5.2.2.1 (Berkeley) 05/31/85
+#	@(#)Makefile	7.11 (Berkeley) 05/31/85
 #
-#	Makefile	5.2.2.1	85/05/31
+#
+# Copyright (c) 1980 Regents of the University of California.
+# All rights reserved.  The Berkeley software License Agreement
+# specifies the terms and conditions for redistribution.
+#
+#	@(#)Makefile	7.11 (Berkeley) 05/31/85
+#
 VERSION=3.7
 #
 # Ex skeletal makefile for VAX VM/Unix 4.2BSD
