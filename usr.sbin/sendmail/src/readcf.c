@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	8.83 (Berkeley) 04/19/95";
+static char sccsid[] = "@(#)readcf.c	8.84 (Berkeley) 04/19/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -560,6 +560,11 @@ readcf(cfname)
 				break;
 			}
 			ConfigLevel = strtol(p, &ep, 10);
+
+			/*
+			**  Do heuristic tweaking for back compatibility.
+			*/
+
 			if (ConfigLevel >= 5)
 			{
 				/* level 5 configs have short name in $w */
@@ -567,6 +572,15 @@ readcf(cfname)
 				if (p != NULL && (p = strchr(p, '.')) != NULL)
 					*p = '\0';
 			}
+			if (ConfigLevel >= 6)
+			{
+				ColonOkInAddr = FALSE;
+			}
+
+			/*
+			**  Look for vendor code.
+			*/
+
 			if (*ep++ == '/')
 			{
 				/* extract vendor code */
