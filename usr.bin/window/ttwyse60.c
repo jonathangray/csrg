@@ -10,7 +10,7 @@
  * All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
- * David C. Elliott.
+ * David C. Elliott, of MIPS Computer Systems.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -42,7 +42,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)ttwyse60.c	3.3 (Berkeley) 06/02/90";
+static char sccsid[] = "@(#)ttwyse60.c	3.4 (Berkeley) 06/06/90";
 #endif /* not lint */
 
 #include "ww.h"
