@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sysexits.h	4.6 (Berkeley) 06/01/90
+ *	@(#)sysexits.h	4.7 (Berkeley) 10/15/90
  */
 
 /*
@@ -94,7 +94,7 @@
 **	Maintained by Eric Allman (eric@berkeley, ucbvax!eric) --
 **		please mail changes to me.
 **
-**			@(#)sysexits.h	4.6		06/01/90
+**			@(#)sysexits.h	4.7		10/15/90
 */
 
 # define EX_OK		0	/* successful termination */
@@ -116,3 +116,5 @@
 # define EX_PROTOCOL	76	/* remote error in protocol */
 # define EX_NOPERM	77	/* permission denied */
 # define EX_CONFIG	78	/* configuration error */
+
+# define EX__MAX	78	/* maximum listed value */
