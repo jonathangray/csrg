@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dbgprf.c	7.1 (Berkeley) 06/15/92
+ *	@(#)dbgprf.c	7.2 (Berkeley) 10/11/92
  */
 
 /*
@@ -44,10 +44,10 @@
 
 #ifdef DEBUGPRINT
 
-#include "sys/param.h"
-#include "sys/systm.h"
+#include <sys/param.h>
+#include <sys/systm.h>
 
-#include "machine/stdarg.h"
+#include <machine/stdarg.h>
 
 static char *sprintn __P((u_long num, int base, int *len));
 
