@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)tcp_seq.h	6.2 (Berkeley) 06/08/85
+ *	@(#)tcp_seq.h	6.3 (Berkeley) 10/14/85
  */
 
 /*
