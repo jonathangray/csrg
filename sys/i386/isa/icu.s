@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)icu.s	7.8 (Berkeley) 06/11/93
+ *	@(#)icu.s	8.1 (Berkeley) 06/11/93
  */
 
 	.data
