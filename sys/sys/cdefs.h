@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cdefs.h	8.3 (Berkeley) 01/03/94
+ *	@(#)cdefs.h	8.4 (Berkeley) 01/04/94
  */
 
 #ifndef	_CDEFS_H_
@@ -80,7 +80,13 @@
 #define	__inline
 #define	__signed
 #define	__volatile
-#ifdef KERNEL
+/*
+ * In non-ANSI C environments, new programs will want ANSI C keywords
+ * deleted from the program and old programs will want them left alone.
+ * Programs using the ANSI C keywords const, inline etc. as variables
+ * should define -DNO_ANSI_KEYWORDS.
+ */
+#ifndef	NO_ANSI_KEYWORDS
 #define	const				/* delete ANSI C keywords */
 #define	inline
 #define	signed
