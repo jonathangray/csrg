@@ -21,8 +21,10 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)autoconf.c	5.1 (Berkeley) 04/24/90
+ *	@(#)autoconf.c	5.2 (Berkeley) 06/23/90
  */
+
+/*	autoconf.c	1.13	87/04/02	*/
 
 /*
  * Setup the system to run on the current machine.
@@ -70,7 +72,7 @@ configure()
 		if (dvp->alive) {
 			printf("%s%d", dp->name, dvp->unit);
 			(*dp->attach)(dvp);
-			printf(" at 0x%x on iba0\n", dvp->ioa);
+			printf(" at 0x%x on isa0\n", dvp->ioa);
 		}
 		splx(s);
 	}
@@ -90,7 +92,6 @@ configure()
 /*pg("swapconf");*/
 	swapconf();
 	cold = 0;
-rootdev=0;
 }
 
 /*
