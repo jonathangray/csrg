@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sun_misc.c	7.1 (Berkeley) 07/13/92
+ *	@(#)sun_misc.c	7.2 (Berkeley) 07/13/92
  *
  * from: $Header: sun_misc.c,v 1.12 92/07/12 13:26:10 torek Exp $
  */
@@ -61,9 +61,10 @@
 #include "signalvar.h"
 #include "socket.h"
 #include "vnode.h"
-#include "specdev.h"
 #include "uio.h"
 #include "wait.h"
+
+#include "miscfs/specfs/specdev.h"
 
 #include "vm/vm.h"
 
