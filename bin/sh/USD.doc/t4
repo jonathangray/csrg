@@ -2,13 +2,13 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)t4	8.1 (Berkeley) 06/08/93
+.\"	@(#)t4	6.3 (Berkeley) 08/10/93
 .\"
 .bp
 .SH
 Appendix\ A\ -\ Grammar
 .LP
-.DS
+.LD
 \fIitem:		word
 		input-output
 		name = value
