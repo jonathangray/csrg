@@ -30,18 +30,19 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dma.c	7.4 (Berkeley) 12/16/90
+ *	@(#)dma.c	7.5 (Berkeley) 05/04/91
  */
 
 /*
  * DMA driver
  */
 
-#include "sys/param.h"
-#include "sys/systm.h"
-#include "sys/time.h"
-#include "sys/kernel.h"
-#include "sys/proc.h"
+#include "param.h"
+#include "systm.h"
+#include "time.h"
+#include "kernel.h"
+#include "proc.h"
+
 #include "dmareg.h"
 #include "dmavar.h"
 #include "device.h"
@@ -50,13 +51,9 @@
 #include "../hp300/isr.h"
 
 extern void isrlink();
-extern void printf();
-extern void panic();
 extern void _insque();
 extern void _remque();
 extern void timeout();
-extern int splbio();
-extern void splx();
 extern u_int kvtop();
 extern void PCIA();
 
