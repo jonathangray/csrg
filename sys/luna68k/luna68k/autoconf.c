@@ -38,7 +38,7 @@
  *
  * from:hp300/hp300/autoconf.c	7.9 (Berkeley) 12/27/92
  *
- *	@(#)autoconf.c	7.5 (Berkeley) 01/12/93
+ *	@(#)autoconf.c	7.6 (Berkeley) 01/13/93
  */
 
 /*
@@ -644,7 +644,7 @@ showroot()
 
 	majdev = major(rootdev);
 	mindev = minor(rootdev);
-	printf("root on %c%c%d%c   ",
+	printf("root on %c%c%d%c  ",
 		devname[majdev][0], devname[majdev][1],
 		mindev >> PARTITIONSHIFT, (mindev & PARTITIONMASK) + 'a');
 
@@ -666,7 +666,7 @@ showroot()
 
 	majdev = major(dumpdev);
 	mindev = minor(dumpdev);
-	printf("  dump on %c%c%d%c\n",
+	printf(" dump on %c%c%d%c\n",
 		devname[majdev][0], devname[majdev][1],
 		mindev >> PARTITIONSHIFT, (mindev & PARTITIONMASK) + 'a');
 }
