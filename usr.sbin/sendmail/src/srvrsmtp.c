@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	8.9 (Berkeley) 07/26/93 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	8.10 (Berkeley) 07/27/93 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	8.9 (Berkeley) 07/26/93 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	8.10 (Berkeley) 07/27/93 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -525,9 +525,6 @@ smtp(e)
 			/* send to all recipients */
 			sendall(e, Verbose ? SM_DELIVER : SM_QUEUE);
 			e->e_to = NULL;
-
-			/* save statistics */
-			markstats(e, (ADDRESS *) NULL);
 
 			unlockqueue(e);
 
