@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: grf.c 1.36 93/08/13$
  *
- *	@(#)grf.c	8.4 (Berkeley) 01/12/94
+ *	@(#)grf.c	8.5 (Berkeley) 01/09/95
  */
 
 /*
@@ -148,8 +148,9 @@ grfclose(dev, flags)
 /*ARGSUSED*/
 grfioctl(dev, cmd, data, flag, p)
 	dev_t dev;
-	int cmd, flag;
+	u_long cmd;
 	caddr_t data;
+	int flag;
 	struct proc *p;
 {
 	register struct grf_softc *gp = &grf_softc[GRFUNIT(dev)];
@@ -268,8 +269,9 @@ grfaddr(gp, off)
 /*ARGSUSED*/
 hpuxgrfioctl(dev, cmd, data, flag, p)
 	dev_t dev;
-	int cmd, flag;
+	u_long cmd;
 	caddr_t data;
+	int flag;
 	struct proc *p;
 {
 	register struct grf_softc *gp = &grf_softc[GRFUNIT(dev)];
