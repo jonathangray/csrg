@@ -1,4 +1,4 @@
-#	@(#)Makefile	4.16 (Berkeley) 07/19/92
+#	@(#)Makefile	8.1 (Berkeley) 06/06/93
 
 LIBC=	/usr/lib/libc.a
 SRCS=	spell.c spellin.c spellout.c
