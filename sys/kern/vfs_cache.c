@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_cache.c	8.1 (Berkeley) 06/10/93
+ *	@(#)vfs_cache.c	8.2 (Berkeley) 07/05/94
  */
 
 #include <sys/param.h>
@@ -93,8 +93,10 @@ cache_lookup(dvp, vpp, cnp)
 {
 	register struct namecache *ncp, *ncq, **ncpp;
 
-	if (!doingcache)
+	if (!doingcache) {
+		cnp->cn_flags &= ~MAKEENTRY;
 		return (0);
+	}
 	if (cnp->cn_namelen > NCHNAMLEN) {
 		nchstats.ncs_long++;
 		cnp->cn_flags &= ~MAKEENTRY;
