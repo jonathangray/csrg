@@ -1,29 +1,4 @@
 /* 
- * Copyright (c) 1987 Carnegie-Mellon University.
- * All rights reserved.
- *
- * Authors: Avadis Tevanian, Jr., Michael Wayne Young
- * 
- * Permission to use, copy, modify and distribute this software and
- * its documentation is hereby granted, provided that both the copyright
- * notice and this permission notice appear in all copies of the
- * software, derivative works or modified versions, and any portions
- * thereof, and that both notices appear in supporting documentation.
- * 
- * CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS" 
- * CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND 
- * FOR ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
- * 
- * Carnegie Mellon requests users of this software to return to Carnegie
- * any improvements or extensions that they make and grant Carnegie
- * the rights to redistribute these changes.  We can be reached at
- * mach@cs.cmu.edu or
- *	Project Mach
- *	School of Computer Science
- *	Carnegie Mellon University
- *	Pittsburgh PA 15213-3890
- *
- *
  * Copyright (c) 1991 Regents of the University of California.
  * All rights reserved.
  *
@@ -58,7 +33,33 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_fault.c	7.3 (Berkeley) 03/27/91
+ *	@(#)vm_fault.c	7.4 (Berkeley) 03/27/91
+ *
+ *
+ * Copyright (c) 1987, 1990 Carnegie-Mellon University.
+ * All rights reserved.
+ *
+ * Authors: Avadis Tevanian, Jr., Michael Wayne Young
+ * 
+ * Permission to use, copy, modify and distribute this software and
+ * its documentation is hereby granted, provided that both the copyright
+ * notice and this permission notice appear in all copies of the
+ * software, derivative works or modified versions, and any portions
+ * thereof, and that both notices appear in supporting documentation.
+ * 
+ * CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS" 
+ * CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND 
+ * FOR ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
+ * 
+ * Carnegie Mellon requests users of this software to return to
+ *
+ *  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
+ *  School of Computer Science
+ *  Carnegie Mellon University
+ *  Pittsburgh PA 15213-3890
+ *
+ * any improvements or extensions that they make and grant Carnegie the
+ * rights to redistribute these changes.
  */
 
 /*
