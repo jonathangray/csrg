@@ -3,7 +3,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	6.10 (Berkeley) 11/08/85
+#	@(#)Makefile	6.11 (Berkeley) 02/04/86
 #
 DESTDIR=/
 CFLAGS=	-O -I../h -DSTANDALONE ${COPTS} 
