@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)readdir.c	8.2 (Berkeley) 07/28/94";
+static char sccsid[] = "@(#)readdir.c	8.3 (Berkeley) 09/29/94";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -67,6 +67,8 @@ readdir(dirp)
 			return (NULL);
 		dirp->dd_loc += dp->d_reclen;
 		if (dp->d_ino == 0)
+			continue;
+		if (dp->d_type == DT_WHT && (dirp->dd_flags & DTF_HIDEW))
 			continue;
 		return (dp);
 	}
