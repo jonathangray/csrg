@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 1990 The Regents of the University of California.
+ * Copyright (c) 1991 The Regents of the University of California.
  * All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
@@ -36,18 +36,18 @@
 
 #ifndef lint
 char copyright[] =
-"@(#) Copyright (c) 1990 The Regents of the University of California.\n\
+"@(#) Copyright (c) 1991 The Regents of the University of California.\n\
  All rights reserved.\n";
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)thash4.c	5.2 (Berkeley) 3/12/91";
+static char sccsid[] = "@(#)thash4.c	5.4 (Berkeley) 09/04/91";
 #endif /* not lint */
 
-#include <stdio.h>
-#include <sys/file.h>
 #include <sys/types.h>
+#include <sys/file.h>
 #include <sys/timeb.h>
+#include <stdio.h>
 #include <errno.h>
 #include <db.h>
 
