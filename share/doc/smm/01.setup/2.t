@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)2.t	6.25 (Berkeley) 07/22/93
+.\"	@(#)2.t	6.26 (Berkeley) 07/23/93
 .\"
 .ds lq ``
 .ds rq ''
@@ -1465,6 +1465,9 @@ lw(2i) l.
 \fB#\fP \fIdate yymmddhhmm\fP	(set date, see \fIdate\fP\|(1))
 \&....
 \fB#\fP \fIpasswd -l root\fP	(set password for super-user)
+\fBNew password:\fP	(password will not echo)
+\fBRetype new password:\fP
+\fB#\fP \fIpasswd -l toor\fP	(set password for super-user)
 \fBNew password:\fP	(password will not echo)
 \fBRetype new password:\fP
 \fB#\fP \fIhostname mysitename\fP	(set your hostname)
