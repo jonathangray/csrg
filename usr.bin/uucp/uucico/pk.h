@@ -1,4 +1,13 @@
-/*	@(#)pk.h	5.6	(Berkeley)	04/05/88	*/
+/*-
+ * Copyright (c) 1985 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ *
+ *	@(#)pk.h	5.7 (Berkeley) 04/24/91
+ */
 
 struct header {
 	char	sync;
