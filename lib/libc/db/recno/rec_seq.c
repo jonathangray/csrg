@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)rec_seq.c	5.7 (Berkeley) 02/11/93";
+static char sccsid[] = "@(#)rec_seq.c	5.8 (Berkeley) 03/19/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -91,7 +91,7 @@ __rec_seq(dbp, key, data, flags)
 		}
 		/* FALLTHROUGH */
 	case R_LAST:
-		if (!ISSET(t, BTF_RINMEM) &&
+		if (!ISSET(t, BTF_EOF | BTF_RINMEM) &&
 		    t->bt_irec(t, MAX_REC_NUMBER) == RET_ERROR)
 			return (RET_ERROR);
 		nrec = t->bt_nrecs;
@@ -102,7 +102,7 @@ einval:		errno = EINVAL;
 	}
 	
 	if (t->bt_nrecs == 0 || nrec > t->bt_nrecs) {
-		if (!ISSET(t, BTF_RINMEM) &&
+		if (!ISSET(t, BTF_EOF | BTF_RINMEM) &&
 		    (status = t->bt_irec(t, nrec)) != RET_SUCCESS)
 			return (status);
 		if (t->bt_nrecs == 0 || nrec > t->bt_nrecs)
