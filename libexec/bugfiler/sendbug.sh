@@ -31,7 +31,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)sendbug.sh	5.11 (Berkeley) 07/25/90
+#	@(#)sendbug.sh	5.12 (Berkeley) 07/25/92
 #
 
 # create a bug report and mail it to '4bsd-bugs'.
@@ -43,7 +43,7 @@ TEMP=/tmp/bug$$
 FORMAT=/usr/share/misc/bugformat
 
 # uucp sites should use ": ${BUGADDR=ucbvax!4bsd-bugs}" with a suitable path.
-: ${BUGADDR=4bsd-bugs@BERKELEY.EDU}
+: ${BUGADDR=4bsd-bugs@CS.Berkeley.EDU}
 : ${EDITOR=vi}
 
 trap 'rm -f $TEMP ; exit 1' 1 2 3 13 15
