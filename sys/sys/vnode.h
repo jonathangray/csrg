@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode.h	7.35 (Berkeley) 05/04/91
+ *	@(#)vnode.h	7.36 (Berkeley) 05/07/91
  */
 
 #ifndef KERNEL
@@ -144,8 +144,10 @@ struct vattr {
 /*
  * Operations on vnodes.
  */
+#ifdef __STDC__
 struct flock;
 struct nameidata;
+#endif
 
 struct vnodeops {
 	int	(*vn_lookup)	__P((struct vnode *vp, struct nameidata *ndp,
@@ -161,8 +163,7 @@ struct vnodeops {
 	int	(*vn_access)	__P((struct vnode *vp, int mode,
 				    struct ucred *cred, struct proc *p));
 	int	(*vn_getattr)	__P((struct vnode *vp, struct vattr *vap,
-				    struct ucred *cred,
-				    struct proc *p));
+				    struct ucred *cred, struct proc *p));
 	int	(*vn_setattr)	__P((struct vnode *vp, struct vattr *vap,
 				    struct ucred *cred, struct proc *p));
 	int	(*vn_read)	__P((struct vnode *vp, struct uio *uio,
