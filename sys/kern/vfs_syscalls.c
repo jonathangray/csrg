@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	8.15 (Berkeley) 06/04/94
+ *	@(#)vfs_syscalls.c	8.16 (Berkeley) 06/16/94
  */
 
 #include <sys/param.h>
@@ -290,7 +290,7 @@ dounmount(mp, flags, p)
 /*
  * Sync each mounted filesystem.
  */
-#ifdef DIAGNOSTIC
+#ifdef DEBUG
 int syncprt = 0;
 struct ctldebug debug0 = { "syncprt", &syncprt };
 #endif
