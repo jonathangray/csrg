@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hash.h	5.5 (Berkeley) 09/04/91
+ *	@(#)hash.h	5.6 (Berkeley) 09/08/91
  */
 
 /* Operations */
@@ -71,6 +71,8 @@ typedef struct hashhdr {	/* Disk resident portion */
 	int	dsize;		/* Directory Size */
 	int	ssize;		/* Segment Size */
 	int	sshift;		/* Segment shift */
+	int	ovfl_point;	/* Where overflow pages are being allocated */
+	int	last_freed;	/* Last overflow page freed */
 	int	max_bucket;	/* ID of Maximum bucket in use */
 	int	high_mask;	/* Mask to modulo into entire table */
 	int	low_mask;	/* Mask to modulo into lower half of table */
@@ -122,7 +124,6 @@ typedef struct htab {		/* Memory resident data structure */
 #define SPLTMAX			8
 #define CHARKEY			"%$sniglet^&"
 #define NUMKEY			1038583
-#define VERSION_NO		3
 #define BYTE_SHIFT		3
 #define INT_TO_BYTE		2
 #define INT_BYTE_SHIFT		5
@@ -265,6 +266,8 @@ typedef struct htab {		/* Memory resident data structure */
 #define SGSIZE		hdr.ssize
 #define SSHIFT		hdr.sshift
 #define LORDER		hdr.lorder
+#define OVFL_POINT	hdr.ovfl_point
+#define	LAST_FREED	hdr.last_freed
 #define MAX_BUCKET	hdr.max_bucket
 #define FFACTOR		hdr.ffactor
 #define HIGH_MASK	hdr.high_mask
