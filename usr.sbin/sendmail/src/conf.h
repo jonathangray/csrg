@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.15 (Berkeley) 07/22/93
+ *	@(#)conf.h	8.16 (Berkeley) 07/24/93
  */
 
 /*
@@ -85,6 +85,19 @@
 # define USERDB		1	/* look in user database (requires NEWDB) */
 # endif
 
+/*
+**  Due to a "feature" in some operating systems such as Ultrix 4.3 and
+**  HPUX 8.0, if you receive a "No route to host" message (ICMP message
+**  ICMP_UNREACH_HOST) on _any_ connection, all connections to that host
+**  are closed.  Some firewalls return this error if you try to connect
+**  to the IDENT port (113), so you can't receive email from these hosts
+**  on these systems.  The firewall really should use a more specific
+**  message such as ICMP_UNREACH_PROTOCOL or _PORT or _NET_PROHIB.  This
+**  will get #undefed below as needed.
+*/
+
+# define IDENTPROTO	1	/* use IDENT proto (RFC 1413) */
+
 /**********************************************************************
 **  Operating system configuration.
 **
@@ -106,6 +119,7 @@
 # define setreuid(r, e)		setresuid(r, e, -1)	
 # define LA_TYPE	LA_FLOAT
 # define _PATH_UNIX	"/hp-ux"
+# undef IDENTPROTO
 # endif
 
 /*
@@ -170,6 +184,7 @@
 # define HASUNSETENV	1	/* has unsetenv(3) call */
 # define LA_TYPE	LA_INT
 # define LA_AVENRUN	"avenrun"
+# undef IDENTPROTO
 #endif
 
 /*
@@ -249,6 +264,7 @@
 # define HASINITGROUPS	1	/* has initgroups(2) call */
 # define NEEDGETOPT	1	/* need replacement for getopt(3) */
 # define LA_TYPE	LA_FLOAT
+# undef IDENTPROTO
 #endif
 
 /*
@@ -306,20 +322,6 @@
 #ifdef _POSIX_VERSION
 # define HASSETSID	1	/* has setsid(2) call */
 # define HASWAITPID	1	/* has waitpid(2) call */
-#endif
-
-/*
-**  Due to a "feature" in some operating systems such as Ultrix 4.3 and
-**  HPUX 8.0, if you receive a "No route to host" message (ICMP message
-**  ICMP_UNREACH_HOST) on _any_ connection, all connections to that host
-**  are closed.  Some firewalls return this error if you try to connect
-**  to the IDENT port (113), so you can't receive email from these hosts
-**  on these systems.  The firewall really should use a more specific
-**  message such as ICMP_UNREACH_PROTOCOL or _PORT or _NET_PROHIB.
-*/
-
-#if !defined(ultrix) && !defined(__hpux)
-# define IDENTPROTO	1	/* use IDENT proto (RFC 1413) */
 #endif
 
 /*
