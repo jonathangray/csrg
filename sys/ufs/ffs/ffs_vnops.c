@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	8.13 (Berkeley) 02/22/95
+ *	@(#)ffs_vnops.c	8.14 (Berkeley) 03/30/95
  */
 
 #include <sys/param.h>
@@ -218,20 +218,11 @@ struct vnodeopv_desc ffs_fifoop_opv_desc =
 	{ &ffs_fifoop_p, ffs_fifoop_entries };
 #endif /* FIFO */
 
-#ifdef DEBUG
 /*
  * Enabling cluster read/write operations.
  */
-#include <sys/sysctl.h>
 int doclusterread = 1;
-struct ctldebug debug11 = { "doclusterread", &doclusterread };
 int doclusterwrite = 1;
-struct ctldebug debug12 = { "doclusterwrite", &doclusterwrite };
-#else
-/* XXX for ufs_readwrite */
-#define doclusterread 1
-#define doclusterwrite 1
-#endif
 
 #include <ufs/ufs/ufs_readwrite.c>
 
