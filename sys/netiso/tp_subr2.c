@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_subr2.c	7.9 (Berkeley) 06/27/91
+ *	@(#)tp_subr2.c	7.10 (Berkeley) 06/28/91
  */
 
 /***********************************************************
@@ -79,6 +79,7 @@ SOFTWARE.
 #define LOCAL_CREDIT_EXPAND
 
 #include "param.h"
+#include "systm.h"
 #include "mbuf.h"
 #include "socket.h"
 #include "socketvar.h"
