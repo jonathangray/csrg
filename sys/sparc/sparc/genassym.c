@@ -9,7 +9,7 @@
  * All advertising materials mentioning features or use of this software
  * must display the following acknowledgement:
  *	This product includes software developed by the University of
- *	California, Lawrence Berkeley Laboratories.
+ *	California, Lawrence Berkeley Laboratory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -41,7 +41,7 @@
  *
  *	@(#)genassym.c	7.4 (Berkeley) 04/20/93
  *
- * from: $Header: genassym.c,v 1.12 92/06/28 10:13:01 mccanne $ (LBL)
+ * from: $Header: genassym.c,v 1.15 93/04/21 06:09:30 torek Exp $ (LBL)
  */
 
 #include <sys/param.h>
@@ -67,11 +67,7 @@
 #include <sparc/sparc/intreg.h>
 
 #include <stdio.h>
-/*#include <stddef.h>*/
-
-#ifndef offsetof
-#define	offsetof(str, mem) ((size_t)&((str *)0)->mem)
-#endif
+#include <stddef.h>
 
 #define	off(what, str, mem) def(what, (int)offsetof(str, mem))
 
