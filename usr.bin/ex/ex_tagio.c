@@ -1,6 +1,6 @@
 /*-
- * Copyright (c) 1980 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1980, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This module is believed to contain source code proprietary to AT&T.
  * Use and redistribution is subject to the Berkeley Software License
@@ -8,7 +8,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)ex_tagio.c	7.5 (Berkeley) 04/17/91";
+static char sccsid[] = "@(#)ex_tagio.c	8.1 (Berkeley) 06/09/93";
 #endif /* not lint */
 
 /*
