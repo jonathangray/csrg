@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1992, 1993
+ * Copyright (c) 1992, 1993, 1995
  *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software donated to Berkeley by
@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)null_vfsops.c	8.5 (Berkeley) 05/10/95
+ *	@(#)null_vfsops.c	8.6 (Berkeley) 05/10/95
  *
  * @(#)lofs_vfsops.c	1.2 (Berkeley) 6/18/92
  * $Id: lofs_vfsops.c,v 1.9 1992/05/30 10:26:24 jsp Exp jsp $
@@ -216,7 +216,7 @@ nullfs_unmount(mp, mntflags, p)
 	/*
 	 * And blow it away for future re-use
 	 */
-	VOP_REVOKE(nullm_rootvp, 0);
+	vgone(nullm_rootvp);
 	/*
 	 * Finally, throw away the null_mount structure
 	 */
