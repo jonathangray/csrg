@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_page.h	7.10 (Berkeley) 11/29/92
+ *	@(#)vm_page.h	7.11 (Berkeley) 05/24/93
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -138,9 +138,9 @@ struct vm_page {
 		(PG_ACTIVE | PG_INACTIVE))) \
 		panic("vm_page_check: not valid!"); \
 }
-#else	VM_PAGE_DEBUG
+#else /* VM_PAGE_DEBUG */
 #define	VM_PAGE_CHECK(mem)
-#endif	VM_PAGE_DEBUG
+#endif /* VM_PAGE_DEBUG */
 
 #ifdef KERNEL
 /*
