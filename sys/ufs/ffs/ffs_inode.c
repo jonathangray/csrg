@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_inode.c	7.44 (Berkeley) 12/16/91
+ *	@(#)ffs_inode.c	7.45 (Berkeley) 12/19/91
  */
 
 #include <sys/param.h>
@@ -102,6 +102,7 @@ ffs_vget(mntp, ino, vpp)
 	ip->i_mode = 0;
 	ip->i_diroff = 0;
 	ip->i_lockf = 0;
+	ip->i_fs = fs = ump->um_fs;
 	ip->i_dev = dev;
 	ip->i_number = ino;
 #ifdef QUOTA
@@ -117,7 +118,6 @@ ffs_vget(mntp, ino, vpp)
 	ufs_ihashins(ip);
 
 	/* Read in the disk contents for the inode, copy into the inode. */
-	fs = ump->um_fs;
 	if (error = bread(ump->um_devvp, fsbtodb(fs, itod(fs, ino)),
 	    (int)fs->fs_bsize, NOCRED, &bp)) {
 		/*
@@ -152,7 +152,6 @@ ffs_vget(mntp, ino, vpp)
 	/*
 	 * Finish inode initialization now that aliasing has been resolved.
 	 */
-	ip->i_fs = fs;
 	ip->i_devvp = ump->um_devvp;
 	VREF(ip->i_devvp);
 	/*
@@ -197,8 +196,10 @@ ffs_update(vp, ta, tm, waitfor)
 		return (0);
 	if (ip->i_flag&IACC)
 		ip->i_atime = ta->tv_sec;
-	if (ip->i_flag&IUPD)
+	if (ip->i_flag&IUPD) {
 		ip->i_mtime = tm->tv_sec;
+		INCRQUAD(ip->i_modrev);
+	}
 	if (ip->i_flag&ICHG)
 		ip->i_ctime = time.tv_sec;
 	ip->i_flag &= ~(IUPD|IACC|ICHG|IMOD);
