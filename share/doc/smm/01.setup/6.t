@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)6.t	6.5 (Berkeley) 04/17/91
+.\"	@(#)6.t	8.1 (Berkeley) 06/08/93
 .\"
 .de IR
 \fI\\$1\fP\|\\$2
