@@ -30,9 +30,21 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)endian.h	7.8 (Berkeley) 04/03/91
+ *	@(#)endian.h	7.9 (Berkeley) 12/19/91
  */
 
+/*
+ * Define _NOQUAD if the compiler does NOT support 64-bit integers.
+ */
+/* #define _NOQUAD */
+
+/*
+ * Define the order of 32-bit words in 64-bit words.
+ */
+#define _QUAD_HIGHWORD 1
+#define _QUAD_LOWWORD 0
+
+#ifndef _POSIX_SOURCE
 /*
  * Definitions for byte order, according to byte significance from low
  * address to high.
@@ -43,9 +55,7 @@
 
 #define	BYTE_ORDER	LITTLE_ENDIAN
 
-#ifndef KERNEL
 #include <sys/cdefs.h>
-#endif
 
 __BEGIN_DECLS
 unsigned long	htonl __P((unsigned long));
@@ -75,3 +85,4 @@ __END_DECLS
 #define	HTONL(x)	(x) = htonl((u_long)x)
 #define	HTONS(x)	(x) = htons((u_short)x)
 #endif
+#endif /* ! _POSIX_SOURCE */
