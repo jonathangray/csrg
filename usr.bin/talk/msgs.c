@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)msgs.c	5.5 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)msgs.c	5.6 (Berkeley) 03/01/91";
 #endif /* not lint */
 
 /* 
@@ -40,9 +40,9 @@ static char sccsid[] = "@(#)msgs.c	5.5 (Berkeley) 06/01/90";
  * if we are slow connecting.
  */
 
+#include <sys/time.h>
 #include <signal.h>
 #include <stdio.h>
-#include <sys/time.h>
 #include "talk.h"
 
 #define MSG_INTERVAL 4
@@ -50,9 +50,9 @@ static char sccsid[] = "@(#)msgs.c	5.5 (Berkeley) 06/01/90";
 char	*current_state;
 int	current_line = 0;
 
+void
 disp_msg()
 {
-
 	message(current_state);
 }
 
@@ -64,7 +64,7 @@ start_msgs()
 	signal(SIGALRM, disp_msg);
 	itimer.it_value.tv_sec = itimer.it_interval.tv_sec = MSG_INTERVAL;
 	itimer.it_value.tv_usec = itimer.it_interval.tv_usec = 0;
-	setitimer(ITIMER_REAL, &itimer, (struct timerval *)0);
+	setitimer(ITIMER_REAL, &itimer, (struct itimerval *)0);
 }
 
 end_msgs()
@@ -73,6 +73,6 @@ end_msgs()
 
 	timerclear(&itimer.it_value);
 	timerclear(&itimer.it_interval);
-	setitimer(ITIMER_REAL, &itimer, (struct timerval *)0);
+	setitimer(ITIMER_REAL, &itimer, (struct itimerval *)0);
 	signal(SIGALRM, SIG_DFL);
 }
