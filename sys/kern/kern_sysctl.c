@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sysctl.c	7.41 (Berkeley) 05/20/93
+ *	@(#)kern_sysctl.c	7.42 (Berkeley) 05/20/93
  */
 
 /*
@@ -122,10 +122,10 @@ __sysctl(p, uap, retval)
 	case CTL_FS:
 		fn = fs_sysctl;
 		break;
+#endif
 	case CTL_MACHDEP:
 		fn = cpu_sysctl;
 		break;
-#endif
 #ifdef DEBUG
 	case CTL_DEBUG:
 		fn = debug_sysctl;
