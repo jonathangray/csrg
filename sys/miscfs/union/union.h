@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union.h	1.6 (Berkeley) 02/04/94
+ *	@(#)union.h	1.7 (Berkeley) 02/07/94
  */
 
 struct union_args {
@@ -68,9 +68,12 @@ struct union_node {
 	struct vnode	        *un_lowervp;	/* underlying object */
 	struct vnode		*un_dirvp;	/* Parent dir of uppervp */
 	char			*un_path;	/* saved component name */
-	int			un_open;	/* # of opens on lowervp */
+	int			un_hash;	/* saved un_path hash value */
+	int			un_openl;	/* # of opens on lowervp */
 	int			un_flags;
+#ifdef DIAGNOSTIC
 	pid_t			un_pid;
+#endif
 };
 
 #define UN_WANT 0x01
@@ -86,6 +89,7 @@ extern int union_mkshadow __P((struct union_mount *, struct vnode *,
 				struct componentname *, struct vnode **));
 extern int union_vn_create __P((struct vnode **, struct union_node *,
 				struct proc *));
+extern void union_removed_upper __P((struct union_node *un));
 
 #define	MOUNTTOUNIONMOUNT(mp) ((struct union_mount *)((mp)->mnt_data))
 #define	VTOUNION(vp) ((struct union_node *)(vp)->v_data)
