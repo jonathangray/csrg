@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)lpd.c	5.19 (Berkeley) 11/30/92";
+static char sccsid[] = "@(#)lpd.c	5.20 (Berkeley) 02/25/93";
 #endif /* not lint */
 
 /*
