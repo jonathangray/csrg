@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mkioconf.c	5.4 (Berkeley) 04/18/93
+ *	@(#)mkioconf.c	5.5 (Berkeley) 05/10/93
  */
 
 #include <sys/param.h>
@@ -273,7 +273,7 @@ struct cfdata cfdata[] = {\n\
 		    state, loc, i->i_cfflags, i->i_pvoff, vs, v) < 0)
 			return (1);
 	}
-	return (fputs("\t0\n};\n", fp) < 0);
+	return (fputs("\t{0}\n};\n", fp) < 0);
 }
 
 /*
