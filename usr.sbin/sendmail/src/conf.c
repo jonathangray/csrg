@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.40 (Berkeley) 10/08/93";
+static char sccsid[] = "@(#)conf.c	8.41 (Berkeley) 10/15/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -756,6 +756,22 @@ getla()
 #else
 #if LA_TYPE == LA_SUBR
 
+#ifdef DGUX
+
+#include <sys/dg_sys_info.h>
+
+int getla()
+{
+	struct dg_sys_info_load_info load_info;
+
+	dg_sys_info((long *)&load_info,
+		DG_SYS_INFO_LOAD_INFO_TYPE, DG_SYS_INFO_LOAD_VERSION_0);
+
+	return((int) (load_info.one_minute + 0.5));
+}
+
+#else
+
 getla()
 {
 	double avenrun[3];
@@ -771,6 +787,7 @@ getla()
 	return ((int) (avenrun[0] + 0.5));
 }
 
+#endif /* DGUX */
 #else
 #if LA_TYPE == LA_MACH
 
@@ -1193,6 +1210,28 @@ setsid __P ((void))
 
 #endif
 /*
+**  DGUX_INET_ADDR -- inet_addr for DG/UX
+**
+**	Data General DG/UX version of inet_addr returns a struct in_addr
+**	instead of a long.  This patches things.
+*/
+
+#ifdef DGUX
+
+#undef inet_addr
+
+long
+dgux_inet_addr(host)
+	char *host;
+{
+	struct in_addr haddr;
+
+	haddr = inet_addr(host);
+	return haddr.s_addr;
+}
+
+#endif
+/*
 **  GETOPT -- for old systems or systems with bogus implementations
 */
 
@@ -1343,7 +1382,7 @@ vsprintf(s, fmt, ap)
 #endif
 
 #ifdef HASSTATFS
-# if defined(IRIX) || defined(apollo) || defined(_SCO_unix_) || defined(UMAXV)
+# if defined(IRIX) || defined(apollo) || defined(_SCO_unix_) || defined(UMAXV) || defined(DGUX)
 #  include <sys/statfs.h>
 # else
 #  if (defined(sun) && !defined(BSD)) || defined(__hpux) || defined(_CONVEX_SOURCE) || defined(NeXT) || defined(_AUX_SOURCE)
@@ -1383,7 +1422,7 @@ freespace(dir, bsize)
 # if defined(HASUSTAT)
 	if (stat(dir, &statbuf) == 0 && ustat(statbuf.st_dev, &fs) == 0)
 # else
-#  if defined(IRIX) || defined(apollo) || defined(UMAXV)
+#  if defined(IRIX) || defined(apollo) || defined(UMAXV) || defined(DGUX)
 	if (statfs(dir, &fs, sizeof fs, 0) == 0)
 #  else
 #   if defined(ultrix)
@@ -1688,4 +1727,21 @@ getcfname()
 	if (ConfFile != NULL)
 		return ConfFile;
 	return _PATH_SENDMAILCF;
+}
+/*
+**  SETVENDOR -- process vendor code from V configuration line
+**
+**	Parameters:
+**		vendor -- string representation of vendor.
+**
+**	Returns:
+**		TRUE -- if ok.
+**		FALSE -- if vendor code could not be processed.
+*/
+
+bool
+setvendor(vendor)
+	char *vendor;
+{
+	return (strcasecmp(vendor, "Berkeley") == 0);
 }
