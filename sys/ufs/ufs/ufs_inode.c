@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_inode.c	8.4 (Berkeley) 01/21/94
+ *	@(#)ufs_inode.c	8.5 (Berkeley) 06/15/94
  */
 
 #include <sys/param.h>
@@ -68,7 +68,9 @@ ufs_init()
 		printf("ufs_init: bad size %d\n", sizeof(struct inode));
 #endif
 	ufs_ihashinit();
+#ifdef QUOTA
 	dqinit();
+#endif
 	return (0);
 }
 
