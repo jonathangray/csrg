@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mount.h	8.13 (Berkeley) 03/27/94
+ *	@(#)mount.h	8.14 (Berkeley) 07/13/94
  */
 
 #ifndef KERNEL
@@ -129,6 +129,7 @@ struct mount {
 	struct vnodelst	mnt_vnodelist;		/* list of vnodes this mount */
 	int		mnt_flag;		/* flags */
 	int		mnt_maxsymlinklen;	/* max size of short symlink */
+	uid_t		mnt_owner;		/* uid that did mount */
 	struct statfs	mnt_stat;		/* cache of filesystem stats */
 	qaddr_t		mnt_data;		/* private data */
 };
@@ -161,7 +162,6 @@ struct mount {
 #define	MNT_LOCAL	0x00001000	/* filesystem is stored locally */
 #define	MNT_QUOTA	0x00002000	/* quotas are enabled on filesystem */
 #define	MNT_ROOTFS	0x00004000	/* identifies the root filesystem */
-#define	MNT_USER	0x00008000	/* mounted by a user */
 
 /*
  * Mask of flags that are visible to statfs()
