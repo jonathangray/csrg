@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kernfs_vfsops.c	8.9 (Berkeley) 05/10/95
+ *	@(#)kernfs_vfsops.c	8.10 (Berkeley) 05/14/95
  */
 
 /*
@@ -198,6 +198,7 @@ kernfs_root(mp, vpp)
 	struct mount *mp;
 	struct vnode **vpp;
 {
+	struct proc *p = curproc;	/* XXX */
 	struct vnode *vp;
 
 #ifdef KERNFS_DIAGNOSTIC
@@ -209,7 +210,7 @@ kernfs_root(mp, vpp)
 	 */
 	vp = VFSTOKERNFS(mp)->kf_root;
 	VREF(vp);
-	VOP_LOCK(vp);
+	vn_lock(vp, LK_EXCLUSIVE | LK_RETRY, p);
 	*vpp = vp;
 	return (0);
 }
