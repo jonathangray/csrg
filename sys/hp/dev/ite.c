@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: ite.c 1.28 92/12/20$
  *
- *	@(#)ite.c	8.2 (Berkeley) 01/12/94
+ *	@(#)ite.c	8.3 (Berkeley) 01/09/95
  */
 
 /*
@@ -287,7 +287,7 @@ itewrite(dev, uio, flag)
 
 iteioctl(dev, cmd, addr, flag, p)
 	dev_t dev;
-	int cmd;
+	u_long cmd;
 	caddr_t addr;
 	int flag;
 	struct proc *p;
