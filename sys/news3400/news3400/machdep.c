@@ -37,7 +37,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)machdep.c	7.4 (Berkeley) 07/10/92
+ *	@(#)machdep.c	7.5 (Berkeley) 12/16/92
  */
 
 /* from: Utah $Hdr: machdep.c 1.63 91/04/24$ */
@@ -289,7 +289,7 @@ consinit()
 
 #include "bm.h"
 #if NBM > 0
-#ifdef news3200
+#if defined(news3200) || defined(news3400)	/* KU:XXX */
 	fbbm_probe(dipsw|2);
 #else
 	fbbm_probe(dipsw);
