@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)radix.c	7.17 (Berkeley) 10/11/92
+ *	@(#)radix.c	7.18 (Berkeley) 04/08/93
  */
 
 /*
@@ -55,7 +55,7 @@ static int gotOddMasks;
 static char *maskedKey;
 static char *rn_zeros, *rn_ones;
 
-#define rn_maskhead (mask_rnhead->rnh_treetop)
+#define rn_masktop (mask_rnhead->rnh_treetop)
 #undef Bcmp
 #define Bcmp(a, b, l) (l == 0 ? 0 : bcmp((caddr_t)(a), (caddr_t)(b), (u_long)l))
 /*
@@ -148,19 +148,19 @@ rn_refines(m, n)
 }
 
 
-struct radix_node *
+static struct radix_node *
 rn_match(v, head)
-	struct radix_node *head;
+	struct radix_node_head *head;
 	caddr_t v;
 {
-	register struct radix_node *t = head, *x;
+	register struct radix_node *t = head->rnh_treetop, *x;
 	register caddr_t cp = v, cp2, cp3;
 	caddr_t cplim, mstart;
-	struct radix_node *saved_t;
+	struct radix_node *saved_t, *top = t;
 	int off = t->rn_off, vlen = *(u_char *)cp, matched_off;
 
 	/*
-	 * Open code rn_search(v, head) to avoid overhead of extra
+	 * Open code rn_search(v, top) to avoid overhead of extra
 	 * subroutine call.
 	 */
 	for (; t->rn_b >= 0; ) {
@@ -231,7 +231,7 @@ on1:
 					    return x;
 			} while (m = m->rm_mklist);
 		}
-	} while (t != head);
+	} while (t != top);
 	return 0;
 };
 		
@@ -239,6 +239,7 @@ on1:
 int	rn_nodenum;
 struct	radix_node *rn_clist;
 int	rn_saveinfo;
+int	rn_debug =  1;
 #endif
 
 struct radix_node *
@@ -259,16 +260,16 @@ rn_newpair(v, b, nodes)
 	return t;
 }
 
-int rn_debug =  1;
-struct radix_node *
+static struct radix_node *
 rn_insert(v, head, dupentry, nodes)
 	caddr_t v;
-	struct radix_node *head;
+	struct radix_node_head *head;
 	int *dupentry;
 	struct radix_node nodes[2];
 {
-	int head_off = head->rn_off, vlen = (int)*((u_char *)v);
-	register struct radix_node *t = rn_search(v, head);
+	struct radix_node *top = head->rnh_treetop;
+	int head_off = top->rn_off, vlen = (int)*((u_char *)v);
+	register struct radix_node *t = rn_search(v, top);
 	register caddr_t cp = v + head_off;
 	register int b;
 	struct radix_node *tt;
@@ -292,7 +293,7 @@ on1:
 		cmp_res >>= 1;
     }
     {
-	register struct radix_node *p, *x = head;
+	register struct radix_node *p, *x = top;
 	cp = v;
 	do {
 		p = x;
@@ -335,7 +336,7 @@ rn_addmask(netmask, search, skip)
 
 	mlen = *(u_char *)netmask;
 	if (search) {
-		x = rn_search(netmask, rn_maskhead);
+		x = rn_search(netmask, rn_masktop);
 		mlen = *(u_char *)netmask;
 		if (Bcmp(netmask, x->rn_key, mlen) == 0)
 			return (x);
@@ -347,7 +348,7 @@ rn_addmask(netmask, search, skip)
 	cp = (caddr_t)(x + 2);
 	Bcopy(netmask, cp, mlen);
 	netmask = cp;
-	x = rn_insert(netmask, rn_maskhead, &maskduplicated, x);
+	x = rn_insert(netmask, mask_rnhead, &maskduplicated, x);
 	/*
 	 * Calculate index of mask.
 	 */
@@ -368,20 +369,20 @@ rn_addmask(netmask, search, skip)
 	return (x);
 }
 
-struct radix_node *
+static struct radix_node *
 rn_addroute(v, netmask, head, treenodes)
 	caddr_t v, netmask;
-	struct radix_node *head;
+	struct radix_node_head *head;
 	struct radix_node treenodes[2];
 {
 	register int j;
 	register caddr_t cp;
 	register struct radix_node *t, *x, *tt;
+	struct radix_node *saved_tt, *top = head->rnh_treetop;
 	short b = 0, b_leaf;
 	int vlen = *(u_char *)v, mlen, keyduplicated;
 	caddr_t cplim; unsigned char *maskp;
 	struct radix_mask *m, **mp;
-	struct radix_node *saved_tt;
 
 	/*
 	 * In dealing with non-contiguous masks, there may be
@@ -391,10 +392,10 @@ rn_addroute(v, netmask, head, treenodes)
 	 * nodes and possibly save time in calculating indices.
 	 */
 	if (netmask)  {
-		x = rn_search(netmask, rn_maskhead);
+		x = rn_search(netmask, rn_masktop);
 		mlen = *(u_char *)netmask;
 		if (Bcmp(netmask, x->rn_key, mlen) != 0) {
-			x = rn_addmask(netmask, 0, head->rn_off);
+			x = rn_addmask(netmask, 0, top->rn_off);
 			if (x == 0)
 				return (0);
 		}
@@ -482,7 +483,7 @@ rn_addroute(v, netmask, head, treenodes)
 	do {
 		x = t;
 		t = t->rn_p;
-	} while (b <= t->rn_b && x != head);
+	} while (b <= t->rn_b && x != top);
 	/*
 	 * Search through routes associated with node to
 	 * insert new route according to index.
@@ -517,16 +518,16 @@ rn_addroute(v, netmask, head, treenodes)
 	return tt;
 }
 
-struct radix_node *
+static struct radix_node *
 rn_delete(v, netmask, head)
 	caddr_t v, netmask;
-	struct radix_node *head;
+	struct radix_node_head *head;
 {
-	register struct radix_node *t, *p, *x = head;
+	register struct radix_node *t, *p, *x = head->rnh_treetop;
 	register struct radix_node *tt = rn_search(v, x);
 	int b, head_off = x->rn_off, vlen =  * (u_char *) v;
 	struct radix_mask *m, *saved_m, **mp;
-	struct radix_node *dupedkey, *saved_tt = tt;
+	struct radix_node *dupedkey, *saved_tt = tt, *top = x;
 
 	if (tt == 0 ||
 	    Bcmp(v + head_off, tt->rn_key + head_off, vlen - head_off))
@@ -536,7 +537,7 @@ rn_delete(v, netmask, head)
 	 */
 	if (dupedkey = tt->rn_dupedkey) {
 		if (netmask) 
-			netmask = rn_search(netmask, rn_maskhead)->rn_key;
+			netmask = rn_search(netmask, rn_masktop)->rn_key;
 		while (tt->rn_mask != netmask)
 			if ((tt = tt->rn_dupedkey) == 0)
 				return (0);
@@ -556,7 +557,7 @@ rn_delete(v, netmask, head)
 	do {
 		x = t;
 		t = t->rn_p;
-	} while (b <= t->rn_b && x != head);
+	} while (b <= t->rn_b && x != top);
 	for (mp = &x->rn_mklist; m = *mp; mp = &m->rm_mklist)
 		if (m == saved_m) {
 			*mp = m->rm_mklist;
@@ -644,13 +645,14 @@ out:
 	return (tt);
 }
 
-rn_walk(rn, f, w)
-	register struct radix_node *rn;
+rn_walktree(h, f, w)
+	struct radix_node_head *h;
 	register int (*f)();
 	caddr_t  w;
 {
 	int error;
 	struct radix_node *base, *next;
+	register struct radix_node *rn = h->rnh_treetop;
 	/*
 	 * This gets complicated because we may delete the node
 	 * while applying the function f to it, so we need to calculate
@@ -702,10 +704,10 @@ rn_inithead(head, off)
 	tt->rn_b = -1 - off;
 	*ttt = *tt;
 	ttt->rn_key = rn_ones;
-	rnh->rnh_add = rn_addroute;
-	rnh->rnh_delete = rn_delete;
-	rnh->rnh_match = rn_match;
-	rnh->rnh_walk = rn_walk;
+	rnh->rnh_addaddr = rn_addroute;
+	rnh->rnh_deladdr = rn_delete;
+	rnh->rnh_matchaddr = rn_match;
+	rnh->rnh_walktree = rn_walktree;
 	rnh->rnh_treetop = t;
 	return (1);
 }
