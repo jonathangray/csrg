@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	7.113 (Berkeley) 03/03/93
+ *	@(#)ufs_vnops.c	7.114 (Berkeley) 03/04/93
  */
 
 #include <sys/param.h>
@@ -331,12 +331,12 @@ ufs_setattr(ap)
 		    (error = suser(cred, &p->p_acflag)))
 			return (error);
 		if (cred->cr_uid == 0) {
-			if ((ip->i_flags & (SYS_IMMUTABLE | SYS_APPEND)) &&
+			if ((ip->i_flags & (SF_IMMUTABLE | SF_APPEND)) &&
 			    securelevel > 0)
 				return (EPERM);
 			ip->i_flags = vap->va_flags;
 		} else {
-			if (ip->i_flags & (SYS_IMMUTABLE | SYS_APPEND))
+			if (ip->i_flags & (SF_IMMUTABLE | SF_APPEND))
 				return (EPERM);
 			ip->i_flags &= 0xffff0000;
 			ip->i_flags |= (vap->va_flags & 0xffff);
