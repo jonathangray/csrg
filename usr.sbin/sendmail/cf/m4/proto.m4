@@ -34,7 +34,7 @@ divert(-1)
 #
 divert(0)
 
-VERSIONID(`@(#)proto.m4	8.26 (Berkeley) 12/15/93')
+VERSIONID(`@(#)proto.m4	8.27 (Berkeley) 12/20/93')
 
 MAILER(local)dnl
 
@@ -91,12 +91,6 @@ ifdef(`BITNET_RELAY',
 `#  BITNET relay host
 DB`'BITNET_RELAY
 CPBITNET
-
-')dnl
-ifdef(`CSNET_RELAY',
-`# CSNET relay host
-DC`'CSNET_RELAY
-CPCSNET
 
 ')dnl
 ifdef(`FAX_RELAY',
@@ -591,8 +585,6 @@ ifdef(`_CLASS_X_',
 # resolve fake top level domains by forwarding to other hosts
 ifdef(`BITNET_RELAY',
 `R$*<@$+.BITNET>$*	$#smtp $@ $B $: $1 @ $2 . BITNET $3	user@host.BITNET',
-	`dnl')
-ifdef(`CSNET_RELAY',
 `R$*<@$+.CSNET>$*	$#smtp $@ $C $: $1 @ $2 . CSNET $3	user@host.CSNET',
 	`dnl')
 ifdef(`_MAILER_pop_',
