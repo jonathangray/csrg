@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_syscalls.c	7.26 (Berkeley) 04/16/91
+ *	@(#)nfs_syscalls.c	7.26.1.1 (Berkeley) 05/19/91
  */
 
 #include "param.h"
@@ -298,6 +298,12 @@ nfssvc(p, uap, retval)
 			m_freem(nam);
 			break;
 		};
+#ifdef DIAGNOSTIC
+		if (p->p_spare[0])
+			panic("nfssvc: M_NAMEI");
+		if (p->p_spare[1])
+			panic("nfssvc: STARTSAVE");
+#endif
 	}
 bad:
 	return (error);
