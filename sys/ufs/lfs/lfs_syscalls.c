@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_syscalls.c	7.27 (Berkeley) 11/14/92
+ *	@(#)lfs_syscalls.c	7.28 (Berkeley) 12/10/92
  */
 
 #include <sys/param.h>
@@ -61,7 +61,6 @@
 #define	CHECK_SEG(s)			\
 if (sp->sum_bytes_left < (s)) {		\
 	(void) lfs_writeseg(fs, sp);	\
-	lfs_initseg(fs, sp);		\
 }
 struct buf *lfs_fakebuf __P((struct vnode *, int, size_t, caddr_t));
 
@@ -106,12 +105,6 @@ lfs_markv(p, uap, retval)
 		return (error);
 	if ((mntp = getvfs(&uap->fsid)) == NULL)
 		return (EINVAL);
-	/* Initialize a segment. */
-	sp = malloc(sizeof(struct segment), M_SEGMENT, M_WAITOK);
-	sp->bpp = malloc(((LFS_SUMMARY_SIZE - sizeof(SEGSUM)) /
-	    sizeof(daddr_t) + 1) * sizeof(struct buf *), M_SEGMENT, M_WAITOK);
-	sp->seg_flags = SEGM_CKP;
-	sp->vp = NULL;
 
 	cnt = uap->blkcnt;
 	start = malloc(cnt * sizeof(BLOCK_INFO), M_SEGMENT, M_WAITOK);
@@ -123,9 +116,8 @@ lfs_markv(p, uap, retval)
 	bsize = fs->lfs_bsize;
 	error = 0;
 
-	lfs_seglock(fs);
-	lfs_initseg(fs, sp);
-	sp->seg_flags |= SEGM_CLEAN;
+	lfs_seglock(fs, SEGM_SYNC | SEGM_CLEAN);
+	sp = fs->lfs_sp;
 	for (v_daddr = LFS_UNUSED_DADDR, lastino = LFS_UNUSED_INUM,
 	    blkp = start; cnt--; ++blkp) {
 		/*
@@ -137,7 +129,7 @@ lfs_markv(p, uap, retval)
 				/* Finish up last file */
 				lfs_updatemeta(sp);
 				lfs_writeinode(fs, sp, ip);
-				vput(vp);
+				lfs_vunref(vp);
 				if (sp->fip->fi_nblocks)
 					BUMP_FIP(sp);
 				else  {
@@ -215,7 +207,7 @@ lfs_markv(p, uap, retval)
 	if (sp->vp) {
 		lfs_updatemeta(sp);
 		lfs_writeinode(fs, sp, ip);
-		vput(vp);
+		lfs_vunref(vp);
 		if (!sp->fip->fi_nblocks) {
 			DEC_FINFO(sp);
 			sp->sum_bytes_left += sizeof(FINFO) - sizeof(daddr_t);
@@ -224,8 +216,6 @@ lfs_markv(p, uap, retval)
 	(void) lfs_writeseg(fs, sp);
 	lfs_segunlock(fs);
 	free(start, M_SEGMENT);
-	free(sp->bpp, M_SEGMENT);
-	free(sp, M_SEGMENT);
 	return (error);
 /*
  * XXX If we come in to error 2, we might have indirect blocks that were
@@ -233,7 +223,7 @@ lfs_markv(p, uap, retval)
  * about this.
  */
 
-err2:	vput(vp);
+err2:	lfs_vunref(vp);
 	/* Free up fakebuffers */
 	for (bpp = --sp->cbpp; bpp >= sp->bpp; --bpp)
 		if ((*bpp)->b_flags & B_CALL) {
@@ -243,8 +233,6 @@ err2:	vput(vp);
 			brelse(*bpp);
 	lfs_segunlock(fs);
 err1:
-	free(sp->bpp, M_SEGMENT);
-	free(sp, M_SEGMENT);
 	free(start, M_SEGMENT);
 	return(error);
 }
@@ -289,6 +277,7 @@ lfs_bmapv(p, uap, retval)
 	for (step = cnt; step--; ++blkp) {
 		if (blkp->bi_lbn == LFS_UNUSED_LBN)
 			continue;
+		/* Could be a deadlock ? */
 		if (VFS_VGET(mntp, blkp->bi_inode, &vp))
 			daddr = LFS_UNUSED_DADDR;
 		else {
@@ -440,8 +429,18 @@ lfs_fastvget(mp, ino, daddr, vpp, dinp)
 
 	ump = VFSTOUFS(mp);
 	dev = ump->um_dev;
-	if ((*vpp = ufs_ihashget(dev, ino)) != NULL) {
+	/*
+	 * This is playing fast and loose.  Someone may have the inode
+	 * locked, in which case they are going to be distinctly unhappy
+	 * if we trash something.
+	 */
+	if ((*vpp = ufs_ihashlookup(dev, ino)) != NULL) {
+		lfs_vref(*vpp);
+		if ((*vpp)->v_flag & VXLOCK)
+			printf ("Cleaned vnode VXLOCKED\n");
 		ip = VTOI(*vpp);
+		if (ip->i_flags & ILOCKED)
+			printf ("Cleaned vnode ILOCKED\n");
 		if (!(ip->i_flag & IMOD)) {
 			++ump->um_lfs->lfs_uinodes;
 			ip->i_flag |= IMOD;
@@ -488,7 +487,7 @@ lfs_fastvget(mp, ino, daddr, vpp, dinp)
 			ufs_ihashrem(ip);
 
 			/* Unlock and discard unneeded inode. */
-			vput(vp);
+			lfs_vunref(vp);
 			brelse(bp);
 			*vpp = NULL;
 			return (error);
@@ -505,7 +504,7 @@ lfs_fastvget(mp, ino, daddr, vpp, dinp)
 	 * cases re-init ip, the underlying vnode/inode may have changed.
 	 */
 	if (error = ufs_vinit(mp, lfs_specop_p, LFS_FIFOOPS, &vp)) {
-		vput(vp);
+		lfs_vunref(vp);
 		*vpp = NULL;
 		return (error);
 	}
