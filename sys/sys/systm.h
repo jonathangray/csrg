@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)systm.h	7.18 (Berkeley) 11/01/91
+ *	@(#)systm.h	7.19 (Berkeley) 02/05/92
  */
 
 extern const char *panicstr;	/* panic message */
@@ -82,8 +82,12 @@ int	enxio __P((void));
 int	eopnotsupp __P((void));
 int	seltrue __P((dev_t dev, int which, struct proc *p));
 
+#ifdef __GNUC__
+volatile void	panic __P((const char *, ...));
+#else
 void	panic __P((const char *, ...));
-void	tablefull __P((char *));
+#endif
+void	tablefull __P((const char *));
 void	addlog __P((const char *, ...));
 void	log __P((int, const char *, ...));
 void	printf __P((const char *, ...));
