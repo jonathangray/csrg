@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)namei.h	7.11 (Berkeley) 01/10/91
+ *	@(#)namei.h	7.12 (Berkeley) 02/05/91
  */
 
-#ifndef _NAMEI_
-#define	_NAMEI_
+#ifndef _NAMEI_H_
+#define	_NAMEI_H_
 
 #ifdef KERNEL
 #include "../ufs/dir.h"
@@ -151,4 +151,4 @@ struct	nchstats {
 	long	ncs_pass2;		/* names found with passes == 2 */
 	long	ncs_2passes;		/* number of times we attempt it */
 };
-#endif /* _NAMEI_ */
+#endif /* !_NAMEI_H_ */
