@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)headers.c	6.4 (Berkeley) 01/18/93";
+static char sccsid[] = "@(#)headers.c	6.5 (Berkeley) 01/21/93";
 #endif /* not lint */
 
 # include <errno.h>
@@ -300,6 +300,7 @@ isheader(s)
 **
 **	Parameters:
 **		e -- the envelope to process.
+**		queuejob -- set if running a queued job.
 **
 **	Returns:
 **		none.
@@ -310,8 +311,9 @@ isheader(s)
 **		Aborts the message if the hop count is exceeded.
 */
 
-eatheader(e)
+eatheader(e, queuejob)
 	register ENVELOPE *e;
+	bool queuejob;
 {
 	register HDR *h;
 	register char *p;
@@ -343,7 +345,7 @@ eatheader(e)
 		}
 
 		/* save the message-id for logging */
-		if (!QueueRun && h->h_value != NULL &&
+		if (!queuejob && h->h_value != NULL &&
 		    strcmp(h->h_field, "message-id") == 0)
 		{
 			msgid = h->h_value;
@@ -374,7 +376,7 @@ eatheader(e)
 	p = hvalue("precedence", e);
 	if (p != NULL)
 		e->e_class = priencode(p);
-	if (!QueueRun)
+	if (!queuejob)
 		e->e_msgpriority = e->e_msgsize
 				 - e->e_class * WkClassFact
 				 + e->e_nrcpts * WkRecipFact;
@@ -402,7 +404,7 @@ eatheader(e)
 	*/
 
 # ifdef LOG
-	if (!QueueRun && LogLevel > 1)
+	if (!queuejob && LogLevel > 1)
 	{
 		char *name;
 		char hbuf[MAXNAME];
@@ -735,8 +737,6 @@ putheader(fp, m, e)
 {
 	char buf[MAX(MAXLINE,BUFSIZ)];
 	register HDR *h;
-	extern char *arpadate();
-	extern char *capitalize();
 	char obuf[MAXLINE];
 
 	for (h = e->e_header; h != NULL; h = h->h_link)
@@ -775,6 +775,7 @@ putheader(fp, m, e)
 		{
 			/* vanilla header line */
 			register char *nlp;
+			extern char *capitalize();
 
 			(void) sprintf(obuf, "%s: ", capitalize(h->h_field));
 			while ((nlp = strchr(p, '\n')) != NULL)
@@ -822,6 +823,7 @@ commaize(h, p, fp, oldstyle, m, e)
 	int opos;
 	bool firstone = TRUE;
 	char obuf[MAXLINE + 3];
+	extern char *capitalize();
 
 	/*
 	**  Output the address list translated by the
