@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.1 (Berkeley) 05/24/91
+ *	@(#)extern.h	5.2 (Berkeley) 05/24/91
  */
 
 #include <sys/cdefs.h>
@@ -75,5 +75,4 @@ PLAN	*c_mtime __P((char *));
 PLAN	*c_not __P((void));
 PLAN	*c_or __P((void));
 
-extern int ftsoptions;
-extern int isdeprecated, isdepth, isoutput, isrelative, isxargs;
+extern int ftsoptions, isdeprecated, isdepth, isoutput, isxargs;
