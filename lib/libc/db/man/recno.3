@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)recno.3	5.2 (Berkeley) 07/14/92
+.\"	@(#)recno.3	5.3 (Berkeley) 08/28/92
 .\"
 .TH RECNO 3 ""
 .UC 7
@@ -149,7 +149,7 @@ In the interface specified by
 .IR dbopen ,
 using the
 .I put
-interface to create a new record may cause the creation of multiple,
+interface to create a new record will cause the creation of multiple,
 empty records if the record number is more than one greater than the
 largest record currently in the database.
 .SH "SEE ALSO"
