@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)stty.c	8.1 (Berkeley) 05/31/93";
+static char sccsid[] = "@(#)stty.c	5.34 (Berkeley) 06/03/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -156,6 +156,6 @@ void
 usage()
 {
 	(void)fprintf(stderr,
-	    "usage: stty: [-a|-e|-g] [-f file] [options]");
+	    "usage: stty: [-a|-e|-g] [-f file] [options]\n");
 	exit (1);
 }
