@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	8.14 (Berkeley) 03/30/95
+ *	@(#)ffs_vnops.c	8.15 (Berkeley) 05/14/95
  */
 
 #include <sys/param.h>
@@ -293,12 +293,13 @@ int
 ffs_reclaim(ap)
 	struct vop_reclaim_args /* {
 		struct vnode *a_vp;
+		struct proc *a_p;
 	} */ *ap;
 {
 	register struct vnode *vp = ap->a_vp;
 	int error;
 
-	if (error = ufs_reclaim(vp))
+	if (error = ufs_reclaim(vp, ap->a_p))
 		return (error);
 	FREE(vp->v_data, VFSTOUFS(vp->v_mount)->um_devvp->v_tag == VT_MFS ?
 	    M_MFSNODE : M_FFSNODE);
