@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	8.37 (Berkeley) 10/29/93";
+static char sccsid[] = "@(#)deliver.c	8.38 (Berkeley) 11/08/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -2042,9 +2042,7 @@ mailfile(filename, ctladdr, e)
 
 		if (bitset(0111, stb.st_mode))
 			exit(EX_CANTCREAT);
-		if (ctladdr == NULL)
-			ctladdr = &e->e_from;
-		else
+		if (ctladdr != NULL)
 		{
 			/* ignore setuid and setgid bits */
 			mode &= ~(S_ISGID|S_ISUID);
@@ -2063,7 +2061,7 @@ mailfile(filename, ctladdr, e)
 
 		if (!bitset(S_ISGID, mode) || setgid(stb.st_gid) < 0)
 		{
-			if (ctladdr->q_uid == 0)
+			if (ctladdr == NULL || ctladdr->q_uid == 0)
 			{
 				(void) initgroups(DefUser, DefGid);
 			}
@@ -2076,7 +2074,7 @@ mailfile(filename, ctladdr, e)
 		}
 		if (!bitset(S_ISUID, mode) || setuid(stb.st_uid) < 0)
 		{
-			if (ctladdr->q_uid == 0)
+			if (ctladdr == NULL || ctladdr->q_uid == 0)
 				(void) setuid(DefUid);
 			else
 				(void) setuid(ctladdr->q_uid);
@@ -2203,7 +2201,6 @@ hostsignature(m, host, e)
 		if (nmx <= 0)
 		{
 			register MCI *mci;
-			extern int errno;
 
 			/* update the connection info for this host */
 			mci = mci_get(hp, m);
