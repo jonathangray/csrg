@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vfsops.c	7.74 (Berkeley) 07/12/92
+ *	@(#)ffs_vfsops.c	7.75 (Berkeley) 07/20/92
  */
 
 #include <sys/param.h>
@@ -579,9 +579,7 @@ ffs_vget(mp, ino, vpp)
 		 * be misleading to leave it on its hash chain. It will be
 		 * returned to the free list by ufs_iput().
 		 */
-		remque(ip);
-		ip->i_forw = ip;
-		ip->i_back = ip;
+		ufs_ihashrem(ip);
 
 		/* Unlock and discard unneeded inode. */
 		ufs_iput(ip);
