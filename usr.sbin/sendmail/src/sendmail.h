@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	5.19 (Berkeley) 07/26/91
+ *	@(#)sendmail.h	5.20 (Berkeley) 10/02/91
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	5.19		07/26/91";
+static char SmailSccsId[] =	"@(#)sendmail.h	5.20		10/02/91";
 # endif lint
 # else  _DEFINE
 # define EXTERN extern
@@ -580,7 +580,7 @@ EXTERN char	*MxHosts[MAXMXHOSTS+1];	/* for MX RRs */
 EXTERN char	*TrustedUsers[MAXTRUST+1];	/* list of trusted users */
 EXTERN char	*UserEnviron[MAXUSERENVIRON+1];	/* saved user environment */
 EXTERN int	CheckpointInterval;	/* queue file checkpoint interval */
-EXTERN bool	WildcardMX;	/* we have wildcard MX records */
+EXTERN bool	NoWildcardMX;	/* we don't have wildcard MX records */
 EXTERN char	*UdbFileName;	/* user database file name [udbexpand.c] */
 /*
 **  Trace information
