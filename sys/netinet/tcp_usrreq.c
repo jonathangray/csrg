@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)tcp_usrreq.c	6.10 (Berkeley) 02/23/86
+ *	@(#)tcp_usrreq.c	6.11 (Berkeley) 04/19/86
  */
 
 #include "param.h"
