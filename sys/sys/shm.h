@@ -10,13 +10,13 @@
  *
  * This code is derived from software contributed to Berkeley by
  * the Systems Programming Group of the University of Utah Computer
- * Science Department.
+ * Science Department.  Originally from the University of Wisconsin.
  *
  * This module is believed to contain source code proprietary to AT&T.
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)shm.h	8.5 (Berkeley) 01/21/94
+ *	@(#)shm.h	8.6 (Berkeley) 01/21/94
  */
 
 /*
