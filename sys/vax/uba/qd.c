@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)qd.c	1.18 (Berkeley) 05/16/91
+ *	@(#)qd.c	7.1 (Berkeley) 06/28/91
  */
 
 /************************************************************************
