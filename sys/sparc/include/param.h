@@ -39,9 +39,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)param.h	7.4 (Berkeley) 04/20/93
+ *	@(#)param.h	7.5 (Berkeley) 05/03/93
  *
- * from: $Header: param.h,v 1.14 93/04/07 01:34:00 torek Exp $ (LBL)
+ * from: $Header: param.h,v 1.13 92/11/26 02:04:38 torek Exp $ (LBL)
  */
 
 /*
@@ -134,7 +134,6 @@
 
 #ifdef KERNEL
 #ifndef LOCORE
-int cpuspeed;		/* XXX for sysctl(hw.cpuspeed) only; should remove */
 #define	DELAY(n)	delay(n)
 #endif
 #else
