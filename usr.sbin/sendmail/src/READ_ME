@@ -30,7 +30,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)READ_ME	8.80 (Berkeley) 03/05/95
+#	@(#)READ_ME	8.61.1.1 (Berkeley) 03/05/95
 #
 
 This directory contains the source files for sendmail.
@@ -968,4 +968,4 @@ version.c	The version number and information about this
 
 Eric Allman
 
-(Version 8.80, last update 03/05/95 12:50:13)
+(Version 8.61.1.1, last update 03/05/95 12:52:33)
