@@ -4,7 +4,7 @@
  *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
- * Henry Spencer of the University of Toronto.
+ * Henry Spencer.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -34,11 +34,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)regexec.c	8.2 (Berkeley) 03/16/94
+ *	@(#)regexec.c	8.3 (Berkeley) 03/20/94
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)regexec.c	8.2 (Berkeley) 03/16/94";
+static char sccsid[] = "@(#)regexec.c	8.3 (Berkeley) 03/20/94";
 #endif /* LIBC_SCCS and not lint */
 
 /*
