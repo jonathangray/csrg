@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)config.h	5.12 (Berkeley) 02/06/91
+ *	@(#)config.h	5.13 (Berkeley) 05/24/91
  */
 
 /*
@@ -187,7 +187,7 @@ int	yyline;
 
 struct	file_list *ftab, *conf_list, **confp;
 
-int	timezone, hadtz;
+int	zone, hadtz;
 int	dst;
 int	profiling;
 int	debugging;
