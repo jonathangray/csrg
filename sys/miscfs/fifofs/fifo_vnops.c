@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fifo_vnops.c	7.7 (Berkeley) 04/15/91
+ *	@(#)fifo_vnops.c	7.8 (Berkeley) 11/05/91
  */
 
 #include "param.h"
@@ -92,6 +92,13 @@ struct vnodeops fifo_vnodeops = {
 	fifo_print,		/* print */
 	fifo_islocked,		/* islocked */
 	fifo_advlock,		/* advlock */
+	fifo_blkatoff,		/* blkatoff */
+	fifo_vget,		/* vget */
+	fifo_valloc,		/* valloc */
+	fifo_vfree,		/* vfree */
+	fifo_truncate,		/* truncate */
+	fifo_update,		/* update */
+	fifo_bwrite,		/* bwrite */
 };
 
 /*
