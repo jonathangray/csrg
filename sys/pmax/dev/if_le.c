@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_le.c	7.4 (Berkeley) 06/20/92
+ *	@(#)if_le.c	7.5 (Berkeley) 07/27/92
  */
 
 #include "le.h"
@@ -834,7 +834,7 @@ leget(lebuf, totlen, off, ifp)
 		if (resid >= MINCLSIZE)
 			MCLGET(m, M_DONTWAIT);
 		if (m->m_flags & M_EXT)
-			m->m_len = MIN(resid, MCLBYTES);
+			m->m_len = min(resid, MCLBYTES);
 		else if (resid < m->m_len) {
 			/*
 			 * Place initial small packet/header at end of mbuf.
