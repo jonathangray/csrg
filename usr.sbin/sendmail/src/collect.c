@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)collect.c	8.3 (Berkeley) 07/29/93";
+static char sccsid[] = "@(#)collect.c	8.4 (Berkeley) 08/06/93";
 #endif /* not lint */
 
 # include <errno.h>
@@ -297,6 +297,7 @@ readerr:
 		/* don't return an error indication */
 		e->e_to = NULL;
 		e->e_flags &= ~EF_FATALERRS;
+		e->e_flags |= EF_CLRQUEUE;
 
 		/* and don't try to deliver the partial message either */
 		finis();
