@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_apx.c	7.10 (Berkeley) 07/23/92
+ *	@(#)if_apx.c	7.11 (Berkeley) 10/11/92
  */
 
 /*
@@ -46,22 +46,22 @@
 #include "apx.h"
 #if NAPX > 0
 
-#include "param.h"
-#include "mbuf.h"
-#include "socket.h"
-#include "ioctl.h"
-#include "errno.h"
-#include "syslog.h"
+#include <sys/param.h>
+#include <sys/mbuf.h>
+#include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <sys/errno.h>
+#include <sys/syslog.h>
 
-#include "net/if.h"
-#include "net/netisr.h"
-#include "net/if_types.h"
+#include <net/if.h>
+#include <net/netisr.h>
+#include <net/if_types.h>
 #ifdef CCITT
-#include "netccitt/x25.h"
+#include <netccitt/x25.h>
 int x25_rtrequest(), x25_ifoutput();
 #endif
 
-#include "if_apxreg.h"
+#include <i386/isa/if_apxreg.h>
 
 int	apxprobe(), apxattach(), apxstart(), apx_uprim(), apx_meminit();
 int	apxinit(), apxoutput(), apxioctl(), apxreset(), apxdebug = 0;
@@ -117,7 +117,7 @@ struct	apc_modes apx_default_modes = {
 
 /* Begin bus & endian dependence */
 
-#include "isa_device.h"
+#include <i386/isa/isa_device.h>
 
 struct	isa_driver apxdriver = {
 	apxprobe, apxattach, "apx",
