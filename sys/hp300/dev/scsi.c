@@ -36,7 +36,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)scsi.c	7.7 (Berkeley) 06/05/92
+ *	@(#)scsi.c	7.8 (Berkeley) 10/11/92
  */
 
 /*
@@ -49,17 +49,18 @@
 static char rcsid[] = "$Header: /usr/src/sys/hp300/dev/RCS/scsi.c,v 1.2 92/04/10 20:48:29 mike Exp $";
 #endif
 
-#include "sys/param.h"
-#include "sys/systm.h"
-#include "sys/buf.h"
-#include "hp/dev/device.h"
+#include <sys/param.h>
+#include <sys/systm.h>
+#include <sys/buf.h>
 
-#include "scsivar.h"
-#include "scsireg.h"
-#include "dmavar.h"
+#include <hp/dev/device.h>
 
-#include "../include/cpu.h"
-#include "../hp300/isr.h"
+#include <hp300/dev/scsivar.h>
+#include <hp300/dev/scsireg.h>
+#include <hp300/dev/dmavar.h>
+
+#include <machine/cpu.h>
+#include <hp300/hp300/isr.h>
 
 /*
  * SCSI delays
