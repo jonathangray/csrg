@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)closedir.c	8.1 (Berkeley) 06/04/93";
+static char sccsid[] = "@(#)closedir.c	5.10 (Berkeley) 06/10/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -49,6 +49,7 @@ closedir(dirp)
 {
 	int fd;
 
+	seekdir(dirp, dirp->dd_rewind);	/* free seekdir storage */
 	fd = dirp->dd_fd;
 	dirp->dd_fd = -1;
 	dirp->dd_loc = 0;
