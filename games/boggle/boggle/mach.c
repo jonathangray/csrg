@@ -1,44 +1,85 @@
-/* vi: set tabstop=4 : */
+/*-
+ * Copyright (c) 1993 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This code is derived from software contributed to Berkeley by
+ * Barry Brachman.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
+
+#ifndef lint
+static char sccsid[] = "@(#)mach.c	5.2 (Berkeley) 06/11/93";
+#endif /* not lint */
 
 /*
  * Terminal interface
  *
  * Input is raw and unechoed
  */
-
-#ifdef unix
-#include <sgtty.h>
-#endif
-#include <signal.h>
-#include <curses.h>
 #include <ctype.h>
+#include <curses.h>
+#include <fcntl.h>
+#include <sgtty.h>
+#include <signal.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 #include "bog.h"
-
-#ifdef ATARI
-#include <osbind.h>
-#endif
+#include "extern.h"
 
 static int ccol, crow, maxw;
 static int colstarts[MAXCOLS], ncolstarts;
 static int lastline;
 int ncols, nlines;
 
-static int cont_catcher(), prwidth(), prword(), stop_catcher(), tty_cleanup();
-static int tty_setup(), tty_showboard();
-static int winch_catcher();
-
-extern int ngames, nmwords, npwords, tnmwords, tnpwords;
 extern char *pword[], *mword[];
+extern int ngames, nmwords, npwords, tnmwords, tnpwords;
+
+static void	cont_catcher __P((int));
+static int	prwidth __P((char *[], int));
+static void	prword __P((char *[], int));
+static void	stop_catcher __P((int));
+static void	tty_cleanup __P((void));
+static int	tty_setup __P((void));
+static void	tty_showboard __P((char *));
+static void	winch_catcher __P((int));
 
 /*
  * Do system dependent initialization
  * This is called once, when the program starts
  */
+int
 setup(sflag, seed)
-int sflag;
-long seed;
+	int sflag;
+	long seed;
 {
 	extern int debug;
 
@@ -46,11 +87,7 @@ long seed;
 		return(-1);
 
 	if (!sflag)
-#ifdef ATARI
-		seed = Random();
-#else
 		time(&seed);
-#endif
 	srandom(seed);
 	if (debug)
 		(void) printf("seed = %ld\n", seed);
@@ -61,9 +98,9 @@ long seed;
  * Do system dependent clean up
  * This is called once, just before the program terminates
  */
+void
 cleanup()
 {
-
 	tty_cleanup();
 }
 
@@ -71,51 +108,50 @@ cleanup()
  * Display the player's word list, the list of words not found, and the running
  * stats
  */
+void
 results()
 {
 	int col, row;
-    int denom1, denom2;
+	int denom1, denom2;
 
-    move(LIST_LINE, LIST_COL);
+	move(LIST_LINE, LIST_COL);
 	clrtobot();
-    printw("Words you found (%d):", npwords);
+	printw("Words you found (%d):", npwords);
 	refresh();
-    move(LIST_LINE + 1, LIST_COL);
-    prtable(pword, npwords, 0, ncols, prword, prwidth);
+	move(LIST_LINE + 1, LIST_COL);
+	prtable(pword, npwords, 0, ncols, prword, prwidth);
 
 	getyx(stdscr, row, col);
-    move(row + 1, col);
-    printw("Words you missed (%d):", nmwords);
+	move(row + 1, col);
+	printw("Words you missed (%d):", nmwords);
 	refresh();
-    move(row + 2, col);
-    prtable(mword, nmwords, 0, ncols, prword, prwidth);
+	move(row + 2, col);
+	prtable(mword, nmwords, 0, ncols, prword, prwidth);
 
-    denom1 = npwords + nmwords;
-    denom2 = tnpwords + tnmwords;
+	denom1 = npwords + nmwords;
+	denom2 = tnpwords + tnmwords;
  
-    move(SCORE_LINE, SCORE_COL);
-    printw("Percentage: %0.2f%% (%0.2f%% over %d game%s)\n",
+	move(SCORE_LINE, SCORE_COL);
+	printw("Percentage: %0.2f%% (%0.2f%% over %d game%s)\n",
         denom1 ? (100.0 * npwords) / (double) (npwords + nmwords) : 0.0,
         denom2 ? (100.0 * tnpwords) / (double) (tnpwords + tnmwords) : 0.0,
         ngames, ngames > 1 ? "s" : "");
 }
 
-static
-prword(base, index)
-char **base;
-int index;
+static void
+prword(base, indx)
+	char *base[];
+	int indx;
 {
- 
-    printw("%s", base[index]);
+	printw("%s", base[indx]);
 }
 
-static
-prwidth(base, index)
-char **base;
-int index;
+static int
+prwidth(base, indx)
+	char *base[];
+	int indx;
 {
-
-    return(strlen(base[index]));
+	return (strlen(base[indx]));
 }
 
 /*
@@ -125,7 +161,7 @@ int index;
  */
 char *
 getline(q)
-char *q;
+	char *q;
 {
 	register int ch, done;
 	register char *p;
@@ -134,7 +170,7 @@ char *q;
 	p = q;
 	done = 0;
 	while (!done) {
-		ch = rawch();
+		ch = timerch();
 		switch (ch) {
 		case '\n':
 		case '\r':
@@ -166,7 +202,7 @@ char *q;
 			break;
 #ifdef SIGTSTP
 		case '\032':			/* <^z> */
-			stop_catcher();
+			stop_catcher(0);
 			break;
 #endif
 		case '\023':			/* <^s> */
@@ -218,80 +254,54 @@ char *q;
 	return(q);
 }
 
+int
 inputch()
 {
-
-	return(getch() & 0177);
+	return (getch() & 0177);
 }
 
+void
 redraw()
 {
-
 	clearok(stdscr, 1);
 	refresh();
 }
 
-#ifdef XXX
-/*
- * Flush all pending input
- */
+void
 flushin(fp)
-FILE *fp;
-{
-
-	flushinp();
-}
-#endif XXX
-
-#ifdef TIOCFLUSH
-#include <sys/file.h>
-
-flushin(fp)
-FILE *fp;
+	FILE *fp;
 {
 	int arg;
 
 	arg = FREAD;
-	(void) ioctl(fileno(fp), TIOCFLUSH, &arg);
+	(void)ioctl(fileno(fp), TIOCFLUSH, &arg);
 }
-#endif TIOCFLUSH
-
-#ifdef ATARI
-#include <osbind.h>
-
-/*ARGSUSED*/
-flushin(fp)
-FILE *fp;
-{
-
-	while (Cconis() == -1)
-		getch();
-}
-#endif ATARI
 
 static int gone;
 
 /*
  * Stop the game timer
  */
+void
 stoptime()
 {
-	long t;
 	extern long start_t;
+	long t;
 
-	time(&t);
+	(void)time(&t);
 	gone = (int) (t - start_t);
 }
 
 /*
  * Restart the game timer
  */
+void
 starttime()
 {
-	long t;
 	extern long start_t;
+	long t;
 
-	time(&t);
+	(void)time(&t);
 	start_t = t - (long) gone;
 }
 
@@ -302,9 +312,9 @@ starttime()
  * Keep track of each column position for showword()
  * There is no check for exceeding COLS
  */
+void
 startwords()
 {
-
 	crow = LIST_LINE;
 	ccol = LIST_COL;
 	maxw = 0;
@@ -319,8 +329,9 @@ startwords()
  * The maximum width of the current column is maintained so we know where
  * to start the next column
  */
+void
 addword(w)
-char *w;
+	char *w;
 {
 	int n;
 
@@ -342,6 +353,7 @@ char *w;
 /*
  * The current word is unacceptable so erase it
  */
+void
 badword()
 {
 
@@ -354,8 +366,9 @@ badword()
  * Highlight the nth word in the list (starting with word 0)
  * No check for wild arg
  */
+void
 showword(n)
-int n;
+	int n;
 {
 	int col, row;
 
@@ -382,6 +395,7 @@ int n;
  *
  * Note: this function knows about the format of the board
  */
+void
 findword()
 {
 	int c, col, found, i, r, row;
@@ -456,11 +470,11 @@ findword()
 /*
  * Display a string at the current cursor position for the given number of secs
  */
+void
 showstr(str, delaysecs)
-char *str;
-int delaysecs;
+	char *str;
+	int delaysecs;
 {
-
 	addstr(str);
 	refresh();
 	delay(delaysecs * 10);
@@ -469,18 +483,19 @@ int delaysecs;
 	refresh();
 }
 
+void
 putstr(s)
-char *s;
+	char *s;
 {
-
 	addstr(s);
 }
 
 /*
  * Get a valid word and put it in the buffer
  */
+void
 getword(q)
-char *q;
+	char *q;
 {
 	int ch, col, done, i, row;
 	char *p;
@@ -536,43 +551,26 @@ char *q;
 	refresh();
 }
 
+void
 showboard(b)
-char *b;
+	char *b;
 {
-
 	tty_showboard(b);
 }
 
+void
 prompt(mesg)
-char *mesg;
+	char *mesg;
 {
-
 	move(PROMPT_LINE, PROMPT_COL);
 	printw("%s", mesg);
 	move(PROMPT_LINE + 1, PROMPT_COL);
 	refresh();
 }
 
-rawch()
-{
-
-#ifdef TIMER
-	return(timerch());
-#else
-	return(getch() & 0177);
-#endif
-}
-
-static
+static int
 tty_setup()
 {
-#ifdef SIGTSTP
-	int stop_catcher(), cont_catcher();
-#endif
-#ifdef TIOCGWINSZ
-	int winch_catcher();
-#endif
-
 	initscr();
 	raw();
 	noecho();
@@ -585,22 +583,16 @@ tty_setup()
 	lastline = nlines - 1;
 	ncols = COLS;
 
-#ifdef SIGTSTP
-    (void) signal(SIGTSTP, stop_catcher);
-    (void) signal(SIGCONT, cont_catcher);
-#endif   
-#ifdef TIOCGWINSZ
+	(void) signal(SIGTSTP, stop_catcher);
+	(void) signal(SIGCONT, cont_catcher);
 	(void) signal(SIGWINCH, winch_catcher);
-#endif
- 
 	return(0);
 }
 
-#ifdef SIGTSTP
-static
-stop_catcher()
+static void
+stop_catcher(signo)
+	int signo;
 {
-
 	stoptime();
 	noraw();
 	echo();
@@ -608,17 +600,15 @@ stop_catcher()
 	refresh();
 
 	(void) signal(SIGTSTP, SIG_DFL);
-#ifdef BSD42 
 	(void) sigsetmask(sigblock(0) & ~(1 << (SIGTSTP-1)));
-#endif
 	(void) kill(0, SIGTSTP);
 	(void) signal(SIGTSTP, stop_catcher);
 }
  
-static
-cont_catcher()
+static void
+cont_catcher(signo)
+	int signo;
 {
-
 	(void) signal(SIGCONT, cont_catcher);
 	noecho();
 	raw();
@@ -627,17 +617,15 @@ cont_catcher()
 	refresh();
 	starttime();
 }
-#endif SIGTSTP
  
-#ifdef SIGWINCH
 /*
  * The signal is caught but nothing is done about it...
  * It would mean reformatting the entire display
  */
-static
-winch_catcher()
+static void
+winch_catcher(signo)
+	int signo;
 {
-
 	struct winsize win;
 
 	(void) signal(SIGWINCH, winch_catcher);
@@ -647,12 +635,10 @@ winch_catcher()
 	COLS = win.ws_col;
 	*/
 }
-#endif
 
-static
+static void
 tty_cleanup()
 {
-
 	move(nlines - 1, 0);
 	refresh();
 	noraw();
@@ -660,9 +646,9 @@ tty_cleanup()
 	endwin();
 }
 
-static
+static void
 tty_showboard(b)
-char *b;
+	char *b;
 {
 	register int i;
 	int line;
@@ -684,19 +670,7 @@ char *b;
 			move(++line, BOARD_COL);
 		}
 	}
-    move(SCORE_LINE, SCORE_COL);
+	move(SCORE_LINE, SCORE_COL);
 	printw("Type '?' for help");
 	refresh();
 }
-
-static
-tty_prompt(p)
-char *p;
-{
-
-	move(PROMPT_LINE, PROMPT_COL);
-	printw("%s", p);
-	clrtoeol();
-	refresh();
-}
-
