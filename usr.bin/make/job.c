@@ -37,7 +37,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)job.c	5.13 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)job.c	5.14 (Berkeley) 01/10/91";
 #endif /* not lint */
 
 /*-
@@ -911,14 +911,14 @@ Job_CheckCommands (gn, abortProc)
 	     * this node's parents so they never get examined. 
 	     */
 	    if (gn->type & OP_OPTIONAL) {
-		printf ("Can't figure out how to make %s (ignored)\n",
+		printf ("make: don't know how to make %s (ignored)\n",
 			gn->name);
 	    } else if (keepgoing) {
-		printf ("Can't figure out how to make %s (continuing)\n",
+		printf ("make: don't know how to make %s (continuing)\n",
 			gn->name);
 		return (FALSE);
 	    } else {
-		(*abortProc) ("Can't figure out how to make %s. Stop",
+		(*abortProc) ("make: don't know how to make %s. Stop",
 			     gn->name);
 		return(FALSE);
 	    }
