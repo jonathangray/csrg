@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ed.h	5.4 (Berkeley) 03/01/93
+ *	@(#)ed.h	5.5 (Berkeley) 03/08/93
  */
 
 #define	FILENAME_LEN	PATH_MAX
@@ -82,8 +82,8 @@ struct d_layer {
 	struct d_layer *next;
 };
 
-extern int nn_max, nn_max_flag, start_default, End_default, address_flag;
-extern LINE *nn_max_start, *nn_max_end, *start, *End, *current;
+extern int nn_max, nn_max_flag, Start_default, End_default, address_flag;
+extern LINE *nn_max_start, *nn_max_end, *Start, *End, *current;
 extern char *text, *prompt_string, help_msg[];
 extern struct MARK mark_matrix[];
 extern char *filename_current, *buf;
