@@ -36,7 +36,7 @@
 # include <string.h>
 
 #ifndef lint
-static char sccsid[] = "@(#)mime.c	8.21 (Berkeley) 05/15/95";
+static char sccsid[] = "@(#)mime.c	8.22 (Berkeley) 05/15/95";
 #endif /* not lint */
 
 /*
@@ -59,6 +59,7 @@ static char sccsid[] = "@(#)mime.c	8.21 (Berkeley) 05/15/95";
 **	ideas have been loosely borrowed.
 */
 
+#if MIME8TO7
 
 /* character set for hex and base64 encoding */
 char	Base16Code[] =	"0123456789ABCDEF";
@@ -1403,3 +1404,5 @@ isboundary(line, boundaries)
 	}
 	return -1;
 }
+
+#endif /* MIME */
