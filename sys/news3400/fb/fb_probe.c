@@ -35,7 +35,7 @@
  *
  * from: $Hdr: fb_probe.c,v 4.300 91/06/09 06:32:57 root Rel41 $ SONY
  *
- *	@(#)fb_probe.c	7.3 (Berkeley) 03/09/93
+ *	@(#)fb_probe.c	8.1 (Berkeley) 06/11/93
  */
 
 #ifdef IPC_MRX
