@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)v7.local.c	5.12 (Berkeley) 02/03/91";
+static char sccsid[] = "@(#)v7.local.c	5.13 (Berkeley) 06/26/92";
 #endif /* not lint */
 
 /*
@@ -44,11 +44,14 @@ static char sccsid[] = "@(#)v7.local.c	5.12 (Berkeley) 02/03/91";
  */
 
 #include "rcv.h"
+#include <fcntl.h>
+#include "extern.h"
 
 /*
  * Locate the user's mailbox file (ie, the place where new, unread
  * mail is queued).
  */
+void
 findmail(user, buf)
 	char *user, *buf;
 {
@@ -58,6 +61,7 @@ findmail(user, buf)
 /*
  * Get rid of the queued mail.
  */
+void
 demail()
 {
 
@@ -68,7 +72,7 @@ demail()
 /*
  * Discover user login name.
  */
-char*
+char *
 username()
 {
 	char *np;
