@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_exit.c	8.8 (Berkeley) 08/22/94
+ *	@(#)kern_exit.c	8.9 (Berkeley) 02/14/95
  */
 
 #include <sys/param.h>
@@ -277,7 +277,7 @@ struct wait_args {
 #define GETPS(rp)	(rp)[PS]
 #endif
 
-owait(p, uap, retval)
+compat_43_wait(p, uap, retval)
 	struct proc *p;
 	register struct wait_args *uap;
 	int *retval;
