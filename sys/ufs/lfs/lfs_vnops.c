@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vnops.c	7.56 (Berkeley) 03/11/91
+ *	@(#)lfs_vnops.c	7.57 (Berkeley) 03/11/91
  */
 
 #include "param.h"
@@ -1036,6 +1036,7 @@ ufs_rename(fndp, tndp)
 			}
 			goto bad;
 		}
+		iput(dp);
 	} else {
 		if (xp->i_dev != dp->i_dev || xp->i_dev != ip->i_dev)
 			panic("rename: EXDEV");
