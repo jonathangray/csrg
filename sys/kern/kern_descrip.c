@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_descrip.c	7.32 (Berkeley) 05/13/92
+ *	@(#)kern_descrip.c	7.32 (Berkeley) 05/14/92
  */
 
 #include "param.h"
