@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)lex.c	5.24 (Berkeley) 06/26/92";
+static char sccsid[] = "@(#)lex.c	5.25 (Berkeley) 09/20/92";
 #endif /* not lint */
 
 #include "rcv.h"
@@ -135,10 +135,12 @@ setfile(name)
 		perror(tempMesg);
 		exit(1);
 	}
+	(void) fcntl(fileno(otf), F_SETFD, 1);
 	if ((itf = fopen(tempMesg, "r")) == NULL) {
 		perror(tempMesg);
 		exit(1);
 	}
+	(void) fcntl(fileno(itf), F_SETFD, 1);
 	rm(tempMesg);
 	setptr(ibuf);
 	setmsize(msgCount);
