@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)hash_bigkey.c	5.6 (Berkeley) 09/04/91";
+static char sccsid[] = "@(#)hash_bigkey.c	5.7 (Berkeley) 09/08/91";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -180,9 +180,8 @@ __big_insert(bufp, key, val)
  *-1 => ERROR
  */
 extern int
-__big_delete(bufp, ndx)
+__big_delete(bufp)
 	BUFHEAD *bufp;
-	int ndx;
 {
 	register BUFHEAD *last_bfp, *rbufp;
 	u_short *bp, pageno;
@@ -423,7 +422,7 @@ __big_return(bufp, ndx, val, set_current)
 			return (0);
 		}
 
-	val->size = collect_data(bufp, len, set_current);
+	val->size = collect_data(bufp, (int)len, set_current);
 	if (val->size == -1)
 		return (-1);
 	if (save_p->addr != save_addr) {
@@ -496,9 +495,8 @@ collect_data(bufp, len, set)
  * Fill in the key and data for this big pair.
  */
 extern int
-__big_keydata(bufp, ndx, key, val, set)
+__big_keydata(bufp, key, val, set)
 	BUFHEAD *bufp;
-	int ndx;
 	DBT *key, *val;
 	int set;
 {
@@ -537,7 +535,8 @@ collect_key(bufp, len, val, set)
 		hashp->tmp_key = malloc(totlen);
 		if (!hashp->tmp_key)
 			return (-1);
-		__big_return(bufp, 1, val, set);
+		if (__big_return(bufp, 1, val, set))
+			return (-1);
 	} else {
 		xbp = __get_buf(bp[bp[0] - 1], bufp, 0);
 		if (!xbp ||
@@ -577,7 +576,7 @@ __big_split(op, np, big_keyp, addr, obucket, ret)
 	bp = big_keyp;
 
 	/* Now figure out where the big key/data goes */
-	if (__big_keydata(big_keyp, 1, &key, &val, 0))
+	if (__big_keydata(big_keyp, &key, &val, 0))
 		return (-1);
 	change = (__call_hash(key.data, key.size) != obucket);
 
