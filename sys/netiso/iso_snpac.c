@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)iso_snpac.c	8.3 (Berkeley) 02/09/95
+ *	@(#)iso_snpac.c	8.4 (Berkeley) 05/02/95
  */
 
 /***********************************************************
@@ -124,7 +124,7 @@ struct rtentry	*known_is;
  *	These addresses assume on-the-wire transmission of least significant
  *	bit first. This is the method used by 802.3. When these
  *	addresses are passed to the token ring driver, (802.5), they
- *	must be bit-swaped because 802.5 transmission order is MSb first.
+ *	must be bit-swapped because 802.5 transmission order is MSb first.
  *
  *	Furthermore, according to IBM Austin, these addresses are not
  *	true token ring multicast addresses. More work is necessary
