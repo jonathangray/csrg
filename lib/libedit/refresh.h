@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)refresh.h	5.1 (Berkeley) 06/22/92
+ *	@(#)refresh.h	5.2 (Berkeley) 06/22/92
  */
 
 /*
@@ -42,7 +42,7 @@
 #ifndef _h_el_refresh
 #define _h_el_refresh
 
-#include "editline.h"
+#include "histedit.h"
 
 typedef struct {
     coord_t 	 r_cursor;	/* Refresh cursor position	*/
