@@ -1,9 +1,12 @@
-/*
- * Copyright (c) 1982, 1986 Regents of the University of California.
- * All rights reserved.  The Berkeley software License Agreement
- * specifies the terms and conditions for redistribution.
+/*-
+ * Copyright (c) 1982, 1986 The Regents of the University of California.
+ * All rights reserved.
  *
- *	@(#)psl.h	7.2 (Berkeley) 12/10/87
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ *
+ *	@(#)psl.h	7.3 (Berkeley) 05/08/91
  */
 
 /*
