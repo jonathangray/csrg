@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_bio.c	8.9 (Berkeley) 05/20/95
+ *	@(#)lfs_bio.c	8.10 (Berkeley) 06/10/95
  */
 
 #include <sys/param.h>
@@ -99,6 +99,7 @@ lfs_bwrite(ap)
 		    bp->b_lblkno > 0) {
 			/* Out of space, need cleaner to run */
 			wakeup(&lfs_allclean_wakeup);
+			wakeup(&fs->lfs_nextseg);
 			if (error = tsleep(&fs->lfs_avail, PCATCH | PUSER,
 			    "cleaner", NULL)) {
 				brelse(bp);
