@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	6.30 (Berkeley) 05/20/93
+ *	@(#)conf.h	6.31 (Berkeley) 05/22/93
  */
 
 /*
@@ -66,10 +66,6 @@
 
 # ifndef QUEUESIZE
 # define QUEUESIZE	1000		/* max # of jobs per queue run */
-# endif
-
-# ifndef FORK
-# define FORK		vfork		/* function to call to fork mailer */
 # endif
 
 /*
@@ -109,6 +105,11 @@
 
 # ifdef __hpux
 # define SYSTEM5	1
+# endif
+
+# ifdef IBM_AIX
+# define LOCKF		1	/* use System V lockf instead of flock */
+# define FORK		fork	/* no vfork primitive available */
 # endif
 
 # ifdef SYSTEM5
@@ -258,3 +259,8 @@ struct utsname
 #ifndef TOBUFSIZE
 # define TOBUFSIZE (1024 - 256)
 #endif
+
+/* fork routine -- set above using #ifdef _osname_ or in Makefile */
+# ifndef FORK
+# define FORK		vfork		/* function to call to fork mailer */
+# endif
