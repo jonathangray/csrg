@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs.h	8.5 (Berkeley) 07/08/94
+ *	@(#)lfs.h	8.6 (Berkeley) 01/02/95
  */
 
 #define	LFS_LABELPAD	8192		/* LFS label size */
@@ -158,6 +158,8 @@ struct lfs {
 	int8_t	  lfs_ronly;		/* mounted read-only flag */
 	int8_t	  lfs_flags;		/* currently unused flag */
 	u_char	  lfs_fsmnt[MNAMELEN];	/* name mounted on */
+
+	int32_t	  lfs_pad[40];		/* round to 512 bytes */
 };
 
 /*
