@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vfsops.c	7.69 (Berkeley) 06/25/92
+ *	@(#)ffs_vfsops.c	7.70 (Berkeley) 07/02/92
  */
 
 #include <sys/param.h>
@@ -159,12 +159,12 @@ ffs_mount(mp, path, data, ndp, p)
 			 * Process export requests.
 			 */
 			if (args.exflags & MNT_EXPORTED) {
-				if (error = hang_addrlist(mp, &args))
+				if (error = ufs_hang_addrlist(mp, &args))
 					return (error);
 				mp->mnt_flag |= MNT_EXPORTED;
 			}
 			if (args.exflags & MNT_DELEXPORT) {
-				free_addrlist(ump);
+				ufs_free_addrlist(ump);
 				mp->mnt_flag &=
 				    ~(MNT_EXPORTED | MNT_DEFEXPORTED);
 			}
