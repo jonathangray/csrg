@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)swap.c	8.1 (Berkeley) 06/06/93";
+static char sccsid[] = "@(#)swap.c	8.2 (Berkeley) 02/21/94";
 #endif /* not lint */
 
 /*
@@ -79,10 +79,10 @@ struct nlist syms[] = {
 
 static int nswap, nswdev, dmmax, nswapmap;
 static struct swdevt *sw;
-static long *perdev;
+static long *perdev, blocksize;
 static struct map *swapmap, *kswapmap;
 static struct mapent *mp;
-static int nfree, hlen, blocksize;
+static int nfree, hlen;
 
 #define	SVAR(var) __STRING(var)	/* to force expansion */
 #define	KGET(idx, var) \
