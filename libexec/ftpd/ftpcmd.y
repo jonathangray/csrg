@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ftpcmd.y	5.25 (Berkeley) 03/18/92
+ *	@(#)ftpcmd.y	5.26 (Berkeley) 06/18/92
  */
 
 /*
@@ -41,7 +41,7 @@
 %{
 
 #ifndef lint
-static char sccsid[] = "@(#)ftpcmd.y	5.25 (Berkeley) 03/18/92";
+static char sccsid[] = "@(#)ftpcmd.y	5.26 (Berkeley) 06/18/92";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -467,7 +467,6 @@ cmd:		USER SP username CRLF
 						(char *) $4);
 				} else {
 					register struct tm *t;
-					struct tm *gmtime();
 					t = gmtime(&stbuf.st_mtime);
 					reply(213,
 					    "19%02d%02d%02d%02d%02d%02d",
