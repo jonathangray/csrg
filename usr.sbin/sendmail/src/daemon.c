@@ -38,9 +38,9 @@
 
 #ifndef lint
 #ifdef DAEMON
-static char sccsid[] = "@(#)daemon.c	8.77 (Berkeley) 04/08/95 (with daemon mode)";
+static char sccsid[] = "@(#)daemon.c	8.78 (Berkeley) 04/09/95 (with daemon mode)";
 #else
-static char sccsid[] = "@(#)daemon.c	8.77 (Berkeley) 04/08/95 (without daemon mode)";
+static char sccsid[] = "@(#)daemon.c	8.78 (Berkeley) 04/09/95 (without daemon mode)";
 #endif
 #endif /* not lint */
 
@@ -855,7 +855,7 @@ host_map_lookup(map, name, av, statp)
 			bcopy(name, hbuf, sizeof hbuf - 1);
 			hbuf[sizeof hbuf - 1] = '\0';
 		}
-		if (getcanonname(hbuf, sizeof hbuf - 1, TRUE))
+		if (getcanonname(hbuf, sizeof hbuf - 1, !NoMXforCanon))
 		{
 			if (tTd(9, 1))
 				printf("%s\n", hbuf);
