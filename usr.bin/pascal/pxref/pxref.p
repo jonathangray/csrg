@@ -3,7 +3,7 @@ program xref(input, output);
 label
     99, 100;
 const
-    { sccsid = '@(#)pxref.p	1.2 (Berkeley) 03/05/82'; }
+    { sccsid = '@(#)pxref.p	1.3 (Berkeley) 07/29/82'; }
     alfasize = 18;
     linesize = 10;
     namesize = 64;
