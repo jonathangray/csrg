@@ -38,9 +38,9 @@
 
 #ifndef lint
 #ifdef DAEMON
-static char sccsid[] = "@(#)daemon.c	8.104 (Berkeley) 06/20/95 (with daemon mode)";
+static char sccsid[] = "@(#)daemon.c	8.105 (Berkeley) 06/20/95 (with daemon mode)";
 #else
-static char sccsid[] = "@(#)daemon.c	8.104 (Berkeley) 06/20/95 (without daemon mode)";
+static char sccsid[] = "@(#)daemon.c	8.105 (Berkeley) 06/20/95 (without daemon mode)";
 #endif
 #endif /* not lint */
 
@@ -230,9 +230,6 @@ makeconnection(host, port, mci, usesecureport)
 	int sav_errno;
 	int addrlen;
 	bool firstconnect;
-#if NAMED_BIND
-	extern int h_errno;
-#endif
 
 	/*
 	**  Set up the address for the mailer.
@@ -534,7 +531,6 @@ myhostname(hostbuf, size)
 {
 	register struct hostent *hp;
 	extern bool getcanonname();
-	extern int h_errno;
 
 	if (gethostname(hostbuf, size) < 0)
 	{
@@ -905,9 +901,6 @@ host_map_lookup(map, name, av, statp)
 	char *cp;
 	register STAB *s;
 	char hbuf[MAXNAME + 1];
-#if NAMED_BIND
-	extern int h_errno;
-#endif
 
 	/*
 	**  See if we have already looked up this name.  If so, just
