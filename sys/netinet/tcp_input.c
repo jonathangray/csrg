@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1982, 1986, 1988, 1990, 1993, 1994
+ * Copyright (c) 1982, 1986, 1988, 1990, 1993, 1994, 1995
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_input.c	8.10 (Berkeley) 05/02/95
+ *	@(#)tcp_input.c	8.11 (Berkeley) 05/24/95
  */
 
 #ifndef TUBA_INCLUDE
@@ -42,6 +42,8 @@
 #include <sys/socket.h>
 #include <sys/socketvar.h>
 #include <sys/errno.h>
+
+#include <machine/cpu.h>	/* before tcp_seq.h, for tcp_random18() */
 
 #include <net/if.h>
 #include <net/route.h>
@@ -358,8 +360,10 @@ findpcb:
 				 * Note: dropwithreset makes sure we don't
 				 * send a reset in response to a RST.
 				 */
-				if (tiflags & (TH_ACK|TH_RST))
+				if (tiflags & TH_ACK) {
+					tcpstat.tcps_badsyn++;
 					goto dropwithreset;
+				}
 				goto drop;
 			}
 			so = sonewconn(so, 0);
@@ -544,12 +548,14 @@ findpcb:
 		struct mbuf *am;
 		register struct sockaddr_in *sin;
 
+#ifdef already_done
 		if (tiflags & TH_RST)
 			goto drop;
 		if (tiflags & TH_ACK)
 			goto dropwithreset;
 		if ((tiflags & TH_SYN) == 0)
 			goto drop;
+#endif
 		/*
 		 * RFC1122 4.2.3.10, p. 104: discard bcast/mcast SYN
 		 * in_broadcast() should never return true on a received
@@ -590,7 +596,7 @@ findpcb:
 			tp->iss = iss;
 		else
 			tp->iss = tcp_iss;
-		tcp_iss += TCP_ISSINCR/2;
+		tcp_iss += TCP_ISSINCR/4;
 		tp->irs = ti->ti_seq;
 		tcp_sendseqinit(tp);
 		tcp_rcvseqinit(tp);
