@@ -9,7 +9,7 @@
  * software without specific prior written permission. This software
  * is provided ``as is'' without express or implied warranty.
  *
- *	@(#)tcp_timer.c	7.11 (Berkeley) 12/07/87
+ *	@(#)tcp_timer.c	7.12 (Berkeley) 02/07/88
  */
 
 #include "param.h"
