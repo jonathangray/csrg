@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stddef.h	5.6 (Berkeley) 06/22/92
+ *	@(#)stddef.h	5.7 (Berkeley) 05/26/93
  */
 
 #ifndef _STDDEF_H_
@@ -47,6 +47,7 @@ typedef	_BSD_SIZE_T_	size_t;
 
 #ifdef	_BSD_WCHAR_T_
 typedef	_BSD_WCHAR_T_	wchar_t;
+typedef	_BSD_WCHAR_T_	rune_t;
 #undef	_BSD_WCHAR_T_
 #endif
 
