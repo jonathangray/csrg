@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fdesc_vnops.c	8.2 (Berkeley) 08/15/93
+ *	@(#)fdesc_vnops.c	8.3 (Berkeley) 09/23/93
  *
  * $Id: fdesc_vnops.c,v 1.12 1993/04/06 16:17:17 jsp Exp $
  */
@@ -61,7 +61,7 @@
 #include <sys/dirent.h>
 #include <miscfs/fdesc/fdesc.h>
 
-#define cttyvp(p) ((p)->p_flag&SCTTY ? (p)->p_session->s_ttyvp : NULL)
+#define cttyvp(p) ((p)->p_flag & P_CONTROLT ? (p)->p_session->s_ttyvp : NULL)
 
 #define FDL_WANT	0x01
 #define FDL_LOCKED	0x02
