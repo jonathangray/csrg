@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vfsops.c	7.81 (Berkeley) 10/08/92
+ *	@(#)ffs_vfsops.c	7.82 (Berkeley) 11/14/92
  */
 
 #include <sys/param.h>
@@ -583,12 +583,12 @@ ffs_vget(mp, ino, vpp)
 		/*
 		 * The inode does not contain anything useful, so it would
 		 * be misleading to leave it on its hash chain. It will be
-		 * returned to the free list by ufs_iput().
+		 * returned to the free list by vput().
 		 */
 		ufs_ihashrem(ip);
 
 		/* Unlock and discard unneeded inode. */
-		ufs_iput(ip);
+		vput(vp);
 		brelse(bp);
 		*vpp = NULL;
 		return (error);
@@ -603,7 +603,7 @@ ffs_vget(mp, ino, vpp)
 	 * Note that the underlying vnode may have changed.
 	 */
 	if (error = ufs_vinit(mp, ffs_specop_p, FFS_FIFOOPS, &vp)) {
-		ufs_iput(ip);
+		vput(vp);
 		*vpp = NULL;
 		return (error);
 	}
