@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_alloc.c	7.25 (Berkeley) 04/16/91
+ *	@(#)lfs_alloc.c	7.26 (Berkeley) 05/02/91
  */
 
 #include "param.h"
@@ -176,9 +176,6 @@ realloccg(ip, lbprev, bpref, osize, nsize, bpp)
 		return (error);
 	}
 #endif
-	allocbuf(bp, nsize);
-	bp->b_flags |= B_DONE;
-	bzero(bp->b_un.b_addr + osize, (unsigned)nsize - osize);
 	/*
 	 * Check for extension in the existing location.
 	 */
@@ -188,6 +185,9 @@ realloccg(ip, lbprev, bpref, osize, nsize, bpp)
 			panic("bad blockno");
 		ip->i_blocks += btodb(nsize - osize);
 		ip->i_flag |= IUPD|ICHG;
+		allocbuf(bp, nsize);
+		bp->b_flags |= B_DONE;
+		bzero(bp->b_un.b_addr + osize, (unsigned)nsize - osize);
 		*bpp = bp;
 		return (0);
 	}
@@ -259,6 +259,9 @@ realloccg(ip, lbprev, bpref, osize, nsize, bpp)
 				(off_t)(request - nsize));
 		ip->i_blocks += btodb(nsize - osize);
 		ip->i_flag |= IUPD|ICHG;
+		allocbuf(bp, nsize);
+		bp->b_flags |= B_DONE;
+		bzero(bp->b_un.b_addr + osize, (unsigned)nsize - osize);
 		*bpp = bp;
 		return (0);
 	}
