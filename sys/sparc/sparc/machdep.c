@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)machdep.c	8.3 (Berkeley) 10/30/93
+ *	@(#)machdep.c	8.4 (Berkeley) 01/12/94
  *
  * from: $Header: machdep.c,v 1.44 93/10/31 05:28:36 torek Exp $
  */
@@ -153,7 +153,7 @@ cpu_startup()
 	 */
 	size = MAXBSIZE * nbuf;
 	buffer_map = kmem_suballoc(kernel_map, (vm_offset_t *)&buffers,
-	    &maxaddr, size, FALSE);
+	    &maxaddr, size, TRUE);
 	minaddr = (vm_offset_t)buffers;
 	if (vm_map_find(buffer_map, vm_object_allocate(size), (vm_offset_t)0,
 			&minaddr, size, FALSE) != KERN_SUCCESS)
