@@ -1,10 +1,15 @@
-/*
- * Copyright (c) 1980 Regents of the University of California.
- * All rights reserved.  The Berkeley software License Agreement
- * specifies the terms and conditions for redistribution.
+/*-
+ * Copyright (c) 1980 The Regents of the University of California.
+ * All rights reserved.
  *
- *	@(#)gram.dcl	5.1.1.1 (Berkeley) 2/6/91
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
  */
+
+#ifndef lint
+static char sccsid[] = "@(#)gram.dcl	5.2 (Berkeley) 04/12/91";
+#endif /* not lint */
 
 /*
  * Grammar for declarations, f77 compiler, 4.2 BSD.
