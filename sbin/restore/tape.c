@@ -37,7 +37,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)tape.c	8.7 (Berkeley) 02/08/95";
+static char sccsid[] = "@(#)tape.c	8.8 (Berkeley) 04/28/95";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -119,9 +119,9 @@ setinput(source)
 	terminal = stdin;
 
 #ifdef RRESTORE
-	if (index(source, ':')) {
+	if (strchr(source, ':')) {
 		host = source;
-		source = index(host, ':');
+		source = strchr(host, ':');
 		*source++ = '\0';
 		if (rmthost(host) == 0)
 			done(1);
@@ -599,7 +599,8 @@ extractfile(name)
 			skipfile();
 			return (GOOD);
 		}
-		if ((ofile = creat(name, 0666)) < 0) {
+		if ((ofile = open(name, O_WRONLY | O_CREAT | O_TRUNC,
+		    0666)) < 0) {
 			fprintf(stderr, "%s: cannot create file: %s\n",
 			    name, strerror(errno));
 			skipfile();
@@ -781,7 +782,7 @@ xtrmap(buf, size)
 	long	size;
 {
 
-	bcopy(buf, map, size);
+	memmove(map, buf, size);
 	map += size;
 }
 
@@ -824,7 +825,7 @@ readtape(buf)
 	int cnt, seek_failed;
 
 	if (blkcnt < numtrec) {
-		bcopy(&tapebuf[(blkcnt++ * TP_BSIZE)], buf, (long)TP_BSIZE);
+		memmove(buf, &tapebuf[(blkcnt++ * TP_BSIZE)], (long)TP_BSIZE);
 		blksread++;
 		tpblksread++;
 		return;
@@ -896,7 +897,7 @@ getmore:
 		if (!yflag && !reply("continue"))
 			done(1);
 		i = ntrec * TP_BSIZE;
-		bzero(tapebuf, i);
+		memset(tapebuf, 0, i);
 #ifdef RRESTORE
 		if (host)
 			seek_failed = (rmtseek(i, 1) < 0);
@@ -927,10 +928,10 @@ getmore:
 			panic("partial block read: %d should be %d\n",
 				rd, ntrec * TP_BSIZE);
 		terminateinput();
-		bcopy((char *)&endoftapemark, &tapebuf[rd], (long)TP_BSIZE);
+		memmove(&tapebuf[rd], &endoftapemark, (long)TP_BSIZE);
 	}
 	blkcnt = 0;
-	bcopy(&tapebuf[(blkcnt++ * TP_BSIZE)], buf, (long)TP_BSIZE);
+	memmove(buf, &tapebuf[(blkcnt++ * TP_BSIZE)], (long)TP_BSIZE);
 	blksread++;
 	tpblksread++;
 }
@@ -1038,7 +1039,7 @@ gethead(buf)
 		goto good;
 	}
 	readtape((char *)(&u_ospcl.s_ospcl));
-	bzero((char *)buf, (long)TP_BSIZE);
+	memset(buf, 0, (long)TP_BSIZE);
 	buf->c_type = u_ospcl.s_ospcl.c_type;
 	buf->c_date = u_ospcl.s_ospcl.c_date;
 	buf->c_ddate = u_ospcl.s_ospcl.c_ddate;
@@ -1057,7 +1058,7 @@ gethead(buf)
 	buf->c_dinode.di_mtime.ts_sec = u_ospcl.s_ospcl.c_dinode.odi_mtime;
 	buf->c_dinode.di_ctime.ts_sec = u_ospcl.s_ospcl.c_dinode.odi_ctime;
 	buf->c_count = u_ospcl.s_ospcl.c_count;
-	bcopy(u_ospcl.s_ospcl.c_addr, buf->c_addr, (long)256);
+	memmove(buf->c_addr, u_ospcl.s_ospcl.c_addr, (long)256);
 	if (u_ospcl.s_ospcl.c_magic != OFS_MAGIC ||
 	    checksum((int *)(&u_ospcl.s_ospcl)) == FAIL)
 		return(FAIL);
