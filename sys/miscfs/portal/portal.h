@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)portal.h	1.2 (Berkeley) 07/12/92
+ *	@(#)portal.h	7.1 (Berkeley) 07/12/92
  *
  * $Id: portal.h,v 1.3 1992/05/30 10:05:24 jsp Exp jsp $
  */
