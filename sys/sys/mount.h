@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mount.h	7.27 (Berkeley) 12/14/91
+ *	@(#)mount.h	7.28 (Berkeley) 12/14/91
  */
 
 typedef quad fsid_t;			/* file system id type */
@@ -204,6 +204,9 @@ typedef struct fhandle	fhandle_t;
 /*
  * Arguments to mount UFS-based filesystems
  */
+#ifndef KERNEL
+#include <sys/ucred.h>
+#endif
 struct ufs_args {
 	char	*fspec;		/* block special device to mount */
 	int	exflags;	/* export related flags */
