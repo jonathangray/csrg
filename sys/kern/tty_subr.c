@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)tty_subr.c	8.1 (Berkeley) 06/10/93
+ *	@(#)tty_subr.c	8.2 (Berkeley) 09/05/93
  */
 
 #include <sys/param.h>
@@ -32,7 +32,8 @@ int	cfreecount, nclist;
 /*
  * Initialize clist by freeing all character blocks.
  */
-cinit()
+void
+clist_init()
 {
 	register int ccp;
 	register struct cblock *cp;
@@ -200,6 +201,7 @@ out:
 /*
  * Flush cc bytes from q.
  */
+void
 ndflush(q, cc)
 	register struct clist *q;
 	register int cc;
@@ -422,6 +424,7 @@ unputc(p)
  * Put the chars in the from que
  * on the end of the to que.
  */
+void
 catq(from, to)
 	struct clist *from, *to;
 {
