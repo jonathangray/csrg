@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	5.39 (Berkeley) 11/14/92 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	5.40 (Berkeley) 12/20/92 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	5.39 (Berkeley) 11/14/92 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	5.40 (Berkeley) 12/20/92 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -189,8 +189,8 @@ smtp(e)
 		/* break off command */
 		for (p = inp; isspace(*p); p++)
 			continue;
-		cmd = p;
-		for (cmd = cmdbuf; *p != '\0' && !isspace(*p); )
+		cmd = cmdbuf;
+		while (*p != '\0' && !isspace(*p) && cmd < &cmdbuf[sizeof cmdbuf - 2])
 			*cmd++ = *p++;
 		*cmd = '\0';
 
