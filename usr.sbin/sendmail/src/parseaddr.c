@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	6.46 (Berkeley) 04/29/93";
+static char sccsid[] = "@(#)parseaddr.c	6.47 (Berkeley) 04/30/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -192,7 +192,12 @@ parseaddr(addr, a, copyf, delim, delimptr, e)
 	*/
 
 	if (queueup)
+	{
+		if (tTd(20, 1))
+			printf("parseaddr: queuing message\n");
+		message("Transient parse error -- message queued for future delivery");
 		a->q_flags |= QQUEUEUP;
+	}
 
 	/*
 	**  Compute return value.
@@ -1608,8 +1613,6 @@ buildaddr(tv, a, e)
 				CurEnv->e_id, buf);
 #endif /* LOG */
 		usrerr(buf);
-		if (e->e_message == NULL)
-			e->e_message = newstr(buf);
 		return (NULL);
 	}
 
