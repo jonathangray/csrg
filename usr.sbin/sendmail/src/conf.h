@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.171 (Berkeley) 05/25/95
+ *	@(#)conf.h	8.172 (Berkeley) 05/27/95
  */
 
 /*
@@ -444,7 +444,7 @@ extern long	dgux_inet_addr();
 
 #ifdef NeXT
 # define HASINITGROUPS	1	/* has initgroups(3) call */
-# define NEEDPUTENV	1	/* need putenv(3) call */
+# define NEEDPUTENV	2	/* need putenv(3) call; no setenv(3) call */
 # ifndef HASFLOCK
 #  define HASFLOCK	1	/* has flock(2) call */
 # endif
