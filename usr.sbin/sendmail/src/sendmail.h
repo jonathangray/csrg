@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	5.33 (Berkeley) 05/31/92
+ *	@(#)sendmail.h	5.34 (Berkeley) 07/11/92
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	5.33		05/31/92";
+static char SmailSccsId[] =	"@(#)sendmail.h	5.34		07/11/92";
 # endif lint
 # else  _DEFINE
 # define EXTERN extern
@@ -388,9 +388,9 @@ struct metamac
 **  hosts that we have looked up recently.
 */
 
-# define MCONINFO	struct mailer_con_info
+# define MCI	struct mailer_con_info
 
-MCONINFO
+MCI
 {
 	short		mci_flags;	/* flag bits, see below */
 	short		mci_errno;	/* error number on last connection */
@@ -408,15 +408,16 @@ MCONINFO
 /* flag bits */
 #define MCIF_VALID	00001		/* this entry is valid */
 #define MCIF_TEMP	00002		/* don't cache this connection */
+#define MCIF_CACHED	00004		/* currently in open cache */
 
 /* states */
 #define MCIS_CLOSED	0		/* no traffic on this connection */
 #define MCIS_OPENING	1		/* sending initial protocol */
 #define MCIS_OPEN	2		/* open, initial protocol sent */
 #define MCIS_ACTIVE	3		/* message being sent */
-#define MCIS_SSD	4		/* service shutting down */
-#define MCIS_ERROR	5		/* error state */
-#define MCIS_TEMPFAIL	6		/* temporary failure */
+#define MCIS_QUITING	4		/* running quit protocol */
+#define MCIS_SSD	5		/* service shutting down */
+#define MCIS_ERROR	6		/* I/O error on connection */
 /*
 **  Mapping functions
 **
@@ -470,7 +471,7 @@ struct symtab
 		char		*sv_alias;	/* alias */
 		MAPCLASS	sv_mapclass;	/* mapping function class */
 		MAP		sv_map;		/* mapping function */
-		MCONINFO	sv_mci;		/* mailer connection info */
+		MCI		sv_mci;		/* mailer connection info */
 	}	s_value;
 };
 
@@ -484,7 +485,7 @@ typedef struct symtab	STAB;
 # define ST_ALIAS	4	/* an alias */
 # define ST_MAPCLASS	5	/* mapping function class */
 # define ST_MAP		6	/* mapping function */
-# define ST_MCONINFO	16	/* mailer connection info (offset) */
+# define ST_MCI		16	/* mailer connection info (offset) */
 
 # define s_class	s_value.sv_class
 # define s_address	s_value.sv_addr
@@ -637,9 +638,7 @@ EXTERN char	SpaceSub;	/* substitution for <lwsp> */
 EXTERN int	WkClassFact;	/* multiplier for message class -> priority */
 EXTERN int	WkRecipFact;	/* multiplier for # of recipients -> priority */
 EXTERN int	WkTimeFact;	/* priority offset each time this job is run */
-EXTERN int	Nmx;		/* number of MX RRs */
 EXTERN char	*PostMasterCopy;	/* address to get errs cc's */
-EXTERN char	*MxHosts[MAXMXHOSTS+1];	/* for MX RRs */
 EXTERN char	*TrustedUsers[MAXTRUST+1];	/* list of trusted users */
 EXTERN char	*UserEnviron[MAXUSERENVIRON+1];	/* saved user environment */
 EXTERN int	CheckpointInterval;	/* queue file checkpoint interval */
@@ -649,6 +648,8 @@ EXTERN int	MaxHopCount;	/* number of hops until we give an error */
 EXTERN int	ConfigLevel;	/* config file level -- what does .cf expect? */
 EXTERN char	*TimeZoneSpec;	/* override time zone specification */
 EXTERN bool	MatchGecos;	/* look for user names in gecos field */
+EXTERN int	MaxMciCache;	/* maximum entries in MCI cache */
+EXTERN time_t	MciCacheTimeout;	/* maximum idle time on connections */
 /*
 **  Trace information
 */
