@@ -38,7 +38,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_bio.c	8.7 (Berkeley) 01/21/94
+ *	@(#)vfs_bio.c	8.8 (Berkeley) 01/24/94
  */
 
 #include <sys/param.h>
@@ -279,8 +279,11 @@ bwrite(bp)
 	register int flag;
 	int s, error = 0;
 
-	if (bp->b_vp && (bp->b_vp->v_mount->mnt_flag & MNT_ASYNC))
-		bp->b_flags |= B_ASYNC;
+	if ((bp->b_flags & B_ASYNC) == 0 &&
+	    bp->b_vp && (bp->b_vp->v_mount->mnt_flag & MNT_ASYNC)) {
+		bdwrite(bp);
+		return (0);
+	}
 	flag = bp->b_flags;
 	bp->b_flags &= ~(B_READ | B_DONE | B_ERROR | B_DELWRI);
 	if (flag & B_ASYNC) {
