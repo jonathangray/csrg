@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	7.98 (Berkeley) 06/23/92
+ *	@(#)ufs_vnops.c	7.99 (Berkeley) 06/25/92
  */
 
 #include <sys/param.h>
@@ -84,7 +84,12 @@ union _qcvt {
  */
 int
 ufs_create(ap)
-	struct vop_create_args *ap;
+	struct vop_create_args /* {
+		struct vnode *a_dvp;
+		struct vnode **a_vpp;
+		struct componentname *a_cnp;
+		struct vattr *a_vap;
+	} */ *ap;
 {
 	int error;
 
@@ -101,7 +106,12 @@ ufs_create(ap)
 /* ARGSUSED */
 int
 ufs_mknod(ap)
-	struct vop_mknod_args *ap;
+	struct vop_mknod_args /* {
+		struct vnode *a_dvp;
+		struct vnode **a_vpp;
+		struct componentname *a_cnp;
+		struct vattr *a_vap;
+	} */ *ap;
 {
 	register struct vattr *vap = ap->a_vap;
 	register struct vnode **vpp = ap->a_vpp;
@@ -141,7 +151,12 @@ ufs_mknod(ap)
 /* ARGSUSED */
 int
 ufs_open(ap)
-	struct vop_open_args *ap;
+	struct vop_open_args /* {
+		struct vnode *a_vp;
+		int  a_mode;
+		struct ucred *a_cred;
+		struct proc *a_p;
+	} */ *ap;
 {
 
 	return (0);
@@ -155,7 +170,12 @@ ufs_open(ap)
 /* ARGSUSED */
 int
 ufs_close(ap)
-	struct vop_close_args *ap;
+	struct vop_close_args /* {
+		struct vnode *a_vp;
+		int  a_fflag;
+		struct ucred *a_cred;
+		struct proc *a_p;
+	} */ *ap;
 {
 	register struct vnode *vp = ap->a_vp;
 	register struct inode *ip = VTOI(vp);
@@ -172,7 +192,12 @@ ufs_close(ap)
  */
 int
 ufs_access(ap)
-	struct vop_access_args *ap;
+	struct vop_access_args /* {
+		struct vnode *a_vp;
+		int  a_mode;
+		struct ucred *a_cred;
+		struct proc *a_p;
+	} */ *ap;
 {
 	USES_VOP_ISLOCKED;
 	register struct vnode *vp = ap->a_vp;
@@ -225,7 +250,12 @@ found:
 /* ARGSUSED */
 int
 ufs_getattr(ap)
-	struct vop_getattr_args *ap;
+	struct vop_getattr_args /* {
+		struct vnode *a_vp;
+		struct vattr *a_vap;
+		struct ucred *a_cred;
+		struct proc *a_p;
+	} */ *ap;
 {
 	register struct vnode *vp = ap->a_vp;
 	register struct inode *ip = VTOI(vp);
@@ -266,7 +296,12 @@ ufs_getattr(ap)
  */
 int
 ufs_setattr(ap)
-	struct vop_setattr_args *ap;
+	struct vop_setattr_args /* {
+		struct vnode *a_vp;
+		struct vattr *a_vap;
+		struct ucred *a_cred;
+		struct proc *a_p;
+	} */ *ap;
 {
 	USES_VOP_TRUNCATE;
 	USES_VOP_UPDATE;
@@ -296,7 +331,7 @@ ufs_setattr(ap)
 	if (vap->va_size != VNOVAL) {
 		if (vp->v_type == VDIR)
 			return (EISDIR);
-		if (error = VOP_TRUNCATE(vp, vap->va_size, 0, cred))
+		if (error = VOP_TRUNCATE(vp, vap->va_size, 0, cred, p))
 			return (error);
 	}
 	ip = VTOI(vp);
@@ -475,7 +510,14 @@ good:
 /* ARGSUSED */
 int
 ufs_ioctl(ap)
-	struct vop_ioctl_args *ap;
+	struct vop_ioctl_args /* {
+		struct vnode *a_vp;
+		int  a_command;
+		caddr_t  a_data;
+		int  a_fflag;
+		struct ucred *a_cred;
+		struct proc *a_p;
+	} */ *ap;
 {
 
 	return (ENOTTY);
@@ -484,7 +526,13 @@ ufs_ioctl(ap)
 /* ARGSUSED */
 int
 ufs_select(ap)
-	struct vop_select_args *ap;
+	struct vop_select_args /* {
+		struct vnode *a_vp;
+		int  a_which;
+		int  a_fflags;
+		struct ucred *a_cred;
+		struct proc *a_p;
+	} */ *ap;
 {
 
 	/*
@@ -501,7 +549,12 @@ ufs_select(ap)
 /* ARGSUSED */
 int
 ufs_mmap(ap)
-	struct vop_mmap_args *ap;
+	struct vop_mmap_args /* {
+		struct vnode *a_vp;
+		int  a_fflags;
+		struct ucred *a_cred;
+		struct proc *a_p;
+	} */ *ap;
 {
 
 	return (EINVAL);
@@ -515,7 +568,12 @@ ufs_mmap(ap)
 /* ARGSUSED */
 int
 ufs_seek(ap)
-	struct vop_seek_args *ap;
+	struct vop_seek_args /* {
+		struct vnode *a_vp;
+		off_t  a_oldoff;
+		off_t  a_newoff;
+		struct ucred *a_cred;
+	} */ *ap;
 {
 
 	return (0);
@@ -528,7 +586,11 @@ ufs_seek(ap)
  */
 int
 ufs_remove(ap)
-	struct vop_remove_args *ap;
+	struct vop_remove_args /* {
+		struct vnode *a_dvp;
+		struct vnode *a_vp;
+		struct componentname *a_cnp;
+	} */ *ap;
 {
 	register struct inode *ip, *dp;
 	int error;
@@ -553,7 +615,11 @@ ufs_remove(ap)
  */
 int
 ufs_link(ap)
-	struct vop_link_args *ap;
+	struct vop_link_args /* {
+		struct vnode *a_vp;
+		struct vnode *a_tdvp;
+		struct componentname *a_cnp;
+	} */ *ap;
 {
 	USES_VOP_UPDATE;
 	USES_VOP_ABORTOP;
@@ -784,7 +850,14 @@ bad:
  */
 int
 ufs_rename(ap)
-	struct vop_rename_args *ap;
+	struct vop_rename_args  /* {
+		struct vnode *a_fdvp;
+		struct vnode *a_fvp;
+		struct componentname *a_fcnp;
+		struct vnode *a_tdvp;
+		struct vnode *a_tvp;
+		struct componentname *a_tcnp;
+	} */ *ap;
 {
 	USES_VOP_ABORTOP;
 	USES_VOP_ACCESS;
@@ -1019,7 +1092,7 @@ ufs_rename(ap)
 			if (--xp->i_nlink != 0)
 				panic("rename: linked directory");
 			error = VOP_TRUNCATE(ITOV(xp), (off_t)0, IO_SYNC,
-			    tcnp->cn_cred);
+			    tcnp->cn_cred, tcnp->cn_proc);
 		}
 		xp->i_flag |= ICHG;
 		ufs_iput(xp);
@@ -1132,9 +1205,13 @@ static struct dirtemplate mastertemplate = {
  */
 int
 ufs_mkdir(ap)
-	struct vop_mkdir_args *ap;
+	struct vop_mkdir_args /* {
+		struct vnode *a_dvp;
+		struct vnode **a_vpp;
+		struct componentname *a_cnp;
+		struct vattr *a_vap;
+	} */ *ap;
 {
-	USES_VOP_TRUNCATE;
 	USES_VOP_UPDATE;
 	USES_VOP_VALLOC;
 	USES_VOP_VFREE;
@@ -1244,7 +1321,12 @@ bad:
  */
 int
 ufs_rmdir(ap)
-	struct vop_rmdir_args *ap;
+	struct vop_rmdir_args /* {
+		struct vnodeop_desc *a_desc;
+		struct vnode *a_dvp;
+		struct vnode *a_vp;
+		struct componentname *a_cnp;
+	} */ *ap;
 {
 	USES_VOP_TRUNCATE;
 	register struct vnode *dvp = ap->a_dvp;
@@ -1299,7 +1381,8 @@ ufs_rmdir(ap)
 	 * worry about them later.
 	 */
 	ip->i_nlink -= 2;
-	error = VOP_TRUNCATE(ap->a_vp, (off_t)0, IO_SYNC, cnp->cn_cred);
+	error = VOP_TRUNCATE(ap->a_vp, (off_t)0, IO_SYNC, cnp->cn_cred,
+	    cnp->cn_proc);
 	cache_purge(ITOV(ip));
 out:
 	if (dvp)
@@ -1313,7 +1396,13 @@ out:
  */
 int
 ufs_symlink(ap)
-	struct vop_symlink_args *ap;
+	struct vop_symlink_args /* {
+		struct vnode *a_dvp;
+		struct vnode **a_vpp;
+		struct componentname *a_cnp;
+		struct vattr *a_vap;
+		char *a_target;
+	} */ *ap;
 {
 	register struct vnode *vp, **vpp = ap->a_vpp;
 	register struct inode *ip;
@@ -1348,7 +1437,11 @@ ufs_symlink(ap)
  */
 int
 ufs_readdir(ap)
-	struct vop_readdir_args *ap;
+	struct vop_readdir_args /* {
+		struct vnode *a_vp;
+		struct uio *a_uio;
+		struct ucred *a_cred;
+	} */ *ap;
 {
 	USES_VOP_READ;
 	register struct uio *uio = ap->a_uio;
@@ -1363,10 +1456,6 @@ ufs_readdir(ap)
 	uio->uio_iov->iov_len = count;
 	error = VOP_READ(ap->a_vp, uio, 0, ap->a_cred);
 	uio->uio_resid += lost;
-	if ((VTOI(ap->a_vp)->i_size - uio->uio_offset) <= 0)
-		*ap->a_eofflagp = 1;
-	else
-		*ap->a_eofflagp = 0;
 	return (error);
 }
 
@@ -1375,7 +1464,11 @@ ufs_readdir(ap)
  */
 int
 ufs_readlink(ap)
-	struct vop_readlink_args *ap;
+	struct vop_readlink_args /* {
+		struct vnode *a_vp;
+		struct uio *a_uio;
+		struct ucred *a_cred;
+	} */ *ap;
 {
 	register struct vnode *vp = ap->a_vp;
 	register struct inode *ip = VTOI(vp);
@@ -1395,7 +1488,10 @@ ufs_readlink(ap)
 /* ARGSUSED */
 int
 ufs_abortop(ap)
-	struct vop_abortop_args *ap;
+	struct vop_abortop_args /* {
+		struct vnode *a_dvp;
+		struct componentname *a_cnp;
+	} */ *ap;
 {
 	if ((ap->a_cnp->cn_flags & (HASBUF | SAVESTART)) == HASBUF)
 		FREE(ap->a_cnp->cn_pnbuf, M_NAMEI);
@@ -1407,7 +1503,9 @@ ufs_abortop(ap)
  */
 int
 ufs_lock(ap)
-	struct vop_lock_args *ap;
+	struct vop_lock_args /* {
+		struct vnode *a_vp;
+	} */ *ap;
 {
 	register struct inode *ip = VTOI(ap->a_vp);
 
@@ -1420,7 +1518,9 @@ ufs_lock(ap)
  */
 int
 ufs_unlock(ap)
-	struct vop_unlock_args *ap;
+	struct vop_unlock_args /* {
+		struct vnode *a_vp;
+	} */ *ap;
 {
 	register struct inode *ip = VTOI(ap->a_vp);
 
@@ -1435,7 +1535,9 @@ ufs_unlock(ap)
  */
 int
 ufs_islocked(ap)
-	struct vop_islocked_args *ap;
+	struct vop_islocked_args /* {
+		struct vnode *a_vp;
+	} */ *ap;
 {
 
 	if (VTOI(ap->a_vp)->i_flag & ILOCKED)
@@ -1449,7 +1551,9 @@ ufs_islocked(ap)
  */
 int
 ufs_strategy(ap)
-	struct vop_strategy_args *ap;
+	struct vop_strategy_args /* {
+		struct buf *a_bp;
+	} */ *ap;
 {
 	USES_VOP_BMAP;
 	register struct buf *bp = ap->a_bp;
@@ -1486,7 +1590,9 @@ ufs_strategy(ap)
  */
 int
 ufs_print(ap)
-	struct vop_print_args *ap;
+	struct vop_print_args /* {
+		struct vnode *a_vp;
+	} */ *ap;
 {
 	register struct vnode *vp = ap->a_vp;
 	register struct inode *ip = VTOI(vp);
@@ -1512,7 +1618,12 @@ ufs_print(ap)
  */
 int
 ufsspec_read(ap)
-	struct vop_read_args *ap;
+	struct vop_read_args /* {
+		struct vnode *a_vp;
+		struct uio *a_uio;
+		int  a_ioflag;
+		struct ucred *a_cred;
+	} */ *ap;
 {
 	extern int (**spec_vnodeop_p)();
 
@@ -1528,7 +1639,12 @@ ufsspec_read(ap)
  */
 int
 ufsspec_write(ap)
-	struct vop_write_args *ap;
+	struct vop_write_args /* {
+		struct vnode *a_vp;
+		struct uio *a_uio;
+		int  a_ioflag;
+		struct ucred *a_cred;
+	} */ *ap;
 {
 	extern int (**spec_vnodeop_p)();
 
@@ -1546,7 +1662,12 @@ ufsspec_write(ap)
  */
 int
 ufsspec_close(ap)
-	struct vop_close_args *ap;
+	struct vop_close_args /* {
+		struct vnode *a_vp;
+		int  a_fflag;
+		struct ucred *a_cred;
+		struct proc *a_p;
+	} */ *ap;
 {
 	extern int (**spec_vnodeop_p)();
 	register struct inode *ip = VTOI(ap->a_vp);
@@ -1562,7 +1683,12 @@ ufsspec_close(ap)
  */
 int
 ufsfifo_read(ap)
-	struct vop_read_args *ap;
+	struct vop_read_args /* {
+		struct vnode *a_vp;
+		struct uio *a_uio;
+		int  a_ioflag;
+		struct ucred *a_cred;
+	} */ *ap;
 {
 	extern int (**fifo_vnodeop_p)();
 
@@ -1578,7 +1704,12 @@ ufsfifo_read(ap)
  */
 int
 ufsfifo_write(ap)
-	struct vop_write_args *ap;
+	struct vop_write_args /* {
+		struct vnode *a_vp;
+		struct uio *a_uio;
+		int  a_ioflag;
+		struct ucred *a_cred;
+	} */ *ap;
 {
 	extern int (**fifo_vnodeop_p)();
 
@@ -1595,7 +1726,12 @@ ufsfifo_write(ap)
  * Update the times on the inode then do device close.
  */
 ufsfifo_close(ap)
-	struct vop_close_args *ap;
+	struct vop_close_args /* {
+		struct vnode *a_vp;
+		int  a_fflag;
+		struct ucred *a_cred;
+		struct proc *a_p;
+	} */ *ap;
 {
 	extern int (**fifo_vnodeop_p)();
 	register struct inode *ip = VTOI(ap->a_vp);
@@ -1611,7 +1747,13 @@ ufsfifo_close(ap)
  */
 int
 ufs_advlock(ap)
-	struct vop_advlock_args *ap;
+	struct vop_advlock_args /* {
+		struct vnode *a_vp;
+		caddr_t  a_id;
+		int  a_op;
+		struct flock *a_fl;
+		int  a_flags;
+	} */ *ap;
 {
 	register struct inode *ip = VTOI(ap->a_vp);
 	register struct flock *fl = ap->a_fl;
