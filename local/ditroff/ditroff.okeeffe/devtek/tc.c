@@ -1,5 +1,5 @@
 #ifndef lint
-static char sccsid[] = "tc.c	(CWI)	1.1	85/03/26";
+static char sccsid[] = "tc.c	(CWI)	1.2	85/03/26";
 #endif lint
 /*
  *	drive 4014 scope
