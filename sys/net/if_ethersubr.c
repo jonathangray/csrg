@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_ethersubr.c	7.13 (Berkeley) 04/20/91
+ *	@(#)if_ethersubr.c	7.14 (Berkeley) 06/25/91
  */
 
 #include "param.h"
@@ -72,6 +72,7 @@
 
 u_char	etherbroadcastaddr[6] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
 extern	struct ifnet loif;
+#define senderr(e) { error = (e); goto bad;}
 
 /*
  * Ethernet output routine.
@@ -80,33 +81,53 @@ extern	struct ifnet loif;
  * packet leaves a multiple of 512 bytes of data in remainder.
  * Assumes that ifp is actually pointer to arpcom structure.
  */
-ether_output(ifp, m0, dst, rt)
+ether_output(ifp, m0, dst, rt0)
 	register struct ifnet *ifp;
 	struct mbuf *m0;
 	struct sockaddr *dst;
-	struct rtentry *rt;
+	struct rtentry *rt0;
 {
 	short type;
 	int s, error = 0;
  	u_char edst[6];
-	struct in_addr idst;
 	register struct mbuf *m = m0;
+	register struct rtentry *rt;
 	struct mbuf *mcopy = (struct mbuf *)0;
 	register struct ether_header *eh;
 	int usetrailers, off, len = m->m_pkthdr.len;
 #define	ac ((struct arpcom *)ifp)
 
-	if ((ifp->if_flags & (IFF_UP|IFF_RUNNING)) != (IFF_UP|IFF_RUNNING)) {
-		error = ENETDOWN;
-		goto bad;
-	}
+	if ((ifp->if_flags & (IFF_UP|IFF_RUNNING)) != (IFF_UP|IFF_RUNNING))
+		senderr(ENETDOWN);
 	ifp->if_lastchange = time;
+	if (rt = rt0) {
+		if ((rt->rt_flags & RTF_UP) == 0) {
+			if (rt0 = rt = rtalloc1(dst, 1))
+				rt->rt_refcnt--;
+			else 
+				return (EHOSTUNREACH);
+		}
+		if (rt->rt_flags & RTF_GATEWAY) {
+			if (rt->rt_gwroute == 0)
+				goto lookup;
+			if (((rt = rt->rt_gwroute)->rt_flags & RTF_UP) == 0) {
+				rtfree(rt); rt = rt0;
+			lookup: rt->rt_gwroute = rtalloc1(rt->rt_gateway, 1);
+				if ((rt = rt->rt_gwroute) == 0)
+					return (EHOSTUNREACH);
+			}
+		}
+		if (rt->rt_flags & RTF_REJECT)
+			if (rt->rt_rmx.rmx_expire == 0 ||
+			    time.tv_sec < rt->rt_rmx.rmx_expire)
+				return (rt == rt0 ? EHOSTDOWN : EHOSTUNREACH);
+	}
 	switch (dst->sa_family) {
 
 #ifdef INET
 	case AF_INET:
-		idst = ((struct sockaddr_in *)dst)->sin_addr;
- 		if (!arpresolve(ac, m, &idst, edst, &usetrailers))
+		if (!arpresolve(ac, rt, m, (struct sockaddr_in *)dst,
+				edst, &usetrailers))
 			return (0);	/* if not yet resolved */
 		if ((ifp->if_flags & IFF_SIMPLEX) && (*edst & 1))
 			mcopy = m_copy(m, 0, (int)M_COPYALL);
@@ -140,29 +161,15 @@ ether_output(ifp, m0, dst, rt)
 	case AF_ISO: {
 		int	snpalen;
 		struct	llc *l;
+		register struct sockaddr_dl *sdl;
 
-	iso_again:
-		if (rt && rt->rt_gateway && (rt->rt_flags & RTF_UP)) {
-			if (rt->rt_flags & RTF_GATEWAY) {
-				if (rt->rt_llinfo) {
-					rt = (struct rtentry *)rt->rt_llinfo;
-					goto iso_again;
-				}
-			} else {
-				register struct sockaddr_dl *sdl = 
-					(struct sockaddr_dl *)rt->rt_gateway;
-				if (sdl && sdl->sdl_family == AF_LINK
-				    && sdl->sdl_alen > 0) {
-					bcopy(LLADDR(sdl), (char *)edst,
-								sizeof(edst));
-					goto iso_resolved;
-				}
-			}
-		}
-		if ((error = iso_snparesolve(ifp, (struct sockaddr_iso *)dst,
-					(char *)edst, &snpalen)) > 0)
+		if (rt && (sdl = (struct sockaddr_dl *)rt->rt_gateway) &&
+		    sdl->sdl_family == AF_LINK && sdl->sdl_alen > 0) {
+			bcopy(LLADDR(sdl), (caddr_t)edst, sizeof(edst));
+		} else if (error =
+			    iso_snparesolve(ifp, (struct sockaddr_iso *)dst,
+					    (char *)edst, &snpalen))
 			goto bad; /* Not Resolved */
-	iso_resolved:
 		if ((ifp->if_flags & IFF_SIMPLEX) && (*edst & 1) &&
 		    (mcopy = m_copy(m, 0, (int)M_COPYALL))) {
 			M_PREPEND(mcopy, sizeof (*eh), M_DONTWAIT);
@@ -211,8 +218,7 @@ ether_output(ifp, m0, dst, rt)
 	default:
 		printf("%s%d: can't handle af%d\n", ifp->if_name, ifp->if_unit,
 			dst->sa_family);
-		error = EAFNOSUPPORT;
-		goto bad;
+		senderr(EAFNOSUPPORT);
 	}
 
 gottrailertype:
@@ -234,10 +240,8 @@ gottype:
 	 * allocate another.
 	 */
 	M_PREPEND(m, sizeof (struct ether_header), M_DONTWAIT);
-	if (m == 0) {
-		error = ENOBUFS;
-		goto bad;
-	}
+	if (m == 0)
+		senderr(ENOBUFS);
 	eh = mtod(m, struct ether_header *);
 	type = htons((u_short)type);
 	bcopy((caddr_t)&type,(caddr_t)&eh->ether_type,
@@ -253,8 +257,7 @@ gottype:
 	if (IF_QFULL(&ifp->if_snd)) {
 		IF_DROP(&ifp->if_snd);
 		splx(s);
-		error = ENOBUFS;
-		goto bad;
+		senderr(ENOBUFS);
 	}
 	IF_ENQUEUE(&ifp->if_snd, m);
 	if ((ifp->if_flags & IFF_OACTIVE) == 0)
@@ -303,8 +306,9 @@ ether_input(ifp, eh, m)
 		break;
 
 	case ETHERTYPE_ARP:
-		arpinput((struct arpcom *)ifp, m);
-		return;
+		schednetisr(NETISR_ARP);
+		inq = &arpintrq;
+		break;
 #endif
 #ifdef NS
 	case ETHERTYPE_NS:
