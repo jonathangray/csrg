@@ -1,5 +1,6 @@
 /*-
- * Copyright (c) 1993 The Regents of the University of California.
+ * Copyright (c) 1993
+ *	The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)config.h	8.3 (Berkeley) 11/26/93
+ *	@(#)config.h	8.4 (Berkeley) 12/18/93
  */
 
 typedef struct _tag {
