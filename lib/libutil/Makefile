@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.6 (Berkeley) 06/27/90
+#	@(#)Makefile	5.7 (Berkeley) 01/15/91
 
 LIB=	util
 CFLAGS+=-DLIBC_SCCS
