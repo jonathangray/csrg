@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)inetd.c	5.23 (Berkeley) 06/22/90";
+static char sccsid[] = "@(#)inetd.c	5.24 (Berkeley) 06/22/90";
 #endif /* not lint */
 
 /*
@@ -270,7 +270,7 @@ main(argc, argv, envp)
 		n--;
 		if (debug)
 			fprintf(stderr, "someone wants %s\n", sep->se_service);
-		if (!sep->se_wait && sep->se_socktype == SOCK_STREAM) {
+		if (sep->se_socktype == SOCK_STREAM) {
 			ctrl = accept(sep->se_fd, (struct sockaddr *)0,
 			    (int *)0);
 			if (debug)
@@ -278,7 +278,8 @@ main(argc, argv, envp)
 			if (ctrl < 0) {
 				if (errno == EINTR)
 					continue;
-				syslog(LOG_WARNING, "accept: %m");
+				syslog(LOG_WARNING, "accept (for %s): %m",
+					sep->se_service);
 				continue;
 			}
 		} else
@@ -318,7 +319,7 @@ main(argc, argv, envp)
 			pid = fork();
 		}
 		if (pid < 0) {
-			if (!sep->se_wait && sep->se_socktype == SOCK_STREAM)
+			if (sep->se_socktype == SOCK_STREAM)
 				close(ctrl);
 			sigsetmask(0L);
 			sleep(1);
@@ -376,7 +377,7 @@ main(argc, argv, envp)
 				_exit(1);
 			}
 		}
-		if (!sep->se_wait && sep->se_socktype == SOCK_STREAM)
+		if (sep->se_socktype == SOCK_STREAM)
 			close(ctrl);
 	    }
 	}
