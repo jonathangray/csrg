@@ -30,25 +30,25 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)setjmp.h	5.4 (Berkeley) 02/22/91
+ *	@(#)setjmp.h	5.5 (Berkeley) 06/08/91
  */
 
 #ifndef _SETJMP_H_
 #define _SETJMP_H_
 
-#ifdef hp300
+#if defined(hp300) || defined(__hp300__)
 #define _JBLEN	17
 #endif
 
-#ifdef i386
+#if defined(i386) || defined(__i386__)
 #define _JBLEN	10
 #endif
 
-#ifdef tahoe
+#if defined(tahoe) || defined(__tahoe__)
 #define _JBLEN	10
 #endif
 
-#ifdef vax
+#if defined(vax) || defined(__vax__)
 #define _JBLEN	10
 #endif
 
