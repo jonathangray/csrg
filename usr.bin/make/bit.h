@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)bit.h	5.3 (Berkeley) 06/01/90
+ *	@(#)bit.h	5.4 (Berkeley) 05/24/93
  */
 
 /*
@@ -97,4 +97,4 @@ extern Boolean 	  Bit_Union();
 extern Boolean 	  Bit_AnySet();
 extern int  	  *Bit_Expand();
 	 
-#endif _BIT
+#endif /* _BIT */
