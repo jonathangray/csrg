@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)scsireg.h	7.1 (Berkeley) 05/08/90
+ *	@(#)scsireg.h	7.2 (Berkeley) 12/16/90
  */
 
 /*
@@ -440,7 +440,7 @@ struct scsi_cache {
  * Driver ioctl's for various scsi operations.
  */
 #ifndef _IOCTL_
-#include "ioctl.h"
+#include "sys/ioctl.h"
 #endif
 
 /*
