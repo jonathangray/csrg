@@ -83,7 +83,7 @@ trap(frame)
 {
 	register int i;
 	register struct proc *p = curproc;
-	struct timeval syst;
+	u_quad_t sticks;
 	int ucode, type, code, eva;
 	extern int cold;
 
@@ -96,11 +96,11 @@ copyfault:	frame.tf_eip = (int)curpcb->pcb_onfault;
 		return;
 	}
 
-	syst = p->p_stime;
 	if (ISPL(frame.tf_cs) == SEL_UPL) {
 		type |= T_USER;
 		p->p_md.md_regs = (int *)&frame;
 		curpcb->pcb_flags |= FM_TRAP;	/* used by sendsig */
+		sticks = p->p_sticks;
 	}
 
 	ucode=0;
@@ -277,11 +277,8 @@ out:
 			psig(i);
 	}
 	if (p->p_stats->p_prof.pr_scale) {
-		int ticks;
-		struct timeval *tv = &p->p_stime;
+		u_quad_t ticks = p->p_sticks - sticks;
 
-		ticks = ((tv->tv_sec - syst.tv_sec) * 1000 +
-			(tv->tv_usec - syst.tv_usec) / 1000) / (tick / 1000);
 		if (ticks) {
 #ifdef PROFTIMER
 			extern int profscale;
@@ -310,7 +307,7 @@ syscall(frame)
 	register int i;
 	register struct sysent *callp;
 	register struct proc *p = curproc;
-	struct timeval syst;
+	u_quad_t sticks;
 	int error, opc;
 	int args[8], rval[2];
 	unsigned int code;
@@ -318,7 +315,7 @@ syscall(frame)
 #ifdef lint
 	r0 = 0; r0 = r0; r1 = 0; r1 = r1;
 #endif
-	syst = p->p_stime;
+	sticks = p->p_sticks;
 	if (ISPL(frame.sf_cs) != SEL_UPL)
 		panic("syscall");
 
@@ -397,11 +394,8 @@ done:
 			psig(i);
 	}
 	if (p->p_stats->p_prof.pr_scale) {
-		int ticks;
-		struct timeval *tv = &p->p_stime;
+		u_quad_t ticks = p->p_sticks - sticks;
 
-		ticks = ((tv->tv_sec - syst.tv_sec) * 1000 +
-			(tv->tv_usec - syst.tv_usec) / 1000) / (tick / 1000);
 		if (ticks) {
 #ifdef PROFTIMER
 			extern int profscale;
