@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stdlib.h	5.22 (Berkeley) 11/23/92
+ *	@(#)stdlib.h	5.23 (Berkeley) 12/02/92
  */
 
 #ifndef _STDLIB_H_
@@ -137,6 +137,8 @@ void	*alloca __P((size_t));	/* built-in for gcc */
 int	 heapsort __P((void *, size_t, size_t,
 	    int (*)(const void *, const void *)));
 char	*initstate __P((unsigned, char *, int));
+int	 mergesort __P((void *, size_t, size_t,
+	    int (*)(const void *, const void *)));
 int	 radixsort __P((const unsigned char **, int, const unsigned char *,
 	    unsigned));
 int	 sradixsort __P((const unsigned char **, int, const unsigned char *,
