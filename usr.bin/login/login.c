@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)login.c	5.70 (Berkeley) 06/02/91";
+static char sccsid[] = "@(#)login.c	5.71 (Berkeley) 06/27/91";
 #endif /* not lint */
 
 /*
@@ -148,7 +148,7 @@ main(argc, argv)
 		case 'h':
 			if (uid) {
 				(void)fprintf(stderr,
-				    "login: -h for super-user only.\n");
+				    "login: -h option: %s\n", strerror(EPERM));
 				exit(1);
 			}
 			if (rflag) {
