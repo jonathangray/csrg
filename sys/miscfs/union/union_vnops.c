@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_vnops.c	8.15 (Berkeley) 06/04/94
+ *	@(#)union_vnops.c	8.16 (Berkeley) 06/16/94
  */
 
 #include <sys/param.h>
@@ -596,7 +596,7 @@ union_getattr(ap)
 	if ((vap != ap->a_vap) && (vap->va_type == VDIR))
 		ap->a_vap->va_nlink += vap->va_nlink;
 
-	vap->va_fsid = ap->a_vp->v_mount->mnt_stat.f_fsid.val[0];
+	ap->a_vap->va_fsid = ap->a_vp->v_mount->mnt_stat.f_fsid.val[0];
 	return (0);
 }
 
