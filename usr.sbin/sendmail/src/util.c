@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)util.c	8.9 (Berkeley) 08/26/93";
+static char sccsid[] = "@(#)util.c	8.10 (Berkeley) 09/04/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -769,6 +769,10 @@ xfclose(fp, a, b)
 {
 	if (tTd(53, 99))
 		printf("xfclose(%x) %s %s\n", fp, a, b);
+#ifdef XDEBUG
+	if (fileno(fp) == 1)
+		syserr("xfclose(%s %s): fd = 1", a, b);
+#endif
 	if (fclose(fp) < 0 && tTd(53, 99))
 		printf("xfclose FAILURE: %s\n", errstring(errno));
 }
