@@ -1,4 +1,4 @@
-/*	pcb.h	3.1	%H%	*/
+/*	pcb.h	3.2	06/07/80	*/
 
 /*
  * VAX process control block
