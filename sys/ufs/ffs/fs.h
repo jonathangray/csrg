@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fs.h	7.11 (Berkeley) 10/24/90
+ *	@(#)fs.h	7.12 (Berkeley) 05/08/91
  */
 
 /*
@@ -94,7 +94,7 @@
  * this purpose, however numerous dump tapes make this
  * assumption, so we are stuck with it)
  */
-#define	ROOTINO		((ino_t)2)	/* i number of all roots */
+#define	ROOTINO		((ino_t)2)
 
 /*
  * MINBSIZE is the smallest allowable block size.
