@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cd9660_rrip.c	8.2 (Berkeley) 01/23/94
+ *	@(#)cd9660_rrip.c	8.3 (Berkeley) 06/01/94
  */
 
 #include <sys/param.h>
@@ -637,7 +637,7 @@ cd9660_rrip_getsymname(isodir,outbuf,outlen,imp)
 	ISO_RRIP_ANALYZE analyze;
 	
 	analyze.outbuf = outbuf;
-	analyze.outlen = outlen;
+	analyze.outlen = 0;
 	*outlen = 0;
 	analyze.maxlen = MAXPATHLEN;
 	analyze.cont = 1;		/* don't start with a slash */
