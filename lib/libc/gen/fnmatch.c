@@ -35,11 +35,11 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)fnmatch.c	5.5 (Berkeley) 06/28/92";
+static char sccsid[] = "@(#)fnmatch.c	5.6 (Berkeley) 06/28/92";
 #endif /* LIBC_SCCS and not lint */
 
 /*
- * Function fnmatch() as proposed in Posix 1003.2 B.6 (rev. 9).
+ * Function fnmatch() as proposed in POSIX 1003.2 B.6 (D11.2).
  * Compares a filename or pathname to a pattern.
  */
 
@@ -48,7 +48,7 @@ static char sccsid[] = "@(#)fnmatch.c	5.5 (Berkeley) 06/28/92";
 
 #define	EOS	'\0'
 
-static char *rangematch __P((char *, int));
+static const char *rangematch __P((const char *, int));
 
 fnmatch(pattern, string, flags)
 	register const char *pattern, *string;
@@ -120,9 +120,9 @@ fnmatch(pattern, string, flags)
 	/* NOTREACHED */
 }
 
-static char *
+static const char *
 rangematch(pattern, test)
-	register char *pattern;
+	register const char *pattern;
 	register int test;
 {
 	register char c, c2;
