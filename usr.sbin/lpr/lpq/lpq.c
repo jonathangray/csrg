@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)lpq.c	5.8 (Berkeley) 07/21/92";
+static char sccsid[] = "@(#)lpq.c	5.9 (Berkeley) 8/6/92";
 #endif /* not lint */
 
 /*
@@ -61,10 +61,10 @@ static char sccsid[] = "@(#)lpq.c	5.8 (Berkeley) 07/21/92";
 #include "lp.h"
 #include "lp.local.h"
 
+int	 requ[MAXREQUESTS];	/* job number of spool entries */
+int	 requests;		/* # of spool requests */
 char	*user[MAXUSERS];	/* users to process */
-int	users;			/* # of users in user array */
-int	requ[MAXREQUESTS];	/* job number of spool entries */
-int	requests;		/* # of spool requests */
+int	 users;			/* # of users in user array */
 
 void usage __P((void));
 
