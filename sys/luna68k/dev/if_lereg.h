@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 1982, 1990 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1982, 1990, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,7 +32,7 @@
  *
  * from: hp300/dev/if_lereg.h	7.5 (Berkeley) 10/11/92
  *
- *	@(#)if_lereg.h	7.4 (Berkeley) 01/13/93
+ *	@(#)if_lereg.h	8.1 (Berkeley) 06/10/93
  */
 
 #include <luna68k/dev/iotypes.h>	/* XXX */
