@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_nqlease.c	7.18 (Berkeley) 02/02/93
+ *	@(#)nfs_nqlease.c	7.19 (Berkeley) 03/31/93
  */
 
 /*
@@ -1080,7 +1080,7 @@ if (vp->v_mount->mnt_stat.f_fsid.val[1] != MOUNT_NFS) panic("trash4");
 		    error = tsleep((caddr_t)&nmp->nm_authstr, PSOCK | PCATCH,
 			"nqnfstimr", hz / 3);
 		    if (error == EINTR || error == ERESTART)
-			(void) dounmount(nmp->nm_mountp, 0);
+			(void) dounmount(nmp->nm_mountp, 0, p);
 	    }
 	}
 	free((caddr_t)nmp, M_NFSMNT);
