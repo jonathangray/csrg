@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)tisink.c	7.8 (Berkeley) 07/24/91";
+static char sccsid[] = "@(#)tisink.c	7.9 (Berkeley) 08/22/91";
 #endif /* not lint */
 
 /*
@@ -62,8 +62,13 @@ static char sccsid[] = "@(#)tisink.c	7.8 (Berkeley) 07/24/91";
 
 
 #define dbprintf if(verbose)printf
+#ifdef __STDC__
+#define try(a,b,c) {x = (a b); dbprintf("%s%s returns %d\n",c,#a,x);\
+		if (x<0) {perror(#a); myexit(0);}}
+#else
 #define try(a,b,c) {x = (a b); dbprintf("%s%s returns %d\n",c,"a",x);\
-		if(x<0) {perror("a"); myexit(0);}}
+		if (x<0) {perror("a"); myexit(0);}}
+#endif
 
 
 struct  ifreq ifr;
@@ -72,8 +77,9 @@ struct  sockaddr_iso faddr, laddr = { sizeof(laddr), AF_ISO };
 struct  sockaddr_iso *siso = &laddr;
 char **xenvp;
 
-long size, count = 10, forkp, confp, mynamep, verbose = 1, playtag, echop = 0;
+long size, forkp = 0, confp, mynamep, verbose = 1, echop = 0;
 long records, intercept = 0, isode_mode = 0, dgramp = 0, tp0mode = 0;
+long dumpnodata = 0, playtag = 0;
 void savedata();
 
 char buf[2048];
@@ -101,10 +107,6 @@ char *envp[];
 			av++;
 			laddr.siso_addr = *iso_addr(*av);
 			argc--;
-		} else if (strcmp(*av,"count")==0) {
-			av++;
-			sscanf(*av,"%ld",&count);
-			argc--;
 		} else if (strcmp(*av,"port")==0) {
 			av++;
 			sscanf(*av,"%hd",&port);
@@ -113,6 +115,8 @@ char *envp[];
 			av++;
 			sscanf(*av,"%ld",&size);
 			argc--;
+		} else if (strcmp(*av, "echo")==0) {
+			echop++;
 		} else if (strcmp(*av, "intercept")==0) {
 			intercept++;
 		}
@@ -263,8 +267,8 @@ tisink()
 			}
 			errno = 0;
 		    }
+		    myexit(0);
 		}
-		myexit(0);
 	}
 }
 struct savebuf {
@@ -308,6 +312,8 @@ char *what; unsigned short *where; int n;
 	unsigned short *s = where;
 	unsigned short *z = where + (n+1)/2;
 	int count = 0;
+	if (dumpnodata)
+		return;
 	printf(what);
 	while(s < z) {
 		count++;
