@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)machAsmDefs.h	7.4 (Berkeley) 02/26/93
+ *	@(#)machAsmDefs.h	7.5 (Berkeley) 04/13/93
  */
 
 /*
@@ -115,6 +115,18 @@ x:
 x: ; \
 	.frame sp, fsize, retpc; \
 	MCOUNT
+
+/*
+ * NNON_LEAF(x)
+ *
+ *	Declare a non-profiled non-leaf routine
+ *	(a routine that makes other C calls).
+ */
+#define NNON_LEAF(x, fsize, retpc) \
+	.globl x; \
+	.ent x, 0; \
+x: ; \
+	.frame sp, fsize, retpc
 
 /*
  * END(x)
