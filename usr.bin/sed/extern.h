@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.4 (Berkeley) 08/28/92
+ *	@(#)extern.h	5.5 (Berkeley) 08/30/92
  */
 
 extern struct s_command *prog;
@@ -55,5 +55,5 @@ void	 process __P((void));
 char	*strregerror __P((int, regex_t *));
 void	*xmalloc __P((u_int));
 void	*xrealloc __P((void *, u_int));
-void	 cfclose __P((struct s_command *));
+void	 cfclose __P((struct s_command *, struct s_command *));
 void	 cspace __P((SPACE *, char *, size_t, enum e_spflag));
