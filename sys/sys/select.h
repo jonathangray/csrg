@@ -30,8 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)select.h	7.2 (Berkeley) 02/17/92
+ *	@(#)select.h	7.3 (Berkeley) 02/18/92
  */
+
+#ifndef _SELECT_H_
+#define	_SELECT_H_
 
 /*
  * Used to maintain information about processes that wish to be
@@ -45,3 +48,5 @@ struct selinfo {
 
 void	selrecord __P((struct proc *selector, struct selinfo *));
 void	selwakeup __P((struct selinfo *));
+
+#endif /* !_SELECT_H_ */
