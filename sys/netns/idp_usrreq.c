@@ -30,11 +30,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)idp_usrreq.c	7.10 (Berkeley) 06/28/90
+ *	@(#)idp_usrreq.c	7.11 (Berkeley) 06/27/91
  */
 
 #include "param.h"
-#include "user.h"
 #include "malloc.h"
 #include "mbuf.h"
 #include "protosw.h"
@@ -545,7 +544,7 @@ idp_raw_usrreq(so, req, m, nam, control)
 
 	case PRU_ATTACH:
 
-		if (suser(u.u_cred, &u.u_acflag) || (nsp != NULL)) {
+		if (!(so->so_state & SS_PRIV) || (nsp != NULL)) {
 			error = EINVAL;
 			break;
 		}
