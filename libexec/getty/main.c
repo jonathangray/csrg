@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.1 (Berkeley) 06/04/93";
+static char sccsid[] = "@(#)main.c	5.22 (Berkeley) 06/20/93";
 #endif /* not lint */
 
 #define USE_OLD_TTY
@@ -146,7 +146,8 @@ interrupt()
  * Action to take when getty is running too long.
  */
 void
-timeoverrun()
+timeoverrun(signo)
+	int signo;
 {
 
 	syslog(LOG_ERR, "getty exiting due to excessive running time\n");
@@ -184,10 +185,10 @@ main(argc, argv)
 	/*
 	 * Limit running time to deal with broken or dead lines.
 	 */
-	signal(SIGXCPU, timeoverrun);
+	(void)signal(SIGXCPU, timeoverrun);
 	limit.rlim_max = RLIM_INFINITY;
 	limit.rlim_cur = GETTY_TIMEOUT;
-	setrlimit(RLIMIT_CPU, &limit);
+	(void)setrlimit(RLIMIT_CPU, &limit);
 
 	/*
 	 * The following is a work around for vhangup interactions
@@ -311,6 +312,9 @@ main(argc, argv)
 			 * soon we rewrite getty completely.
 			 */
 			set_ttydefaults(0);
+			limit.rlim_max = RLIM_INFINITY;
+			limit.rlim_cur = RLIM_INFINITY;
+			(void)setrlimit(RLIMIT_CPU, &limit);
 			execle(LO, "login", "-p", name, (char *) 0, env);
 			syslog(LOG_ERR, "%s: %m", LO);
 			exit(1);
