@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)1.t	6.7 (Berkeley) 07/15/93
+.\"	@(#)1.t	6.8 (Berkeley) 07/15/93
 .\"
 .ds lq ``
 .ds rq ''
@@ -48,7 +48,7 @@ and it will only be necessary for you to do a full bootstrap
 procedure if you are installing the release on a new machine.
 The object file formats are completely different in the System V releases.
 Thus, the most straightforward procedure for upgrading a System V
-system is to perform a full bootstrap.
+system is to do a full bootstrap.
 .PP
 The full bootstrap procedure
 is outlined in section 2; the process starts with copying a filesystem
