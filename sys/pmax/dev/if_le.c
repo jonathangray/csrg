@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_le.c	7.3 (Berkeley) 03/29/92
+ *	@(#)if_le.c	7.4 (Berkeley) 06/20/92
  */
 
 #include "le.h"
@@ -624,8 +624,8 @@ leread(unit, buf, len)
 		resid = ntohs(sbuf[1]);
 #endif
 #ifdef DS5000
-		et.ether_type = ntohs((u_short *)(buf + (sizeof(et) + off))[0]);
-		resid = ntohs((u_short *)(buf + (sizeof(et) + off))[1]);
+		et.ether_type = ntohs(((u_short *)(buf + (sizeof(et) + off)))[0]);
+		resid = ntohs(((u_short *)(buf + (sizeof(et) + off)))[1]);
 #endif
 		if (off + resid > len)
 			return;		/* sanity */
@@ -979,6 +979,8 @@ lererror(unit, msg)
 {
 	register struct le_softc *le = &le_softc[unit];
 	register volatile struct lermd *rmd;
+	u_char eaddr[6];
+	char *cp;
 	int len;
 
 	if (!ledebug)
@@ -986,11 +988,21 @@ lererror(unit, msg)
 
 	rmd = &le->sc_r2->ler2_rmd[le->sc_rmd];
 	len = rmd->rmd3;
+	if (len > 11) {
+#ifdef DS3100
+		CopyFromBuffer((char *)&le->sc_r2->ler2_rbuf[le->sc_rmd][6],
+			eaddr, sizeof(eaddr));
+#endif
+#ifdef DS5000
+		bcopy((char *)&le->sc_r2->ler2_rbuf[le->sc_rmd][6],
+			eaddr, sizeof(eaddr));
+#endif
+		cp = ether_sprintf(eaddr);
+	} else
+		cp = "unknown";
 	log(LOG_WARNING,
 	    "le%d: ierror(%s): from %s: buf=%d, len=%d, rmd1=%b\n",
-	    unit, msg,
-	    len > 11 ? ether_sprintf(&le->sc_r2->ler2_rbuf[le->sc_rmd][6]) : "unknown",
-	    le->sc_rmd, len,
+	    unit, msg, cp, le->sc_rmd, len,
 	    rmd->rmd1,
 	    "\20\20OWN\17ERR\16FRAM\15OFLO\14CRC\13RBUF\12STP\11ENP");
 }
@@ -1000,6 +1012,8 @@ lexerror(unit)
 {
 	register struct le_softc *le = &le_softc[unit];
 	register volatile struct letmd *tmd;
+	u_char eaddr[6];
+	char *cp;
 	int len;
 
 	if (!ledebug)
@@ -1007,11 +1021,21 @@ lexerror(unit)
 
 	tmd = le->sc_r2->ler2_tmd;
 	len = -tmd->tmd2;
+	if (len > 5) {
+#ifdef DS3100
+		CopyFromBuffer((char *)&le->sc_r2->ler2_tbuf[le->sc_tmd][0],
+			eaddr, sizeof(eaddr));
+#endif
+#ifdef DS5000
+		bcopy((char *)&le->sc_r2->ler2_tbuf[le->sc_tmd][0],
+			eaddr, sizeof(eaddr));
+#endif
+		cp = ether_sprintf(eaddr);
+	} else
+		cp = "unknown";
 	log(LOG_WARNING,
 	    "le%d: oerror: to %s: buf=%d, len=%d, tmd1=%b, tmd3=%b\n",
-	    unit,
-	    len > 5 ? ether_sprintf(&le->sc_r2->ler2_tbuf[0][0]) : "unknown",
-	    0, len,
+	    unit, cp, le->sc_tmd, len,
 	    tmd->tmd1,
 	    "\20\20OWN\17ERR\16RES\15MORE\14ONE\13DEF\12STP\11ENP",
 	    tmd->tmd3,
