@@ -1,4 +1,4 @@
-#	@(#)files.newconf	7.3 (Berkeley) 04/18/93
+#	@(#)files.newconf	7.4 (Berkeley) 05/05/93
 
 # generic attributes
 define	disk
