@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hash.h	8.1 (Berkeley) 06/04/93
+ *	@(#)hash.h	8.2 (Berkeley) 02/21/94
  */
 
 /* Operations */
@@ -89,7 +89,8 @@ typedef struct htab {		/* Memory resident data structure */
 	HASHHDR hdr;		/* Header */
 	int	nsegs;		/* Number of allocated segments */
 	int	exsegs;		/* Number of extra allocated segments */
-	int	(*hash) ();	/* Hash Function */
+	u_int32_t		/* Hash function */
+	    (*hash)__P((const void *, size_t));
 	int	flags;		/* Flag values */
 	int	fp;		/* File pointer */
 	char	*tmp_buf;	/* Temporary Buffer for BIG data */
