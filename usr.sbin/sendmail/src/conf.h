@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.148 (Berkeley) 04/12/95
+ *	@(#)conf.h	8.149 (Berkeley) 04/14/95
  */
 
 /*
@@ -778,6 +778,7 @@ extern void		*malloc();
 #ifdef _AUX_SOURCE
 # include <sys/sysmacros.h>
 # define BSD			/* has BSD routines */
+# define BROKEN_RES_SEARCH 1	/* res_search(unknown) returns h_errno=0 */
 # define HASUNAME	1	/* use System V uname(2) system call */
 # define HASSETVBUF	1	/* we have setvbuf(3) in libc */
 # define SIGFUNC_DEFINED	/* sigfunc_t already defined */
