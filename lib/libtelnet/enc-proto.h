@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)enc-proto.h	5.3 (Berkeley) 12/18/92
+ *	@(#)enc-proto.h	5.4 (Berkeley) 05/20/93
  */
 
 /*
@@ -60,7 +60,7 @@
 #endif
 #endif
 
-#if	defined(ENCRYPTION)
+#ifdef	ENCRYPTION
 void encrypt_init P((char *, int));
 Encryptions *findencryption P((int));
 void encrypt_send_supprt P((void));
@@ -122,4 +122,4 @@ void des_set_random_generator_seed P((Block));
 void des_key_sched P((Block, Schedule));
 void des_ecb_encrypt P((Block, Block, Schedule, int));
 int  des_string_to_key P((char *, Block));
-#endif
+#endif	/* ENCRYPTION */
