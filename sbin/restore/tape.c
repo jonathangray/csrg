@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)tape.c	5.26 (Berkeley) 01/29/92";
+static char sccsid[] = "@(#)tape.c	5.27 (Berkeley) 05/18/92";
 #endif /* not lint */
 
 #include "restore.h"
@@ -311,14 +311,8 @@ again:
 	if (feof(terminal))
 		done(1);
 	if (!strcmp(tbf, "none\n")) {
-		curfile.name = "<name unknown>";
-		curfile.action = UNKNOWN;
-		curfile.dip = (struct dinode *)NIL;
-		curfile.ino = maxino;
-		if (gettingfile) {
-			gettingfile = 0;
-			longjmp(restart, 1);
-		}
+		terminateinput();
+		return;
 	}
 	if (tbf[0] != '\n') {
 		(void) strcpy(magtape, tbf);
@@ -398,6 +392,26 @@ gethdr:
 			readtape(buf);
 	(void) gethead(&spcl);
 	findinode(&spcl);
+	if (gettingfile) {
+		gettingfile = 0;
+		longjmp(restart, 1);
+	}
+}
+
+/*
+ * Handle unexpected EOF.
+ */
+terminateinput()
+{
+
+	if (gettingfile && curfile.action == USING) {
+		printf("Warning: %s %s\n",
+		    "End-of-input encountered while extracting", curfile.name);
+	}
+	curfile.name = "<name unknown>";
+	curfile.action = UNKNOWN;
+	curfile.dip = (struct dinode *)NIL;
+	curfile.ino = maxino;
 	if (gettingfile) {
 		gettingfile = 0;
 		longjmp(restart, 1);
@@ -815,6 +829,7 @@ getmore:
 		if (rd % TP_BSIZE != 0)
 			panic("partial block read: %d should be %d\n",
 				rd, ntrec * TP_BSIZE);
+		terminateinput();
 		bcopy((char *)&endoftapemark, &tbf[rd], (long)TP_BSIZE);
 	}
 	bct = 0;
