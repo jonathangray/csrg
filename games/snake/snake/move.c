@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)move.c	8.1 (Berkeley) 05/31/93";
+static char sccsid[] = "@(#)move.c	5.11 (Berkeley) 07/19/93";
 #endif /* not lint */
 
 /*************************************************************************
@@ -576,6 +576,9 @@ getcap()
 	char *xPC;
 	struct point z;
 	void stop();
+#ifdef TIOCGWINSZ
+	struct winsize win;
+#endif
 
 	term = getenv("TERM");
 	if (term==0) {
@@ -594,8 +597,15 @@ getcap()
 
 	ap = tcapbuf;
 
-	LINES = tgetnum("li");
-	COLUMNS = tgetnum("co");
+#ifdef TIOCGWINSZ
+	if (ioctl(0, TIOCGWINSZ, (char *) &win) < 0 ||
+	    (LINES = win.ws_row) == 0 || (COLUMNS = win.ws_col) == 0) {
+#endif
+		LINES = tgetnum("li");
+		COLUMNS = tgetnum("co");
+#ifdef TIOCGWINSZ
+	}
+#endif
 	if (!lcnt)
 		lcnt = LINES - 2;
 	if (!ccnt)
