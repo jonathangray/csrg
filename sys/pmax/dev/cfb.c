@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cfb.c	7.1 (Berkeley) 03/09/92
+ *	@(#)cfb.c	7.2 (Berkeley) 03/15/92
  */
 
 /*
@@ -721,6 +721,7 @@ cfbclose(dev, flag)
 	dev_t dev;
 	int flag;
 {
+	int s;
 
 	if (!GraphicsOpen)
 		return (EBADF);
@@ -728,6 +729,11 @@ cfbclose(dev, flag)
 	GraphicsOpen = 0;
 	if (!isMono)
 		InitColorMap();
+	s = spltty();
+	dcDivertXInput = (void (*)())0;
+	dcMouseEvent = (void (*)())0;
+	dcMouseButtons = (void (*)())0;
+	splx(s);
 	ScreenInit();
 	vmUserUnmap();
 	bzero(fb_addr, (isMono ? 1024 / 8 : 1024) * 864);
@@ -740,6 +746,7 @@ cfbioctl(dev, cmd, data, flag)
 	dev_t dev;
 	caddr_t data;
 {
+	int s;
 
 	switch (cmd) {
 	case QIOCGINFO:
@@ -831,15 +838,19 @@ cfbioctl(dev, cmd, data, flag)
 		break;
 
 	case QIOKERNLOOP:
+		s = spltty();
 		dcDivertXInput = cfbKbdEvent;
 		dcMouseEvent = cfbMouseEvent;
 		dcMouseButtons = cfbMouseButtons;
+		splx(s);
 		break;
 
 	case QIOKERNUNLOOP:
+		s = spltty();
 		dcDivertXInput = (void (*)())0;
 		dcMouseEvent = (void (*)())0;
 		dcMouseButtons = (void (*)())0;
+		splx(s);
 		break;
 
 	case QIOVIDEOON:
