@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lookup.c	8.10 (Berkeley) 12/30/94
+ *	@(#)ufs_lookup.c	8.11 (Berkeley) 01/02/95
  */
 
 #include <sys/param.h>
@@ -636,9 +636,9 @@ ufs_dirbadentry(dp, ep, entryoffsetinblock)
 	}
 	if (ep->d_name[i])
 		goto bad;
-	return (ep->d_name[i]);
+	return (0);
 bad:
-	return(1);
+	return (1);
 }
 
 /*
@@ -832,7 +832,7 @@ ufs_dirremove(dvp, cnp)
 
 	if (cnp->cn_flags & DOWHITEOUT) {
 		/*
-		 * First entry in block: set d_ino to zero.
+		 * Whiteout entry: set d_ino to WINO.
 		 */
 		if (error =
 		    VOP_BLKATOFF(dvp, (off_t)dp->i_offset, (char **)&ep, &bp))
