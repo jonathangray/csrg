@@ -5,13 +5,14 @@
  */
 
 #ifndef lint
-static char *sccsid = "@(#)ex_temp.c	7.6.1.1 (Berkeley) 08/08/88";
+static char *sccsid = "@(#)ex_temp.c	7.7 (Berkeley) 05/11/89";
 #endif not lint
 
 #include "ex.h"
 #include "ex_temp.h"
 #include "ex_vis.h"
 #include "ex_tty.h"
+#include "pathnames.h"
 
 /*
  * Editor temporary file routines.
