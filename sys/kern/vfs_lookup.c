@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_lookup.c	8.7 (Berkeley) 04/28/95
+ *	@(#)vfs_lookup.c	8.8 (Berkeley) 05/14/95
  */
 
 #include <sys/param.h>
@@ -84,6 +84,7 @@ namei(ndp)
 	struct uio auio;
 	int error, linklen;
 	struct componentname *cnp = &ndp->ni_cnd;
+	struct proc *p = cnp->cn_proc;
 
 	ndp->ni_cnd.cn_cred = ndp->ni_cnd.cn_proc->p_ucred;
 #ifdef DIAGNOSTIC
@@ -157,7 +158,7 @@ namei(ndp)
 			return (0);
 		}
 		if ((cnp->cn_flags & LOCKPARENT) && ndp->ni_pathlen == 1)
-			VOP_UNLOCK(ndp->ni_dvp);
+			VOP_UNLOCK(ndp->ni_dvp, 0, p);
 		if (ndp->ni_loopcnt++ >= MAXSYMLINKS) {
 			error = ELOOP;
 			break;
@@ -255,6 +256,7 @@ lookup(ndp)
 	int rdonly;			/* lookup read-only flag bit */
 	int error = 0;
 	struct componentname *cnp = &ndp->ni_cnd;
+	struct proc *p = cnp->cn_proc;
 
 	/*
 	 * Setup: break out flag bits into variables.
@@ -269,7 +271,7 @@ lookup(ndp)
 	cnp->cn_flags &= ~ISSYMLINK;
 	dp = ndp->ni_startdir;
 	ndp->ni_startdir = NULLVP;
-	VOP_LOCK(dp);
+	vn_lock(dp, LK_EXCLUSIVE | LK_RETRY, p);
 
 dirloop:
 	/*
@@ -332,7 +334,7 @@ dirloop:
 		}
 		ndp->ni_vp = dp;
 		if (!(cnp->cn_flags & (LOCKPARENT | LOCKLEAF)))
-			VOP_UNLOCK(dp);
+			VOP_UNLOCK(dp, 0, p);
 		if (cnp->cn_flags & SAVESTART)
 			panic("lookup: SAVESTART");
 		return (0);
@@ -363,7 +365,7 @@ dirloop:
 			dp = dp->v_mount->mnt_vnodecovered;
 			vput(tdp);
 			VREF(dp);
-			VOP_LOCK(dp);
+			vn_lock(dp, LK_EXCLUSIVE | LK_RETRY, p);
 		}
 	}
 
@@ -387,7 +389,7 @@ unionlookup:
 			dp = dp->v_mount->mnt_vnodecovered;
 			vput(tdp);
 			VREF(dp);
-			VOP_LOCK(dp);
+			vn_lock(dp, LK_EXCLUSIVE | LK_RETRY, p);
 			goto unionlookup;
 		}
 
@@ -492,12 +494,12 @@ nextname:
 	if (!wantparent)
 		vrele(ndp->ni_dvp);
 	if ((cnp->cn_flags & LOCKLEAF) == 0)
-		VOP_UNLOCK(dp);
+		VOP_UNLOCK(dp, 0, p);
 	return (0);
 
 bad2:
 	if ((cnp->cn_flags & LOCKPARENT) && *ndp->ni_next == '\0')
-		VOP_UNLOCK(ndp->ni_dvp);
+		VOP_UNLOCK(ndp->ni_dvp, 0, p);
 	vrele(ndp->ni_dvp);
 bad:
 	vput(dp);
@@ -514,7 +516,8 @@ relookup(dvp, vpp, cnp)
 	struct vnode *dvp, **vpp;
 	struct componentname *cnp;
 {
-	register struct vnode *dp = 0;	/* the directory we are searching */
+	struct proc *p = cnp->cn_proc;
+	struct vnode *dp = 0;		/* the directory we are searching */
 	int docache;			/* == 0 do not cache last component */
 	int wantparent;			/* 1 => wantparent or lockparent flag */
 	int rdonly;			/* lookup read-only flag bit */
@@ -535,7 +538,7 @@ relookup(dvp, vpp, cnp)
 	rdonly = cnp->cn_flags & RDONLY;
 	cnp->cn_flags &= ~ISSYMLINK;
 	dp = dvp;
-	VOP_LOCK(dp);
+	vn_lock(dp, LK_EXCLUSIVE | LK_RETRY, p);
 
 /* dirloop: */
 	/*
@@ -574,7 +577,7 @@ relookup(dvp, vpp, cnp)
 			goto bad;
 		}
 		if (!(cnp->cn_flags & LOCKLEAF))
-			VOP_UNLOCK(dp);
+			VOP_UNLOCK(dp, 0, p);
 		*vpp = dp;
 		if (cnp->cn_flags & SAVESTART)
 			panic("lookup: SAVESTART");
@@ -644,12 +647,12 @@ relookup(dvp, vpp, cnp)
 	if (!wantparent)
 		vrele(dvp);
 	if ((cnp->cn_flags & LOCKLEAF) == 0)
-		VOP_UNLOCK(dp);
+		VOP_UNLOCK(dp, 0, p);
 	return (0);
 
 bad2:
 	if ((cnp->cn_flags & LOCKPARENT) && (cnp->cn_flags & ISLASTCN))
-		VOP_UNLOCK(dvp);
+		VOP_UNLOCK(dvp, 0, p);
 	vrele(dvp);
 bad:
 	vput(dp);
