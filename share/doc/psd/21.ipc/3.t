@@ -1,4 +1,4 @@
-.\" Copyright (c) 1986 The Regents of the University of California.
+.\" Copyright (c) 1986, 1993 The Regents of the University of California.
 .\" All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)3.t	5.1 (Berkeley) 04/17/91
+.\"	@(#)3.t	5.2 (Berkeley) 05/14/93
 .\"
 .\".ds RH "Network Library Routines
 .bp
@@ -50,9 +50,10 @@ interprocess communication facilities in a distributed
 environment.  To aid in this task a number of routines
 have been added to the standard C run-time library.
 In this section we will consider the new routines provided
-to manipulate network addresses.  While the 4.3BSD networking
-facilities support both the DARPA standard Internet protocols
-and the Xerox NS protocols, most of the routines presented
+to manipulate network addresses.  While the 4.4BSD networking
+facilities support the Internet protocols
+and the Xerox NS protocols,
+most of the routines presented
 in this section do not apply to the NS domain.  Unless otherwise
 stated, it should be assumed that the routines presented in this
 section do not apply to the NS domain.
@@ -341,8 +342,8 @@ Table 1.  C run-time routines.
 .KE
 .PP
 The byte swapping routines are provided because the operating
-system expects addresses to be supplied in network order.  On
-some architectures, such as the VAX,
+system expects addresses to be supplied in network order (aka ``big-endian'' order).  On
+``little-endian'' architectures, such as Intel x86 and VAX,
 host byte ordering is different than
 network byte ordering.  Consequently,
 programs are sometimes required to byte swap quantities.  The
