@@ -34,11 +34,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)regerror.c	8.2 (Berkeley) 03/16/94
+ *	@(#)regerror.c	8.3 (Berkeley) 03/19/94
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)regerror.c	8.2 (Berkeley) 03/16/94";
+static char sccsid[] = "@(#)regerror.c	8.3 (Berkeley) 03/19/94";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -57,7 +57,7 @@ extern "C" {
 #endif
 
 /* === regerror.c === */
-static char *regatoi(const regex_t *preg, char *localbuf);
+static char *regatoi __P((const regex_t *preg, char *localbuf));
 
 #ifdef __cplusplus
 }
