@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)err.c	5.15 (Berkeley) 11/14/92";
+static char sccsid[] = "@(#)err.c	5.16 (Berkeley) 11/16/92";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -68,11 +68,13 @@ char	MsgBuf[BUFSIZ*2];	/* text of most recent message */
 static void fmtmsg();
 
 /*VARARGS1*/
-syserr(fmt, a, b, c, d, e)
+syserr(fmt VA_ARG_FORMAL)
 	char *fmt;
+	VA_ARG_DECL
 {
 	register char *p;
 	int olderrno = errno;
+	VA_LOCAL_DECL
 	extern char Arpa_PSyserr[];
 	extern char Arpa_TSyserr[];
 
@@ -81,7 +83,9 @@ syserr(fmt, a, b, c, d, e)
 		p = Arpa_PSyserr;
 	else
 		p = Arpa_TSyserr;
-	fmtmsg(MsgBuf, (char *) NULL, p, olderrno, fmt, a, b, c, d, e);
+	VA_START(fmt);
+	fmtmsg(MsgBuf, (char *) NULL, p, olderrno, fmt, ap);
+	VA_END;
 	puterrmsg(MsgBuf);
 
 	/* determine exit status if not already set */
@@ -120,9 +124,11 @@ syserr(fmt, a, b, c, d, e)
 */
 
 /*VARARGS1*/
-usrerr(fmt, a, b, c, d, e)
+usrerr(fmt VA_ARG_FORMAL)
 	char *fmt;
+	VA_ARG_DECL
 {
+	VA_LOCAL_DECL
 	extern char SuprErrs;
 	extern char Arpa_Usrerr[];
 	extern int errno;
@@ -130,7 +136,9 @@ usrerr(fmt, a, b, c, d, e)
 	if (SuprErrs)
 		return;
 
-	fmtmsg(MsgBuf, CurEnv->e_to, Arpa_Usrerr, errno, fmt, a, b, c, d, e);
+	VA_START(fmt);
+	fmtmsg(MsgBuf, CurEnv->e_to, Arpa_Usrerr, errno, fmt, ap);
+	VA_END;
 	puterrmsg(MsgBuf);
 
 # ifdef LOG
@@ -160,12 +168,17 @@ usrerr(fmt, a, b, c, d, e)
 */
 
 /*VARARGS2*/
-message(num, msg, a, b, c, d, e)
-	register char *num;
-	register char *msg;
+message(num, msg VA_ARG_FORMAL)
+	char *num;
+	char *msg;
+	VA_ARG_DECL
 {
+	VA_LOCAL_DECL
+
 	errno = 0;
-	fmtmsg(MsgBuf, CurEnv->e_to, num, 0, msg, a, b, c, d, e);
+	VA_START(msg);
+	fmtmsg(MsgBuf, CurEnv->e_to, num, 0, msg, ap);
+	VA_END;
 	putmsg(MsgBuf, FALSE);
 }
 /*
@@ -187,12 +200,17 @@ message(num, msg, a, b, c, d, e)
 */
 
 /*VARARGS2*/
-nmessage(num, msg, a, b, c, d, e)
-	register char *num;
-	register char *msg;
+nmessage(num, msg VA_ARG_FORMAL)
+	char *num;
+	char *msg;
+	VA_ARG_DECL
 {
+	VA_LOCAL_DECL
+
 	errno = 0;
-	fmtmsg(MsgBuf, (char *) NULL, num, 0, msg, a, b, c, d, e);
+	VA_START(msg);
+	fmtmsg(MsgBuf, (char *) NULL, num, 0, msg, ap);
+	VA_END;
 	putmsg(MsgBuf, FALSE);
 }
 /*
@@ -273,14 +291,14 @@ puterrmsg(msg)
 **		none.
 */
 
-/*VARARGS5*/
 static void
-fmtmsg(eb, to, num, eno, fmt, a, b, c, d, e)
+fmtmsg(eb, to, num, eno, fmt, ap)
 	register char *eb;
 	char *to;
 	char *num;
 	int eno;
 	char *fmt;
+	va_list ap;
 {
 	char del;
 
@@ -313,7 +331,7 @@ fmtmsg(eb, to, num, eno, fmt, a, b, c, d, e)
 	}
 
 	/* output the message */
-	(void) sprintf(eb, fmt, a, b, c, d, e);
+	(void) vsprintf(eb, fmt, ap);
 	while (*eb != '\0')
 		*eb++ &= 0177;
 
