@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_lookup.c	7.31.1.1 (Berkeley) 05/19/91
+ *	@(#)vfs_lookup.c	7.32 (Berkeley) 05/21/91
  */
 
 #include "param.h"
@@ -271,15 +271,8 @@ dirloop:
 	 * responsibility for freeing the pathname buffer.
 	 */
 	ndp->ni_hash = 0;
-	for (cp = ndp->ni_ptr; *cp != 0 && *cp != '/'; cp++) {
+	for (cp = ndp->ni_ptr; *cp != 0 && *cp != '/'; cp++)
 		ndp->ni_hash += (unsigned char)*cp;
-		if ((*cp & 0200) == 0)
-			continue;
-		if ((*cp & 0377) == ('/' | 0200) || flag != DELETE) {
-			error = EINVAL;
-			goto bad;
-		}
-	}
 	ndp->ni_namelen = cp - ndp->ni_ptr;
 	if (ndp->ni_namelen >= NAME_MAX) {
 		error = ENAMETOOLONG;
