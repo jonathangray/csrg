@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ccitt_addr.c	5.2 (Berkeley) 04/29/91
+ *	@(#)ccitt_addr.c	5.3 (Berkeley) 07/01/91
  */
 /*
  * parse CCITT addresses
@@ -60,12 +60,11 @@ char *addr;
 register struct sockaddr_x25 *xp;
 {
 	register char *p, *ap, *limit;
-	register int havenet = 0;
+	int havenet = 0;
 
 	bzero ((char *)xp, sizeof (*xp));
 	xp->x25_family = AF_CCITT;
 	xp->x25_len = sizeof(*xp);
-	xp->x25_udlen = 4;
 	p = addr;
 
 	/*
@@ -121,6 +120,7 @@ register struct sockaddr_x25 *xp;
 	p++;
 	ap = xp->x25_udata + 4;		/* first four bytes are protocol id */
 	limit = ap + sizeof (xp->x25_udata) - 4;
+	xp->x25_udlen = 4;
 	while (*p) {
 		if (*p == ',')
 			break;
@@ -129,12 +129,14 @@ register struct sockaddr_x25 *xp;
 		p = copychar (p, ap++);
 		xp->x25_udlen++;
 	}
+	if (xp->x25_udlen == 4)
+		xp->x25_udlen = 0;
 	if (*p == '\0')
 		return (1);
 
 	p++;
 	ap = xp->x25_udata;		/* protocol id */
-	limit = ap + 4;
+	limit = ap + (xp->x25_udlen ? 4 : sizeof(xp->x25_udata));
 	while (*p) {
 		if (*p == ',')
 			return (0);
@@ -142,6 +144,8 @@ register struct sockaddr_x25 *xp;
 			return (0);
 		p = copychar (p, ap++);
 	}
+	if (xp->x25_udlen == 0)
+		xp->x25_udlen = ap - xp->x25_udata;
 	return (1);
 }
 
