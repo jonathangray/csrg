@@ -9,7 +9,7 @@
  * All advertising materials mentioning features or use of this software
  * must display the following acknowledgement:
  *	This product includes software developed by the University of
- *	California, Lawrence Berkeley Laboratories.
+ *	California, Lawrence Berkeley Laboratory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -39,9 +39,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cpu.c	7.3 (Berkeley) 10/11/92
+ *	@(#)cpu.c	7.4 (Berkeley) 04/20/93
  *
- * from: $Header: cpu.c,v 1.8 92/06/17 05:22:01 torek Exp $ (LBL)
+ * from: $Header: cpu.c,v 1.10 93/04/20 11:16:51 torek Exp $ (LBL)
  */
 
 #include <sys/param.h>
@@ -50,6 +50,11 @@
 #include <machine/autoconf.h>
 #include <machine/cpu.h>
 #include <machine/reg.h>
+
+/* the following are used externally (sysctl_hw) */
+char	machine[] = "sparc";
+char	cpu_model[80];
+int	cpuspeed;		/* XXX */
 
 static char *psrtoname();
 static char *fsrtoname();
@@ -64,29 +69,38 @@ cpu_attach(parent, dev, aux)
 	struct device *dev;
 	void *aux;
 {
-	register int node = ((struct romaux *)aux)->ra_node;
+	register int node, clk;
 	register u_int psr, fver;
+	register char *fpuname;
 	struct fpstate fpstate;
 
-	psr = getpsr();
-	printf(": %s (%s @ %s MHz), ", getpropstring(node, "name"),
-	    psrtoname(psr), clockfreq(getpropint(node, "clock-frequency", 0)));
 	/*
 	 * Get the FSR and clear any exceptions.  If we do not unload
 	 * the queue here and it is left over from a previous crash, we
-	 * will panic in the first loadfpstate(), due to a sequence error.
+	 * will panic in the first loadfpstate(), due to a sequence error,
+	 * so we need to dump the whole state anyway.
 	 *
-	 * If there is no FPU, trap.c will advance over all the stores.
+	 * If there is no FPU, trap.c will advance over all the stores,
+	 * so we initialize fs_fsr here.
 	 */
-	fpstate.fs_fsr = 7 << FSR_VER_SHIFT;
+	fpstate.fs_fsr = 7 << FSR_VER_SHIFT;	/* 7 is reserved for "none" */
 	savefpstate(&fpstate);
 	fver = (fpstate.fs_fsr >> FSR_VER_SHIFT) & (FSR_VER >> FSR_VER_SHIFT);
-	if (fver == 7)
-		printf("no FPU\n");
-	else {
+	psr = getpsr();
+	if (fver != 7) {
 		foundfpu = 1;
-		printf("fpu = %s\n", fsrtoname(psr, fver));
-	}
+		fpuname = fsrtoname(psr, fver);
+	} else
+		fpuname = "no";
+
+	/* tell them what we have */
+	node = ((struct romaux *)aux)->ra_node;
+	clk = getpropint(node, "clock-frequency", 0);
+	sprintf(cpu_model, "%s (%s @ %s MHz, %s FPU)",
+	    getpropstring(node, "name"), psrtoname(psr),
+	    clockfreq(clk), fpuname);
+	printf(": %s\n", cpu_model);
+	cpuspeed = clk / 1000000;	/* XXX */
 }
 
 struct cfdriver cpucd =
@@ -122,7 +136,7 @@ psrtoname(psr)
 			return ("MN10501");
 		break;
 	}
-	return ("mystery cpu type");
+	return ("???");
 }
 
 static char *
@@ -169,5 +183,5 @@ fsrtoname(psr, fver)
 		if (fver == 0)
 			return ("MN10501");
 	}
-	return ("mystery fpu type");
+	return ("???");
 }
