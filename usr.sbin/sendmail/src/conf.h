@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	6.12 (Berkeley) 03/17/93
+ *	@(#)conf.h	6.13 (Berkeley) 03/18/93
  */
 
 /*
@@ -187,4 +187,14 @@ struct utsname
 
 # include <sys/file.h>
 
+#endif
+
+/*
+**  Size of tobuf (deliver.c)
+**	Tweak this to match your syslog implementation.  It will have to
+**	allow for the extra information printed.
+*/
+
+#ifndef TOBUFSIZE
+# define TOBUFSIZE (1024 - 256)
 #endif
