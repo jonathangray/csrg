@@ -1,4 +1,4 @@
-/* 03/05/81 (Berkeley) @(#)curses.h	1.3 */
+/* 03/05/81 (Berkeley) @(#)curses.h	1.4 */
 # ifndef WINDOW
 
 # include	<stdio.h>
