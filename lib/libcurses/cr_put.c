@@ -11,7 +11,7 @@ int		plodput();
  * as formatting of lines (printing of control characters,
  * line numbering and the like).
  *
- * 03/27/83 (Berkeley) @(#)cr_put.c	1.4
+ * 05/01/85 (Berkeley) @(#)cr_put.c	1.5
  */
 
 /*
