@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)refresh.h	5.2 (Berkeley) 06/22/92
+ *	@(#)refresh.h	5.3 (Berkeley) 07/03/92
  */
 
 /*
