@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fcntl.h	5.11 (Berkeley) 02/22/91
+ *	@(#)fcntl.h	5.12 (Berkeley) 02/23/91
  */
 
 #ifndef _FCNTL_H_
@@ -179,6 +179,9 @@ __BEGIN_DECLS
 int	open __P((const char *, int, ...));
 int	creat __P((const char *, mode_t));
 int	fcntl __P((int, int, ...));
+#ifndef _POSIX_SOURCE
+int	flock __P((int, int));
+#endif /* !_POSIX_SOURCE */
 __END_DECLS
 #endif
 
