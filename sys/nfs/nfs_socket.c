@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_socket.c	7.24 (Berkeley) 01/14/92
+ *	@(#)nfs_socket.c	7.25 (Berkeley) 03/09/92
  */
 
 /*
@@ -344,15 +344,11 @@ nfs_reconnect(rep)
 	int error;
 
 	nfs_disconnect(nmp);
-	nfs_msg(rep->r_procp, nmp->nm_mountp->mnt_stat.f_mntfromname,
-	    "trying reconnect");
 	while (error = nfs_connect(nmp, rep)) {
 		if (error == EINTR || error == ERESTART)
 			return (EINTR);
 		(void) tsleep((caddr_t)&lbolt, PSOCK, "nfscon", 0);
 	}
-	nfs_msg(rep->r_procp, nmp->nm_mountp->mnt_stat.f_mntfromname,
-	    "reconnected");
 
 	/*
 	 * Loop through outstanding request list and fix up all requests
@@ -1743,6 +1739,16 @@ nfsrv_rcv(so, arg, waitflag)
 	struct uio auio;
 	int flags, error;
 
+	if ((slp->ns_flag & SLP_VALID) == 0)
+		return;
+#ifdef notdef
+	/*
+	 * Define this to test for nfsds handling this under heavy load.
+	 */
+	if (waitflag == M_DONTWAIT) {
+		slp->ns_flag |= SLP_NEEDQ; goto dorecs;
+	}
+#endif
 	if (so->so_type == SOCK_STREAM) {
 		/*
 		 * If there are already records on the queue, defer soreceive()
@@ -1751,8 +1757,7 @@ nfsrv_rcv(so, arg, waitflag)
 		 */
 		if (slp->ns_rec && waitflag == M_DONTWAIT) {
 			slp->ns_flag |= SLP_NEEDQ;
-			nfsrv_wakenfsd(slp);
-			return;
+			goto dorecs;
 		}
 
 		/*
@@ -1762,11 +1767,10 @@ nfsrv_rcv(so, arg, waitflag)
 		flags = MSG_DONTWAIT;
 		error = soreceive(so, &nam, &auio, &mp, (struct mbuf **)0, &flags);
 		if (error || mp == (struct mbuf *)0) {
-			if (error != EWOULDBLOCK) {
+			if (error == EWOULDBLOCK)
+				slp->ns_flag |= SLP_NEEDQ;
+			else
 				slp->ns_flag |= SLP_DISCONN;
-				if (waitflag == M_DONTWAIT)
-					nfsrv_wakenfsd(slp);
-			}
 			goto dorecs;
 		}
 		m = mp;
@@ -1787,10 +1791,8 @@ nfsrv_rcv(so, arg, waitflag)
 		if (error = nfsrv_getstream(slp, waitflag)) {
 			if (error == EPERM)
 				slp->ns_flag |= SLP_DISCONN;
-			if (error == EWOULDBLOCK)
+			else
 				slp->ns_flag |= SLP_NEEDQ;
-			if (waitflag == M_DONTWAIT)
-				nfsrv_wakenfsd(slp);
 		}
 	} else {
 		do {
@@ -1816,8 +1818,7 @@ nfsrv_rcv(so, arg, waitflag)
 				if ((so->so_proto->pr_flags & PR_CONNREQUIRED)
 					&& error != EWOULDBLOCK) {
 					slp->ns_flag |= SLP_DISCONN;
-					if (waitflag == M_DONTWAIT)
-						nfsrv_wakenfsd(slp);
+					goto dorecs;
 				}
 			}
 		} while (mp);
@@ -1827,7 +1828,8 @@ nfsrv_rcv(so, arg, waitflag)
 	 * Now try and process the request records, non-blocking.
 	 */
 dorecs:
-	if (slp->ns_rec && waitflag == M_DONTWAIT)
+	if (waitflag == M_DONTWAIT &&
+		(slp->ns_rec || (slp->ns_flag & (SLP_NEEDQ | SLP_DISCONN))))
 		nfsrv_wakenfsd(slp);
 }
 
@@ -1947,7 +1949,7 @@ nfsrv_dorec(slp, nd)
 	register struct mbuf *m;
 	int error;
 
-	if (slp->ns_sref != nd->nd_sref ||
+	if ((slp->ns_flag & SLP_VALID) == 0 ||
 	    (m = slp->ns_rec) == (struct mbuf *)0)
 		return (ENOBUFS);
 	if (slp->ns_rec = m->m_nextpkt)
@@ -2133,18 +2135,20 @@ nfsrv_wakenfsd(slp)
 {
 	register struct nfsd *nd = nfsd_head.nd_next;
 
+	if ((slp->ns_flag & SLP_VALID) == 0)
+		return;
 	while (nd != (struct nfsd *)&nfsd_head) {
 		if (nd->nd_flag & NFSD_WAITING) {
 			nd->nd_flag &= ~NFSD_WAITING;
 			if (nd->nd_slp)
 				panic("nfsd wakeup");
 			nd->nd_slp = slp;
-			nd->nd_sref = slp->ns_sref;
 			wakeup((caddr_t)nd);
 			return;
 		}
 		nd = nd->nd_next;
 	}
+	slp->ns_flag |= SLP_DOREC;
 	nfsd_head.nd_flag |= NFSD_CHECKSLP;
 }
 
