@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)signal.h	5.6 (Berkeley) 05/07/93
+ *	@(#)signal.h	8.1 (Berkeley) 06/02/93
  */
 
 #ifndef _USER_SIGNAL_H
