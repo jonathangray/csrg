@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_balloc.c	7.25 (Berkeley) 12/31/91
+ *	@(#)lfs_balloc.c	7.26 (Berkeley) 01/10/92
  */
 
 #include <sys/param.h>
@@ -306,10 +306,10 @@ lfs_balloc(vp, iosize, lbn, bpp)
 	if (!newblock && (error = lfs_bmap(vp, lbn, NULL, &daddr)))
 		return(error);
 
-	if (newblock || daddr == LFS_UNUSED_DADDR || iosize == fs->lfs_bsize) {
+	if (newblock || daddr == UNASSIGNED || iosize == fs->lfs_bsize) {
 		*bpp = bp = getblk(vp, lbn, fs->lfs_bsize);
 		if (newblock ||
-		    daddr == LFS_UNUSED_DADDR && !(bp->b_flags & B_CACHE)) {
+		    daddr == UNASSIGNED && !(bp->b_flags & B_CACHE)) {
 			++ip->i_blocks;
 			if (iosize != fs->lfs_bsize)
 				clrbuf(bp);
