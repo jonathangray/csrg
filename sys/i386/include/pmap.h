@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.h	7.3 (Berkeley) 05/10/91
+ *	@(#)pmap.h	7.4 (Berkeley) 05/12/91
  */
 
 /*
@@ -135,16 +135,17 @@ typedef struct pte	pt_entry_t;	/* Mach page table entry */
 #define	KPTDI_FIRST	0x3f8		/* start of kernel virtual pde's */
 #define	KPTDI_LAST	0x3fA		/* last of kernel virtual pde's */
 
-extern	pt_entry_t	*Sysmap;
-
 /*
  * Address of current and alternate address space page table maps
  * and directories.
  */
-extern struct pte PTmap[], APTmap[], Upte;
-extern struct pde PTD[], APTD[], PTDpde, APTDpde, Upde;
+#ifdef KERNEL
+extern struct pte	PTmap[], APTmap[], Upte;
+extern struct pde	PTD[], APTD[], PTDpde, APTDpde, Upde;
+extern	pt_entry_t	*Sysmap;
 
-extern int IdlePTD;
+extern int	IdlePTD;	/* physical address of "Idle" state directory */
+#endif
 
 /*
  * virtual address to page table entry and
@@ -185,7 +186,9 @@ struct pmap {
 
 typedef struct pmap	*pmap_t;
 
+#ifdef KERNEL
 extern pmap_t		kernel_pmap;
+#endif
 
 /*
  * Macros for speed
