@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)iso.h	7.6 (Berkeley) 05/06/91
+ *	@(#)iso.h	7.7 (Berkeley) 10/11/92
  */
 
 /***********************************************************
@@ -124,7 +124,7 @@ SOFTWARE.
 
 
 #ifndef IN_CLASSA_NET
-#include "../netinet/in.h"
+#include <netinet/in.h>
 #endif IN_CLASSA_NET
 
 
