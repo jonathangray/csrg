@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)file.c	5.17 (Berkeley) 06/08/91";
+static char sccsid[] = "@(#)file.c	5.18 (Berkeley) 07/19/91";
 #endif /* not lint */
 
 #ifdef FILEC
@@ -261,17 +261,17 @@ print_by_column(dir, items, count)
 	    if (i < count) {
 		register int w;
 
-		xprintf("%s", short2str(items[i]));
-		xputchar(dir ? filetype(dir, items[i]) : ' ');
+		(void) fprintf(cshout, "%s", short2str(items[i]));
+		(void) fputc(dir ? filetype(dir, items[i]) : ' ', cshout);
 		if (c < columns - 1) {	/* last column? */
 		    w = Strlen(items[i]) + 1;
 		    for (; w < maxwidth; w++)
-			xputchar(' ');
+			(void) fputc(' ', cshout);
 		}
 	    }
 	}
-	xputchar('\r');
-	xputchar('\n');
+	(void) fputc('\r', cshout);
+	(void) fputc('\n', cshout);
     }
 }
 
@@ -335,28 +335,28 @@ print_recognized_stuff(recognized_part)
     Char   *recognized_part;
 {
     /* An optimized erasing of that silly ^[ */
-    putraw('\b');
-    putraw('\b');
+    (void) fputc('\b', cshout);
+    (void) fputc('\b', cshout);
     switch (Strlen(recognized_part)) {
 
     case 0:			/* erase two Characters: ^[ */
-	putraw(' ');
-	putraw(' ');
-	putraw('\b');
-	putraw('\b');
+	(void) fputc(' ', cshout);
+	(void) fputc(' ', cshout);
+	(void) fputc('\b', cshout);
+	(void) fputc('\b', cshout);
 	break;
 
     case 1:			/* overstrike the ^, erase the [ */
-	xprintf("%s", short2str(recognized_part));
-	putraw(' ');
-	putraw('\b');
+	(void) fprintf(cshout, "%s", short2str(recognized_part));
+	(void) fputc(' ', cshout);
+	(void) fputc('\b', cshout);
 	break;
 
     default:			/* overstrike both Characters ^[ */
-	xprintf("%s", short2str(recognized_part));
+	(void) fprintf(cshout, "%s", short2str(recognized_part));
 	break;
     }
-    flush();
+    (void) fflush(cshout);
 }
 
 /*
@@ -466,9 +466,9 @@ again:				/* search for matches */
 	    continue;
 	if (command == LIST) {
 	    if (numitems >= MAXITEMS) {
-		xprintf("\nYikes!! Too many %s!!\n",
-			looking_for_lognames ?
-			"names in password file" : "files");
+		(void) fprintf(csherr, "\nYikes!! Too many %s!!\n",
+			       looking_for_lognames ?
+			       "names in password file" : "files");
 		break;
 	    }
 	    if (items == NULL)
@@ -614,7 +614,7 @@ tenex(inputline, inputline_size)
 	    break;
 	command = (last_Char == ESC) ? RECOGNIZE : LIST;
 	if (command == LIST)
-	    xputchar('\n');
+	    (void) fputc('\n', cshout);
 	str_end = &inputline[num_read];
 	if (last_Char == ESC)
 	    --str_end;		/* wipeout trailing cmd Char */
