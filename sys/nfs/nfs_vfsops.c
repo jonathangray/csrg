@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vfsops.c	7.31 (Berkeley) 05/06/91
+ *	@(#)nfs_vfsops.c	7.32 (Berkeley) 11/01/91
  */
 
 #include "param.h"
@@ -537,7 +537,7 @@ nfs_sync(mp, waitfor)
 	int waitfor;
 {
 	if (syncprt)
-		bufstats();
+		ufs_bufstats();
 	/*
 	 * Force stale buffer cache information to be flushed.
 	 */
