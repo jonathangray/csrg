@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: machparam.h 1.11 89/08/14$
  *
- *	@(#)param.h	7.2 (Berkeley) 06/26/92
+ *	@(#)param.h	7.3 (Berkeley) 07/28/92
  */
 
 /*
@@ -143,6 +143,7 @@
 #define	spltty		Mach_spl1
 #define	splimp		Mach_spl1
 #define	splclock	Mach_spl2
+#define	splstatclock	Mach_spl2
 #else
 #define	splnet		spl2
 #define	splsoftclock	spl2
@@ -150,6 +151,7 @@
 #define	spltty		spl4
 #define	splimp		spl4
 #define	splclock	spl5
+#define	splstatclock	spl5
 #endif /* PMAXSPL */
 #endif /* news3400 */
 
