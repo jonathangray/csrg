@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lst.h	5.3 (Berkeley) 06/01/90
+ *	@(#)lst.h	5.4 (Berkeley) 05/24/93
  */
 
 /*-
@@ -46,6 +46,9 @@
 #define _LST_H_
 
 #include	<sprite.h>
+#if __STDC__
+#include	<stdlib.h>
+#endif
 
 /*
  * basic typedef. This is what the Lst_ functions handle
