@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)zic.c	8.1 (Berkeley) 06/08/93";
+static char sccsid[] = "@(#)zic.c	5.5 (Berkeley) 07/19/93";
 #endif /* not lint */
 
 #ifdef notdef
@@ -1801,7 +1801,7 @@ register const int			wantedy;
 			} else {
 				dayoff = oadd(dayoff, (long) -1);
 				if (--wday < 0)
-					wday = LDAYSPERWEEK;
+					wday = LDAYSPERWEEK - 1;
 				--i;
 			}
 		if (i < 0 || i >= len_months[isleap(y)][m]) {
