@@ -14,7 +14,7 @@
  * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *	@(#)tcp_usrreq.c	7.11 (Berkeley) 10/12/88
+ *	@(#)tcp_usrreq.c	7.7.1.3 (Berkeley) 02/15/89
  */
 
 #include "param.h"
