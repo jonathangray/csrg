@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.43.1.1 (Berkeley) 02/10/95
+ *	@(#)sendmail.h	8.86 (Berkeley) 02/11/95
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.43.1.1		02/10/95";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.86		02/11/95";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -825,6 +825,7 @@ struct prival
 #define SFF_MUSTOWN		0x0001	/* user must own this file */
 #define SFF_NOSLINK		0x0002	/* file cannot be a symbolic link */
 #define SFF_ROOTOK		0x0004	/* ok for root to own this file */
+#define SFF_NOPATHCHECK		0x0010	/* don't bother checking dir path */
 
 
 /*
