@@ -1,4 +1,8 @@
-.\"	@(#)p0	6.1 (Berkeley) 05/23/86
+.\" This module is believed to contain source code proprietary to AT&T.
+.\" Use and redistribution is subject to the Berkeley Software License
+.\" Agreement and your Software Agreement with AT&T (Western Electric).
+.\"
+.\"	@(#)p0	6.2 (Berkeley) 04/17/91
 .\"
 .EH 'USD:2-%''LEARN \(em Computer-Aided Instruction on UNIX'
 .OH 'LEARN \(em Computer-Aided Instruction on UNIX''USD:2-%'
