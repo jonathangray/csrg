@@ -2,9 +2,11 @@
 
 static char sccsid[] = "@(#)HALT.c 1.3 06/10/81";
 
+#include "h00vars.h"
 
 HALT()
 {
-		ERROR("Call to procedure halt\n", 0);
+		PFLUSH();
+		fputs("Call to procedure halt\n", stderr);
 		PCEXIT(0);
 }
