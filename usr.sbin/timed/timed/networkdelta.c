@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)networkdelta.c	8.1 (Berkeley) 06/06/93";
+static char sccsid[] = "@(#)networkdelta.c	8.2 (Berkeley) 03/26/95";
 #endif /* not lint */
 
 #ifdef sgi
@@ -101,15 +101,23 @@ networkdelta()
 	if (numdelta == 1)
 		return 0;
 
+	/* get average of trusted values */
 	med /= numdelta;
-	eps = med - x[0];
+
 	if (trace)
 		fprintf(fd, "median of %d values starting at %ld is about ",
 			numdelta, med);
+	/* get median of all trusted values, using average as initial guess */
+	eps = med - x[0];
 	med = median(med, &eps, &x[0], xp+1, VALID_RANGE);
 
-	/*
-	 * compute the median of all values near the good median
+	/* Compute the median of all good values.
+	 * Good values are those of all clocks, including untrusted clocks,
+	 * that are
+	 *	- trusted and somewhat close to the median of the
+	 *		trusted clocks
+	 *	- trusted or untrusted and very close to the median of the
+	 *		trusted clocks
 	 */
 	hidelta = med + GOOD_RANGE;
 	lodelta = med - GOOD_RANGE;
@@ -189,7 +197,7 @@ median(a, eps_ptr, x, xlim, gnuf)
 			float xx = *xptr;
 
 			dum = xx - a;
-			if (dum != 0.0) {	/* avoid dividing by 0 */
+			if (dum != 0.0) {   /* avoid dividing by 0 */
 				if (dum > 0.0) {
 					npts++;
 					if (xx < xp)
@@ -209,7 +217,8 @@ median(a, eps_ptr, x, xlim, gnuf)
 		if (ap-am < gnuf || sum == 0) {
 			if (trace)
 				fprintf(fd,
-			           "%ld in %d passes; early out balance=%d\n",
+					"%ld in %d passes;"
+					" early out balance=%d\n",
 				        (long)a, pass, npts);
 			return a;	/* guess was good enough */
 		}
@@ -217,14 +226,14 @@ median(a, eps_ptr, x, xlim, gnuf)
 		aa = (sumx/sum-a)*AMP;
 		if (npts >= 2) {	/* guess was too low */
 			am = a;
-			aa = xp + max(0.0, aa);;
-			if (aa > ap)
+			aa = xp + max(0.0, aa);
+			if (aa >= ap)
 				aa = (a + ap)/2;
 
-		} else if (npts <= -2) {  /* guess was two high */
+		} else if (npts <= -2) {    /* guess was two high */
 			ap = a;
-			aa = xm + min(0.0, aa);;
-			if (aa < am)
+			aa = xm + min(0.0, aa);
+			if (aa <= am)
 				aa = (a + am)/2;
 
 		} else {
@@ -233,8 +242,8 @@ median(a, eps_ptr, x, xlim, gnuf)
 
 		if (a == aa) {
 			if (trace)
-				fprintf(fd,
-				  "%ld in %d passes; force out balance=%d\n",
+				fprintf(fd, "%ld in %d passes;"
+					" force out balance=%d\n",
 				        (long)a, pass, npts);
 			return a;
 		}
@@ -251,7 +260,7 @@ median(a, eps_ptr, x, xlim, gnuf)
 		else
 			a = (xm+a)/2;
 
-	} else 	if (npts != 0) {	/* odd number of points */
+	} else if (npts != 0) {		/* odd number of points */
 		if (npts > 0)
 			a = xp;
 		else
