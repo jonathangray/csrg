@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 1995 Eric P. Allman
  * Copyright (c) 1988, 1993
  *	The Regents of the University of California.  All rights reserved.
  *
@@ -30,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)useful.h	8.3 (Berkeley) 03/31/95
+ *	@(#)useful.h	8.4 (Berkeley) 04/21/95
  */
 
 # include <sys/types.h>
