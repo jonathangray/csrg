@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_serv.c	7.40.1.1 (Berkeley) 05/19/91
+ *	@(#)nfs_serv.c	7.41 (Berkeley) 11/01/91
  */
 
 /*
@@ -62,9 +62,9 @@
 #include "mount.h"
 #include "mbuf.h"
 
-#include "../ufs/quota.h"
-#include "../ufs/inode.h"
-#include "../ufs/dir.h"
+#include "ufs/ufs/quota.h"
+#include "ufs/ufs/inode.h"
+#include "ufs/ufs/dir.h"
 
 #include "nfsv2.h"
 #include "nfs.h"
