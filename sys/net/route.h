@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)route.h	8.1 (Berkeley) 06/10/93
+ *	@(#)route.h	8.2 (Berkeley) 04/19/94
  */
 
 /*
@@ -148,7 +148,7 @@ struct	rtstat {
  */
 struct rt_msghdr {
 	u_short	rtm_msglen;	/* to skip over non-understood messages */
-	u_char	rtm_version;	/* future binary compatability */
+	u_char	rtm_version;	/* future binary compatibility */
 	u_char	rtm_type;	/* message type */
 	u_short	rtm_index;	/* index for associated ifp */
 	int	rtm_flags;	/* flags, incl. kern & message, e.g. DONE */
