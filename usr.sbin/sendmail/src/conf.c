@@ -9,7 +9,7 @@
 */
 
 #ifndef lint
-static char	SccsId[] = "@(#)conf.c	5.1 (Berkeley) 06/07/85";
+static char	SccsId[] = "@(#)conf.c	5.2 (Berkeley) 06/07/85";
 #endif not lint
 
 # include <pwd.h>
@@ -48,7 +48,6 @@ static char	SccsId[] = "@(#)conf.c	5.1 (Berkeley) 06/07/85";
 
 
 
-SCCSID(@(#)conf.c	5.1		06/07/85);
 /*
 **  Header info table
 **	Final (null) entry contains the flags used for any other field.
