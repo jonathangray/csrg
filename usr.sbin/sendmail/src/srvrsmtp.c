@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	6.35 (Berkeley) 03/30/93 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.35.1.1 (Berkeley) 03/30/93 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	6.35 (Berkeley) 03/30/93 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.35.1.1 (Berkeley) 03/30/93 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -399,7 +399,6 @@ smtp(e)
 			}
 			QuickAbort = TRUE;
 			LogUsrErrs = TRUE;
-
 			p = skipword(p, "to");
 			if (p == NULL)
 				break;
@@ -472,17 +471,23 @@ smtp(e)
 			id = e->e_id;
 
 			/* send to all recipients */
-			sendall(e, SM_DEFAULT);
+			sendall(e, Verbose ? SM_DELIVER : SM_QUEUE);
 			e->e_to = NULL;
 
 			/* save statistics */
 			markstats(e, (ADDRESS *) NULL);
+
+			unlockqueue(e);
 
 			/* issue success if appropriate and reset */
 			if (Errors == 0 || HoldErrs)
 				message("250 %s Message accepted for delivery", id);
 			else
 				e->e_flags &= ~EF_FATALERRS;
+
+			/* now make it really happen */
+			if (!Verbose && e->e_sendmode != SM_QUEUE)
+				dowork(id, TRUE, e);
 
 			/* if in a child, pop back to our parent */
 			if (InChild)
