@@ -30,19 +30,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)namei.h	7.13 (Berkeley) 02/21/91
+ *	@(#)namei.h	7.14 (Berkeley) 03/17/91
  */
 
 #ifndef _NAMEI_H_
 #define	_NAMEI_H_
 
-#ifdef KERNEL
-#include "../ufs/dir.h"
-#include "uio.h"
-#else
-#include <sys/uio.h>
-#include <ufs/dir.h>
-#endif
+#include <ufs/dir.h>		/* XXX */
 
 /*
  * Encapsulation of namei parameters.
@@ -147,6 +141,7 @@ struct	namecache {
 
 #ifdef KERNEL
 u_long	nextvnodeid;
+int	namei __P((struct nameidata *ndp, struct proc *p));
 #endif
 
 /*
