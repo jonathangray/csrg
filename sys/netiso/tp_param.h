@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_param.h	7.11 (Berkeley) 10/02/91
+ *	@(#)tp_param.h	7.12 (Berkeley) 10/11/92
  */
 
 /***********************************************************
@@ -349,13 +349,13 @@ bcopy((caddr_t)&(((struct tp_vbp *)(src))->tpv_val),(caddr_t)&(dst),sizeof(type)
 
 #ifdef KERNEL
 extern int tp_rttadd, tp_rttdiv;
-#include "syslog.h"
+#include <sys/syslog.h>
 #define printf logpri(LOG_DEBUG),addlog
 
 #ifndef  tp_NSTATES 
 
-#include "tp_states.h"
-#include "tp_events.h"
+#include <netiso/tp_states.h>
+#include <netiso/tp_events.h>
 #if defined(__STDC__) || defined(__cplusplus)
 #undef ATTR
 #define ATTR(X) ev_union.EV_ ## X
