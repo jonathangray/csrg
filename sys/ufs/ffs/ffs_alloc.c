@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_alloc.c	8.11 (Berkeley) 10/27/94
+ *	@(#)ffs_alloc.c	8.12 (Berkeley) 01/02/95
  */
 
 #include <sys/param.h>
@@ -311,12 +311,14 @@ nospace:
  * Note that the error return is not reflected back to the user. Rather
  * the previous block allocation will be used.
  */
+#ifdef DEBUG
 #include <sys/sysctl.h>
 int doasyncfree = 1;
-#ifdef DEBUG
 struct ctldebug debug14 = { "doasyncfree", &doasyncfree };
 int prtrealloc = 0;
 struct ctldebug debug15 = { "prtrealloc", &prtrealloc };
+#else
+#define doasyncfree	1
 #endif
 
 int
@@ -411,8 +413,8 @@ ffs_reallocblks(ap)
 #ifdef DEBUG
 	if (prtrealloc)
 		printf("realloc: ino %d, lbns %d-%d\n\told:", ip->i_number,
-			start_lbn, end_lbn);
-#endif DEBUG
+		    start_lbn, end_lbn);
+#endif
 	blkno = newblk;
 	for (bap = &sbap[soff], i = 0; i < len; i++, blkno += fs->fs_frag) {
 		if (i == ssize)
