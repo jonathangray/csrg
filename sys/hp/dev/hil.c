@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: hil.c 1.33 89/12/22$
  *
- *	@(#)hil.c	7.3 (Berkeley) 06/20/90
+ *	@(#)hil.c	7.4 (Berkeley) 06/22/90
  */
 
 #include "param.h"
@@ -619,8 +619,8 @@ hilmap(dev, off, prot)
 	dev_t dev;
 	register int off;
 {
-	struct proc *p = u.u_procp;		/* XXX */
 #ifdef MMAP
+	struct proc *p = u.u_procp;		/* XXX */
 	register struct hilloop *hilp = &hil0;	/* XXX */
 	register struct hiliqueue *qp;
 	register int qnum;
@@ -979,13 +979,13 @@ hpuxhilevent(hilp, dptr)
 hilqalloc(qip)
 	struct hilqinfo *qip;
 {
-	struct proc *p = u.u_procp;		/* XXX */
 #ifdef MAPMEM
+	struct proc *p = u.u_procp;		/* XXX */
 	register struct hilloop *hilp = &hil0;	/* XXX */
 	register HILQ *hq;
 	register int qnum;
 	struct mapmem *mp;
-	int hilqmapin();
+	int error, hilqmapin();
 
 #ifdef DEBUG
 	if (hildebug & HDB_FOLLOW)
@@ -1016,17 +1016,19 @@ hilqalloc(qip)
 	/*
 	 * Map queue into user address space as instructed
 	 */
-	if (u.u_error = mmalloc(p, qnum, &qip->addr, sizeof(HILQ), MM_RW|MM_CI, &hilqops, &mp)) {
+	error = mmalloc(p, qnum, &qip->addr, sizeof(HILQ), MM_RW|MM_CI,
+			&hilqops, &mp);
+	if (error) {
 		cifree((caddr_t)hq, sizeof(HILQ));
 		hilp->hl_queue[qnum].hq_eventqueue = NULL;
-		return(u.u_error);
+		return(error);
 	}
 	qip->qid = qnum;
-	if (!mmmapin(p, mp, hilqmapin)) {
-		mmfree(p, mp);
+	if (error = mmmapin(p, mp, hilqmapin)) {
+		(void) mmfree(p, mp);
 		cifree((caddr_t)hq, sizeof(HILQ));
 		hilp->hl_queue[qnum].hq_eventqueue = NULL;
-		return(u.u_error);
+		return(error);
 	}
 	hilp->hl_queue[qnum].hq_procp = p;
 	hilp->hl_queue[qnum].hq_devmask = 0;
@@ -1039,8 +1041,8 @@ hilqalloc(qip)
 hilqfree(qnum)
 	register int qnum;
 {
-	struct proc *p = u.u_procp;		/* XXX */
 #ifdef MAPMEM
+	struct proc *p = u.u_procp;		/* XXX */
 	register struct hilloop *hilp = &hil0;	/* XXX */
 	register struct mapmem *mp;
 
@@ -1053,7 +1055,7 @@ hilqfree(qnum)
 		return(EINVAL);
 	for (mp = u.u_mmap; mp; mp = mp->mm_next)
 		if (qnum == mp->mm_id && mp->mm_ops == &hilqops) {
-			hilqexit(mp);
+			(void) hilqexit(mp);
 			return(0);
 		}
 	panic("hilqfree");
@@ -1154,7 +1156,7 @@ hilqfork(mp, ischild)
 #endif
 	if (ischild) {
 		mmmapout(p, mp);
-		mmfree(p, mp);
+		(void) mmfree(p, mp);
 	}
 }
 
@@ -1210,7 +1212,7 @@ hilqexit(mp)
 	cifree((caddr_t)hilp->hl_queue[i].hq_eventqueue, sizeof(HILQ));
 	hilp->hl_queue[i].hq_eventqueue = NULL;
 	hilp->hl_queue[i].hq_procp = NULL;
-	mmfree(p, mp);
+	return(mmfree(p, mp));
 }
 #endif
 
@@ -1564,12 +1566,8 @@ hilreset(hilp)
 	/*
 	 * At this point, the loop should have reconfigured.
 	 * The reconfiguration interrupt has already called hilconfig()
-	 * so the keyboard has been determined.  All that is left is
-	 * 
+	 * so the keyboard has been determined.
 	 */
-#if 0
-	hilconfig(hilp);
-#endif
 	send_hil_cmd(hildevice, HIL_INTON, NULL, 0, NULL);
 }
 
