@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)udp_usrreq.c	7.27 (Berkeley) 01/08/93
+ *	@(#)udp_usrreq.c	7.28 (Berkeley) 01/18/93
  */
 
 #include <sys/param.h>
@@ -145,7 +145,7 @@ udp_input(m, iphlen)
 		}
 	}
 
-	if (IN_MULTICAST(ntohl(ip->ip_src.s_addr)) ||
+	if (IN_MULTICAST(ntohl(ip->ip_dst.s_addr)) ||
 	    in_broadcast(ip->ip_dst)) {
 		struct socket *last;
 		/*
