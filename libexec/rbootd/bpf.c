@@ -38,14 +38,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)bpf.c	5.2 (Berkeley) 07/23/92
+ *	@(#)bpf.c	8.1 (Berkeley) 06/04/93
  *
  * Utah $Hdr: bpf.c 3.1 92/07/06$
  * Author: Jeff Forys, University of Utah CSS
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)bpf.c	5.2 (Berkeley) 07/23/92";
+static char sccsid[] = "@(#)bpf.c	8.1 (Berkeley) 06/04/93";
 #endif /* not lint */
 
 #include <sys/param.h>
