@@ -1,22 +1,39 @@
 #!/bin/sh -
 #
-# Copyright (c) 1988 Regents of the University of California.
+# Copyright (c) 1990 The Regents of the University of California.
 # All rights reserved.
 #
-# Redistribution and use in source and binary forms are permitted
-# provided that the above copyright notice and this paragraph are
-# duplicated in all such forms and that any documentation,
-# advertising materials, and other materials related to such
-# distribution and use acknowledge that the software was developed
-# by the University of California, Berkeley.  The name of the
-# University may not be used to endorse or promote products derived
-# from this software without specific prior written permission.
-# THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
-# IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
-# WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+# 3. All advertising materials mentioning features or use of this software
+#    must display the following acknowledgement:
+#	This product includes software developed by the University of
+#	California, Berkeley and its contributors.
+# 4. Neither the name of the University nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
+#    without specific prior written permission.
 #
-#	@(#)get	1.6 (Berkeley) 04/06/90
+# THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+# OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+# SUCH DAMAGE.
 #
+#	@(#)get	1.7 (Berkeley) 07/04/90
+#
+
 # Shell script to build a mini-root file system in preparation for building
 # a distribution tape.  The file system created here is image copied onto
 # tape, then image copied onto disk as the "first" step in a cold boot of
@@ -31,38 +48,42 @@ then
 fi
 
 # copy in kernel
-cp $DISTROOT/sys/GENERIC/vmunix .
+cp $DISTROOT/sys/GENERIC.alltahoe/vmunix .
 
 # create necessary directories
-DIRLIST="bin dev etc a tmp stand"
+DIRLIST="bin dev etc a tmp stand sbin"
 rm -rf $DIRLIST
 mkdir $DIRLIST
 
-# copy in files from /etc
-ETCFILE="disklabel disktab fsck ifconfig init mknod mount newfs restore \
-	rrestore umount"
-for i in $ETCFILE; do
+ETC="disktab"
+for i in $ETC; do
 	cp $DISTROOT/etc/$i etc/$i
 done
 
-# copy in files from /bin
-BINFILE="[ awk cat cp dd echo ed expr ls make mkdir mt mv rcp rm sh stty \
-	sync"
-for i in $BINFILE; do
+SBIN="disklabel fsck ifconfig init mknod mount newfs restore \
+	rrestore umount"
+for i in $SBIN; do
+	cp $DISTROOT/sbin/$i sbin/$i
+done
+
+BIN="[ cat cp dd echo ed expr ls mkdir mv rcp rm sh stty sync"
+UBIN="awk make mt"
+for i in $BIN; do
 	cp $DISTROOT/bin/$i bin/$i
+done
+for i in $UBIN; do
+	cp $DISTROOT/usr/bin/$i bin/$i
 done
 ln bin/stty bin/STTY
 
-# copy in files from /stand
-STANDFILE="copy vdformat"
-for i in $STANDFILE; do
+STAND="copy vdformat"
+for i in $STAND; do
 	cp $DISTROOT/stand/$i stand/$i
 done
 
-# copy in files from /
-#DOTFILE=".profile boot fppoc fppwcs poc poc1 poc2 wcs"
-DOTFILE=".profile boot"
-for i in $DOTFILE; do
+DOT=".profile boot fppoc fppwcs poc poc1 poc2 wcs"
+#DOT=".profile boot"
+for i in $DOT; do
 	cp $DISTROOT/$i $i
 done
 
@@ -107,7 +128,7 @@ echo 'Restore the dump image of the root'
 restore rsf 3 /dev/${tape}0
 cd /
 sync
-umount /dev/${disk}a
+umount /a
 sync
 fsck /dev/r${disk}a
 echo 'Root filesystem extracted'
