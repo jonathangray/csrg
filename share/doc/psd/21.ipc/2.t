@@ -29,12 +29,15 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)2.t	8.1 (Berkeley) 06/08/93
+.\"	@(#)2.t	5.3 (Berkeley) 08/09/93
 .\"
 .\".ds RH "Basics
 .bp
 .nr H1 2
 .nr H2 0
+.\" The next line is a major hack to get around internal changes in the groff
+.\" implementation of .NH.
+.nr nh*hl 1
 .bp
 .LG
 .B
