@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sig.c	7.38 (Berkeley) 01/07/92
+ *	@(#)kern_sig.c	7.39 (Berkeley) 01/14/92
  */
 
 #define	SIGPROP		/* include signal properties table */
@@ -1043,6 +1043,7 @@ coredump(p)
 	}
 	VATTR_NULL(&vattr);
 	vattr.va_size = 0;
+	LEASE_CHECK(vp, p, cred, LEASE_WRITE);
 	VOP_SETATTR(vp, &vattr, cred, p);
 	p->p_acflag |= ACORE;
 	bcopy(p, &p->p_addr->u_kproc.kp_proc, sizeof(struct proc));
