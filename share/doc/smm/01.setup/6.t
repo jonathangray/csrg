@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)6.t	6.11 (Berkeley) 07/20/93
+.\"	@(#)6.t	6.12 (Berkeley) 07/21/93
 .\"
 .ds LH "Installing/Operating \*(4B
 .ds CF \*(Dy
@@ -390,7 +390,8 @@ its symbol table stripped.  The install command should be used
 instead of
 .Xr mv (1)
 or
-.Xr cp (1) as it understands how to install programs
+.Xr cp (1)
+as it understands how to install programs
 even when the program is currently in use.
 .PP
 If you wish to recompile and install all programs into a particular
@@ -408,7 +409,7 @@ To regenerate all the system binaries you can do
 .PP
 The additional target
 .DS
-\fB#\fP \fImake cleandir\P
+\fB#\fP \fImake cleandir\fP
 .DE
 not only removes the binaries and objects, but the dependency
 files and the formatted manual pages as well.
@@ -422,7 +423,7 @@ have to be a little careful.
 You must insure that the libraries are installed before the
 remainder of the source, otherwise the loaded images will not
 contain the new routine from the library.
-The following sequence will accomplish this.
+The following sequence will accomplish this task.
 .DS
 \fB#\fP \fIcd /usr/src/lib/libc\fP
 \fB#\fP \fImake clean depend install\fP
