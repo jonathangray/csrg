@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)types.h	7.19 (Berkeley) 12/19/91
+ *	@(#)types.h	7.20 (Berkeley) 01/09/92
  */
 
 #ifndef _TYPES_H_
@@ -61,6 +61,8 @@ typedef	long *	qaddr_t;
 	 ((q1).val[_QUAD_HIGHWORD] > (q2).val[_QUAD_HIGHWORD]))
 #define	INCRQUAD(q) \
 	((++((q).val[_QUAD_LOWWORD]) == 0) ? ++((q).val[_QUAD_HIGHWORD]) : 0)
+#define	ZEROQUAD(q) \
+	(q).val[0] = (q).val[1] = 0
 
 #else /* QUAD support */
 typedef	unsigned long long u_quad_t;
@@ -70,6 +72,7 @@ typedef	quad_t * qaddr_t;
 #define	QUADEQ(q1, q2)	(q1) == (q2)
 #define	QUADGT(q1, q2)	(q1) > (q2)
 #define	INCRQUAD(q)	(q)++
+#define	ZEROQUAD(q)	(q) = 0
 #endif /* QUAD */
 
 typedef	char *	caddr_t;		/* core address */
