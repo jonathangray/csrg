@@ -39,9 +39,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)trap.c	7.4 (Berkeley) 04/20/93
+ *	@(#)trap.c	7.5 (Berkeley) 05/27/93
  *
- * from: $Header: trap.c,v 1.33 92/11/26 03:05:09 torek Exp $
+ * from: $Header: trap.c,v 1.34 93/05/28 04:34:50 torek Exp $
  */
 
 #include <sys/param.h>
@@ -79,8 +79,8 @@ int	rwindow_debug = 0;
  * seems to imply that we should do this, and it does make sense.
  */
 struct	fpstate initfpstate = {
-	~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0,
-	~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0,
+	{ ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0,
+	  ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0, ~0 }
 };
 
 /*
