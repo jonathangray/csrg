@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	7.52 (Berkeley) 02/21/91
+ *	@(#)nfs_vnops.c	7.53 (Berkeley) 03/04/91
  */
 
 /*
@@ -45,6 +45,7 @@
 #include "user.h"
 #include "proc.h"
 #include "kernel.h"
+#include "systm.h"
 #include "mount.h"
 #include "buf.h"
 #include "malloc.h"
@@ -79,8 +80,6 @@ int	nfs_lookup(),
 	nfs_setattr(),
 	nfs_read(),
 	nfs_write(),
-	vfs_noop(),
-	vfs_nullop(),
 	nfs_remove(),
 	nfs_link(),
 	nfs_rename(),
@@ -99,7 +98,9 @@ int	nfs_lookup(),
 	nfs_reclaim(),
 	nfs_print(),
 	nfs_islocked(),
-	nfs_advlock();
+	nfs_advlock(),
+	eopnotsupp(),
+	seltrue();
 
 struct vnodeops nfsv2_vnodeops = {
 	nfs_lookup,		/* lookup */
@@ -112,11 +113,11 @@ struct vnodeops nfsv2_vnodeops = {
 	nfs_setattr,		/* setattr */
 	nfs_read,		/* read */
 	nfs_write,		/* write */
-	vfs_noop,		/* ioctl */
-	vfs_noop,		/* select */
-	vfs_noop,		/* mmap */
+	eopnotsupp,		/* ioctl */
+	seltrue,		/* select */
+	eopnotsupp,		/* mmap */
 	nfs_fsync,		/* fsync */
-	vfs_nullop,		/* seek */
+	nullop,			/* seek */
 	nfs_remove,		/* remove */
 	nfs_link,		/* link */
 	nfs_rename,		/* rename */
@@ -148,7 +149,6 @@ int	spec_lookup(),
 	spec_select(),
 	spec_close(),
 	spec_badop(),
-	spec_nullop(),
 	spec_advlock();
 
 struct vnodeops spec_nfsv2nodeops = {
@@ -165,7 +165,7 @@ struct vnodeops spec_nfsv2nodeops = {
 	spec_ioctl,		/* ioctl */
 	spec_select,		/* select */
 	spec_badop,		/* mmap */
-	spec_nullop,		/* fsync */
+	nullop,			/* fsync */
 	spec_badop,		/* seek */
 	spec_badop,		/* remove */
 	spec_badop,		/* link */
@@ -198,7 +198,6 @@ int	fifo_lookup(),
 	fifo_close(),
 	fifo_print(),
 	fifo_badop(),
-	fifo_nullop(),
 	fifo_advlock();
 
 struct vnodeops fifo_nfsv2nodeops = {
@@ -215,7 +214,7 @@ struct vnodeops fifo_nfsv2nodeops = {
 	fifo_ioctl,		/* ioctl */
 	fifo_select,		/* select */
 	fifo_badop,		/* mmap */
-	fifo_nullop,		/* fsync */
+	nullop,			/* fsync */
 	fifo_badop,		/* seek */
 	fifo_badop,		/* remove */
 	fifo_badop,		/* link */
@@ -1610,11 +1609,8 @@ nfs_doio(bp)
 	 * and a guess at a group
 	 */
 	if (bp->b_flags & B_PHYS) {
-		bp->b_rcred = cr = crget();
-		rp = (bp->b_flags & B_DIRTY) ? &proc[2] : bp->b_proc;
-		cr->cr_uid = rp->p_uid;
-		cr->cr_gid = 0;		/* Anything ?? */
-		cr->cr_ngroups = 1;
+		rp = (bp->b_flags & B_DIRTY) ? pageproc : bp->b_proc;
+		bp->b_rcred = cr = crcopy(rp->p_ucred);
 #if defined(hp300) || defined(i386)
 		/* mapping was already done by vmapbuf */
 		io.iov_base = bp->b_un.b_addr;
