@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_inode.c	7.34 (Berkeley) 07/03/90
+ *	@(#)ffs_inode.c	7.35 (Berkeley) 08/24/90
  */
 
 #include "param.h"
@@ -448,7 +448,7 @@ itrunc(oip, length, flags)
 		count = howmany(size, CLBYTES);
 			munhash(oip->i_devvp, bn + i * CLBYTES / DEV_BSIZE);
 		bzero(bp->b_un.b_addr + offset, (unsigned)(size - offset));
-		brealloc(bp, size);
+		allocbuf(bp, size);
 		if (flags & IO_SYNC)
 			bwrite(bp);
 		else
