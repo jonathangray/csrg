@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_user.h	7.11 (Berkeley) 07/29/91
+ *	@(#)tp_user.h	7.12 (Berkeley) 12/17/91
  */
 
 /***********************************************************
@@ -96,7 +96,7 @@ struct tp_conn_param {
 	short	p_ref_ticks;
 	short	p_inact_ticks;
 
-	short	p_unused;	/* was .. local credit fraction reported (>0) */
+	short	p_ptpdusize;	/* preferred tpdusize/128 */
 	short	p_winsize;
 
 	u_char	p_tpdusize; 	/* log 2 of size */
