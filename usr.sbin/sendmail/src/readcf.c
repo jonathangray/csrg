@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	8.46 (Berkeley) 11/12/94";
+static char sccsid[] = "@(#)readcf.c	8.47 (Berkeley) 11/13/94";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -555,6 +555,26 @@ readcf(cfname)
 
 	/* initialize host maps from local service tables */
 	inithostmaps();
+
+	/* determine if we need to do special name-server frotz */
+	{
+		int nmaps;
+		char *maptype[MAXMAPSTACK];
+		short mapreturn[MAXMAPACTIONS];
+
+		nmaps = switch_map_find("hosts", maptype, mapreturn);
+		UseNameServer = FALSE;
+		if (nmaps > 0 && nmaps <= MAXMAPSTACK)
+		{
+			register int mapno;
+
+			for (mapno = 0; mapno < nmaps && !UseNameServer; mapno++)
+			{
+				if (strcmp(maptype[mapno], "dns") == 0)
+					UseNameServer = TRUE;
+			}
+		}
+	}
 }
 /*
 **  TOOMANY -- signal too many of some option
@@ -1467,7 +1487,6 @@ setoption(opt, val, sticky)
 
 	  case 'I':		/* use internet domain name server */
 #if NAMED_BIND
-		UseNameServer = TRUE;
 		for (p = val; *p != 0; )
 		{
 			bool clearmode;
