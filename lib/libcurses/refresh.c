@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)refresh.c	5.42 (Berkeley) 05/11/93";
+static char sccsid[] = "@(#)refresh.c	5.43 (Berkeley) 05/16/93";
 #endif /* not lint */
 
 #include <curses.h>
@@ -96,8 +96,8 @@ wrefresh(win)
 			werase(curscr);
 	}
 #ifdef DEBUG
-	__TRACE("wrefresh: (%0.2o): curwin = %d\n", win, curwin);
-	__TRACE("wrefresh: \tfirstch\tlastch\n");
+	__CTRACE("wrefresh: (%0.2o): curwin = %d\n", win, curwin);
+	__CTRACE("wrefresh: \tfirstch\tlastch\n");
 #endif
 
 #ifndef NOQCH
@@ -116,36 +116,36 @@ wrefresh(win)
 
 #ifdef DEBUG
 { int i, j;
-		__TRACE("#####################################\n");
+		__CTRACE("#####################################\n");
 		for (i = 0; i < curscr->maxy; i++) {
-			__TRACE("C: %d:", i);
-			__TRACE(" 0x%x \n", curscr->lines[i]->hash);
+			__CTRACE("C: %d:", i);
+			__CTRACE(" 0x%x \n", curscr->lines[i]->hash);
 			for (j = 0; j < curscr->maxx; j++) 
-				__TRACE("%c", 
+				__CTRACE("%c", 
 			           curscr->lines[i]->line[j].ch);
-			__TRACE("\n");
+			__CTRACE("\n");
 			for (j = 0; j < curscr->maxx; j++) 
-				__TRACE("%x", 
+				__CTRACE("%x", 
 			           curscr->lines[i]->line[j].attr);
-			__TRACE("\n");
-			__TRACE("W: %d:", i);
-			__TRACE(" 0x%x \n", win->lines[i]->hash);
-			__TRACE(" 0x%x ", win->lines[i]->flags);
+			__CTRACE("\n");
+			__CTRACE("W: %d:", i);
+			__CTRACE(" 0x%x \n", win->lines[i]->hash);
+			__CTRACE(" 0x%x ", win->lines[i]->flags);
 			for (j = 0; j < win->maxx; j++) 
-				__TRACE("%c", 
+				__CTRACE("%c", 
 			           win->lines[i]->line[j].ch);
-			__TRACE("\n");
+			__CTRACE("\n");
 			for (j = 0; j < win->maxx; j++) 
-				__TRACE("%x", 
+				__CTRACE("%x", 
 			           win->lines[i]->line[j].attr);
-			__TRACE("\n");
+			__CTRACE("\n");
 		}
 }
 #endif /* DEBUG */
 
 	for (wy = 0; wy < win->maxy; wy++) {
 #ifdef DEBUG
-		__TRACE("%d\t%d\t%d\n",
+		__CTRACE("%d\t%d\t%d\n",
 		    wy, *win->lines[wy]->firstchp, *win->lines[wy]->lastchp);
 #endif
 		if (!curwin)
@@ -163,7 +163,7 @@ wrefresh(win)
 				if (*win->lines[wy]->lastchp < 
 				    *win->lines[wy]->firstchp) {
 #ifdef DEBUG
-					__TRACE("wrefresh: line %d notdirty \n", wy);
+					__CTRACE("wrefresh: line %d notdirty \n", wy);
 #endif
 					win->lines[wy]->flags &= ~__ISDIRTY;
 				}
@@ -171,13 +171,13 @@ wrefresh(win)
 
 		}
 #ifdef DEBUG
-		__TRACE("\t%d\t%d\n", *win->lines[wy]->firstchp, 
+		__CTRACE("\t%d\t%d\n", *win->lines[wy]->firstchp, 
 			*win->lines[wy]->lastchp);
 #endif
 	}
 	
 #ifdef DEBUG
-	__TRACE("refresh: ly=%d, lx=%d\n", ly, lx);
+	__CTRACE("refresh: ly=%d, lx=%d\n", ly, lx);
 #endif
 
 	if (win == curscr)
@@ -286,7 +286,7 @@ makech(win, wy)
 		domvcur(ly, lx, y, wx + win->begx);
 
 #ifdef DEBUG
-		__TRACE("makech: 1: wx = %d, ly= %d, lx = %d, newy = %d, newx = %d, force =%d\n", 
+		__CTRACE("makech: 1: wx = %d, ly= %d, lx = %d, newy = %d, newx = %d, force =%d\n", 
 		    wx, ly, lx, y, wx + win->begx, force);
 #endif
 		ly = y;
@@ -304,13 +304,13 @@ makech(win, wy)
 				clsp = cep - curscr->lines[wy]->line - 
 				       win->begx * __LDATASIZE;
 #ifdef DEBUG
-			__TRACE("makech: clsp = %d, nlsp = %d\n", clsp, nlsp);
+			__CTRACE("makech: clsp = %d, nlsp = %d\n", clsp, nlsp);
 #endif
 				if ((clsp - nlsp >= strlen(CE) 
 				    && clsp < win->maxx * __LDATASIZE) ||
 				    wy == win->maxy - 1) {
 #ifdef DEBUG
-					__TRACE("makech: using CE\n");
+					__CTRACE("makech: using CE\n");
 #endif
 					tputs(CE, 0, __cputchar);
 					lx = wx + win->begx;
@@ -373,7 +373,7 @@ makech(win, wy)
 					putchar(nsp->ch);
 			}
 #ifdef DEBUG
-			__TRACE("makech: putchar(%c)\n", nsp->ch & 0177);
+			__CTRACE("makech: putchar(%c)\n", nsp->ch & 0177);
 #endif
 			if (UC && (nsp->attr & __STANDOUT)) {
 				putchar('\b');
@@ -381,7 +381,7 @@ makech(win, wy)
 			}
 			nsp++;
 #ifdef DEBUG
-		__TRACE("makech: 2: wx = %d, lx = %d\n", wx, lx);
+		__CTRACE("makech: 2: wx = %d, lx = %d\n", wx, lx);
 #endif
 		}
 		if (lx == wx + win->begx)	/* If no change. */
@@ -395,7 +395,7 @@ makech(win, wy)
 		}
 
 #ifdef DEBUG
-		__TRACE("makech: 3: wx = %d, lx = %d\n", wx, lx);
+		__CTRACE("makech: 3: wx = %d, lx = %d\n", wx, lx);
 #endif
 	}
 	return (OK);
@@ -506,7 +506,7 @@ quickch(win)
 		return;
 
 #ifdef DEBUG
-	__TRACE("quickch:bsize=%d,starts=%d,startw=%d,curw=%d,curs=%d,top=%d,bot=%d\n", 
+	__CTRACE("quickch:bsize=%d,starts=%d,startw=%d,curw=%d,curs=%d,top=%d,bot=%d\n", 
 		bsize, starts, startw, curw, curs, top, bot);
 #endif
 
@@ -522,29 +522,29 @@ quickch(win)
 	n = startw - starts;
 
 #ifdef DEBUG
-		__TRACE("#####################################\n");
+		__CTRACE("#####################################\n");
 		for (i = 0; i < curscr->maxy; i++) {
-			__TRACE("C: %d:", i);
-			__TRACE(" 0x%x \n", curscr->lines[i]->hash);
+			__CTRACE("C: %d:", i);
+			__CTRACE(" 0x%x \n", curscr->lines[i]->hash);
 			for (j = 0; j < curscr->maxx; j++) 
-				__TRACE("%c", 
+				__CTRACE("%c", 
 			           curscr->lines[i]->line[j].ch);
-			__TRACE("\n");
+			__CTRACE("\n");
 			for (j = 0; j < curscr->maxx; j++) 
-				__TRACE("%x", 
+				__CTRACE("%x", 
 			           curscr->lines[i]->line[j].attr);
-			__TRACE("\n");
-			__TRACE("W: %d:", i);
-			__TRACE(" 0x%x \n", win->lines[i]->hash);
-			__TRACE(" 0x%x ", win->lines[i]->flags);
+			__CTRACE("\n");
+			__CTRACE("W: %d:", i);
+			__CTRACE(" 0x%x \n", win->lines[i]->hash);
+			__CTRACE(" 0x%x ", win->lines[i]->flags);
 			for (j = 0; j < win->maxx; j++) 
-				__TRACE("%c", 
+				__CTRACE("%c", 
 			           win->lines[i]->line[j].ch);
-			__TRACE("\n");
+			__CTRACE("\n");
 			for (j = 0; j < win->maxx; j++) 
-				__TRACE("%x", 
+				__CTRACE("%x", 
 			           win->lines[i]->line[j].attr);
-			__TRACE("\n");
+			__CTRACE("\n");
 		}
 #endif 
 	
@@ -598,13 +598,13 @@ quickch(win)
 		/* Mark block as clean and blank out scrolled lines. */
 		clp = curscr->lines[target];
 #ifdef DEBUG
-		__TRACE("quickch: n=%d startw=%d curw=%d i = %d target=%d ",
+		__CTRACE("quickch: n=%d startw=%d curw=%d i = %d target=%d ",
 			n, startw, curw, i, target);
 #endif
 		if ((target >= startw && target < curw) || target < top 
 		    || target > bot) {
 #ifdef DEBUG
-			__TRACE("-- notdirty");
+			__CTRACE("-- notdirty");
 #endif
 			win->lines[target]->flags &= ~__ISDIRTY;
 		} else if ((n > 0 && target >= top && target < top + n) ||
@@ -614,24 +614,24 @@ quickch(win)
 				(void)memcpy(clp->line,  buf,
 				    win->maxx * __LDATASIZE);
 #ifdef DEBUG
-				__TRACE("-- blanked out: dirty");
+				__CTRACE("-- blanked out: dirty");
 #endif
 				clp->hash = blank_hash;
 				__touchline(win, target, 0, win->maxx - 1, 0);
 			} else {
 				__touchline(win, target, 0, win->maxx - 1, 0);
 #ifdef DEBUG
-				__TRACE(" -- blank line already: dirty");
+				__CTRACE(" -- blank line already: dirty");
 #endif
 			}
 		} else {
 #ifdef DEBUG
-			__TRACE(" -- dirty");
+			__CTRACE(" -- dirty");
 #endif
 			__touchline(win, target, 0, win->maxx - 1, 0);
 		}
 #ifdef DEBUG
-		__TRACE("\n");
+		__CTRACE("\n");
 #endif
 		if (target == cur_period) {
 			i = target + 1;
@@ -643,18 +643,18 @@ quickch(win)
 		}
 	}
 #ifdef DEBUG
-		__TRACE("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n");
+		__CTRACE("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n");
 		for (i = 0; i < curscr->maxy; i++) {
-			__TRACE("C: %d:", i);
+			__CTRACE("C: %d:", i);
 			for (j = 0; j < curscr->maxx; j++) 
-				__TRACE("%c", 
+				__CTRACE("%c", 
 			           curscr->lines[i]->line[j].ch);
-			__TRACE("\n");
-			__TRACE("W: %d:", i);
+			__CTRACE("\n");
+			__CTRACE("W: %d:", i);
 			for (j = 0; j < win->maxx; j++) 
-				__TRACE("%c", 
+				__CTRACE("%c", 
 			           win->lines[i]->line[j].ch);
-			__TRACE("\n");
+			__CTRACE("\n");
 		}
 #endif
 	if (n != 0)
