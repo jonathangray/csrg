@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)spp_usrreq.c	7.16 (Berkeley) 10/11/92
+ *	@(#)spp_usrreq.c	7.17 (Berkeley) 05/25/93
  */
 
 #include <sys/param.h>
@@ -1801,4 +1801,4 @@ spp_timers(cb, timer)
 #ifndef lint
 int SppcbSize = sizeof (struct sppcb);
 int NspcbSize = sizeof (struct nspcb);
-#endif lint
+#endif /* lint */
