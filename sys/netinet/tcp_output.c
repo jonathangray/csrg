@@ -14,7 +14,7 @@
  * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *	@(#)tcp_output.c	7.17 (Berkeley) 06/29/88
+ *	@(#)tcp_output.c	7.13.1.4 (Berkeley) 02/15/89
  */
 
 #include "param.h"
@@ -234,11 +234,6 @@ send:
 			tcpstat.tcps_sndbyte += len;
 		}
 		if (len <= DATASPACE) {
-			m_copydata(so->so_snd.sb_mb, off, (int) len,
-			    mtod(m, caddr_t) + sizeof(struct tcpiphdr));
-			m->m_len += len;
-		} else {
-			m->m_next = m_copy(so->so_snd.sb_mb, off, (int) len);
 			if (m->m_next == 0)
 				len = 0;
 		}
