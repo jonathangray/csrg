@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.3 (Berkeley) 05/11/90
+#	@(#)Makefile	5.4 (Berkeley) 01/15/91
 
 PROG=	ps
 SRCS=	ps.c devname.c attime.c proc_compare.c
