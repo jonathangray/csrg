@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sysctl.c	7.31 (Berkeley) 03/04/93
+ *	@(#)kern_sysctl.c	7.32 (Berkeley) 04/04/93
  */
 
 /*
@@ -615,7 +615,7 @@ struct getkerninfo_args {
 	int	arg;
 };
 
-getkerninfo(p, uap, retval)
+ogetkerninfo(p, uap, retval)
 	struct proc *p;
 	register struct getkerninfo_args *uap;
 	int *retval;
