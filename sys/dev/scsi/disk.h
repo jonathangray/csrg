@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)disk.h	5.3 (Berkeley) 02/01/93
+ *	@(#)disk.h	5.4 (Berkeley) 04/29/93
  *
  * from: $Header: disk.h,v 1.3 92/12/02 03:43:24 torek Exp $ (LBL)
  */
