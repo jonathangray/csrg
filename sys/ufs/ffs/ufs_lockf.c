@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lockf.c	7.5 (Berkeley) 05/25/91
+ *	@(#)ufs_lockf.c	7.6 (Berkeley) 05/30/91
  */
 
 #include "param.h"
@@ -154,7 +154,7 @@ lf_setlock(lock)
 			lf_printlist("lf_setlock", block);
 		}
 #endif /* LOCKF_DEBUG */
-		if (error = tsleep((caddr_t *)lock, priority, lockstr, 0)) {
+		if (error = tsleep((caddr_t)lock, priority, lockstr, 0)) {
 			free(lock, M_LOCKF);
 			return (error);
 		}
