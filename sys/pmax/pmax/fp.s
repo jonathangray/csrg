@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fp.s	7.3 (Berkeley) 10/11/92
+ *	@(#)fp.s	7.4 (Berkeley) 12/20/92
  */
 
 /*
@@ -1355,9 +1355,10 @@ cvt_s_w:
  */
 cvt_d_s:
 	jal	get_fs_s
+	move	t3, zero
 	bne	t1, SEXP_INF, 1f		# is FS an infinity?
 	li	t1, DEXP_INF			# convert to double
-	b	2f
+	b	result_fs_d
 1:
 	bne	t1, zero, 2f			# is FS denormalized or zero?
 	beq	t2, zero, result_fs_d		# is FS zero?
@@ -1422,6 +1423,7 @@ cvt_d_w:
 	sll	t2, t2, t9			# shift left
 1:
 	and	t2, t2, ~DIMPL_ONE		# clear implied one bit
+	move	t3, zero
 	b	result_fs_d
 2:
 	negu	t9				# shift right by t9
