@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)mount.c	5.49 (Berkeley) 05/28/92";
+static char sccsid[] = "@(#)mount.c	5.50 (Berkeley) 07/19/92";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -385,6 +385,8 @@ prmount(spec, name, flags)
 		PR("with quotas");
 	if (flags & MNT_LOCAL)
 		PR("local");
+	if (flags & MNT_UNION)
+		PR("union");
 	if (flags & MNT_EXPORTED)
 		PR("NFS exported");
 	(void)printf(")\n");
@@ -468,6 +470,13 @@ getstdopts(options, flagp)
 				*flagp |= MNT_SYNCHRONOUS;
 			else
 				*flagp &= ~MNT_SYNCHRONOUS;
+			continue;
+		}
+		if (!strcasecmp(opt, "union")) {
+			if (!negative)
+				*flagp |= MNT_UNION;
+			else
+				*flagp &= ~MNT_UNION;
 			continue;
 		}
 	}
