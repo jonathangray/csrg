@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_fork.c	7.35 (Berkeley) 06/02/92
+ *	@(#)kern_fork.c	7.36 (Berkeley) 06/20/92
  */
 
 #include "param.h"
@@ -177,17 +177,15 @@ again:
 	    (unsigned) ((caddr_t)&p2->p_endzero - (caddr_t)&p2->p_startzero));
 	bcopy(&p1->p_startcopy, &p2->p_startcopy,
 	    (unsigned) ((caddr_t)&p2->p_endcopy - (caddr_t)&p2->p_startcopy));
-	p2->p_wmesg = NULL;	/* XXX - should be in zero range */
-	p2->p_spare[0] = 0;	/* XXX - should be in zero range */
-	p2->p_spare[1] = 0;	/* XXX - should be in zero range */
-	p2->p_spare[2] = 0;	/* XXX - should be in zero range */
-	p2->p_spare[3] = 0;	/* XXX - should be in zero range */
 
 	/*
 	 * Duplicate sub-structures as needed.
 	 * Increase reference counts on shared objects.
 	 * The p_stats and p_sigacts substructs are set in vm_fork.
 	 */
+	p2->p_flag = SLOAD | (p1->p_flag & SHPUX);
+	if (p1->p_flag & SPROFIL)
+		startprofclock(p2);
 	MALLOC(p2->p_cred, struct pcred *, sizeof(struct pcred),
 	    M_SUBPROC, M_WAITOK);
 	bcopy(p1->p_cred, p2->p_cred, sizeof(*p2->p_cred));
@@ -208,7 +206,6 @@ again:
 		p2->p_limit->p_refcnt++;
 	}
 
-	p2->p_flag = SLOAD | (p1->p_flag & SHPUX);
 	if (p1->p_session->s_ttyvp != NULL && p1->p_flag & SCTTY)
 		p2->p_flag |= SCTTY;
 	if (isvfork)
@@ -230,10 +227,6 @@ again:
 		if ((p2->p_tracep = p1->p_tracep) != NULL)
 			VREF(p2->p_tracep);
 	}
-#endif
-
-#if defined(tahoe)
-	p2->p_vmspace->p_ckey = p1->p_vmspace->p_ckey; /* XXX move this */
 #endif
 
 	/*
