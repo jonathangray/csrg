@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dd.h	8.1 (Berkeley) 05/31/93
+ *	@(#)dd.h	8.2 (Berkeley) 01/13/94
  */
 
 /* Input/output stream state. */
@@ -93,3 +93,4 @@ typedef struct {
 #define	C_SYNC		0x20000
 #define	C_UCASE		0x40000
 #define	C_UNBLOCK	0x80000
+#define	C_OSYNC		0x100000
