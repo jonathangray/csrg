@@ -1,4 +1,4 @@
-/* $Id: os-utx32.h,v 5.2 90/06/23 22:21:00 jsp Rel $ */
+/* $Id: os-utx32.h,v 5.2.1.1 90/10/21 22:31:11 jsp Exp $ */
 
 /*
  * Gould UTX/32 definitions for Amd (automounter)
@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)os-utx32.h	5.1 (Berkeley) 06/29/90
+ *	@(#)os-utx32.h	5.2 (Berkeley) 03/17/91
  */
 
 /*
