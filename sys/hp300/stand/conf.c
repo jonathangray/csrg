@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.c	7.1 (Berkeley) 05/08/90
+ *	@(#)conf.c	7.2 (Berkeley) 07/01/90
  */
 
 #include "saio.h"
@@ -45,7 +45,7 @@ devread(io)
 
 	io->i_flgs |= F_RDDATA;
 	io->i_error = 0;
-	cc = (*devsw[io->i_ino.i_dev].dv_strategy)(io, READ);
+	cc = (*devsw[io->i_dev].dv_strategy)(io, READ);
 	io->i_flgs &= ~F_TYPEMASK;
 	return (cc);
 }
@@ -57,7 +57,7 @@ devwrite(io)
 
 	io->i_flgs |= F_WRDATA;
 	io->i_error = 0;
-	cc = (*devsw[io->i_ino.i_dev].dv_strategy)(io, WRITE);
+	cc = (*devsw[io->i_dev].dv_strategy)(io, WRITE);
 	io->i_flgs &= ~F_TYPEMASK;
 	return (cc);
 }
@@ -66,14 +66,14 @@ devopen(io)
 	register struct iob *io;
 {
 
-	(*devsw[io->i_ino.i_dev].dv_open)(io);
+	(*devsw[io->i_dev].dv_open)(io);
 }
 
 devclose(io)
 	register struct iob *io;
 {
 
-	(*devsw[io->i_ino.i_dev].dv_close)(io);
+	(*devsw[io->i_dev].dv_close)(io);
 }
 
 devioctl(io, cmd, arg)
@@ -82,7 +82,7 @@ devioctl(io, cmd, arg)
 	caddr_t arg;
 {
 
-	return ((*devsw[io->i_ino.i_dev].dv_ioctl)(io, cmd, arg));
+	return ((*devsw[io->i_dev].dv_ioctl)(io, cmd, arg));
 }
 
 /*ARGSUSED*/
