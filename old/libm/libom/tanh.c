@@ -1,4 +1,4 @@
-/*	@(#)tanh.c	4.1	12/25/82	*/
+/*	@(#)tanh.c	4.2	05/23/85	*/
 
 /*
 	tanh(arg) computes the hyperbolic tangent of its floating
