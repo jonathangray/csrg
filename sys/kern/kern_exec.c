@@ -11,7 +11,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_exec.c	8.8 (Berkeley) 02/14/95
+ *	@(#)kern_exec.c	8.9 (Berkeley) 02/14/95
  */
 
 #include <sys/param.h>
@@ -336,7 +336,7 @@ execve(p, uap, retval)
 			SCARG(uap, argp)++;
 		}
 		if (ap == NULL && SCARG(uap, envp)) {
-			SCARG(uap, envp) = NULL;
+			SCARG(uap, argp) = NULL;
 			if ((ap = fuword((caddr_t)SCARG(uap, envp))) != NULL)
 				SCARG(uap, envp)++, ne++;
 		}
