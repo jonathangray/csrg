@@ -14,7 +14,7 @@
  * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *	@(#)tcp_timer.c	7.14 (Berkeley) 06/29/88
+ *	@(#)tcp_timer.c	7.11.1.3 (Berkeley) 02/15/89
  */
 
 #include "param.h"
