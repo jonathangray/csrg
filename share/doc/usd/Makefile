@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.3 (Berkeley) 03/18/93
+#	@(#)Makefile	5.4 (Berkeley) 06/05/93
 
 #Missing: 01.begin 02.learn 03.shell 05.dc 06.bc 08.mh 12.edtut 13.edadv
 #	  17.jove 18.sed 19.awk 20.msmacros 24.troff 25.trofftut 26.eqn
