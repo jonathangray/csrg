@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_lock.c	8.12 (Berkeley) 05/17/95
+ *	@(#)kern_lock.c	8.13 (Berkeley) 05/17/95
  */
 
 #include <sys/param.h>
