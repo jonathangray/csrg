@@ -244,29 +244,30 @@ main(argc, argv)
 		setlinebuf(stdout);
 
 	consfile.f_type = F_CONSOLE;
-	(void) strcpy(consfile.f_un.f_fname, ctty);
-	(void) gethostname(LocalHostName, sizeof LocalHostName);
+	(void)strcpy(consfile.f_un.f_fname, ctty);
+	(void)gethostname(LocalHostName, sizeof LocalHostName);
 	if (p = index(LocalHostName, '.')) {
 		*p++ = '\0';
 		LocalDomain = p;
-	}
-	else
+	} else
 		LocalDomain = "";
-	(void) signal(SIGTERM, die);
-	(void) signal(SIGINT, Debug ? die : SIG_IGN);
-	(void) signal(SIGQUIT, Debug ? die : SIG_IGN);
-	(void) signal(SIGCHLD, reapchild);
-	(void) signal(SIGALRM, domark);
-	(void) alarm(TIMERINTVL);
-	(void) unlink(LogName);
+	(void)signal(SIGTERM, die);
+	(void)signal(SIGINT, Debug ? die : SIG_IGN);
+	(void)signal(SIGQUIT, Debug ? die : SIG_IGN);
+	(void)signal(SIGCHLD, reapchild);
+	(void)signal(SIGALRM, domark);
+	(void)alarm(TIMERINTVL);
+	(void)unlink(LogName);
 
+#ifndef SUN_LEN
+#define SUN_LEN(unp) (strlen((unp)->sun_path) + 2)
+#endif
 	bzero((char *)&sunx, sizeof(sunx));
 	sunx.sun_family = AF_UNIX;
-	(void) strncpy(sunx.sun_path, LogName, sizeof sunx.sun_path);
+	(void)strncpy(sunx.sun_path, LogName, sizeof sunx.sun_path);
 	funix = socket(AF_UNIX, SOCK_DGRAM, 0);
-	if (funix < 0 || bind(funix, (struct sockaddr *) &sunx,
-	    sizeof(sunx.sun_family)+sizeof(sunx.sun_len)+
-	    strlen(sunx.sun_path)) < 0 ||
+	if (funix < 0 ||
+	    bind(funix, (struct sockaddr *)&sunx, SUN_LEN(&sunx)) < 0 ||
 	    chmod(LogName, 0666) < 0) {
 		(void) sprintf(line, "cannot create %s", LogName);
 		logerror(line);
@@ -313,15 +314,15 @@ main(argc, argv)
 	dprintf("off & running....\n");
 
 	init(0);
-	(void) signal(SIGHUP, init);
+	(void)signal(SIGHUP, init);
 
 	for (;;) {
 		int nfds, readfds = FDMASK(funix) | inetm | klogm;
 
 		errno = 0;
 		dprintf("readfds = %#x\n", readfds);
-		nfds = select(20, (fd_set *) &readfds, (fd_set *) NULL,
-		    (fd_set *) NULL, (struct timeval *) NULL);
+		nfds = select(20, (fd_set *)&readfds, (fd_set *)NULL,
+		    (fd_set *)NULL, (struct timeval *)NULL);
 		if (nfds == 0)
 			continue;
 		if (nfds < 0) {
@@ -344,7 +345,7 @@ main(argc, argv)
 		if (readfds & FDMASK(funix)) {
 			len = sizeof fromunix;
 			i = recvfrom(funix, line, MAXLINE, 0,
-			    (struct sockaddr *) &fromunix, &len);
+			    (struct sockaddr *)&fromunix, &len);
 			if (i > 0) {
 				line[i] = '\0';
 				printline(LocalHostName, line);
@@ -354,7 +355,7 @@ main(argc, argv)
 		if (readfds & inetm) {
 			len = sizeof frominet;
 			i = recvfrom(finet, line, MAXLINE, 0,
-			    (struct sockaddr *) &frominet, &len);
+			    (struct sockaddr *)&frominet, &len);
 			if (i > 0) {
 				line[i] = '\0';
 				printline(cvthname(&frominet), line);
@@ -367,7 +368,7 @@ main(argc, argv)
 void
 usage()
 {
-	(void) fprintf(stderr,
+	(void)fprintf(stderr,
 	    "usage: syslogd [-f conffile] [-m markinterval] [-p logpath]\n");
 	exit(1);
 }
@@ -436,7 +437,7 @@ printsys(msg)
 	int pri, flags;
 	char *lp;
 
-	(void) strcpy(line, "vmunix: ");
+	(void)strcpy(line, "vmunix: ");
 	lp = line + strlen(line);
 	for (p = msg; *p != '\0'; ) {
 		flags = SYNC_FILE | ADDDATE;	/* fsync file after write */
@@ -492,7 +493,7 @@ logmsg(pri, msg, from, flags)
 	    msg[9] != ':' || msg[12] != ':' || msg[15] != ' ')
 		flags |= ADDDATE;
 
-	(void) time(&now);
+	(void)time(&now);
 	if (flags & ADDDATE)
 		timestamp = ctime(&now) + 4;
 	else {
@@ -515,9 +516,9 @@ logmsg(pri, msg, from, flags)
 
 		if (f->f_file >= 0) {
 			fprintlog(f, flags, msg);
-			(void) close(f->f_file);
+			(void)close(f->f_file);
 		}
-		(void) sigsetmask(omask);
+		(void)sigsetmask(omask);
 		return;
 	}
 	for (f = Files; f; f = f->f_next) {
@@ -539,7 +540,7 @@ logmsg(pri, msg, from, flags)
 		if ((flags & MARK) == 0 && msglen == f->f_prevlen &&
 		    !strcmp(msg, f->f_prevline) &&
 		    !strcmp(from, f->f_prevhost)) {
-			(void) strncpy(f->f_lasttime, timestamp, 15);
+			(void)strncpy(f->f_lasttime, timestamp, 15);
 			f->f_prevcount++;
 			dprintf("msg repeated %d times, %ld sec of %d\n",
 			    f->f_prevcount, now - f->f_time,
@@ -559,13 +560,13 @@ logmsg(pri, msg, from, flags)
 			if (f->f_prevcount)
 				fprintlog(f, 0, (char *)NULL);
 			f->f_repeatcount = 0;
-			(void) strncpy(f->f_lasttime, timestamp, 15);
-			(void) strncpy(f->f_prevhost, from,
+			(void)strncpy(f->f_lasttime, timestamp, 15);
+			(void)strncpy(f->f_prevhost, from,
 					sizeof(f->f_prevhost));
 			if (msglen < MAXSVLINE) {
 				f->f_prevlen = msglen;
 				f->f_prevpri = pri;
-				(void) strcpy(f->f_prevline, msg);
+				(void)strcpy(f->f_prevline, msg);
 				fprintlog(f, flags, (char *)NULL);
 			} else {
 				f->f_prevline[0] = 0;
@@ -574,7 +575,7 @@ logmsg(pri, msg, from, flags)
 			}
 		}
 	}
-	(void) sigsetmask(omask);
+	(void)sigsetmask(omask);
 }
 
 void
@@ -644,7 +645,7 @@ fprintlog(f, flags, msg)
 		    (struct sockaddr *)&f->f_un.f_forw.f_addr,
 		    sizeof f->f_un.f_forw.f_addr) != l) {
 			int e = errno;
-			(void) close(f->f_file);
+			(void)close(f->f_file);
 			f->f_type = F_UNUSED;
 			errno = e;
 			logerror("sendto");
@@ -671,7 +672,7 @@ fprintlog(f, flags, msg)
 	again:
 		if (writev(f->f_file, iov, 6) < 0) {
 			int e = errno;
-			(void) close(f->f_file);
+			(void)close(f->f_file);
 			/*
 			 * Check for errors on TTY's due to loss of tty
 			 */
@@ -689,7 +690,7 @@ fprintlog(f, flags, msg)
 				logerror(f->f_un.f_fname);
 			}
 		} else if (flags & SYNC_FILE)
-			(void) fsync(f->f_file);
+			(void)fsync(f->f_file);
 		break;
 
 	case F_USERS:
@@ -728,7 +729,7 @@ wallmsg(f, iov)
 		return;
 	}
 	/* NOSTRICT */
-	while (fread((char *) &ut, sizeof ut, 1, uf) == 1) {
+	while (fread((char *)&ut, sizeof ut, 1, uf) == 1) {
 		if (ut.ut_name[0] == '\0')
 			continue;
 		if (f->f_type == F_WALL) {
@@ -752,7 +753,7 @@ wallmsg(f, iov)
 			}
 		}
 	}
-	(void) fclose(uf);
+	(void)fclose(uf);
 	reenter = 0;
 }
 
@@ -762,7 +763,7 @@ reapchild(signo)
 {
 	union wait status;
 
-	while (wait3((int *)&status, WNOHANG, (struct rusage *) NULL) > 0)
+	while (wait3((int *)&status, WNOHANG, (struct rusage *)NULL) > 0)
 		;
 }
 
@@ -816,7 +817,7 @@ domark(signo)
 			BACKOFF(f);
 		}
 	}
-	(void) alarm(TIMERINTVL);
+	(void)alarm(TIMERINTVL);
 }
 
 /*
@@ -829,10 +830,10 @@ logerror(type)
 	char buf[100];
 
 	if (errno)
-		(void) snprintf(buf,
+		(void)snprintf(buf,
 		    sizeof(buf), "syslogd: %s: %s", type, strerror(errno));
 	else
-		(void) snprintf(buf, sizeof(buf), "syslogd: %s", type);
+		(void)snprintf(buf, sizeof(buf), "syslogd: %s", type);
 	errno = 0;
 	dprintf("%s\n", buf);
 	logmsg(LOG_SYSLOG|LOG_ERR, buf, LocalHostName, ADDDATE);
@@ -852,11 +853,11 @@ die(signo)
 	}
 	if (signo) {
 		dprintf("syslogd: exiting on signal %d\n", signo);
-		(void) sprintf(buf, "exiting on signal %d", signo);
+		(void)sprintf(buf, "exiting on signal %d", signo);
 		errno = 0;
 		logerror(buf);
 	}
-	(void) unlink(LogName);
+	(void)unlink(LogName);
 	exit(0);
 }
 
@@ -885,15 +886,15 @@ init(signo)
 			fprintlog(f, 0, (char *)NULL);
 
 		switch (f->f_type) {
-		  case F_FILE:
-		  case F_TTY:
-		  case F_CONSOLE:
-		  case F_FORW:
-			(void) close(f->f_file);
+		case F_FILE:
+		case F_TTY:
+		case F_CONSOLE:
+		case F_FORW:
+			(void)close(f->f_file);
 			break;
 		}
 		next = f->f_next;
-		free((char *) f);
+		free((char *)f);
 	}
 	Files = NULL;
 	nextp = &Files;
@@ -930,7 +931,7 @@ init(signo)
 	}
 
 	/* close the configuration file */
-	(void) fclose(cf);
+	(void)fclose(cf);
 
 	Initialized = 1;
 
@@ -987,7 +988,7 @@ cfline(line, f)
 	errno = 0;	/* keep strerror() stuff out of logerror messages */
 
 	/* clear out file entry */
-	bzero((char *) f, sizeof *f);
+	bzero((char *)f, sizeof *f);
 	for (i = 0; i <= LOG_NFACILITIES; i++)
 		f->f_pmask[i] = INTERNAL_NOPRI;
 
@@ -1013,7 +1014,7 @@ cfline(line, f)
 		else {
 			pri = decode(buf, prioritynames);
 			if (pri < 0) {
-				(void) sprintf(ebuf,
+				(void)sprintf(ebuf,
 				    "unknown priority name \"%s\"", buf);
 				logerror(ebuf);
 				return;
@@ -1031,7 +1032,7 @@ cfline(line, f)
 			else {
 				i = decode(buf, facilitynames);
 				if (i < 0) {
-					(void) sprintf(ebuf,
+					(void)sprintf(ebuf,
 					    "unknown facility name \"%s\"",
 					    buf);
 					logerror(ebuf);
@@ -1055,7 +1056,7 @@ cfline(line, f)
 	case '@':
 		if (!InetInuse)
 			break;
-		(void) strcpy(f->f_un.f_forw.f_hname, ++p);
+		(void)strcpy(f->f_un.f_forw.f_hname, ++p);
 		hp = gethostbyname(p);
 		if (hp == NULL) {
 			extern int h_errno, h_nerr;
@@ -1065,16 +1066,16 @@ cfline(line, f)
 			    h_errlist[h_errno] : "Unknown error");
 			break;
 		}
-		bzero((char *) &f->f_un.f_forw.f_addr,
+		bzero((char *)&f->f_un.f_forw.f_addr,
 			 sizeof f->f_un.f_forw.f_addr);
 		f->f_un.f_forw.f_addr.sin_family = AF_INET;
 		f->f_un.f_forw.f_addr.sin_port = LogPort;
-		bcopy(hp->h_addr, (char *) &f->f_un.f_forw.f_addr.sin_addr, hp->h_length);
+		bcopy(hp->h_addr, (char *)&f->f_un.f_forw.f_addr.sin_addr, hp->h_length);
 		f->f_type = F_FORW;
 		break;
 
 	case '/':
-		(void) strcpy(f->f_un.f_fname, p);
+		(void)strcpy(f->f_un.f_fname, p);
 		if ((f->f_file = open(p, O_WRONLY|O_APPEND, 0)) < 0) {
 			f->f_file = F_UNUSED;
 			logerror(p);
@@ -1096,7 +1097,7 @@ cfline(line, f)
 		for (i = 0; i < MAXUNAMES && *p; i++) {
 			for (q = p; *q && *q != ','; )
 				q++;
-			(void) strncpy(f->f_un.f_uname[i], p, UT_NAMESIZE);
+			(void)strncpy(f->f_un.f_uname[i], p, UT_NAMESIZE);
 			if ((q - p) > UT_NAMESIZE)
 				f->f_un.f_uname[i][UT_NAMESIZE] = '\0';
 			else
@@ -1126,7 +1127,7 @@ decode(name, codetab)
 	if (isdigit(*name))
 		return (atoi(name));
 
-	(void) strcpy(buf, name);
+	(void)strcpy(buf, name);
 	for (p = buf; *p; p++)
 		if (isupper(*p))
 			*p = tolower(*p);
