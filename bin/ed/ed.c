@@ -1,5 +1,5 @@
 #ifndef lint
-static char sccsid[] = "@(#)ed.c	4.9 (Berkeley) 05/08/89";
+static char sccsid[] = "@(#)ed.c	4.10 (Berkeley) 05/27/89";
 #endif
 
 /*
