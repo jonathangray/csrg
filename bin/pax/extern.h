@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	8.1 (Berkeley) 05/31/93
+ *	@(#)extern.h	8.2 (Berkeley) 04/18/94
  */
 
 /*
@@ -223,8 +223,8 @@ extern int exit_val;
 extern int docrc;
 extern char *dirptr;
 extern char *ltmfrmt;
+extern char *argv0;
 int main __P((int, char **));
-void usage __P((void));
 void sig_cleanup __P((int));
 
 /*
