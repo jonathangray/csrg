@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_pageout.c	7.6 (Berkeley) 08/28/91
+ *	@(#)vm_pageout.c	7.7 (Berkeley) 05/04/92
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -66,11 +66,11 @@
  *	The proverbial page-out daemon.
  */
 
-#include "param.h"
+#include <sys/param.h>
 
-#include "vm.h"
-#include "vm_page.h"
-#include "vm_pageout.h"
+#include <vm/vm.h>
+#include <vm/vm_page.h>
+#include <vm/vm_pageout.h>
 
 int	vm_pages_needed;	/* Event on which pageout daemon sleeps */
 
@@ -79,6 +79,7 @@ int	vm_page_free_min_sanity = 40;
 /*
  *	vm_pageout_scan does the dirty work for the pageout daemon.
  */
+void
 vm_pageout_scan()
 {
 	register vm_page_t	m;
