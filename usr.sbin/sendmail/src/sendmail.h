@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.104 (Berkeley) 03/21/95
+ *	@(#)sendmail.h	8.105 (Berkeley) 03/21/95
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.104		03/21/95";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.105		03/21/95";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -398,7 +398,6 @@ ENVELOPE
 	struct envelope	*e_parent;	/* the message this one encloses */
 	struct envelope *e_sibling;	/* the next envelope of interest */
 	char		*e_bodytype;	/* type of message body */
-	char		*e_df;		/* location of temp file */
 	FILE		*e_dfp;		/* temporary file */
 	char		*e_id;		/* code for this entry in queue */
 	FILE		*e_xfp;		/* transcript file */
@@ -438,6 +437,7 @@ ENVELOPE
 #define EF_NL_NOT_EOL	0x0040000	/* don't accept raw NL as EOLine */
 #define EF_CRLF_NOT_EOL	0x0080000	/* don't accept CR-LF as EOLine */
 #define EF_RET_PARAM	0x0100000	/* RCPT command had RET argument */
+#define EF_HAS_DF	0x0200000	/* set when df file is instantiated */
 
 EXTERN ENVELOPE	*CurEnv;	/* envelope currently being processed */
 /*
