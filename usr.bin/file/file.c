@@ -14,7 +14,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)file.c	5.2 (Berkeley) 01/11/93";
+static char sccsid[] = "@(#)file.c	5.3 (Berkeley) 03/08/93";
 #endif /* not lint */
 
 /*
@@ -185,6 +185,16 @@ char *file;
 		}
 		break;
 #endif
+#ifdef MID_MIPSI
+	case MID_MIPSI:
+		printf("MIPS R3000 ");
+		break;
+#endif
+#ifdef MID_MIPSII
+	case MID_MIPSII:
+		printf("MIPS R4000 ");
+		break;
+#endif
 #if BYTE_ORDER == BIG_ENDIAN
 	case ((OMAGIC & 0xff) << 8) | (OMAGIC >> 8):
 	case ((NMAGIC & 0xff) << 8) | (NMAGIC >> 8):
@@ -192,8 +202,8 @@ char *file;
 		printf("byte-swapped (VAX/386) ");
 		hdr->a_magic = ((hdr->a_mid & 0xff) << 8) | (hdr->a_mid >> 8);
 		break;
-	}
 #endif
+	}
 #endif /* MID_ZERO, a_mid */
 	switch (hdr->a_magic) {
 
