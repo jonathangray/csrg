@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)bt_open.c	5.17 (Berkeley) 05/15/92";
+static char sccsid[] = "@(#)bt_open.c	5.18 (Berkeley) 07/17/92";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -48,6 +48,8 @@ static char sccsid[] = "@(#)bt_open.c	5.17 (Berkeley) 05/15/92";
 
 #include <sys/param.h>
 #include <sys/stat.h>
+
+#include <signal.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <limits.h>
@@ -359,7 +361,7 @@ tmp()
 	(void)snprintf(path,
 	    sizeof(path), "%s/bt.XXXXXX", envtmp ? envtmp : "/tmp");
 
-	sigfillset(&set);
+	(void)sigfillset(&set);
 	(void)sigprocmask(SIG_BLOCK, &set, &oset);
 	if ((fd = mkstemp(path)) != -1)
 		(void)unlink(path);
