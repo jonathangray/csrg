@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	8.107 (Berkeley) 06/20/95";
+static char sccsid[] = "@(#)readcf.c	8.108 (Berkeley) 06/21/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -2269,7 +2269,7 @@ strtorwset(p, endp, stabmode)
 
 		if (stabmode == ST_ENTER && delim == '=')
 		{
-			ruleset = strtol(p, endp, 10);
+			ruleset = strtol(++p, endp, 10);
 			if (ruleset >= MAXRWSETS / 2 || ruleset < 0)
 			{
 				syserr("bad ruleset %s = %d (%d max)",
