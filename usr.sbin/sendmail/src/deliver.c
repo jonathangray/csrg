@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	8.126 (Berkeley) 03/05/95";
+static char sccsid[] = "@(#)deliver.c	8.84.1.3 (Berkeley) 03/05/95";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -2568,6 +2568,7 @@ mailfile(filename, ctladdr, e)
 		struct stat fsb;
 		MCI mcibuf;
 		int oflags = O_WRONLY|O_APPEND;
+		int oflags = O_WRONLY|O_APPEND;
 
 		if (e->e_lockfp != NULL)
 		{
@@ -2585,6 +2586,7 @@ mailfile(filename, ctladdr, e)
 					 : stat(filename, &stb)) < 0)
 #else
 		if (stat(filename, &stb) < 0)
+		{
 #endif
 		{
 			stb.st_mode = FileMode;
