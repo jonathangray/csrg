@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)func.c	5.36 (Berkeley) 05/28/92";
+static char sccsid[] = "@(#)func.c	5.37 (Berkeley) 07/12/92";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -1257,10 +1257,8 @@ badscal:
 	stderror(ERR_NAME | ERR_SCALEF);
     }
     f += 0.5;
-    if (f > (float) 0x7fffffff)
-	return 0x7fffffff;
-    else if (f < (float) 0x80000000)
-	return 0x80000000;
+    if (f > (float) RLIM_INFINITY)
+	return RLIM_INFINITY;
     else
 	return ((RLIM_TYPE) f);
 }
