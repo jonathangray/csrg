@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)fmt.c	8.1 (Berkeley) 06/06/93";
+static char sccsid[] = "@(#)fmt.c	5.11 (Berkeley) 07/20/93";
 #endif /* not lint */
 
 #include <stdio.h>
@@ -239,7 +239,7 @@ prefix(line)
 		oflush();
 	pfx = np;
 	if (h)
-		pack(cp);
+		pack(cp, strlen(cp));
 	else	split(cp);
 	if (h)
 		oflush();
