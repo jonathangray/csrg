@@ -35,14 +35,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)shm.h	7.1 (Berkeley) 05/08/90
+ *	@(#)shm.h	7.2 (Berkeley) 02/05/91
  */
 
 /*
  * SVID compatible shm.h file
  */
-#ifndef _SHM_
-#define _SHM_
+#ifndef _SHM_H_
+#define _SHM_H_
 
 #ifdef KERNEL
 #include "ipc.h"
@@ -91,4 +91,4 @@ struct	shmid_ds	*shmsegs;
 struct	shminfo		shminfo;
 #endif
 
-#endif /* _SHM_ */
+#endif /* !_SHM_H_ */
