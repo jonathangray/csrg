@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)qv.c	1.16 (Berkeley) 05/16/91
+ *	@(#)qv.c	7.1 (Berkeley) 06/28/91
  */
 
 /*
