@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)udp_usrreq.c	7.22 (Berkeley) 10/02/91
+ *	@(#)udp_usrreq.c	7.23 (Berkeley) 02/15/92
  */
 
 #include "param.h"
