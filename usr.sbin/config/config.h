@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)config.h	5.13 (Berkeley) 05/24/91
+ *	@(#)config.h	5.14 (Berkeley) 07/01/91
  */
 
 /*
@@ -47,7 +47,7 @@ struct file_list {
 	char	*f_fn;			/* the name */
 	u_char	f_type;			/* see below */
 	u_char	f_flags;		/* see below */
-	short	f_special;		/* requires special make rule */
+	char	*f_special;		/* special make rule if present */
 	char	*f_needs;
 	/*
 	 * Random values:
@@ -61,14 +61,12 @@ struct file_list {
 		} fuw;
 		struct {		/* when system specification */
 			dev_t	fus_rootdev;
-			dev_t	fus_argdev;
 			dev_t	fus_dumpdev;
 		} fus;
 	} fun;
 #define	f_swapdev	fun.fuw.fuw_swapdev
 #define	f_swapsize	fun.fuw.fuw_swapsize
 #define	f_rootdev	fun.fus.fus_rootdev
-#define	f_argdev	fun.fus.fus_argdev
 #define	f_dumpdev	fun.fus.fus_dumpdev
 };
 
@@ -162,6 +160,7 @@ char	*ns();
 char	*tc();
 char	*qu();
 char	*get_word();
+char	*get_quoted_word();
 char	*path();
 char	*raise();
 
