@@ -85,8 +85,9 @@ ufs_iput(ip)
  * Reclaim an inode so that it can be used for other purposes.
  */
 int
-ufs_reclaim(vp)
-	register struct vnode *vp;
+ufs_reclaim (ap)
+	struct vop_reclaim_args *ap;
+#define vp (ap->a_vp)
 {
 	register struct inode *ip;
 	int i, type;
@@ -131,6 +132,7 @@ ufs_reclaim(vp)
 	vp->v_data = NULL;
 	return (0);
 }
+#undef vp
 
 /*
  * Lock an inode. If its already locked, set the WANT bit and sleep.
