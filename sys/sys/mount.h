@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mount.h	8.12 (Berkeley) 02/20/94
+ *	@(#)mount.h	8.13 (Berkeley) 03/27/94
  */
 
 #ifndef KERNEL
@@ -317,7 +317,6 @@ struct iso_args {
 #define ISOFSMNT_NORRIP		0x00000001 /* disable Rock Ridge Ext.*/
 #define ISOFSMNT_GENS		0x00000002 /* enable generation numbers */
 #define ISOFSMNT_EXTATT		0x00000004 /* enable extended attributes */
-#define ISOFSMNT_NOTRANS	0x00000008 /* disable filename translation */
 #endif /* CD9660 */
 
 #ifdef NFS
