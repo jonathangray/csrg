@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)read.c	5.1 (Berkeley) 07/21/91";
+static char sccsid[] = "@(#)read.c	5.2 (Berkeley) 03/03/92";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -69,7 +69,7 @@ bytes(fp, off)
 	char *sp;
 
 	if ((sp = p = malloc(off)) == NULL)
-		err("%s", strerror(errno));
+		err(1, "%s", strerror(errno));
 
 	for (wrap = 0, ep = p + off; (ch = getc(fp)) != EOF;) {
 		*p = ch;
@@ -78,8 +78,10 @@ bytes(fp, off)
 			p = sp;
 		}
 	}
-	if (ferror(fp))
+	if (ferror(fp)) {
 		ierr();
+		return;
+	}
 
 	if (rflag) {
 		for (t = p - 1, len = 0; t >= sp; --t, ++len)
@@ -140,7 +142,7 @@ lines(fp, off)
 	char *sp;
 
 	if ((lines = malloc(off * sizeof(*lines))) == NULL)
-		err("%s", strerror(errno));
+		err(1, "%s", strerror(errno));
 
 	sp = NULL;
 	blen = cnt = recno = wrap = 0;
@@ -148,7 +150,7 @@ lines(fp, off)
 	while ((ch = getc(fp)) != EOF) {
 		if (++cnt > blen) {
 			if ((sp = realloc(sp, blen += 1024)) == NULL)
-				err("%s", strerror(errno));
+				err(1, "%s", strerror(errno));
 			p = sp + cnt - 1;
 		}
 		*p++ = ch;
@@ -157,7 +159,7 @@ lines(fp, off)
 				lines[recno].blen = cnt + 256;
 				if ((lines[recno].l = realloc(lines[recno].l,
 				    lines[recno].blen)) == NULL)
-					err("%s", strerror(errno));
+					err(1, "%s", strerror(errno));
 			}
 			bcopy(sp, lines[recno].l, lines[recno].len = cnt);
 			cnt = 0;
@@ -168,8 +170,10 @@ lines(fp, off)
 			}
 		}
 	}
-	if (ferror(fp))
+	if (ferror(fp)) {
 		ierr();
+		return;
+	}
 	if (cnt) {
 		lines[recno].l = sp;
 		lines[recno].len = cnt;
