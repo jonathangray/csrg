@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	6.66 (Berkeley) 05/21/93
+ *	@(#)sendmail.h	6.67 (Berkeley) 05/27/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	6.66		05/21/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	6.67		05/27/93";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -607,7 +607,8 @@ typedef struct symtab	STAB;
 # define s_alias	s_value.sv_alias
 # define s_mci		s_value.sv_mci
 
-extern STAB	*stab();
+extern STAB		*stab __P((char *, int, int));
+extern void		stabapply __P((void (*)(STAB *)));
 
 /* opcodes to stab */
 # define ST_FIND	0	/* find entry */
@@ -898,6 +899,28 @@ extern char		*queuename __P((ENVELOPE *, int));
 extern time_t		curtime __P(());
 extern bool		transienterror __P((int));
 extern const char	*errstring __P((int));
+extern void		expand __P((char *, char *, char *, ENVELOPE *));
+extern void		define __P((char, char *, ENVELOPE *));
+extern char		*macvalue __P((char, ENVELOPE *));
+extern char		**prescan __P((char *, char, char[], char **));
+extern char		*fgetfolded __P((char *, int, FILE *));
+extern ADDRESS		*recipient __P((ADDRESS *, ADDRESS **, ENVELOPE *));
+extern ENVELOPE		*newenvelope __P((ENVELOPE *, ENVELOPE *));
+extern void		dropenvelope __P((ENVELOPE *));
+extern void		clearenvelope __P((ENVELOPE *, bool));
+extern char		*username __P(());
+extern MCI		*mci_get __P((char *, MAILER *));
+extern char		*pintvl __P((time_t, bool));
+extern char		*sfgets __P((char *, int, FILE *, time_t));
+extern char		*map_rewrite __P((MAP *, char *, int, char **));
+extern ADDRESS		*getctladdr __P((ADDRESS *));
+extern char		*anynet_ntoa __P((SOCKADDR *));
+extern char		*remotename __P((char *, MAILER *, int, int *, ENVELOPE *));
+extern bool		shouldqueue __P((long, time_t));
+extern bool		lockfile __P((int, char *, int));
+extern char		*hostsignature __P((MAILER *, char *, ENVELOPE *));
+extern void		openxscript __P((ENVELOPE *));
+extern void		closexscript __P((ENVELOPE *));
 
 /* ellipsis is a different case though */
 #ifdef __STDC__
