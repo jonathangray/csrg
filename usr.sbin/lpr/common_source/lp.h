@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * 	@(#)lp.h	5.9 (Berkeley) 09/15/92
+ * 	@(#)lp.h	5.10 (Berkeley) 02/26/93
  */
 
 
@@ -97,7 +97,7 @@ struct queue {
 
 #include <sys/cdefs.h>
 
-_BEGIN_DECLS
+__BEGIN_DECLS
 struct dirent;
 
 void     blankfill __P((int));
@@ -123,4 +123,4 @@ void     rmremote __P((void));
 void     show __P((char *, char *, int));
 int      startdaemon __P((char *));
 void     warn __P((void));
-_END_DECLS
+__END_DECLS
