@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vfsops.c	7.41 (Berkeley) 07/03/92
+ *	@(#)nfs_vfsops.c	7.42 (Berkeley) 07/06/92
  */
 
 #include "param.h"
@@ -641,10 +641,13 @@ nfs_vget(mp, ino, vpp)
  * At this point, this should never happen
  */
 /* ARGSUSED */
-nfs_fhtovp(mp, fhp, vpp)
-	struct mount *mp;
+nfs_fhtovp(mp, fhp, nam, vpp, exflagsp, credanonp)
+	register struct mount *mp;
 	struct fid *fhp;
+	struct mbuf *nam;
 	struct vnode **vpp;
+	int *exflagsp;
+	struct ucred **credanonp;
 {
 
 	return (EINVAL);
