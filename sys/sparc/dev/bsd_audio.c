@@ -39,9 +39,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)bsd_audio.c	7.4 (Berkeley) 04/20/93
+ *	@(#)bsd_audio.c	7.5 (Berkeley) 04/27/93
  *
- * from: $Header: bsd_audio.c,v 1.17 93/04/20 05:31:28 torek Exp $ (LBL)
+ * from: $Header: bsd_audio.c,v 1.18 93/04/24 16:20:35 leres Exp $ (LBL)
  */
 #include "bsdaudio.h"
 #if NBSDAUDIO > 0
@@ -346,12 +346,13 @@ static int sunaudiogetinfo __P((struct audio_softc *,
 				struct sun_audio_info *));
 static void audio_setmmr2 __P((volatile struct amd7930 *, int));
 
+/* ARGSUSED */
 int
 AUDIOOPEN(dev, flags, ifmt, p)
 {
 	register struct audio_softc *sc;
 	register volatile struct amd7930 *amd;
-	int unit = minor(dev), error, s;
+	int unit = minor(dev);
 
 #ifdef SUNOS
 	if (unit > 0)
@@ -457,6 +458,7 @@ audio_sleep(cb, thresh)
 	return (error);
 }
 
+/* ARGSUSED */
 int
 AUDIOREAD(dev, uio, ioflag)
 {
@@ -509,12 +511,13 @@ AUDIOREAD(dev, uio, ioflag)
 	return (error);
 }
 
+/* ARGSUSED */
 int
 AUDIOWRITE(dev, uio, ioflag)
 {
 	register struct audio_softc *sc = SOFTC(dev);
 	register struct aucb *cb = &sc->sc_au.au_wb;
-	register int n, tail, tailspace, error, first, watermark, drops;
+	register int n, tail, tailspace, error, first, watermark;
 
 	error = 0;
 	first = 1;
@@ -641,11 +644,12 @@ struct sun_audio_info {
 #define SUNAUDIO_SETINFO	_IOWR(A, 2, struct sun_audio_info)
 #endif
 
+/* ARGSUSED */
 int
 AUDIOIOCTL(dev, cmd, addr, flag, p)
 {
 	register struct audio_softc *sc = SOFTC(dev);
-	int error = 0, i, s;
+	int error = 0, s;
 
 	switch (cmd) {
 
@@ -715,6 +719,7 @@ AUDIOIOCTL(dev, cmd, addr, flag, p)
 	return (error);
 }
 
+/* ARGSUSED */
 int
 AUDIOSELECT(dev, rw, p)
 {
@@ -804,6 +809,7 @@ audiohwintr(au0)
 }
 #endif
 
+/* ARGSUSED */
 int
 audioswintr(sc0)
 	void *sc0;
