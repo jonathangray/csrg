@@ -5,7 +5,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)c.c	5.1.1.1 (Berkeley) 10/14/86";
+static char sccsid[] = "@(#)c.c	5.4 (Berkeley) 10/14/86";
 #endif not lint
 
 static char rcsid[] = "$Header: c.c,v 1.5 84/12/26 10:38:23 linton Exp $";
