@@ -30,8 +30,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)socketvar.h	7.20 (Berkeley) 02/15/92
+ *	@(#)socketvar.h	7.21 (Berkeley) 02/17/92
  */
+
+#include <sys/select.h>			/* for struct selinfo */
 
 /*
  * Kernel structure per socket.
