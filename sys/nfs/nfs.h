@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs.h	7.10 (Berkeley) 04/16/91
+ *	@(#)nfs.h	7.11 (Berkeley) 04/19/91
  */
 
 /*
@@ -112,9 +112,11 @@ struct nfsreq {
  * can be removed by nfs_inactive()
  */
 struct sillyrename {
-	int	s_flag;
 	nfsv2fh_t s_fh;
-	struct nameidata s_namei;
+	struct	ucred *s_cred;
+	struct	vnode *s_dvp;
+	u_short	s_namlen;
+	char	s_name[20];
 };
 
 /* And its flag values */
