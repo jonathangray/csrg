@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_serv.c	7.38 (Berkeley) 05/08/91
+ *	@(#)nfs_serv.c	7.39 (Berkeley) 05/08/91
  */
 
 /*
