@@ -33,11 +33,10 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)clock.c	8.4 (Berkeley) 07/21/93";
+static char sccsid[] = "@(#)clock.c	8.5 (Berkeley) 07/26/93";
 #endif /* not lint */
 
 # include "sendmail.h"
-# include <signal.h>
 
 # ifndef sigmask
 #  define sigmask(s)	(1 << ((s) - 1))
@@ -128,7 +127,7 @@ clrevent(ev)
 		return;
 
 	/* find the parent event */
-	(void) signal(SIGALRM, SIG_IGN);
+	(void) setsignal(SIGALRM, SIG_IGN);
 	for (evp = &EventQueue; *evp != NULL; evp = &(*evp)->ev_link)
 	{
 		if (*evp == ev)
@@ -170,7 +169,7 @@ tick()
 	sigset_t ss;
 #endif
 
-	(void) signal(SIGALRM, SIG_IGN);
+	(void) setsignal(SIGALRM, SIG_IGN);
 	(void) alarm(0);
 	now = curtime();
 
@@ -192,7 +191,7 @@ tick()
 				ev->ev_func, ev->ev_arg, ev->ev_pid);
 
 		/* we must be careful in here because ev_func may not return */
-		(void) signal(SIGALRM, tick);
+		(void) setsignal(SIGALRM, tick);
 #ifdef SIG_UNBLOCK
 		/* unblock SIGALRM signal */
 		sigemptyset(&ss);
@@ -222,7 +221,7 @@ tick()
 		(void) alarm(0);
 		now = curtime();
 	}
-	(void) signal(SIGALRM, tick);
+	(void) setsignal(SIGALRM, tick);
 	if (EventQueue != NULL)
 		(void) alarm((unsigned) (EventQueue->ev_time - now));
 }
