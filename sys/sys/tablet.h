@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tablet.h	8.1 (Berkeley) 06/02/93
+ *	@(#)tablet.h	8.2 (Berkeley) 12/29/93
  */
 
 #ifndef _TABLET_H_
@@ -39,11 +39,7 @@
 /*
  * Tablet line discipline.
  */
-#ifdef KERNEL
-#include "../h/ioctl.h"
-#else
 #include <sys/ioctl.h>
-#endif
 
 /*
  * Reads on the tablet return one of the following structures, depending on
@@ -94,6 +90,5 @@ struct	polpos {
 #define		TBDIGIHIRES	0x8		/* gtco digi-pad, high res */
 #define BIOSTYPE	_IOW('b', 3, int)	/* set tablet type */
 #define BIOGTYPE	_IOR('b', 4, int)	/* get tablet type*/
-#endif
 
 #endif /* !_TABLET_H_ */
