@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tuba_table.c	8.4 (Berkeley) 07/13/94
+ *	@(#)tuba_table.c	8.5 (Berkeley) 07/13/94
  */
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -94,7 +94,7 @@ tuba_lookup(siso, wait)
 	     && ((rn->rn_flags & RNF_ROOT) == 0)) {
 		tc = (struct tuba_cache *)rn;
 		tc->tc_time = time.tv_sec;
-		i = tc->index;
+		i = tc->tc_index;
 	done:	siso->siso_nlen--;
 		return (i);
 	}
