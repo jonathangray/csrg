@@ -1,4 +1,4 @@
-static char *sccsid = "@(#)cron.c	4.2 (Berkeley) 05/17/81";
+static char *sccsid = "@(#)cron.c	4.3 (Berkeley) 07/05/81";
 #include <sys/types.h>
 #include <stdio.h>
 #include <ctype.h>
