@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: trap.c 1.32 91/04/06$
  *
- *	@(#)trap.c	7.14 (Berkeley) 03/08/93
+ *	@(#)trap.c	7.15 (Berkeley) 03/23/93
  */
 
 #include <sys/param.h>
@@ -73,6 +73,8 @@
 #include <pmax/pmax/asic.h>
 #include <pmax/pmax/turbochannel.h>
 
+#include <pmax/stand/dec_prom.h>
+
 #include <asc.h>
 #include <sii.h>
 #include <le.h>
@@ -85,7 +87,7 @@
 
 #ifdef X_KLUGE
 #define USER_MAP_ADDR	0x4000
-#define NPTES 300
+#define NPTES 550
 static pt_entry_t UserMapPtes[NPTES];
 static unsigned nUserMapPtes;
 static pid_t UserMapPid;
@@ -181,6 +183,7 @@ static void kn03_errintr();
 static unsigned kn02ba_recover_erradr();
 extern tc_option_t tc_slot_info[TC_MAX_LOGICAL_SLOTS];
 extern u_long kmin_tc3_imask, xine_tc3_imask;
+extern const struct callback *callv;
 #ifdef DS5000_240
 extern u_long kn03_tc3_imask;
 #endif
@@ -967,6 +970,8 @@ kmin_intr(mask, pc, statusReg, causeReg)
 	old_mask = *imaskp & kmin_tc3_imask;
 	*imaskp = old_mask;
 
+	if (mask & MACH_INT_MASK_4)
+		(*callv->halt)((int *)0, 0);
 	if (mask & MACH_INT_MASK_3) {
 		intr = *intrp;
 		/* masked interrupts are still observable */
@@ -1016,12 +1021,10 @@ kmin_intr(mask, pc, statusReg, causeReg)
 			(tc_slot_info[KMIN_LANCE_SLOT].unit);
 	
 		if (user_warned && ((intr & KMIN_INTR_PSWARN) == 0)) {
-			*imaskp = 0;
 			printf("%s\n", "Power supply ok now.");
 			user_warned = 0;
 		}
 		if ((intr & KMIN_INTR_PSWARN) && (user_warned < 3)) {
-			*imaskp = 0;
 			user_warned++;
 			printf("%s\n", "Power supply overheating");
 		}
@@ -1058,6 +1061,9 @@ xine_intr(mask, pc, statusReg, causeReg)
 	old_mask = *imaskp & xine_tc3_imask;
 	*imaskp = old_mask;
 
+	if (mask & MACH_INT_MASK_4)
+		(*callv->halt)((int *)0, 0);
+
 	/* handle clock interrupts ASAP */
 	if (mask & MACH_INT_MASK_1) {
 		temp = c->regc;	/* XXX clear interrupt bits */
@@ -1086,6 +1092,16 @@ xine_intr(mask, pc, statusReg, causeReg)
 		if (intr & XINE_INTR_LANCE_READ_E)
 			*intrp &= ~XINE_INTR_LANCE_READ_E;
 
+		if ((intr & XINE_INTR_SCC_0) &&
+			tc_slot_info[XINE_SCC0_SLOT].intr)
+			(*(tc_slot_info[XINE_SCC0_SLOT].intr))
+			(tc_slot_info[XINE_SCC0_SLOT].unit);
+	
+		if ((intr & XINE_INTR_DTOP_RX) &&
+			tc_slot_info[XINE_DTOP_SLOT].intr)
+			(*(tc_slot_info[XINE_DTOP_SLOT].intr))
+			(tc_slot_info[XINE_DTOP_SLOT].unit);
+	
 		if ((intr & XINE_INTR_FLOPPY) &&
 			tc_slot_info[XINE_FLOPPY_SLOT].intr)
 			(*(tc_slot_info[XINE_FLOPPY_SLOT].intr))
@@ -1095,6 +1111,11 @@ xine_intr(mask, pc, statusReg, causeReg)
 			tc_slot_info[0].intr)
 			(*(tc_slot_info[0].intr))
 			(tc_slot_info[0].unit);
+	
+		if ((intr & XINE_INTR_TC_1) &&
+			tc_slot_info[1].intr)
+			(*(tc_slot_info[1].intr))
+			(tc_slot_info[1].unit);
 	
 		if ((intr & XINE_INTR_ISDN) &&
 			tc_slot_info[XINE_ISDN_SLOT].intr)
@@ -1110,21 +1131,6 @@ xine_intr(mask, pc, statusReg, causeReg)
 			tc_slot_info[XINE_LANCE_SLOT].intr)
 			(*(tc_slot_info[XINE_LANCE_SLOT].intr))
 			(tc_slot_info[XINE_LANCE_SLOT].unit);
-	
-		if ((intr & XINE_INTR_SCC_0) &&
-			tc_slot_info[XINE_SCC0_SLOT].intr)
-			(*(tc_slot_info[XINE_SCC0_SLOT].intr))
-			(tc_slot_info[XINE_SCC0_SLOT].unit);
-	
-		if ((intr & XINE_INTR_TC_1) &&
-			tc_slot_info[1].intr)
-			(*(tc_slot_info[1].intr))
-			(tc_slot_info[1].unit);
-	
-		if ((intr & XINE_INTR_DTOP_RX) &&
-			tc_slot_info[XINE_DTOP_SLOT].intr)
-			(*(tc_slot_info[XINE_DTOP_SLOT].intr))
-			(tc_slot_info[XINE_DTOP_SLOT].unit);
 	
 	}
 	if (mask & MACH_INT_MASK_2)
@@ -1152,9 +1158,13 @@ kn03_intr(mask, pc, statusReg, causeReg)
 	u_int old_mask;
 	struct clockframe cf;
 	int temp;
+	static int user_warned = 0;
 
 	old_mask = *imaskp & kn03_tc3_imask;
 	*imaskp = old_mask;
+
+	if (mask & MACH_INT_MASK_4)
+		(*callv->halt)((int *)0, 0);
 
 	/* handle clock interrupts ASAP */
 	if (mask & MACH_INT_MASK_1) {
@@ -1184,6 +1194,16 @@ kn03_intr(mask, pc, statusReg, causeReg)
 		if (intr & KN03_INTR_LANCE_READ_E)
 			*intrp &= ~KN03_INTR_LANCE_READ_E;
 
+		if ((intr & KN03_INTR_SCC_0) &&
+			tc_slot_info[KN03_SCC0_SLOT].intr)
+			(*(tc_slot_info[KN03_SCC0_SLOT].intr))
+			(tc_slot_info[KN03_SCC0_SLOT].unit);
+	
+		if ((intr & KN03_INTR_SCC_1) &&
+			tc_slot_info[KN03_SCC1_SLOT].intr)
+			(*(tc_slot_info[KN03_SCC1_SLOT].intr))
+			(tc_slot_info[KN03_SCC1_SLOT].unit);
+	
 		if ((intr & KN03_INTR_TC_0) &&
 			tc_slot_info[0].intr)
 			(*(tc_slot_info[0].intr))
@@ -1209,16 +1229,14 @@ kn03_intr(mask, pc, statusReg, causeReg)
 			(*(tc_slot_info[KN03_LANCE_SLOT].intr))
 			(tc_slot_info[KN03_LANCE_SLOT].unit);
 	
-		if ((intr & KN03_INTR_SCC_0) &&
-			tc_slot_info[KN03_SCC0_SLOT].intr)
-			(*(tc_slot_info[KN03_SCC0_SLOT].intr))
-			(tc_slot_info[KN03_SCC0_SLOT].unit);
-	
-		if ((intr & KN03_INTR_SCC_1) &&
-			tc_slot_info[KN03_SCC1_SLOT].intr)
-			(*(tc_slot_info[KN03_SCC1_SLOT].intr))
-			(tc_slot_info[KN03_SCC1_SLOT].unit);
-	
+		if (user_warned && ((intr & KN03_INTR_PSWARN) == 0)) {
+			printf("%s\n", "Power supply ok now.");
+			user_warned = 0;
+		}
+		if ((intr & KN03_INTR_PSWARN) && (user_warned < 3)) {
+			user_warned++;
+			printf("%s\n", "Power supply overheating");
+		}
 	}
 	if (mask & MACH_INT_MASK_3)
 		kn03_errintr();
