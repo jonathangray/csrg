@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_ecreg.h	7.1 (Berkeley) 09/17/91
+ *	@(#)if_ecreg.h	7.2 (Berkeley) 09/18/91
  */
 /*
  * Device definitions for the i82586 generally and the 3com ec507
@@ -177,12 +177,13 @@ struct	ec_82586params {
 	u_char	fifolimit;
 	u_char	save_bad_frames;
 	u_char	data1;		/* addr len, no src ins, lpbk, prmble */
+	u_char	priority;
 	u_char	ifspacing;
 	u_char	mbz1;
 	u_char	data2;		/* max restries, slot time high */
 	u_char	promisc;	/* brddis, mnch/nrz, tnocr, crc16, bstf, pad */
 #define M_PROMISC 1
-#define M_TNOCR 4
+#define M_TNOCR 8
 	u_char	cdf_cds;	/* carrier detect/sense filter(length) & src */
 	u_char	min_frame_len;
 	u_char	mbz2[3];
