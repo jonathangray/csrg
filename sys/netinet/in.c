@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)in.c	8.2 (Berkeley) 11/15/93
+ *	@(#)in.c	8.3 (Berkeley) 11/07/94
  */
 
 #include <sys/param.h>
@@ -141,7 +141,7 @@ struct sockaddr_in *ap;
     register char *cp = (char *) (&ap->sin_addr + 1);
 
     ap->sin_len = 0;
-    while (--cp > cplim)
+    while (--cp >= cplim)
         if (*cp) {
 	    (ap)->sin_len = cp - (char *) (ap) + 1;
 	    break;
