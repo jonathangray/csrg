@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: srt0.c 1.8 88/12/03$
  *
- *	@(#)srt0.c	7.2 (Berkeley) 05/25/90
+ *	@(#)srt0.c	7.3 (Berkeley) 05/05/91
  */
 
 /*
@@ -49,7 +49,8 @@
 	.globl	_edata
 	.globl	_main
 	.globl	_configure
-	.globl	_openfirst
+	.globl	_bootdev
+	.globl	_firstopen
 	.globl	__rtt
 	.globl	_lowram,_howto,_devtype,_internalhpib
 
@@ -65,11 +66,13 @@
 	NBPG =     4096
 
 	.data
-_lowram:
+_bootdev:
+	.long	0
+_devtype:
 	.long	0
 _howto:
 	.long	0
-_devtype:
+_lowram:
 	.long	0
 
 	.text
@@ -130,7 +133,7 @@ clr:
 	cmpl	a2,a3		| done?
 	bne	clr		| no, keep going
 	jsr	_configure	| configure critical devices
-	movl	#1,_openfirst	| mark this as the first open
+	movl	#1,_firstopen	| mark this as the first open
 	jsr	_main		| lets go
 __rtt:
 	movl	#3,_howto	| restarts get RB_SINGLE|RB_ASKNAME
