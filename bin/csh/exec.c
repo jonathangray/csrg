@@ -32,10 +32,11 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)exec.c	5.12 (Berkeley) 06/04/91";
+static char sccsid[] = "@(#)exec.c	5.13 (Berkeley) 06/07/91";
 #endif /* not lint */
 
-#include "sh.h"
+#include "csh.h"
+#include "extern.h"
 
 /*
  * System level search and execute of a command.
@@ -75,10 +76,7 @@ static char xhash[HSHSIZ / 8];
 #define hash(a, b)	((a) * HSHMUL + (b) & HSHMASK)
 #define bit(h, b)	((h)[(b) >> 3] & 1 << ((b) & 7))	/* bit test */
 #define bis(h, b)	((h)[(b) >> 3] |= 1 << ((b) & 7))	/* bit set */
-#ifdef VFORK
 static int hits, misses;
-
-#endif
 
 /* Dummy search path for just absolute search when no path */
 static Char *justabs[] = {STRNULL, 0};
@@ -120,9 +118,7 @@ doexec(t)
 
     exerr = 0;
     expath = Strsave(pv[0]);
-#ifdef VFORK
     Vexpath = expath;
-#endif
 
     v = adrof(STRpath);
     if (v == 0 && expath[0] != '/') {
@@ -183,15 +179,11 @@ doexec(t)
     else
 	pv = v->vec;
     sav = Strspl(STRslash, *av);/* / command name for postpending */
-#ifdef VFORK
     Vsav = sav;
-#endif
     if (havhash)
 	hashval = hashname(*av);
     i = 0;
-#ifdef VFORK
     hits++;
-#endif
     do {
 	/*
 	 * Try to save time by looking at the hash table for where this command
@@ -208,28 +200,18 @@ doexec(t)
 	    texec(*av, av);
 	else {
 	    dp = Strspl(*pv, sav);
-#ifdef VFORK
 	    Vdp = dp;
-#endif
 	    texec(dp, av);
-#ifdef VFORK
 	    Vdp = 0;
-#endif
 	    xfree((ptr_t) dp);
 	}
-#ifdef VFORK
 	misses++;
-#endif
 cont:
 	pv++;
 	i++;
     } while (*pv);
-#ifdef VFORK
     hits--;
-#endif
-#ifdef VFORK
     Vsav = 0;
-#endif
     xfree((ptr_t) sav);
     pexerr();
 }
@@ -240,9 +222,7 @@ pexerr()
     /* Couldn't find the damn thing */
     if (expath) {
 	setname(short2str(expath));
-#ifdef VFORK
 	Vexpath = 0;
-#endif
 	xfree((ptr_t) expath);
 	expath = 0;
     }
@@ -275,14 +255,10 @@ texec(sf, st)
     /* The order for the conversions is significant */
     t = short2blk(st);
     f = short2str(sf);
-#ifdef VFORK
     Vt = t;
-#endif
     errno = 0;			/* don't use a previous error */
     (void) execv(f, t);
-#ifdef VFORK
     Vt = 0;
-#endif
     blkfree((Char **) t);
     switch (errno) {
 
@@ -334,13 +310,9 @@ texec(sf, st)
 	t = short2blk(st);
 	f = short2str(sf);
 	xfree((ptr_t) st);
-#ifdef VFORK
 	Vt = t;
-#endif
 	(void) execv(f, t);
-#ifdef VFORK
 	Vt = 0;
-#endif
 	blkfree((Char **) t);
 	/* The sky is falling, the sky is falling! */
 
@@ -356,9 +328,7 @@ texec(sf, st)
 	    if (expath)
 		xfree((ptr_t) expath);
 	    expath = Strsave(sf);
-#ifdef VFORK
 	    Vexpath = expath;
-#endif
 	}
     }
 }
@@ -437,7 +407,6 @@ dounhash()
     havhash = 0;
 }
 
-#ifdef VFORK
 void
 hashstat()
 {
@@ -445,8 +414,6 @@ hashstat()
 	xprintf("%d hits, %d misses, %d%%\n",
 		hits, misses, 100 * hits / (hits + misses));
 }
-
-#endif
 
 /*
  * Hash a command name.
