@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)netstat.h	5.2 (Berkeley) 05/27/92
+ *	@(#)netstat.h	5.3 (Berkeley) 07/06/92
  */
 
 #include <sys/cdefs.h>
@@ -40,6 +40,7 @@ int	aflag;		/* show all sockets (including servers) */
 int	dflag;		/* show i/f dropped packets */
 int	hflag;		/* show IMP host table */
 int	iflag;		/* show interfaces */
+int	Bflag;		/* show multicast tables (or multicast stats) */
 int	mflag;		/* show memory stats */
 int	nflag;		/* show addresses numerically */
 int	pflag;		/* show given protocol */
@@ -59,6 +60,7 @@ char	*prog;		/* program name */
 
 int	kread __P((off_t addr, char *buf, int size));
 char	*plural __P((int));
+char	*plurales __P((int));
 
 void	protopr __P((off_t, char *));
 void	tcp_stats __P((off_t, char *));
@@ -87,7 +89,6 @@ void	nsprotopr __P((off_t, char *));
 void	spp_stats __P((off_t, char *));
 void	idp_stats __P((off_t, char *));
 void	nserr_stats __P((off_t, char *));
-void	ns_erputil __P((int, int));
 
 void	intpr __P((int, off_t));
 
@@ -97,4 +98,10 @@ void	esis_stats __P((off_t, char *));
 void	clnp_stats __P((off_t, char *));
 void	cltp_stats __P((off_t, char *));
 void	iso_protopr __P((off_t, char *));
+void	iso_protopr1 __P((off_t, int));
+void	tp_protopr __P((off_t, char *));
+void	tp_inproto __P((off_t));
 void	tp_stats __P((caddr_t, caddr_t));
+
+void	mroutepr __P((off_t, off_t, off_t));
+void	mrt_stats __P((off_t, off_t));
