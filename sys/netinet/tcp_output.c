@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_output.c	7.21 (Berkeley) 06/28/90
+ *	@(#)tcp_output.c	7.22 (Berkeley) 08/31/90
  */
 
 #include "param.h"
@@ -177,14 +177,11 @@ again:
 	 * window, then want to send a window update to peer.
 	 */
 	if (win > 0) {
-		int adv = win - (tp->rcv_adv - tp->rcv_nxt);
+		long adv = win - (tp->rcv_adv - tp->rcv_nxt);
 
-		/* this was:					XXX
-		 * if (so->so_rcv.sb_cc == 0 && adv >= 2 * tp->t_maxseg)
-		 */
-		if (adv >= 2 * tp->t_maxseg)
+		if (adv >= (long) (2 * tp->t_maxseg))
 			goto send;
-		if (2 * adv >= so->so_rcv.sb_hiwat)
+		if (2 * adv >= (long) so->so_rcv.sb_hiwat)
 			goto send;
 	}
 
