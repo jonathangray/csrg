@@ -48,7 +48,8 @@ static char sccsid[] = "@(#)ruserpass.c	5.10 (Berkeley) 07/03/92";
 static void blkencrypt(), enblkclr(), enblknot(), nbssetkey(), rnetrc();
 static int token();
 static char *renvlook();
-struct	utmp *getutmp();
+static struct utmp *getutmp();
+
 static	FILE *cfile;
 
 ruserpass(host, aname, apass)
@@ -269,8 +270,8 @@ token()
 }
 /* rest is nbs.c stolen from berknet */
 
-char *deblknot(), *deblkclr();
-char *nbs8decrypt(), *nbs8encrypt();
+static char *deblknot(), *deblkclr();
+static char *nbs8decrypt(), *nbs8encrypt();
 static char	E[48];
 
 /*
