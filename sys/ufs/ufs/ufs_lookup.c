@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lookup.c	7.40 (Berkeley) 02/21/92
+ *	@(#)ufs_lookup.c	7.41 (Berkeley) 03/02/92
  */
 
 #include <sys/param.h>
@@ -391,6 +391,7 @@ searchloop:
 		cnp->cn_flags |= SAVENAME;
 		if (!lockparent)
 			IUNLOCK(dp);
+		return (EJUSTRETURN);
 	}
 	/*
 	 * Insert name into cache (as non-existent) if appropriate.
