@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)udp_var.h	7.10 (Berkeley) 04/26/93
+ *	@(#)udp_var.h	7.11 (Berkeley) 05/03/93
  */
 
 /*
@@ -69,7 +69,7 @@ struct	udpstat {
 /*
  * Names for UDP sysctl objects
  */
-#define	UDPCTL_CHECKSUM		1	/* allow replies to netmask requests */
+#define	UDPCTL_CHECKSUM		1	/* checksum UDP packets */
 #define UDPCTL_MAXID		2
 
 #define UDPCTL_NAMES { \
