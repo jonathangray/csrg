@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	6.41 (Berkeley) 03/31/93
+ *	@(#)sendmail.h	6.42 (Berkeley) 04/01/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	6.41		03/31/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	6.42		04/01/93";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -310,6 +310,7 @@ struct envelope
 	FILE		*e_lockfp;	/* the lock file for this message */
 	FILE		*e_qfp;		/* queue control file */
 	char		*e_message;	/* error message */
+	char		*e_statmsg;	/* stat msg (changes per delivery) */
 	char		*e_macro[128];	/* macro definitions */
 };
 
