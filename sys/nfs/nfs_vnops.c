@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	7.81 (Berkeley) 06/17/92
+ *	@(#)nfs_vnops.c	7.82 (Berkeley) 06/18/92
  */
 
 /*
@@ -1126,7 +1126,6 @@ nfs_link(ap)
 			vrele(vp);
 		else
 			vput(vp);
-		vrele(tdvp);
 		return (EXDEV);
 	}
 
