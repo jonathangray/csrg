@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.34 (Berkeley) 09/22/93
+ *	@(#)conf.h	8.35 (Berkeley) 09/22/93
  */
 
 /*
@@ -150,6 +150,7 @@
 # define HASINITGROUPS	1	/* has initgroups(3) call */
 # define HASSTATFS	1	/* has the statfs(2) syscall */
 # define FORK		fork	/* no vfork primitive available */
+# define WAITUNION	1	/* use "union wait" as wait argument type */
 # define setpgid	BSDsetpgrp
 # define GIDSET_T	gid_t
 # endif
