@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.70 (Berkeley) 02/25/92
+ *	@(#)vfs_subr.c	7.71 (Berkeley) 05/04/92
  */
 
 /*
@@ -759,7 +759,7 @@ void vrele(vp)
 /*
  * Page or buffer structure gets a reference.
  */
-vhold(vp)
+void vhold(vp)
 	register struct vnode *vp;
 {
 
@@ -769,7 +769,7 @@ vhold(vp)
 /*
  * Page or buffer structure frees a reference.
  */
-holdrele(vp)
+void holdrele(vp)
 	register struct vnode *vp;
 {
 
