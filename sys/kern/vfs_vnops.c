@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_vnops.c	7.46 (Berkeley) 10/11/92
+ *	@(#)vfs_vnops.c	7.47 (Berkeley) 04/27/93
  */
 
 #include <sys/param.h>
@@ -124,9 +124,11 @@ vn_open(ndp, fmode, cmode)
 		}
 	}
 	if (fmode & O_TRUNC) {
+		VOP_UNLOCK(vp);				/* XXX */
+		LEASE_CHECK(vp, p, cred, LEASE_WRITE);
+		VOP_LOCK(vp);					/* XXX */
 		VATTR_NULL(vap);
 		vap->va_size = 0;
-		LEASE_CHECK(vp, p, cred, LEASE_WRITE);
 		if (error = VOP_SETATTR(vp, vap, cred, p))
 			goto bad;
 	}
@@ -219,10 +221,8 @@ vn_rdwr(rw, vp, base, len, offset, segflg, ioflg, cred, aresid, p)
 	auio.uio_rw = rw;
 	auio.uio_procp = p;
 	if (rw == UIO_READ) {
-		LEASE_CHECK(vp, p, cred, LEASE_READ);
 		error = VOP_READ(vp, &auio, ioflg, cred);
 	} else {
-		LEASE_CHECK(vp, p, cred, LEASE_WRITE);
 		error = VOP_WRITE(vp, &auio, ioflg, cred);
 	}
 	if (aresid)
@@ -246,10 +246,10 @@ vn_read(fp, uio, cred)
 	register struct vnode *vp = (struct vnode *)fp->f_data;
 	int count, error;
 
+	LEASE_CHECK(vp, uio->uio_procp, cred, LEASE_READ);
 	VOP_LOCK(vp);
 	uio->uio_offset = fp->f_offset;
 	count = uio->uio_resid;
-	LEASE_CHECK(vp, uio->uio_procp, cred, LEASE_READ);
 	error = VOP_READ(vp, uio, (fp->f_flag & FNONBLOCK) ? IO_NDELAY : 0,
 		cred);
 	fp->f_offset += count - uio->uio_resid;
@@ -272,10 +272,10 @@ vn_write(fp, uio, cred)
 		ioflag |= IO_APPEND;
 	if (fp->f_flag & FNONBLOCK)
 		ioflag |= IO_NDELAY;
+	LEASE_CHECK(vp, uio->uio_procp, cred, LEASE_WRITE);
 	VOP_LOCK(vp);
 	uio->uio_offset = fp->f_offset;
 	count = uio->uio_resid;
-	LEASE_CHECK(vp, uio->uio_procp, cred, LEASE_WRITE);
 	error = VOP_WRITE(vp, uio, ioflag, cred);
 	if (ioflag & IO_APPEND)
 		fp->f_offset = uio->uio_offset;
