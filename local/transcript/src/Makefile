@@ -1,4 +1,4 @@
-#	@(#)Makefile	1.3 03/23/88
+#	@(#)Makefile	1.4 03/26/88
 # transcript/src/Makefile.bsd
 #
 # Copyright (C) 1985 Adobe Systems Incorporated
