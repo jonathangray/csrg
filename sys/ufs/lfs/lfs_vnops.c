@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vnops.c	7.89 (Berkeley) 07/22/92
+ *	@(#)lfs_vnops.c	7.90 (Berkeley) 08/01/92
  */
 
 #include <sys/param.h>
@@ -401,9 +401,6 @@ lfs_fsync(ap)
 {
 	struct timeval tv;
 
-#ifdef VERBOSE
-	printf("lfs_fsync\n");
-#endif
 	tv = time;
 	return (VOP_UPDATE(ap->a_vp, &tv, &tv,
 	    ap->a_waitfor == MNT_WAIT ? LFS_SYNC : 0));
@@ -425,9 +422,6 @@ lfs_inactive(ap)
 	struct timeval tv;
 	int mode, error;
 
-#ifdef VERBOSE
-	printf("lfs_inactive\n");
-#endif
 	if (prtactive && vp->v_usecount != 0)
 		vprint("lfs_inactive: pushing active", vp);
 
