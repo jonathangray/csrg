@@ -34,9 +34,9 @@
 
 #ifndef lint
 #ifdef USERDB
-static char sccsid [] = "@(#)udb.c	6.7 (Berkeley) 02/18/93 (with USERDB)";
+static char sccsid [] = "@(#)udb.c	6.8 (Berkeley) 02/19/93 (with USERDB)";
 #else
-static char sccsid [] = "@(#)udb.c	6.7 (Berkeley) 02/18/93 (without USERDB)";
+static char sccsid [] = "@(#)udb.c	6.8 (Berkeley) 02/19/93 (without USERDB)";
 #endif
 #endif
 
@@ -145,7 +145,7 @@ udbexpand(a, sendq, e)
 	char buf[BUFSIZ];
 
 	if (tTd(28, 1))
-		printf("expand(%s)\n", a->q_paddr);
+		printf("udbexpand(%s)\n", a->q_paddr);
 
 	/* make certain we are supposed to send to this address */
 	if (bitset(QDONTSEND, a->q_flags))
@@ -200,7 +200,7 @@ udbexpand(a, sendq, e)
 			if (i > 0 || info.size <= 0)
 			{
 				if (tTd(28, 2))
-					printf("expand: no match on %s\n", keybuf);
+					printf("udbexpand: no match on %s\n", keybuf);
 				continue;
 			}
 
@@ -231,6 +231,15 @@ udbexpand(a, sendq, e)
 				/* get the next record */
 				i = (*up->udb_dbp->seq)(up->udb_dbp, &key, &info, R_NEXT);
 			}
+			if (!bitset(QSELFREF, a->q_flags))
+			{
+				if (tTd(28, 5))
+				{
+					printf("udbexpand: QDONTSEND ");
+					printaddr(a, FALSE);
+				}
+				a->q_flags |= QDONTSEND;
+			}
 			if (i < 0)
 			{
 				syserr("udbexpand: db-get %.*s stat %d",
@@ -254,6 +263,15 @@ udbexpand(a, sendq, e)
 			AliasLevel++;
 			sendtolist(user, a, sendq, e);
 			AliasLevel--;
+			if (!bitset(QSELFREF, a->q_flags))
+			{
+				if (tTd(28, 5))
+				{
+					printf("udbexpand: QDONTSEND ");
+					printaddr(a, FALSE);
+				}
+				a->q_flags |= QDONTSEND;
+			}
 			if (user != buf)
 				free(user);
 			breakout = TRUE;
