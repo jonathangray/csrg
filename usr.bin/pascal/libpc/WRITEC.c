@@ -8,14 +8,14 @@ static char sccsid[] = "@(#)WRITEC.c 1.3 03/10/81";
 WRITEC(curfile, d1, d2)
 
 	register struct iorec	*curfile;
-	long			d1;
+	char			d1;
 	FILE			*d2;
 {
 	if (curfile->funit & FREAD) {
 		ERROR(EWRITEIT, curfile->pfname);
 		return;
 	}
-	fputc((char)d1, d2);
+	fputc(d1, d2);
 	if (ferror(curfile->fbuf)) {
 		ERROR(EWRITE, curfile->pfname);
 		return;
