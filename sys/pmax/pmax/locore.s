@@ -48,7 +48,7 @@
  * from: $Header: /sprite/src/kernel/vm/ds3100.md/vmPmaxAsm.s,
  *	v 1.1 89/07/10 14:27:41 nelson Exp $ SPRITE (DECWRL)
  *
- *	@(#)locore.s	7.15 (Berkeley) 05/09/93
+ *	@(#)locore.s	8.1 (Berkeley) 06/10/93
  */
 
 /*
