@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	7.12 (Berkeley) 07/20/92
+ *	@(#)conf.h	8.1 (Berkeley) 06/02/93
  */
 
 /*
