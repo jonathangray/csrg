@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_conf.c	7.15 (Berkeley) 07/12/92
+ *	@(#)vfs_conf.c	7.16 (Berkeley) 07/18/92
  */
 
 #include <sys/param.h>
@@ -120,6 +120,13 @@ extern	struct vfsops umap_vfsops;
 #define UMAP_VFSOPS	NULL
 #endif
 
+#ifdef KERNFS
+extern	struct vfsops kernfs_vfsops;
+#define KERNFS_VFSOPS	&kernfs_vfsops
+#else
+#define KERNFS_VFSOPS	NULL
+#endif
+
 
 struct vfsops *vfssw[] = {
 	NULL,			/* 0 = MOUNT_NONE */
@@ -133,6 +140,7 @@ struct vfsops *vfssw[] = {
 	PORTAL_VFSOPS,		/* 8 = MOUNT_PORTAL */
 	NULL_VFSOPS,		/* 9 = MOUNT_NULL */
 	UMAP_VFSOPS,		/* 10 = MOUNT_UMAP */
+	KERNFS_VFSOPS,		/* 11 = MOUNT_KERNFS */
 	0
 };
 
@@ -162,6 +170,7 @@ extern struct vnodeopv_desc fdesc_vnodeop_opv_desc;
 extern struct vnodeopv_desc portal_vnodeop_opv_desc;
 extern struct vnodeopv_desc null_vnodeop_opv_desc;
 extern struct vnodeopv_desc umap_vnodeop_opv_desc;
+extern struct vnodeopv_desc kernfs_vnodeop_opv_desc;
 
 struct vnodeopv_desc *vfs_opv_descs[] = {
 	&ffs_vnodeop_opv_desc,
@@ -205,6 +214,9 @@ struct vnodeopv_desc *vfs_opv_descs[] = {
 #endif
 #ifdef UMAPFS
 	&umap_vnodeop_opv_desc,
+#endif
+#ifdef KERNFS
+	&kernfs_vnodeop_opv_desc,
 #endif
 	NULL
 };
