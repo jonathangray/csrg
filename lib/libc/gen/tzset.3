@@ -3,6 +3,7 @@
 .\"
 .\" This code is derived from software contributed to Berkeley by
 .\" Arthur Olson.
+.\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
 .\" are met:
@@ -31,10 +32,11 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)tzset.3	5.2 (Berkeley) 04/19/91
+.\"	@(#)tzset.3	5.3 (Berkeley) 07/23/91
 .\"
 .Dd 
 .Dt TZSET 3
+.Os
 .Sh NAME
 .Nm tzset ,
 .Nm tzsetwall
@@ -316,8 +318,8 @@ leap seconds are loaded from
 .Xr tzfile 5
 .Sh HISTORY
 The
-.Fn tzset
+.Nm tzset
 and
-.Fn tzsetwall
+.Nm tzsetwall
 functions are
 .Ud .
