@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)init.c	6.2 (Berkeley) 07/05/91";
+static char sccsid[] = "@(#)init.c	6.3 (Berkeley) 07/17/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -302,9 +302,7 @@ delset(va_alist)
 /*
  * Log a message and sleep for a while (to give someone an opportunity
  * to read it and to save log or hardcopy output if the problem is chronic).
- * We fork so that we can't block on I/O when writing the message,
- * and so that init proper doesn't acquire another open file.
- * If the fork fails, or the child can't finish, too bad.
+ * NB: should send a message to the session logger to avoid blocking.
  */
 void
 #ifdef __STDC__
@@ -325,19 +323,15 @@ stall(va_alist)
 	va_start(ap, message);
 #endif
 
-	if ((pid = fork()) == 0) {
-		vsyslog(LOG_ALERT, message, ap);
-		_exit(0);
-	}
+	vsyslog(LOG_ALERT, message, ap);
 	va_end(ap);
 	sleep(STALL_TIMEOUT);
-	if (pid != -1)
-		waitpid(pid, (int *) 0, WNOHANG);
 }
 
 /*
  * Like stall(), but doesn't sleep.
  * If cpp had variadic macros, the two functions could be #defines for another.
+ * NB: should send a message to the session logger to avoid blocking.
  */
 void
 #ifdef __STDC__
@@ -357,16 +351,13 @@ warning(va_alist)
 	va_start(ap, message);
 #endif
 
-	if (fork() == 0) {
-		vsyslog(LOG_ALERT, message, ap);
-		_exit(0);
-	}
+	vsyslog(LOG_ALERT, message, ap);
 	va_end(ap);
 }
 
 /*
- * Log a message, no forking, no waiting.
- * We take care to close syslog's file descriptor, however.
+ * Log an emergency message.
+ * NB: should send a message to the session logger to avoid blocking.
  */
 void
 #ifdef __STDC__
@@ -388,8 +379,6 @@ emergency(va_alist)
 
 	vsyslog(LOG_EMERG, message, ap);
 	va_end(ap);
-	closelog();
-	openlog("init", LOG_CONS|LOG_ODELAY, LOG_AUTH);
 }
 
 /*
@@ -479,12 +468,13 @@ start_logger()
 
 /*
  * Close out the accounting files for a login session.
+ * NB: should send a message to the session logger to avoid blocking.
  */
 void
 clear_session_logs(sp)
 	session_t *sp;
 {
-	if (fork() == 0 && logout(sp->se_device))
+	if (logout(sp->se_device))
 		logwtmp(sp->se_device, "", "");
 }
 
@@ -692,7 +682,8 @@ runcom()
 		return (state_func_t) single_user;
 
 	runcom_mode = AUTOBOOT;		/* the default */
-	logwtmp("~", "reboot", "");	/* XXX */
+	/* NB: should send a message to the session logger to avoid blocking. */
+	logwtmp("~", "reboot", "");
 	return (state_func_t) read_ttys;
 }
 
@@ -1160,7 +1151,8 @@ death()
 	for (sp = sessions; sp; sp = sp->se_next)
 		sp->se_flags |= SE_SHUTDOWN;
 
-	logwtmp("~", "shutdown", "");	/* XXX */
+	/* NB: should send a message to the session logger to avoid blocking. */
+	logwtmp("~", "shutdown", "");
 	logger_enable = 0;
 
 	for (i = 0; i < 3; ++i) {
