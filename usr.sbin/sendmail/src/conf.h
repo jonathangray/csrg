@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.6 (Berkeley) 07/19/93
+ *	@(#)conf.h	8.7 (Berkeley) 07/20/93
  */
 
 /*
@@ -92,16 +92,6 @@
 **	change these.
 **********************************************************************/
 
-/* general "standard C" defines */
-#ifdef __STDC__
-# define HASSETVBUF	1	/* yes, we have setvbuf in libc */
-#endif
-
-/* general POSIX defines */
-#ifdef _POSIX_VERSION
-# define HASSETSID	1	/* has setsid(2) call */
-#endif
-
 /*
 **  Per-Operating System defines
 */
@@ -115,9 +105,6 @@
 # define UNSETENV	1	/* need unsetenv(3) support */
 # define HASSETREUID	1	/* have setreuid(2) call */
 # define setreuid(r, e)		setresuid(r, e, -1)	
-# ifndef __STDC__
-#  define HASSETVBUF	1	/* we have setvbuf in libc (but not __STDC__) */
-# endif
 # endif
 
 /*
@@ -156,11 +143,7 @@
 
 # ifdef SOLARIS
 			/* Solaris 2.x (a.k.a. SunOS 5.x) */
-#  define LOCKF		1	/* use System V lockf instead of flock */
-#  define HASUSTAT	1	/* has the ustat(2) syscall */
-#  define bcopy(s, d, l)	(memmove((d), (s), (l)))
-#  define bzero(d, l)		(memset((d), '\0', (l)))
-#  define bcmp(s, d, l)		(memcmp((s), (d), (l)))
+#  define SYSTEM5	1	/* use System V definitions */
 #  include <sys/time.h>
 
 # else
@@ -229,13 +212,30 @@
 **  End of Per-Operating System defines
 **********************************************************************/
 
+/**********************************************************************
+**  More general defines
+**********************************************************************/
+
 /* general System V defines */
 # ifdef SYSTEM5
-# define LOCKF		1	/* use System V lockf instead of flock */
+# define LOCKF		1	/* use System V locking instead of flock */
 # define SYS5TZ		1	/* use System V style timezones */
-# define HASUNAME	1	/* use System V uname system call */
-# define NEEDGETDTABLESIZE 1	/* needs a replacement getdtablesize */
+# define HASUNAME	1	/* use System V uname(2) system call */
+# define HASUSTAT	1	/* use System V ustat(2) syscall */
+# define bcopy(s, d, l)		(memmove((d), (s), (l)))
+# define bzero(d, l)		(memset((d), '\0', (l)))
+# define bcmp(s, d, l)		(memcmp((s), (d), (l)))
 # endif
+
+/* general "standard C" defines */
+#if defined(__STDC__) || defined(SYSTEM5)
+# define HASSETVBUF	1	/* we have setvbuf(3) in libc */
+#endif
+
+/* general POSIX defines */
+#ifdef _POSIX_VERSION
+# define HASSETSID	1	/* has setsid(2) call */
+#endif
 
 /*
 **  Due to a "feature" in some operating systems such as Ultrix 4.3 and
