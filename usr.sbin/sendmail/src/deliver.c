@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	8.159 (Berkeley) 06/18/95";
+static char sccsid[] = "@(#)deliver.c	8.160 (Berkeley) 06/21/95";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1342,6 +1342,7 @@ tryhost:
 			}
 
 			/* reset user id */
+			endpwent();
 			if (bitnset(M_SPECIFIC_UID, m->m_flags))
 				(void) setuid(m->m_uid);
 			else if (bitset(S_ISUID, stb.st_mode))
@@ -2735,6 +2736,7 @@ mailfile(filename, ctladdr, sfflags, e)
 		}
 
 		/* now set the group and user ids */
+		endpwent();
 		if (RealUserName != NULL)
 			(void) initgroups(RealUserName, RealGid);
 		else
