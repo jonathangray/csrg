@@ -30,20 +30,20 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_swap.c	7.19 (Berkeley) 02/03/92
+ *	@(#)vm_swap.c	7.20 (Berkeley) 05/04/92
  */
 
-#include "param.h"
-#include "systm.h"
-#include "buf.h"
-#include "conf.h"
-#include "proc.h"
-#include "namei.h"
-#include "dmap.h"		/* XXX */
-#include "vnode.h"
-#include "specdev.h"
-#include "map.h"
-#include "file.h"
+#include <sys/param.h>
+#include <sys/systm.h>
+#include <sys/buf.h>
+#include <sys/conf.h>
+#include <sys/proc.h>
+#include <sys/namei.h>
+#include <sys/dmap.h>		/* XXX */
+#include <sys/vnode.h>
+#include <sys/specdev.h>
+#include <sys/map.h>
+#include <sys/file.h>
 #include "stat.h"
 
 /*
@@ -59,6 +59,7 @@ int	nswap, nswdev;
  * to buffers, but rather to pages that
  * are being swapped in and out.
  */
+void
 swapinit()
 {
 	register int i;
@@ -99,6 +100,7 @@ swapinit()
 	sp->av_forw = NULL;
 }
 
+void
 swstrategy(bp)
 	register struct buf *bp;
 {
@@ -152,6 +154,7 @@ swstrategy(bp)
  * if already swapping on this device.
  */
 /* ARGSUSED */
+int
 swapon(p, uap, retval)
 	struct proc *p;
 	struct args {
@@ -203,6 +206,7 @@ long	argdbsize;		/* XXX */
  * space, which is laid out with blocks of dmmax pages circularly
  * among the devices.
  */
+int
 swfree(p, index)
 	struct proc *p;
 	int index;
