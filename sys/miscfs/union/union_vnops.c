@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_vnops.c	8.22 (Berkeley) 12/10/94
+ *	@(#)union_vnops.c	8.23 (Berkeley) 02/22/95
  */
 
 #include <sys/param.h>
@@ -1309,7 +1309,7 @@ union_inactive(ap)
 	}
 
 	if ((un->un_flags & UN_CACHED) == 0)
-		vgone(ap->a_vp);
+		VOP_REVOKE(ap->a_vp, 0);
 
 	return (0);
 }
