@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)types.h	8.1 (Berkeley) 06/11/93
+ *	@(#)types.h	8.2 (Berkeley) 01/04/94
  */
 
 #ifndef	_MACHTYPES_H_
@@ -46,8 +46,8 @@ typedef struct label_t {
 } label_t;
 #endif
 
-typedef	u_long	vm_offset_t;
-typedef	u_long	vm_size_t;
+typedef	unsigned long	vm_offset_t;
+typedef	unsigned long	vm_size_t;
 
 /*
  * Basic integral types.  Omit the typedef if
