@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)mtpr.h	6.3 (Berkeley) 08/05/85
+ *	@(#)mtpr.h	6.4 (Berkeley) 04/22/86
  */
 
 /*
