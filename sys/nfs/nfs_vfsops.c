@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vfsops.c	7.40 (Berkeley) 06/25/92
+ *	@(#)nfs_vfsops.c	7.41 (Berkeley) 07/03/92
  */
 
 #include "param.h"
@@ -75,6 +75,7 @@ struct vfsops nfs_vfsops = {
 	nfs_quotactl,
 	nfs_statfs,
 	nfs_sync,
+	nfs_vget,
 	nfs_fhtovp,
 	nfs_vptofh,
 	nfs_init,
@@ -596,8 +597,6 @@ nfs_sync(mp, waitfor, cred, p)
 	struct ucred *cred;
 	struct proc *p;
 {
-	USES_VOP_FSYNC;
-	USES_VOP_ISLOCKED;
 	register struct vnode *vp;
 	int error, allerror = 0;
 
@@ -621,6 +620,21 @@ loop:
 		vput(vp);
 	}
 	return (allerror);
+}
+
+/*
+ * NFS flat namespace lookup.
+ * Currently unsupported.
+ */
+/* ARGSUSED */
+int
+nfs_vget(mp, ino, vpp)
+	struct mount *mp;
+	ino_t ino;
+	struct vnode **vpp;
+{
+
+	return (EOPNOTSUPP);
 }
 
 /*
