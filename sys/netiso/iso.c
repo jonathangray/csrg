@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)iso.c	8.1 (Berkeley) 06/10/93
+ *	@(#)iso.c	8.2 (Berkeley) 11/15/93
  */
 
 /***********************************************************
@@ -78,7 +78,6 @@ SOFTWARE.
 
 #include <net/if.h>
 #include <net/route.h>
-#include <net/af.h>
 
 #include <netiso/iso.h>
 #include <netiso/iso_var.h>
