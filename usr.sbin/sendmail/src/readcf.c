@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	8.81 (Berkeley) 04/09/95";
+static char sccsid[] = "@(#)readcf.c	8.82 (Berkeley) 04/10/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1316,8 +1316,6 @@ struct optioninfo
 	"ForkEachJob",		'Y',		FALSE,
 	"ClassFactor",		'z',		FALSE,
 	"RetryFactor",		'Z',		FALSE,
-#define O_BSP		0x80
-	"BrokenSmtpPeers",	O_BSP,		TRUE,
 #define O_QUEUESORTORD	0x81
 	"QueueSortOrder",	O_QUEUESORTORD,	TRUE,
 #define O_MQA		0x83
@@ -1896,10 +1894,6 @@ setoption(opt, val, sticky)
 
 	  case 'Z':		/* work time factor */
 		WkTimeFact = atoi(val);
-		break;
-
-	  case O_BSP:		/* SMTP Peers can't handle 2-line greeting */
-		BrokenSmtpPeers = atobool(val);
 		break;
 
 	  case O_QUEUESORTORD:	/* queue sorting order */
