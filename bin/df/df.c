@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)df.c	5.34 (Berkeley) 05/05/93";
+static char sccsid[] = "@(#)df.c	5.35 (Berkeley) 05/06/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -214,7 +214,7 @@ getmntpt(name)
 	long mntsize, i;
 	struct statfs *mntbuf;
 
-	mntsize = getmntinfo(&mntbuf, (nflag ? MNT_NOWAIT : MNT_WAIT));
+	mntsize = getmntinfo(&mntbuf, MNT_NOWAIT);
 	for (i = 0; i < mntsize; i++) {
 		if (!strcmp(mntbuf[i].f_mntfromname, name))
 			return (mntbuf[i].f_mntonname);
