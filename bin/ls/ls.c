@@ -41,7 +41,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)ls.c	5.73 (Berkeley) 04/28/93";
+static char sccsid[] = "@(#)ls.c	5.74 (Berkeley) 04/28/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -57,7 +57,7 @@ static char sccsid[] = "@(#)ls.c	5.73 (Berkeley) 04/28/93";
 #include "ls.h"
 #include "extern.h"
 
-char	*getbsize __P((char *, int *, long *));
+char	*getbsize __P((int *, long *));
 
 static void	 display __P((FTSENT *, FTSENT *));
 static int	 mastercmp __P((const FTSENT **, const FTSENT **));
@@ -218,7 +218,7 @@ main(argc, argv)
 
 	/* If -l or -s, figure out block size. */
 	if (f_longform || f_size) {
-		(void)getbsize("ls", &notused, &blocksize);
+		(void)getbsize(&notused, &blocksize);
 		blocksize /= 512;
 	}
 
