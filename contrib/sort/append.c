@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)append.c	5.1 (Berkeley) 06/01/93";
+static char sccsid[] = "@(#)append.c	5.2 (Berkeley) 06/01/93";
 #endif /* not lint */
 
 #include "sort.h"
@@ -74,6 +74,8 @@ append(keylist, nelem, depth, fd, put, ftbl)
 	register u_char *cend, *pend, *start;
 	register struct recheader *crec, *prec;
 
+	if (*keylist == '\0' && UNIQUE)
+		return;
 	wts1 = wts = ftbl[0].weights;
 	if ((!UNIQUE) && SINGL_FLD) {
 		if (ftbl[0].flags & F && ftbl[0].flags & R)
