@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1988, 1993
+ * Copyright (c) 1988, 1993, 1994
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)field.c	8.3 (Berkeley) 04/02/94";
+static char sccsid[] = "@(#)field.c	8.4 (Berkeley) 04/02/94";
 #endif /* not lint */
 
 #include <sys/param.h>
