@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_inode.c	7.35 (Berkeley) 08/24/90
+ *	@(#)ffs_inode.c	7.36 (Berkeley) 12/05/90
  */
 
 #include "param.h"
@@ -403,6 +403,7 @@ itrunc(oip, length, flags)
 	int aflags, error, allerror;
 	struct inode tip;
 
+	vnode_pager_setsize(ITOV(oip), length);
 	if (oip->i_size <= length) {
 		oip->i_flag |= ICHG|IUPD;
 		error = iupdat(oip, &time, &time, 1);
@@ -444,9 +445,7 @@ itrunc(oip, length, flags)
 			return (error);
 		oip->i_size = length;
 		size = blksize(fs, oip, lbn);
-		bn = bp->b_blkno;
-		count = howmany(size, CLBYTES);
-			munhash(oip->i_devvp, bn + i * CLBYTES / DEV_BSIZE);
+		(void) vnode_pager_uncache(ITOV(oip));
 		bzero(bp->b_un.b_addr + offset, (unsigned)(size - offset));
 		allocbuf(bp, size);
 		if (flags & IO_SYNC)
