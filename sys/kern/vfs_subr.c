@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.54 (Berkeley) 05/06/91
+ *	@(#)vfs_subr.c	7.55 (Berkeley) 05/08/91
  */
 
 /*
@@ -379,13 +379,11 @@ loop:
 		 * NB: This is really specific to ufs, but is done here
 		 * as it is easier and quicker.
 		 */
-		if (bp->b_vp == vp || (flags & B_SYNC) == 0) {
+		if (bp->b_vp == vp || (flags & B_SYNC) == 0)
 			(void) bawrite(bp);
-			s = splbio();
-		} else {
+		else
 			(void) bwrite(bp);
-			goto loop;
-		}
+		goto loop;
 	}
 	splx(s);
 	if ((flags & B_SYNC) == 0)
