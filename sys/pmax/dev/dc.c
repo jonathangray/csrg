@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dc.c	7.1 (Berkeley) 01/07/92
+ *	@(#)dc.c	7.2 (Berkeley) 02/26/92
  *
  * devDC7085.c --
  *
@@ -846,11 +846,7 @@ dcstart(tp)
 			tp->t_state &= ~TS_ASLEEP;
 			wakeup((caddr_t)&tp->t_outq);
 		}
-		if (tp->t_wsel) {
-			selwakeup(tp->t_wsel, tp->t_state & TS_WCOLL);
-			tp->t_wsel = 0;
-			tp->t_state &= ~TS_WCOLL;
-		}
+		selwakeup(&tp->t_wsel);
 	}
 	if (tp->t_outq.c_cc == 0)
 		goto out;
@@ -869,11 +865,7 @@ dcstart(tp)
 				tp->t_state &= ~TS_ASLEEP;
 				wakeup((caddr_t)&tp->t_outq);
 			}
-			if (tp->t_wsel) {
-				selwakeup(tp->t_wsel, tp->t_state & TS_WCOLL);
-				tp->t_wsel = 0;
-				tp->t_state &= ~TS_WCOLL;
-			}
+			selwakeup(&tp->t_wsel);
 		}
 		goto out;
 	}
