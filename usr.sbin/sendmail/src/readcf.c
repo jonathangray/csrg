@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	6.1 (Berkeley) 12/21/92";
+static char sccsid[] = "@(#)readcf.c	6.2 (Berkeley) 01/02/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -541,7 +541,6 @@ makemailer(line)
 	/* allocate a mailer and set up defaults */
 	m = (struct mailer *) xalloc(sizeof *m);
 	bzero((char *) m, sizeof *m);
-	m->m_mno = NextMailer;
 	m->m_eol = "\n";
 
 	/* collect the mailer name */
@@ -628,15 +627,23 @@ makemailer(line)
 			setbitn(M_7BITS, m->m_flags);
 	}
 
-	/* now store the mailer away */
 	if (NextMailer >= MAXMAILERS)
 	{
 		syserr("too many mailers defined (%d max)", MAXMAILERS);
 		return;
 	}
-	Mailer[NextMailer++] = m;
+
 	s = stab(m->m_name, ST_MAILER, ST_ENTER);
-	s->s_mailer = m;
+	if (s->s_mailer != NULL)
+	{
+		i = s->s_mailer->m_mno;
+		free(s->s_mailer);
+	}
+	else
+	{
+		i = NextMailer++;
+	}
+	Mailer[i] = s->s_mailer = m;
 }
 /*
 **  MUNCHSTRING -- translate a string into internal form.
