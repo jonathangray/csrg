@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.11 (Berkeley) 06/25/90
+#	@(#)Makefile	5.12 (Berkeley) 03/29/92
 
 PROG=	more
 DPADD=	${LIBTERM} ${LIBCOMPAT}
