@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	7.58 (Berkeley) 03/19/91
+ *	@(#)ffs_vnops.c	7.59 (Berkeley) 03/25/91
  */
 
 #include "param.h"
@@ -1219,7 +1219,6 @@ ufs_mkdir(ndp, vap)
 	struct nameidata *ndp;
 	struct vattr *vap;
 {
-	struct proc *p = curproc;		/* XXX */
 	register struct inode *ip, *dp;
 	struct inode *tip;
 	struct vnode *dvp;
@@ -1302,15 +1301,8 @@ ufs_mkdir(ndp, vap)
 	 * the parent directory.
 	 */
 	if (error = direnter(ip, ndp)) {
-		ndp->ni_nameiop &= ~(MODMASK | OPMASK);
-		ndp->ni_nameiop |= LOOKUP | LOCKLEAF | NOCACHE;
-		error = namei(ndp, p);
-		if (!error) {
-			iput(dp);
-			dp = VTOI(ndp->ni_vp);
-			dp->i_nlink--;
-			dp->i_flag |= ICHG;
-		}
+		dp->i_nlink--;
+		dp->i_flag |= ICHG;
 	}
 bad:
 	/*
