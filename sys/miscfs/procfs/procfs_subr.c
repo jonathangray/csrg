@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)procfs_subr.c	8.3 (Berkeley) 01/21/94
+ *	@(#)procfs_subr.c	8.4 (Berkeley) 01/27/94
  *
  * From:
  *	$Id: procfs_subr.c,v 3.2 1993/12/15 09:40:17 jsp Exp $
@@ -152,6 +152,10 @@ loop:
 		pfs->pfs_mode = (VREAD|VWRITE);
 		break;
 
+	case Pfpregs:
+		pfs->pfs_mode = (VREAD|VWRITE);
+		break;
+
 	case Pctl:
 		pfs->pfs_mode = (VWRITE);
 		break;
@@ -230,6 +234,9 @@ procfs_rw(ap)
 
 	case Pregs:
 		return (procfs_doregs(curp, p, pfs, uio));
+
+	case Pfpregs:
+		return (procfs_dofpregs(curp, p, pfs, uio));
 
 	case Pctl:
 		return (procfs_doctl(curp, p, pfs, uio));
