@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)autoconf.c	7.3 (Berkeley) 10/11/92
+ *	@(#)autoconf.c	7.4 (Berkeley) 04/20/93
  *
  * from: $Header: autoconf.c,v 1.23 92/07/10 22:35:23 torek Exp $ (LBL)
  */
