@@ -29,7 +29,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mbuf.h	7.18 (Berkeley) 07/11/92
+ *	@(#)mbuf.h	8.1 (Berkeley) 06/02/93
  */
 
 #ifndef M_WAITOK
