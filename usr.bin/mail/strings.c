@@ -11,7 +11,7 @@
  */
 
 #ifdef notdef
-static char sccsid[] = "@(#)strings.c	5.5 (Berkeley) 02/18/88";
+static char sccsid[] = "@(#)strings.c	5.6 (Berkeley) 06/16/88";
 #endif /* notdef */
 
 /*
@@ -83,7 +83,6 @@ sreset()
 
 	if (noreset)
 		return;
-	minit();
 	index = 0;
 	for (sp = &stringdope[0]; sp < &stringdope[NSPACE]; sp++) {
 		if (sp->s_topFree == NOSTR)
