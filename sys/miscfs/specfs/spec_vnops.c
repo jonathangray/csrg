@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)spec_vnops.c	7.39 (Berkeley) 11/01/91
+ *	@(#)spec_vnops.c	7.40 (Berkeley) 11/05/91
  */
 
 #include <sys/param.h>
@@ -92,6 +92,13 @@ struct vnodeops spec_vnodeops = {
 	spec_print,		/* print */
 	spec_islocked,		/* islocked */
 	spec_advlock,		/* advlock */
+	spec_blkatoff,		/* blkatoff */
+	spec_vget,		/* vget */
+	spec_valloc,		/* valloc */
+	spec_vfree,		/* vfree */
+	spec_truncate,		/* truncate */
+	spec_update,		/* update */
+	spec_bwrite,		/* bwrite */
 };
 
 /*
