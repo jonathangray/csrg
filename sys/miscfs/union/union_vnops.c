@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_vnops.c	8.16 (Berkeley) 06/16/94
+ *	@(#)union_vnops.c	8.17 (Berkeley) 06/17/94
  */
 
 #include <sys/param.h>
@@ -240,6 +240,14 @@ union_lookup(ap)
 		}
 	} else {
 		lerror = ENOENT;
+		if ((cnp->cn_flags & ISDOTDOT) && dun->un_pvp != NULLVP) {
+			lowervp = LOWERVP(dun->un_pvp);
+			if (lowervp != NULLVP) {
+				VREF(lowervp);
+				VOP_LOCK(lowervp);
+				lerror = 0;
+			}
+		}
 	}
 
 	if (!lockparent)
