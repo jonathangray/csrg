@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fhpib.c	8.1 (Berkeley) 06/10/93
+ *	@(#)fhpib.c	8.2 (Berkeley) 01/12/94
  */
 
 /*
@@ -92,6 +92,7 @@ fhpibtype(hc)
 }
 
 fhpibreset(unit)
+	int unit;
 {
 	register struct hpib_softc *hs = &hpib_softc[unit];
 	register struct fhpibdevice *hd;
@@ -133,6 +134,7 @@ fhpibifc(hd)
 }
 
 fhpibsend(unit, slave, sec, addr, origcnt)
+	int unit, slave, sec, origcnt;
 	register char *addr;
 {
 	register struct hpib_softc *hs = &hpib_softc[unit];
@@ -190,6 +192,7 @@ senderr:
 }
 
 fhpibrecv(unit, slave, sec, addr, origcnt)
+	int unit, slave, sec, origcnt;
 	register char *addr;
 {
 	register struct hpib_softc *hs = &hpib_softc[unit];
@@ -246,6 +249,7 @@ recvbyteserror:
 
 fhpibgo(unit, slave, sec, addr, count, rw)
 	register int unit;
+	int slave, sec, count, rw;
 	char *addr;
 {
 	register struct hpib_softc *hs = &hpib_softc[unit];
@@ -331,6 +335,7 @@ fhpibgo(unit, slave, sec, addr, count, rw)
 }
 
 fhpibdone(unit)
+	int unit;
 {
 	register struct hpib_softc *hs = &hpib_softc[unit];
 	register struct fhpibdevice *hd;
@@ -444,6 +449,7 @@ fhpibintr(unit)
 }
 
 fhpibppoll(unit)
+	int unit;
 {
 	register struct fhpibdevice *hd;
 	register int ppoll;
@@ -466,6 +472,7 @@ fhpibppoll(unit)
 
 fhpibwait(hd, x)
 	register struct fhpibdevice *hd;
+	int x;
 {
 	register int timo = hpibtimeout;
 
