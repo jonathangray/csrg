@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_usrreq.c	7.27 (Berkeley) 10/11/92
+ *	@(#)tp_usrreq.c	7.28 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -139,7 +139,7 @@ dump_mbuf(n, str)
 				}
 				printf("\n");
 			}
-#endif notdef
+#endif /* notdef */
 			if (n->m_next == n) {
 				printf("LOOP!\n");
 				return;
@@ -151,7 +151,7 @@ dump_mbuf(n, str)
 	printf("\n");
 }
 
-#endif ARGO_DEBUG
+#endif /* ARGO_DEBUG */
 
 /*
  * CALLED FROM:
@@ -679,7 +679,7 @@ tp_usrreq(so, req, m, nam, controlp)
 	default:
 #ifdef ARGO_DEBUG
 		printf("tp_usrreq UNKNOWN PRU %d\n", req);
-#endif ARGO_DEBUG
+#endif /* ARGO_DEBUG */
 		error = EOPNOTSUPP;
 	}
 
