@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)kdbparam.h	7.8 (Berkeley) 05/03/90
+ *	@(#)kdbparam.h	7.9 (Berkeley) 05/08/91
  */
 
 #define DBNAME "kdb\n"
