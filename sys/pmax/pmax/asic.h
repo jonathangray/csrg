@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)asic.h	7.2 (Berkeley) 12/20/92
+ *	@(#)asic.h	7.3 (Berkeley) 05/09/93
  */
 
 /* 
@@ -238,4 +238,4 @@
  */
 #define	ASIC_SYS_ETHER_ADDRESS(base)	((base) + ASIC_SLOT_2_START)
 #define	ASIC_SYS_LANCE(base)		((base) + ASIC_SLOT_3_START)
-#endif	MIPS_ASIC_H
+#endif	/* MIPS_ASIC_H */
