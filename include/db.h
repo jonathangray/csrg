@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)db.h	5.25 (Berkeley) 05/22/93
+ *	@(#)db.h	5.26 (Berkeley) 05/24/93
  */
 
 #ifndef _DB_H_
