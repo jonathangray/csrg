@@ -30,9 +30,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_domain.c	7.8 (Berkeley) 11/29/90
+ *	@(#)uipc_domain.c	7.9 (Berkeley) 03/04/91
  */
 
+#include <sys/cdefs.h>
 #include "param.h"
 #include "socket.h"
 #include "protosw.h"
@@ -42,9 +43,9 @@
 #include "kernel.h"
 
 #define	ADDDOMAIN(x)	{ \
-	extern struct domain x/**/domain; \
-	x/**/domain.dom_next = domains; \
-	domains = &x/**/domain; \
+	extern struct domain __CONCAT(x,domain); \
+	__CONCAT(x,domain.dom_next) = domains; \
+	domains = &__CONCAT(x,domain); \
 }
 
 domaininit()
@@ -52,6 +53,7 @@ domaininit()
 	register struct domain *dp;
 	register struct protosw *pr;
 
+#undef unix
 #ifndef lint
 	ADDDOMAIN(unix);
 	ADDDOMAIN(route);
