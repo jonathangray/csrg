@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)param.c	8.1 (Berkeley) 06/10/93
+ *	@(#)param.c	7.24 (Berkeley) 06/16/93
  */
 
 #include <sys/param.h>
@@ -72,7 +72,7 @@ struct	timezone tz = { TIMEZONE, DST };
 int	maxproc = NPROC;
 #define	NTEXT (80 + NPROC / 8)			/* actually the object cache */
 #define	NVNODE (NPROC + NTEXT + 100)
-long	desiredvnodes = NVNODE;
+int	desiredvnodes = NVNODE;
 int	maxfiles = 3 * (NPROC + MAXUSERS) + 80;
 int	ncallout = 16 + NPROC;
 int	nclist = 60 + 12 * MAXUSERS;
