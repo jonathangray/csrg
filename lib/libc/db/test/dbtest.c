@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)dbtest.c	8.3 (Berkeley) 08/27/93";
+static char sccsid[] = "@(#)dbtest.c	8.4 (Berkeley) 09/06/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -239,7 +239,7 @@ ldata:			switch(command) {
 				err("line %lu: not expecting a key", lineno);
 			if (type == DB_RECNO) {
 				static recno_t recno;
-				recno = strtol(p + 1, NULL, 0);
+				recno = atoi(p + 1);
 				key.data = &recno;
 				key.size = sizeof(recno);
 			} else {
