@@ -169,7 +169,9 @@ res_send(buf, buflen, answer, anslen)
 			printf("got answer:\n");
 			p_query(answer);
 		}
+		(void) close(s);
 		return (resplen);
 	}
+	(void) close(s);
 	return (-1);
 }
