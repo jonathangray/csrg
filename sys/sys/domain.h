@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)domain.h	7.6 (Berkeley) 11/16/92
+ *	@(#)domain.h	7.7 (Berkeley) 06/02/93
  */
 
 /*
@@ -45,7 +45,7 @@ struct	mbuf;
 struct	domain {
 	int	dom_family;		/* AF_xxx */
 	char	*dom_name;
-	int	(*dom_init)		/* initialize domain data structures */
+	void	(*dom_init)		/* initialize domain data structures */
 		__P((void));
 	int	(*dom_externalize)	/* externalize access rights */
 		__P((struct mbuf *));
