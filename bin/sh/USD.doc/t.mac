@@ -1,4 +1,8 @@
-.\"	@(#)t.mac	6.1 (Berkeley) 05/22/86
+.\" This module is believed to contain source code proprietary to AT&T.
+.\" Use and redistribution is subject to the Berkeley Software License
+.\" Agreement and your Software Agreement with AT&T (Western Electric).
+.\"
+.\"	@(#)t.mac	6.2 (Berkeley) 04/17/91
 .\"
 .ds ZZ \fB.\|.\|.\fP
 .ds ST \v'.3m'\s+2*\s0\v'-.3m'
