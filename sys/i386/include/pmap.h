@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.h	7.5 (Berkeley) 02/19/92
+ *	@(#)pmap.h	7.6 (Berkeley) 06/02/93
  */
 
 /*
@@ -229,6 +229,7 @@ pv_entry_t	pv_table;		/* array of entries, one per page */
 #define pa_to_pvh(pa)		(&pv_table[pa_index(pa)])
 
 #define	pmap_resident_count(pmap)	((pmap)->pm_stats.resident_count)
+#define	pmap_wired_count(pmap)		((pmap)->pm_stats.wired_count)
 
 #endif	KERNEL
 
