@@ -33,13 +33,15 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tzfile.h	5.9 (Berkeley) 06/11/90
+ *	@(#)tzfile.h	5.10 (Berkeley) 04/03/91
  */
 
-/*
-** Information about time zone files.
-*/
+#ifndef _TZFILE_H_
+#define	_TZFILE_H_
 
+/*
+ * Information about time zone files.
+ */
 			/* Time zone object file directory */
 #define TZDIR		"/usr/share/zoneinfo"
 #define TZDEFAULT	"/etc/localtime"
@@ -145,3 +147,5 @@ struct tzhead {
 */
 
 #define isleap(y) (((y) % 4) == 0 && ((y) % 100) != 0 || ((y) % 400) == 0)
+
+#endif /* !_TZFILE_H_ */
