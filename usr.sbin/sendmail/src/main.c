@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.76 (Berkeley) 01/24/95";
+static char sccsid[] = "@(#)main.c	8.77 (Berkeley) 01/25/95";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -656,6 +656,15 @@ main(argc, argv, envp)
 		xputs(macvalue('k', CurEnv));
 		printf("\n");
 	}
+
+	/*
+	**  Initialize name server if it is going to be used.
+	*/
+
+#if NAMED_BIND
+	if (UseNameServer && !bitset(RES_INIT, _res.options))
+		res_init();
+#endif
 
 	/*
 	**  Process authorization warnings from command line.
