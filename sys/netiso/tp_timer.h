@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_timer.h	7.5 (Berkeley) 09/05/91
+ *	@(#)tp_timer.h	7.6 (Berkeley) 09/06/91
  */
 
 /***********************************************************
@@ -83,5 +83,10 @@ struct	Ecallarg {
 struct	Ccallout {
 	int	c_time;		/* incremental time */
 };
+
+#define SET_DELACK(t) {\
+    (t)->tp_flags |= TPF_DELACK; \
+    if ((t)->tp_fasttimeo == 0)\
+	{ (t)->tp_fasttimeo = tp_ftimeolist; tp_ftimeolist = (t); } }
 
 #endif __TP_CALLOUT__
