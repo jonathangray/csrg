@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)tty.4	8.1 (Berkeley) 06/05/93
+.\"     @(#)tty.4	8.2 (Berkeley) 11/30/93
 .\"
 .Dd August 14, 1992
 .Dt TTY 4
@@ -72,7 +72,7 @@ these terminal special files (see
 .Pp
 When an interactive user logs in, the system prepares the line to
 behave in a certain way (called a
-.Em "line discipline" ),
+.Em "line discipline" ) ,
 the particular details of which is described in
 .Xr stty 1
 at the command level, and in
@@ -87,7 +87,7 @@ to provide features similar to those provided by the system.
 .Ss Line disciplines
 A terminal file is used like any other file in the system in that
 it can be opened, read, and written to using standard system
-calls.  For each existing terminal file, a software processing module
+calls.  For each existing terminal file, there is a software processing module
 called a
 .Em "line discipline"
 is associated with it.  The
@@ -115,12 +115,12 @@ semantics.
 The operations described here
 generally represent features common
 across all
-.Em "line disciplines"
-however, some of these calls may not
+.Em "line disciplines" ,
+however some of these calls may not
 make sense in conjunction with a line discipline other than
 .Dv termios ,
 and some may not be supported by the underlying
-hardware or (lack thereof, as in the case of ptys).
+hardware (or lack thereof, as in the case of ptys).
 .Ss Terminal File Operations
 All of the following operations are invoked using the
 .Xr ioctl 2
@@ -129,7 +129,7 @@ the
 .Em request
 and
 .Em argp
-parameter.
+parameters.
 In addition to the ioctl
 .Em requests
 defined here, the specific line discipline
@@ -138,18 +138,17 @@ in effect will define other
 specific to it (actually
 .Xr termios 4
 defines them as function calls, not ioctl
-.Em requests .)
+.Em requests . )
 The following section lists the available ioctl requests.  The
-name of the request and the typed
+name of the request, a description of its purpose, and the typed
 .Em argp
 parameter (if any)
-is listed along with a description of its
-purpose.  For example, the first entry says
+are listed.  For example, the first entry says
 .Pp
 .D1 Em "TIOCSETD int *ldisc"
 .Pp
 and would be called on the terminal associated with
-file discriptor zero by the following code fragment:
+file descriptor zero by the following code fragment:
 .Bd -literal
 	int ldisc;
 
@@ -239,7 +238,7 @@ Place the current number of characters in the output queue in the
 integer pointed to by
 .Fa num .
 .It Dv TIOCSTI Fa char *cp
-Simulate typed input.  Pretend as if the terminal recieved the
+Simulate typed input.  Pretend as if the terminal received the
 character pointed to by
 .Fa cp .
 .It Dv TIOCNOTTY Fa void
@@ -278,7 +277,7 @@ terminal.
 .It Dv TIOCSTOP Fa void
 Stop output on the terminal (like typing ^S at the keyboard).
 .It Dv TIOCSTART Fa void
-Start output on the terminal (like typing ^Q at the kayboard).
+Start output on the terminal (like typing ^Q at the keyboard).
 .It Dv TIOCSCTTY Fa void
 Make the terminal the controlling terminal for the process (the process
 must not currently have a controlling terminal).
@@ -313,7 +312,7 @@ Put the window size information associated with the terminal in the
 structure pointed to by
 .Fa ws .
 The window size structure contains the number of rows and columns (and pixels
-if appropiate) of the devices attached to the terminal.  It is set by user software
+if appropriate) of the devices attached to the terminal.  It is set by user software
 and is the means by which most full\&-screen oriented programs determine the
 screen size.  The
 .Va winsize
@@ -352,7 +351,7 @@ Request To Send.
 .It TIOCM_ST
 Secondary Transmit.
 .It TIOCM_SR
-Secondary Recieve.
+Secondary Receive.
 .It TIOCM_CTS
 Clear To Send.
 .It TIOCM_CAR
