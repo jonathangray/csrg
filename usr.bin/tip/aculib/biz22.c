@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)biz22.c	5.4 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)biz22.c	5.5 (Berkeley) 03/02/91";
 #endif /* not lint */
 
 #include "tip.h"
@@ -54,6 +54,7 @@ biz_dialer(num, mod)
 {
 	register int connected = 0;
 	char cbuf[40];
+	static int cmd(), detect();
 
 	if (boolean(value(VERBOSE)))
 		printf("\nstarting call...");
