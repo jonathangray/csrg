@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sig.h	5.2 (Berkeley) 06/22/92
+ *	@(#)sig.h	5.3 (Berkeley) 07/03/92
  */
 
 /*
