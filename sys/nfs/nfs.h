@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs.h	7.9 (Berkeley) 06/28/90
+ *	@(#)nfs.h	7.10 (Berkeley) 04/16/91
  */
 
 /*
@@ -55,7 +55,8 @@
 #define	NFS_WSIZE	8192		/* Def. write data size <= 8192 */
 #define	NFS_RSIZE	8192		/* Def. read data size <= 8192 */
 #define	NFS_MAXREADDIR	NFS_MAXDATA	/* Max. size of directory read */
-#define	NFS_MAXASYNCDAEMON 20	/* Max. number async_daemons runable */
+#define	NFS_MAXASYNCDAEMON 20		/* Max. number async_daemons runable */
+#define	NFS_DIRBLKSIZ	1024		/* Size of an NFS directory block */
 #define	NMOD(a)		((a) % nfs_asyncdaemons)
 
 /*
