@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kgdb_glue.c	7.1 (Berkeley) 05/12/91
+ *	@(#)kgdb_glue.c	7.2 (Berkeley) 05/13/91
  */
 
 /*
@@ -40,8 +40,8 @@
 #ifdef KGDB
 
 #include "param.h"
-#include "../include/frame.h"
-#include "../include/reg.h"
+#include "machine/frame.h"
+#include "machine/reg.h"
 
 #ifndef lint
 static char rcsid[] =
