@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)lcmd2.c	3.23 (Berkeley) 06/17/90";
+static char sccsid[] = "@(#)lcmd2.c	3.24 (Berkeley) 06/24/92";
 #endif /* not lint */
 
 #include "defs.h"
@@ -82,9 +82,9 @@ struct value *v, *a;
 	wwprintf(w, "select\terror\tzero\n");
 	wwprintf(w, "%d\t%d\t%d\n",
 		wwnselect, wwnselecte, wwnselectz);
-	wwprintf(w, "read\terror\tzero\tchar\n");
-	wwprintf(w, "%d\t%d\t%d\t%d\n",
-		wwnread, wwnreade, wwnreadz, wwnreadc);
+	wwprintf(w, "read\terror\tzero\tchar\terrorc\n");
+	wwprintf(w, "%d\t%d\t%d\t%d\t%d\n",
+		wwnread, wwnreade, wwnreadz, wwnreadc, wwnreadec);
 	wwprintf(w, "ptyread\terror\tzero\tcontrol\tdata\tchar\n");
 	wwprintf(w, "%d\t%d\t%d\t%d\t%d\t%d\n",
 		wwnwread, wwnwreade, wwnwreadz,
