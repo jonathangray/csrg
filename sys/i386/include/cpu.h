@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cpu.h	8.3 (Berkeley) 12/10/93
+ *	@(#)cpu.h	8.4 (Berkeley) 01/05/94
  */
 
 /*
@@ -49,6 +49,7 @@
 #undef	COPY_SIGCODE	/* don't copy sigcode above user stack in exec */
 
 #define	cpu_exec(p)			/* nothing */
+#define	cpu_swapin(p)			/* nothing */
 #define cpu_setstack(p, ap)		(p)->p_md.md_regs[SP] = ap
 #define cpu_set_init_frame(p, fp)	(p)->p_md.md_regs = fp
 
