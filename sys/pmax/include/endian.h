@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)endian.h	7.6 (Berkeley) 06/28/90
+ *	@(#)endian.h	7.7 (Berkeley) 02/22/91
  */
 
 /*
