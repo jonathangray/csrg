@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: machparam.h 1.11 89/08/14$
  *
- *	@(#)param.h	8.4 (Berkeley) 06/02/95
+ *	@(#)param.h	8.5 (Berkeley) 06/02/95
  */
 
 /*
@@ -141,8 +141,8 @@
 #define pmax_btop(x)		((unsigned)(x) >> PGSHIFT)
 #define pmax_ptob(x)		((unsigned)(x) << PGSHIFT)
 
-#ifdef KERNEL
 #ifndef LOCORE
+#ifdef KERNEL
 extern int (*Mach_splnet)(), (*Mach_splbio)(), (*Mach_splimp)(),
 	   (*Mach_spltty)(), (*Mach_splclock)(), (*Mach_splstatclock)();
 #define	splnet()	((*Mach_splnet)())
@@ -153,8 +153,6 @@ extern int (*Mach_splnet)(), (*Mach_splbio)(), (*Mach_splimp)(),
 #define	splstatclock()	((*Mach_splstatclock)())
 extern	int cpuspeed;
 #define	DELAY(n)	{ register int N = cpuspeed * (n); while (--N > 0); }
-#endif
-
 #else /* !KERNEL */
 #define	DELAY(n)	{ register int N = (n); while (--N > 0); }
 #endif /* !KERNEL */
@@ -217,3 +215,4 @@ simple_unlock(lkp)
 }
 #endif /* NCPUS > 1 */
 #endif /* !_SIMPLELOCK_H_ */
+#endif /* LOCORE */
