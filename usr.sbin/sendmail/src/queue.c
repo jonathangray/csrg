@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef QUEUE
-static char sccsid[] = "@(#)queue.c	6.33 (Berkeley) 03/18/93 (with queueing)";
+static char sccsid[] = "@(#)queue.c	6.34 (Berkeley) 03/18/93 (with queueing)";
 #else
-static char sccsid[] = "@(#)queue.c	6.33 (Berkeley) 03/18/93 (without queueing)";
+static char sccsid[] = "@(#)queue.c	6.34 (Berkeley) 03/18/93 (without queueing)";
 #endif
 #endif /* not lint */
 
@@ -1304,6 +1304,10 @@ unlockqueue(e)
 	if (e->e_lockfp != NULL)
 		xfclose(e->e_lockfp, "unlockqueue", e->e_id);
 	e->e_lockfp = NULL;
+
+	/* don't create a queue id if we don't already have one */
+	if (e->e_id == NULL)
+		return;
 
 	/* remove the transcript */
 # ifdef LOG
