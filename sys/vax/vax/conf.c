@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.c	7.18 (Berkeley) 05/09/91
+ *	@(#)conf.c	7.19 (Berkeley) 05/27/92
  */
 
 #include "sys/param.h"
@@ -376,7 +376,7 @@ int	lpopen(),lpclose(),lpwrite(),lpreset();
 #define	lpreset		nullop
 #endif
 
-int	syopen(),syread(),sywrite(),syioctl(),syselect();
+int	cttyopen(),cttyread(),cttywrite(),cttyioctl(),cttyselect();
 
 int 	mmrw();
 #define	mmselect	seltrue
@@ -618,9 +618,9 @@ struct cdevsw	cdevsw[] =
 	dzopen,		dzclose,	dzread,		dzwrite,	/*1*/
 	dzioctl,	dzstop,		dzreset,	dz_tty,
 	ttselect,	enodev,		NULL,
-	syopen,		nullop,	syread,		sywrite,	/*2*/
-	syioctl,	nullop,	nullop,	NULL,
-	syselect,	enodev,		NULL,
+	cttyopen,		nullop,	cttyread,		cttywrite,	/*2*/
+	cttyioctl,	nullop,	nullop,	NULL,
+	cttyselect,	enodev,		NULL,
 	nullop,	nullop,	mmrw,		mmrw,		/*3*/
 	enodev,		nullop,	nullop,	NULL,
 	mmselect,	enodev,		NULL,
