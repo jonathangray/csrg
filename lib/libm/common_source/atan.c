@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 1985 Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1985, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)atan.c	5.5 (Berkeley) 10/09/90";
+static char sccsid[] = "@(#)atan.c	8.1 (Berkeley) 06/04/93";
 #endif /* not lint */
 
 /* ATAN(X)
