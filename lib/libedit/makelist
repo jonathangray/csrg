@@ -34,13 +34,11 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)makelist	5.1 (Berkeley) 07/06/92
+#	@(#)makelist	5.2 (Berkeley) 07/15/92
 
 # makelist.sh: Automatically generate header files...
 
-# On vangogh /usr/bin/awk is broken; christos Fri Jul  3 14:01:03 EDT 1992
-AWK=/usr/old/bin/awk
-#AWK=/usr/bin/awk
+AWK=/usr/bin/awk
 USAGE="Usage: $0 -h|-e|-fc|-fh|-bc|-bh <filenames>" 
 
 if [ "x$1" = "x" ]
