@@ -484,7 +484,7 @@ lw(2i) l.
 \fB#\fP \fI../dev/MAKEDEV \*(Dk#\fP	(create special files for root disk)
 (\fI\*(Dk\fP is the disk type, \fI#\fP is the unit number)
 (ignore warning from ``sh'')
-\fB#\fP \fImount -u /tmp/\*(Dk#a /\fP	(read-write mount root filesystem)
+\fB#\fP \fImount \-uw /tmp/\*(Dk#a /\fP	(read-write mount root filesystem)
 \fB#\fP \fIcd /dev\fP	(go to device directory)
 \fB#\fP \fI./MAKEDEV \*(Dk#\fP	(create permanent special files for root disk)
 (again, ignore warning from ``sh'')
@@ -944,7 +944,7 @@ see sections 4.4 and 5).
 Execute the following to start the networking:
 .DS
 .ft CW
-# mount -u /
+# mount \-uw /
 # echo 127.0.0.1 localhost >> /etc/hosts
 # echo <your.host.inet.number> myname.my.domain myname >> /etc/hosts
 # echo <friend.host.inet.number> myfriend.my.domain myfriend >> /etc/hosts
@@ -971,7 +971,7 @@ Supported disk types are listed in
 Restore the root filesystem.
 .DS
 .ft CW
-# mount \-u /
+# mount \-uw /
 # mount /dev/rz?a /a
 # cd /a
 .DE
@@ -1120,7 +1120,7 @@ divide between the available disks:
 The root filesystem.
 .IP 2)
 The
-.Pn /tmp
+.Pn /var
 and
 .Pn /var/tmp
 filesystems.
@@ -1143,7 +1143,7 @@ l | lw(5) | lw(5) | lw(5).
 what	2	3	4
 _
 root	0	0	0
-tmp	1	2	3
+var	1	2	3
 usr	1	1	1
 paging	0+1	0+2	0+2+3
 users	0	0+2	0+2
@@ -1160,7 +1160,7 @@ load when the system is busy.
 Intelligent experimentation with a few filesystem arrangements can
 pay off in much improved performance.  It is particularly easy to
 move the root, the
-.Pn /tmp
+.Pn /var
 and
 .Pn /var/tmp
 filesystems and the paging areas.  Place the
@@ -1448,8 +1448,7 @@ and
 .ne 5
 .TS
 lw(2i) l.
-\fB#\fP \fImount -u /dev/\*(Dk#a /\fP	(read-write mount root filesystem)
-(this step may fail if it was done earlier)
+\fB#\fP \fImount \-uw /dev/\*(Dk#a /\fP	(read-write mount root filesystem)
 \fB#\fP \fIdate yymmddhhmm\fP	(set date, see \fIdate\fP\|(1))
 \&....
 \fB#\fP \fIpasswd -l root\fP	(set password for super-user)
@@ -1503,7 +1502,7 @@ The next step is to extract the sources.
 As previously noted,
 .Pn /usr/src
 .\" XXX Check
-requires about 250-350Mb of space.
+requires about 250-340Mb of space.
 Ideally sources should be in a separate filesystem;
 if you plan to put them into your
 .Pn /usr
