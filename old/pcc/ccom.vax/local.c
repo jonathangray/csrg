@@ -1,5 +1,5 @@
 #ifndef lint
-static char *sccsid ="@(#)local.c	1.5 (Berkeley) 01/18/85";
+static char *sccsid ="@(#)local.c	1.6 (Berkeley) 02/07/85";
 #endif lint
 
 # include "mfile1"
