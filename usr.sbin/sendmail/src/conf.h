@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.124 (Berkeley) 12/05/94
+ *	@(#)conf.h	8.125 (Berkeley) 12/10/94
  */
 
 /*
@@ -343,6 +343,21 @@ extern long	dgux_inet_addr();
 # define SFS_TYPE	SFS_MOUNT	/* use <sys/mount.h> statfs() impl */
 # ifndef IDENTPROTO
 #  define IDENTPROTO	0	/* TCP/IP implementation is broken */
+# endif
+#endif
+
+
+/*
+**  OSF/1 for Intel Paragon.
+**
+**	Contributed by Jeff A. Earickson <jeff@ithaca.ccs.ornl.gov>
+**	of Oak Ridge National Lab.
+*/
+
+#ifdef __PARAGON__
+# define __osf__	1	/* get OSF/1 defines below */
+# ifndef _PATH_SENDMAILCF
+#  define _PATH_SENDMAILCF	"/var/adm/sendmail/sendmail.cf"
 # endif
 #endif
 
