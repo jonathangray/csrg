@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-.asciz  "@(#)modf.c	5.1 (Berkeley) 4/23/90"
+static char sccsid[] = "@(#)modf.s	5.4 (Berkeley) 03/16/91";
 #endif /* LIBC_SCCS and not lint */
 
 /*
