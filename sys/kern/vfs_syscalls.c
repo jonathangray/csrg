@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	7.66 (Berkeley) 03/31/91
+ *	@(#)vfs_syscalls.c	7.67 (Berkeley) 04/15/91
  */
 
 #include "param.h"
@@ -169,7 +169,7 @@ update:
 	/*
 	 * Mount the filesystem.
 	 */
-	error = VFS_MOUNT(mp, uap->dir, uap->data, ndp);
+	error = VFS_MOUNT(mp, uap->dir, uap->data, ndp, p);
 	if (mp->mnt_flag & MNT_UPDATE) {
 		mp->mnt_flag &= ~MNT_UPDATE;
 		vrele(vp);
@@ -188,7 +188,7 @@ update:
 	if (!error) {
 		VOP_UNLOCK(vp);
 		vfs_unlock(mp);
-		error = VFS_START(mp, 0);
+		error = VFS_START(mp, 0, p);
 	} else {
 		vfs_remove(mp);
 		free((caddr_t)mp, M_MOUNT);
@@ -240,15 +240,16 @@ unmount(p, uap, retval)
 	}
 	mp = vp->v_mount;
 	vput(vp);
-	return (dounmount(mp, uap->flags));
+	return (dounmount(mp, uap->flags, p));
 }
 
 /*
  * Do an unmount.
  */
-dounmount(mp, flags)
+dounmount(mp, flags, p)
 	register struct mount *mp;
 	int flags;
+	struct proc *p;
 {
 	struct vnode *coveredvp;
 	int error;
@@ -267,7 +268,7 @@ dounmount(mp, flags)
 #endif
 	cache_purgevfs(mp);	/* remove cache entries for this file sys */
 	if ((error = VFS_SYNC(mp, MNT_WAIT)) == 0 || (flags & MNT_FORCE))
-		error = VFS_UNMOUNT(mp, flags);
+		error = VFS_UNMOUNT(mp, flags, p);
 	mp->mnt_flag &= ~MNT_UNMOUNT;
 	vfs_unbusy(mp);
 	if (error) {
@@ -338,7 +339,7 @@ quotactl(p, uap, retval)
 		return (error);
 	mp = ndp->ni_vp->v_mount;
 	vrele(ndp->ni_vp);
-	return (VFS_QUOTACTL(mp, uap->cmd, uap->uid, uap->arg));
+	return (VFS_QUOTACTL(mp, uap->cmd, uap->uid, uap->arg, p));
 }
 
 /*
@@ -368,7 +369,7 @@ statfs(p, uap, retval)
 	mp = ndp->ni_vp->v_mount;
 	sp = &mp->mnt_stat;
 	vrele(ndp->ni_vp);
-	if (error = VFS_STATFS(mp, sp))
+	if (error = VFS_STATFS(mp, sp, p))
 		return (error);
 	sp->f_flags = mp->mnt_flag & MNT_VISFLAGMASK;
 	return (copyout((caddr_t)sp, (caddr_t)uap->buf, sizeof(*sp)));
@@ -395,7 +396,7 @@ fstatfs(p, uap, retval)
 		return (error);
 	mp = ((struct vnode *)fp->f_data)->v_mount;
 	sp = &mp->mnt_stat;
-	if (error = VFS_STATFS(mp, sp))
+	if (error = VFS_STATFS(mp, sp, p))
 		return (error);
 	sp->f_flags = mp->mnt_flag & MNT_VISFLAGMASK;
 	return (copyout((caddr_t)sp, (caddr_t)uap->buf, sizeof(*sp)));
@@ -432,7 +433,7 @@ getfsstat(p, uap, retval)
 			 */
 			if (((uap->flags & MNT_NOWAIT) == 0 ||
 			    (uap->flags & MNT_WAIT)) &&
-			    (error = VFS_STATFS(mp, sp))) {
+			    (error = VFS_STATFS(mp, sp, p))) {
 				mp = mp->mnt_prev;
 				continue;
 			}
@@ -474,7 +475,7 @@ fchdir(p, uap, retval)
 	if (vp->v_type != VDIR)
 		error = ENOTDIR;
 	else
-		error = VOP_ACCESS(vp, VEXEC, p->p_ucred);
+		error = VOP_ACCESS(vp, VEXEC, p->p_ucred, p);
 	VOP_UNLOCK(vp);
 	if (error)
 		return (error);
@@ -557,7 +558,7 @@ chdirec(ndp, p)
 	if (vp->v_type != VDIR)
 		error = ENOTDIR;
 	else
-		error = VOP_ACCESS(vp, VEXEC, p->p_ucred);
+		error = VOP_ACCESS(vp, VEXEC, p->p_ucred, p);
 	VOP_UNLOCK(vp);
 	if (error)
 		vrele(vp);
@@ -695,7 +696,7 @@ mknod(p, uap, retval)
 	vattr.va_rdev = uap->dev;
 out:
 	if (!error) {
-		error = VOP_MKNOD(ndp, &vattr, p->p_ucred);
+		error = VOP_MKNOD(ndp, &vattr, p->p_ucred, p);
 	} else {
 		VOP_ABORTOP(ndp);
 		if (ndp->ni_dvp == vp)
@@ -746,7 +747,7 @@ mkfifo(p, uap, retval)
 	VATTR_NULL(&vattr);
 	vattr.va_type = VFIFO;
 	vattr.va_mode = (uap->fmode & 07777) &~ p->p_fd->fd_cmask;
-	return (VOP_MKNOD(ndp, &vattr, p->p_ucred));
+	return (VOP_MKNOD(ndp, &vattr, p->p_ucred, p));
 #endif /* FIFO */
 }
 
@@ -791,7 +792,7 @@ link(p, uap, retval)
 		error = EXDEV;
 out:
 	if (!error) {
-		error = VOP_LINK(vp, ndp);
+		error = VOP_LINK(vp, ndp, p);
 	} else {
 		VOP_ABORTOP(ndp);
 		if (ndp->ni_dvp == ndp->ni_vp)
@@ -845,7 +846,7 @@ symlink(p, uap, retval)
 	}
 	VATTR_NULL(&vattr);
 	vattr.va_mode = 0777 &~ p->p_fd->fd_cmask;
-	error = VOP_SYMLINK(ndp, &vattr, target);
+	error = VOP_SYMLINK(ndp, &vattr, target, p);
 out:
 	FREE(target, M_NAMEI);
 	return (error);
@@ -894,7 +895,7 @@ unlink(p, uap, retval)
 #endif
 out:
 	if (!error) {
-		error = VOP_REMOVE(ndp);
+		error = VOP_REMOVE(ndp, p);
 	} else {
 		VOP_ABORTOP(ndp);
 		if (ndp->ni_dvp == vp)
@@ -937,7 +938,7 @@ lseek(p, uap, retval)
 
 	case L_XTND:
 		if (error = VOP_GETATTR((struct vnode *)fp->f_data,
-		    &vattr, cred))
+		    &vattr, cred, p))
 			return (error);
 		fp->f_offset = uap->off + vattr.va_size;
 		break;
@@ -994,7 +995,7 @@ saccess(p, uap, retval)
 		if (uap->fmode & X_OK)
 			mode |= VEXEC;
 		if ((mode & VWRITE) == 0 || (error = vn_writechk(vp)) == 0)
-			error = VOP_ACCESS(vp, mode, cred);
+			error = VOP_ACCESS(vp, mode, cred, p);
 	}
 	vput(vp);
 out1:
@@ -1026,7 +1027,7 @@ stat(p, uap, retval)
 	ndp->ni_dirp = uap->fname;
 	if (error = namei(ndp, p))
 		return (error);
-	error = vn_stat(ndp->ni_vp, &sb);
+	error = vn_stat(ndp->ni_vp, &sb, p);
 	vput(ndp->ni_vp);
 	if (error)
 		return (error);
@@ -1057,7 +1058,7 @@ lstat(p, uap, retval)
 	ndp->ni_dirp = uap->fname;
 	if (error = namei(ndp, p))
 		return (error);
-	error = vn_stat(ndp->ni_vp, &sb);
+	error = vn_stat(ndp->ni_vp, &sb, p);
 	vput(ndp->ni_vp);
 	if (error)
 		return (error);
@@ -1103,6 +1104,7 @@ readlink(p, uap, retval)
 	auio.uio_offset = 0;
 	auio.uio_rw = UIO_READ;
 	auio.uio_segflg = UIO_USERSPACE;
+	auio.uio_procp = p;
 	auio.uio_resid = uap->count;
 	error = VOP_READLINK(vp, &auio, p->p_ucred);
 out:
@@ -1142,7 +1144,7 @@ chflags(p, uap, retval)
 	}
 	VATTR_NULL(&vattr);
 	vattr.va_flags = uap->flags;
-	error = VOP_SETATTR(vp, &vattr, p->p_ucred);
+	error = VOP_SETATTR(vp, &vattr, p->p_ucred, p);
 out:
 	vput(vp);
 	return (error);
@@ -1175,7 +1177,7 @@ fchflags(p, uap, retval)
 	}
 	VATTR_NULL(&vattr);
 	vattr.va_flags = uap->flags;
-	error = VOP_SETATTR(vp, &vattr, p->p_ucred);
+	error = VOP_SETATTR(vp, &vattr, p->p_ucred, p);
 out:
 	VOP_UNLOCK(vp);
 	return (error);
@@ -1212,7 +1214,7 @@ chmod(p, uap, retval)
 	}
 	VATTR_NULL(&vattr);
 	vattr.va_mode = uap->fmode & 07777;
-	error = VOP_SETATTR(vp, &vattr, p->p_ucred);
+	error = VOP_SETATTR(vp, &vattr, p->p_ucred, p);
 out:
 	vput(vp);
 	return (error);
@@ -1245,7 +1247,7 @@ fchmod(p, uap, retval)
 	}
 	VATTR_NULL(&vattr);
 	vattr.va_mode = uap->fmode & 07777;
-	error = VOP_SETATTR(vp, &vattr, p->p_ucred);
+	error = VOP_SETATTR(vp, &vattr, p->p_ucred, p);
 out:
 	VOP_UNLOCK(vp);
 	return (error);
@@ -1284,7 +1286,7 @@ chown(p, uap, retval)
 	VATTR_NULL(&vattr);
 	vattr.va_uid = uap->uid;
 	vattr.va_gid = uap->gid;
-	error = VOP_SETATTR(vp, &vattr, p->p_ucred);
+	error = VOP_SETATTR(vp, &vattr, p->p_ucred, p);
 out:
 	vput(vp);
 	return (error);
@@ -1319,7 +1321,7 @@ fchown(p, uap, retval)
 	VATTR_NULL(&vattr);
 	vattr.va_uid = uap->uid;
 	vattr.va_gid = uap->gid;
-	error = VOP_SETATTR(vp, &vattr, p->p_ucred);
+	error = VOP_SETATTR(vp, &vattr, p->p_ucred, p);
 out:
 	VOP_UNLOCK(vp);
 	return (error);
@@ -1360,7 +1362,7 @@ utimes(p, uap, retval)
 	VATTR_NULL(&vattr);
 	vattr.va_atime = tv[0];
 	vattr.va_mtime = tv[1];
-	error = VOP_SETATTR(vp, &vattr, p->p_ucred);
+	error = VOP_SETATTR(vp, &vattr, p->p_ucred, p);
 out:
 	vput(vp);
 	return (error);
@@ -1396,11 +1398,11 @@ truncate(p, uap, retval)
 		goto out;
 	}
 	if ((error = vn_writechk(vp)) ||
-	    (error = VOP_ACCESS(vp, VWRITE, p->p_ucred)))
+	    (error = VOP_ACCESS(vp, VWRITE, p->p_ucred, p)))
 		goto out;
 	VATTR_NULL(&vattr);
 	vattr.va_size = uap->length;
-	error = VOP_SETATTR(vp, &vattr, p->p_ucred);
+	error = VOP_SETATTR(vp, &vattr, p->p_ucred, p);
 out:
 	vput(vp);
 	return (error);
@@ -1437,7 +1439,7 @@ ftruncate(p, uap, retval)
 		goto out;
 	VATTR_NULL(&vattr);
 	vattr.va_size = uap->length;
-	error = VOP_SETATTR(vp, &vattr, fp->f_cred);
+	error = VOP_SETATTR(vp, &vattr, fp->f_cred, p);
 out:
 	VOP_UNLOCK(vp);
 	return (error);
@@ -1462,7 +1464,7 @@ fsync(p, uap, retval)
 		return (error);
 	vp = (struct vnode *)fp->f_data;
 	VOP_LOCK(vp);
-	error = VOP_FSYNC(vp, fp->f_flag, fp->f_cred, MNT_WAIT);
+	error = VOP_FSYNC(vp, fp->f_flag, fp->f_cred, MNT_WAIT, p);
 	VOP_UNLOCK(vp);
 	return (error);
 }
@@ -1533,7 +1535,7 @@ rename(p, uap, retval)
 		error = -1;
 out:
 	if (!error) {
-		error = VOP_RENAME(ndp, &tond);
+		error = VOP_RENAME(ndp, &tond, p);
 	} else {
 		VOP_ABORTOP(&tond);
 		if (tdvp == tvp)
@@ -1590,7 +1592,7 @@ mkdir(p, uap, retval)
 	VATTR_NULL(&vattr);
 	vattr.va_type = VDIR;
 	vattr.va_mode = (uap->dmode & 0777) &~ p->p_fd->fd_cmask;
-	error = VOP_MKDIR(ndp, &vattr);
+	error = VOP_MKDIR(ndp, &vattr, p);
 	if (!error)
 		vput(ndp->ni_vp);
 	return (error);
@@ -1637,7 +1639,7 @@ rmdir(p, uap, retval)
 		error = EBUSY;
 out:
 	if (!error) {
-		error = VOP_RMDIR(ndp);
+		error = VOP_RMDIR(ndp, p);
 	} else {
 		VOP_ABORTOP(ndp);
 		if (ndp->ni_dvp == vp)
@@ -1682,6 +1684,7 @@ getdirentries(p, uap, retval)
 	auio.uio_iovcnt = 1;
 	auio.uio_rw = UIO_READ;
 	auio.uio_segflg = UIO_USERSPACE;
+	auio.uio_procp = p;
 	auio.uio_resid = uap->count;
 	VOP_LOCK(vp);
 	auio.uio_offset = off = fp->f_offset;
@@ -1742,7 +1745,7 @@ revoke(p, uap, retval)
 		error = EINVAL;
 		goto out;
 	}
-	if (error = VOP_GETATTR(vp, &vattr, p->p_ucred))
+	if (error = VOP_GETATTR(vp, &vattr, p->p_ucred, p))
 		goto out;
 	if (p->p_ucred->cr_uid != vattr.va_uid &&
 	    (error = suser(p->p_ucred, &p->p_acflag)))
