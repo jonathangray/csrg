@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fbreg.h	7.1 (Berkeley) 11/15/92
+ *	@(#)fbreg.h	7.2 (Berkeley) 03/23/93
  */
 
 /*
@@ -53,6 +53,7 @@ struct pmax_fb {
 	int	row, col;		/* Screen pos for glass tty */
 	struct	fbuaccess *fbu;		/* X event stuff */
 	char	*fr_addr;		/* Frame buffer address */
+	char	*fr_chipaddr;		/* Base address for chips */
 	void	(*posCursor)();		/* Position cursor func */
 	void	(*KBDPutc)();		/* Send char to keyboard func */
 	dev_t	kbddev;			/* Device for KBDPutc */
