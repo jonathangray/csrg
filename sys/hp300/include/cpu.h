@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: cpu.h 1.13 89/06/23$
  *
- *	@(#)cpu.h	7.1 (Berkeley) 05/08/90
+ *	@(#)cpu.h	7.2 (Berkeley) 05/25/90
  */
 
 /* values for machineid */
@@ -47,6 +47,7 @@
 #define HP_360		3	/* 25Mhz 68030 */
 #define HP_370		4	/* 33Mhz 68030+64K external cache */
 #define HP_340		5	/* 16Mhz 68030 */
+#define HP_375		6	/* 50Mhz 68030+32K external cache */
 
 /* values for mmutype (assigned for quick testing) */
 #define MMU_68030	-1	/* 68030 on-chip subset of 68851 */
@@ -63,6 +64,7 @@
 #define MHZ_16		2
 #define MHZ_25		3
 #define MHZ_33		4
+#define MHZ_50		6
 
 #ifdef KERNEL
 extern	int machineid, mmutype, ectype;
