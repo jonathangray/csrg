@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.91 (Berkeley) 06/19/94";
+static char sccsid[] = "@(#)conf.c	8.92 (Berkeley) 06/19/94";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -2033,6 +2033,36 @@ chownsafe(fd)
 	return FALSE;
 #   endif
 #  endif
+# endif
+#endif
+}
+/*
+**  RESETLIMITS -- reset system controlled resource limits
+**
+**	This is to avoid denial-of-service attacks
+**
+**	Parameters:
+**		none
+**
+**	Returns:
+**		none
+*/
+
+#if HASSETRLIMIT
+# include <sys/resource.h>
+#endif
+
+resetlimits()
+{
+#if HASSETRLIMIT
+	struct rlimit lim;
+
+	lim.rlim_cur = lim.rlim_max = RLIM_INFINITY;
+	(void) setrlimit(RLIMIT_CPU, &lim);
+	(void) setrlimit(RLIMIT_FSIZE, &lim);
+#else
+# if HASULIMIT
+	(void) ulimit(2, 0x3fffff);
 # endif
 #endif
 }
