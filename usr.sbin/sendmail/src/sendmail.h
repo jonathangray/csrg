@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	6.44 (Berkeley) 04/04/93
+ *	@(#)sendmail.h	6.45 (Berkeley) 04/10/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	6.44		04/04/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	6.45		04/10/93";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -416,6 +416,7 @@ EXTERN struct rewrite	*RewriteRules[MAXRWSETS];
 
 /* macro substitution character */
 # define MACROEXPAND	0201	/* macro expansion */
+# define MACRODEXPAND	0202	/* deferred macro expansion */
 
 /* to make the code clearer */
 # define MATCHZERO	CANONHOST
