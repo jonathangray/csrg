@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_malloc.c	7.33 (Berkeley) 05/20/92
+ *	@(#)kern_malloc.c	7.33.1.1 (Berkeley) 05/20/92
  */
 
 #include "param.h"
@@ -87,6 +87,13 @@ struct freelist {
 	caddr_t	next;
 };
 #endif /* DIAGNOSTIC */
+
+struct uselist {
+	struct	uselist *next;
+	caddr_t	mem;
+	long	size;
+	long	type;
+} *listhd;
 
 /*
  * Allocate a block of memory
@@ -202,6 +209,14 @@ out:
 #else
 out:
 #endif
+	if (size > 64 && size <= 128) {
+		mlp = (struct uselist *)malloc(sizeof(*mlp), M_TEMP, M_WAITOK);
+		mlp->type = type;
+		mlp->size = size;
+		mlp->mem = va;
+		mlp->next = listhd;
+		listhd = mlp;
+	}
 	OUT;
 	splx(s);
 	return ((void *) va);
@@ -253,6 +268,25 @@ free(addr, type)
 	size = 1 << kup->ku_indx;
 	kbp = &bucket[kup->ku_indx];
 	s = splimp();
+	if (size == 128) {
+		struct uselist *mlp, *pmlp;
+
+		mlp = listhd;
+		if (mlp->mem == addr)
+			listhd = mlp->next;
+		else for (pmlp = mlp, mlp = mlp->next ; mlp; mlp = mlp->next) {
+			if (mlp->mem == addr) {
+				pmlp->next = mlp->next;
+				break;
+			}
+			pmlp = mlp;
+		}
+		if (mlp == NULL)
+			printf("free: lost type %s size %d\n", memname[type],
+			    size);
+		else
+			free(mlp, M_TEMP);
+	}
 #ifdef DIAGNOSTIC
 	/*
 	 * Check for returns of data that do not point to the
