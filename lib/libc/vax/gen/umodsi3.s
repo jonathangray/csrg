@@ -2,6 +2,9 @@
  * Copyright (c) 1991 The Regents of the University of California.
  * All rights reserved.
  *
+ * This code is derived from software contributed to Berkeley by
+ * Donn Seeley at UUNET Technologies, Inc.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -32,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-	.asciz "@(#)umodsi3.s	6.1 (Berkeley) 04/05/91"
+	.asciz "@(#)umodsi3.s	6.2 (Berkeley) 04/15/91"
 #endif /* LIBC_SCCS and not lint */
 
 /*
