@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)util.c	8.73 (Berkeley) 05/30/95";
+static char sccsid[] = "@(#)util.c	8.74 (Berkeley) 05/30/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -726,7 +726,6 @@ safefopen(fn, omode, cmode, sff)
 	FILE *fp;
 	int smode;
 	struct stat stb, sta;
-	extern char RealUserName[];
 
 	if (bitset(O_CREAT, omode))
 		sff |= SFF_CREAT;
