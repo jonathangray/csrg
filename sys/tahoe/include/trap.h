@@ -1,9 +1,15 @@
-/*
- * Copyright (c) 1988 Regents of the University of California.
- * All rights reserved.  The Berkeley software License Agreement
- * specifies the terms and conditions for redistribution.
+/*-
+ * Copyright (c) 1988 The Regents of the University of California.
+ * All rights reserved.
  *
- *	@(#)trap.h	7.1 (Berkeley) 05/21/88
+ * This code is derived from software contributed to Berkeley by
+ * Computer Consoles Inc.
+ *
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ *
+ *	@(#)trap.h	7.2 (Berkeley) 05/08/91
  */
 
 /*
