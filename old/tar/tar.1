@@ -5,7 +5,7 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)tar.1	6.11 (Berkeley) 08/09/91
+.\"	@(#)tar.1	6.12 (Berkeley) 06/01/92
 .\"
 .Dd 
 .Dt TAR 1
@@ -145,6 +145,16 @@ to follow symbolic links as if they were normal files or
 directories.  Normally, 
 .Nm tar
 does not follow symbolic links.
+.It Cm H
+Force
+.Nm tar
+to follow symbolic links on the command line only as if they were normal 
+files or directories.  Normally,
+.Nm tar
+does not follow symbolic links.  Note that 
+.Fl h
+supercedes 
+.Fl H .
 .It Cm B
 Forces input and output blocking to 20 blocks per record.  This option
 was added so that 
