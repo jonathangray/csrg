@@ -30,14 +30,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_cksum.c	7.4 (Berkeley) 05/14/92
+ *	@(#)lfs_cksum.c	7.5 (Berkeley) 06/22/92
  */
 
-#include <sys/param.h>
-#include <sys/vnode.h>
-
-#include <ufs/lfs/lfs.h>
-#include <ufs/lfs/lfs_extern.h>
+#include <sys/types.h>
 
 /*
  * Simple, general purpose, fast checksum.  Data must be short-aligned.
