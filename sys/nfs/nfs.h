@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs.h	8.3 (Berkeley) 03/30/95
+ *	@(#)nfs.h	8.4 (Berkeley) 05/01/95
  */
 
 #ifndef _NFS_NFS_H_
@@ -125,7 +125,9 @@
 /*
  * Arguments to mount NFS
  */
+#define NFS_ARGSVERSION	3		/* change when nfs_args changes */
 struct nfs_args {
+	int		version;	/* args structure version number */
 	struct sockaddr	*addr;		/* file server address */
 	int		addrlen;	/* length of address */
 	int		sotype;		/* Socket type */
