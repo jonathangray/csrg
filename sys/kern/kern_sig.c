@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sig.c	7.37 (Berkeley) 11/19/91
+ *	@(#)kern_sig.c	7.38 (Berkeley) 01/07/92
  */
 
 #define	SIGPROP		/* include signal properties table */
@@ -362,8 +362,8 @@ sigsuspend(p, uap, retval)
 	 * When returning from sigpause, we want
 	 * the old mask to be restored after the
 	 * signal handler has finished.  Thus, we
-	 * save it here and mark the proc structure
-	 * to indicate this (should be in sigacts).
+	 * save it here and mark the sigacts structure
+	 * to indicate this.
 	 */
 	ps->ps_oldmask = p->p_sigmask;
 	ps->ps_flags |= SA_OLDMASK;
