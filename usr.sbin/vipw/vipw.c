@@ -38,23 +38,47 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)vipw.c	8.1 (Berkeley) 06/06/93";
+static char sccsid[] = "@(#)vipw.c	8.2 (Berkeley) 04/01/94";
 #endif /* not lint */
 
 #include <sys/types.h>
 #include <sys/stat.h>
+
+#include <err.h>
 #include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
-char *progname = "vipw";
+#include "pw_util.h"
+
 char *tempname;
 
-main()
+void	copyfile __P((int, int));
+void	usage __P((void));
+
+int
+main(argc, argv)
+	int argc;
+	char *argv[];
 {
-	register int pfd, tfd;
+	int pfd, tfd;
 	struct stat begin, end;
+	int ch;
+
+	while ((ch = getopt(argc, argv, "")) != EOF)
+		switch (ch) {
+		case '?':
+		default:
+			usage();
+		}
+	
+	argc -= optind;
+	argv += optind;
+
+	if (argc != 0)
+		usage();
 
 	pw_init();
 	pfd = pw_lock();
@@ -69,7 +93,7 @@ main()
 		if (stat(tempname, &end))
 			pw_error(tempname, 1, 1);
 		if (begin.st_mtime == end.st_mtime) {
-			(void)fprintf(stderr, "vipw: no changes made\n");
+			warnx("no changes made");
 			pw_error((char *)NULL, 0, 0);
 		}
 		if (pw_mkdb())
@@ -79,10 +103,11 @@ main()
 	exit(0);
 }
 
+void
 copyfile(from, to)
-	register int from, to;
+	int from, to;
 {
-	register int nr, nw, off;
+	int nr, nw, off;
 	char buf[8*1024];
 	
 	while ((nr = read(from, buf, sizeof(buf))) > 0)
@@ -91,4 +116,12 @@ copyfile(from, to)
 				pw_error(tempname, 1, 1);
 	if (nr < 0)
 		pw_error(_PATH_MASTERPASSWD, 1, 1);
+}
+
+void
+usage()
+{
+
+	(void)fprintf(stderr, "usage: vipw\n");
+	exit(1);
 }
