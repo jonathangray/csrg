@@ -35,7 +35,7 @@
  */
 
 #if !defined(lint) && !defined(SCCSID)
-static char sccsid[] = "@(#)history.c	5.3 (Berkeley) 07/03/92";
+static char sccsid[] = "@(#)history.c	5.4 (Berkeley) 07/18/92";
 #endif /* not lint && not SCCSID */
 
 /*
@@ -507,7 +507,7 @@ history(va_alist)
 #endif
 {
     va_list va;
-    const HistEvent *ev;
+    const HistEvent *ev = NULL;
     const char *str;
     static const HistEvent sev = { 0, "" };
 
@@ -571,8 +571,6 @@ history(va_alist)
     case H_EVENT:
 	if (history_set_num(h, va_arg(va, int)) == 0)
 	    ev = &sev;
-	else
-	    ev = NULL;
 	break;
 
     case H_FUNC:
@@ -589,8 +587,6 @@ history(va_alist)
 	    if (history_set_fun(h, first, next, last, prev, 
 				   curr, enter, add, ptr) == 0)
 		ev = &sev;
-	    else
-		ev = NULL;
 	}
 	break;
 
