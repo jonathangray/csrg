@@ -30,24 +30,15 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)user.h	7.13 (Berkeley) 06/28/90
+ *	@(#)user.h	7.14 (Berkeley) 12/05/90
  */
 
-#ifdef KERNEL
-#include "machine/pcb.h"
-#include "dmap.h"
-#include "time.h"
-#include "resource.h"
-#include "namei.h"
-#include "ucred.h"
-#else
 #include <machine/pcb.h>
 #include <sys/dmap.h>
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <sys/namei.h>
 #include <sys/ucred.h>
-#endif
 
 /*
  * Per process structure containing data that
