@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.c	7.1 (Berkeley) 01/07/92
+ *	@(#)conf.c	7.2 (Berkeley) 03/07/92
  */
 
 #include "saio.h"
@@ -58,9 +58,3 @@ devwrite(io)
 	return (write(io->i_unit, io->i_ma, io->i_cc));
 }
 #endif
-
-struct devsw devsw[] = {
-	"rz",
-	"tz",
-	0,
-};
