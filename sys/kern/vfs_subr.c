@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.49 (Berkeley) 01/10/91
+ *	@(#)vfs_subr.c	7.50 (Berkeley) 02/01/91
  */
 
 /*
@@ -273,8 +273,6 @@ getnewvnode(tag, mp, vops, vpp)
 		if (vp->v_type != VBAD)
 			vgone(vp);
 		vp->v_flag = 0;
-		vp->v_shlockc = 0;
-		vp->v_exlockc = 0;
 		vp->v_lastr = 0;
 		vp->v_socket = 0;
 	}
@@ -853,12 +851,6 @@ vprint(label, vp)
 		strcat(buf, "|VTEXT");
 	if (vp->v_flag & VSYSTEM)
 		strcat(buf, "|VSYSTEM");
-	if (vp->v_flag & VEXLOCK)
-		strcat(buf, "|VEXLOCK");
-	if (vp->v_flag & VSHLOCK)
-		strcat(buf, "|VSHLOCK");
-	if (vp->v_flag & VLWAIT)
-		strcat(buf, "|VLWAIT");
 	if (vp->v_flag & VXLOCK)
 		strcat(buf, "|VXLOCK");
 	if (vp->v_flag & VXWANT)
