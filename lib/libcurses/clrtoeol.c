@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)clrtoeol.c	5.9 (Berkeley) 10/27/92";
+static char sccsid[] = "@(#)clrtoeol.c	5.10 (Berkeley) 11/11/92";
 #endif	/* not lint */
 
 #include <curses.h>
@@ -63,8 +63,8 @@ wclrtoeol(win)
 		}
 #ifdef DEBUG
 	__TRACE("CLRTOEOL: minx = %d, maxx = %d, firstch = %d, lastch = %d\n",
-	    minx, maxx - win->lines[y]->line, win->lines[y]->firstch, 
-	    win->lines[y]->lastch);
+	    minx, maxx - win->lines[y]->line, *win->lines[y]->firstchp, 
+	    *win->lines[y]->lastchp);
 #endif
 	/* Update firstch and lastch for the line. */
 	return (__touchline(win, y, win->curx, win->maxx - 1, 0));
