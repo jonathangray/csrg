@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sysctl.c	7.43 (Berkeley) 05/25/93
+ *	@(#)kern_sysctl.c	7.44 (Berkeley) 06/04/93
  */
 
 /*
@@ -226,7 +226,7 @@ kern_sysctl(name, namelen, oldp, oldlenp, newp, newlen, p)
 	case KERN_HOSTNAME:
 		error = sysctl_string(oldp, oldlenp, newp, newlen,
 		    hostname, sizeof(hostname));
-		if (!error)
+		if (newp && !error)
 			hostnamelen = newlen;
 		return (error);
 	case KERN_HOSTID:
