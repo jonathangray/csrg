@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vfsops.c	7.67 (Berkeley) 12/14/91
+ *	@(#)lfs_vfsops.c	7.68 (Berkeley) 12/16/91
  */
 
 #include <sys/param.h>
@@ -243,7 +243,7 @@ lfs_mountfs(devvp, mp, p)
 
 	/* Allocate the mount structure, copy the superblock into it. */
 	ump = (struct ufsmount *)malloc(sizeof *ump, M_UFSMNT, M_WAITOK);
-	ump->um_lfs = malloc(sizeof(struct lfs), M_SUPERBLK, M_WAITOK);
+	ump->um_lfs = malloc(sizeof(struct lfs), M_UFSMNT, M_WAITOK);
 	bcopy(bp->b_un.b_addr, ump->um_lfs, sizeof(struct lfs));
 	if (sizeof(struct lfs) < LFS_SBPAD)			/* XXX why? */
 		bp->b_flags |= B_INVAL;
@@ -299,7 +299,7 @@ out:
 		brelse(bp);
 	(void)VOP_CLOSE(devvp, ronly ? FREAD : FREAD|FWRITE, NOCRED, p);
 	if (ump) {
-		free(ump->um_lfs, M_SUPERBLK);
+		free(ump->um_lfs, M_UFSMNT);
 		free(ump, M_UFSMNT);
 		mp->mnt_data = (qaddr_t)0;
 	}
