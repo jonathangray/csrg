@@ -3,7 +3,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	5.1 (Berkeley) 05/30/85
+#	@(#)Makefile	5.2 (Berkeley) 05/15/86
 #
 # make file for cribbage
 #
