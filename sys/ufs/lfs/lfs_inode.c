@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_inode.c	7.80 (Berkeley) 09/02/92
+ *	@(#)lfs_inode.c	7.81 (Berkeley) 09/29/92
  */
 
 #include <sys/param.h>
@@ -347,7 +347,7 @@ lfs_truncate(ap)
 		    "Truncation to zero, but ", ip->i_blocks,
 		    " blocks left on inode");
 #endif
-	fs->lfs_avail -= fsbtodb(fs, a_released);
+	fs->lfs_avail += fsbtodb(fs, a_released);
 	e1 = vinvalbuf(vp, length > 0, ap->a_cred, ap->a_p); 
 	e2 = VOP_UPDATE(vp, &tv, &tv, 0);
 	return (e1 ? e1 : e2 ? e2 : 0);
