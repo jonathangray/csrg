@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ppi.c	7.2 (Berkeley) 11/04/90
+ *	@(#)ppi.c	7.3 (Berkeley) 12/16/90
  */
 
 /*
@@ -40,10 +40,10 @@
 #include "ppi.h"
 #if NPPI > 0
 
-#include "param.h"
-#include "errno.h"
-#include "uio.h"
-#include "malloc.h"
+#include "sys/param.h"
+#include "sys/errno.h"
+#include "sys/uio.h"
+#include "sys/malloc.h"
 
 #include "device.h"
 #include "ppiioctl.h"
