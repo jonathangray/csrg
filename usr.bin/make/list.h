@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)list.h	5.3 (Berkeley) 06/01/90
+ *	@(#)list.h	5.4 (Berkeley) 05/24/93
  */
 
 /*
@@ -295,4 +295,4 @@ void 	List_Move();    /* move an element elsewhere in a list */
 
 #define LIST_ATREAR(headerPtr) (((List_Links *) headerPtr)->prevPtr)
 
-#endif _LIST
+#endif /* _LIST */
