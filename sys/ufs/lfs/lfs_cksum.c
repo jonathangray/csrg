@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_cksum.c	7.3 (Berkeley) 05/04/92
+ *	@(#)lfs_cksum.c	7.4 (Berkeley) 05/14/92
  */
 
 #include <sys/param.h>
