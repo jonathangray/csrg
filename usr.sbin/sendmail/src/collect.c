@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)collect.c	8.22 (Berkeley) 08/15/94";
+static char sccsid[] = "@(#)collect.c	8.23 (Berkeley) 08/16/94";
 #endif /* not lint */
 
 # include <errno.h>
@@ -263,17 +263,18 @@ maketemp(from)
 				break;
 
 			  case IS_CR:
-				if (c != '\n')
+				if (c == '\n')
+					istate = IS_BOL;
+				else
 				{
 					ungetc(c, InChannel);
 					c = '\r';
+					istate = IS_NORM;
 				}
-				else if (!bitset(EF_CRLF_NOT_EOL, e->e_flags))
-					istate = IS_BOL;
-				break;
+				goto bufferchar;
 			}
 
-			if (c == '\r')
+			if (c == '\r' && !bitset(EF_CRLF_NOT_EOL, e->e_flags))
 			{
 				istate = IS_CR;
 				continue;
@@ -283,6 +284,7 @@ maketemp(from)
 			else
 				istate = IS_NORM;
 
+bufferchar:
 			if (mstate == MS_BODY)
 			{
 				/* just put the character out */
