@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	6.28 (Berkeley) 03/16/93";
+static char sccsid[] = "@(#)parseaddr.c	6.29 (Berkeley) 03/23/93";
 #endif /* not lint */
 
 #include "sendmail.h"
