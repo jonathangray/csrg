@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_object.c	7.4 (Berkeley) 05/07/91
+ *	@(#)vm_object.c	7.5 (Berkeley) 07/25/91
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -334,14 +334,14 @@ void vm_object_terminate(object)
 			queue_remove(&vm_page_queue_active, p, vm_page_t,
 						pageq);
 			p->active = FALSE;
-			vm_page_active_count--;
+			vm_stat.active_count--;
 		}
 
 		if (p->inactive) {
 			queue_remove(&vm_page_queue_inactive, p, vm_page_t,
 						pageq);
 			p->inactive = FALSE;
-			vm_page_inactive_count--;
+			vm_stat.inactive_count--;
 		}
 		vm_page_unlock_queues();
 		p = (vm_page_t) queue_next(&p->listq);
