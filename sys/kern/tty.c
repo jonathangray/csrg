@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)tty.c	7.23 (Berkeley) 05/04/90
+ *	@(#)tty.c	7.24 (Berkeley) 05/04/90
  */
 
 #include "param.h"
@@ -1210,6 +1210,7 @@ ttread(tp, uio, flag)
 
 
 loop:
+	lflag = tp->t_lflag;
 	s = spltty();
 	/*
 	 * take pending input first 
