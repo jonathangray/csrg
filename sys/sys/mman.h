@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mman.h	7.4 (Berkeley) 02/22/91
+ *	@(#)mman.h	7.5 (Berkeley) 06/27/91
  */
 
 /*
@@ -78,7 +78,7 @@
 
 __BEGIN_DECLS
 /* Some of these int's should probably be size_t's */
-int	mmap __P((caddr_t, int, int, int, int, off_t));
+caddr_t	mmap __P((caddr_t, size_t, int, int, int, off_t));
 int	mprotect __P((caddr_t, int, int));
 int	munmap __P((caddr_t, int));
 int	msync __P((caddr_t, int));
