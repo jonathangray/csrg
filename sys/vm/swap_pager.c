@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: swap_pager.c 1.4 91/04/30$
  *
- *	@(#)swap_pager.c	7.8 (Berkeley) 05/14/92
+ *	@(#)swap_pager.c	7.9 (Berkeley) 05/14/92
  */
 
 /*
