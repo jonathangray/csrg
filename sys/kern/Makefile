@@ -1,4 +1,4 @@
-#	@(#)Makefile	7.17 (Berkeley) 03/28/93
+#	@(#)Makefile	8.1 (Berkeley) 06/10/93
 
 # Makefile for kernel tags files, init_sysent, etc.
 
