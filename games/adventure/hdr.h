@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hdr.h	5.2 (Berkeley) 05/12/93
+ *	@(#)hdr.h	5.3 (Berkeley) 05/13/93
  */
 
 /*   ADVENTURE -- Jim Gillogly, Jul 1977
@@ -157,6 +157,8 @@ int turns,lmwarn,iwest,knfloc,detail,   /* various flags & counters     */
 int demo,newloc,limit;
 
 char *malloc();
+char *decr();
+unsigned long crc();
 
 /* We need to get a little tricky to avoid strings */
 #define DECR(a,b,c,d,e) decr('a'+'+','b'+'-','c'+'#','d'+'&','e'+'%')
