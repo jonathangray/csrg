@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)envelope.c	6.34 (Berkeley) 05/03/93";
+static char sccsid[] = "@(#)envelope.c	6.35 (Berkeley) 05/27/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -96,6 +96,7 @@ newenvelope(e, parent)
 **		Unlocks this queue file.
 */
 
+void
 dropenvelope(e)
 	register ENVELOPE *e;
 {
@@ -205,6 +206,7 @@ dropenvelope(e)
 **		Marks the envelope as unallocated.
 */
 
+void
 clearenvelope(e, fullclear)
 	register ENVELOPE *e;
 	bool fullclear;
@@ -254,6 +256,7 @@ clearenvelope(e, fullclear)
 **		forms is set.
 */
 
+void
 initsys(e)
 	register ENVELOPE *e;
 {
@@ -264,7 +267,7 @@ initsys(e)
 	register char *p;
 #endif /* TTYNAME */
 	extern char *ttyname();
-	extern char *macvalue();
+	extern void settime();
 	extern char Version[];
 
 	/*
@@ -329,6 +332,7 @@ initsys(e)
 **		Sets the various time macros -- $a, $b, $d, $t.
 */
 
+void
 settime(e)
 	register ENVELOPE *e;
 {
@@ -339,7 +343,6 @@ settime(e)
 	register struct tm *tm;
 	extern char *arpadate();
 	extern struct tm *gmtime();
-	extern char *macvalue();
 
 	now = curtime();
 	tm = gmtime(&now);
@@ -376,6 +379,7 @@ settime(e)
 #define O_APPEND	0
 #endif
 
+void
 openxscript(e)
 	register ENVELOPE *e;
 {
@@ -404,6 +408,7 @@ openxscript(e)
 **		none.
 */
 
+void
 closexscript(e)
 	register ENVELOPE *e;
 {
@@ -449,6 +454,7 @@ closexscript(e)
 **		sets sendmail's notion of who the from person is.
 */
 
+void
 setsender(from, e, delimptr, internal)
 	char *from;
 	register ENVELOPE *e;
@@ -462,8 +468,6 @@ setsender(from, e, delimptr, internal)
 	char buf[MAXNAME];
 	char pvpbuf[PSBUFSIZE];
 	extern struct passwd *getpwnam();
-	extern char *macvalue();
-	extern char **prescan();
 	extern char *FullName;
 
 	if (tTd(45, 1))
@@ -477,11 +481,7 @@ setsender(from, e, delimptr, internal)
 	if (bitset(EF_QUEUERUN, e->e_flags) || OpMode == MD_SMTP)
 		realname = from;
 	if (realname == NULL || realname[0] == '\0')
-	{
-		extern char *username();
-
 		realname = username();
-	}
 
 	if (ConfigLevel < 2)
 		SuprErrs = TRUE;
