@@ -33,9 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)umap_vnops.c	7.1 (Berkeley) 07/12/92
- *
- * @(#)umap_vnops.c       1.5 (Berkeley) 7/10/92
+ *	@(#)umap_vnops.c	1.3 (Berkeley) 07/12/92
  */
 
 /*
@@ -51,7 +49,7 @@
 #include <sys/namei.h>
 #include <sys/malloc.h>
 #include <sys/buf.h>
-#include <umapfs/umap.h>
+#include <miscfs/umapfs/umap.h>
 
 
 int umap_bug_bypass = 0;   /* for debugging: enables bypass printf'ing */
@@ -62,7 +60,10 @@ int umap_bug_bypass = 0;   /* for debugging: enables bypass printf'ing */
  */ 
 int
 umap_bypass(ap)
-	struct vop_generic_args *ap;
+	struct vop_generic_args /* {
+		struct vnodeop_desc *a_desc;
+		<other random data follows, presumably>
+	} */ *ap;
 {
 	extern int (**umap_vnodeop_p)();  /* not extern, really "forward" */
 	int *mapdata, nentries ;
@@ -251,7 +252,12 @@ umap_bypass(ap)
  */
 int
 umap_getattr(ap)
-	struct vop_getattr_args *ap;
+	struct vop_getattr_args /* {
+		struct vnode *a_vp;
+		struct vattr *a_vap;
+		struct ucred *a_cred;
+		struct proc *a_p;
+	} */ *ap;
 {
 	short uid, gid;
 	int error, tmpid, *mapdata, nentries, *gmapdata, gnentries;
@@ -259,7 +265,7 @@ umap_getattr(ap)
 	struct vnodeop_desc *descp = ap->a_desc;
 
 	if (error = umap_bypass(ap))
-		return error;
+		return (error);
 	/* Requires that arguments be restored. */
 	ap->a_vap->va_fsid = ap->a_vp->v_mount->mnt_stat.f_fsid.val[0];
 
@@ -313,12 +319,14 @@ umap_getattr(ap)
 	} else
 		ap->a_vap->va_gid = (gid_t)NULLGROUP;
 	
-	return 0;
+	return (0);
 }
 
 int
-umap_inactive (ap)
-	struct vop_inactive_args *ap;
+umap_inactive(ap)
+	struct vop_inactive_args /* {
+		struct vnode *a_vp;
+	} */ *ap;
 {
 	/*
 	 * Do nothing (and _don't_ bypass).
@@ -327,12 +335,14 @@ umap_inactive (ap)
 	 * cache and reusable.
 	 *
 	 */
-	return 0;
+	return (0);
 }
 
 int
-umap_reclaim (ap)
-	struct vop_reclaim_args *ap;
+umap_reclaim(ap)
+	struct vop_reclaim_args /* {
+		struct vnode *a_vp;
+	} */ *ap;
 {
 	struct vnode *vp = ap->a_vp;
 	struct umap_node *xp = VTOUMAP(vp);
@@ -344,12 +354,14 @@ umap_reclaim (ap)
 	FREE(vp->v_data, M_TEMP);
 	vp->v_data = NULL;
 	vrele (lowervp);
-	return 0;
+	return (0);
 }
 
 int
-umap_strategy (ap)
-	struct vop_strategy_args *ap;
+umap_strategy(ap)
+	struct vop_strategy_args /* {
+		struct buf *a_bp;
+	} */ *ap;
 {
 	struct buf *bp = ap->a_bp;
 	int error;
@@ -362,12 +374,14 @@ umap_strategy (ap)
 
 	bp->b_vp = savedvp;
 
-	return error;
+	return (error);
 }
 
 int
-umap_bwrite (ap)
-	struct vop_bwrite_args *ap;
+umap_bwrite(ap)
+	struct vop_bwrite_args /* {
+		struct buf *a_bp;
+	} */ *ap;
 {
 	struct buf *bp = ap->a_bp;
 	int error;
@@ -380,22 +394,31 @@ umap_bwrite (ap)
 
 	bp->b_vp = savedvp;
 
-	return error;
+	return (error);
 }
 
 
 int
-umap_print (ap)
-	struct vop_print_args *ap;
+umap_print(ap)
+	struct vop_print_args /* {
+		struct vnode *a_vp;
+	} */ *ap;
 {
 	register struct vnode *vp = ap->a_vp;
 	printf ("\ttag VT_UMAPFS, vp=%x, lowervp=%x\n", vp, UMAPVPTOLOWERVP(vp));
-	return 0;
+	return (0);
 }
 
 int
 umap_rename(ap)
-	struct vop_rename_args *ap;
+	struct vop_rename_args  /* {
+		struct vnode *a_fdvp;
+		struct vnode *a_fvp;
+		struct componentname *a_fcnp;
+		struct vnode *a_tdvp;
+		struct vnode *a_tvp;
+		struct componentname *a_tcnp;
+	} */ *ap;
 {
 	int error;
 	struct componentname *compnamep;
@@ -426,7 +449,7 @@ umap_rename(ap)
 		    compcredp->cr_uid,compcredp->cr_gid);
 
 	if (error = umap_bypass(ap))
-		return error;
+		return (error);
 	
 	/* Restore the additional mapped componentname cred structure. */
 
