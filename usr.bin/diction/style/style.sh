@@ -4,11 +4,11 @@
 # Use and redistribution is subject to the Berkeley Software License
 # Agreement and your Software Agreement with AT&T (Western Electric).
 #
-#	@(#)style.sh	4.8 (Berkeley) 04/17/91
+#	@(#)style.sh	4.9 (Berkeley) 07/31/91
 #
 
 L=/usr/libexec
-B=/usr/ucb
+B=/usr/bin
 echo " " $*
 sflag=-s
 eflag=
