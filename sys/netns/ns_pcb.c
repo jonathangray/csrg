@@ -14,7 +14,7 @@
  * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *	@(#)ns_pcb.c	7.6 (Berkeley) 09/01/88
+ *	@(#)ns_pcb.c	7.6 (Berkeley) 09/02/88
  */
 
 #include "param.h"
