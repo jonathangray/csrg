@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)info_hes.c	5.3 (Berkeley) 05/12/91
+ *	@(#)info_hes.c	5.4 (Berkeley) 02/09/92
  *
- * $Id: info_hes.c,v 5.2.1.5 91/05/07 22:17:58 jsp Alpha $
+ * $Id: info_hes.c,v 5.2.2.1 1992/02/09 15:08:29 jsp beta $
  *
  */
 
