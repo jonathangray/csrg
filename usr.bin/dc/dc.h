@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)dc.h	5.1 (Berkeley) 04/17/91
+ *	@(#)dc.h	5.2 (Berkeley) 02/23/93
  */
 
 #define FATAL 0
@@ -91,7 +91,7 @@ struct	blk *scalint();
 struct	blk *removc();
 struct	blk *add(),*div(),*removr();
 struct	blk *exp();
-struct	blk *sqrt();
+struct	blk *dcsqrt();
 struct	blk *salloc(),*copy();
 struct	blk *scale();
 int	neg;
