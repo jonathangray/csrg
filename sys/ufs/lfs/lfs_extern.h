@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_extern.h	7.2 (Berkeley) 11/05/91
+ *	@(#)lfs_extern.h	7.3 (Berkeley) 11/08/91
  */
 
 struct fid;
@@ -80,3 +80,10 @@ int	lfs_umountdebug __P((struct mount *));
 int	lfs_vinvalbuf __P((struct vnode *));
 #endif
 __END_DECLS
+extern struct vnodeops lfs_vnodeops, lfs_specops;
+#ifdef FIFO
+extern struct vnodeops lfs_fifoops;
+#define LFS_FIFOOPS &lfs_fifoops
+#else
+#define LFS_FIFOOPS NULL
+#endif
