@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.51 (Berkeley) 07/12/92";
+static char sccsid[] = "@(#)main.c	5.52 (Berkeley) 07/12/92";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -150,6 +150,7 @@ main(argc, argv, envp)
 	bool safecf = TRUE;
 	static bool reenter = FALSE;
 	char jbuf[60];			/* holds MyHostName */
+	extern int DtableSize;
 	extern bool safefile();
 	extern time_t convtime();
 	extern putheader(), putbody();
@@ -190,6 +191,11 @@ main(argc, argv, envp)
 	unsetenv("TZ");
 #endif
 
+	/* in 4.4BSD, the table can be huge; impose a reasonable limit */
+	DtableSize = getdtablesize();
+	if (DtableSize > 256)
+		DtableSize = 256;
+
 	/*
 	**  Be sure we have enough file descriptors.
 	**	But also be sure that 0, 1, & 2 are open.
@@ -198,11 +204,8 @@ main(argc, argv, envp)
 	i = open("/dev/null", O_RDWR);
 	while (i >= 0 && i < 2)
 		i = dup(i);
-	i = getdtablesize();
 
-	/* in 4.4BSD, the table can be huge; impose a reasonable limit */
-	if (i > 256)
-		i = 256;
+	i = DtableSize;
 	while (--i > 2)
 		(void) close(i);
 	errno = 0;
