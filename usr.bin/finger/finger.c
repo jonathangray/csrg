@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)finger.c	8.3 (Berkeley) 04/28/95";
+static char sccsid[] = "@(#)finger.c	8.4 (Berkeley) 04/28/95";
 #endif /* not lint */
 
 /*
@@ -169,7 +169,7 @@ loginlist()
 				err(1, "db seq");
 			if (r == 1)
 				break;
-			memcpy(&tmp, data.data, sizeof tmp);
+			memmove(&tmp, data.data, sizeof tmp);
 			enter_lastlog(tmp);
 		}
 }
@@ -256,7 +256,7 @@ net:	for (p = nargv; *p;)
 				err(1, "db seq");
 			if (r == 1)
 				break;
-			memcpy(&tmp, data.data, sizeof tmp);
+			memmove(&tmp, data.data, sizeof tmp);
 			enter_lastlog(tmp);
 		}
 }
