@@ -3,7 +3,7 @@
 # include <sys/ioctl.h>
 # include "sendmail.h"
 
-SCCSID(@(#)main.c	3.143		12/05/82);
+SCCSID(@(#)main.c	3.144		12/09/82);
 
 /*
 **  SENDMAIL -- Post mail to a set of destinations.
@@ -630,6 +630,7 @@ struct metamac	MetaMacros[] =
 {
 	/* these are important on the LHS */
 	'*', MATCHZANY,	'+', MATCHANY,	'-', MATCHONE,	'=', MATCHCLASS,
+	'~', MATCHNCLASS,
 
 	/* these are RHS metasymbols */
 	'#', CANONNET,	'@', CANONHOST,	':', CANONUSER,	'>', CALLSUBR,
