@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.31 (Berkeley) 07/12/92";
+static char sccsid[] = "@(#)main.c	5.32 (Berkeley) 02/16/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -156,6 +156,8 @@ struct  protox berkprotox[] = {
 	  ip_stats,	"ip" },
 	{ -1,		N_ICMPSTAT,	1,	0,
 	  icmp_stats,	"icmp" },
+	{ -1,		N_IGMPSTAT,	1,	0,
+	  igmp_stats,	"igmp" },
 	{ -1,		-1,		0,	0,
 	  0,		0 }
 };
