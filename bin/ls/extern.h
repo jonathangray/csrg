@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.4 (Berkeley) 03/03/93
+ *	@(#)extern.h	5.5 (Berkeley) 04/29/93
  */
 
 int	 acccmp __P((const FTSENT *, const FTSENT *));
@@ -42,7 +42,6 @@ int	 revnamecmp __P((const FTSENT *, const FTSENT *));
 int	 statcmp __P((const FTSENT *, const FTSENT *));
 int	 revstatcmp __P((const FTSENT *, const FTSENT *));
 
-void	 err __P((int, const char *, ...));
 char	*flags_to_string __P((u_long, char *));
 void	 prcopy __P((char *, char *, int));
 void	 printcol __P((DISPLAY *));
