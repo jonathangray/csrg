@@ -39,9 +39,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cache.c	8.1 (Berkeley) 06/11/93
+ *	@(#)cache.c	7.7 (Berkeley) 07/19/93
  *
- * from: $Header: cache.c,v 1.9 93/05/05 09:16:17 torek Exp $ (LBL)
+ * from: $Header: cache.c,v 1.10 93/07/18 06:23:51 torek Exp $ (LBL)
  */
 
 /*
@@ -69,7 +69,7 @@ struct cachestats cachestats;
 void
 cache_enable()
 {
-	register int i, lim, ls;
+	register u_int i, lim, ls;
 
 	i = AC_CACHETAGS;
 	lim = i + cacheinfo.c_totalsize;
