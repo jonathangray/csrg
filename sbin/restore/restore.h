@@ -30,14 +30,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)restore.h	5.9 (Berkeley) 07/29/91
+ *	@(#)restore.h	5.10 (Berkeley) 11/11/91
  */
 
-#include <stdio.h>
 #include <sys/param.h>
 #include <sys/time.h>
-#include <ufs/dinode.h>
-#include <ufs/fs.h>
+#include <ufs/ufs/dinode.h>
+#include <ufs/ffs/fs.h>
+#include <stdio.h>
 
 /*
  * Flags
