@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)inode.c	5.15 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)inode.c	5.16 (Berkeley) 07/20/90";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -40,6 +40,8 @@ static char sccsid[] = "@(#)inode.c	5.15 (Berkeley) 06/01/90";
 #include <ufs/fs.h>
 #include <ufs/dir.h>
 #include <pwd.h>
+#include <stdlib.h>
+#include <string.h>
 #include "fsck.h"
 
 static ino_t startinum;
@@ -91,7 +93,7 @@ ckinode(dp, idesc)
 iblock(idesc, ilevel, isize)
 	struct inodesc *idesc;
 	register long ilevel;
-	long isize;
+	u_long isize;
 {
 	register daddr_t *ap;
 	register daddr_t *aplim;
@@ -120,7 +122,7 @@ iblock(idesc, ilevel, isize)
 		for (ap = &bp->b_un.b_indir[nif]; ap < aplim; ap++) {
 			if (*ap == 0)
 				continue;
-			(void)sprintf(buf, "PARTIALLY TRUNCATED INODE I=%d",
+			(void)sprintf(buf, "PARTIALLY TRUNCATED INODE I=%lu",
 				idesc->id_number);
 			if (dofix(idesc, buf)) {
 				*ap = 0;
@@ -163,9 +165,9 @@ chkrange(blk, cnt)
 	if (blk < cgdmin(&sblock, c)) {
 		if ((blk + cnt) > cgsblock(&sblock, c)) {
 			if (debug) {
-				printf("blk %d < cgdmin %d;",
+				printf("blk %ld < cgdmin %ld;",
 				    blk, cgdmin(&sblock, c));
-				printf(" blk + cnt %d > cgsbase %d\n",
+				printf(" blk + cnt %ld > cgsbase %ld\n",
 				    blk + cnt, cgsblock(&sblock, c));
 			}
 			return (1);
@@ -173,9 +175,9 @@ chkrange(blk, cnt)
 	} else {
 		if ((blk + cnt) > cgbase(&sblock, c+1)) {
 			if (debug)  {
-				printf("blk %d >= cgdmin %d;",
+				printf("blk %ld >= cgdmin %ld;",
 				    blk, cgdmin(&sblock, c));
-				printf(" blk + cnt %d > sblock.fs_fpg %d\n",
+				printf(" blk + cnt %ld > sblock.fs_fpg %ld\n",
 				    blk+cnt, sblock.fs_fpg);
 			}
 			return (1);
@@ -234,7 +236,7 @@ getnextinode(inumber)
 			size = inobufsize;
 			lastinum += fullcnt;
 		}
-		bread(fsreadfd, (char *)inodebuf, dblk, size);
+		(void)bread(fsreadfd, (char *)inodebuf, dblk, size); /* ??? */
 		dp = inodebuf;
 	}
 	return (dp++);
@@ -262,7 +264,7 @@ resetinodebuf()
 	    (inodebuf = (struct dinode *)malloc((unsigned)inobufsize)) == NULL)
 		errexit("Cannot allocate space for inode buffer\n");
 	while (nextino < ROOTINO)
-		getnextinode(nextino);
+		(void)getnextinode(nextino);
 }
 
 freeinodebuf()
@@ -304,7 +306,7 @@ cacheino(dp, inumber)
 	inp->i_isize = dp->di_size;
 	inp->i_numblks = blks * sizeof(daddr_t);
 	bcopy((char *)&dp->di_db[0], (char *)&inp->i_blks[0],
-	    (int)inp->i_numblks);
+	    (size_t)inp->i_numblks);
 	if (inplast == listmax) {
 		listmax += 100;
 		inpsort = (struct inoinfo **)realloc((char *)inpsort,
@@ -386,7 +388,7 @@ findname(idesc)
 
 	if (dirp->d_ino != idesc->id_parent)
 		return (KEEPON);
-	bcopy(dirp->d_name, idesc->id_name, (int)dirp->d_namlen + 1);
+	bcopy(dirp->d_name, idesc->id_name, (size_t)dirp->d_namlen + 1);
 	return (STOP|FOUND);
 }
 
@@ -413,7 +415,7 @@ pinode(ino)
 	struct passwd *pw;
 	char *ctime();
 
-	printf(" I=%u ", ino);
+	printf(" I=%lu ", ino);
 	if (ino < ROOTINO || ino > maxino)
 		return;
 	dp = ginode(ino);
@@ -421,11 +423,11 @@ pinode(ino)
 	if ((pw = getpwuid((int)dp->di_uid)) != 0)
 		printf("%s ", pw->pw_name);
 	else
-		printf("%d ", dp->di_uid);
+		printf("%u ", (unsigned)dp->di_uid);
 	printf("MODE=%o\n", dp->di_mode);
 	if (preen)
 		printf("%s: ", devname);
-	printf("SIZE=%ld ", dp->di_size);
+	printf("SIZE=%lu ", dp->di_size);
 	p = ctime(&dp->di_mtime);
 	printf("MTIME=%12.12s %4.4s ", p + 4, p + 20);
 }
@@ -436,7 +438,7 @@ blkerror(ino, type, blk)
 	daddr_t blk;
 {
 
-	pfatal("%ld %s I=%u", blk, type, ino);
+	pfatal("%ld %s I=%lu", blk, type, ino);
 	printf("\n");
 	switch (statemap[ino]) {
 
@@ -496,7 +498,7 @@ allocino(request, type)
 		return (0);
 	}
 	dp->di_mode = type;
-	time(&dp->di_atime);
+	(void)time(&dp->di_atime);
 	dp->di_mtime = dp->di_ctime = dp->di_atime;
 	dp->di_size = sblock.fs_fsize;
 	dp->di_blocks = btodb(sblock.fs_fsize);
