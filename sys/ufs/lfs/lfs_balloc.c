@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_balloc.c	7.27 (Berkeley) 03/18/92
+ *	@(#)lfs_balloc.c	7.28 (Berkeley) 05/13/92
  */
 
 #include <sys/param.h>
