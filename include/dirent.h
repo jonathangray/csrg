@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dirent.h	5.16 (Berkeley) 02/05/91
+ *	@(#)dirent.h	5.17 (Berkeley) 02/22/91
  */
 
 #ifndef _DIRENT_H_
@@ -83,6 +83,8 @@ typedef struct _dirdesc {
 
 #endif /* _POSIX_SOURCE */
 
+#ifndef KERNEL
+
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
@@ -96,7 +98,10 @@ void seekdir __P((DIR *, long));
 int scandir __P((const char *, struct dirent ***,
     int (*)(struct dirent *), int (*)(void *, void *)));
 int alphasort __P((const void *, const void *));
-#endif
+int getdirentries __P((int, char *, int, long *));
+#endif /* not POSIX */
 __END_DECLS
+
+#endif /* !KERNEL */
 
 #endif /* !_DIRENT_H_ */
