@@ -1,4 +1,4 @@
-static char *sccsid = "@(#)pstat.c	4.9 (Berkeley) 05/07/81";
+static char *sccsid = "@(#)pstat.c	4.10 (Berkeley) 05/08/81";
 /*
  * Print system stuff
  */
