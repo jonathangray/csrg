@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_param.h	7.10 (Berkeley) 09/26/91
+ *	@(#)tp_param.h	7.11 (Berkeley) 10/02/91
  */
 
 /***********************************************************
@@ -105,6 +105,10 @@ extern int N_TPREF;
  */
 #define 	TP_RTT_ALPHA		3 
 #define 	TP_RTV_ALPHA		2
+#define		TP_REXMTVAL(tpcb)\
+	((tp_rttadd + (tpcb)->tp_rtt + ((tpcb)->tp_rtv) << 2) / tp_rttdiv)
+#define		TP_RANGESET(tv, value, min, max) \
+	((tv = value) > (max) ? (tv = max) : (tv < min ? tv = min : tv))
 
 /*
  * not sure how to treat data on disconnect 
@@ -201,6 +205,9 @@ extern int N_TPREF;
 #define		TPP_addl_opt		0xc6
 #define		TPP_alt_class		0xc7
 #define		TPP_perf_meas		0xc8	/* local item : perf meas on, svp */
+#define		TPP_ptpdu_size		0xf0	/* preferred TPDU size */
+#define		TPP_inact_time		0xf2	/* inactivity time exchanged */
+
 
 /******************************************************
  * Some fundamental data types
@@ -243,15 +250,6 @@ extern int N_TPREF;
 typedef 	unsigned int	SeqNum;
 typedef		unsigned short	RefNum;
 typedef		int				ProtoHook;
-
-
-/******************************************************
- * Some fundamental constants
- *****************************************************/
-
-#define TP_MIN_WIN	2048
-#define TP_MAX_WIN 16384
-#define TP_MAX_WIN_UNPRIV 8192
 
 /******************************************************
  * Macro used all over, for driver
@@ -350,6 +348,7 @@ bcopy((caddr_t)&(((struct tp_vbp *)(src))->tpv_val),(caddr_t)&(dst),sizeof(type)
 #endif ARGO_DEBUG
 
 #ifdef KERNEL
+extern int tp_rttadd, tp_rttdiv;
 #include "syslog.h"
 #define printf logpri(LOG_DEBUG),addlog
 
