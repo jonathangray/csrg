@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)cmd2.c	3.40 (Berkeley) 06/06/90";
+static char sccsid[] = "@(#)cmd2.c	3.41 (Berkeley) 02/01/93";
 #endif /* not lint */
 
 #include "defs.h"
@@ -61,6 +61,8 @@ char *help_shortcmd[] = {
 	"j       Move cursor down",
 	"k       Move cursor up",
 	"l       Move cursor right",
+	"y       Yank",
+	"p       Put",
 	"^S      Stop output in current window",
 	"^Q      Restart output in current window",
 	"^L      Redraw screen",
