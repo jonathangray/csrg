@@ -1,4 +1,4 @@
-#	@(#)leapseconds	5.2 (Berkeley) 11/05/92
+#	@(#)leapseconds	8.1 (Berkeley) 06/08/93
 
 # Allowance for leapseconds added to each timezone file.
 
