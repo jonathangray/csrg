@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)portal_vnops.c	8.5 (Berkeley) 01/05/94
+ *	@(#)portal_vnops.c	8.6 (Berkeley) 01/05/94
  *
  * $Id: portal_vnops.c,v 1.4 1992/05/30 10:05:24 jsp Exp jsp $
  */
@@ -90,6 +90,7 @@ portal_closefd(p, fd)
  * vp is the current namei directory
  * cnp is the name to locate in that directory...
  */
+int
 portal_lookup(ap)
 	struct vop_lookup_args /* {
 		struct vnode * a_dvp;
@@ -104,9 +105,6 @@ portal_lookup(ap)
 	char *path;
 	int size;
 
-#ifdef PORTAL_DIAGNOSTIC
-	printf("portal_lookup(%s)\n", pname);
-#endif
 	if (ap->a_cnp->cn_namelen == 1 && *pname == '.') {
 		*ap->a_vpp = ap->a_dvp;
 		VREF(ap->a_dvp);
@@ -115,9 +113,6 @@ portal_lookup(ap)
 	}
 
 
-#ifdef PORTAL_DIAGNOSTIC
-	printf("portal_lookup: allocate new vnode\n");
-#endif
 	error = getnewvnode(VT_PORTAL, ap->a_dvp->v_mount, portal_vnodeop_p, &fvp);
 	if (error)
 		goto bad;
@@ -142,22 +137,13 @@ portal_lookup(ap)
 
 	*ap->a_vpp = fvp;
 	/*VOP_LOCK(fvp);*/
-#ifdef PORTAL_DIAGNOSTIC
-	printf("portal_lookup: newvp = %x\n", fvp);
-#endif
 	return (0);
 
 bad:;
 	if (fvp) {
-#ifdef PORTAL_DIAGNOSTIC
-		printf("portal_lookup: vrele(%x)\n", fvp);
-#endif
 		vrele(fvp);
 	}
 	*ap->a_vpp = NULL;
-#ifdef PORTAL_DIAGNOSTIC
-	printf("portal_lookup: error = %d\n", error);
-#endif
 	return (error);
 }
 
@@ -167,14 +153,9 @@ portal_connect(so, so2)
 	struct socket *so2;
 {
 	/* from unp_connect, bypassing the namei stuff... */
-
 	struct socket *so3;
 	struct unpcb *unp2;
 	struct unpcb *unp3;
-
-#ifdef PORTAL_DIAGNOSTIC
-	printf("portal_connect\n");
-#endif
 
 	if (so2 == 0)
 		return (ECONNREFUSED);
@@ -184,10 +165,6 @@ portal_connect(so, so2)
 
 	if ((so2->so_options & SO_ACCEPTCONN) == 0)
 		return (ECONNREFUSED);
-
-#ifdef PORTAL_DIAGNOSTIC
-	printf("portal_connect: calling sonewconn\n");
-#endif
 
 	if ((so3 = sonewconn(so2, 0)) == 0)
 		return (ECONNREFUSED);
@@ -199,13 +176,11 @@ portal_connect(so, so2)
 
 	so2 = so3;
 
-#ifdef PORTAL_DIAGNOSTIC
-	printf("portal_connect: calling unp_connect2\n");
-#endif
 
 	return (unp_connect2(so, so2));
 }
 
+int
 portal_open(ap)
 	struct vop_open_args /* {
 		struct vnode *a_vp;
@@ -239,10 +214,6 @@ portal_open(ap)
 	if (vp->v_flag & VROOT)
 		return (0);
 
-#ifdef PORTAL_DIAGNOSTIC
-	printf("portal_open(%x)\n", vp);
-#endif
-
 	/*
 	 * Can't be opened unless the caller is set up
 	 * to deal with the side effects.  Check for this
@@ -264,9 +235,6 @@ portal_open(ap)
 	/*
 	 * Reserve some buffer space
 	 */
-#ifdef PORTAL_DIAGNOSTIC
-	printf("portal_open: calling soreserve\n");
-#endif
 	res = pt->pt_size + sizeof(pcred) + 512;	/* XXX */
 	error = soreserve(so, res, res);
 	if (error)
@@ -275,9 +243,6 @@ portal_open(ap)
 	/*
 	 * Kick off connection
 	 */
-#ifdef PORTAL_DIAGNOSTIC
-	printf("portal_open: calling portal_connect\n");
-#endif
 	error = portal_connect(so, (struct socket *)fmp->pm_server->f_data);
 	if (error)
 		goto bad;
@@ -285,9 +250,6 @@ portal_open(ap)
 	/*
 	 * Wait for connection to complete
 	 */
-#ifdef PORTAL_DIAGNOSTIC
-	printf("portal_open: waiting for connect\n");
-#endif
 	/*
 	 * XXX: Since the mount point is holding a reference on the
 	 * underlying server socket, it is not easy to find out whether
@@ -303,9 +265,6 @@ portal_open(ap)
 		if (fmp->pm_server->f_count == 1) {
 			error = ECONNREFUSED;
 			splx(s);
-#ifdef PORTAL_DIAGNOSTIC
-			printf("portal_open: server process has gone away\n");
-#endif
 			goto bad;
 		}
 		(void) tsleep((caddr_t) &so->so_timeo, PSOCK, "portalcon", 5 * hz);
@@ -325,9 +284,6 @@ portal_open(ap)
 	so->so_rcv.sb_flags |= SB_NOINTR;
 	so->so_snd.sb_flags |= SB_NOINTR;
 
-#ifdef PORTAL_DIAGNOSTIC
-	printf("portal_open: constructing data uio\n");
-#endif
 
 	pcred.pcr_flag = ap->a_mode;
 	pcred.pcr_uid = ap->a_cred->cr_uid;
@@ -345,9 +301,6 @@ portal_open(ap)
 	auio.uio_offset = 0;
 	auio.uio_resid = aiov[0].iov_len + aiov[1].iov_len;
 
-#ifdef PORTAL_DIAGNOSTIC
-	printf("portal_open: sending data to server\n");
-#endif
 	error = sosend(so, (struct mbuf *) 0, &auio,
 			(struct mbuf *) 0, (struct mbuf *) 0, 0);
 	if (error)
@@ -357,19 +310,8 @@ portal_open(ap)
 	do {
 		struct mbuf *m = 0;
 		int flags = MSG_WAITALL;
-#ifdef PORTAL_DIAGNOSTIC
-		printf("portal_open: receiving data from server\n");
-		printf("portal_open: so = %x, cm = %x, resid = %d\n",
-				so, cm, auio.uio_resid);
-		printf("portal_open, uio=%x, mp0=%x, controlp=%x\n", &auio, &cm);
-#endif
 		error = soreceive(so, (struct mbuf **) 0, &auio,
 					&m, &cm, &flags);
-#ifdef PORTAL_DIAGNOSTIC
-		printf("portal_open: after receiving data\n");
-		printf("portal_open: so = %x, cm = %x, resid = %d\n",
-				so, cm, auio.uio_resid);
-#endif
 		if (error)
 			goto bad;
 
@@ -384,14 +326,8 @@ portal_open(ap)
 			} else {
 				error = EINVAL;
 			}
-#ifdef PORTAL_DIAGNOSTIC
-			printf("portal_open: error returned is %d\n", error);
-#endif
 		} else {
 			if (cm == 0) {
-#ifdef PORTAL_DIAGNOSTIC
-				printf("portal_open: no rights received\n");
-#endif
 				error = ECONNRESET;	 /* XXX */
 #ifdef notdef
 				break;
@@ -404,9 +340,6 @@ portal_open(ap)
 		goto bad;
 
 	if (auio.uio_resid) {
-#ifdef PORTAL_DIAGNOSTIC
-		printf("portal_open: still need another %d bytes\n", auio.uio_resid);
-#endif
 		error = 0;
 #ifdef notdef
 		error = EMSGSIZE;
@@ -420,15 +353,9 @@ portal_open(ap)
 	 * may have been received, or that the rights chain may have more
 	 * than a single mbuf in it.  What to do?
 	 */
-#ifdef PORTAL_DIAGNOSTIC
-	printf("portal_open: about to break apart control message\n");
-#endif
 	cmsg = mtod(cm, struct cmsghdr *);
 	newfds = (cmsg->cmsg_len - sizeof(*cmsg)) / sizeof (int);
 	if (newfds == 0) {
-#ifdef PORTAL_DIAGNOSTIC
-		printf("portal_open: received no fds\n");
-#endif
 		error = ECONNREFUSED;
 		goto bad;
 	}
@@ -456,9 +383,6 @@ portal_open(ap)
 	 * Check that the mode the file is being opened for is a subset 
 	 * of the mode of the existing descriptor.
 	 */
-#ifdef PORTAL_DIAGNOSTIC
-	printf("portal_open: checking file flags, fd = %d\n", fd);
-#endif
  	fp = p->p_fd->fd_ofiles[fd];
 	if (((ap->a_mode & (FREAD|FWRITE)) | fp->f_flag) != fp->f_flag) {
 		portal_closefd(p, fd);
@@ -466,9 +390,6 @@ portal_open(ap)
 		goto bad;
 	}
 
-#ifdef PORTAL_DIAGNOSTIC
-	printf("portal_open: got fd = %d\n", fd);
-#endif
 	/*
 	 * Save the dup fd in the proc structure then return the
 	 * special error code (ENXIO) which causes magic things to
@@ -482,29 +403,17 @@ bad:;
 	 * And discard the control message.
 	 */
 	if (cm) { 
-#ifdef PORTAL_DIAGNOSTIC
-		printf("portal_open: free'ing control message\n");
-#endif
 		m_freem(cm);
 	}
 
 	if (so) {
-#ifdef PORTAL_DIAGNOSTIC
-		printf("portal_open: calling soshutdown\n");
-#endif
 		soshutdown(so, 2);
-#ifdef PORTAL_DIAGNOSTIC
-		printf("portal_open: calling soclose\n");
-#endif
 		soclose(so);
 	}
-#ifdef PORTAL_DIAGNOSTIC
-	if (error != ENODEV)
-		printf("portal_open: error = %d\n", error);
-#endif
 	return (error);
 }
 
+int
 portal_getattr(ap)
 	struct vop_getattr_args /* {
 		struct vnode *a_vp;
@@ -533,9 +442,6 @@ portal_getattr(ap)
 	vap->va_bytes = 0;
 	/* vap->va_qsize = 0; */
 	if (vp->v_flag & VROOT) {
-#ifdef PORTAL_DIAGNOSTIC
-		printf("portal_getattr: stat rootdir\n");
-#endif
 		vap->va_type = VDIR;
 		vap->va_mode = S_IRUSR|S_IWUSR|S_IXUSR|
 				S_IRGRP|S_IWGRP|S_IXGRP|
@@ -543,9 +449,6 @@ portal_getattr(ap)
 		vap->va_nlink = 2;
 		vap->va_fileid = 2;
 	} else {
-#ifdef PORTAL_DIAGNOSTIC
-		printf("portal_getattr: stat portal\n");
-#endif
 		vap->va_type = VREG;
 		vap->va_mode = S_IRUSR|S_IWUSR|
 				S_IRGRP|S_IWGRP|
@@ -556,6 +459,7 @@ portal_getattr(ap)
 	return (0);
 }
 
+int
 portal_setattr(ap)
 	struct vop_setattr_args /* {
 		struct vnode *a_vp;
@@ -564,6 +468,7 @@ portal_setattr(ap)
 		struct proc *a_p;
 	} */ *ap;
 {
+
 	/*
 	 * Can't mess with the root vnode
 	 */
@@ -577,6 +482,7 @@ portal_setattr(ap)
  * Fake readdir, just return empty directory.
  * It is hard to deal with '.' and '..' so don't bother.
  */
+int
 portal_readdir(ap)
 	struct vop_readdir_args /* {
 		struct vnode *a_vp;
@@ -584,40 +490,35 @@ portal_readdir(ap)
 		struct ucred *a_cred;
 	} */ *ap;
 {
-	/* *ap->a_eofflagp = 1; */
+
 	return (0);
 }
 
+int
 portal_inactive(ap)
 	struct vop_inactive_args /* {
 		struct vnode *a_vp;
 	} */ *ap;
 {
-#ifdef PORTAL_DIAGNOSTIC
-	if (VTOPORTAL(ap->a_vp)->pt_arg)
-		printf("portal_inactive(%x, %s)\n", ap->a_vp, VTOPORTAL(ap->a_vp)->pt_arg);
-	else
-		printf("portal_inactive(%x)\n", ap->a_vp);
-#endif
-	/*vgone(ap->a_vp);*/
+
 	return (0);
 }
 
+int
 portal_reclaim(ap)
 	struct vop_reclaim_args /* {
 		struct vnode *a_vp;
 	} */ *ap;
 {
 	struct portalnode *pt = VTOPORTAL(ap->a_vp);
-#ifdef PORTAL_DIAGOISTIC
-	printf("portal_reclaim(%x)\n", ap->a_vp);
-#endif
+
 	if (pt->pt_arg) {
 		free((caddr_t) pt->pt_arg, M_TEMP);
 		pt->pt_arg = 0;
 	}
 	FREE(ap->a_vp->v_data, M_TEMP);
 	ap->a_vp->v_data = 0;
+
 	return (0);
 }
 
@@ -625,6 +526,7 @@ portal_reclaim(ap)
  * Print out the contents of a Portal vnode.
  */
 /* ARGSUSED */
+int
 portal_print(ap)
 	struct vop_print_args /* {
 		struct vnode *a_vp;
@@ -636,6 +538,7 @@ portal_print(ap)
 }
 
 /*void*/
+int
 portal_vfree(ap)
 	struct vop_vfree_args /* {
 		struct vnode *a_pvp;
@@ -651,6 +554,7 @@ portal_vfree(ap)
 /*
  * Portal vnode unsupported operation
  */
+int
 portal_enotsupp()
 {
 
@@ -660,6 +564,7 @@ portal_enotsupp()
 /*
  * Portal "should never get here" operation
  */
+int
 portal_badop()
 {
 
@@ -670,6 +575,7 @@ portal_badop()
 /*
  * Portal vnode null operation
  */
+int
 portal_nullop()
 {
 
