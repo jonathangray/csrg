@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.5 (Berkeley) 03/01/93";
+static char sccsid[] = "@(#)main.c	5.6 (Berkeley) 03/08/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -61,7 +61,7 @@ static char sccsid[] = "@(#)main.c	5.5 (Berkeley) 03/01/93";
  * set for extern in the ed.h header file (so everyone can get them).
  */
 
-int nn_max, nn_max_flag, start_default, End_default, address_flag;
+int nn_max, nn_max_flag, Start_default, End_default, address_flag;
 int zsnum, filename_flag, add_flag=0, join_flag=0;
 int help_flag=0;
 #ifdef STDIO
@@ -82,7 +82,7 @@ char *filename_current, *prompt_string=NULL, help_msg[130];
 char *template=NULL;
 int prompt_str_flg=0, start_up_flag=0, name_set=0;
 
-LINE *top, *current, *bottom, *start, *End; 
+LINE *top, *current, *bottom, *Start, *End; 
 struct u_layer *u_stk;
 struct d_layer *d_stk;
 LINE *u_current, *u_top, *u_bottom;
@@ -124,7 +124,7 @@ main(argc, argv)
 	if (line_length == 0)
 		line_length = 78;
 
-	start = End = NULL;
+	Start = End = NULL;
 	top = bottom = NULL;
 	current = NULL;
 	nn_max_flag = 0;
@@ -135,7 +135,7 @@ main(argc, argv)
 	text = calloc(NN_MAX_START + 2, sizeof(char));
 	if (text == NULL)
 		ed_exit(4);
-	start_default = End_default = 0;
+	Start_default = End_default = 0;
 	zsnum = 22;		/* for the 'z' command */
 	u_stk = NULL;
 	d_stk = NULL;
@@ -243,8 +243,8 @@ cmd_loop(inputt, errnum)
 			(void)printf("%s", prompt_string);
 		ss = getc(inputt);
 		*errnum = 0;
-		l_tempp = start = End = NULL;
-		start_default = End_default = 1;
+		l_tempp = Start = End = NULL;
+		Start_default = End_default = 1;
 
 		/*
 		 * This isn't nice and alphabetical mainly because of
@@ -395,13 +395,13 @@ cmd_loop(inputt, errnum)
 			 * and the compatibility for address "chains".
 			 */
 			case ';':
-				if (End_default == 1 && start_default == 1) {
-					start = current;
+				if (End_default == 1 && Start_default == 1) {
+					Start = current;
 					End = bottom;
-					start_default = End_default = 0;
+					Start_default = End_default = 0;
 				} else {
-					start = current = End;
-					start_default = 0;
+					Start = current = End;
+					Start_default = 0;
 					End_default = 1;
 				}
 				l_tempp = NULL;
@@ -411,13 +411,13 @@ cmd_loop(inputt, errnum)
 			 * bug - for backward compatability.
 			 */
 			case ',':
-				if (End_default == 1 && start_default == 1) {
-					start = top;
+				if (End_default == 1 && Start_default == 1) {
+					Start = top;
 					End = bottom;
-					start_default = End_default = 0;
+					Start_default = End_default = 0;
 				} else {
-					start = End;
-					start_default = 0;
+					Start = End;
+					Start_default = 0;
 					End_default = 1;
 				}
 				l_tempp = NULL;
@@ -429,9 +429,9 @@ cmd_loop(inputt, errnum)
 					*errnum = -1;
 					break;
 				}
-				start = top;
+				Start = top;
 				End = bottom;
-				start_default = End_default = 0;
+				Start_default = End_default = 0;
 				l_tempp = NULL;
 				break;
 			/*
@@ -459,7 +459,7 @@ cmd_loop(inputt, errnum)
 			case '/':
 			case '.':
 				ungetc(ss, inputt);
-				if (start_default == 0 && End_default == 0) {
+				if (Start_default == 0 && End_default == 0) {
 					strcpy(help_msg,
 					    "badly formed address");
 					*errnum = -1;
@@ -471,8 +471,8 @@ cmd_loop(inputt, errnum)
 					break;
 				End = l_tempp;
 				End_default = 0;
-				if (start_default == 0)
-					*errnum = address_check(start, End);
+				if (Start_default == 0)
+					*errnum = address_check(Start, End);
 				break;
 			default:
 				*errnum = -1;
@@ -486,7 +486,7 @@ cmd_loop(inputt, errnum)
 					return;
 				/* Do the suffixes if there were any. */
 				if (printsfx > 0) {
-					start = End = current;
+					Start = End = current;
 					ungetc(ss, inputt);
 					if (printsfx == 1)
 						p(inputt, errnum, 0);
