@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)times.h	8.2 (Berkeley) 01/04/94
+ *	@(#)times.h	8.3 (Berkeley) 01/04/94
  */
 
-#ifndef	_TIMES_H_
-#define	_TIMES_H_
+#ifndef	_SYS_TIMES_H_
+#define	_SYS_TIMES_H_
 
 #include <machine/ansi.h>
 
@@ -57,4 +57,4 @@ __BEGIN_DECLS
 clock_t	times __P((struct tms *));
 __END_DECLS
 #endif
-#endif /* !_TIMES_H_ */
+#endif /* !_SYS_TIMES_H_ */
