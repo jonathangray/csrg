@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_xxx.c	8.2 (Berkeley) 02/14/95
+ *	@(#)subr_xxx.c	8.3 (Berkeley) 03/29/95
  */
 
 /*
@@ -93,6 +93,17 @@ eopnotsupp()
 {
 
 	return (EOPNOTSUPP);
+}
+
+/*
+ * Return error for an inval operation
+ * on a specific object or file type.
+ */
+int
+einval()
+{
+
+	return (EINVAL);
 }
 
 /*
