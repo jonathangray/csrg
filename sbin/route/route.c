@@ -22,7 +22,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)route.c	5.20 (Berkeley) 04/16/90";
+static char sccsid[] = "@(#)route.c	5.21 (Berkeley) 05/02/90";
 #endif /* not lint */
 
 #include <paths.h>
