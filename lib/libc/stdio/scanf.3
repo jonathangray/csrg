@@ -31,7 +31,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)scanf.3	6.8 (Berkeley) 04/20/91
+.\"     @(#)scanf.3	6.9 (Berkeley) 04/23/91
 .\"
 .Dd 
 .Dt SCANF 3
@@ -92,15 +92,18 @@ and reads input from the stream pointer
 .Fa stream
 using a variable argument list of pointers (see
 .Xr varargs 3 ) .
+The
 .Fn vscanf
-scans a variable argument list from the standard input and
+function scans a variable argument list from the standard input and
+the
 .Fn vsscanf
-scans it from a string;
+function scans it from a string;
 these are analogous to
+the
 .Fn vprintf
 and
 .Fn vsprintf
-respectively.
+functions respectively.
 Each successive
 .Em pointer
 argument must correspond properly with
@@ -403,9 +406,3 @@ and
 conversions is unfortunate.
 .Pp
 All of the backwards compatibility formats will be removed in the future.
-.Pp
-There is no
-.Em vscanf
-or
-.Em vsscanf .
-.\" Had to draw the line somewhere!
