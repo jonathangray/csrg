@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)types.h	7.12 (Berkeley) 04/30/93
+ *	@(#)types.h	7.13 (Berkeley) 04/30/93
  */
 
 #ifndef	_MACHTYPES_H_
