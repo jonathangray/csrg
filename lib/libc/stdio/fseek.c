@@ -1,4 +1,4 @@
-/* @(#)fseek.c	4.3 (Berkeley) 09/25/83 */
+/* @(#)fseek.c	4.4 (Berkeley) 02/13/85 */
 /*
  * Seek for standard library.  Coordinates with buffering.
  */
