@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)lfs.c	5.6 (Berkeley) 12/31/91";
+static char sccsid[] = "@(#)lfs.c	5.7 (Berkeley) 01/14/92";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -42,6 +42,7 @@ static char sccsid[] = "@(#)lfs.c	5.6 (Berkeley) 12/31/91";
 #include <sys/resource.h>
 #include <sys/proc.h>
 #include <sys/vnode.h>
+#include <sys/mount.h>
 
 #include <ufs/ufs/dir.h>
 #include <ufs/ufs/quota.h>
