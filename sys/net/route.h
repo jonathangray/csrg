@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)route.h	7.11 (Berkeley) 06/28/90
+ *	@(#)route.h	7.12 (Berkeley) 07/26/90
  */
 
 /*
@@ -116,6 +116,7 @@ struct ortentry {
 #define	RTF_UP		0x1		/* route useable */
 #define	RTF_GATEWAY	0x2		/* destination is a gateway */
 #define	RTF_HOST	0x4		/* host entry (net otherwise) */
+#define	RTF_REJECT	0x8		/* host or net unreachable */
 #define	RTF_DYNAMIC	0x10		/* created dynamically (by redirect) */
 #define	RTF_MODIFIED	0x20		/* modified dynamically (by redirect) */
 #define RTF_DONE	0x40		/* message confirmed */
