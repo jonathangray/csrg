@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	8.18 (Berkeley) 07/14/94
+ *	@(#)vfs_syscalls.c	8.19 (Berkeley) 07/28/94
  */
 
 #include <sys/param.h>
@@ -725,6 +725,7 @@ mknod(p, uap, retval)
 	register struct vnode *vp;
 	struct vattr vattr;
 	int error;
+	int whiteout;
 	struct nameidata nd;
 
 	CHECKPOINTREF;
@@ -740,6 +741,7 @@ mknod(p, uap, retval)
 		VATTR_NULL(&vattr);
 		vattr.va_mode = (uap->mode & ALLPERMS) &~ p->p_fd->fd_cmask;
 		vattr.va_rdev = uap->dev;
+		whiteout = 0;
 
 		switch (uap->mode & S_IFMT) {
 		case S_IFMT:	/* used by badsect to flag bad sectors */
@@ -751,12 +753,18 @@ mknod(p, uap, retval)
 		case S_IFBLK:
 			vattr.va_type = VBLK;
 			break;
+		case S_IFWHT:
+			whiteout = 1;
+			break;
 		default:
 			error = EINVAL;
 			break;
 		}
 	}
-	if (!error) {
+	if (whiteout) {
+		error = VOP_WHITEOUT(nd.ni_dvp, &nd.ni_cnd, CREATE);
+		vput(nd.ni_dvp);
+	} else if (!error) {
 		LEASE_CHECK(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
 		error = VOP_MKNOD(nd.ni_dvp, &nd.ni_vp, &nd.ni_cnd, &vattr);
 	} else {
@@ -924,10 +932,12 @@ unwhiteout(p, uap, retval)
 	int error;
 	struct nameidata nd;
 
-	NDINIT(&nd, CREATE, LOCKPARENT, UIO_USERSPACE, uap->path, p);
-	if (error = namei(&nd))
+	NDINIT(&nd, DELETE, LOCKPARENT|DOWHITEOUT, UIO_USERSPACE, uap->path, p);
+	error = namei(&nd);
+	if (error)
 		return (error);
-	if (nd.ni_vp || !(nd.ni_cnd.cn_flags & WHITEOUT)) {
+
+	if (nd.ni_vp != NULLVP || !(nd.ni_cnd.cn_flags & ISWHITEOUT)) {
 		VOP_ABORTOP(nd.ni_dvp, &nd.ni_cnd);
 		if (nd.ni_dvp == nd.ni_vp)
 			vrele(nd.ni_dvp);
@@ -937,8 +947,11 @@ unwhiteout(p, uap, retval)
 			vrele(nd.ni_vp);
 		return (EEXIST);
 	}
+
 	LEASE_CHECK(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
 	error = VOP_WHITEOUT(nd.ni_dvp, &nd.ni_cnd, DELETE);
+	if (error != 0)
+		VOP_ABORTOP(nd.ni_dvp, &nd.ni_cnd);
 	vput(nd.ni_dvp);
 	return (error);
 }
@@ -987,7 +1000,8 @@ unlink(p, uap, retval)
 			vrele(nd.ni_dvp);
 		else
 			vput(nd.ni_dvp);
-		vput(vp);
+		if (vp != NULLVP)
+			vput(vp);
 	}
 	CHECKREFS("unlink");
 	return (error);
@@ -2048,6 +2062,20 @@ unionread:
 
 		lvp = union_lowervp(vp);
 		if (lvp != NULLVP) {
+			struct vattr va;
+
+			/*
+			 * If the directory is opaque,
+			 * then don't show lower entries
+			 */
+			error = VOP_GETATTR(vp, &va, fp->f_cred, p);
+			if (va.va_flags & OPAQUE) {
+				vrele(lvp);
+				lvp = NULL;
+			}
+		}
+		
+		if (lvp != NULLVP) {
 			VOP_LOCK(lvp);
 			error = VOP_OPEN(lvp, FREAD, fp->f_cred, p);
 			VOP_UNLOCK(lvp);
@@ -2140,6 +2168,20 @@ unionread:
 		struct vnode *lvp;
 
 		lvp = union_lowervp(vp);
+		if (lvp != NULLVP) {
+			struct vattr va;
+
+			/*
+			 * If the directory is opaque,
+			 * then don't show lower entries
+			 */
+			error = VOP_GETATTR(vp, &va, fp->f_cred, p);
+			if (va.va_flags & OPAQUE) {
+				vrele(lvp);
+				lvp = NULL;
+			}
+		}
+		
 		if (lvp != NULLVP) {
 			VOP_LOCK(lvp);
 			error = VOP_OPEN(lvp, FREAD, fp->f_cred, p);
