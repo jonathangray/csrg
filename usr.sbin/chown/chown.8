@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)chown.8	8.1 (Berkeley) 06/06/93
+.\"     @(#)chown.8	6.11 (Berkeley) 06/29/93
 .\"
 .Dd 
 .Dt CHOWN 8
@@ -65,11 +65,11 @@ the exit status to reflect such failures.
 When encountering a symbolic link anywhere in the traversal, follow it.
 .El
 .Pp
-The ownership of a symbolic link is immutable, so that unless the
+The ownership of a symbolic link is immutable, so unless the
 .Fl h
 or 
 .Fl H 
-flags are set,
+flag is set,
 .Nm chown
 on a symbolic link is a no-op.
 .Pp
