@@ -21,7 +21,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)wd.c	5.8 (Berkeley) 11/18/90
+ *	@(#)wd.c	5.9 (Berkeley) 01/08/91
  */
 
 #include "wd.h"
