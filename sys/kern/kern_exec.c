@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_exec.c	7.75 (Berkeley) 04/27/93
+ *	@(#)kern_exec.c	7.76 (Berkeley) 05/11/93
  */
 
 #include <sys/param.h>
@@ -579,7 +579,7 @@ getxfile(p, vp, ep, paged, ssize, uid, gid)
 		p->p_flag &= ~SPPWAIT;
 		wakeup((caddr_t) p->p_pptr);
 	}
-#if defined(HP380)
+#if defined(HP380) || defined(LUNA2)
 	/* default to copyback caching on 68040 */
 	if (mmutype == MMU_68040)
 		p->p_md.md_flags |= (MDP_CCBDATA|MDP_CCBSTACK);
