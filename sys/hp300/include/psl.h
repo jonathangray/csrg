@@ -30,9 +30,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)psl.h	7.1 (Berkeley) 05/08/90
+ *	@(#)psl.h	7.2 (Berkeley) 05/04/91
  */
 
+#ifndef PSL_C
 /*
  * MC68000 program status word
  */
@@ -63,3 +64,10 @@
 
 #define	PSL_USERSET	(0)
 #define	PSL_USERCLR	(PSL_S | PSL_IPL7 | PSL_MBZ)
+
+/*
+ * Macros to decode processor status word.
+ */
+#define	USERMODE(ps)	(((ps) & PSL_S) == 0)
+#define	BASEPRI(ps)	(((ps) & PSL_IPL7) == 0)
+#endif
