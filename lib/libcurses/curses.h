@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)curses.h	5.11 (Berkeley) 08/31/92
+ *	@(#)curses.h	5.12 (Berkeley) 09/01/92
  */
 
 #ifndef _CURSES_H_
@@ -94,7 +94,6 @@ typedef struct _win_st {		/* Window structure. */
 #define	_STANDOUT	0x080		/* Added characters are standout. */
 	unsigned short	_flags;
 
-	short		scroll;		/* Scrolling offset. */
 	short		_ch_off;	/* x offset for firstch/lastch. */
 	char		_clear;		/* If clear on next refresh. */
 	char		_leave;		/* If cursor left. */
