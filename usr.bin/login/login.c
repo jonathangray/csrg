@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)login.c	5.59 (Berkeley) 06/24/90";
+static char sccsid[] = "@(#)login.c	5.60 (Berkeley) 06/24/90";
 #endif /* not lint */
 
 /*
@@ -108,7 +108,7 @@ main(argc, argv)
 	register int ch;
 	register char *p;
 	int ask, fflag, hflag, pflag, rflag, cnt;
-	int quietlog, passwd_req, ioctlval, rval;
+	int quietlog, ioctlval, rval;
 	char *domain, *salt, *ttyn;
 	char tbuf[MAXPATHLEN + 2], tname[sizeof(_PATH_TTY) + 10];
 	char localhost[MAXHOSTNAMELEN];
@@ -139,7 +139,6 @@ main(argc, argv)
 		domain = index(localhost, '.');
 
 	fflag = hflag = pflag = rflag = 0;
-	passwd_req = 1;
 	uid = getuid();
 	while ((ch = getopt(argc, argv, "fh:pr:")) != EOF)
 		switch (ch) {
@@ -271,22 +270,13 @@ main(argc, argv)
 			salt = "xx";
 
 		/*
-		 * Disallow automatic login to root; if not invoked by
-		 * root, disallow if the uid's differ.
+		 * if we have a valid account name, and it doesn't have a
+		 * password, or the -f option was specified and the caller
+		 * is root or the caller isn't changing their uid, don't
+		 * authenticate.
 		 */
-		if (pwd && fflag) {
-			passwd_req =
-#ifndef	KERBEROS
-			     pwd->pw_uid == 0 ||
-#endif
-			    (uid && uid != pwd->pw_uid);
-		}
-
-		/*
-		 * If no pre-authentication and a password exists
-		 * for this user, prompt for one and verify it.
-		 */
-		if (pwd && (!passwd_req || !*pwd->pw_passwd))
+		if (pwd && (*pwd->pw_passwd == '\0' ||
+		    fflag && (uid == 0 || uid == pwd->pw_uid)))
 			break;
 
 		/*
