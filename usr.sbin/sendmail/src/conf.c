@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.89 (Berkeley) 04/18/94";
+static char sccsid[] = "@(#)conf.c	8.90 (Berkeley) 05/17/94";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -549,6 +549,9 @@ setsignal(sig, handler)
 
 	bzero(&n, sizeof n);
 	n.sa_handler = handler;
+# ifdef SA_RESTART
+	n.sa_flags = SA_RESTART;
+# endif
 	if (sigaction(sig, &n, &o) < 0)
 		return SIG_ERR;
 	return o.sa_handler;
@@ -1676,10 +1679,14 @@ freespace(dir, bsize)
 #  if SFS_TYPE == SFS_4ARGS
 	if (statfs(dir, &fs, sizeof fs, 0) == 0)
 #  else
-#   if defined(ultrix)
-	if (statfs(dir, &fs) > 0)
+#   if SFS_TYPE == SFS_STATVFS
+	if (statvfs(dir, &fs) == 0)
 #   else
+#    if defined(ultrix)
+	if (statfs(dir, &fs) > 0)
+#    else
 	if (statfs(dir, &fs) == 0)
+#    endif
 #   endif
 #  endif
 # endif
