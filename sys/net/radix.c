@@ -30,22 +30,24 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)radix.c	7.16 (Berkeley) 07/12/92
+ *	@(#)radix.c	7.17 (Berkeley) 10/11/92
  */
 
 /*
  * Routines to build and maintain radix trees for routing lookups.
  */
 #ifndef RNF_NORMAL
-#include "param.h"
-#include "systm.h"
-#include "radix.h"
-#include "malloc.h"
+#include <sys/param.h>
+#include <sys/systm.h>
+#include <sys/malloc.h>
 #define	M_DONTWAIT M_NOWAIT
 #ifdef	KERNEL
-#include "domain.h"
+#include <sys/domain.h>
 #endif
 #endif
+
+#include <net/radix.h>
+
 int	max_keylen;
 struct radix_mask *rn_mkfreelist;
 struct radix_node_head *mask_rnhead;
