@@ -33,8 +33,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ndbm.h	5.5 (Berkeley) 02/14/91
+ *	@(#)ndbm.h	5.6 (Berkeley) 04/03/91
  */
+
+#ifndef _NDBM_H_
+#define	_NDBM_H_
 
 #include <sys/cdefs.h>
 #include <db.h>
@@ -69,3 +72,5 @@ datum	 dbm_nextkey __P((DBM *));
 DBM	*dbm_open __P((const char *, int, int));
 int	 dbm_store __P((DBM *, datum, datum, int));
 __END_DECLS
+
+#endif /* !_NDBM_H_ */
