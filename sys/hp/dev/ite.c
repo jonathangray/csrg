@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: ite.c 1.28 92/12/20$
  *
- *	@(#)ite.c	8.1 (Berkeley) 06/10/93
+ *	@(#)ite.c	8.2 (Berkeley) 01/12/94
  */
 
 /*
@@ -117,6 +117,7 @@ u_char  console_attributes[0x2200];
  */
 iteon(dev, flag)
 	dev_t dev;
+	int flag;
 {
 	int unit = UNIT(dev);
 	struct tty *tp = &ite_tty[unit];
@@ -182,6 +183,7 @@ iteinit(dev)
  */
 iteoff(dev, flag)
 	dev_t dev;
+	int flag;
 {
 	register struct ite_softc *ip = &ite_softc[UNIT(dev)];
 
@@ -262,6 +264,7 @@ iteclose(dev, flag, mode, p)
 iteread(dev, uio, flag)
 	dev_t dev;
 	struct uio *uio;
+	int flag;
 {
 	register struct tty *tp = &ite_tty[UNIT(dev)];
 
@@ -271,6 +274,7 @@ iteread(dev, uio, flag)
 itewrite(dev, uio, flag)
 	dev_t dev;
 	struct uio *uio;
+	int flag;
 {
 	int unit = UNIT(dev);
 	register struct tty *tp = &ite_tty[unit];
@@ -378,7 +382,7 @@ itestart(tp)
 }
 
 itefilter(stat, c)
-     register char stat, c;
+	register char stat, c;
 {
 	static int capsmode = 0;
 	static int metamode = 0;
@@ -411,7 +415,7 @@ itefilter(stat, c)
 			code = kbd_keymap[c];
 			break;
 		}
-		/* fall into... */
+		/* FALLTHROUGH */
 
 	case KBD_SHIFT:
 		code = kbd_shiftmap[c];
