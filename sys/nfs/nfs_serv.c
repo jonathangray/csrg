@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_serv.c	7.28 (Berkeley) 08/22/90
+ *	@(#)nfs_serv.c	7.29 (Berkeley) 10/01/90
  */
 
 /*
@@ -899,6 +899,7 @@ nfsrv_symlink(mrep, md, dpos, cred, xid, mrq, repstat)
 	register struct vattr *vap = &va;
 	register u_long *p;
 	register long t1;
+	struct nfsv2_sattr *sp;
 	caddr_t bpos;
 	struct uio io;
 	struct iovec iv;
@@ -929,6 +930,7 @@ nfsrv_symlink(mrep, md, dpos, cred, xid, mrq, repstat)
 	io.uio_segflg = UIO_SYSSPACE;
 	io.uio_rw = UIO_READ;
 	nfsm_mtouio(&io, len2);
+	nfsm_disect(sp, struct nfsv2_sattr *, NFSX_SATTR);
 	*(pathcp + len2) = '\0';
 	if (ndp->ni_vp) {
 		VOP_ABORTOP(ndp);
@@ -941,7 +943,7 @@ nfsrv_symlink(mrep, md, dpos, cred, xid, mrq, repstat)
 		goto out;
 	}
 	VATTR_NULL(vap);
-	vap->va_mode = 0777;
+	vap->va_mode = fxdr_unsigned(u_short, sp->sa_mode);
 	error = VOP_SYMLINK(ndp, vap, pathcp);
 out:
 	if (pathcp)
