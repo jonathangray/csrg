@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_ktrace.c	7.12 (Berkeley) 03/25/91
+ *	@(#)kern_ktrace.c	7.13 (Berkeley) 04/15/91
  */
 
 #ifdef KTRACE
@@ -38,6 +38,7 @@
 #include "param.h"
 #include "proc.h"
 #include "file.h"
+#include "namei.h"
 #include "vnode.h"
 #include "ktrace.h"
 #include "malloc.h"
@@ -47,7 +48,7 @@ struct ktr_header *
 ktrgetheader(type)
 {
 	register struct ktr_header *kth;
-	struct proc *p = curproc;
+	struct proc *p = curproc;	/* XXX */
 
 	MALLOC(kth, struct ktr_header *, sizeof (struct ktr_header), 
 		M_TEMP, M_WAITOK);
@@ -343,7 +344,7 @@ ktrwrite(vp, kth)
 {
 	struct uio auio;
 	struct iovec aiov[2];
-	struct proc *p;
+	register struct proc *p = curproc;	/* XXX */
 	int error;
 
 	if (vp == NULL)
@@ -356,6 +357,7 @@ ktrwrite(vp, kth)
 	aiov[0].iov_len = sizeof(struct ktr_header);
 	auio.uio_resid = sizeof(struct ktr_header);
 	auio.uio_iovcnt = 1;
+	auio.uio_procp = (struct proc *)0;
 	if (kth->ktr_len > 0) {
 		auio.uio_iovcnt++;
 		aiov[1].iov_base = kth->ktr_buf;
@@ -363,7 +365,7 @@ ktrwrite(vp, kth)
 		auio.uio_resid += kth->ktr_len;
 	}
 	VOP_LOCK(vp);
-	error = VOP_WRITE(vp, &auio, IO_UNIT|IO_APPEND, curproc->p_ucred);
+	error = VOP_WRITE(vp, &auio, IO_UNIT|IO_APPEND, p->p_ucred);
 	VOP_UNLOCK(vp);
 	if (!error)
 		return;
