@@ -30,12 +30,17 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ftp_var.h	8.1 (Berkeley) 06/06/93
+ *	@(#)ftp_var.h	8.2 (Berkeley) 04/02/94
  */
 
 /*
  * FTP global variables.
  */
+
+#include <sys/param.h>
+#include <setjmp.h>
+
+#include "extern.h"
 
 /*
  * Options and other state info.
@@ -64,7 +69,6 @@ char	pasv[64];		/* passive port for proxy data connection */
 char	*altarg;		/* argv[1] with no shell-like preprocessing  */
 char	ntin[17];		/* input translation table */
 char	ntout[17];		/* output translation table */
-#include <sys/param.h>
 char	mapin[MAXPATHLEN];	/* input map template */
 char	mapout[MAXPATHLEN];	/* output map template */
 char	typename[32];		/* name of file transfer type */
@@ -85,7 +89,6 @@ int	unix_proxy;		/* proxy is unix, can use binary for ascii */
 
 struct	servent *sp;		/* service spec for tcp/ftp */
 
-#include <setjmp.h>
 jmp_buf	toplevel;		/* non-local goto stuff for cmd scanner */
 
 char	line[200];		/* input line buffer */
@@ -108,7 +111,7 @@ struct cmd {
 	char	c_bell;		/* give bell when command completes */
 	char	c_conn;		/* must be connected to use command */
 	char	c_proxy;	/* proxy server may execute */
-	int	(*c_handler)();	/* function to call */
+	void	(*c_handler) __P((int, char **)); /* function to call */
 };
 
 struct macel {
@@ -120,14 +123,3 @@ struct macel {
 int macnum;			/* number of defined macros */
 struct macel macros[16];
 char macbuf[4096];
-
-extern	char *tail();
-extern	char *index();
-extern	char *rindex();
-extern	char *remglob();
-extern	int errno;
-extern	char *mktemp();
-extern	char *strncpy();
-extern	char *strncat();
-extern	char *strcat();
-extern	char *strcpy();
