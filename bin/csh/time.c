@@ -32,9 +32,10 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)time.c	5.12 (Berkeley) 06/07/91";
+static char sccsid[] = "@(#)time.c	5.13 (Berkeley) 06/08/91";
 #endif /* not lint */
 
+#include <sys/types.h>
 #include "csh.h"
 #include "extern.h"
 
@@ -48,7 +49,7 @@ settimes()
 {
     struct rusage ruch;
 
-    (void) gettimeofday(&time0, (struct timezone *) 0);
+    (void) gettimeofday(&time0, NULL);
     (void) getrusage(RUSAGE_SELF, &ru0);
     (void) getrusage(RUSAGE_CHILDREN, &ruch);
     ruadd(&ru0, &ruch);
@@ -67,7 +68,7 @@ dotime()
     (void) getrusage(RUSAGE_SELF, &ru1);
     (void) getrusage(RUSAGE_CHILDREN, &ruch);
     ruadd(&ru1, &ruch);
-    (void) gettimeofday(&timedol, (struct timezone *) 0);
+    (void) gettimeofday(&timedol, NULL);
     prusage(&ru0, &ru1, &timedol, &time0);
 }
 
