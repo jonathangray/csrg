@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hd_subr.c	7.5 (Berkeley) 10/04/90
+ *	@(#)hd_subr.c	7.6 (Berkeley) 05/29/91
  */
 
 #include "param.h"
@@ -67,6 +67,7 @@ struct sockaddr *addr;
 	register struct hdcb *hdp;
 	register struct ifaddr *ifa;
 	struct ifnet *ifp;
+	caddr_t pk_newlink();
 
 	if (addr->sa_family != AF_CCITT)
 		return (EAFNOSUPPORT);
@@ -88,18 +89,19 @@ struct sockaddr *addr;
 		if (hdp == 0)
 			return (ENOBUFS);
 		bzero((caddr_t)hdp, sizeof(*hdp));
-		if (error = pk_ctlinput (PRC_LINKDOWN, xcp)) {
-			free((caddr_t)hdp, M_PCB);
-			return (error);
+		hdp->hd_pkp =
+			pk_newlink ((struct x25_ifaddr *)ifa, (caddr_t)hdp);
+		if (hdp -> hd_pkp == 0) {
+			free(hdp, M_PCB);
+			return (ENOBUFS);
 		}
-		hdp->hd_next = hdcbhead;
-		hdcbhead = hdp;
 		hdp->hd_ifp = ifp;
 		hdp->hd_ifa = ifa;
 		hdp->hd_xcp = xcp;
 		hdp->hd_state = INIT;
 		hdp->hd_output = hd_ifoutput;
-		pk_ifattach((struct x25_ifaddr *)ifa, hd_output, (caddr_t)hdp);
+		hdp->hd_next = hdcbhead;
+		hdcbhead = hdp;
 	}
 
 	switch (prc) {
@@ -114,7 +116,7 @@ struct sockaddr *addr;
 	case PRC_IFDOWN:
 		if (hdp->hd_state == ABM)
 			hd_message (hdp, "Operator shutdown: link closed");
-		(void) pk_ctlinput (PRC_LINKDOWN, xcp);
+		(void) pk_ctlinput (PRC_LINKDOWN, hdp->hd_pkp);
 		hd_writeinternal (hdp, DISC, POLLON);
 		hdp->hd_state = DISC_SENT;
 		SET_TIMER (hdp);
