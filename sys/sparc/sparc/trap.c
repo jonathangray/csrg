@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)trap.c	7.5 (Berkeley) 05/27/93
+ *	@(#)trap.c	8.1 (Berkeley) 06/11/93
  *
  * from: $Header: trap.c,v 1.34 93/05/28 04:34:50 torek Exp $
  */
