@@ -32,7 +32,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#       @(#)makesendmail	8.25 (Berkeley) 06/11/95
+#       @(#)makesendmail	8.26 (Berkeley) 06/20/95
 #
 
 #
@@ -224,6 +224,8 @@ else
 	echo "Creating $obj using $makefile"
 	mkdir $obj
 	(cd $obj; ln -s ../*.[ch158] ../sendmail.hf .; ln -s ../Makefiles/$makefile Makefile)
+	echo "Making dependencies in $obj"
+	(cd $obj; ${MAKE-make} depend)
 fi
 
 if [ "$mflag" ]
