@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.27 (Berkeley) 08/23/93";
+static char sccsid[] = "@(#)conf.c	8.28 (Berkeley) 08/23/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1355,6 +1355,7 @@ freespace(dir, bsize)
 			*bsize = FSBLOCKSIZE;
 		return (fs.f_bavail);
 	}
+#endif
 	return (-1);
 }
 /*
@@ -1411,7 +1412,6 @@ enoughspace(msize)
 	else if (tTd(4, 80))
 		printf("enoughspace failure: min=%ld, need=%ld: %s\n",
 			MinBlocksFree, msize, errstring(errno));
-#endif
 	return TRUE;
 }
 /*
