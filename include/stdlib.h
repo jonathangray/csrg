@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stdlib.h	5.14 (Berkeley) 07/22/91
+ *	@(#)stdlib.h	5.15 (Berkeley) 07/23/91
  */
 
 #ifndef _STDLIB_H_
@@ -119,7 +119,7 @@ void	*alloca __P((size_t));	/* built-in for gcc */
 int	 heapsort __P((void *, size_t, size_t,
 	    int (*)(const void *, const void *)));
 char	*initstate __P((unsigned, char *, int));
-int	 radixsort __P((const u_char **, int, const u_char *, u_char));
+int	 radixsort __P((const u_char **, int, const u_char *, u_int));
 long	 random __P((void));
 char	*setstate __P((char *));
 void	 srandom __P((unsigned));
