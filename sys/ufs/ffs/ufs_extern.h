@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_extern.h	7.12 (Berkeley) 07/02/92
+ *	@(#)ufs_extern.h	7.13 (Berkeley) 07/20/92
  */
 
 struct buf;
@@ -75,9 +75,10 @@ void	 ufs_free_addrlist __P((struct ufsmount *));
 int	 ufs_getattr __P((struct vop_getattr_args *));
 int	 ufs_hang_addrlist __P((struct mount *, struct ufs_args *));
 struct vnode *
-	 ufs_ihashget __P((int, ino_t));
+	 ufs_ihashget __P((dev_t, ino_t));
 void	 ufs_ihashinit __P((void));
 void	 ufs_ihashins __P((struct inode *));
+void	 ufs_ihashrem __P((struct inode *));
 void	 ufs_ilock __P((struct inode *));
 int	 ufs_init __P((void));
 int	 ufs_ioctl __P((struct vop_ioctl_args *));
