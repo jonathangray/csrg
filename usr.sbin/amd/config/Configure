@@ -36,7 +36,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)Configure	5.1 (Berkeley) 06/29/90
+#	@(#)Configure	5.2 (Berkeley) 03/17/91
 #
 echo "Making ./arch and ./os-type executable ..."
 until chmod +x ./arch ./os-type; do echo "Error: chmod command failed" >&2; exit 1; done
