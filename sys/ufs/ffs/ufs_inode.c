@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_inode.c	7.47 (Berkeley) 06/04/92
+ *	@(#)ufs_inode.c	7.48 (Berkeley) 07/03/92
  */
 
 #include <sys/param.h>
@@ -85,8 +85,10 @@ ufs_iput(ip)
  * Reclaim an inode so that it can be used for other purposes.
  */
 int
-ufs_reclaim (ap)
-	struct vop_reclaim_args *ap;
+ufs_reclaim(ap)
+	struct vop_reclaim_args /* {
+		struct vnode *a_vp;
+	} */ *ap;
 {
 	register struct vnode *vp = ap->a_vp;
 	register struct inode *ip;
