@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.51 (Berkeley) 03/04/91
+ *	@(#)vfs_subr.c	7.52 (Berkeley) 04/15/91
  */
 
 /*
@@ -38,6 +38,7 @@
  */
 
 #include "param.h"
+#include "proc.h"
 #include "mount.h"
 #include "time.h"
 #include "vnode.h"
@@ -473,6 +474,7 @@ void vput(vp)
 void vrele(vp)
 	register struct vnode *vp;
 {
+	struct proc *p = curproc;		/* XXX */
 
 	if (vp == NULL)
 		panic("vrele: null vp");
@@ -496,7 +498,7 @@ void vrele(vp)
 	}
 	vp->v_freef = NULL;
 	vfreet = &vp->v_freef;
-	VOP_INACTIVE(vp);
+	VOP_INACTIVE(vp, p);
 }
 
 /*
@@ -596,6 +598,7 @@ void vclean(vp, flags)
 {
 	struct vnodeops *origops;
 	int active;
+	struct proc *p = curproc;	/* XXX */
 
 	/*
 	 * Check to see if the vnode is in use.
@@ -636,8 +639,8 @@ void vclean(vp, flags)
 	(*(origops->vn_unlock))(vp);
 	if (active) {
 		if (flags & DOCLOSE)
-			(*(origops->vn_close))(vp, 0, NOCRED);
-		(*(origops->vn_inactive))(vp);
+			(*(origops->vn_close))(vp, 0, NOCRED, p);
+		(*(origops->vn_inactive))(vp, p);
 	}
 	/*
 	 * Reclaim the vnode.
