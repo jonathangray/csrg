@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.116 (Berkeley) 11/13/94";
+static char sccsid[] = "@(#)conf.c	8.117 (Berkeley) 11/19/94";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -119,6 +119,7 @@ struct hdrinfo	HdrInfo[] =
 	"comments",			H_FORCE,
 	"return-path",			H_FORCE|H_ACHECK,
 	"content-transfer-encoding",	H_CTE,
+	"content-type",			H_CTYPE,
 
 	NULL,			0,
 };
