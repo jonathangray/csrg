@@ -33,8 +33,8 @@ divert(-1)
 # SUCH DAMAGE.
 #
 divert(0)
-VERSIONID(@(#)CS.Berkeley.EDU.m4	2.11 (Berkeley) 12/12/91)
+VERSIONID(@(#)CS.Berkeley.EDU.m4	2.12 (Berkeley) 12/20/91)
 DOMAIN(Berkeley)dnl
-#FEATURE(no_wildcard_MX)dnl
+ifdef(`_OLD_SENDMAIL_', `', `FEATURE(no_wildcard_MX)')dnl
 HACK(cssubdomain)dnl
 define(`USERDB_SPEC', `/usr/sww/share/lib/users.cs.db')dnl
