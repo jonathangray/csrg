@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ip_input.c	8.1 (Berkeley) 06/10/93
+ *	@(#)ip_input.c	8.2 (Berkeley) 01/04/94
  */
 
 #include <sys/param.h>
@@ -1105,7 +1105,6 @@ ip_forward(m, srcrt)
 	    ipsendredirects && !srcrt) {
 #define	RTA(rt)	((struct in_ifaddr *)(rt->rt_ifa))
 		u_long src = ntohl(ip->ip_src.s_addr);
-		u_long dst = ntohl(ip->ip_dst.s_addr);
 
 		if (RTA(rt) &&
 		    (src & RTA(rt)->ia_subnetmask) == RTA(rt)->ia_subnet) {
@@ -1184,9 +1183,7 @@ ip_sysctl(name, namelen, oldp, oldlenp, newp, newlen)
 	void *newp;
 	size_t newlen;
 {
-	extern int ip_ttl;
-
-	/* all sysctl names at this level are terminal */
+	/* All sysctl names at this level are terminal. */
 	if (namelen != 1)
 		return (ENOTDIR);
 
