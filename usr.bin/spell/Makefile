@@ -1,4 +1,4 @@
-#	@(#)Makefile	4.13 (Berkeley) 06/22/90
+#	@(#)Makefile	4.14 (Berkeley) 06/24/90
 
 LIBC=	/usr/lib/libc.a
 SRCS=	spell.c spellin.c spellout.c
@@ -38,7 +38,9 @@ FILES=	hlist hlista hlistb hstop
 
 install: maninstall
 	install ${STRIP} -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} \
-	    spell spellin spellout ${DESTDIR}/usr/libexec
+	    spellin spellout ${DESTDIR}/usr/bin
+	install ${STRIP} -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} \
+	    spell ${DESTDIR}/usr/libexec
 	install -c -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} \
 	    ${.CURDIR}/spell.sh ${DESTDIR}/usr/bin/spell
 	install -c -o ${BINOWN} -g ${BINGRP} -m 444 ${FILES} ${DIR}
