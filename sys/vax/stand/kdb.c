@@ -30,18 +30,18 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kdb.c	7.7 (Berkeley) 06/28/90
+ *	@(#)kdb.c	7.8 (Berkeley) 12/16/90
  */
 
 /*
  * KDB50/RAxx disk device driver
  */
-#include "machine/pte.h"
+#include "../include/pte.h"
 
-#include "param.h"
-#include "disklabel.h"
+#include "sys/param.h"
+#include "sys/disklabel.h"
 
-#include "saio.h"
+#include "stand/saio.h"
 #include "savax.h"
 
 /*
@@ -59,8 +59,8 @@
 #define	NRSP	1
 #define	NCMD	1
 
-#include "../vaxbi/bireg.h"
-#include "../vaxbi/kdbreg.h"
+#include "../bi/bireg.h"
+#include "../bi/kdbreg.h"
 #include "../vax/mscp.h"
 
 struct kdb {
