@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vfsops.c	7.63 (Berkeley) 02/15/92
+ *	@(#)ffs_vfsops.c	7.64 (Berkeley) 03/22/92
  */
 
 #include <sys/param.h>
@@ -75,7 +75,7 @@ struct vfsops ufs_vfsops = {
 };
 
 /*
- * Called by vfs_mountroot when ufs is going to be mounted as root.
+ * Called by main() when ufs is going to be mounted as root.
  *
  * Name is updated by mount(8) after booting.
  */
@@ -91,8 +91,7 @@ ffs_mountroot()
 	u_int size;
 	int error;
 
-	mp = malloc((u_long)sizeof(struct mount),
-		M_MOUNT, M_WAITOK);
+	mp = malloc((u_long)sizeof(struct mount), M_MOUNT, M_WAITOK);
 	mp->mnt_op = &ufs_vfsops;
 	mp->mnt_flag = MNT_RDONLY;
 	mp->mnt_mounth = NULLVP;
