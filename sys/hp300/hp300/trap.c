@@ -146,6 +146,7 @@ trap(type, code, v, frame)
 #if defined(HP380)
 	int beenhere = 0;
 #endif
+	extern char fswintr[];
 
 	cnt.v_trap++;
 	syst = p->p_stime;
@@ -365,6 +366,12 @@ copyfault:
 		goto out;
 
 	case T_MMUFLT:		/* kernel mode page fault */
+		/*
+		 * If we were doing profiling ticks or other user mode
+		 * stuff from interrupt code, Just Say No.
+		 */
+		if (p->p_addr->u_pcb.pcb_onfault == fswintr)
+			goto copyfault;
 		/* fall into ... */
 
 	case T_MMUFLT|T_USER:	/* page fault */
