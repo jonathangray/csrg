@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)procfs_vnops.c	8.4 (Berkeley) 01/21/94
+ *	@(#)procfs_vnops.c	8.5 (Berkeley) 01/27/94
  *
  * From:
  *	$Id: procfs_vnops.c,v 3.2 1993/12/15 09:40:17 jsp Exp $
@@ -75,13 +75,14 @@ static struct pfsnames {
 } procent[] = {
 #define N(s) sizeof(s)-1, s
 	/* namlen, nam, type */
-	{  N("file"),   Pfile },
-	{  N("mem"),    Pmem },
-	{  N("regs"),   Pregs },
-	{  N("ctl"),    Pctl },
-	{  N("status"), Pstatus },
-	{  N("note"),   Pnote },
-	{  N("notepg"), Pnotepg },
+	{  N("file"),	Pfile },
+	{  N("mem"),	Pmem },
+	{  N("regs"),	Pregs },
+	{  N("fpregs"),	Pfpregs },
+	{  N("ctl"),	Pctl },
+	{  N("status"),	Pstatus },
+	{  N("note"),	Pnote },
+	{  N("notepg"),	Pnotepg },
 #undef N
 };
 #define Nprocent (sizeof(procent)/sizeof(procent[0]))
@@ -382,6 +383,7 @@ procfs_getattr(ap)
 		break;
 
 	case Pregs:
+	case Pfpregs:
 	case Pctl:
 	case Pstatus:
 	case Pnote:
