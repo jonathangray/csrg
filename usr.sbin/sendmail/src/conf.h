@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	6.35 (Berkeley) 05/28/93
+ *	@(#)conf.h	6.36 (Berkeley) 05/30/93
  */
 
 /*
@@ -113,9 +113,13 @@
 
 #if defined(sun) && !defined(BSD)
 # define UNSETENV	1	/* need unsetenv(3) support */
-# define HASSTATFS	1	/* has the statfs(2) syscall */
 
-# if !defined(SOLARIS)
+# ifdef SOLARIS
+#  define LOCKF		1	/* use System V lockf instead of flock */
+#  define UNSETENV	1	/* need unsetenv(3) support */
+#  define HASUSTAT	1	/* has the ustat(2) syscall */
+# else
+#  define HASSTATFS	1	/* has the statfs(2) syscall */
 #  include <vfork.h>
 # endif
 
