@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)login.c	5.62 (Berkeley) 06/29/90";
+static char sccsid[] = "@(#)login.c	5.63 (Berkeley) 06/29/90";
 #endif /* not lint */
 
 /*
@@ -205,9 +205,6 @@ main(argc, argv)
 	if (rflag)
 		ask = 0;
 
-	(void) ioctl(0, TIOCNXCL, 0);
-	(void) fcntl(0, F_SETFL, 0);
-
 	for (cnt = getdtablesize(); cnt > 2; cnt--)
 		close(cnt);
 
@@ -291,7 +288,6 @@ main(argc, argv)
 		if (++cnt > 3) {
 			if (cnt >= 10) {
 				badlogin(username);
-				(void)ioctl(0, TIOCHPCL, (struct sgttyb *)NULL);
 				sleepexit(1);
 			}
 			sleep((u_int)((cnt - 3) * 5));
