@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)nfsd.8	5.6 (Berkeley) 06/24/90
+.\"	@(#)nfsd.8	5.7 (Berkeley) 04/20/91
 .\"
 .TH NFSD 8 ""
 .UC 7
@@ -37,6 +37,9 @@
 nfsd \- remote NFS server
 .SH SYNOPSIS
 .B nfsd
+[
+.B \-r
+]
 [
 .B \-u
 .I msk,mtch,numprocs
@@ -67,6 +70,22 @@ Serve UDP NFS clients.
 .TP
 .B \-t
 Serve TCP NFS clients.
+.TP \-r
+Register the NFS service with
+.IR portmap (8)
+without creating any servers.
+This option can be used along with the
+.B \-u
+and/or
+.B \-t
+options to re-register NFS if the portmap server is restarted.
+.LP
+The following arguments to the
+.B \-u
+or
+.B \-t
+options are used to specify parameters for service using the respective
+protocol:
 .TP
 .I "msk, mtch"
 These arguments permit restriction of NFS services
