@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_conf.c	8.5 (Berkeley) 01/25/94
+ *	@(#)vfs_conf.c	8.6 (Berkeley) 01/25/94
  */
 
 #include <sys/param.h>
@@ -142,10 +142,10 @@ extern	struct vfsops afs_vfsops;
 #endif
 
 #ifdef CD9660
-extern	struct vfsops isofs_vfsops;
-#define ISOFS_VFSOPS	&isofs_vfsops
+extern	struct vfsops cd9660_vfsops;
+#define CD9660_VFSOPS	&cd9660_vfsops
 #else
-#define ISOFS_VFSOPS	NULL
+#define CD9660_VFSOPS	NULL
 #endif
 
 struct vfsops *vfssw[] = {
@@ -163,7 +163,7 @@ struct vfsops *vfssw[] = {
 	KERNFS_VFSOPS,		/* 11 = MOUNT_KERNFS */
 	PROCFS_VFSOPS,		/* 12 = MOUNT_PROCFS */
 	AFS_VFSOPS,		/* 13 = MOUNT_AFS */
-	ISOFS_VFSOPS,		/* 14 = MOUNT_CD9660 */
+	CD9660_VFSOPS,		/* 14 = MOUNT_CD9660 */
 	0
 };
 
@@ -195,9 +195,9 @@ extern struct vnodeopv_desc null_vnodeop_opv_desc;
 extern struct vnodeopv_desc umap_vnodeop_opv_desc;
 extern struct vnodeopv_desc kernfs_vnodeop_opv_desc;
 extern struct vnodeopv_desc procfs_vnodeop_opv_desc;
-extern struct vnodeopv_desc isofs_vnodeop_opv_desc;
-extern struct vnodeopv_desc isofs_specop_opv_desc;
-extern struct vnodeopv_desc isofs_fifoop_opv_desc;
+extern struct vnodeopv_desc cd9660_vnodeop_opv_desc;
+extern struct vnodeopv_desc cd9660_specop_opv_desc;
+extern struct vnodeopv_desc cd9660_fifoop_opv_desc;
 
 struct vnodeopv_desc *vfs_opv_descs[] = {
 	&ffs_vnodeop_opv_desc,
@@ -249,10 +249,10 @@ struct vnodeopv_desc *vfs_opv_descs[] = {
 	&procfs_vnodeop_opv_desc,
 #endif
 #ifdef CD9660
-	&isofs_vnodeop_opv_desc,
-	&isofs_specop_opv_desc,
+	&cd9660_vnodeop_opv_desc,
+	&cd9660_specop_opv_desc,
 #ifdef FIFO
-	&isofs_fifoop_opv_desc,
+	&cd9660_fifoop_opv_desc,
 #endif
 #endif
 	NULL
