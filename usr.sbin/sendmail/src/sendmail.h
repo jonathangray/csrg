@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	6.55 (Berkeley) 05/02/93
+ *	@(#)sendmail.h	6.56 (Berkeley) 05/02/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	6.55		05/02/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	6.56		05/02/93";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -491,8 +491,12 @@ NAMECANON
 	short		nc_errno;	/* cached errno */
 	short		nc_herrno;	/* cached h_errno */
 	short		nc_stat;	/* cached exit status code */
+	short		nc_flags;	/* flag bits */
 	char		*nc_cname;	/* the canonical name */
 };
+
+/* values for nc_flags */
+#define NCF_VALID	0x0001	/* entry valid */
 /*
 **  Mapping functions
 **
