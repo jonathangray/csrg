@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nhpib.c	7.4 (Berkeley) 05/07/91
+ *	@(#)nhpib.c	7.5 (Berkeley) 06/05/92
  */
 
 /*
@@ -43,7 +43,7 @@
 #include "sys/systm.h"
 #include "sys/buf.h"
 
-#include "device.h"
+#include "hp/dev/device.h"
 #include "nhpibreg.h"
 #include "hpibvar.h"
 #include "dmavar.h"
