@@ -1,6 +1,6 @@
 /* Copyright (c) 1979 Regents of the University of California */
 
-static char sccsid[] = "@(#)PCLOSE.c 1.1 10/30/80";
+static char sccsid[] = "@(#)PCLOSE.c 1.2 01/09/81";
 
 #include "h00vars.h"
 #include "h01errs.h"
