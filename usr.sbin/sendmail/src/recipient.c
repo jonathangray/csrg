@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recipient.c	8.21 (Berkeley) 10/29/93";
+static char sccsid[] = "@(#)recipient.c	8.22 (Berkeley) 11/08/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -392,7 +392,7 @@ recipient(a, sendq, e)
 			a->q_flags |= QBADADDR;
 			usrerr("550 Cannot mail directly to files");
 		}
-		else if ((stat(buf, &stb) >= 0) ? (!writable(&stb)) :
+		else if ((stat(buf, &stb) >= 0) ? (!writable(buf, &stb)) :
 		    (*p = '\0', safefile(buf, RealUid, RealGid, NULL, TRUE, S_IWRITE|S_IEXEC) != 0))
 		{
 			a->q_flags |= QBADADDR;
@@ -415,7 +415,6 @@ recipient(a, sendq, e)
 	if (!bitset(QDONTSEND|QNOTREMOTE|QVERIFIED, a->q_flags))
 	{
 		extern int udbexpand();
-		extern int errno;
 
 		if (udbexpand(a, sendq, e) == EX_TEMPFAIL)
 		{
@@ -651,13 +650,16 @@ finduser(name, fuzzyp)
 */
 
 bool
-writable(s)
+writable(filename, s)
+	char *filename;
 	register struct stat *s;
 {
 	uid_t euid;
 	gid_t egid;
 	int bits;
 
+	if (tTd(29, 5))
+		printf("writable(%s) mode=%o\n", filename, s->st_mode);
 	if (bitset(0111, s->st_mode))
 		return (FALSE);
 	euid = RealUid;
@@ -669,6 +671,10 @@ writable(s)
 		if (bitset(S_ISGID, s->st_mode))
 			egid = s->st_gid;
 	}
+
+	if (tTd(29, 5))
+		printf("\teu/gid=%d/%d, st_u/gid=%d/%d\n",
+			euid, egid, s->st_uid, s->st_gid);
 
 	if (euid == 0)
 		return (TRUE);
