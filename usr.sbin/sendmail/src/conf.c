@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	5.42 (Berkeley) 09/09/92";
+static char sccsid[] = "@(#)conf.c	5.43 (Berkeley) 11/14/92";
 #endif /* not lint */
 
 # include <sys/ioctl.h>
@@ -451,7 +451,7 @@ checkcompat(to, e)
 		/* NoReturn = TRUE; to supress return copy */
 		return (FALSE);
 	}
-# endif EXAMPLE_CODE
+# endif /* EXAMPLE_CODE */
 	return (TRUE);
 }
 /*
@@ -710,7 +710,7 @@ setproctitle(fmt, a, b, c)
 	p = &Argv[0][i];
 	while (p < LastArgv)
 		*p++ = ' ';
-# endif SETPROCTITLE
+# endif /* SETPROCTITLE */
 }
 /*
 **  REAPCHILD -- pick up the body of my child, lest it become a zombie
@@ -735,12 +735,12 @@ reapchild()
 
 	while (wait3((int *)&status, WNOHANG, (struct rusage *) NULL) > 0)
 		continue;
-# else WNOHANG
+# else /* WNOHANG */
 	auto int status;
 
 	while (wait((int *)&status) > 0)
 		continue;
-# endif WNOHANG
+# endif /* WNOHANG */
 }
 /*
 **  UNSETENV -- remove a variable from the environment
