@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	6.24 (Berkeley) 03/30/93";
+static char sccsid[] = "@(#)readcf.c	6.25 (Berkeley) 04/03/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -744,6 +744,10 @@ makemailer(line)
 
 		  case 'L':		/* maximum line length */
 			m->m_linelimit = atoi(p);
+			break;
+
+		  case 'D':		/* working directory */
+			m->m_execdir = newstr(p);
 			break;
 		}
 
