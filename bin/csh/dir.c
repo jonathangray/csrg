@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)dir.c	5.11 (Berkeley) 06/24/91";
+static char sccsid[] = "@(#)dir.c	5.12 (Berkeley) 06/26/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -417,6 +417,7 @@ dfollow(cp)
     register Char *dp;
     struct varent *c;
     char    ebuf[MAXPATHLEN];
+    int serrno;
 
     cp = globone(cp, G_ERROR);
     /*
@@ -431,6 +432,7 @@ dfollow(cp)
 	xfree((ptr_t) dp);
 	if (chdir(short2str(cp)) >= 0)
 	    return dgoto(cp);
+	serrno = errno;
     }
 
     if (cp[0] != '/' && !prefix(STRdotsl, cp) && !prefix(STRdotdotsl, cp)
@@ -460,7 +462,7 @@ dfollow(cp)
     }
     (void) strcpy(ebuf, short2str(cp));
     xfree((ptr_t) cp);
-    stderror(ERR_SYSTEM, ebuf, strerror(errno));
+    stderror(ERR_SYSTEM, ebuf, strerror(serrno));
     return (NULL);
 }
 
