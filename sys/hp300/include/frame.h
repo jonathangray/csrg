@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * from: Utah $Hdr: frame.h 1.6 89/02/24$
+ * from: Utah $Hdr: frame.h 1.1 90/07/09$
  *
- *	@(#)frame.h	7.1 (Berkeley) 05/08/90
+ *	@(#)frame.h	7.2 (Berkeley) 11/02/90
  */
 
 struct frame {
