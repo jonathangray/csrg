@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)arp.c	5.11.1.1 (Berkeley) 07/22/91";
+static char sccsid[] = "@(#)arp.c	5.13 (Berkeley) 02/25/92";
 #endif /* not lint */
 
 /*
@@ -437,7 +437,7 @@ rtmsg(cmd)
 		rtm->rtm_addrs |= RTA_GATEWAY;
 		rtm->rtm_rmx.rmx_expire = expire_time;
 		rtm->rtm_inits = RTV_EXPIRE;
-		rtm->rtm_flags |= RTF_HOST;
+		rtm->rtm_flags |= (RTF_HOST | RTF_STATIC);
 		sin_m.sin_other = 0;
 		if (doing_proxy) {
 			if (export_only)
