@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fifo_vnops.c	8.4 (Berkeley) 08/10/94
+ *	@(#)fifo_vnops.c	8.5 (Berkeley) 02/06/95
  */
 
 #include <sys/param.h>
@@ -343,6 +343,8 @@ fifo_bmap(ap)
 		*ap->a_vpp = ap->a_vp;
 	if (ap->a_bnp != NULL)
 		*ap->a_bnp = ap->a_bn;
+	if (ap->a_runp != NULL)
+		*ap->a_runp = 0;
 	return (0);
 }
 
