@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mfs_vnops.c	8.9 (Berkeley) 03/21/95
+ *	@(#)mfs_vnops.c	8.10 (Berkeley) 03/30/95
  */
 
 #include <sys/param.h>
@@ -341,7 +341,8 @@ mfs_badop()
 /*
  * Memory based filesystem initialization.
  */
-mfs_init()
+mfs_init(vfsp)
+	struct vfsconf *vfsp;
 {
 
 	return;
