@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)err.c	8.11 (Berkeley) 10/17/93";
+static char sccsid[] = "@(#)err.c	8.12 (Berkeley) 10/21/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -117,7 +117,10 @@ syserr(fmt, va_alist)
 			&MsgBuf[4]);
 # endif /* LOG */
 	if (olderrno == EMFILE)
+	{
 		printopenfds(TRUE);
+		mci_dump_all(TRUE);
+	}
 	if (panic)
 	{
 #ifdef XLA
