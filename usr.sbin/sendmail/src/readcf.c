@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	8.53 (Berkeley) 12/05/94";
+static char sccsid[] = "@(#)readcf.c	8.54 (Berkeley) 12/15/94";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -936,7 +936,7 @@ makemailer(line)
 
 	if (ConfigLevel < 6 && m->m_mtstype == NULL &&
 	    (strcmp(m->m_mailer, "[IPC]") == 0 ||
-	     strcmp(m->m_mailer, "[TCP]") == NULL))
+	     strcmp(m->m_mailer, "[TCP]") == 0))
 		m->m_mtstype = "Internet";
 
 	/* enter the mailer into the symbol table */
