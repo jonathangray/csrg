@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	8.9 (Berkeley) 08/14/93";
+static char sccsid[] = "@(#)readcf.c	8.10 (Berkeley) 08/16/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -482,6 +482,13 @@ readcf(cfname)
 
 		  case 'V':		/* configuration syntax version */
 			ConfigLevel = atoi(&bp[1]);
+			if (ConfigLevel >= 5)
+			{
+				/* level 5 configs have short name in $w */
+				p = macvalue('w', e);
+				if (p != NULL && (p = strchr(p, '.')) != NULL)
+					*p = '\0';
+			}
 			break;
 
 		  case 'K':
