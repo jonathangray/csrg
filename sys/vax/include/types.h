@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)types.h	7.1 (Berkeley) 05/15/90
+ *	@(#)types.h	7.2 (Berkeley) 05/17/90
  */
 
-#ifndef	_X3J11_H_
-#define	_X3J11_H_
+#ifndef	_MACHTYPES_H_
+#define	_MACHTYPES_H_
 
 /*
  * Types which are fundamental to the implementation and may appear in
@@ -52,4 +52,10 @@
 #define	_WCHAR_T_	unsigned short		/* wchar_t */
 #define	_SIZE_T_	unsigned int		/* sizeof() */
 
-#endif	/* _X3J11_H_ */
+#ifndef _ANSI_SOURCE
+typedef	struct	_physadr { int r[1]; } *physadr;
+typedef	struct	label_t	{
+	int	val[14];
+} label_t;
+#endif
+#endif	/* _MACHTYPES_H_ */
