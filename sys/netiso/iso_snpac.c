@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)iso_snpac.c	8.1 (Berkeley) 06/10/93
+ *	@(#)iso_snpac.c	8.2 (Berkeley) 01/09/95
  */
 
 /***********************************************************
@@ -486,7 +486,7 @@ snpac_fixdstandmask(nsellength)
  */
 snpac_ioctl (so, cmd, data)
 struct socket *so;
-int		cmd;	/* ioctl to process */
+u_long	cmd;	/* ioctl to process */
 caddr_t	data;	/* data for the cmd */
 {
 	register struct systype_req *rq = (struct systype_req *)data;
