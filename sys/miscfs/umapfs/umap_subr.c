@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)umap_subr.c	8.7 (Berkeley) 08/20/94
+ *	@(#)umap_subr.c	8.8 (Berkeley) 03/29/95
  *
  * $Id: lofs_subr.c, v 1.11 1992/05/30 10:05:43 jsp Exp jsp $
  */
@@ -67,7 +67,8 @@ u_long umap_node_hash;
 /*
  * Initialise cache headers
  */
-umapfs_init()
+umapfs_init(vfsp)
+	struct vfsconf *vfsp;
 {
 
 #ifdef UMAPFS_DIAGNOSTIC
