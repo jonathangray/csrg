@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kernfs_vnops.c	7.1 (Berkeley) 07/18/92
+ *	@(#)kernfs_vnops.c	7.2 (Berkeley) 07/18/92
  */
 
 /*
@@ -208,7 +208,7 @@ kernfs_lookup(ap)
 #endif
 	if (cnp->cn_namelen == 1 && *pname == '.') {
 		*vpp = dvp;
-		VREF(dvp);	
+		VREF(dvp);
 		/*VOP_LOCK(dvp);*/
 		return (0);
 	}
@@ -219,7 +219,7 @@ kernfs_lookup(ap)
 		VOP_LOCK(rootdir);
 		return (0);
 	}
-	
+
 	/*
 	 * /kern/rootdev is the root device
 	 */
@@ -597,7 +597,7 @@ kernfs_badop()
 }
 
 /*
- * /dev/fd vnode null operation
+ * kernfs vnode null operation
  */
 kernfs_nullop()
 {
