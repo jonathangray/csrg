@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)bmc.c	7.2 (Berkeley) 12/10/92
+ *	@(#)bmc.c	7.3 (Berkeley) 12/14/92
  */
 
 #define	BMC_NOCONSOLE
@@ -90,13 +90,13 @@ struct	bmc_softc bmc_softc[NBMC];
 struct	tty bmc_tty[NBMC];
 
 int	bmc_config_done = 0;
-
-int	bmcconsole;
+int	bmcconsole = -1;
 int	bmcdefaultrate = B9600;				/* speed of console line is fixed */
 int	bmcmajor = 0;
 
 #define	bmcunit(x)		minor(x)
 
+extern	struct tty *constty;
 
 /*
  *  probe routine
@@ -229,7 +229,12 @@ bmcwrite(dev, uio, flag)
 	dev_t dev;
 	struct uio *uio;
 {
-	register struct tty *tp = &bmc_tty[bmcunit(dev)];
+	register int unit = bmcunit(dev);
+	register struct tty *tp = &bmc_tty[unit];
+
+	if ((unit == bmcconsole) && constty &&
+	    (constty->t_state&(TS_CARR_ON|TS_ISOPEN))==(TS_CARR_ON|TS_ISOPEN))
+		tp = constty;
 
 	return ((*linesw[tp->t_line].l_write)(tp, uio, flag));
 }
