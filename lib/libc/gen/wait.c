@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)wait.c	5.2 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)wait.c	5.3 (Berkeley) 10/30/90";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -40,9 +40,9 @@ static char sccsid[] = "@(#)wait.c	5.2 (Berkeley) 06/01/90";
 #include <sys/wait.h>
 #include <sys/resource.h>
 
+pid_t
 wait(pstat)
 	union wait *pstat;
 {
-
 	return (wait4(WAIT_ANY, pstat, 0, (struct rusage *)0));
 }
