@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)clnp_output.c	7.12 (Berkeley) 10/11/92
+ *	@(#)clnp_output.c	7.13 (Berkeley) 06/04/93
  */
 
 /***********************************************************
@@ -124,7 +124,7 @@ static struct clnp_fixed echor_template = {
 #ifdef	DECBIT
 u_char qos_option[] = {CLNPOVAL_QOS, 1, 
 	CLNPOVAL_GLOBAL|CLNPOVAL_SEQUENCING|CLNPOVAL_LOWDELAY};
-#endif	DECBIT
+#endif	/* DECBIT */
 
 int				clnp_id = 0;		/* id for segmented dgrams */
 
@@ -466,7 +466,7 @@ int					flags;		/* flags */
 			hdrlen += sizeof(qos_option);
 			m->m_len += sizeof(qos_option);
 		}
-#endif	DECBIT
+#endif	/* DECBIT */
 
 		/*
 		 *	If an options mbuf is present, concatenate a copy to the hdr mbuf.
