@@ -30,10 +30,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)times.h	7.5 (Berkeley) 02/05/91
+ *	@(#)times.h	7.6 (Berkeley) 03/09/91
  */
 
-#include <machine/types.h>
+#include <machine/ansi.h>
 
 #ifdef	_CLOCK_T_
 typedef	_CLOCK_T_	clock_t;
