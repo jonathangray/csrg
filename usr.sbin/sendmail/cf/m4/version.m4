@@ -32,11 +32,11 @@ divert(-1)
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-VERSIONID(@(#)version.m4	2.7 (Berkeley) 07/14/92)
+VERSIONID(@(#)version.m4	2.8 (Berkeley) 07/20/92)
 #
 divert(0)
 ######################
 #   Version Number   #
 ######################
 
-DZ2.7
+DZ2.8
