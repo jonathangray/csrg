@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vfsops.c	7.32 (Berkeley) 11/01/91
+ *	@(#)nfs_vfsops.c	7.33 (Berkeley) 11/05/91
  */
 
 #include "param.h"
@@ -586,15 +586,14 @@ nfs_start(mp, flags, p)
 /*
  * Do operations associated with quotas, not supported
  */
+/* ARGSUSED */
 nfs_quotactl(mp, cmd, uid, arg, p)
 	struct mount *mp;
 	int cmd;
-	uid_t uid;
+	u_int uid;
 	caddr_t arg;
 	struct proc *p;
 {
-#ifdef lint
-	mp = mp; cmd = cmd; uid = uid; arg = arg;
-#endif /* lint */
+
 	return (EOPNOTSUPP);
 }
