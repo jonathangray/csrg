@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)namei.h	8.4 (Berkeley) 08/20/94
+ *	@(#)namei.h	8.5 (Berkeley) 01/09/95
  */
 
 #ifndef _SYS_NAMEI_H_
@@ -172,6 +172,8 @@ struct	namecache {
 u_long	nextvnodeid;
 int	namei __P((struct nameidata *ndp));
 int	lookup __P((struct nameidata *ndp));
+int	relookup __P((struct vnode *dvp, struct vnode **vpp,
+	    struct componentname *cnp));
 #endif
 
 /*
