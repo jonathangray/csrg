@@ -6,7 +6,7 @@
 # include "sendmail.h"
 # include <sys/stat.h>
 
-SCCSID(@(#)main.c	3.104		08/27/82);
+SCCSID(@(#)main.c	3.105		09/01/82);
 
 /*
 **  SENDMAIL -- Post mail to a set of destinations.
@@ -425,6 +425,10 @@ main(argc, argv)
 	**	Extract special fields for local use.
 	*/
 
+# ifdef LOG
+	if (LogLevel > 8)
+		syslog(LOG_DEBUG, "entered, uid=%d, pid=%d", getuid(), getpid());
+# endif LOG
 	readcf(ConfFile, safecf);
 	initsys();
 
