@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)systm.h	8.1 (Berkeley) 06/11/93
+ *	@(#)systm.h	8.2 (Berkeley) 09/03/93
  */
 
 /*
@@ -72,7 +72,7 @@ extern int nswap;		/* size of swap space */
 
 extern int selwait;		/* select timeout address */
 
-extern u_char curpri;		/* priority of current process */
+extern u_char curpriority;	/* priority of current process */
 
 extern int maxmem;		/* max memory per process */
 extern int physmem;		/* physical memory */
