@@ -1,3 +1,43 @@
+/*
+ * Copyright (c) University of British Columbia, 1984
+ * Copyright (c) 1990 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This code is derived from software contributed to Berkeley by
+ * the Laboratory for Computation Vision and the Computer Science Department
+ * of the University of British Columbia.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ *
+ *	@(#)x25.h	7.2 (Berkeley) 05/11/90
+ */
+
 #ifdef KERNEL
 #define PRC_IFUP	3
 #define PRC_LINKUP	4
@@ -51,12 +91,14 @@ struct	x25config {
 	/* packet level parameters */
 	u_short	xc_pwsize:3,	/* default window size */
 		xc_psize:4,	/* default packet size 7=128, 8=256, ... */
-		xc_type:2,	/* network type */
+		xc_type:3,	/* network type */
 #define X25_1976	0
 #define X25_1980	1
 #define X25_1984	2
+#define X25_DDN		3
+#define X25_BASIC	4
 		xc_ptrace:1,	/* packet level tracing flag */
-		xc_rsvd2:6;
+		xc_rsvd2:5;
 	u_char	xc_maxlcn;	/* max logical channels */
 	u_char	xc_rsvd3;
 };
@@ -68,7 +110,8 @@ struct	x25config {
  */
 
 struct	sockaddr_x25 {
-	short	x25_family;	/* must be AF_CCITT */
+	u_char	x25_len;
+	u_char	x25_family;	/* must be AF_CCITT */
 	short	x25_net;	/* network id code (usually a dnic) */
 	struct	x25opts {
 		char	op_flags;	/* miscellaneous options */
