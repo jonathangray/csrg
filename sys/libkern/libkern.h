@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)libkern.h	7.2 (Berkeley) 06/21/92
+ *	@(#)libkern.h	7.3 (Berkeley) 06/24/92
  */
 
 #include <sys/types.h>
@@ -46,6 +46,7 @@ long	 lmin __P((long, long));
 int	 locc __P((int, char *, u_int));
 u_int	 max __P((u_int, u_int));
 u_int	 min __P((u_int, u_int));
+u_long	 random __P((void));
 int	 scanc __P((u_int, u_char *, u_char *, int));
 int	 skpc __P((int, int, char *));
 char	*strcat __P((char *, const char *));
