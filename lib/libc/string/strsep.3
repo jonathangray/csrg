@@ -3,6 +3,7 @@
 .\"
 .\" This code is derived from software contributed to Berkeley by
 .\" Chris Torek.
+.\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
 .\" are met:
@@ -31,7 +32,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)strsep.3	5.3 (Berkeley) 04/19/91
+.\"	@(#)strsep.3	5.4 (Berkeley) 08/03/91
 .\"
 .Dd 
 .Dt STRSEP 3
@@ -46,7 +47,7 @@
 .Sh DESCRIPTION
 The
 .Fn strsep
-locates in the null-terminated string at
+function locates in the null-terminated string at
 .Fa *stringp
 the first occurence of any character in
 .Fa delim
