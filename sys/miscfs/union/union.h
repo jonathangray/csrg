@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union.h	2.1 (Berkeley) 02/10/94
+ *	@(#)union.h	2.2 (Berkeley) 02/10/94
  */
 
 struct union_args {
@@ -68,7 +68,7 @@ struct union_mount {
  * A cache of vnode references
  */
 struct union_node {
-	struct union_node	*un_next;	/* Hash chain */
+	LIST_ENTRY(union_node)	un_cache;	/* Hash chain */
 	struct vnode		*un_vnode;	/* Back pointer */
 	struct vnode	        *un_uppervp;	/* overlaying object */
 	struct vnode	        *un_lowervp;	/* underlying object */
@@ -87,13 +87,6 @@ struct union_node {
 #define UN_ULOCK	0x04		/* Upper node is locked */
 #define UN_KLOCK	0x08		/* Keep upper node locked on vput */
 
-#define LOCKUVP(un) \
-		(((un)->un_flags & UN_ULOCK) ? \
-		  (0) : \
-		  (((un)->un_flags |= UN_ULOCK), VOP_LOCK((un)->un_uppervp)))
-#define UNLOCKUVP(un) \
-		((un)->un_flags &= ~UN_ULOCK)
-
 extern int union_allocvp __P((struct vnode **, struct mount *,
 				struct vnode *, struct vnode *,
 				struct componentname *, struct vnode *,
@@ -108,6 +101,8 @@ extern int union_cn_close __P((struct vnode *, int, struct ucred *,
 				struct proc *));
 extern void union_removed_upper __P((struct union_node *un));
 extern struct vnode *union_lowervp __P((struct vnode *));
+extern void union_newlower __P((struct union_node *, struct vnode *));
+extern void union_newupper __P((struct union_node *, struct vnode *));
 
 #define	MOUNTTOUNIONMOUNT(mp) ((struct union_mount *)((mp)->mnt_data))
 #define	VTOUNION(vp) ((struct union_node *)(vp)->v_data)
