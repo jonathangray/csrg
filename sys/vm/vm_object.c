@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_object.c	7.7.1.1 (Berkeley) 11/20/91
+ *	@(#)vm_object.c	7.9 (Berkeley) 11/20/91
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
