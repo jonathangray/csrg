@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)psreg.h	7.4 (Berkeley) 06/28/90
+ *	@(#)psreg.h	7.5 (Berkeley) 12/16/90
  */
 
 #ifndef _PSREG_
@@ -38,11 +38,7 @@
 /*
  * PS300 definitions.
  */
-#ifndef KERNEL
 #include <sys/ioctl.h>
-#else
-#include "ioctl.h"
-#endif
 
 struct  pslookup {
         int     pl_len;                 /* length of name string */
