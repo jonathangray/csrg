@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_ihash.c	8.3 (Berkeley) 09/23/93
+ *	@(#)ufs_ihash.c	8.4 (Berkeley) 12/30/93
  */
 
 #include <sys/param.h>
@@ -103,7 +103,7 @@ ufs_ihashget(device, inum)
 					break;
 				}
 				vp = ITOV(ip);
-				if (!vget(vp))
+				if (!vget(vp, 1))
 					return (vp);
 				break;
 			}
