@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)mountd.8	8.3 (Berkeley) 03/29/95
+.\"     @(#)mountd.8	8.4 (Berkeley) 04/28/95
 .\"
 .Dd 
 .Dt MOUNTD 8
@@ -93,7 +93,7 @@ After changing the exports file,
 a hangup signal should be sent to the mountd daemon
 to get it to reload the export information.
 After sending the SIGHUP
-(kill -HUP `cat /var/run/mountd.pid`),
+(kill \-s HUP `cat /var/run/mountd.pid`),
 check the syslog output to see if mountd logged any parsing
 errors in the exports file.
 .Sh FILES
