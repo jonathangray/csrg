@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)collect.c	5.11 (Berkeley) 01/04/92";
+static char sccsid[] = "@(#)collect.c	5.12 (Berkeley) 07/12/92";
 #endif /* not lint */
 
 # include <errno.h>
@@ -77,14 +77,14 @@ maketemp(from)
 	**  Create the temp file name and create the file.
 	*/
 
-	CurEnv->e_df = newstr(queuename(CurEnv, 'd'));
-	if ((tf = dfopen(CurEnv->e_df, "w")) == NULL)
+	e->e_df = newstr(queuename(e, 'd'));
+	if ((tf = dfopen(e->e_df, "w")) == NULL)
 	{
-		syserr("Cannot create %s", CurEnv->e_df);
+		syserr("Cannot create %s", e->e_df);
 		NoReturn = TRUE;
 		finis();
 	}
-	(void) chmod(CurEnv->e_df, FileMode);
+	(void) chmod(e->e_df, FileMode);
 
 	/*
 	**  Tell ARPANET to go ahead.
@@ -105,7 +105,7 @@ maketemp(from)
 	{
 		if (!flusheol(buf, InChannel))
 			goto readerr;
-		eatfrom(buf);
+		eatfrom(buf, e);
 		if (sfgets(buf, MAXFIELD, InChannel) == NULL)
 			goto readerr;
 		fixcrlf(buf, FALSE);
@@ -170,7 +170,7 @@ maketemp(from)
 			}
 		}
 
-		CurEnv->e_msgsize += workbuflen;
+		e->e_msgsize += workbuflen;
 
 		/*
 		**  The working buffer now becomes the free buffer, since
@@ -194,7 +194,7 @@ maketemp(from)
 		**  Snarf header away.
 		*/
 
-		if (bitset(H_EOH, chompheader(freebuf, FALSE)))
+		if (bitset(H_EOH, chompheader(freebuf, FALSE, e)))
 			break;
 	}
 
@@ -233,16 +233,16 @@ maketemp(from)
 		**  file, and insert a newline if missing.
 		*/
 
-		CurEnv->e_msgsize += strlen(bp) + 1;
+		e->e_msgsize += strlen(bp) + 1;
 		fputs(bp, tf);
 		fputs("\n", tf);
 		if (ferror(tf))
-			tferror(tf);
+			tferror(tf, e);
 	} while (sfgets(buf, MAXFIELD, InChannel) != NULL);
 
 readerr:
 	if (fflush(tf) != 0)
-		tferror(tf);
+		tferror(tf, e);
 	(void) fclose(tf);
 
 	/* An EOF when running SMTP is an error */
@@ -253,14 +253,14 @@ readerr:
 		if (RealHostName != NULL && LogLevel > 0)
 			syslog(LOG_NOTICE,
 			    "collect: unexpected close on connection from %s: %m\n",
-			    CurEnv->e_from.q_paddr, RealHostName);
+			    e->e_from.q_paddr, RealHostName);
 # endif
 		(feof(InChannel) ? usrerr: syserr)
-			("collect: unexpected close, from=%s", CurEnv->e_from.q_paddr);
+			("collect: unexpected close, from=%s", e->e_from.q_paddr);
 
 		/* don't return an error indication */
-		CurEnv->e_to = NULL;
-		CurEnv->e_flags &= ~EF_FATALERRS;
+		e->e_to = NULL;
+		e->e_flags &= ~EF_FATALERRS;
 
 		/* and don't try to deliver the partial message either */
 		finis();
@@ -271,31 +271,31 @@ readerr:
 	**	Examples are who is the from person & the date.
 	*/
 
-	eatheader(CurEnv);
+	eatheader(e);
 
 	/*
 	**  Add an Apparently-To: line if we have no recipient lines.
 	*/
 
-	if (hvalue("to") == NULL && hvalue("cc") == NULL &&
-	    hvalue("bcc") == NULL && hvalue("apparently-to") == NULL)
+	if (hvalue("to", e) == NULL && hvalue("cc", e) == NULL &&
+	    hvalue("bcc", e) == NULL && hvalue("apparently-to", e) == NULL)
 	{
 		register ADDRESS *q;
 
 		/* create an Apparently-To: field */
 		/*    that or reject the message.... */
-		for (q = CurEnv->e_sendqueue; q != NULL; q = q->q_next)
+		for (q = e->e_sendqueue; q != NULL; q = q->q_next)
 		{
 			if (q->q_alias != NULL)
 				continue;
 			if (tTd(30, 3))
 				printf("Adding Apparently-To: %s\n", q->q_paddr);
-			addheader("apparently-to", q->q_paddr, CurEnv);
+			addheader("apparently-to", q->q_paddr, e);
 		}
 	}
 
-	if ((CurEnv->e_dfp = fopen(CurEnv->e_df, "r")) == NULL)
-		syserr("Cannot reopen %s", CurEnv->e_df);
+	if ((e->e_dfp = fopen(e->e_df, "r")) == NULL)
+		syserr("Cannot reopen %s", e->e_df);
 }
 /*
 **  FLUSHEOL -- if not at EOL, throw away rest of input line.
@@ -341,17 +341,18 @@ flusheol(buf, fp)
 **		Arranges for following output to go elsewhere.
 */
 
-tferror(tf)
+tferror(tf, e)
 	FILE *tf;
+	register ENVELOPE *e;
 {
 	if (errno == ENOSPC)
 	{
-		(void) freopen(CurEnv->e_df, "w", tf);
+		(void) freopen(e->e_df, "w", tf);
 		fputs("\nMAIL DELETED BECAUSE OF LACK OF DISK SPACE\n\n", tf);
 		usrerr("452 Out of disk space for temp file");
 	}
 	else
-		syserr("collect: Cannot write %s", CurEnv->e_df);
+		syserr("collect: Cannot write %s", e->e_df);
 	(void) freopen("/dev/null", "w", tf);
 }
 /*
@@ -385,8 +386,9 @@ char	*MonthList[] =
 	NULL
 };
 
-eatfrom(fm)
+eatfrom(fm, e)
 	char *fm;
+	register ENVELOPE *e;
 {
 	register char *p;
 	register char **dt;
@@ -429,9 +431,9 @@ eatfrom(fm)
 		q = xalloc(25);
 		(void) strncpy(q, p, 25);
 		q[24] = '\0';
-		define('d', q, CurEnv);
+		define('d', q, e);
 		q = arpadate(q);
-		define('a', newstr(q), CurEnv);
+		define('a', newstr(q), e);
 	}
 }
 
