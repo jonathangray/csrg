@@ -33,22 +33,22 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mscp.c	7.4 (Berkeley) 06/28/90
+ *	@(#)mscp.c	7.5 (Berkeley) 12/16/90
  */
 
 /*
  * MSCP generic driver routines
  */
 
-#include "param.h"
-#include "buf.h"
-#include "errno.h"
-#include "dkstat.h"
-#include "ioctl.h"
-#include "disklabel.h"
-#include "syslog.h"
+#include "sys/param.h"
+#include "sys/buf.h"
+#include "sys/errno.h"
+#include "sys/dkstat.h"
+#include "sys/ioctl.h"
+#include "sys/disklabel.h"
+#include "sys/syslog.h"
 
-#include "../vaxuba/ubavar.h"
+#include "../uba/ubavar.h"
 
 #include "mscp.h"
 #include "mscpvar.h"
