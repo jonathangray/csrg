@@ -1,6 +1,6 @@
 /*-
- * Copyright (c) 1990 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1990, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)pr_time.c	5.4 (Berkeley) 04/27/93";
+static char sccsid[] = "@(#)pr_time.c	8.1 (Berkeley) 06/06/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -49,7 +49,7 @@ static char sccsid[] = "@(#)pr_time.c	5.4 (Berkeley) 04/27/93";
  *	Print the time since the user logged in. 
  *
  *	Note: SCCS forces the bizarre string manipulation, things like
- *	5.4 get replaced in the source code.
+ *	8.1 get replaced in the source code.
  */
 void
 pr_attime(started, now)
