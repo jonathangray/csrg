@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)find.1	6.7 (Berkeley) 04/16/90
+.\"	@(#)find.1	6.8 (Berkeley) 04/16/90
 .\"
 .TH FIND 1 ""
 .AT 3
@@ -94,6 +94,12 @@ it is replaced by the pathname of the current file.
 Utility will be executed in the directory from which
 .I find
 was executed.
+Note, the
+.IR utility ,
+optional
+.I arguments
+and terminating semicolon must each be a separate argument to
+.IR find .
 .TP
 .B \-follow
 This primary always evaluates to true.
