@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_cons.c	7.11 (Berkeley) 10/11/92
+ *	@(#)tp_cons.c	7.12 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -304,5 +304,5 @@ tpcons_dg_output(chan, m0, datalen)
 {
 	return tpcons_output(((struct pklcd *)chan)->lcd_upnext, m0, datalen, 0);
 }
-#endif TPCONS
-#endif ISO
+#endif /* TPCONS */
+#endif /* ISO */
