@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_syscalls.c	7.26 (Berkeley) 10/24/92
+ *	@(#)lfs_syscalls.c	7.27 (Berkeley) 11/14/92
  */
 
 #include <sys/param.h>
@@ -488,7 +488,7 @@ lfs_fastvget(mp, ino, daddr, vpp, dinp)
 			ufs_ihashrem(ip);
 
 			/* Unlock and discard unneeded inode. */
-			ufs_iput(ip);
+			vput(vp);
 			brelse(bp);
 			*vpp = NULL;
 			return (error);
@@ -505,7 +505,7 @@ lfs_fastvget(mp, ino, daddr, vpp, dinp)
 	 * cases re-init ip, the underlying vnode/inode may have changed.
 	 */
 	if (error = ufs_vinit(mp, lfs_specop_p, LFS_FIFOOPS, &vp)) {
-		ufs_iput(ip);
+		vput(vp);
 		*vpp = NULL;
 		return (error);
 	}
