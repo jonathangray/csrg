@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ftpcmd.y	8.2 (Berkeley) 04/04/94
+ *	@(#)ftpcmd.y	8.3 (Berkeley) 04/06/94
  */
 
 /*
@@ -41,7 +41,7 @@
 %{
 
 #ifndef lint
-static char sccsid[] = "@(#)ftpcmd.y	8.2 (Berkeley) 04/04/94";
+static char sccsid[] = "@(#)ftpcmd.y	8.3 (Berkeley) 04/06/94";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -647,10 +647,12 @@ pathname
 			 */
 			if (logged_in && $1 && *$1 == '~') {
 				glob_t gl;
-				int flags = GLOB_BRACE|GLOB_QUOTE|GLOB_TILDE;
+				int flags =
+				 GLOB_BRACE|GLOB_NOCHECK|GLOB_QUOTE|GLOB_TILDE;
 
 				memset(&gl, 0, sizeof(gl));
-				if (glob($1, flags, NULL, &gl)) {
+				if (glob($1, flags, NULL, &gl) ||
+				    gl.gl_pathc == 0) {
 					reply(550, "not found");
 					$$ = NULL;
 				} else {
