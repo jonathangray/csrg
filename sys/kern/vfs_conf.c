@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_conf.c	7.12 (Berkeley) 06/23/92
+ *	@(#)vfs_conf.c	7.13 (Berkeley) 07/03/92
  */
 
 #include <sys/param.h>
@@ -160,7 +160,6 @@ extern struct vnodeop_desc
 	vop_islocked_desc,
 	vop_advlock_desc,
 	vop_blkatoff_desc,
-	vop_vget_desc,
 	vop_valloc_desc,
 	vop_vfree_desc,
 	vop_truncate_desc,
@@ -205,7 +204,6 @@ struct vnodeop_desc *vfs_op_descs[] = {
 	&vop_islocked_desc,
 	&vop_advlock_desc,
 	&vop_blkatoff_desc,
-	&vop_vget_desc,
 	&vop_valloc_desc,
 	&vop_vfree_desc,
 	&vop_truncate_desc,
