@@ -11,7 +11,7 @@
 # include <sysexits.h>
 # include "conf.h"
 
-static char	SccsId[] =	"@(#)rmail.c	4.2	(Berkeley)	02/18/83";
+static char	SccsId[] =	"@(#)rmail.c	4.3	(Berkeley)	02/18/83";
 
 typedef char	bool;
 #define TRUE	1
