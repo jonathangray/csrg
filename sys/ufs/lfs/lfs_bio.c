@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_bio.c	7.13 (Berkeley) 07/02/92
+ *	@(#)lfs_bio.c	7.14 (Berkeley) 08/01/92
  */
 
 #include <sys/param.h>
@@ -64,9 +64,7 @@ lfs_bwrite(ap)
 {
 	register struct buf *bp = ap->a_bp;
 	int s;
-#ifdef VERBOSE
-printf("lfs_bwrite\n");
-#endif
+
 	/*
 	 * Set the delayed write flag and use reassignbuf to move the buffer
 	 * from the clean list to the dirty one.
