@@ -32,7 +32,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#       @(#)makesendmail	8.12 (Berkeley) 12/28/94
+#       @(#)makesendmail	8.13 (Berkeley) 01/07/95
 #
 
 #
@@ -134,4 +134,9 @@ else
 fi
 echo "Making in $obj"
 cd $obj
-exec ${MAKE-make} "$@"
+if [ $# = 0 ]
+then
+	exec ${MAKE-make}
+else
+	exec ${MAKE-make} "$@"
+fi
