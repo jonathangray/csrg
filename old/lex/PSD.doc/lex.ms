@@ -2,7 +2,7 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)lex.ms	8.1 (Berkeley) 06/08/93
+.\"	@(#)lex.ms	8.2 (Berkeley) 05/24/94
 .\"
 .EH 'PSD:16-%''Lex \- A Lexical Analyzer Generator'
 .OH 'Lex \- A Lexical Analyzer Generator''PSD:16-%'
@@ -168,7 +168,6 @@ input
 in this memo)
 and perform the specified actions for each expression as it is detected.
 See Figure 1.
-.GS
 .TS
 center;
 l _ r
@@ -190,7 +189,6 @@ Input \(->	yylex	\(-> Output
 An overview of Lex
 Figure 1
 .TE
-.GE
 .PP
 For a trivial example, consider a program to delete
 from the input
@@ -2082,7 +2080,6 @@ l.
 .TE
 which indicate the value associated with each character.
 Thus the next example
-.GS 2
 .TS
 center;
 l l.
@@ -2103,7 +2100,6 @@ l l.
 .sp
 .ce 1
 Sample character table.
-.GE
 maps the lower and upper case letters together into the integers 1 through 26,
 newline into 27, + and \- into 28 and 29, and the
 digits into 30 through 39.
