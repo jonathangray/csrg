@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)util.c	8.39 (Berkeley) 04/14/94";
+static char sccsid[] = "@(#)util.c	8.40 (Berkeley) 06/17/94";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1403,7 +1403,8 @@ dumpfd(fd, printclosed, logit)
 			sprintf(p, "(badsock)");
 		else
 		{
-			hp = gethostbyaddr((char *) &sin.sin_addr, slen, AF_INET);
+			hp = gethostbyaddr((char *) &sin.sin_addr,
+					   IPADDRSIZE, AF_INET);
 			sprintf(p, "%s/%d", hp == NULL ? inet_ntoa(sin.sin_addr)
 						   : hp->h_name, ntohs(sin.sin_port));
 		}
@@ -1415,7 +1416,8 @@ dumpfd(fd, printclosed, logit)
 			sprintf(p, "(badsock)");
 		else
 		{
-			hp = gethostbyaddr((char *) &sin.sin_addr, slen, AF_INET);
+			hp = gethostbyaddr((char *) &sin.sin_addr,
+					   IPADDRSIZE, AF_INET);
 			sprintf(p, "%s/%d", hp == NULL ? inet_ntoa(sin.sin_addr)
 						   : hp->h_name, ntohs(sin.sin_port));
 		}
