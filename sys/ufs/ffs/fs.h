@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fs.h	8.8 (Berkeley) 07/08/94
+ *	@(#)fs.h	8.9 (Berkeley) 08/14/94
  */
 
 /*
@@ -157,8 +157,8 @@ struct csum {
  * Super block for an FFS file system.
  */
 struct fs {
-	int32_t	 unused_1;		/* historic file system linked list, */
-	int32_t	 unused_2;		/*     used for incore super blocks */
+	int32_t	 fs_firstfield;		/* historic file system linked list, */
+	int32_t	 fs_unused_1;		/*     used for incore super blocks */
 	daddr_t	 fs_sblkno;		/* addr of super-block in filesys */
 	daddr_t	 fs_cblkno;		/* offset of cyl-block in filesys */
 	daddr_t	 fs_iblkno;		/* offset of inode-blocks in filesys */
@@ -307,7 +307,7 @@ struct fs {
  */
 #define	CG_MAGIC	0x090255
 struct cg {
-	int32_t	 unused_1;		/* historic cyl groups linked list */
+	int32_t	 cg_firstfield;		/* historic cyl groups linked list */
 	int32_t	 cg_magic;		/* magic number */
 	time_t	 cg_time;		/* time last written */
 	int32_t	 cg_cgx;		/* we are the cgx'th cylinder group */
@@ -364,8 +364,8 @@ struct cg {
  * for compatibility with old file systems.
  */
 struct ocg {
-	int32_t	 unused_1;		/* historic linked list of cyl groups */
-	int32_t	 unused_2;		/*     used for incore cyl groups */
+	int32_t	 cg_firstfield;		/* historic linked list of cyl groups */
+	int32_t	 unused_1;		/*     used for incore cyl groups */
 	time_t	 cg_time;		/* time last written */
 	int32_t	 cg_cgx;		/* we are the cgx'th cylinder group */
 	int16_t	 cg_ncyl;		/* number of cyl's this cg */
