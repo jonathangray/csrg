@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	6.64 (Berkeley) 05/17/93";
+static char sccsid[] = "@(#)main.c	6.65 (Berkeley) 05/22/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -341,7 +341,6 @@ main(argc, argv, envp)
 	if (jbuf[0] != '\0')
 	{
 		struct	utsname	utsname;
-		extern char *strchr();
 
 		if (tTd(0, 4))
 			printf("canonical name: %s\n", jbuf);
