@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)if_dmc.c	6.9 (Berkeley) 01/08/86
+ *	@(#)if_dmc.c	6.10 (Berkeley) 02/19/86
  */
 
 #include "dmc.h"
