@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cpu.h	7.3 (Berkeley) 12/17/92
+ *	@(#)cpu.h	7.4 (Berkeley) 01/20/93
  */
 
 #ifndef _CPU_H_
@@ -50,7 +50,7 @@
  * definitions of cpu-dependent requirements
  * referenced in generic code
  */
-#undef	COPY_SIGCODE		/* copy sigcode above user stack in exec */
+#define	COPY_SIGCODE		/* copy sigcode above user stack in exec */
 
 #define	cpu_exec(p)	(p->p_md.md_ss_addr = 0) /* init single step */
 #define	cpu_wait(p)	/* nothing */
