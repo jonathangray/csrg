@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_malloc.c	7.23 (Berkeley) 04/20/91
+ *	@(#)kern_malloc.c	7.24 (Berkeley) 05/04/91
  */
 
 #include "param.h"
@@ -55,7 +55,7 @@ long malloc_reentered;
 /*
  * Allocate a block of memory
  */
-qaddr_t
+void *
 malloc(size, type, flags)
 	unsigned long size;
 	int type, flags;
@@ -80,7 +80,7 @@ malloc(size, type, flags)
 		if (flags & M_NOWAIT) {
 			OUT;
 			splx(s);
-			return (0);
+			return ((void *) NULL);
 		}
 		if (ksp->ks_limblocks < 65535)
 			ksp->ks_limblocks++;
@@ -100,7 +100,7 @@ malloc(size, type, flags)
 		if (va == NULL) {
 			OUT;
 			splx(s);
-			return (0);
+			return ((void *) NULL);
 		}
 #ifdef KMEMSTATS
 		kbp->kb_total += kbp->kb_elmpercl;
@@ -163,7 +163,7 @@ out:
 #endif
 	OUT;
 	splx(s);
-	return ((qaddr_t)va);
+	return ((void *) va);
 }
 
 #ifdef DIAGNOSTIC
@@ -189,7 +189,7 @@ long addrmask[] = { 0x00000000,
  */
 void
 free(addr, type)
-	caddr_t addr;
+	void *addr;
 	int type;
 {
 	register struct kmembuckets *kbp;
