@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pk_output.c	7.10 (Berkeley) 05/29/91
+ *	@(#)pk_output.c	7.11 (Berkeley) 07/17/91
  */
 
 #include "param.h"
@@ -52,7 +52,7 @@
 #include "pk.h"
 #include "pk_var.h"
 
-struct mbuf_cache pk_output_cache = {0 };
+struct mbuf_cache pk_output_cache = {0 }, pk_input_cache;
 struct	mbuf *nextpk ();
 
 pk_output (lcp)
@@ -172,8 +172,10 @@ register struct pklcd *lcp;
 		pk_trace (pkp -> pk_xcp, m, "P-Out");
 
 		/* Pass the packet on down to the link layer */
-		if (pk_output_cache.mbc_size || pk_output_cache.mbc_oldsize)
-			mbuf_cache(&pk_output_cache, m);
+		if (pk_input_cache.mbc_size || pk_input_cache.mbc_oldsize) {
+			m->m_flags |= 0x08;
+			mbuf_cache(&pk_input_cache, m);
+		}
 		(*pkp -> pk_lloutput) (pkp -> pk_llnext, m);
 	}
 }
