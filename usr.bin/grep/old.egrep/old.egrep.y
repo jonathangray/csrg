@@ -13,7 +13,7 @@
 %left STAR PLUS QUEST
 
 %{
-static char *sccsid = "@(#)old.egrep.y	4.1 (Berkeley) 10/01/80";
+static char *sccsid = "@(#)old.egrep.y	4.2 (Berkeley) 11/08/82";
 #include <stdio.h>
 
 #define MAXLIN 350
