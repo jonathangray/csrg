@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)encrypt.c	8.1 (Berkeley) 06/04/93";
+static char sccsid[] = "@(#)encrypt.c	8.2 (Berkeley) 05/30/95";
 #endif /* not lint */
 
 /*
@@ -106,7 +106,7 @@ static long remote_supports_decrypt = 0;
 static Encryptions encryptions[] = {
 #ifdef	DES_ENCRYPTION
     { "DES_CFB64",	ENCTYPE_DES_CFB64,
-			cfb64_encrypt,	
+			cfb64_encrypt,
 			cfb64_decrypt,
 			cfb64_init,
 			cfb64_start,
@@ -116,7 +116,7 @@ static Encryptions encryptions[] = {
 			cfb64_keyid,
 			cfb64_printsub },
     { "DES_OFB64",	ENCTYPE_DES_OFB64,
-			ofb64_encrypt,	
+			ofb64_encrypt,
 			ofb64_decrypt,
 			ofb64_init,
 			ofb64_start,
@@ -708,7 +708,7 @@ encrypt_request_end()
  * Called when ENCRYPT REQUEST-START is received.  If we receive
  * this before a type is picked, then that indicates that the
  * other side wants us to start encrypting data as soon as we
- * can. 
+ * can.
  */
 	void
 encrypt_request_start(data, cnt)
@@ -763,12 +763,13 @@ encrypt_keyid(kp, keyid, len)
 		if (ep->keyid)
 			(void)(*ep->keyid)(dir, kp->keyid, &kp->keylen);
 
-	} else if ((len != kp->keylen) || (bcmp(keyid, kp->keyid, len) != 0)) {
+	} else if ((len != kp->keylen) ||
+		   (memcmp(keyid, kp->keyid, len) != 0)) {
 		/*
 		 * Length or contents are different
 		 */
 		kp->keylen = len;
-		bcopy(keyid, kp->keyid, len);
+		memmove(kp->keyid, keyid, len);
 		if (ep->keyid)
 			(void)(*ep->keyid)(dir, kp->keyid, &kp->keylen);
 	} else {
@@ -795,7 +796,7 @@ encrypt_send_keyid(dir, keyid, keylen, saveit)
 			? ENCRYPT_ENC_KEYID : ENCRYPT_DEC_KEYID;
 	if (saveit) {
 		struct key_info *kp = &ki[(dir == DIR_ENCRYPT) ? 0 : 1];
-		bcopy(keyid, kp->keyid, keylen);
+		memmove(kp->keyid, keyid, keylen);
 		kp->keylen = keylen;
 	}
 
@@ -851,7 +852,7 @@ encrypt_start_output(type)
 		i = (*ep->start)(DIR_ENCRYPT, Server);
 		if (encrypt_debug_mode) {
 			printf(">>>%s: Encrypt start: %s (%d) %s\r\n",
-				Name, 
+				Name,
 				(i < 0) ? "failed" :
 					"initial negotiation in progress",
 				i, ENCTYPE_NAME(type));
