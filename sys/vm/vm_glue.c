@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_glue.c	8.7 (Berkeley) 08/20/94
+ *	@(#)vm_glue.c	8.8 (Berkeley) 01/09/95
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -318,7 +318,7 @@ scheduler()
 loop:
 #ifdef DEBUG
 	while (!enableswap)
-		sleep((caddr_t)&proc0, PVM);
+		tsleep((caddr_t)&proc0, PVM, "noswap", 0);
 #endif
 	pp = NULL;
 	ppri = INT_MIN;
@@ -333,13 +333,13 @@ loop:
 	}
 #ifdef DEBUG
 	if (swapdebug & SDB_FOLLOW)
-		printf("sched: running, procp %x pri %d\n", pp, ppri);
+		printf("scheduler: running, procp %x pri %d\n", pp, ppri);
 #endif
 	/*
 	 * Nothing to do, back to sleep
 	 */
 	if ((p = pp) == NULL) {
-		sleep((caddr_t)&proc0, PVM);
+		tsleep((caddr_t)&proc0, PVM, "scheduler", 0);
 		goto loop;
 	}
 
@@ -378,7 +378,7 @@ loop:
 	 */
 #ifdef DEBUG
 	if (swapdebug & SDB_FOLLOW)
-		printf("sched: no room for pid %d(%s), free %d\n",
+		printf("scheduler: no room for pid %d(%s), free %d\n",
 		       p->p_pid, p->p_comm, cnt.v_free_count);
 #endif
 	(void) splhigh();
@@ -386,7 +386,7 @@ loop:
 	(void) spl0();
 #ifdef DEBUG
 	if (swapdebug & SDB_FOLLOW)
-		printf("sched: room again, free %d\n", cnt.v_free_count);
+		printf("scheduler: room again, free %d\n", cnt.v_free_count);
 #endif
 	goto loop;
 }
@@ -527,7 +527,7 @@ swapout(p)
 
 void
 assert_wait(event, ruptible)
-	int event;
+	void *event;
 	boolean_t ruptible;
 {
 #ifdef lint
@@ -542,35 +542,35 @@ thread_block()
 	int s = splhigh();
 
 	if (curproc->p_thread)
-		sleep((caddr_t)curproc->p_thread, PVM);
+		tsleep(curproc->p_thread, PVM, "thrd_block", 0);
 	splx(s);
 }
 
 void
 thread_sleep(event, lock, ruptible)
-	int event;
+	void *event;
 	simple_lock_t lock;
 	boolean_t ruptible;
 {
+	int s = splhigh();
+
 #ifdef lint
 	ruptible++;
 #endif
-	int s = splhigh();
-
 	curproc->p_thread = event;
 	simple_unlock(lock);
 	if (curproc->p_thread)
-		sleep((caddr_t)event, PVM);
+		tsleep(event, PVM, "thrd_sleep", 0);
 	splx(s);
 }
 
 void
 thread_wakeup(event)
-	int event;
+	void *event;
 {
 	int s = splhigh();
 
-	wakeup((caddr_t)event);
+	wakeup(event);
 	splx(s);
 }
 
