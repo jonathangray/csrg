@@ -1,4 +1,8 @@
-.\"	@(#)p1	6.2 (Berkeley) 04/25/86
+.\" This module is believed to contain source code proprietary to AT&T.
+.\" Use and redistribution is subject to the Berkeley Software License
+.\" Agreement and your Software Agreement with AT&T (Western Electric).
+.\"
+.\"	@(#)p1	6.3 (Berkeley) 04/17/91
 .\"
 .OH 'The UNIX Time-Sharing System''PS2:1-%'
 .EH 'PS2:1-%''The UNIX Time-Sharing System'
