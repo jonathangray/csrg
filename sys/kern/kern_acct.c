@@ -11,7 +11,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_acct.c	8.4 (Berkeley) 06/02/94
+ *	@(#)kern_acct.c	8.5 (Berkeley) 08/11/94
  */
 
 #include <sys/param.h>
@@ -187,7 +187,7 @@ acct_process(p)
 	else
 		ap->ac_tty = NODEV;
 	ap->ac_flag = p->p_acflag;
-	LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
+	VOP_LEASE(vp, p, p->p_ucred, LEASE_WRITE);
 	return (vn_rdwr(UIO_WRITE, vp, (caddr_t)ap, sizeof (acctbuf), (off_t)0,
 		UIO_SYSSPACE, IO_UNIT|IO_APPEND, p->p_ucred, (int *)0,
 		(struct proc *)0));
