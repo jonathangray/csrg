@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)bt_utils.c	5.4 (Berkeley) 09/04/91";
+static char sccsid[] = "@(#)bt_utils.c	5.5 (Berkeley) 09/12/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -51,7 +51,7 @@ static char sccsid[] = "@(#)bt_utils.c	5.4 (Berkeley) 09/04/91";
  * Parameters:
  *	t:	tree
  *	d:	LEAF to be returned to the user.
- *	key:	user's key structure
+ *	key:	user's key structure (NULL if not to be filled in)
  *	data:	user's data structure
  *
  * Returns:
@@ -64,24 +64,9 @@ __bt_ret(t, e, key, data)
 	DBT *key, *data;
 {
 	register BLEAF *bl;
+	register void *p;
 
 	bl = GETBLEAF(e->page, e->index);
-
-	if (bl->flags & P_BIGKEY) {
-		if (__ovfl_get(t, bl->bytes,
-		    &key->size, &t->bt_kbuf, &t->bt_kbufsz))
-			return (RET_ERROR);
-	} else {
-		if (bl->ksize > t->bt_kbufsz) {
-			if ((t->bt_kbuf =
-			    realloc(t->bt_kbuf, bl->ksize)) == NULL)
-				return (RET_ERROR);
-			t->bt_kbufsz = bl->ksize;
-		}
-		bcopy(bl->bytes, t->bt_kbuf, t->bt_kbufsz);
-		key->size = bl->ksize;
-	}
-	key->data = t->bt_kbuf;
 
 	if (bl->flags & P_BIGDATA) {
 		if (__ovfl_get(t, bl->bytes + bl->ksize,
@@ -89,9 +74,9 @@ __bt_ret(t, e, key, data)
 			return (RET_ERROR);
 	} else {
 		if (bl->dsize > t->bt_dbufsz) {
-			if ((t->bt_dbuf =
-			    realloc(t->bt_dbuf, bl->dsize)) == NULL)
+			if ((p = realloc(t->bt_dbuf, bl->dsize)) == NULL)
 				return (RET_ERROR);
+			t->bt_dbuf = p;
 			t->bt_dbufsz = bl->dsize;
 		}
 		bcopy(bl->bytes + bl->ksize, t->bt_dbuf, t->bt_dbufsz);
@@ -99,6 +84,24 @@ __bt_ret(t, e, key, data)
 	}
 	data->data = t->bt_dbuf;
 
+	if (key == NULL)
+		return (RET_SUCCESS);
+
+	if (bl->flags & P_BIGKEY) {
+		if (__ovfl_get(t, bl->bytes,
+		    &key->size, &t->bt_kbuf, &t->bt_kbufsz))
+			return (RET_ERROR);
+	} else {
+		if (bl->ksize > t->bt_kbufsz) {
+			if ((p = realloc(t->bt_kbuf, bl->ksize)) == NULL)
+				return (RET_ERROR);
+			t->bt_kbuf = p;
+			t->bt_kbufsz = bl->ksize;
+		}
+		bcopy(bl->bytes, t->bt_kbuf, t->bt_kbufsz);
+		key->size = bl->ksize;
+	}
+	key->data = t->bt_kbuf;
 	return (RET_SUCCESS);
 }
 
@@ -215,7 +218,7 @@ __bt_defpfx(a, b)
 	for (p1 = a->data, p2 = b->data; len--; ++p1, ++p2, ++cnt)
 		if (*p1 != *p2)
 			return(cnt);
-	if (a->size == b->size)
-		return (a->size);
-	return(a->size + 1);
+
+	/* a->size must be <= b->size, or they wouldn't be in this order. */
+	return (a->size < b->size ? a->size + 1 : a->size);
 }
