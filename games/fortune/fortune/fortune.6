@@ -32,7 +32,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)fortune.6	8.1 (Berkeley) 05/31/93
+.\"	@(#)fortune.6	8.2 (Berkeley) 11/17/93
 .\"
 .Dd 
 .Dt FORTUNE 6
@@ -160,7 +160,8 @@ fortune -e
 .Pp
 is equivalent to
 .Bd -literal -offset indent
-fortune 50% funny 50% notEm -funny
+fortune 50% funny 50% not
+.Em -funny
 .Ed
 .Sh FILES
 .Bl -tag -width Pa -compact
