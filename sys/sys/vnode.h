@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode.h	7.59 (Berkeley) 07/23/92
+ *	@(#)vnode.h	7.60 (Berkeley) 07/24/92
  */
 
 #ifndef KERNEL
@@ -214,7 +214,7 @@ void	lease_updatetime __P((int deltat));
 #define	LEASE_CHECK(vp, p, cred, flag)
 #define	LEASE_UPDATETIME(dt)
 #endif /* NFS */
-#endif
+#endif /* KERNEL */
 
 
 /*
@@ -266,6 +266,7 @@ struct vnodeop_desc {
 	caddr_t	*vdesc_transports;
 };
 
+#ifdef KERNEL
 /*
  * A list of all the operation descs.
  */
@@ -375,3 +376,4 @@ struct vnode *
 void 	vput __P((struct vnode *vp));
 void 	vref __P((struct vnode *vp));
 void 	vrele __P((struct vnode *vp));
+#endif /* KERNEL */
