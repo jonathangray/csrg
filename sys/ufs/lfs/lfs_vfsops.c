@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vfsops.c	7.90 (Berkeley) 02/02/93
+ *	@(#)lfs_vfsops.c	7.91 (Berkeley) 04/28/93
  */
 
 #include <sys/param.h>
@@ -212,7 +212,7 @@ lfs_mountfs(devvp, mp, p)
 	dev_t dev;
 	int error, i, ronly, size;
 
-	if (error = VOP_OPEN(devvp, ronly ? FREAD : FREAD|FWRITE, NOCRED, p))
+	if (error = VOP_OPEN(devvp, ronly ? FREAD : FREAD|FWRITE, FSCRED, p))
 		return (error);
 
 	if (VOP_IOCTL(devvp, DIOCGPART, (caddr_t)&dpart, FREAD, NOCRED, p) != 0)
