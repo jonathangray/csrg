@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)timerreg.h	7.2 (Berkeley) 07/21/92
+ *	@(#)timerreg.h	7.3 (Berkeley) 10/11/92
  *
  * from: $Header: timerreg.h,v 1.6 92/07/07 04:56:09 leres Exp $ (LBL)
  */
@@ -86,5 +86,5 @@ struct timerreg {
 /* Compute a limit that causes the timer to fire every n microseconds. */
 #define	tmr_ustolim(n)	(((n) + 1) << TMR_SHIFT)
 
-#include "vaddrs.h"
+#include <sparc/sparc/vaddrs.h>
 #define	TIMERREG	((volatile struct timerreg *)TIMERREG_VA)
