@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef QUEUE
-static char sccsid[] = "@(#)queue.c	6.1 (Berkeley) 12/21/92 (with queueing)";
+static char sccsid[] = "@(#)queue.c	6.2 (Berkeley) 01/09/93 (with queueing)";
 #else
-static char sccsid[] = "@(#)queue.c	6.1 (Berkeley) 12/21/92 (without queueing)";
+static char sccsid[] = "@(#)queue.c	6.2 (Berkeley) 01/09/93 (without queueing)";
 #endif
 #endif /* not lint */
 
@@ -412,7 +412,7 @@ runqueue(forkflag)
 
 	CurrentLA = getla();	/* get load average */
 
-	if (shouldqueue(-100000000L))
+	if (shouldqueue(-100000000L, curtime()))
 	{
 		if (Verbose)
 			printf("Skipping queue run -- load average too high\n");
@@ -627,7 +627,7 @@ orderq(doall)
 		}
 		(void) fclose(cf);
 
-		if (!doall && shouldqueue(w->w_pri))
+		if (!doall && shouldqueue(w->w_pri, w->w_ctime))
 		{
 			/* don't even bother sorting this job in */
 			wn--;
@@ -686,8 +686,8 @@ workcmpf(a, b)
 	register WORK *a;
 	register WORK *b;
 {
-	long pa = a->w_pri + a->w_ctime;
-	long pb = b->w_pri + b->w_ctime;
+	long pa = a->w_pri;
+	long pb = b->w_pri;
 
 	if (pa == pb)
 		return (0);
@@ -724,7 +724,7 @@ dowork(w, e)
 	**  Ignore jobs that are too expensive for the moment.
 	*/
 
-	if (shouldqueue(w->w_pri))
+	if (shouldqueue(w->w_pri, w->w_ctime))
 	{
 		if (Verbose)
 			printf("\nSkipping %s\n", w->w_name + 2);
@@ -1053,7 +1053,7 @@ printqueue()
 		if (flock(fileno(f), LOCK_SH|LOCK_NB) < 0)
 # endif
 			printf("*");
-		else if (shouldqueue(w->w_pri))
+		else if (shouldqueue(w->w_pri, w->w_ctime))
 			printf("X");
 		else
 			printf(" ");
