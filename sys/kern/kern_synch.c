@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_synch.c	7.22 (Berkeley) 02/28/92
+ *	@(#)kern_synch.c	7.23 (Berkeley) 02/28/92
  */
 
 #include "param.h"
@@ -263,7 +263,7 @@ int safepri;
  * be interrupted by the signal (return EINTR).
  */
 tsleep(chan, pri, wmesg, timo)
-	caddr_t chan;
+	void *chan;
 	int pri;
 	char *wmesg;
 	int timo;
@@ -292,7 +292,7 @@ tsleep(chan, pri, wmesg, timo)
 		return (0);
 	}
 #ifdef DIAGNOSTIC
-	if (chan == 0 || p->p_stat != SRUN || p->p_rlink)
+	if (chan == NULL || p->p_stat != SRUN || p->p_rlink)
 		panic("tsleep");
 #endif
 	p->p_wchan = chan;
@@ -389,7 +389,7 @@ endtsleep(p)
  * Short-term, non-interruptable sleep.
  */
 sleep(chan, pri)
-	caddr_t chan;
+	void *chan;
 	int pri;
 {
 	register struct proc *p = curproc;
@@ -400,7 +400,7 @@ sleep(chan, pri)
 #ifdef DIAGNOSTIC
 	if (pri > PZERO) {
 		printf("sleep called with pri %d > PZERO, wchan: %x\n",
-			pri, chan);
+		    pri, chan);
 		panic("old sleep");
 	}
 #endif
@@ -417,7 +417,7 @@ sleep(chan, pri)
 		return;
 	}
 #ifdef DIAGNOSTIC
-	if (chan==0 || p->p_stat != SRUN || p->p_rlink)
+	if (chan == NULL || p->p_stat != SRUN || p->p_rlink)
 		panic("sleep");
 #endif
 	p->p_wchan = chan;
@@ -473,7 +473,7 @@ unsleep(p)
  * sleeping on chan to run state.
  */
 wakeup(chan)
-	register caddr_t chan;
+	register void *chan;
 {
 	register struct slpque *qp;
 	register struct proc *p, **q;
