@@ -33,11 +33,10 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	8.76 (Berkeley) 03/26/95";
+static char sccsid[] = "@(#)readcf.c	8.77 (Berkeley) 03/31/95";
 #endif /* not lint */
 
 # include "sendmail.h"
-# include <pwd.h>
 # include <grp.h>
 #if NAMED_BIND
 # include <resolv.h>
@@ -935,7 +934,7 @@ makemailer(line)
 					*p++ = '\0';
 				if (*p != '\0')
 					*p++ = '\0';
-				pw = getpwnam(q);
+				pw = sm_getpwnam(q);
 				if (pw == NULL)
 					syserr("readcf: mailer U= flag: unknown user %s", q);
 				else
@@ -1836,7 +1835,7 @@ setoption(opt, val, sticky)
 			register struct passwd *pw;
 
 			DefUid = -1;
-			pw = getpwnam(val);
+			pw = sm_getpwnam(val);
 			if (pw == NULL)
 				syserr("readcf: option u: unknown user %s", val);
 			else
