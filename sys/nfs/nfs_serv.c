@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_serv.c	7.35 (Berkeley) 03/04/91
+ *	@(#)nfs_serv.c	7.36 (Berkeley) 03/19/91
  */
 
 /*
@@ -55,14 +55,14 @@
  */
 
 #include "param.h"
-#include "user.h"
 #include "file.h"
 #include "vnode.h"
 #include "mount.h"
 #include "mbuf.h"
-#include "errno.h"
+
 #include "../ufs/quota.h"
 #include "../ufs/inode.h"
+
 #include "nfsv2.h"
 #include "nfs.h"
 #include "xdr_subs.h"
