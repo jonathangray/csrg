@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ww.h	3.64 (Berkeley) 06/24/92
+ *	@(#)ww.h	3.65 (Berkeley) 08/16/92
  */
 
 #ifdef OLD_TTY
@@ -287,11 +287,15 @@ jmp_buf wwjmpbuf;	/* jmpbuf for above */
 #define WWT_DC		"dc=\\EN:"
 char wwwintermcap[1024];	/* terminal-specific but window-independent
 				   part of the window termcap */
+#ifdef TERMINFO
+	/* where to put the temporary terminfo directory */
+char wwterminfopath[1024];
+#endif
 
 	/* our functions */
 struct ww *wwopen();
 void wwchild();
-void wwsuspend();
+void wwquit();
 char **wwalloc();
 char *wwerror();
 
