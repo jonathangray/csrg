@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lang.l	5.8 (Berkeley) 04/19/91
+ *	@(#)lang.l	5.9 (Berkeley) 06/19/92
  */
 
 #include <ctype.h>
@@ -92,7 +92,7 @@ struct kt {
 	{ "priority",	PRIORITY },
 	{ "pseudo-device",PSEUDO_DEVICE },
 	{ "root",	ROOT },
-#if MACHINE_HP300
+#if MACHINE_HP300 || MACHINE_LUNA68K
 	{ "scode",	NEXUS },
 #endif
 	{ "size",	SIZE },
