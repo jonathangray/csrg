@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.32 (Berkeley) 09/19/93
+ *	@(#)conf.h	8.33 (Berkeley) 09/22/93
  */
 
 /*
@@ -388,6 +388,8 @@ typedef int		pid_t;
 # ifndef LA_TYPE
 #  define LA_TYPE	LA_ZERO
 # endif
+# undef WIFEXITED
+# undef WEXITSTATUS
 #endif
 
 
