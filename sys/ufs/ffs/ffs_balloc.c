@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_balloc.c	7.12 (Berkeley) 03/19/91
+ *	@(#)ffs_balloc.c	7.13 (Berkeley) 05/08/91
  */
 
 #include "param.h"
@@ -45,9 +45,10 @@
 #include "fs.h"
 
 /*
- * Bmap defines the structure of file system storage
- * by returning the physical block number on a device
- * given the inode and the logical block number in a file.
+ * Bmap converts a the logical block number of a file
+ * to its physical block number on the disk. The conversion
+ * is done by using the logical block number to index into
+ * the array of block pointers described by the dinode.
  */
 bmap(ip, bn, bnp)
 	register struct inode *ip;
