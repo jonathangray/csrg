@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)db.h	5.6 (Berkeley) 03/03/91
+ *	@(#)db.h	5.7 (Berkeley) 03/11/91
  */
 
 #ifndef _DB_H_
@@ -92,7 +92,7 @@ typedef struct {
 	int bsize;		/* bucket size */
 	int ffactor;		/* fill factor */
 	int nelem;		/* number of elements */
-	int ncached;		/* bytes to cache */
+	int cachesize;		/* bytes to cache */
 	int (*hash)();		/* hash function */
 	int lorder;		/* byte order */
 } HASHINFO;
