@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)if_imp.c	6.9 (Berkeley) 02/23/86
+ *	@(#)if_imp.c	6.10 (Berkeley) 05/04/86
  */
 
 #include "imp.h"
