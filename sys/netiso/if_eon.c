@@ -27,7 +27,7 @@ SOFTWARE.
 /*
  * $Header: if_eon.c,v 1.4 88/07/19 15:53:59 hagens Exp $ 
  * $Source: /usr/argo/sys/netiso/RCS/if_eon.c,v $ 
- *	@(#)if_eon.c	7.6 (Berkeley) 04/05/90 *
+ *	@(#)if_eon.c	7.7 (Berkeley) 05/04/90 *
  *
  *	EON rfc 
  *  Layer between IP and CLNL
