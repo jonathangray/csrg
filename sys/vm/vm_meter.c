@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_meter.c	8.2 (Berkeley) 09/23/93
+ *	@(#)vm_meter.c	8.3 (Berkeley) 12/30/93
  */
 
 #include <sys/param.h>
@@ -145,11 +145,10 @@ vmtotal(totalp)
 	 * Mark all objects as inactive.
 	 */
 	simple_lock(&vm_object_list_lock);
-	object = (vm_object_t) queue_first(&vm_object_list);
-	while (!queue_end(&vm_object_list, (queue_entry_t) object)) {
+	for (object = vm_object_list.tqh_first;
+	     object != NULL;
+	     object = object->object_list.tqe_next)
 		object->flags &= ~OBJ_ACTIVE;
-		object = (vm_object_t) queue_next(&object->object_list);
-	}
 	simple_unlock(&vm_object_list_lock);
 	/*
 	 * Calculate process statistics.
@@ -203,8 +202,9 @@ vmtotal(totalp)
 	 * Calculate object memory usage statistics.
 	 */
 	simple_lock(&vm_object_list_lock);
-	object = (vm_object_t) queue_first(&vm_object_list);
-	while (!queue_end(&vm_object_list, (queue_entry_t) object)) {
+	for (object = vm_object_list.tqh_first;
+	     object != NULL;
+	     object = object->object_list.tqe_next) {
 		totalp->t_vm += num_pages(object->size);
 		totalp->t_rm += object->resident_page_count;
 		if (object->flags & OBJ_ACTIVE) {
@@ -220,7 +220,6 @@ vmtotal(totalp)
 				totalp->t_armshr += object->resident_page_count;
 			}
 		}
-		object = (vm_object_t) queue_next(&object->object_list);
 	}
 	totalp->t_free = cnt.v_free_count;
 }
