@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_input.c	7.31 (Berkeley) 01/20/93
+ *	@(#)tcp_input.c	7.32 (Berkeley) 01/22/93
  */
 
 #include <sys/param.h>
@@ -1398,15 +1398,6 @@ tcp_dooptions(tp, cp, cnt, ti, ts_present, ts_val, ts_ecr)
 				tp->ts_recent_age = tcp_now;
 			}
 			break;
-#ifdef DO_SACK
-		case TCPOPT_SACK_PERMITTED:
-			if (optlen != TCPOLEN_SACK_PERMITTED)
-				continue;
-			if (!(ti->ti_flags & TH_SYN))
-				continue;
-			tp->t_flags |= TF_SACK_PERMIT;
-			break;
-#endif
 		}
 	}
 }
