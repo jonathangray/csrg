@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fdesc_vnops.c	7.6 (Berkeley) 04/28/93
+ *	@(#)fdesc_vnops.c	7.7 (Berkeley) 04/30/93
  *
  * $Id: fdesc_vnops.c,v 1.12 1993/04/06 16:17:17 jsp Exp $
  */
@@ -358,6 +358,13 @@ fdesc_attr(fd, vap, cred, p)
 	switch (fp->f_type) {
 	case DTYPE_VNODE:
 		error = VOP_GETATTR((struct vnode *) fp->f_data, vap, cred, p);
+		if (error == 0 && vap->va_type == VDIR) {
+			/*
+			 * don't allow directories to show up because
+			 * that causes loops in the namespace.
+			 */
+			vap->va_type = VFIFO;
+		}
 		break;
 
 	case DTYPE_SOCKET:
