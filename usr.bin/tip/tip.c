@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)tip.c	5.13 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)tip.c	5.14 (Berkeley) 12/22/90";
 #endif /* not lint */
 
 /*
@@ -603,6 +603,6 @@ setparity(defparity)
 			partab[i] |= 0200;	/* turn on bit 7 */
 		return;
 	}
-	fprintf(stderr, "%s: unknown parity value\n", PA);
+	fprintf(stderr, "%s: unknown parity value\r\n", parity);
 	fflush(stderr);
 }
