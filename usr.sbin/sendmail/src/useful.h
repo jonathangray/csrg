@@ -30,10 +30,17 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)useful.h	6.2 (Berkeley) 03/31/93
+ *	@(#)useful.h	6.3 (Berkeley) 04/18/93
  */
 
 # include <sys/types.h>
+
+/* support for ANSI prototypes (or not, as the case may be) */
+#if defined(__STDC__) && defined(_FORGIVING_CC_)
+#define P(protos)	protos
+#else
+#define P(protos)	()
+#endif
 
 /* support for bool type */
 typedef char	bool;
