@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ioctl.h	7.16 (Berkeley) 02/22/91
+ *	@(#)ioctl.h	7.17 (Berkeley) 04/08/91
  */
 
 #ifndef	_IOCTL_H_
@@ -108,11 +108,6 @@ struct ttysize {
 #define	TIOCSETA	_IOW('t', 20, struct termios) /* set termios struct */
 #define	TIOCSETAW	_IOW('t', 21, struct termios) /* drain output, set */
 #define	TIOCSETAF	_IOW('t', 22, struct termios) /* drn out, fls in, set */
-/*** THESE GO AWAY ***/
-#define	JUNK_TIOCSETAS	_IOW('t', 23, struct termios) /* SETA ign hdw state */
-#define	JUNK_TIOCSETAWS	_IOW('t', 24, struct termios) /* SETAW ign hdw state */
-#define	JUNK_TIOCSETAFS	_IOW('t', 25, struct termios) /* SETAF ign hdw state */
-/******************/
 #define	TIOCGETD	_IOR('t', 26, int)	/* get line discipline */
 #define	TIOCSETD	_IOW('t', 27, int)	/* set line discipline */
 						/* 127-124 compat */
