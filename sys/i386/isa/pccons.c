@@ -3,9 +3,7 @@
  * All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
- * William Jolitz.
- *
- * Added support for ibmpc term type and improved keyboard support. -Don Ahn
+ * William Jolitz and Don Ahn.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -35,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pccons.c	5.10 (Berkeley) 05/16/91
+ *	@(#)pccons.c	5.11 (Berkeley) 05/21/91
  */
 
 /*
