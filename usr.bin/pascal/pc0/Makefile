@@ -3,9 +3,9 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	5.2 (Berkeley) 09/07/85
+#	@(#)Makefile	5.3 (Berkeley) 10/26/87
 #
-SCCSID = "@(#)Makefile 5.2 09/07/85"
+SCCSID = "@(#)Makefile 5.3 10/26/87"
 
 INSTALLDIR = $(DESTDIR)/usr/lib
 INSTALLNAME = ${INSTALLDIR}/pc0
@@ -13,7 +13,7 @@ BINDIR = ../pc0
 SRCDIR = ../src
 WHOAMI = pc
 VERSION = 3.1
-DATE = 09/07/85
+DATE = 10/26/87
 
 MKSTR = /usr/ucb/mkstr
 EYACC = ../eyacc/eyacc
