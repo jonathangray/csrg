@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * from: Utah $Hdr: ite_dv.c 1.8 92/01/21$
+ * from: Utah $Hdr: ite_dv.c 1.9 92/12/20$
  *
- *	@(#)ite_dv.c	7.7 (Berkeley) 10/11/92
+ *	@(#)ite_dv.c	7.8 (Berkeley) 12/27/92
  */
 
 #include "ite.h"
@@ -202,8 +202,6 @@ dvbox_scroll(ip, sy, sx, count, dir)
 	register int dx = sx;
 	register int height = 1;
 	register int width = ip->cols;
-
-	dvbox_cursor(ip, ERASE_CURSOR);
 
 	if (dir == SCROLL_UP) {
 		dy = sy - count;
