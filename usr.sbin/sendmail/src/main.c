@@ -6,7 +6,7 @@
 # include "sendmail.h"
 # include <sys/stat.h>
 
-SCCSID(@(#)main.c	3.107		09/05/82);
+SCCSID(@(#)main.c	3.108		09/06/82);
 
 /*
 **  SENDMAIL -- Post mail to a set of destinations.
@@ -841,7 +841,7 @@ finis()
 	{
 		auto ADDRESS *rlist;
 
-		sendto(CurEnv->e_receiptto, 1, (ADDRESS *) NULL, &rlist);
+		sendto(CurEnv->e_receiptto, (ADDRESS *) NULL, &rlist);
 		(void) returntosender("Return receipt", rlist, FALSE);
 	}
 
