@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	5.44 (Berkeley) 12/09/92
+ *	@(#)sendmail.h	5.45 (Berkeley) 12/15/92
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	5.44		12/09/92";
+static char SmailSccsId[] =	"@(#)sendmail.h	5.45		12/15/92";
 # endif lint
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -661,6 +661,7 @@ EXTERN char	*TimeZoneSpec;	/* override time zone specification */
 EXTERN bool	MatchGecos;	/* look for user names in gecos field */
 EXTERN int	MaxMciCache;	/* maximum entries in MCI cache */
 EXTERN time_t	MciCacheTimeout;	/* maximum idle time on connections */
+EXTERN char	*ForwardPath;	/* path to search for .forward files */
 /*
 **  Trace information
 */
