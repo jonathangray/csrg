@@ -2,7 +2,7 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)m5	6.3 (Berkeley) 08/14/93
+.\"	@(#)m5	8.1 (Berkeley) 08/14/93
 .\"
 .ds H T
 .tr |
