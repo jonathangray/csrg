@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)defs.h	5.8 (Berkeley) 06/01/90
+ *	@(#)defs.h	5.9 (Berkeley) 02/26/91
  */
 
 #include <sys/types.h>
@@ -83,11 +83,6 @@ struct	rip *msg;
 
 char	**argv0;
 
-extern	int errno;
-
-char	*malloc();
-int	exit();
-int	sendmsg();
+int	sndmsg();
 int	supply();
-int	timer();
 int	cleanup();
