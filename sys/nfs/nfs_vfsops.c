@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vfsops.c	7.34 (Berkeley) 12/14/91
+ *	@(#)nfs_vfsops.c	7.35 (Berkeley) 12/15/91
  */
 
 #include "param.h"
@@ -54,9 +54,9 @@
 #include "../netinet/in.h"
 
 #include "nfsv2.h"
-#include "nfsnode.h"
 #include "nfsmount.h"
 #include "nfs.h"
+#include "nfsnode.h"
 #include "xdr_subs.h"
 #include "nfsm_subs.h"
 #include "nfsdiskless.h"
