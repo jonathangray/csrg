@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	6.52 (Berkeley) 05/14/93";
+static char sccsid[] = "@(#)parseaddr.c	6.53 (Berkeley) 05/17/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -2183,8 +2183,7 @@ dequote_init(map, mapname, args)
 **
 **	Parameters:
 **		map -- the internal map structure (ignored).
-**		buf -- the buffer to dequote.
-**		bufsiz -- the size of that buffer.
+**		name -- the name to dequote.
 **		av -- arguments (ignored).
 **		statp -- pointer to status out-parameter.
 **
@@ -2195,10 +2194,9 @@ dequote_init(map, mapname, args)
 */
 
 char *
-dequote_map(map, buf, bufsiz, av, statp)
+dequote_map(map, name, av, statp)
 	MAP *map;
-	char buf[];
-	int bufsiz;
+	char *name;
 	char **av;
 	int *statp;
 {
@@ -2219,7 +2217,7 @@ dequote_map(map, buf, bufsiz, av, statp)
 	quotemode = FALSE;
 	bslashmode = FALSE;
 
-	for (p = q = buf; (c = *p++) != '\0'; )
+	for (p = q = name; (c = *p++) != '\0'; )
 	{
 		if (bslashmode)
 		{
@@ -2277,5 +2275,5 @@ dequote_map(map, buf, bufsiz, av, statp)
 	    quotemode || quotecnt <= 0 || spacecnt != 0)
 		return NULL;
 	*q++ = '\0';
-	return buf;
+	return name;
 }
