@@ -39,7 +39,7 @@ POPDIVERT
 ###   UUCP Mailer specification   ###
 #####################################
 
-VERSIONID(`@(#)uucp.m4	6.4 (Berkeley) 02/20/93')
+VERSIONID(`@(#)uucp.m4	6.5 (Berkeley) 02/21/93')
 
 Msuucp,		P=UUCP_MAILER_PATH, F=mDFMhuU, S=12, R=22, M=100000
 		A=uux - -r -z -a$f -gC $h!rmail ($u)
@@ -49,6 +49,9 @@ Muucp,		P=UUCP_MAILER_PATH, F=DFMhuU, S=12, R=22, M=100000
 
 # sender rewriting
 S12
+
+# handle error address as a special case
+R<@>				$n			errors to mailer-daemon
 
 # don't qualify list:; syntax
 R$* :;				$@ $1 :;
