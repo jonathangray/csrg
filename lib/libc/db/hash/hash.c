@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)hash.c	5.12 (Berkeley) 03/03/91";
+static char sccsid[] = "@(#)hash.c	5.13 (Berkeley) 03/12/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -69,7 +69,7 @@ extern int __delpair();
 extern u_long *__init_bitmap();
 
 /* big.c */
-extern void __big_return();
+extern int __big_return();
 extern int __big_keydata();
 extern u_short __find_last_page();
 
@@ -83,7 +83,7 @@ extern int (*default_hash)();
 
 /* My externals */
 extern int __expand_table();
-extern int __call_hash();
+extern u_int __call_hash();
 
 /* Internal routines */
 static HTAB *init_hash();
@@ -212,29 +212,18 @@ const HASHINFO	*info;		/* Special directives for create */
 		  (hashp->BSHIFT + BYTE_SHIFT);
 
 	hashp->nmaps = bpages;
-	hashp->mapp[0] = (u_long *)malloc(bpages<<hashp->BSHIFT);
-	if ( !hashp->mapp[0] ) {
-	    RETURN_ERROR(errno, error2);
-	}
-	for ( i = 0; i < bpages; i++ ) {
-	    hashp->mapp[i] = &hashp->mapp[0][i<<hashp->BSHIFT];
-	    if (__get_page ((char *)hashp->mapp[i],
-		hashp->BITMAPS[i], 0, 1, 1)) {
-		    RETURN_ERROR(errno, error2);
-	    }
-	}
-
+	memset ( &hashp->mapp[0], 0, bpages * sizeof ( u_long *) );
     }
 
     /* Initialize Buffer Manager */
-    if ( info && info->ncached ) {
-	__buf_init (info->ncached);
+    if ( info && info->cachesize ) {
+	__buf_init (info->cachesize);
     } else {
 	__buf_init (DEF_BUFSIZE);
     }
 
     hashp->new_file = new_table;
-    hashp->save_file = file && !(hashp->flags&O_RDONLY);
+    hashp->save_file = file && (hashp->flags & (O_WRONLY|O_RDWR));
     hashp->cbucket = -1;
     if ( !(dbp = (DB *)malloc ( sizeof (DB) )) ) {
 	save_errno = errno;
@@ -415,7 +404,6 @@ hdestroy()
 {
 	int	save_errno;
 	int	i;
-	u_long	**mapp;
 
 	save_errno = 0;
 
@@ -454,16 +442,11 @@ hdestroy()
 		    save_errno = errno;
 		}
 
-		/* Free Initial Bigmaps */
-		if ( hashp->nmaps ) {
-		    (void)free(hashp->mapp[0]);	
-		}
-
-		/* Free extra bitmaps */
-		for ( mapp = &hashp->mapp[hashp->nmaps]; 
-		      hashp->exmaps--; 
-		      mapp++ ) {
-		      (void) free ( *mapp );
+		/* Free Bigmaps */
+		for ( i = 0; i < hashp->nmaps; i++ ) {
+		    if ( hashp->mapp[i] ) {
+			(void) free ( hashp->mapp[i] );
+		    }
 		}
 
 		if ( hashp->fp != -1 ) {
@@ -557,7 +540,7 @@ static int
 hash_get ( dbp, key, data, flag )
 DB	*dbp;
 DBT	*key, *data;
-u_long	flag;
+u_int	flag;
 {
 #ifdef lint
     flag = flag;
@@ -579,7 +562,7 @@ static int
 hash_put ( dbp, key, data, flag )
 DB	*dbp;
 DBT 	*key, *data;
-u_long	flag;
+u_int	flag;
 {
     if ( !dbp ) {
 	return (ERROR);
@@ -601,7 +584,7 @@ static int
 hash_delete ( dbp, key, flag )
 DB	*dbp;
 DBT 	*key;
-u_long	flag;		/* Ignored */
+u_int	flag;		/* Ignored */
 {
 #ifdef lint
     flag = flag;
@@ -749,9 +732,9 @@ static int
 hash_seq(dbp, key, data, flag)
 DB	*dbp;
 DBT 	*key, *data;
-u_long	flag;
+u_int	flag;
 {
-	register	int bucket;
+	register	u_int bucket;
 	register	BUFHEAD	*bufp;
 	BUFHEAD	*save_bufp;
 	u_short	*bp;
@@ -836,7 +819,7 @@ u_long	flag;
 extern int
 __expand_table()
 {
-	int	old_bucket, new_bucket;
+	u_int	old_bucket, new_bucket;
 	int	new_segnum;
 	int	dirsize;
 	int	spare_ndx;
@@ -913,7 +896,7 @@ int	newsize;
 	return (p);
 }
 
-extern int
+extern u_int
 __call_hash ( k, len )
 char	*k;
 int	len;
