@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ppi.c	8.1 (Berkeley) 06/16/93
+ *	@(#)ppi.c	8.2 (Berkeley) 01/09/95
  */
 
 /*
@@ -351,7 +351,7 @@ again:
 
 ppiioctl(dev, cmd, data, flag)
 	dev_t dev;
-	int cmd;
+	u_long cmd;
 	caddr_t data;
 	int flag;
 {
