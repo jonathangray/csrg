@@ -1,6 +1,4 @@
 /*
- * $Id: nfsx_ops.c,v 5.2.1.5 91/03/17 17:46:15 jsp Alpha $
- *
  * Copyright (c) 1990 Jan-Simon Pendry
  * Copyright (c) 1990 Imperial College of Science, Technology & Medicine
  * Copyright (c) 1990 The Regents of the University of California.
@@ -37,7 +35,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsx_ops.c	5.2 (Berkeley) 03/17/91
+ *	@(#)nfsx_ops.c	5.3 (Berkeley) 05/12/91
+ *
+ * $Id: nfsx_ops.c,v 5.2.1.9 91/05/07 22:18:19 jsp Alpha $
+ *
  */
 
 #include "am.h"
@@ -83,11 +84,20 @@ am_opts *fo;
 		return FALSE;
 	}
 
+#ifdef notdef
 	/* fiddle sublink, must be last... */
 	if (fo->opt_sublink) {
 		plog(XLOG_WARNING, "nfsx: sublink %s ignored", fo->opt_sublink);
 		free((voidp) fo->opt_sublink);
 		fo->opt_sublink = 0;
+	}
+#endif
+
+	/* set default sublink */
+	if (fo->opt_sublink == 0) {
+		ptr = strchr(fo->opt_rfs, ',');
+		if (ptr && ptr != (fo->opt_rfs + 1))
+			fo->opt_sublink = strnsave(fo->opt_rfs + 1, ptr - fo->opt_rfs - 1);
 	}
 
 	/*
@@ -147,6 +157,7 @@ mntfs *mf;
 	int i;
 	int glob_error;
 	struct nfsx *nx;
+	int asked_for_wakeup = 0;
 
 	nx = (struct nfsx *) mf->mf_private;
 
@@ -238,8 +249,7 @@ errexit:
 		 * If HARD_NFSX_ERRORS is defined, make any
 		 * initialisation failure a hard error and
 		 * fail the entire group.  Otherwise only fail
-		 * fail if none of the group is mountable (see
-		 * nfsx_fmount).
+		 * if none of the group is mountable (see nfsx_fmount).
 		 */
 #ifdef HARD_NFSX_ERRORS
 		if (error > 0)
@@ -248,8 +258,13 @@ errexit:
 		if (error > 0)
 			n->n_error = error;
 #endif
-		else if (error < 0)
+		else if (error < 0) {
 			glob_error = -1;
+			if (!asked_for_wakeup) {
+				asked_for_wakeup = 1;
+				sched_task(wakeup_task, (voidp) mf, (voidp) m);
+			}
+		}
 	}
 
 	return glob_error;
@@ -266,12 +281,12 @@ voidp closure;
 	nfsx_mnt *n = nx->nx_try;
 
 	n->n_mnt->mf_flags &= ~(MFF_ERROR|MFF_MOUNTING);
-	mf->mf_flags &= ~(MFF_ERROR|MFF_MOUNTING);
+	mf->mf_flags &= ~MFF_ERROR;
 
 	/*
 	 * Wakeup anything waiting for this mount
 	 */
-	wakeup((voidp) mf);
+	wakeup((voidp) n->n_mnt);
 
 	if (rc || term) {
 		if (term) {
@@ -298,11 +313,15 @@ voidp closure;
 		 */
 		mf_mounted(n->n_mnt);
 		n->n_error = 0;
-		/*
-		 * Do the remaining bits
-		 */
-		if (nfsx_fmount(mf) >= 0)
-			mf_mounted(mf);
+	}
+
+	/*
+	 * Do the remaining bits
+	 */
+	if (nfsx_fmount(mf) >= 0) {
+		wakeup((voidp) mf);
+		mf->mf_flags &= ~MFF_MOUNTING;
+		mf_mounted(mf);
 	}
 }
 
@@ -319,9 +338,10 @@ voidp mv;
 	return error;
 }
 
-static int nfsx_fmount P((mntfs *mf));
-static int nfsx_fmount(mf)
+static int nfsx_remount P((mntfs *mf, int fg));
+static int nfsx_remount(mf, fg)
 mntfs *mf;
+int fg;
 {
 	struct nfsx *nx = (struct nfsx *) mf->mf_private;
 	nfsx_mnt *n;
@@ -355,7 +375,7 @@ mntfs *mf;
 #ifdef DEBUG
 				dlog("calling underlying fmount on %s", m->mf_mount);
 #endif
-				if (foreground && (m->mf_ops->fs_flags & FS_MBACKGROUND)) {
+				if (!fg && foreground && (m->mf_ops->fs_flags & FS_MBACKGROUND)) {
 					m->mf_flags |= MFF_MOUNTING;	/* XXX */
 #ifdef DEBUG
 					dlog("backgrounding mount of \"%s\"", m->mf_info);
@@ -367,7 +387,7 @@ mntfs *mf;
 				} else {
 #ifdef DEBUG
 					dlog("foreground mount of \"%s\" ...", mf->mf_info);
-#endif /* DEBUG */
+#endif
 					n->n_error = (*m->mf_ops->fmount_fs)(m);
 				}
 			}
@@ -388,6 +408,18 @@ mntfs *mf;
 	return glob_error < 0 ? 0 : glob_error;
 }
 
+static int nfsx_fmount P((mntfs *mf));
+static int nfsx_fmount(mf)
+mntfs *mf;
+{
+	return nfsx_remount(mf, FALSE);
+}
+
+/*
+ * Unmount an NFS hierarchy.
+ * Note that this is called in the foreground
+ * and so may hang under extremely rare conditions.
+ */
 static int nfsx_fumount(mf)
 mntfs *mf;
 {
@@ -417,6 +449,7 @@ mntfs *mf;
 			n->n_error = (*m->mf_ops->fumount_fs)(m);
 			if (n->n_error) {
 				glob_error = n->n_error;
+				n->n_error = 0;
 			} else {
 				/*
 				 * Make sure remount gets this node
@@ -431,9 +464,11 @@ mntfs *mf;
 	 * whole lot...
 	 */
 	if (glob_error) {
-		glob_error = nfsx_fmount(mf);
-		if (glob_error)
+		glob_error = nfsx_remount(mf, TRUE);
+		if (glob_error) {
+			errno = glob_error; /* XXX */
 			plog(XLOG_USER, "nfsx: remount of %s failed: %m", mf->mf_mount);
+		}
 		glob_error = EBUSY;
 	} else {
 		/*
@@ -442,11 +477,14 @@ mntfs *mf;
 		for (n = nx->nx_v; n < nx->nx_v + nx->nx_c; n++) {
 			mntfs *m = n->n_mnt;
 			if (n->n_error < 0) {
-				if (m->mf_ops->fs_flags & FS_MKMNT)
+				if (m->mf_ops->fs_flags & FS_MKMNT) {
 					(void) rmdirs(m->mf_mount);
+					m->mf_flags &= ~MFF_MKMNT;
+				}
 			}
 			free_mntfs(m);
 			n->n_mnt = 0;
+			n->n_error = -1;
 		}
 	}
 
