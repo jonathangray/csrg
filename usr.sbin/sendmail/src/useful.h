@@ -30,13 +30,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)useful.h	8.2 (Berkeley) 09/24/93
+ *	@(#)useful.h	8.3 (Berkeley) 03/31/95
  */
 
 # include <sys/types.h>
 
 /* support for bool type */
-typedef char	bool;
+typedef int	bool;
 # define TRUE	1
 # define FALSE	0
 
