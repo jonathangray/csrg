@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)lfs_alloc.c	7.4 (Berkeley) 09/09/87
+ *	@(#)lfs_alloc.c	7.4 (Berkeley) 11/23/87
  */
 
 #include "param.h"
@@ -118,8 +118,7 @@ realloccg(ip, bprev, bpref, osize, nsize)
 	register struct buf *bp, *obp;
 	int cg, request;
 	daddr_t bno, bn;
-	int i, count, s;
-	extern struct cmap *mfind();
+	int i, count;
 	
 	fs = ip->i_fs;
 	if ((unsigned)osize > fs->fs_bsize || fragoff(fs, osize) != 0 ||
