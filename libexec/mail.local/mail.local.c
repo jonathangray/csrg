@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)mail.local.c	8.6 (Berkeley) 04/08/94";
+static char sccsid[] = "@(#)mail.local.c	8.7 (Berkeley) 10/17/94";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -65,7 +65,45 @@ static char sccsid[] = "@(#)mail.local.c	8.6 (Berkeley) 04/08/94";
 #include <varargs.h>
 #endif
 
-#include "pathnames.h"
+#ifndef LOCK_EX
+# include <sys/file.h>
+#endif
+
+#ifdef BSD4_4
+# include "pathnames.h"
+#endif
+
+#ifndef __P
+# ifdef __STDC__
+#  define __P(protos)	protos
+# else
+#  define __P(protos)	()
+#  define const
+# endif
+#endif
+#ifndef __dead
+# if defined(__GNUC__) && (__GNUC__ < 2 || __GNUC_MINOR__ < 5) && !defined(__STRICT_ANSI__)
+#  define __dead	__volatile
+# else
+#  define __dead
+# endif
+#endif
+
+#ifndef BSD4_4
+# define _BSD_VA_LIST_	va_list
+extern char	*strerror __P((int));
+#endif
+
+#ifndef _PATH_LOCTMP
+# define _PATH_LOCTMP	"/tmp/local.XXXXXX"
+#endif
+#ifndef _PATH_MAILDIR
+# define _PATH_MAILDIR	"/var/spool/mail"
+#endif
+
+#ifndef S_ISLNK
+# define S_ISLNK(mode)	(((mode) & _S_IFMT) == S_IFLNK)
+#endif
 
 int eval = EX_OK;			/* sysexits.h error value. */
 
@@ -87,8 +125,14 @@ main(argc, argv)
 	int ch, fd;
 	uid_t uid;
 	char *from;
+	extern char *optarg;
+	extern int optind;
 
+#ifdef LOG_MAIL
 	openlog("mail.local", 0, LOG_MAIL);
+#else
+	openlog("mail.local", 0);
+#endif
 
 	from = NULL;
 	while ((ch = getopt(argc, argv, "df:r:")) != EOF)
@@ -144,15 +188,15 @@ store(from)
 	FILE *fp;
 	time_t tval;
 	int fd, eline;
-	char *tn, line[2048];
+	char line[2048];
+	char tmpbuf[sizeof _PATH_LOCTMP + 1];
 
-	tn = strdup(_PATH_LOCTMP);
-	if ((fd = mkstemp(tn)) == -1 || (fp = fdopen(fd, "w+")) == NULL) {
+	strcpy(tmpbuf, _PATH_LOCTMP);
+	if ((fd = mkstemp(tmpbuf)) == -1 || (fp = fdopen(fd, "w+")) == NULL) {
 		e_to_sys(errno);
 		err("unable to open temporary file");
 	}
-	(void)unlink(tn);
-	free(tn);
+	(void)unlink(tmpbuf);
 
 	(void)time(&tval);
 	(void)fprintf(fp, "From %s %s", from, ctime(&tval));
@@ -334,7 +378,7 @@ notifybiff(msg)
 			return;
 		}
 		addr.sin_family = hp->h_addrtype;
-		memmove(&addr.sin_addr, hp->h_addr, hp->h_length);
+		memcpy(&addr.sin_addr, hp->h_addr, hp->h_length);
 		addr.sin_port = sp->s_port;
 	}
 	if (f < 0 && (f = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
@@ -413,8 +457,17 @@ vwarn(fmt, ap)
 	(void)vfprintf(stderr, fmt, ap);
 	(void)fprintf(stderr, "\n");
 
+#ifndef ultrix
 	/* Log the message to syslog. */
 	vsyslog(LOG_ERR, fmt, ap);
+#else
+	{
+		char fmtbuf[10240];
+
+		(void) sprintf(fmtbuf, fmt, ap);
+		syslog(LOG_ERR, "%s", fmtbuf);
+	}
+#endif
 }
 
 /*
@@ -499,7 +552,7 @@ e_to_sys(num)
 #ifdef ETIMEDOUT
 	case ETIMEDOUT:		/* Connection timed out */
 #endif
-#if defined(EWOULDBLOCK) && (EWOULDBLOCK != EAGAIN)
+#if defined(EWOULDBLOCK) && EWOULDBLOCK != EAGAIN && EWOULDBLOCK != EDEADLK
 	case EWOULDBLOCK:	/* Operation would block. */
 #endif
 		eval = EX_TEMPFAIL;
@@ -509,3 +562,55 @@ e_to_sys(num)
 		break;
 	}
 }
+
+#ifndef BSD4_4
+
+char *
+strerror(eno)
+	int eno;
+{
+	extern int sys_nerr;
+	extern char *sys_errlist[];
+	static char ebuf[60];
+
+	if (eno >= 0 && eno <= sys_nerr)
+		return sys_errlist[eno];
+	(void) sprintf(ebuf, "Error %d", eno);
+	return ebuf;
+}
+
+#if __STDC__
+snprintf(char *buf, int bufsiz, const char *fmt, ...)
+#else
+snprintf(buf, bufsiz, fmt, va_alist)
+	char *buf;
+	int bufsiz;
+	const char *fmt;
+	va_dcl
+#endif
+{
+	va_list ap;
+
+#if __STDC__
+	va_start(ap, fmt);
+#else
+	va_start(ap);
+#endif
+	vsprintf(buf, fmt, ap);
+	va_end(ap);
+}
+
+#endif
+
+#ifdef ultrix
+
+int
+mkstemp(template)
+	char *template;
+{
+	int fd;
+
+	return open(mktemp(template), O_RDWR|O_CREAT|O_EXCL, 0600);
+}
+
+#endif
