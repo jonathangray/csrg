@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)restore.h	5.12 (Berkeley) 08/09/92
+ *	@(#)restore.h	5.13 (Berkeley) 10/05/92
  */
 
 #include <sys/param.h>
