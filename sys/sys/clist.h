@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)clist.h	7.3 (Berkeley) 02/15/91
+ *	@(#)clist.h	8.1 (Berkeley) 06/02/93
  */
 
 struct cblock {
