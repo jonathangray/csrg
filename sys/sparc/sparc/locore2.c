@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)locore2.c	8.1 (Berkeley) 06/11/93
+ *	@(#)locore2.c	8.2 (Berkeley) 09/21/93
  *
  * from: $Header: locore2.c,v 1.8 92/11/26 03:05:01 mccanne Exp $ (LBL)
  */
@@ -59,7 +59,7 @@ int	whichqs;
  * Put process p on the run queue indicated by its priority.
  * Calls should be made at splstatclock(), and p->p_stat should be SRUN.
  */
-setrq(p)
+setrunqueue(p)
 	register struct proc *p;
 {
 	register struct prochd *q;
@@ -67,7 +67,7 @@ setrq(p)
 	register int which = p->p_pri >> 2;
 
 	if (p->p_rlink != NULL)
-		panic("setrq");
+		panic("setrunqueue");
 	q = &qs[which];
 	whichqs |= 1 << which;
 	p->p_link = (struct proc *)q;
