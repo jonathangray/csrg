@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef NAMED_BIND
-static char sccsid[] = "@(#)domain.c	5.26 (Berkeley) 07/29/91 (with name server)";
+static char sccsid[] = "@(#)domain.c	5.27 (Berkeley) 09/03/91 (with name server)";
 #else
-static char sccsid[] = "@(#)domain.c	5.26 (Berkeley) 07/29/91 (without name server)";
+static char sccsid[] = "@(#)domain.c	5.27 (Berkeley) 09/03/91 (without name server)";
 #endif
 #endif /* not lint */
 
@@ -49,10 +49,6 @@ static char sccsid[] = "@(#)domain.c	5.26 (Berkeley) 07/29/91 (without name serv
 #include <arpa/nameser.h>
 #include <resolv.h>
 #include <netdb.h>
-
-#ifndef BSD4_4
-#define __dn_skipname	dn_skipname
-#endif
 
 typedef union {
 	HEADER qb1;
@@ -112,7 +108,7 @@ getmxrr(host, mxhosts, localhost, rcode)
 	cp = (u_char *)&answer + sizeof(HEADER);
 	eom = (u_char *)&answer + n;
 	for (qdcount = ntohs(hp->qdcount); qdcount--; cp += n + QFIXEDSZ)
-		if ((n = __dn_skipname(cp, eom)) < 0)
+		if ((n = dn_skipname(cp, eom)) < 0)
 			goto punt;
 	nmx = 0;
 	seenlocal = 0;
@@ -234,7 +230,7 @@ loop:
 	cp = (u_char *)&answer + sizeof(HEADER);
 	eom = (u_char *)&answer + n;
 	for (qdcount = ntohs(hp->qdcount); qdcount--; cp += n + QFIXEDSZ)
-		if ((n = __dn_skipname(cp, eom)) < 0)
+		if ((n = dn_skipname(cp, eom)) < 0)
 			return;
 
 	/*
