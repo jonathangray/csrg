@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fs.h	7.13 (Berkeley) 11/01/91
+ *	@(#)fs.h	7.14 (Berkeley) 12/19/91
  */
 
 /*
@@ -208,8 +208,8 @@ struct	fs
 	short	fs_opostbl[16][8];	/* old rotation block list head */
 	long	fs_sparecon[55];	/* reserved for future constants */
 	long	fs_state;		/* validate fs_clean field */
-	quad	fs_qbmask;		/* ~fs_bmask - for use with quad size */
-	quad	fs_qfmask;		/* ~fs_fmask - for use with quad size */
+	quad_t	fs_qbmask;		/* ~fs_bmask - for use with quad size */
+	quad_t	fs_qfmask;		/* ~fs_fmask - for use with quad size */
 	long	fs_postblformat;	/* format of positional layout tables */
 	long	fs_nrpos;		/* number of rotaional positions */
 	long	fs_postbloff;		/* (short) rotation block list head */
