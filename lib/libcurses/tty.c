@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)tty.c	8.3 (Berkeley) 05/04/94";
+static char sccsid[] = "@(#)tty.c	8.4 (Berkeley) 05/18/94";
 #endif /* not lint */
 
 #include <termios.h>
@@ -125,7 +125,7 @@ raw()
 	useraw = __pfast = __rawmode = 1;
 	curt = &rawt;
 	return (tcsetattr(STDIN_FILENO, __tcaction ?
-	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt));
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt) ? ERR : OK);
 }
 
 int
@@ -134,7 +134,7 @@ noraw()
 	useraw = __pfast = __rawmode = 0;
 	curt = &__baset;
 	return (tcsetattr(STDIN_FILENO, __tcaction ?
-	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt));
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt) ? ERR : OK);
 }
 
 int
@@ -144,7 +144,7 @@ cbreak()
 	__rawmode = 1;
 	curt = useraw ? &rawt : &cbreakt;
 	return (tcsetattr(STDIN_FILENO, __tcaction ?
-	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt));
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt) ? ERR : OK);
 }
 
 int
@@ -154,7 +154,7 @@ nocbreak()
 	__rawmode = 0;
 	curt = useraw ? &rawt : &__baset;
 	return (tcsetattr(STDIN_FILENO, __tcaction ?
-	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt));
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt) ? ERR : OK);
 }
 	
 int
@@ -166,7 +166,7 @@ echo()
 	
 	__echoit = 1;
 	return (tcsetattr(STDIN_FILENO, __tcaction ?
-	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt));
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt) ? ERR : OK);
 }
 
 int
@@ -178,7 +178,7 @@ noecho()
 	
 	__echoit = 0;
 	return (tcsetattr(STDIN_FILENO, __tcaction ?
-	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt));
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt) ? ERR : OK);
 }
 
 int
@@ -193,7 +193,7 @@ nl()
 
 	__pfast = __rawmode;
 	return (tcsetattr(STDIN_FILENO, __tcaction ?
-	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt));
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt) ? ERR : OK);
 }
 
 int
@@ -208,7 +208,7 @@ nonl()
 
 	__pfast = 1;
 	return (tcsetattr(STDIN_FILENO, __tcaction ?
-	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt));
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt) ? ERR : OK);
 }
 
 void
@@ -240,7 +240,7 @@ endwin()
 	(void)setvbuf(stdout, NULL, _IOLBF, 0);
 
 	return (tcsetattr(STDIN_FILENO, __tcaction ?
-	    TCSASOFT | TCSADRAIN : TCSADRAIN, &__orig_termios));
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, &__orig_termios) ? ERR : OK);
 }
 
 /*
@@ -252,12 +252,12 @@ static struct termios savedtty;
 int
 savetty()
 {
-	return (tcgetattr(STDIN_FILENO, &savedtty));
+	return (tcgetattr(STDIN_FILENO, &savedtty) ? ERR : OK);
 }
 
 int
 resetty()
 {
 	return (tcsetattr(STDIN_FILENO, __tcaction ?
-	    TCSASOFT | TCSADRAIN : TCSADRAIN, &savedtty));
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, &savedtty) ? ERR : OK);
 }
