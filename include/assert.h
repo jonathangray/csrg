@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)assert.h	5.2 (Berkeley) 06/18/92
+ *	@(#)assert.h	5.3 (Berkeley) 12/03/92
  */
 
 /*
@@ -39,6 +39,7 @@
  */
 
 #undef assert
+#undef _assert
 
 #ifdef NDEBUG
 #define	assert(e)	((void)0)
