@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lockf.c	8.2 (Berkeley) 01/04/94
+ *	@(#)ufs_lockf.c	8.3 (Berkeley) 01/06/94
  */
 
 #include <sys/param.h>
@@ -171,10 +171,17 @@ lf_setlock(lock)
 				block->lf_spare = block->lf_block->lf_block;
 				if ((block->lf_block->lf_flags & HASBLOCK) == 0)
 					block->lf_flags &= ~HASBLOCK;
-				free(lock, M_LOCKF);
-				return (error);
+				break;
 			}
-			panic("lf_setlock: lost lock");
+			/*
+			 * If we did not find ourselves on the list, but
+			 * are still linked onto a lock list, then something
+			 * is very wrong.
+			 */
+			if (block == NOLOCKF && lock->lf_next != NOLOCKF)
+				panic("lf_setlock: lost lock");
+			free(lock, M_LOCKF);
+			return (error);
 		}
 	}
 	/*
