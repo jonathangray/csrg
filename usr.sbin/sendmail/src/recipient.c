@@ -2,7 +2,7 @@
 # include "sendmail.h"
 # include <sys/stat.h>
 
-SCCSID(@(#)recipient.c	3.42		09/18/82);
+SCCSID(@(#)recipient.c	3.43		11/03/82);
 
 /*
 **  SENDTO -- Designate a send list.
@@ -406,7 +406,7 @@ finduser(name)
 
 	for (p = name; *p != '\0'; p++)
 	{
-		if (*p == (SPACESUB & 0177) || *p == '_')
+		if (*p == (SpaceSub & 0177) || *p == '_')
 			*p = ' ';
 	}
 
