@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)vfprintf.c	5.38 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)vfprintf.c	5.39 (Berkeley) 06/28/90";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -433,6 +433,11 @@ cvt(number, prec, flags, signp, fmtch, startp, endp)
 	double integer, tmp, modf();
 	char *exponent(), *round();
 
+#ifdef hp300
+	if (expcnt = isspecial(number, startp, signp))
+		return(expcnt);
+#endif
+
 	dotrim = expcnt = gformat = 0;
 	fract = modf(number, &integer);
 
@@ -680,3 +685,25 @@ exponent(p, exp, fmtch)
 	}
 	return(p);
 }
+
+#ifdef hp300
+isspecial(d, bufp, signp)
+	double d;
+	char *bufp, *signp;
+{
+	register struct IEEEdp {
+		unsigned sign:1;
+		unsigned exp:11;
+		unsigned manh:20;
+		unsigned manl:32;
+	} *ip = (struct IEEEdp *)&d;
+
+	if (ip->exp != 0x7ff)
+		return(0);
+	if (ip->manh || ip->manl)
+		(void)strcpy(bufp, "NaN");
+	else
+		(void)strcpy(bufp, "Inf");
+	return(3);
+}
+#endif
