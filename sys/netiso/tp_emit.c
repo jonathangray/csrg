@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_emit.c	7.8 (Berkeley) 05/06/91
+ *	@(#)tp_emit.c	7.9 (Berkeley) 05/09/91
  */
 
 /***********************************************************
@@ -193,12 +193,14 @@ tp_emit(dutype,	tpcb, seq, eot, data)
 			m->m_type = TPMT_TPHDR;
 			mbstat.m_mtypes[TPMT_TPHDR]++;
 			m->m_next = MNULL;
-			m->m_data = m->m_dat;
-			m->m_flags = 0;
+			m->m_nextpkt = MNULL;
+			m->m_data = m->m_pktdat;
+			m->m_flags = M_PKTHDR;
 		}
 	} else {
-		MGET(m, M_DONTWAIT, TPMT_TPHDR); 
+		MGETHDR(m, M_DONTWAIT, TPMT_TPHDR); 
 	}
+	m->m_data += max_hdr;
 	if (m == NULL) {
 		if(data != (struct mbuf *)0)
 			m_freem(data);
