@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_segment.c	7.14 (Berkeley) 03/03/92
+ *	@(#)lfs_segment.c	7.15 (Berkeley) 03/18/92
  */
 
 #include <sys/param.h>
@@ -168,11 +168,18 @@ lfs_vflush(vp)
 	 */
 	s = splbio();
 	if (--fs->lfs_iocount && (error =
-	    tsleep(&fs->lfs_iocount, PRIBIO + 1, "lfs vflush", 0)))
+	    tsleep(&fs->lfs_iocount, PRIBIO + 1, "lfs vflush", 0))) {
+		free(sp->bpp, M_SEGMENT);
+		free(sp, M_SEGMENT);
 		return (error);
+	}
 	splx(s);
 	vfs_unbusy(mp);
 
+	/*
+	 * XXX
+	 * Should be writing a checkpoint?
+	 */
 	free(sp->bpp, M_SEGMENT);
 	free(sp, M_SEGMENT);
 
@@ -278,8 +285,11 @@ printf("lfs_segment: failed to get vnode (tell Keith)!\n");
 	--fs->lfs_iocount;
 	if (do_ckp) {
 		if (fs->lfs_iocount && (error =
-		    tsleep(&fs->lfs_iocount, PRIBIO + 1, "lfs sync", 0)))
+		    tsleep(&fs->lfs_iocount, PRIBIO + 1, "lfs sync", 0))) {
+			free(sp->bpp, M_SEGMENT);
+			free(sp, M_SEGMENT);
 			return (error);
+		}
 		splx(s);
 		lfs_writesuper(fs, sp);
 	} else 
