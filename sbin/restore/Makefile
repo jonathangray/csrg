@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.10 (Berkeley) 05/11/90
+#	@(#)Makefile	5.11 (Berkeley) 01/15/91
 
 PROG=	restore
 SRCS=	main.c interactive.c restore.c dirs.c symtab.c tape.c utilities.c
