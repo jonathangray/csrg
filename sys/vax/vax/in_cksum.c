@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)in_cksum.c	7.5 (Berkeley) 06/28/90
+ *	@(#)in_cksum.c	7.6 (Berkeley) 12/16/90
  */
 
-#include "param.h"
-#include "mbuf.h"
+#include "sys/param.h"
+#include "sys/mbuf.h"
 
 /*
  * Checksum routine for Internet Protocol family headers (VAX Version).
