@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	6.9 (Berkeley) 02/15/93
+ *	@(#)sendmail.h	6.10 (Berkeley) 02/16/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	6.9		02/15/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	6.10		02/16/93";
 # endif lint
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -165,8 +165,10 @@ struct mailer
 	BITMAP	m_flags;	/* status flags, see below */
 	short	m_mno;		/* mailer number internally */
 	char	**m_argv;	/* template argument vector */
-	short	m_s_rwset;	/* rewriting set for sender addresses */
-	short	m_r_rwset;	/* rewriting set for recipient addresses */
+	short	m_sh_rwset;	/* rewrite set: sender header addresses */
+	short	m_se_rwset;	/* rewrite set: sender envelope addresses */
+	short	m_rh_rwset;	/* rewrite set: recipient header addresses */
+	short	m_re_rwset;	/* rewrite set: recipient envelope addresses */
 	char	*m_eol;		/* end of line string */
 	long	m_maxsize;	/* size limit on message to this mailer */
 	int	m_linelimit;	/* max # characters per line */
