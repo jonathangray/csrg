@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)route.h	7.16 (Berkeley) 02/18/92
+ *	@(#)route.h	7.17 (Berkeley) 10/11/92
  */
 
 /*
@@ -84,7 +84,7 @@ struct rt_metrics {
  * gateway rather than the ultimate destination.
  */
 #ifndef RNF_NORMAL
-#include "radix.h"
+#include <net/radix.h>
 #endif
 struct rtentry {
 	struct	radix_node rt_nodes[2];	/* tree glue, and other values */
