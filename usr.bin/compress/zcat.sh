@@ -1,7 +1,7 @@
 #!/bin/sh -
 #
-# Copyright (c) 1992 The Regents of the University of California.
-# All rights reserved.
+# Copyright (c) 1992, 1993
+#	The Regents of the University of California.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -31,7 +31,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)zcat.sh	5.1 (Berkeley) 12/02/92
+#	@(#)zcat.sh	8.1 (Berkeley) 06/06/93
 #
 
 uncompress -c $*
