@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)ops.vax.c	5.11 (Berkeley) 11/13/91";
+static char sccsid[] = "@(#)ops.vax.c	5.12 (Berkeley) 11/14/91";
 #endif /* not lint */
 
 /*
@@ -341,7 +341,7 @@ typedef struct {
 } Optab;
 
 #ifndef ASINSTRS
-#define ASINSTRS "../as.vax/instrs.h"
+#define ASINSTRS "instrs.h"
 #endif
 
 #ifndef ADBINSTRS
