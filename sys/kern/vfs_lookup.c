@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_lookup.c	7.41 (Berkeley) 07/12/92
+ *	@(#)vfs_lookup.c	7.42 (Berkeley) 07/13/92
  */
 
 #include "param.h"
@@ -298,12 +298,14 @@ dirloop:
 	if (*cp == '\0' && docache == 0)
 		cnp->cn_flags &= ~MAKEENTRY;
 	if (cnp->cn_namelen == 2 &&
-			cnp->cn_nameptr[1] == '.' && cnp->cn_nameptr[0] == '.')
+	    cnp->cn_nameptr[1] == '.' && cnp->cn_nameptr[0] == '.')
 		cnp->cn_flags |= ISDOTDOT;
-	else cnp->cn_flags &= ~ISDOTDOT;
+	else
+		cnp->cn_flags &= ~ISDOTDOT;
 	if (*ndp->ni_next == 0)
 		cnp->cn_flags |= ISLASTCN;
-	else cnp->cn_flags &= ~ISLASTCN;
+	else
+		cnp->cn_flags &= ~ISLASTCN;
 
 
 	/*
