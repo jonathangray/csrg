@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)tread2.c	5.2 (Berkeley) 03/12/91";
+static char sccsid[] = "@(#)tread2.c	5.2 (Berkeley) 3/12/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -56,8 +56,8 @@ typedef struct {		       /* info to be stored */
 	int num, siz;
 } info;
 
-char	wp1[256];
-char	wp2[256];
+char	wp1[8192];
+char	wp2[8192];
 main(argc, argv)
 char **argv;
 {
@@ -82,8 +82,8 @@ char **argv;
 
 	key.data = wp1;
 	item.data = wp2;
-	while ( fgets(wp1, 256, stdin) &&
-		fgets(wp2, 256, stdin) &&
+	while ( fgets(wp1, 8192, stdin) &&
+		fgets(wp2, 8192, stdin) &&
 		i++ < MAXWORDS) {
 /*
 * put info in structure, and structure in the item
@@ -91,7 +91,7 @@ char **argv;
 		key.size = strlen(wp1);
 		item.size = strlen(wp2);
 
-		stat = (dbp->get)(dbp, &key, &res);
+		stat = (dbp->get)(dbp, &key, &res,0);
 		if (stat < 0) {
 		    fprintf ( stderr, "Error retrieving %s\n", key.data );
 		    exit(1);
