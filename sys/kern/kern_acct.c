@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_acct.c	8.1 (Berkeley) 06/10/93
+ *	@(#)kern_acct.c	7.29 (Berkeley) 06/14/93
  */
 
 #include <sys/param.h>
@@ -48,13 +48,12 @@ struct	vnode *savacctp;
  * accounting has been suspended, and freespace rises above acctresume,
  * accounting is resumed.
  */
-/* ARGSUSED */
-struct sysacct_args {
+struct acct_args {
 	char	*fname;
 };
-sysacct(p, uap, retval)
+acct(p, uap, retval)
 	struct proc *p;
-	struct sysacct_args *uap;
+	struct acct_args *uap;
 	int *retval;
 {
 	register struct vnode *vp;
@@ -129,7 +128,7 @@ acctwatch(a)
  * This routine calculates an accounting record for a process and,
  * if accounting is enabled, writes it to the accounting file.
  */
-acct(p)
+acct_process(p)
 	register struct proc *p;
 {
 	register struct rusage *ru;
