@@ -36,7 +36,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)ftree.c	1.1 (Berkeley) 12/13/92";
+static char sccsid[] = "@(#)ftree.c	1.2 (Berkeley) 01/16/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -75,7 +75,6 @@ static FTREE *fthead = NULL;		/* head of linked list of file args */
 static FTREE *fttail = NULL;		/* tail of linked list of file args */
 static FTREE *ftcur = NULL;		/* current file arg being processed */
 static FTSENT *ftent = NULL;		/* current file tree entry */
-static int refcnt = 1;			/* ref count for stdin supplied arg */
 static int ftree_skip;			/* when set skip to next file arg */
 
 static int ftree_arg __P((void));
@@ -213,10 +212,8 @@ ftree_sel(arcn)
 	 * the trees are read from stdin. stdin processing uses a global
 	 * reference count for the last path input.
 	 */
-	if (ftcur != NULL)
+	if (ftcur != NULL) 
 		ftcur->refcnt = 1;
-	else
-		refcnt = 1;
 
 	/*
 	 * if -n we are done with this arg, force a skip to the next arg when
@@ -306,11 +303,8 @@ ftree_arg()
 		if (fthead == NULL) {
 			/*
 			 * the user didn't supply any args, get the file trees
-			 * to process from stdin; if the refenece count is 0
-			 * complain that the last stdin read file tree did not
-			 * supply any selected members
+			 * to process from stdin; 
 			 */
-			refcnt = 0;
 			if (fgets(farray[0], PAXPATHLEN+1, stdin) == NULL)
 				return(-1);
 			if ((pt = strchr(farray[0], '\n')) != NULL)
@@ -318,15 +312,11 @@ ftree_arg()
 		} else {
 			/*
 			 * the user supplied the file args as arguements to pax
-			 * store the current reference count (unless we have not
-			 * processed any files yet).
 			 */
-			if (ftcur != NULL) {
-				ftcur->refcnt = refcnt;
-				if ((ftcur = ftcur->fow) == NULL)
-					return(-1);
-			} else
+			if (ftcur == NULL)
 				ftcur = fthead;
+			else if ((ftcur != NULL)&&((ftcur=ftcur->fow) == NULL))
+				return(-1);
 			farray[0] = ftcur->fname;
 		}
 
