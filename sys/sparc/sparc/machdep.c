@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)machdep.c	8.6 (Berkeley) 01/14/94
+ *	@(#)machdep.c	8.7 (Berkeley) 04/03/95
  *
  * from: $Header: machdep.c,v 1.44 93/10/31 05:28:36 torek Exp $
  */
@@ -366,7 +366,7 @@ void
 sendsig(catcher, sig, mask, code)
 	sig_t catcher;
 	int sig, mask;
-	unsigned code;
+	u_long code;
 {
 	register struct proc *p = curproc;
 	register struct sigacts *psp = p->p_sigacts;
