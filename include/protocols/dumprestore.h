@@ -30,8 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dumprestore.h	5.5 (Berkeley) 03/07/91
+ *	@(#)dumprestore.h	5.6 (Berkeley) 04/03/91
  */
+
+#ifndef _DUMPRESTORE_H_
+#define _DUMPRESTORE_H_
 
 /*
  * TP_BSIZE is the size of file blocks on the dump tapes.
@@ -97,3 +100,5 @@ union u_spcl {
 #define	DUMPOUTFMT	"%-16s %c %s"		/* for printf */
 						/* name, level, ctime(date) */
 #define	DUMPINFMT	"%16s %c %[^\n]\n"	/* inverse for scanf */
+
+#endif /* !_DUMPRESTORE_H_ */
