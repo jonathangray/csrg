@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)3.t	6.21 (Berkeley) 07/15/93
+.\"	@(#)3.t	6.22 (Berkeley) 07/15/93
 .\"
 .ds lq ``
 .ds rq ''
@@ -1157,9 +1157,9 @@ as have the address family-specific versions of this structure.
 The
 .I sa_family
 family field has been split into a length,
-.IR sa_len ,
+.Pn sa_len ,
 and a family,
-.IR sa_family .
+.Pn sa_family .
 System calls that pass a
 .I sockaddr
 structure into the kernel (e.g.
