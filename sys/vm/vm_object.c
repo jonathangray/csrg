@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_object.c	7.6 (Berkeley) 08/16/91
+ *	@(#)vm_object.c	7.7 (Berkeley) 08/28/91
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -163,7 +163,7 @@ _vm_object_allocate(size, object)
 	object->ref_count = 1;
 	object->resident_page_count = 0;
 	object->size = size;
-	object->can_persist = FALSE;
+	object->flags = OBJ_INTERNAL;	/* vm_allocate_with_pager will reset */
 	object->paging_in_progress = 0;
 	object->copy = NULL;
 
@@ -172,8 +172,6 @@ _vm_object_allocate(size, object)
 	 */
 
 	object->pager = NULL;
-	object->pager_ready = FALSE;
-	object->internal = TRUE;	/* vm_allocate_with_pager will reset */
 	object->paging_offset = 0;
 	object->shadow = NULL;
 	object->shadow_offset = (vm_offset_t) 0;
@@ -247,7 +245,7 @@ void vm_object_deallocate(object)
 		 *	pages.
 		 */
 
-		if (object->can_persist) {
+		if (object->flags & OBJ_CANPERSIST) {
 
 			queue_enter(&vm_object_cached_list, object,
 				vm_object_t, cached_list);
@@ -334,14 +332,14 @@ void vm_object_terminate(object)
 			queue_remove(&vm_page_queue_active, p, vm_page_t,
 						pageq);
 			p->active = FALSE;
-			vm_stat.active_count--;
+			cnt.v_active_count--;
 		}
 
 		if (p->inactive) {
 			queue_remove(&vm_page_queue_inactive, p, vm_page_t,
 						pageq);
 			p->inactive = FALSE;
-			vm_stat.inactive_count--;
+			cnt.v_inactive_count--;
 		}
 		vm_page_unlock_queues();
 		p = (vm_page_t) queue_next(&p->listq);
@@ -358,7 +356,7 @@ void vm_object_terminate(object)
 	 *	so we don't need to lock it.
 	 */
 
-	if (!object->internal) {
+	if ((object->flags & OBJ_INTERNAL) == 0) {
 		vm_object_lock(object);
 		vm_object_page_clean(object, 0, 0);
 		vm_object_unlock(object);
@@ -642,7 +640,7 @@ void vm_object_copy(src_object, src_offset, size,
 
 	vm_object_lock(src_object);
 	if (src_object->pager == NULL ||
-	    src_object->internal) {
+	    (src_object->flags & OBJ_INTERNAL)) {
 
 		/*
 		 *	Make another reference to the object
@@ -941,7 +939,7 @@ void vm_object_enter(object, pager)
 	entry = (vm_object_hash_entry_t)
 		malloc((u_long)sizeof *entry, M_VMOBJHASH, M_WAITOK);
 	entry->object = object;
-	object->can_persist = TRUE;
+	object->flags |= OBJ_CANPERSIST;
 
 	vm_object_cache_lock();
 	queue_enter(bucket, entry, vm_object_hash_entry_t, hash_links);
@@ -1064,7 +1062,7 @@ void vm_object_collapse(object)
 		 *		The backing object is internal.
 		 */
 	
-		if (!backing_object->internal ||
+		if ((backing_object->flags & OBJ_INTERNAL) == 0 ||
 		    backing_object->paging_in_progress != 0) {
 			vm_object_unlock(backing_object);
 			return;
