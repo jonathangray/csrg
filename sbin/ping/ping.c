@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)ping.c	5.8 (Berkeley) 03/05/91";
+static char sccsid[] = "@(#)ping.c	5.9 (Berkeley) 05/12/91";
 #endif /* not lint */
 
 /*
@@ -175,7 +175,7 @@ main(argc, argv)
 		case 'f':
 			if (getuid()) {
 				(void)fprintf(stderr,
-				    "ping: you must be root to use the -f option.\n");
+				    "ping: %s\n", strerror(EPERM));
 				exit(1);
 			}
 			options |= F_FLOOD;
@@ -440,7 +440,7 @@ pinger()
 		(void)printf("ping: wrote %s %d chars, ret=%d\n",
 		    hostname, cc, i);
 	}
-	if (options & F_FLOOD)
+	if (!(options & F_QUIET) && options & F_FLOOD)
 		(void)write(STDOUT_FILENO, &DOT, 1);
 }
 
