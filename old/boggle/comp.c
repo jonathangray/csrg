@@ -1,6 +1,6 @@
 /*-
- * Copyright (c) 1982 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1982, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This module is believed to contain source code proprietary to AT&T.
  * Use and redistribution is subject to the Berkeley Software License
@@ -8,13 +8,13 @@
  */
 
 #ifndef lint
-char copyright[] =
-"@(#) Copyright (c) 1982 The Regents of the University of California.\n\
- All rights reserved.\n";
+static char copyright[] =
+"@(#) Copyright (c) 1982, 1993\n\
+	The Regents of the University of California.  All rights reserved.\n";
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)comp.c	5.3 (Berkeley) 02/03/93";
+static char sccsid[] = "@(#)comp.c	8.1 (Berkeley) 05/31/93";
 #endif /* not lint */
 
 #include <stdio.h>
