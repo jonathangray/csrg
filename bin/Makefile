@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.38 (Berkeley) 04/26/93
+#	@(#)Makefile	5.39 (Berkeley) 05/17/93
 
 # Missing: adb dd ed expr tar test
 SUBDIR=	cat chmod cp csh date df echo hostname kill ln ls \
