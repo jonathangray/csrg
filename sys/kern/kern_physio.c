@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_physio.c	8.2 (Berkeley) 09/21/93
+ *	@(#)kern_physio.c	8.3 (Berkeley) 09/23/93
  */
 
 #include <sys/param.h>
