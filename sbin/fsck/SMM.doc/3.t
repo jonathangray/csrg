@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)3.t	4.4 (Berkeley) 04/17/91
+.\"	@(#)3.t	4.5 (Berkeley) 06/05/93
 .\"
 .ds RH Fixing corrupted file systems
 .NH
@@ -371,7 +371,7 @@ will replace them with the correct values.
 If there are multiple hard links to a directory,
 the first one encountered is considered the real parent
 to which ``\fB..\fP'' should point;
-\fIfsck\P recommends deletion for the subsequently discovered names.
+\fIfsck\fP recommends deletion for the subsequently discovered names.
 .NH 2
 File system connectivity
 .PP
