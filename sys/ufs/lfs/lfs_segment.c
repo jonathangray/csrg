@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_segment.c	7.34 (Berkeley) 09/02/92
+ *	@(#)lfs_segment.c	7.35 (Berkeley) 09/03/92
  */
 
 #include <sys/param.h>
@@ -417,7 +417,7 @@ lfs_writeinode(fs, sp, ip)
 	int redo_ifile = 0;
 
 	if (!(ip->i_flag & (IMOD | IACC | IUPD | ICHG)))
-		return;
+		return(0);
 
 	/* Allocate a new inode block if necessary. */
 	if (sp->ibp == NULL) {
@@ -539,10 +539,6 @@ lfs_gatherblock(sp, bp, sptr)
 	}
 
 	/* Insert into the buffer list, update the FINFO block. */
-if (bp->b_vp == sp->fs->lfs_ivnode &&
-((bp->b_lblkno == 0 && (bp->b_un.b_daddr[0] > 26 || bp->b_un.b_daddr[1] > 26)) ||
-(bp->b_lblkno > 2)))
-	printf ("Bad ifile block\n");
 	bp->b_flags |= B_GATHERED;
 	*sp->cbpp++ = bp;
 	sp->fip->fi_blocks[sp->fip->fi_nblocks++] = bp->b_lblkno;
