@@ -21,7 +21,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)wd.c	5.6 (Berkeley) 11/08/90
+ *	@(#)wd.c	5.7 (Berkeley) 11/08/90
  */
 
 #include "wd.h"
@@ -41,7 +41,6 @@
 #include "uio.h"
 #include "machine/pte.h"
 #include "machine/isa/device.h"
-#include "atio.h"
 #include "icu.h"
 #include "wdreg.h"
 #include "syslog.h"
