@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mtree.h	5.9 (Berkeley) 02/19/92
+ *	@(#)mtree.h	5.10 (Berkeley) 06/18/92
  */
 
 #include <string.h>
@@ -45,7 +45,7 @@ typedef struct _node {
 	struct _node	*parent, *child;	/* up, down */
 	struct _node	*prev, *next;		/* left, right */
 	off_t	st_size;			/* size */
-	time_t	st_mtime;			/* last modification time */
+	struct timespec	st_mtimespec;		/* last modification time */
 	u_long	cksum;				/* check sum */
 	char	*slink;				/* symbolic link reference */
 	uid_t	st_uid;				/* uid */
