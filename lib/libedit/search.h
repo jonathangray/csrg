@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)search.h	5.2 (Berkeley) 06/22/92
+ *	@(#)search.h	5.3 (Berkeley) 07/03/92
  */
 
 /*
@@ -53,6 +53,7 @@ typedef struct el_search_t {
 } el_search_t;
 
 
+protected int 		el_match	__P((const char *, const char *));
 protected int		search_init	__P((EditLine *));
 protected void		search_end	__P((EditLine *));
 protected int		c_hmatch	__P((EditLine *, const char *));
