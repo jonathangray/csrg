@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)esis.c	7.22 (Berkeley) 10/11/92
+ *	@(#)esis.c	7.23 (Berkeley) 04/06/93
  */
 
 /***********************************************************
@@ -97,7 +97,7 @@ SOFTWARE.
  *
  */
 struct rawcb	esis_pcb;
-int				esis_config(), snpac_age();
+void				esis_config(), snpac_age();
 int				esis_sendspace = 2048;
 int				esis_recvspace = 2048;
 short			esis_holding_time = ESIS_HT;
@@ -742,6 +742,7 @@ bad: ;    /* Needed by ESIS_NEXT_OPTION */
  *
  * NOTES:			Called every esis_config_time seconds
  */
+void
 esis_config()
 {
 	register struct ifnet	*ifp;
