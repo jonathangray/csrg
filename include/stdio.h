@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stdio.h	8.2 (Berkeley) 01/02/94
+ *	@(#)stdio.h	8.3 (Berkeley) 01/03/94
  */
 
 #ifndef	_STDIO_H_
@@ -240,7 +240,7 @@ int	 getchar __P((void));
 char	*gets __P((char *));
 #if !defined(_ANSI_SOURCE) && !defined(_POSIX_SOURCE)
 extern int sys_nerr;			/* perror(3) external variables */
-extern const char *const sys_errlist[];
+extern __const char *__const sys_errlist[];
 #endif
 void	 perror __P((const char *));
 int	 printf __P((const char *, ...));
