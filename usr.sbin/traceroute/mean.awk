@@ -34,7 +34,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)mean.awk	5.2 (Berkeley) 04/28/90
+#	@(#)mean.awk	8.1 (Berkeley) 06/06/93
 #
 /^ *[0-9]/	{
 	# print out the average time to each hop along a route.
