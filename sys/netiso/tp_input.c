@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_input.c	7.31 (Berkeley) 10/11/92
+ *	@(#)tp_input.c	7.32 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -385,7 +385,7 @@ tpcons_output()
 {
 	return(0);
 }
-#endif !CONS
+#endif /* !CONS */
 
 /* 
  * NAME: 	tp_input()
@@ -433,7 +433,7 @@ tp_input(m, faddr, laddr, cons_channel, dgout_routine, ce_bit)
 	u_char					opt, dusize, addlopt, version;
 #ifdef TP_PERF_MEAS
 	u_char					perf_meas;
-#endif TP_PERF_MEAS
+#endif /* TP_PERF_MEAS */
 	u_char					fsufxlen, lsufxlen;
 	caddr_t					fsufxloc, lsufxloc;
 	int						tpdu_len;
@@ -455,7 +455,7 @@ again:
 	dusize = TP_DFL_TPDUSIZE;
 #ifdef TP_PERF_MEAS
 	GET_CUR_TIME( &e.e_time ); perf_meas = 0;
-#endif TP_PERF_MEAS
+#endif /* TP_PERF_MEAS */
 	
 	IFDEBUG(D_TPINPUT)
 		printf("tp_input(0x%x, ... 0x%x)\n", m, cons_channel);
@@ -524,7 +524,7 @@ again:
 		IncStat(ts_inv_dutype);
 		goto discard;
 	}
-#endif ARGO_DEBUG
+#endif /* ARGO_DEBUG */
 
 	CHECK( (dutype < TP_MIN_TPDUTYPE || dutype > TP_MAX_TPDUTYPE),
 		E_TP_INV_TPDU, ts_inv_dutype, respond, 
@@ -606,7 +606,7 @@ again:
 			case	TPP_perf_meas:
 				vb_getval(P, u_char, perf_meas);
 				break;
-#endif TP_PERF_MEAS
+#endif /* TP_PERF_MEAS */
 
 			case	TPP_vers:
 				/* not in class 0; 1 octet; in CR_TPDU only */
@@ -770,7 +770,7 @@ again:
 			tpp.p_use_efc = (opt & TPO_USE_EFC) == TPO_USE_EFC;
 			tpp.p_use_nxpd = (addlopt & TPAO_USE_NXPD) == TPAO_USE_NXPD;
 			tpp.p_use_rcc = (addlopt & TPAO_USE_RCC) == TPAO_USE_RCC;
-#endif notdef
+#endif /* notdef */
 
 		CHECK(
 			tp_consistency(tpcb, 0 /* not force or strict */, &tpp) != 0, 
@@ -858,7 +858,7 @@ again:
 				 */
 				(void) tp_setup_perf(tpcb);
 			}
-#endif TP_PERF_MEAS
+#endif /* TP_PERF_MEAS */
 			tpcb->tp_fref = sref;
 
 			/* We've already checked for consistency with the options 
@@ -1074,7 +1074,7 @@ again:
 				 * to pass this info to the user anyway
 				 */
 				break;
-#endif notdef
+#endif /* notdef */
 
 			caseof( AK_TPDU_type, TPP_subseq ):
 				/* used after reduction of window */
@@ -1142,7 +1142,7 @@ again:
 				tpp.p_use_efc = (opt & TPO_USE_EFC) == TPO_USE_EFC;
 				tpp.p_use_nxpd = (addlopt & TPAO_USE_NXPD) == TPAO_USE_NXPD;
 				tpp.p_use_rcc = (addlopt & TPAO_USE_RCC) == TPAO_USE_RCC;
-#endif notdef
+#endif /* notdef */
 
 			CHECK(
 				tp_consistency(tpcb, TP_FORCE, &tpp) != 0, 
@@ -1266,7 +1266,7 @@ again:
 #else
 				e.ATTR(AK_TPDU).e_cdt = hdr->tpdu_AKcdtX;
 				e.ATTR(AK_TPDU).e_seq = hdr->tpdu_AKseqX;
-#endif BYTE_ORDER
+#endif /* BYTE_ORDER */
 			} else {
 				e.ATTR(AK_TPDU).e_cdt = hdr->tpdu_AKcdt;
 				e.ATTR(AK_TPDU).e_seq = hdr->tpdu_AKseq;
@@ -1291,7 +1291,7 @@ again:
 				e.ATTR(XAK_TPDU).e_seq = seqeotX.s_seq;
 #else
 				e.ATTR(XAK_TPDU).e_seq = hdr->tpdu_XAKseqX;
-#endif BYTE_ORDER
+#endif /* BYTE_ORDER */
 			} else {
 				e.ATTR(XAK_TPDU).e_seq = hdr->tpdu_XAKseq;
 			}
@@ -1309,7 +1309,7 @@ again:
 				e.ATTR(XPD_TPDU).e_seq = seqeotX.s_seq;
 #else
 				e.ATTR(XPD_TPDU).e_seq = hdr->tpdu_XPDseqX;
-#endif BYTE_ORDER
+#endif /* BYTE_ORDER */
 			} else {
 				e.ATTR(XPD_TPDU).e_seq = hdr->tpdu_XPDseq;
 			}
@@ -1345,7 +1345,7 @@ again:
 #else
 				e.ATTR(DT_TPDU).e_seq = hdr->tpdu_DTseqX;
 				e.ATTR(DT_TPDU).e_eot = hdr->tpdu_DTeotX;
-#endif BYTE_ORDER
+#endif /* BYTE_ORDER */
 			} else {
 				e.ATTR(DT_TPDU).e_seq = hdr->tpdu_DTseq;
 				e.ATTR(DT_TPDU).e_eot = hdr->tpdu_DTeot;
@@ -1566,7 +1566,7 @@ respond:
 
 #ifdef lint
 	printf("",sref,opt);
-#endif lint
+#endif /* lint */
 	IncStat(ts_recv_drop);
 	return (ProtoHook)0;
 }
