@@ -17,7 +17,7 @@ char copyright[] =
 #endif /* !lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)cmp.c	4.7 (Berkeley) 11/24/87";
+static char sccsid[] = "@(#)cmp.c	4.8 (Berkeley) 12/21/87";
 #endif /* !lint */
 
 #include <sys/param.h>
@@ -33,7 +33,7 @@ static char sccsid[] = "@(#)cmp.c	4.7 (Berkeley) 11/24/87";
 #define OK	0			/* didn't find differences */
 #define YES	1			/* yes/true */
 
-static int	fd1, fd2;		/* file descriptors */
+static int	fd1, fd2,		/* file descriptors */
 		silent = NO;		/* if silent run */
 static short	all = NO;		/* if report all differences */
 static u_char	buf1[MAXBSIZE],		/* read buffers */
