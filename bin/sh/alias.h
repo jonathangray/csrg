@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)alias.h	1.2 (Berkeley) 05/31/93
+ *	@(#)alias.h	8.1 (Berkeley) 05/31/93
  */
 
 #define ALIASINUSE	1
