@@ -36,11 +36,11 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)amd.start.ex	5.3 (Berkeley) 05/12/91
+#	@(#)amd.start.ex	5.4 (Berkeley) 02/09/92
 #
 # Start amd
 #
-# $Id: amd.start.ex,v 5.2.1.3 91/05/07 22:20:41 jsp Alpha $
+# $Id: amd.start.ex,v 5.2.2.1 1992/02/09 15:11:32 jsp beta $
 #
 PATH=/usr/sbin:/bin:/usr/bin:$PATH export PATH
 
