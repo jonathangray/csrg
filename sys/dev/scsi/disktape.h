@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 1992 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1992, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This software was developed by the Computer Systems Engineering group
  * at Lawrence Berkeley Laboratory under DARPA contract BG 91-66 and
@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)disktape.h	5.4 (Berkeley) 04/29/93
+ *	@(#)disktape.h	8.1 (Berkeley) 06/10/93
  *
  * from: $Header: disktape.h,v 1.4 93/04/30 00:02:16 torek Exp $ (LBL)
  */
