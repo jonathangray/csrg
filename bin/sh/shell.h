@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)shell.h	8.1 (Berkeley) 05/31/93
+ *	@(#)shell.h	8.2 (Berkeley) 05/04/95
  */
 
 /*
