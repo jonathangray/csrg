@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vfsops.c	7.70 (Berkeley) 12/31/91
+ *	@(#)lfs_vfsops.c	7.71 (Berkeley) 01/10/92
  */
 
 #include <sys/param.h>
@@ -106,20 +106,6 @@ lfs_mount(mp, path, data, ndp, p)
 	if (args.exflags & MNT_EXPORTED)
 		return (EINVAL);
 	/*
-	 * Process export requests.
-	 */
-	if ((args.exflags & MNT_EXPORTED) || (mp->mnt_flag & MNT_EXPORTED)) {
-		if (args.exflags & MNT_EXPORTED)
-			mp->mnt_flag |= MNT_EXPORTED;
-		else
-			mp->mnt_flag &= ~MNT_EXPORTED;
-		if (args.exflags & MNT_EXRDONLY)
-			mp->mnt_flag |= MNT_EXRDONLY;
-		else
-			mp->mnt_flag &= ~MNT_EXRDONLY;
-		mp->mnt_exroot = args.exroot;
-	}
-	/*
 	 * If updating, check whether changing from read-only to
 	 * read/write; if there is no device name, that's all we do.
 	 */
@@ -134,8 +120,22 @@ lfs_mount(mp, path, data, ndp, p)
 		if (fs->lfs_ronly && (mp->mnt_flag & MNT_RDONLY) == 0)
 			fs->lfs_ronly = 0;
 #endif
-		if (args.fspec == 0)
+		if (args.fspec == 0) {
+			/*
+			 * Process export requests.
+			 */
+			if (args.exflags & MNT_EXPORTED) {
+				if (error = hang_addrlist(mp, &args))
+					return (error);
+				mp->mnt_flag |= MNT_EXPORTED;
+			}
+			if (args.exflags & MNT_DELEXPORT) {
+				free_addrlist(ump);
+				mp->mnt_flag &=
+				    ~(MNT_EXPORTED | MNT_DEFEXPORTED);
+			}
 			return (0);
+		}
 	}
 	/*
 	 * Not an update, or updating the name: look up the name
@@ -442,9 +442,10 @@ lfs_sync(mp, waitfor)
  * generational number.
  */
 int
-lfs_fhtovp(mp, fhp, vpp)
+lfs_fhtovp(mp, fhp, setgen, vpp)
 	register struct mount *mp;
 	struct fid *fhp;
+	int setgen;
 	struct vnode **vpp;
 {
 	register struct inode *ip;
@@ -466,9 +467,13 @@ lfs_fhtovp(mp, fhp, vpp)
 		return (EINVAL);
 	}
 	if (ip->i_gen != ufhp->ufid_gen) {
-		ufs_iput(ip);
-		*vpp = NULLVP;
-		return (EINVAL);
+		if (setgen)
+			ufhp->ufid_gen = ip->i_gen;
+		else {
+			ufs_iput(ip);
+			*vpp = NULLVP;
+			return (EINVAL);
+		}
 	}
 	*vpp = nvp;
 	return (0);
