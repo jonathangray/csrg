@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty.c	8.4 (Berkeley) 09/23/93
+ *	@(#)tty.c	8.5 (Berkeley) 11/15/93
  */
 
 #include <sys/param.h>
@@ -1231,6 +1231,7 @@ ttwrite(tp, uio, flag)
 	hiwat = tp->t_hiwat;
 	cnt = uio->uio_resid;
 	error = 0;
+	cc = 0;
 loop:
 	s = spltty();
 	if (!ISSET(tp->t_state, TS_CARR_ON) &&
@@ -1272,7 +1273,7 @@ loop:
 	 * output translation.  Keep track of high water mark, sleep on
 	 * overflow awaiting device aid in acquiring new space.
 	 */
-	for (cc = 0; uio->uio_resid > 0 || cc > 0;) {
+	while (uio->uio_resid > 0 || cc > 0) {
 		if (ISSET(tp->t_lflag, FLUSHO)) {
 			uio->uio_resid = 0;
 			return (0);
