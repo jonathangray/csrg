@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_disksubr.c	7.15 (Berkeley) 03/19/91
+ *	@(#)ufs_disksubr.c	7.16 (Berkeley) 05/04/91
  */
 
 #include "param.h"
