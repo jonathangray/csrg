@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)names.c	8.1 (Berkeley) 06/06/93
+ *	@(#)names.c	8.2 (Berkeley) 01/12/94
  */
 
 #if !defined(hp300) && !defined(tahoe) && !defined(vax) && \
