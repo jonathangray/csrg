@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.168 (Berkeley) 05/17/95";
+static char sccsid[] = "@(#)conf.c	8.169 (Berkeley) 05/17/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -3388,6 +3388,9 @@ char	*CompileOptions[] =
 #endif
 #if NIS
 	"NIS",
+#endif
+#if NISPLUS
+	"NISPLUS",
 #endif
 #if SCANF
 	"SCANF",
