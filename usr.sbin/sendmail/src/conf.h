@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	6.18 (Berkeley) 04/15/93
+ *	@(#)conf.h	6.19 (Berkeley) 04/16/93
  */
 
 /*
@@ -76,8 +76,6 @@
 */
 
 # define LOG		1	/* enable logging */
-# define SMTP		1	/* enable user and server SMTP */
-# define QUEUE		1	/* enable queueing */
 # define UGLYUUCP	1	/* output ugly UUCP From lines */
 # define NETINET	1	/* include internet support */
 # define SETPROCTITLE	1	/* munge argv to display current status */
@@ -150,9 +148,9 @@
 */
 
 #if defined(NETINET) || defined(NETISO)
-# define DAEMON		1
-# define SMTP		1
-# define QUEUE		1
+# define SMTP		1	/* enable user and server SMTP */
+# define QUEUE		1	/* enable queueing */
+# define DAEMON		1	/* include the daemon (requires IPC & SMTP) */
 #endif
 
 
