@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.106 (Berkeley) 05/15/95";
+static char sccsid[] = "@(#)main.c	8.107 (Berkeley) 05/15/95";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -92,8 +92,6 @@ ENVELOPE	BlankEnvelope;	/* a "blank" envelope */
 ENVELOPE	MainEnvelope;	/* the envelope around the basic letter */
 ADDRESS		NullAddress =	/* a null address */
 		{ "", "", NULL, "" };
-char		*UserEnviron[MAXUSERENVIRON + 2];
-				/* saved user environment */
 char		RealUserName[256];	/* the actual user id on this host */
 char		*CommandLineArgs;	/* command line args for pid file */
 bool		Warn_Q_option = FALSE;	/* warn about Q option use */
@@ -320,14 +318,11 @@ main(argc, argv, envp)
 	**  the top of memory.
 	*/
 
-	for (i = j = 0; j < MAXUSERENVIRON && (p = envp[i]) != NULL; i++)
-	{
-		if (strncmp(p, "IFS=", 4) == 0 || strncmp(p, "LD_", 3) == 0)
-			continue;
-		UserEnviron[j++] = newstr(p);
-	}
-	UserEnviron[j] = NULL;
-	environ = UserEnviron;
+	for (i = 0; envp[i] != NULL; i++)
+		continue;
+	environ = (char **) xalloc(sizeof (char *) * i);
+	for (i = 0; envp[i] != NULL; i++)
+		environ[i] = newstr(envp[i]);
 
 	/*
 	**  Save start and extent of argv for setproctitle.
@@ -750,23 +745,7 @@ main(argc, argv, envp)
 	if (TimeZoneSpec == NULL)
 		unsetenv("TZ");
 	else if (TimeZoneSpec[0] != '\0')
-	{
-		char **evp = UserEnviron;
-		char tzbuf[100];
-
-		strcpy(tzbuf, "TZ=");
-		strcpy(&tzbuf[3], TimeZoneSpec);
-
-		while (*evp != NULL && strncmp(*evp, "TZ=", 3) != 0)
-			evp++;
-		if (*evp == NULL)
-		{
-			*evp++ = newstr(tzbuf);
-			*evp = NULL;
-		}
-		else
-			*evp++ = newstr(tzbuf);
-	}
+		setenv("TZ", TimeZoneSpec, TRUE);
 	tzset();
 
 	if (ConfigLevel > MAXCONFIGLEVEL)
@@ -869,7 +848,16 @@ main(argc, argv, envp)
 			setbitn(M_RUNASRCPT, ProgMailer->m_flags);
 		if (FileMailer != NULL)
 			setbitn(M_RUNASRCPT, FileMailer->m_flags);
+
+		/* propogate some envariables into children */
+		setuserenv("AGENT", "sendmail");
+		setuserenv("ISP", NULL);
+		setuserenv("SYSTYPE", NULL);
 	}
+
+	/* guarantee non-empty environment to children */
+	if (UserEnviron[0] == NULL)
+		setuserenv("AGENT", "sendmail");
 
 	/* MIME Content-Types that cannot be transfer encoded */
 	setclass('n', "multipart/signed");
@@ -1509,6 +1497,55 @@ auth_warning(e, msg, va_alist)
 			syslog(LOG_INFO, "%s: Authentication-Warning: %s",
 				e->e_id == NULL ? "[NOQUEUE]" : e->e_id, buf);
 #endif
+	}
+}
+/*
+**  SETUSERENV -- set an environment in the propogated environment
+**
+**	Parameters:
+**		envar -- the name of the environment variable.
+**		value -- the value to which it should be set.  If
+**			null, this is extracted from the incoming
+**			environment.  If that is not set, the call
+**			to setuserenv is ignored.
+**
+**	Returns:
+**		none.
+*/
+
+setuserenv(envar, value)
+	char *envar;
+	char *value;
+{
+	int i;
+	char **evp = UserEnviron;
+	char buf[100];
+
+	if (value == NULL)
+	{
+		value = getenv(envar);
+		if (value == NULL)
+			return;
+	}
+
+	i = strlen(envar);
+	if (i + strlen(value) > sizeof buf - 2)
+		return;
+
+	strcpy(buf, envar);
+	buf[i++] = '=';
+	strcpy(&buf[i], value);
+
+	while (*evp != NULL && strncmp(*evp, buf, i) != 0)
+		evp++;
+	if (*evp != NULL)
+	{
+		*evp++ = newstr(buf);
+	}
+	else if (evp < &UserEnviron[MAXUSERENVIRON])
+	{
+		*evp++ = newstr(buf);
+		*evp = NULL;
 	}
 }
 /*
