@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cltp_usrreq.c	7.7 (Berkeley) 07/18/91
+ *	@(#)cltp_usrreq.c	7.8 (Berkeley) 07/18/91
  */
 
 #ifndef CLTPOVAL_SRC /* XXX -- till files gets changed */
@@ -261,7 +261,6 @@ cltp_usrreq(so, req, m, nam, control)
 	struct mbuf *m, *nam, *control;
 {
 	register struct isopcb *isop = sotoisopcb(so);
-	register struct sockaddr_iso *siso;
 	int s, error = 0;
 
 	if (req == PRU_CONTROL)
