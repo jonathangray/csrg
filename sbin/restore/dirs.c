@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)dirs.c	5.26 (Berkeley) 02/10/93";
+static char sccsid[] = "@(#)dirs.c	5.27 (Berkeley) 02/11/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -139,7 +139,7 @@ extractdirs(genmode)
 	vprintf(stdout, "Extract directories from tape\n");
 	(void) sprintf(dirfile, "%s/rstdir%d", _PATH_TMP, dumpdate);
 	df = fopen(dirfile, "w");
-	if (df == 0) {
+	if (df == NULL) {
 		fprintf(stderr,
 		    "restore: %s - cannot create directory temporary\n",
 		    dirfile);
@@ -149,7 +149,7 @@ extractdirs(genmode)
 	if (genmode != 0) {
 		(void) sprintf(modefile, "%s/rstmode%d", _PATH_TMP, dumpdate);
 		mf = fopen(modefile, "w");
-		if (mf == 0) {
+		if (mf == NULL) {
 			fprintf(stderr,
 			    "restore: %s - cannot create modefile \n",
 			    modefile);
@@ -284,8 +284,9 @@ pathsearch(pathname)
 	ino = ROOTINO;
 	while (*path == '/')
 		path++;
+	dp = NULL;
 	while ((name = strsep(&path, "/")) != NULL && *name != NULL) {
-		if ((dp = searchdir(ino, name)) == 0)
+		if ((dp = searchdir(ino, name)) == NULL)
 			return (NULL);
 		ino = dp->d_ino;
 	}
@@ -307,7 +308,7 @@ searchdir(inum, name)
 
 	itp = inotablookup(inum);
 	if (itp == NULL)
-		return(0);
+		return (NULL);
 	rst_seekdir(dirp, itp->t_seekpt, itp->t_seekpt);
 	len = strlen(name);
 	do {
@@ -514,7 +515,7 @@ rst_opendir(name)
 		rst_seekdir(dirp, itp->t_seekpt, itp->t_seekpt);
 		return (dirp);
 	}
-	return (0);
+	return (NULL);
 }
 
 /*
@@ -696,7 +697,7 @@ allocinotab(ino, dip, seekpt)
 	itp->t_ino = ino;
 	itp->t_seekpt = seekpt;
 	if (mf == NULL)
-		return(itp);
+		return (itp);
 	node.ino = ino;
 	node.timep[0].tv_sec = dip->di_atime.ts_sec;
 	node.timep[0].tv_usec = dip->di_atime.ts_nsec / 1000;
@@ -706,7 +707,7 @@ allocinotab(ino, dip, seekpt)
 	node.uid = dip->di_uid;
 	node.gid = dip->di_gid;
 	(void) fwrite((char *)&node, 1, sizeof(struct modeinfo), mf);
-	return(itp);
+	return (itp);
 }
 
 /*
@@ -720,14 +721,14 @@ inotablookup(ino)
 
 	for (itp = inotab[INOHASH(ino)]; itp != NULL; itp = itp->t_next)
 		if (itp->t_ino == ino)
-			return(itp);
+			return (itp);
 	return (NULL);
 }
 
 /*
  * Clean up and exit
  */
-void
+__dead void
 done(exitcode)
 	int exitcode;
 {
