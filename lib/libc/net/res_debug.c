@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)res_debug.c	5.34 (Berkeley) 03/02/91
+ *	@(#)res_debug.c	5.35 (Berkeley) 03/02/91
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)res_debug.c	5.34 (Berkeley) 03/02/91";
+static char sccsid[] = "@(#)res_debug.c	5.35 (Berkeley) 03/02/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -45,6 +45,8 @@ static char sccsid[] = "@(#)res_debug.c	5.34 (Berkeley) 03/02/91";
 #include <stdio.h>
 #include <string.h>
 
+void __fp_query();
+char *__p_class(), *__p_type();
 static char *p_cdname(), *p_rr(), *p_time();
 
 char *_res_opcodes[] = {
@@ -88,8 +90,6 @@ char *_res_resultcodes[] = {
 __p_query(msg)
 	char *msg;
 {
-	void __fp_query();
-
 	__fp_query(msg,stdout);
 }
 
