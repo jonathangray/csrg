@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)os-utx32.h	5.2 (Berkeley) 03/17/91
+ *	@(#)os-utx32.h	5.3 (Berkeley) 05/12/91
  */
 
 /*
