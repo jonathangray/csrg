@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)param.h	5.3 (Berkeley) 01/18/91
+ *	@(#)param.h	5.4 (Berkeley) 04/15/91
  */
 
 /*
@@ -122,6 +122,18 @@
  * For now though just use DEV_BSIZE.
  */
 #define	bdbtofsb(bn)	((bn) / (BLKDEV_IOSIZE/DEV_BSIZE))
+
+/*
+ * Mach derived conversion macros
+ */
+#define i386_round_pdr(x)	((((unsigned)(x)) + NBPDR - 1) & ~(NBPDR-1))
+#define i386_trunc_pdr(x)	((unsigned)(x) & ~(NBPDR-1))
+#define i386_round_page(x)	((((unsigned)(x)) + NBPG - 1) & ~(NBPG-1))
+#define i386_trunc_page(x)	((unsigned)(x) & ~(NBPG-1))
+#define i386_btod(x)		((unsigned)(x) >> PDRSHIFT)
+#define i386_dtob(x)		((unsigned)(x) << PDRSHIFT)
+#define i386_btop(x)		((unsigned)(x) >> PGSHIFT)
+#define i386_ptob(x)		((unsigned)(x) << PGSHIFT)
 
 #ifdef KERNEL
 #ifndef LOCORE
