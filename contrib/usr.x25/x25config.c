@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)x25config.c	5.2 (Berkeley) 04/29/91
+ *	@(#)x25config.c	5.3 (Berkeley) 04/25/93
  */
 /*
  * Configure X.25 interface
@@ -55,7 +55,7 @@
 "\020\1UP\2BROADCAST\3DEBUG\4ROUTE\5POINTOPOINT\6NOTRAILERS\7RUNNING\10NOARP"
 
 int	setifflags (), setdefault (), setnet (), setntn ();
-int	setlproto (), sethdlc (), setlwsize (), setltrace ();
+int	setlproto (), sethdlc (), setlwsize (), setlkeepalive (), setltrace ();
 int	setyear (), setpwsize (), setpacketsize (), setmaxlcn (), setptrace ();
 
 struct	cmd {
@@ -71,12 +71,15 @@ struct	cmd {
 	"default",	0,			setdefault,
 	"hdlc",		CCITTPROTO_HDLC,	setlproto,
 	"ieee802llc",	IEEEPROTO_802LLC,	setlproto,
+	"llc2",		IEEEPROTO_802LLC,	setlproto,
 	"lap",		HDLCPROTO_LAP,		sethdlc,
 	"lapb",		HDLCPROTO_LAPB,		sethdlc,
 	"lapd",		HDLCPROTO_LAPD,		sethdlc,
 	"unset",	HDLCPROTO_UNSET,	sethdlc,
 	"-ltrace",	0,			setltrace,
 	"ltrace",	1,			setltrace,
+	"keepalive",	1,			setlkeepalive,
+	"-keepalive",	0,			setlkeepalive,
 
 	"1976",		X25_1976,		setyear,
 	"1980",		X25_1980,		setyear,
@@ -311,9 +314,17 @@ char *arg;
 {
 	register int ws;
 
-	if ((ws = atoi (arg)) <= 0 || ws > 31)
+	if ((ws = atoi (arg)) <= 0 || 
+	    ( ws > 31 && x25conf.xc_lproto != IEEEPROTO_802LLC ) 
+	    || ws > 127)
 		abort ("invalid link level window size");
 	x25conf.xc_lwsize = ws;
+}
+
+setlkeepalive (arg)
+int arg;
+{
+	/* x25conf.xc_lkeepalive = arg; */
 }
 
 setltrace (arg)
