@@ -1,4 +1,4 @@
-/*	ufs_lookup.c	6.9	84/07/02	*/
+/*	ufs_lookup.c	6.10	84/07/04	*/
 
 #include "../h/param.h"
 #include "../h/systm.h"
