@@ -35,10 +35,10 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)mount_umap.8	5.1 (Berkeley) 07/10/92
+.\"     @(#)mount_umap.8	1.1 (Berkeley) 7/10/92
 .\"
 .\"
-.Dd 
+.Dd July 10, 1992
 .Dt MOUNT_UMAP 8
 .Os BSD 4.4
 .Sh NAME
@@ -95,30 +95,11 @@ The layer created by the
 command is meant to serve as a simple example of file system layering.
 It is not meant for production use.  The implementation is not very
 sophisticated, and not particularly fast.
-
-This command makes use of the layered file system, described
-command makes a sub-tree of an existing filesystem visible
-in another part of the global filesystem namespace,
-while also performing mappings of uids and gids.  
-This allows existing files and directories to be accessed
-using a different pathname.
-.Pp
-Virtual file system sub-trees created by the null layer should
-be identical to those created by the loopback
-The virtual copy of a file system sub-tree created by the null
-layer should be nearly identical to one created by
-.Xr mount_lofs 8 .
-The purpose of the null layer is to serve as a basis for future
-layer development.
-.Pp
-An example of a layer constructed from the null layer is
-the umap layer (see
-.Xr mount_umap 8 ).
 .Sh SEE ALSO
-UCLA Technical Report CSD-910056,
-"Stackable Layers: an Architecture for File System Development".
+.Xr mount_null 8
+.Xr mount_lofs 8
 .Sh HISTORY
 The
-null file system layer
+umap file system layer
 is
 .Ud
