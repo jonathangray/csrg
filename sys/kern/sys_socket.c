@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sys_socket.c	8.1 (Berkeley) 06/10/93
+ *	@(#)sys_socket.c	8.2 (Berkeley) 01/09/95
  */
 
 #include <sys/param.h>
@@ -74,7 +74,7 @@ soo_write(fp, uio, cred)
 
 soo_ioctl(fp, cmd, data, p)
 	struct file *fp;
-	int cmd;
+	u_long cmd;
 	register caddr_t data;
 	struct proc *p;
 {
