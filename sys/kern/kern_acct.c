@@ -11,7 +11,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_acct.c	8.5 (Berkeley) 08/11/94
+ *	@(#)kern_acct.c	8.6 (Berkeley) 12/08/94
  */
 
 #include <sys/param.h>
