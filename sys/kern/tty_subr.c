@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)tty_subr.c	7.7 (Berkeley) 05/09/91
+ *	@(#)tty_subr.c	7.8 (Berkeley) 02/14/92
  */
 
 #include "param.h"
@@ -98,10 +98,10 @@ getc(p)
 q_to_b(q, cp, cc)
 	register struct clist *q;
 	register char *cp;
+	int cc;
 {
 	register struct cblock *bp;
-	register int s;
-	register nc;
+	register int s, nc;
 	char *acp;
 
 	if (cc <= 0)
@@ -161,9 +161,9 @@ q_to_b(q, cp, cc)
  */
 ndqb(q, flag)
 	register struct clist *q;
+	int flag;
 {
-	register cc;
-	int s;
+	register int cc, s;
 
 	s = spltty();
 	if (q->c_cc <= 0) {
@@ -199,7 +199,7 @@ out:
  */
 ndflush(q, cc)
 	register struct clist *q;
-	register cc;
+	register int cc;
 {
 	register struct cblock *bp;
 	char *end;
@@ -252,11 +252,12 @@ out:
 
 
 putc(c, p)
+	int c;
 	register struct clist *p;
 {
 	register struct cblock *bp;
 	register char *cp;
-	register s;
+	register int s;
 
 	s = spltty();
 	if ((cp = p->c_cl) == NULL || p->c_cc < 0 ) {	/* no cblocks yet */
@@ -301,7 +302,7 @@ b_to_q(cp, cc, q)
 {
 	register char *cq;
 	register struct cblock *bp;
-	register s, nc;
+	register int s, nc;
 	int acc;
 
 	if (cc <= 0)
@@ -424,7 +425,7 @@ catq(from, to)
 #ifdef notdef
 	char bbuf[CBSIZE*4];
 #endif
-	register s, c;
+	register int s, c;
 
 	s = spltty();
 	if (to->c_cc == 0) {
@@ -509,7 +510,7 @@ putw(c, p)
 	register struct clist *p;
 	word_t c;
 {
-	register s;
+	register int s;
 	register struct cblock *bp;
 	register char *cp;
 
