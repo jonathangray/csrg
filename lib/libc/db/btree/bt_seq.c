@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)bt_seq.c	5.8 (Berkeley) 02/11/93";
+static char sccsid[] = "@(#)bt_seq.c	5.9 (Berkeley) 02/14/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -275,7 +275,7 @@ bt_seqadv(t, e, flags)
 {
 	EPGNO *c, delc;
 	PAGE *h;
-	index_t index;
+	indx_t index;
 	pgno_t pg;
 
 	/* Save the current cursor if going to delete it. */
