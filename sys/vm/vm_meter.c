@@ -30,21 +30,22 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_meter.c	7.14 (Berkeley) 03/03/92
+ *	@(#)vm_meter.c	7.15 (Berkeley) 05/04/92
  */
 
-#include "param.h"
-#include "proc.h"
-#include "systm.h"
-#include "kernel.h"
-#include "vm.h"
+#include <sys/param.h>
+#include <sys/proc.h>
+#include <sys/systm.h>
+#include <sys/kernel.h>
+
+#include <vm/vm.h>
 
 struct	loadavg averunnable;		/* load average, of runnable procs */
 
 int	maxslp = MAXSLP;
 int	saferss = SAFERSS;
 
-
+void
 vmmeter()
 {
 	register unsigned *cp, *rp, *sp;
@@ -69,6 +70,7 @@ fixpt_t	cexp[3] = {
  * Compute a tenex style load average of a quantity on
  * 1, 5 and 15 minute intervals.
  */
+void
 loadav(avg)
 	register struct loadavg *avg;
 {
@@ -99,6 +101,7 @@ loadav(avg)
  * Load average information
  */
 /* ARGSUSED */
+int
 kinfo_loadavg(op, where, acopysize, arg, aneeded)
 	int op;
 	register char *where;
@@ -130,6 +133,7 @@ kinfo_loadavg(op, where, acopysize, arg, aneeded)
 /*
  * Calculate and return vmtotals structure.
  */
+int
 kinfo_meter(op, where, acopysize, arg, aneeded)
 	int op;
 	caddr_t where;
@@ -154,6 +158,7 @@ kinfo_meter(op, where, acopysize, arg, aneeded)
  * Calculate the current state of the system.
  * Done on demand from getkerninfo().
  */
+void
 vmtotal(totalp)
 	register struct vmtotal *totalp;
 {
