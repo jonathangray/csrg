@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)rshd.c	5.37 (Berkeley) 02/25/91";
+static char sccsid[] = "@(#)rshd.c	5.38 (Berkeley) 03/02/91";
 #endif /* not lint */
 
 /*
@@ -139,8 +139,9 @@ main(argc, argv)
 char	username[20] = "USER=";
 char	homedir[64] = "HOME=";
 char	shell[64] = "SHELL=";
+char	path[100] = "PATH=";
 char	*envinit[] =
-	    {homedir, shell, _PATH_DEFPATH, username, 0};
+	    {homedir, shell, path, username, 0};
 char	**environ;
 
 doit(fromp)
@@ -436,6 +437,7 @@ doit(fromp)
 	(void) setuid((uid_t)pwd->pw_uid);
 	environ = envinit;
 	strncat(homedir, pwd->pw_dir, sizeof(homedir)-6);
+	strcat(path, _PATH_DEFPATH);
 	strncat(shell, pwd->pw_shell, sizeof(shell)-7);
 	strncat(username, pwd->pw_name, sizeof(username)-6);
 	cp = rindex(pwd->pw_shell, '/');
