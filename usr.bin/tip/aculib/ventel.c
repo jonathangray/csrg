@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)ventel.c	5.3 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)ventel.c	5.4 (Berkeley) 03/02/91";
 #endif /* not lint */
 
 /*
@@ -43,7 +43,7 @@ static char sccsid[] = "@(#)ventel.c	5.3 (Berkeley) 06/01/90";
 
 #define	MAXRETRY	5
 
-static	int sigALRM();
+static	void sigALRM();
 static	int timeout = 0;
 static	jmp_buf timeoutbuf;
 
@@ -64,6 +64,8 @@ ven_dialer(num, acu)
 	register char *cp;
 	register int connected = 0;
 	char *msg, *index(), line[80];
+	static int gobble(), vensync();
+	static void echo();
 
 	/*
 	 * Get in synch with a couple of carriage returns
@@ -135,7 +137,7 @@ ven_abort()
 	close(FD);
 }
 
-static int
+static void
 echo(s)
 	register char *s;
 {
@@ -159,10 +161,9 @@ echo(s)
 	}
 }
 
-static int
+static void
 sigALRM()
 {
-
 	printf("\07timeout waiting for reply\n");
 	timeout = 1;
 	longjmp(timeoutbuf, 1);
@@ -174,10 +175,10 @@ gobble(match, response)
 	char response[];
 {
 	register char *cp = response;
+	sig_t f;
 	char c;
-	int (*f)();
 
-	signal(SIGALRM, sigALRM);
+	f = signal(SIGALRM, sigALRM);
 	timeout = 0;
 	do {
 		if (setjmp(timeoutbuf)) {
