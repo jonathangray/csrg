@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_alloc.c	7.52 (Berkeley) 08/21/92
+ *	@(#)lfs_alloc.c	7.53 (Berkeley) 08/25/92
  */
 
 #include <sys/param.h>
@@ -96,12 +96,6 @@ lfs_valloc(ap)
 		ip = VTOI(vp);
 		blkno = lblkno(fs, ip->i_size);
 		bp = getblk(vp, blkno, fs->lfs_bsize);
-		if (!bp) {
-			uprintf("\n%s: no inodes left\n", fs->lfs_fsmnt);
-			log(LOG_ERR, "uid %d on %s: out of inodes\n",
-			    ap->a_cred->cr_uid, fs->lfs_fsmnt);
-			return (ENOSPC);
-		}
 		i = (blkno - fs->lfs_segtabsz - fs->lfs_cleansz) *
 		    fs->lfs_ifpb;
 		fs->lfs_free = i;
