@@ -1,4 +1,4 @@
-#	@(#)Makefile.inc	5.11 (Berkeley) 06/23/91
+#	@(#)Makefile.inc	5.12 (Berkeley) 11/12/91
 
 # Missing: profil.0, ptrace.0
 
