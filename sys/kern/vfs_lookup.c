@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_lookup.c	8.1 (Berkeley) 06/10/93
+ *	@(#)vfs_lookup.c	8.2 (Berkeley) 09/05/93
  */
 
 #include <sys/param.h>
@@ -118,7 +118,7 @@ namei(ndp)
 	 * Get starting point for the translation.
 	 */
 	if ((ndp->ni_rootdir = fdp->fd_rdir) == NULL)
-		ndp->ni_rootdir = rootdir;
+		ndp->ni_rootdir = rootvnode;
 	dp = fdp->fd_cdir;
 	VREF(dp);
 	for (;;) {
@@ -345,7 +345,7 @@ dirloop:
 	 */
 	if (cnp->cn_flags & ISDOTDOT) {
 		for (;;) {
-			if (dp == ndp->ni_rootdir || dp == rootdir) {
+			if (dp == ndp->ni_rootdir || dp == rootvnode) {
 				ndp->ni_dvp = dp;
 				ndp->ni_vp = dp;
 				VREF(dp);
