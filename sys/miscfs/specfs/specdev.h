@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)specdev.h	7.6 (Berkeley) 02/04/92
+ *	@(#)specdev.h	7.7 (Berkeley) 04/21/92
  */
 
 /*
@@ -248,7 +248,7 @@ int	spec_advlock __P((
 		int mode))) spec_badop)
 #define spec_truncate ((int (*) __P(( \
 		struct vnode *vp, \
-		u_long length, \
+		off_t length, \
 		int flags))) nullop)
 #define spec_update ((int (*) __P(( \
 		struct vnode *vp, \
