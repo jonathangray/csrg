@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)timed.h	1.10 (Berkeley) 04/03/91
+ *	@(#)timed.h	5.1 (Berkeley) 07/19/92
  */
 
 #ifndef	_TIMED_H_
