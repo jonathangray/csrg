@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)fcntl.2	8.1 (Berkeley) 07/11/93
+.\"     @(#)fcntl.2	8.2 (Berkeley) 01/12/94
 .\"
 .Dd 
 .Dt FCNTL 2
@@ -150,6 +150,7 @@ upon availability of data to be read.
 .Pp
 Several commands are available for doing advisory file locking;
 they all operate on the following structure:
+.ne 7v
 .Bd -literal
 struct flock {
 	off_t	l_start;	/* starting offset */
