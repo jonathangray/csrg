@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)db.h	5.21 (Berkeley) 02/14/93
+ *	@(#)db.h	5.22 (Berkeley) 05/10/93
  */
 
 #ifndef _DB_H_
@@ -58,7 +58,7 @@ typedef struct {
 
 /* Routine flags. */
 #define	R_CURSOR	1		/* del, put, seq */
-#define	R_CURSORLOG	2		/* put (RECNO) */
+#define	__R_UNUSED	2		/* UNUSED */
 #define	R_FIRST		3		/* seq */
 #define	R_IAFTER	4		/* put (RECNO) */
 #define	R_IBEFORE	5		/* put (RECNO) */
