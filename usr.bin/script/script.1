@@ -29,10 +29,8 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)script.1	6.4 (Berkeley) 03/14/91
+.\"	@(#)script.1	6.5 (Berkeley) 07/27/91
 .\"
-.Vx
-.Vx
 .Dd 
 .Dt SCRIPT 1
 .Os BSD 4
@@ -61,20 +59,20 @@ If no file name is given, the typescript is saved in the file
 .Pa typescript  .
 .Pp
 Option:
-.Tw Ds
-.Tp Fl a
+.Bl -tag -width Ds
+.It Fl a
 Append the output to
 .Ar file
 or
 .Pa typescript ,
 retaining the prior contents.
-.Tp
+.El
 .Pp
 The script ends when the forked shell exits (a
 .Em control-D
 to exit
 the Bourne shell
-.Pf \&( Xr sh 1 ) ,
+.Pf ( Xr sh 1 ) ,
 and
 .Em exit , 
 .Em logout
@@ -96,8 +94,8 @@ terminal.
 .Sh ENVIRONMENT
 The following environment variable is utilized by
 .Nm script :
-.Tw SHELL
-.Tp Ev SHELL
+.Bl -tag -width SHELL
+.It Ev SHELL
 If the variable
 .Ev SHELL
 exists, the shell forked by
@@ -106,15 +104,17 @@ will be that shell. If
 .Ev SHELL
 is not set, the Bourne shell
 is assumed. (Most shells set this variable automatically).
-.Tp
+.El
 .Sh SEE ALSO
 .Xr csh 1
 (for the
 .Em history
 mechanism).
 .Sh HISTORY
-.Nm Script
-appeared in 3 BSD.
+The
+.Nm script
+command appeared in
+.Bx 3.0 .
 .Sh BUGS
 .Nm Script
 places
