@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ip_icmp.c	7.16 (Berkeley) 07/06/92
+ *	@(#)ip_icmp.c	7.17 (Berkeley) 07/12/92
  */
 
 #include "param.h"
@@ -188,7 +188,7 @@ icmp_input(m, hlen)
 		icmpstat.icps_tooshort++;
 		goto freeit;
 	}
-	i = hlen + MIN(icmplen, ICMP_ADVLENMIN);
+	i = hlen + min(icmplen, ICMP_ADVLENMIN);
 	if (m->m_len < i && (m = m_pullup(m, i)) == 0)  {
 		icmpstat.icps_tooshort++;
 		return;
