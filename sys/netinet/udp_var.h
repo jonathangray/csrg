@@ -66,6 +66,17 @@ struct	udpstat {
 	u_long	udps_opackets;		/* total output packets */
 };
 
+/*
+ * Names for UDP sysctl objects
+ */
+#define	UDPCTL_CHECKSUM		1	/* allow replies to netmask requests */
+#define UDPCTL_MAXID		2
+
+#define UDPCTL_NAMES { \
+	{ 0, 0 }, \
+	{ "checksum", CTLTYPE_INT }, \
+}
+
 #ifdef KERNEL
 struct	inpcb udb;
 struct	udpstat udpstat;
