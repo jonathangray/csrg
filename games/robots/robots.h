@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)robots.h	5.5 (Berkeley) 06/01/90
+ *	@(#)robots.h	5.6 (Berkeley) 02/28/91
  */
 
 # include	<curses.h>
@@ -104,6 +104,7 @@ extern jmp_buf	End_move;
  * functions types
  */
 
-int	quit(), cmp_sc(), move_robots();
+int	cmp_sc();
+void	move_robots();
 
 COORD	*rnd_pos();
