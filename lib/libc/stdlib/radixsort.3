@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)radixsort.3	5.3 (Berkeley) 11/11/90
+.\"	@(#)radixsort.3	5.4 (Berkeley) 11/21/90
 .\"
 .TH radixsort 3 ""
 .SH NAME
@@ -102,3 +102,6 @@ may fail and set
 .I errno
 for any of the errors specified for the library routine
 .IR malloc (3).
+.SH BUGS
+.I Nmemb
+must be less than the maximum integer, INT_MAX.
