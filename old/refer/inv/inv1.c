@@ -1,5 +1,5 @@
 #ifndef lint
-static char *sccsid = "@(#)inv1.c	4.2 (Berkeley) 03/04/86";
+static char *sccsid = "@(#)inv1.c	4.2 (Berkeley) 08/02/86";
 #endif
 
 #include <stdio.h>
@@ -120,7 +120,8 @@ char *argv[];
 			appflg=0;
 	}
 	fc = fopen(nmc,  appflg ? "a" : "w");
-	fd = keepkey ? fopen(nmd, "w") : 0;
+	if (keepkey)
+		fd = keepkey ? fopen(nmd, "w") : 0;
 	docs = newkeys(fta, stdin, fc, nhash, fd, &iflong);
 	fclose(stdin);
 	if (remove != NULL)
