@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.4 (Berkeley) 07/16/93
+ *	@(#)sendmail.h	8.5 (Berkeley) 07/17/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.4		07/16/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.5		07/17/93";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -338,6 +338,7 @@ ENVELOPE
 #define EF_WARNING	002000		/* warning message has been sent */
 #define EF_QUEUERUN	004000		/* this envelope is from queue */
 #define EF_GLOBALERRS	010000		/* treat errors as global */
+#define EF_PM_NOTIFY	020000		/* send return mail to postmaster */
 
 EXTERN ENVELOPE	*CurEnv;	/* envelope currently being processed */
 /*
