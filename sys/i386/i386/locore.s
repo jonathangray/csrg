@@ -21,7 +21,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)locore.s	5.6 (Berkeley) 11/25/90
+ *	@(#)locore.s	5.7 (Berkeley) 12/06/90
  */
 
 /*
@@ -30,13 +30,13 @@
  *		Written by William F. Jolitz, 386BSD Project
  */
 
-#include "psl.h"
-#include "pte.h"
+#include "machine/psl.h"
+#include "machine/pte.h"
 
 #include "errno.h"
 #include "cmap.h"
 
-#include "../i386/trap.h"
+#include "machine/trap.h"
 
 /*
  * Note: This version greatly munged to avoid various assembler errors
@@ -220,6 +220,7 @@ start:				# This is assumed to be location zero!
 	rep
 	stosb
 
+#ifdef notdef
 	/* pass parameters on stack (howto, bootdev, unit, cyloffset) */
 
 	movl	4(%esp),%eax
@@ -229,7 +230,6 @@ start:				# This is assumed to be location zero!
 	movl	12(%esp),%eax
 	movl	%eax, _cyloffset-SYSTEM
 
-#ifdef notdef
 
 	movl	$0x36000,%edi
 	movl	$0x68000,%ecx
@@ -375,11 +375,6 @@ begin:
 	movl	%ecx,PCB_P1BR(%eax)	# p1br: P1PAGES from end of PT
 	movl	$ P1PAGES-UPAGES,PCB_P1LR(%eax)	# p1lr: vax style
 	movl	$ CLSIZE,PCB_SZPT(%eax)	# page table size
-	# fninit
-	# pushl	$0x262
-	# fldcw	0(%esp)
-	# popl	%ecx
-	# fnsave	PCB_SAVEFPU(%eax)
 	movl	%edi,PCB_CR3(%eax)
 	pushl	%edi	# cr3
 	movl	%esi,%eax
@@ -448,7 +443,7 @@ _icode:
 	pushl	%eax	# dummy out rta
 	LCALL(0x7,0x0)
 
-init:	.asciz	"/etc/init"
+init:	.asciz	"/sbin/init"
 	.align	2
 _initflags:
 	.long	0
@@ -962,8 +957,8 @@ badsw:
  * Swtch()
  */
 ENTRY(swtch)
-	movl	_cpl,%eax
-	movl	%eax,_u+PCB_IML
+	movw	_cpl, %ax
+	movw	%ax, _u+PCB_IML
 	movl	$1,%eax
 	movl	%eax,_noproc
 	incl	_cnt+V_SWTCH
@@ -1005,16 +1000,14 @@ sw2:
 	movl	P_ADDR(%ecx),%edx
 	movl	(%edx),%eax
 	movl	%eax,_Swtchmap
-	movl	4(%edx),%eax
-	movl	%eax,_Swtchmap+4
+	# movl	4(%edx),%eax
+	# movl	%eax,_Swtchmap+4
 	# movl	%cr3,%eax
- 	# orl	$ I386_CR3PAT,%eax
 	# movl	%eax,%cr3
 	movl	_Swtchbase+PCB_CR3,%edx
 
- # pushal; pushl %edx ; pushl P_CR3(%ecx); pushl $l2; call _pg; popl %eax ; popl %eax; popl %eax ; popal ; .data ; l2: .asciz "s %x %x " ; .text
-
 /* switch to new process. first, save context as needed */
+
 	movl	$_u,%ecx
 
 	movl	(%esp),%eax		# Hardware registers
@@ -1034,9 +1027,6 @@ sw2:
 	movl	%edx,%cr3	# context switch
 
 	movl	$_u,%ecx
-	# .globl	__gsel_tss
-	# movw	__gsel_tss,%ax
-	# ltr	%ax
 
 /* restore context */
 	movl	PCB_EBX(%ecx), %ebx
@@ -1056,17 +1046,16 @@ sw2:
 	cmpl	$0,PCB_SSWAP(%ecx)	# do an alternate return?
 	jne	res3			# yes, go reload regs
 
-	pushl	PCB_IML(%ecx)
-	call	_splx
-	popl	%eax
+	# pushl	PCB_IML(%ecx)
+	# call	_splx
+	# popl	%eax
+	call _spl0
 	movl	$0,%eax
 	ret
 
 res3:
 	xorl	%eax,%eax		# inline restore context
 	xchgl	PCB_SSWAP(%ecx),%eax	# addr of saved context, clear it
-
- #pushal; pushl 20(%eax); pushl $l2; call _printf; popl %eax ; popl %eax; popal ; .data ; l2: .asciz "s %x\n" ; .text
 
 	movl	 0(%eax),%ebx		# restore ebx
 	movl	 4(%eax),%esp		# restore esp
@@ -1075,7 +1064,12 @@ res3:
 	movl	16(%eax),%edi		# restore edi
 	movl	20(%eax),%edx		# get rta
 	movl	%edx,(%esp)		# put in return frame
-	call	_spl0
+
+	# call	_spl0
+	pushl	_u+PCB_IML
+	call	_splx
+	popl	%eax
+
 	xorl	%eax,%eax		# return (1);
 	incl	%eax
 	ret
@@ -1088,6 +1082,8 @@ res3:
 ENTRY(resume)
 	# movl	4(%esp),%ecx
 	movl	$_u,%ecx
+	movw	_cpl, %ax
+	movw	%ax,  PCB_IML(%ecx)
 	movl	(%esp),%eax	
 	movl	%eax, PCB_EIP(%ecx)
 	movl	%ebx, PCB_EBX(%ecx)
@@ -1098,10 +1094,9 @@ ENTRY(resume)
 #ifdef FPUNOTYET
 #endif
 	fsave	PCB_SAVEFPU(%ecx)
-	movl	_cpl,%eax
-	movl	%eax,PCB_IML(%ecx)
 	movl	$0,%eax
 	ret
+
 
 .data
 	.globl	_cyloffset
