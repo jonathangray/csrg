@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)wait.h	7.17 (Berkeley) 06/19/91
+ *	@(#)wait.h	7.18 (Berkeley) 07/09/92
  */
 
 /*
@@ -65,7 +65,7 @@
 #endif
 
 /*
- * Option bits for the second argument of wait4.  WNOHANG causes the
+ * Option bits for the third argument of wait4.  WNOHANG causes the
  * wait to not hang if there are no stopped or terminated processes, rather
  * returning an error indication in this case (pid==0).  WUNTRACED
  * indicates that the caller should receive status about untraced children
