@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_segment.c	7.18 (Berkeley) 05/14/92
+ *	@(#)lfs_segment.c	7.19 (Berkeley) 05/15/92
  */
 
 #include <sys/param.h>
@@ -706,13 +706,14 @@ lfs_writeseg(fs, sp)
 	struct lfs *fs;
 	struct segment *sp;
 {
+	USES_VOP_STRATEGY;
 	struct buf **bpp, *bp, *cbp;
 	SEGUSE *sup;
 	SEGSUM *ssp;
 	dev_t i_dev;
 	u_long *datap, *dp;
 	size_t size;
-	int ch_per_blk, i, nblocks, num, s, (*strategy)__P((struct buf *));
+	int ch_per_blk, i, nblocks, num, s, (*strategy)__P((struct vop_strategy_args *));
 	char *p;
 
 #ifdef VERBOSE
@@ -740,7 +741,7 @@ lfs_writeseg(fs, sp)
 	free(datap, M_SEGMENT);
 
 	i_dev = VTOI(fs->lfs_ivnode)->i_dev;
-	strategy = VTOI(fs->lfs_ivnode)->i_devvp->v_op->vop_strategy;
+	strategy = VTOI(fs->lfs_ivnode)->i_devvp->v_op[VOFFSET(vop_strategy)];
 
 	/*
 	 * When we simply write the blocks we lose a rotation for every block
@@ -789,7 +790,9 @@ lfs_writeseg(fs, sp)
 		}
 		splx(s);
 		cbp->b_bcount = p - cbp->b_un.b_addr;
-		(strategy)(cbp);
+		vop_strategy_a.a_desc = VDESC(vop_strategy);
+		vop_strategy_a.a_bp = cbp;
+		(strategy)(&vop_strategy_a);
 	}
 
 	/* Update the segment usage information. */
@@ -806,15 +809,16 @@ lfs_writesuper(fs, sp)
 	struct lfs *fs;
 	struct segment *sp;
 {
+	USES_VOP_STRATEGY;
 	struct buf *bp;
 	dev_t i_dev;
-	int (*strategy) __P((struct buf *));
+	int (*strategy) __P((struct vop_strategy_args *));
 
 #ifdef VERBOSE
 	printf("lfs_writesuper\n");
 #endif
 	i_dev = VTOI(fs->lfs_ivnode)->i_dev;
-	strategy = VTOI(fs->lfs_ivnode)->i_devvp->v_op->vop_strategy;
+	strategy = VTOI(fs->lfs_ivnode)->i_devvp->v_op[VOFFSET(vop_strategy)];
 
 	/* Checksum the superblock and copy it into a buffer. */
 	fs->lfs_cksum = cksum(fs, sizeof(struct lfs) - sizeof(fs->lfs_cksum));
@@ -825,14 +829,16 @@ lfs_writesuper(fs, sp)
 	bp->b_dev = i_dev;
 	bp->b_flags |= B_BUSY;
 	bp->b_flags &= ~(B_DONE | B_ERROR | B_READ | B_DELWRI);
-	(strategy)(bp);
+	vop_strategy_a.a_desc = VDESC(vop_strategy);
+	vop_strategy_a.a_bp = bp;
+	(strategy)(&vop_strategy_a);
 	biowait(bp);
 
 	/* Write the second superblock (don't wait). */
 	bp->b_blkno = bp->b_lblkno = fs->lfs_sboffs[1];
 	bp->b_flags |= B_ASYNC | B_BUSY;
 	bp->b_flags &= ~(B_DONE | B_ERROR | B_READ | B_DELWRI);
-	(strategy)(bp);
+	(strategy)(&vop_strategy_a);
 }
 
 /*
