@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)locore.s	7.5 (Berkeley) 02/05/92
+ *	@(#)locore.s	7.6 (Berkeley) 05/11/92
  */
 
 #include "assym.s"
@@ -43,6 +43,8 @@
 #include "errno.h"
 
 #include "machine/trap.h"
+
+#include "npx.h"
 
 /*
  * Note: This version greatly munged to avoid various assembler errors
@@ -973,7 +975,7 @@ ENTRY(swtch)
 	movl	%esi, PCB_ESI(%ecx)
 	movl	%edi, PCB_EDI(%ecx)
 
-#ifdef NPXx
+#if 0 && NNPX > 0
 	movb	PCB_FLAGS(%ecx),%al
 	/* have we used fp, and need a save? */
 	andb	$ FP_WASUSED|FP_NEEDSSAVE,%al
@@ -1076,7 +1078,7 @@ swfnd:
 	movl	PCB_EIP(%edx), %eax
 	movl	%eax, (%esp)
 
-#ifdef NPX
+#if NNPX > 0
 #ifdef notdef
 	movb	PCB_FLAGS(%edx),%al
 	/* if fp could be used, a dna trap will do a restore */
@@ -1146,7 +1148,7 @@ ENTRY(savectx)
 	movl	%ebp, PCB_EBP(%ecx)
 	movl	%esi, PCB_ESI(%ecx)
 	movl	%edi, PCB_EDI(%ecx)
-#ifdef NPXx
+#if 0 && NNPX > 0
 	/* have we ever used fp, and need to save? */
 	testb	$ FP_WASUSED, PCB_FLAGS(%ecx)
 	je	1f
