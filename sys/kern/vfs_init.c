@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 1989 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1989, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed
  * to Berkeley by John Heidemann of the UCLA Ficus project.
@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_init.c	7.4 (Berkeley) 07/21/92
+ *	@(#)vfs_init.c	8.1 (Berkeley) 06/10/93
  */
 
 
