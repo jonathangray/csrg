@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_pcb.c	7.23 (Berkeley) 04/17/92
+ *	@(#)tp_pcb.c	7.24 (Berkeley) 05/27/92
  */
 
 /***********************************************************
@@ -682,6 +682,7 @@ tp_attach(so, protocol)
 	tpcb->tp_lref = lref;
 	tpcb->tp_sock =  so;
 	tpcb->tp_domain = dom;
+	tpcb->tp_rhiwat = so->so_rcv.sb_hiwat;
 	/* tpcb->tp_proto = protocol; someday maybe? */
 	if (protocol && protocol<ISOPROTO_TP4) {
 		tpcb->tp_netservice = ISO_CONS;
