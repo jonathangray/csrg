@@ -33,8 +33,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ar.h	5.3 (Berkeley) 03/12/91
+ *	@(#)ar.h	5.4 (Berkeley) 04/03/91
  */
+
+#ifndef _AR_H_
+#define	_AR_H_
 
 /* Pre-4BSD archives had these magic numbers in them. */
 #define	OARMAG1	0177555
@@ -55,3 +58,5 @@ struct ar_hdr {
 #define	ARFMAG	"`\n"
 	char ar_fmag[2];		/* consistency check */
 };
+
+#endif /* !_AR_H_ */
