@@ -1,5 +1,5 @@
 #ifndef lint
-static char sccsid[] = "@(#)bib.c	2.2	09/23/83";
+static char sccsid[] = "@(#)bib.c	2.3	01/24/84";
 #endif not lint
 /*
         Bib - bibliographic formatter
