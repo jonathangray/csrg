@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.111 (Berkeley) 06/19/94
+ *	@(#)conf.h	8.112 (Berkeley) 06/19/94
  */
 
 /*
@@ -192,6 +192,7 @@ extern int	syslog(int, char *, ...);
 # define GIDSET_T	gid_t
 # define SFS_TYPE	SFS_4ARGS	/* four argument statfs() call */
 # define LA_TYPE	LA_INT
+# define NAMELISTMASK	0x7fffffff	/* mask for nlist() values */
 # endif
 
 
