@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)savemail.c	8.46 (Berkeley) 11/27/94";
+static char sccsid[] = "@(#)savemail.c	8.47 (Berkeley) 11/28/94";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -534,17 +534,6 @@ returntosender(msg, returnq, sendbody, e)
 		msg = buf;
 	}
 	addheader("Subject", msg, ee);
-	if (SendMIMEErrors)
-	{
-		addheader("MIME-Version", "1.0", &ee->e_header);
-		(void) sprintf(buf, "%s.%ld/%s",
-			ee->e_id, curtime(), MyHostName);
-		ee->e_msgboundary = newstr(buf);
-		(void) sprintf(buf,
-			"multipart/report; report-type=delivery-status; boundary=\"%s\"",
-			ee->e_msgboundary);
-		addheader("Content-Type", buf, &ee->e_header);
-	}
 
 	/* fake up an address header for the from person */
 	expand("\201n", buf, &buf[sizeof buf - 1], e);
@@ -890,7 +879,12 @@ errbody(mci, e, separator, flags)
 			/* Final-Recipient: -- the name from the RCPT command */
 			for (r = q; r->q_alias != NULL; r = r->q_alias)
 				continue;
-			(void) sprintf(buf, "Final-Recipient: %s", r->q_paddr);
+			if (strchr(r->q_user, '@') == NULL)
+				(void) sprintf(buf, "Final-Recipient: %s@%s",
+					r->q_user, MyHostName);
+			else
+				(void) sprintf(buf, "Final-Recipient: %s",
+					r->q_user);
 			putline(buf, mci);
 
 			/* Final-Status: -- same as Status?  XXX */
