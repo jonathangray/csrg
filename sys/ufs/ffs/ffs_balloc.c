@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_balloc.c	7.24 (Berkeley) 10/08/92
+ *	@(#)ffs_balloc.c	7.25 (Berkeley) 02/02/93
  */
 
 #include <sys/param.h>
@@ -143,7 +143,7 @@ ffs_balloc(ip, bn, size, cred, bpp, flags)
 			    nsize, cred, &newb);
 			if (error)
 				return (error);
-			bp = getblk(vp, bn, nsize);
+			bp = getblk(vp, bn, nsize, 0, 0);
 			bp->b_blkno = fsbtodb(fs, newb);
 			if (flags & B_CLRBUF)
 				clrbuf(bp);
@@ -174,7 +174,7 @@ ffs_balloc(ip, bn, size, cred, bpp, flags)
 		    cred, &newb))
 			return (error);
 		nb = newb;
-		bp = getblk(vp, indirs[1].in_lbn, fs->fs_bsize);
+		bp = getblk(vp, indirs[1].in_lbn, fs->fs_bsize, 0, 0);
 		bp->b_blkno = fsbtodb(fs, newb);
 		clrbuf(bp);
 		/*
@@ -215,7 +215,7 @@ ffs_balloc(ip, bn, size, cred, bpp, flags)
 			return (error);
 		}
 		nb = newb;
-		nbp = getblk(vp, indirs[j].in_lbn, fs->fs_bsize);
+		nbp = getblk(vp, indirs[j].in_lbn, fs->fs_bsize, 0, 0);
 		nbp->b_blkno = fsbtodb(fs, nb);
 		clrbuf(nbp);
 		/*
@@ -249,7 +249,7 @@ ffs_balloc(ip, bn, size, cred, bpp, flags)
 			return (error);
 		}
 		nb = newb;
-		nbp = getblk(vp, lbn, fs->fs_bsize);
+		nbp = getblk(vp, lbn, fs->fs_bsize, 0, 0);
 		nbp->b_blkno = fsbtodb(fs, nb);
 		if (flags & B_CLRBUF)
 			clrbuf(nbp);
@@ -274,7 +274,7 @@ ffs_balloc(ip, bn, size, cred, bpp, flags)
 			return (error);
 		}
 	} else {
-		nbp = getblk(vp, lbn, fs->fs_bsize);
+		nbp = getblk(vp, lbn, fs->fs_bsize, 0, 0);
 		nbp->b_blkno = fsbtodb(fs, nb);
 	}
 	*bpp = nbp;
