@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty_tty.c	8.2 (Berkeley) 09/23/93
+ *	@(#)tty_tty.c	8.3 (Berkeley) 01/09/95
  */
 
 /*
@@ -114,7 +114,7 @@ cttywrite(dev, uio, flag)
 /*ARGSUSED*/
 cttyioctl(dev, cmd, addr, flag, p)
 	dev_t dev;
-	int cmd;
+	u_long cmd;
 	caddr_t addr;
 	int flag;
 	struct proc *p;
