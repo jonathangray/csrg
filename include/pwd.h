@@ -30,8 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pwd.h	5.10 (Berkeley) 03/03/91
+ *	@(#)pwd.h	5.11 (Berkeley) 04/03/91
  */
+
+#ifndef _PWD_H_
+#define	_PWD_H_
 
 #include <sys/types.h>
 
@@ -76,3 +79,5 @@ int		 setpwent __P((void));
 void		 endpwent __P((void));
 #endif
 __END_DECLS
+
+#endif /* !_PWD_H_ */
