@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)life.c	6.3 (Berkeley) 04/17/91
+.\"	@(#)life.c	8.1 (Berkeley) 06/04/93
 .\"
 # include	<curses.h>
 # include	<signal.h>
