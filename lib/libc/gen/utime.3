@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)utime.3	6.4 (Berkeley) 10/11/91
+.\"     @(#)utime.3	6.5 (Berkeley) 03/29/92
 .\"
 .Dd 
 .Dt UTIME 3
@@ -39,6 +39,7 @@
 .Nd set file times
 .Sh SYNOPSIS
 .Fd #include <sys/types.h>
+.Fd #include <utime.h>
 .Ft int
 .Fn utime "const char *file" "const struct utimbuf *timep"
 .Sh DESCRIPTION
