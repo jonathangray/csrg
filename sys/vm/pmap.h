@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.h	7.8 (Berkeley) 09/12/91
+ *	@(#)pmap.h	7.9 (Berkeley) 02/19/92
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -113,11 +113,7 @@ void		pmap_clear_modify __P((vm_offset_t pa));
 boolean_t	pmap_is_referenced __P((vm_offset_t pa));
 boolean_t	pmap_is_modified __P((vm_offset_t pa));
 vm_offset_t	pmap_phys_address __P((int));
-#ifndef pmap_kernel
-pmap_t		pmap_kernel();
+
 #endif
 
-extern pmap_t	kernel_pmap;
-#endif
-
-#endif	_PMAP_VM_
+#endif /* _PMAP_VM_ */
