@@ -37,7 +37,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)suff.c	8.2 (Berkeley) 01/02/94";
+static char sccsid[] = "@(#)suff.c	8.3 (Berkeley) 03/19/94";
 #endif /* not lint */
 
 /*-
@@ -1707,6 +1707,7 @@ SuffFindNormalDeps(gn)
 	    targ->suff = (Suff *)Lst_Datum(ln);
 	    targ->node = gn;
 	    targ->parent = (Src *)NULL;
+	    targ->children = 0;
 	    
 	    /*
 	     * Allocate room for the prefix, whose end is found by subtracting
@@ -1747,6 +1748,7 @@ SuffFindNormalDeps(gn)
 	targ->suff = suffNull;
 	targ->node = gn;
 	targ->parent = (Src *)NULL;
+	targ->children = 0;
 	targ->pref = strdup(sopref);
 
 	SuffAddLevel(srcs, targ);
