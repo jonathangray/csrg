@@ -1,5 +1,5 @@
 /*
- * $Id: amq.h,v 5.2 90/06/23 22:20:13 jsp Rel $
+ * $Id: amq.h,v 5.2.1.2 91/03/17 17:39:26 jsp Alpha $
  *
  * Copyright (c) 1990 Jan-Simon Pendry
  * Copyright (c) 1990 Imperial College of Science, Technology & Medicine
@@ -37,7 +37,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)amq.h	5.1 (Berkeley) 07/19/90
+ *	@(#)amq.h	5.2 (Berkeley) 03/17/91
  */
 
 #define AMQ_STRLEN 1024
@@ -145,4 +145,8 @@ extern amq_mount_tree_list *amqproc_export_1();
 extern int *amqproc_setopt_1();
 #define AMQPROC_GETMNTFS ((u_long)6)
 extern amq_mount_info_list *amqproc_getmntfs_1();
+#define AMQPROC_MOUNT ((u_long)7)
+extern int *amqproc_mount_1();
+#define AMQPROC_GETVERS ((u_long)8)
+extern amq_string *amqproc_getvers_1();
 
