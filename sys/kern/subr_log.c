@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_log.c	7.13 (Berkeley) 02/15/92
+ *	@(#)subr_log.c	7.14 (Berkeley) 05/20/92
  */
 
 /*
@@ -94,6 +94,7 @@ logclose(dev, flag, mode, p)
 
 	log_open = 0;
 	logsoftc.sc_state = 0;
+	return (0);
 }
 
 /*ARGSUSED*/
