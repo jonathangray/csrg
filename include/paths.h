@@ -30,14 +30,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)paths.h	5.14 (Berkeley) 04/03/91
+ *	@(#)paths.h	5.15 (Berkeley) 05/29/91
  */
 
 #ifndef _PATHS_H_
 #define	_PATHS_H_
 
 /* Default search path. */
-#define	_PATH_DEFPATH	"/bin:/usr/bin:"
+#define	_PATH_DEFPATH	"/usr/bin:/bin"
 
 #define	_PATH_BSHELL	"/bin/sh"
 #define	_PATH_CONSOLE	"/dev/console"
