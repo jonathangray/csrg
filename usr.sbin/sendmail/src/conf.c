@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.67 (Berkeley) 01/31/94";
+static char sccsid[] = "@(#)conf.c	8.68 (Berkeley) 01/31/94";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1847,7 +1847,7 @@ bool
 chownsafe(fd)
 	int fd;
 {
-#ifdef __hpux__
+#ifdef __hpux
 	char *s;
 	int tfd;
 	uid_t o_uid, o_euid;
