@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	6.14 (Berkeley) 02/12/93";
+static char sccsid[] = "@(#)main.c	6.15 (Berkeley) 02/14/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -1063,13 +1063,21 @@ union frz
 	} frzinfo;
 };
 
+#ifdef __hpux
+#define BRK_TYPE        int
+#define SBRK_TYPE       void *
+#else
+#define BRK_TYPE        char *
+#define SBRK_TYPE       char *
+#endif
+
 freeze(freezefile)
 	char *freezefile;
 {
 	int f;
 	union frz fhdr;
+	extern SBRK_TYPE sbrk();
 	extern char edata, end;
-	extern char *sbrk();
 	extern char Version[];
 
 	if (freezefile == NULL)
@@ -1128,9 +1136,9 @@ thaw(freezefile, binfile)
 	struct stat fst, sst;
 	extern char edata, end;
 	extern char Version[];
-	extern caddr_t brk();
 	extern char **myhostname();
 	extern char *macvalue();
+	extern BRK_TYPE brk();
 
 	if (freezefile == NULL)
 		return (FALSE);
