@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)unistd.h	8.1 (Berkeley) 06/06/93
+ *	@(#)unistd.h	8.2 (Berkeley) 11/20/93
  */
 
 #ifndef _UNISTD_H_
@@ -169,7 +169,7 @@ int	 ttyslot __P((void));
 unsigned int	 ualarm __P((unsigned int, unsigned int));
 void	 usleep __P((unsigned int));
 void	*valloc __P((size_t));			/* obsoleted by malloc() */
-int	 vfork __P((void));
+pid_t	 vfork __P((void));
 
 #endif /* !_POSIX_SOURCE */
 __END_DECLS
