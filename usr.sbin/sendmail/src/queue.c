@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef QUEUE
-static char sccsid[] = "@(#)queue.c	8.81 (Berkeley) 05/18/95 (with queueing)";
+static char sccsid[] = "@(#)queue.c	8.82 (Berkeley) 05/27/95 (with queueing)";
 #else
-static char sccsid[] = "@(#)queue.c	8.81 (Berkeley) 05/18/95 (without queueing)";
+static char sccsid[] = "@(#)queue.c	8.82 (Berkeley) 05/27/95 (without queueing)";
 #endif
 #endif /* not lint */
 
@@ -654,6 +654,9 @@ runqueue(forkflag)
 # define NEED_R		004
 # define NEED_S		010
 
+static WORK	*WorkList = NULL;
+static int	WorkListSize = 0;
+
 # ifndef DIR
 # define DIR		FILE
 # define direct		dir
@@ -670,7 +673,6 @@ orderq(doall)
 	register WORK *w;
 	DIR *f;
 	register int i;
-	WORK wlist[QUEUESIZE+1];
 	int wn = -1;
 	int wc;
 
@@ -765,8 +767,12 @@ orderq(doall)
 #endif
 
 		/* open control file (if not too many files) */
-		if (++wn >= QUEUESIZE)
-			continue;
+		if (++wn >= WorkListSize)
+		{
+			grow_wlist();
+			if (wn >= WorkListSize)
+				continue;
+		}
 
 		cf = fopen(d->d_name, "r");
 		if (cf == NULL)
@@ -780,7 +786,7 @@ orderq(doall)
 			wn--;
 			continue;
 		}
-		w = &wlist[wn];
+		w = &WorkList[wn];
 		w->w_name = newstr(d->d_name);
 		w->w_host = NULL;
 		w->w_lock = !lockfile(fileno(cf), w->w_name, NULL, LOCK_SH|LOCK_NB);
@@ -842,7 +848,7 @@ orderq(doall)
 	(void) closedir(f);
 	wn++;
 
-	wc = min(wn, QUEUESIZE);
+	wc = min(wn, WorkListSize);
 
 	if (QueueSortOrder == QS_BYHOST)
 	{
@@ -854,7 +860,7 @@ orderq(doall)
 		**  based on host name, lock status, and priority.
 		*/
 
-		qsort((char *) wlist, wc, sizeof *wlist, workcmpf1);
+		qsort((char *) WorkList, wc, sizeof *WorkList, workcmpf1);
 
 		/*
 		**  If one message to host is locked, "lock" all messages
@@ -864,21 +870,21 @@ orderq(doall)
 		i = 0;
 		while (i < wc)
 		{
-			if (!wlist[i].w_lock)
+			if (!WorkList[i].w_lock)
 			{
 				i++;
 				continue;
 			}
-			w = &wlist[i];
+			w = &WorkList[i];
 			while (++i < wc)
 			{
-				if (wlist[i].w_host == NULL &&
+				if (WorkList[i].w_host == NULL &&
 				    w->w_host == NULL)
-					wlist[i].w_lock = TRUE;
-				else if (wlist[i].w_host != NULL &&
+					WorkList[i].w_lock = TRUE;
+				else if (WorkList[i].w_host != NULL &&
 					 w->w_host != NULL &&
-					 strcmp(wlist[i].w_host, w->w_host) == 0)
-					wlist[i].w_lock = TRUE;
+					 strcmp(WorkList[i].w_host, w->w_host) == 0)
+					WorkList[i].w_lock = TRUE;
 				else
 					break;
 			}
@@ -889,7 +895,7 @@ orderq(doall)
 		**  based on lock status, host name, and priority.
 		*/
 
-		qsort((char *) wlist, wc, sizeof *wlist, workcmpf2);
+		qsort((char *) WorkList, wc, sizeof *WorkList, workcmpf2);
 	}
 	else
 	{
@@ -899,7 +905,7 @@ orderq(doall)
 		**  Simple sort based on queue priority only.
 		*/
 
-		qsort((char *) wlist, wc, sizeof *wlist, workcmpf0);
+		qsort((char *) WorkList, wc, sizeof *WorkList, workcmpf0);
 	}
 
 	/*
@@ -911,14 +917,16 @@ orderq(doall)
 	for (i = wc; --i >= 0; )
 	{
 		w = (WORK *) xalloc(sizeof *w);
-		w->w_name = wlist[i].w_name;
-		w->w_host = wlist[i].w_host;
-		w->w_lock = wlist[i].w_lock;
-		w->w_pri = wlist[i].w_pri;
-		w->w_ctime = wlist[i].w_ctime;
+		w->w_name = WorkList[i].w_name;
+		w->w_host = WorkList[i].w_host;
+		w->w_lock = WorkList[i].w_lock;
+		w->w_pri = WorkList[i].w_pri;
+		w->w_ctime = WorkList[i].w_ctime;
 		w->w_next = WorkQ;
 		WorkQ = w;
 	}
+	free(WorkList);
+	WorkList = NULL;
 
 	if (tTd(40, 1))
 	{
@@ -927,6 +935,51 @@ orderq(doall)
 	}
 
 	return (wn);
+}
+
+grow_wlist()
+{
+	if (tTd(41, 1))
+		printf("grow_wlist: WorkListSize=%d\n", WorkListSize);
+	if (WorkListSize >= MAXQUEUESIZE)
+	{
+# ifdef LOG
+		if (LogLevel > 0)
+			syslog(LOG_ALERT, "WorkList for %s maxed out at %d",
+					QueueDir, WorkListSize);
+# endif
+	}
+	else if (WorkList == NULL)
+	{
+		WorkList = (WORK *) xalloc(sizeof(WORK) * (QUEUESEGSIZE + 1));
+		WorkListSize = QUEUESEGSIZE;
+	}
+	else
+	{
+		int newsize = WorkListSize + QUEUESEGSIZE;
+		WORK *newlist = (WORK *) realloc((char *)WorkList,
+					  (unsigned)sizeof(WORK) * (newsize + 1));
+
+		if (newlist != NULL)
+		{
+			WorkListSize = newsize;
+			WorkList = newlist;
+# ifdef LOG
+			if (LogLevel > 1)
+			{
+				syslog(LOG_NOTICE, "grew WorkList for %s to %d",
+						QueueDir, WorkListSize);
+			}
+		}
+		else if (LogLevel > 0)
+		{
+			syslog(LOG_ALERT, "FAILED to grow WorkList for %s to %d",
+					QueueDir, newsize);
+# endif
+		}
+	}
+	if (tTd(41, 1))
+		printf("grow_wlist: WorkListSize now %d\n", WorkListSize);
 }
 /*
 **  WORKCMPF0 -- simple priority-only compare function.
@@ -1525,8 +1578,8 @@ printqueue()
 	CurrentLA = getla();	/* get load average */
 
 	printf("\t\tMail Queue (%d request%s", nrequests, nrequests == 1 ? "" : "s");
-	if (nrequests > QUEUESIZE)
-		printf(", only %d printed", QUEUESIZE);
+	if (nrequests > WorkListSize)
+		printf(", only %d printed", WorkListSize);
 	if (Verbose)
 		printf(")\n--Q-ID-- --Size-- -Priority- ---Q-Time--- -----------Sender/Recipient-----------\n");
 	else
