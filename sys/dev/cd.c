@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: cd.c 1.6 90/11/28$
  *
- *	@(#)cd.c	7.4 (Berkeley) 05/07/91
+ *	@(#)cd.c	7.5 (Berkeley) 10/11/92
  */
 
 /*
@@ -46,15 +46,15 @@
 #include "cd.h"
 #if NCD > 0
 
-#include "sys/param.h"
-#include "sys/systm.h"
-#include "sys/errno.h"
-#include "sys/dkstat.h"
-#include "sys/buf.h"
-#include "sys/malloc.h"
-#include "sys/conf.h"
+#include <sys/param.h>
+#include <sys/systm.h>
+#include <sys/errno.h>
+#include <sys/dkstat.h>
+#include <sys/buf.h>
+#include <sys/malloc.h>
+#include <sys/conf.h>
 
-#include "cdvar.h"
+#include <dev/cdvar.h>
 
 #ifdef DEBUG
 int cddebug = 0x00;
