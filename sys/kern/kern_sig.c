@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sig.c	8.10 (Berkeley) 08/22/94
+ *	@(#)kern_sig.c	8.11 (Berkeley) 12/05/94
  */
 
 #define	SIGPROP		/* include signal properties table */
@@ -1205,5 +1205,5 @@ nosys(p, args, retval)
 {
 
 	psignal(p, SIGSYS);
-	return (EINVAL);
+	return (ENOSYS);
 }
