@@ -30,8 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)endian.h	7.9 (Berkeley) 06/19/92
+ *	@(#)endian.h	7.10 (Berkeley) 05/07/93
  */
+
+#ifndef _ENDIAN_H_
+#define	_ENDIAN_H_
 
 /*
  * Define the order of 32-bit words in 64-bit words.
@@ -81,3 +84,4 @@ __END_DECLS
 #define	HTONS(x)	(x) = htons((u_short)x)
 #endif
 #endif /* !_POSIX_SOURCE */
+#endif /* !_ENDIAN_H_ */
