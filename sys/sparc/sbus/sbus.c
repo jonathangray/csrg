@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sbus.c	7.2 (Berkeley) 07/21/92
+ *	@(#)sbus.c	7.3 (Berkeley) 10/11/92
  *
  * from: $Header: sbus.c,v 1.8 92/06/17 06:59:43 torek Exp $ (LBL)
  */
@@ -51,13 +51,13 @@
 /* #include "sbus.h" */
 #define NSBUS 1	/* XXX */
 
-#include "sys/param.h"
-#include "sys/device.h"
+#include <sys/param.h>
+#include <sys/device.h>
 
-#include "machine/autoconf.h"
+#include <machine/autoconf.h>
 
-#include "sbusreg.h"
-#include "sbusvar.h"
+#include <sparc/sbus/sbusreg.h>
+#include <sparc/sbus/sbusvar.h>
 
 /* autoconfiguration driver */
 void	sbus_attach __P((struct device *, struct device *, void *));
