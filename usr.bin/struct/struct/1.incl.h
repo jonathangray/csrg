@@ -3,7 +3,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)1.incl.h	4.3 (Berkeley) 04/16/91
+ *	@(#)1.incl.h	8.1 (Berkeley) 06/06/93
  */
 
 #define maxlsw		10	/* max number of switches and labels per statement */
