@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty.c	8.10 (Berkeley) 08/14/94
+ *	@(#)tty.c	8.11 (Berkeley) 08/15/94
  */
 
 #include <sys/param.h>
@@ -727,8 +727,8 @@ ttioctl(tp, cmd, data, flag)
 	case TIOCSCTTY:			/* become controlling tty */
 		/* Session ctty vnode pointer set in vnode layer. */
 		if (!SESS_LEADER(p) ||
-		    p->p_session->s_ttyvp ||
-		    (tp->t_session && tp->t_session != p->p_session))
+		    (p->p_session->s_ttyvp || tp->t_session) &&
+		    (tp->t_session != p->p_session))
 			return (EPERM);
 		tp->t_session = p->p_session;
 		tp->t_pgrp = p->p_pgrp;
