@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_bio.c	7.8 (Berkeley) 04/08/92
+ *	@(#)lfs_bio.c	7.9 (Berkeley) 05/13/92
  */
 
 #include <sys/param.h>
