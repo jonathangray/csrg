@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)sys_process.c	8.2 (Berkeley) 09/21/93
+ *	@(#)sys_process.c	8.3 (Berkeley) 09/23/93
  */
 
 #define IPCREG
@@ -61,7 +61,7 @@ ptrace(curp, uap, retval)
 	int error;
 
 	if (uap->req <= 0) {
-		curp->p_flag |= STRC;
+		curp->p_flag |= P_TRACED;
 		return (0);
 	}
 	p = pfind(uap->pid);
@@ -73,11 +73,11 @@ ptrace(curp, uap, retval)
 		 * privileges or does not belong to the real user.  Must
 		 * not be already traced.  Can't attach to ourselves.
 		 */
-		if ((p->p_flag & SUGID ||
+		if ((p->p_flag & P_SUGID ||
 		    p->p_cred->p_ruid != curp->p_cred->p_ruid) &&
 		    (error = suser(p->p_ucred, &p->p_acflag)) != 0)
 			return (error);
-		if (p->p_flag & STRC)
+		if (p->p_flag & P_TRACED)
 			return (EALREADY);	/* ??? */
 		if (p->p_pid == curp->p_pid)
 			return (EINVAL);
@@ -90,13 +90,13 @@ ptrace(curp, uap, retval)
 		 * The old parent is remembered so we can put things back
 		 * on a "detach".
 		 */
-		p->p_flag |= STRC;
+		p->p_flag |= P_TRACED;
 		p->p_oppid = p->p_pptr->p_pid;
 		proc_reparent(p, curp);
 		psignal(p, SIGSTOP);
 		return (0);
 	}
-	if (p->p_stat != SSTOP || p->p_pptr != curp || !(p->p_flag & STRC))
+	if (p->p_stat != SSTOP || p->p_pptr != curp || !(p->p_flag & P_TRACED))
 		return (ESRCH);
 	while (ipc.ip_lock)
 		sleep((caddr_t)&ipc, IPCPRI);
@@ -104,7 +104,7 @@ ptrace(curp, uap, retval)
 	ipc.ip_data = uap->data;
 	ipc.ip_addr = uap->addr;
 	ipc.ip_req = uap->req;
-	p->p_flag &= ~SWTED;
+	p->p_flag &= ~P_WAITED;
 	while (ipc.ip_req > 0) {
 		if (p->p_stat==SSTOP)
 			setrunnable(p);
@@ -144,7 +144,7 @@ ptrace(curp, uap, retval)
  * being debugged. This code runs in the context of the child process
  * to fulfill the command requested by the parent.
  */
-procxmt(p)
+trace_req(p)
 	register struct proc *p;
 {
 	register int i, *poff, *regs;
@@ -251,7 +251,7 @@ procxmt(p)
 			goto error;
 		if ((int)ipc.ip_addr != 1)
 			regs[PC] = (int)ipc.ip_addr;
-		p->p_xstat = ipc.ip_data;	/* see issig */
+		p->p_xstat = ipc.ip_data;	/* see issignal */
 #ifdef PSL_T
 		/* need something more machine independent here... */
 		if (i == PT_STEP) 
@@ -270,8 +270,8 @@ procxmt(p)
 			goto error;
 		if ((int)ipc.ip_addr != 1)
 			regs[PC] = (int)ipc.ip_addr;
-		p->p_xstat = ipc.ip_data;	/* see issig */
-		p->p_flag &= ~STRC;
+		p->p_xstat = ipc.ip_data;	/* see issignal */
+		p->p_flag &= ~P_TRACED;
 		if (p->p_oppid != p->p_pptr->p_pid) {
                         register struct proc *pp = pfind(p->p_oppid);
 
