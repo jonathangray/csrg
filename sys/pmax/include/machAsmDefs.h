@@ -33,8 +33,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)machAsmDefs.h	7.1 (Berkeley) 01/07/92
- *
+ *	@(#)machAsmDefs.h	7.2 (Berkeley) 02/29/92
+ */
+
+/*
  * machAsmDefs.h --
  *
  *	Macros used when writing assembler programs.
@@ -53,6 +55,8 @@
 
 #ifndef _MACHASMDEFS
 #define _MACHASMDEFS
+
+#include <machine/regdef.h>
 
 /*
  * LEAF(x)
@@ -104,7 +108,7 @@ x: ; \
 	MSG(msg)
 
 #define	PRINTF(msg) \
-	la	a0,9f; \
+	la	a0, 9f; \
 	jal	printf; \
 	MSG(msg)
 
@@ -112,5 +116,9 @@ x: ; \
 	.rdata; \
 9:	.asciiz	msg; \
 	.text
+
+#define ASMSTR(str) \
+	.asciiz str; \
+	.align	2
 
 #endif /* _MACHASMDEFS */
