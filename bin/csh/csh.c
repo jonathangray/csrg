@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)csh.c	5.29 (Berkeley) 08/30/91";
+static char sccsid[] = "@(#)csh.c	5.30 (Berkeley) 10/27/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -871,7 +871,7 @@ pintr1(wantnl)
      * about that here.
      */
     if (gointr) {
-	search(T_GOTO, 0, gointr);
+	gotolab(gointr);
 	timflg = 0;
 	if (v = pargv)
 	    pargv = 0, blkfree(v);
