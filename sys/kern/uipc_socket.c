@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_socket.c	7.27.1.1 (Berkeley) 05/09/91
+ *	@(#)uipc_socket.c	7.29 (Berkeley) 08/30/91
  */
 
 #include "param.h"
@@ -883,6 +883,9 @@ sosetopt(so, level, optname, m0)
 			error = ENOPROTOOPT;
 			break;
 		}
+		if (error == 0 && so->so_proto && so->so_proto->pr_ctloutput)
+			(void) ((*so->so_proto->pr_ctloutput)
+				  (PRCO_SETOPT, so, level, optname, &m0));
 	}
 bad:
 	if (m)
