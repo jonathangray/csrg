@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hash.h	5.2 (Berkeley) 02/19/91
+ *	@(#)hash.h	5.3 (Berkeley) 02/21/91
  */
 
 /* Operations */
@@ -99,6 +99,8 @@ typedef struct htab {	/* Memory resident data structure */
 	int new_file;	/* Indicates whether fd is backing store or no */
 	int save_file;	/* Indicates whether we need to flush file at exit */
 	u_long *mapp[NCACHED];	/* Pointers to page maps */
+	int nmaps;	/* Initial number of bitmaps */
+	int exmaps;	/* Number of extra allocated bitmaps */
 	int nbufs;	/* Number of buffers left to allocate */
 	BUFHEAD	bufhead; /* Header of buffer lru list */
 	SEGMENT	 *dir;	/* Hash Bucket directory */
