@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.99 (Berkeley) 04/09/95";
+static char sccsid[] = "@(#)main.c	8.100 (Berkeley) 04/09/95";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -849,9 +849,12 @@ main(argc, argv, envp)
 	else
 		InclMailer = st->s_mailer;
 
-	/* heuristic tweaking of local mailer for back compat */
 	if (ConfigLevel < 6)
 	{
+		/* need config support for group:; handling */
+		ColonOkInAddr = TRUE;
+
+		/* heuristic tweaking of local mailer for back compat */
 		if (LocalMailer != NULL)
 		{
 			setbitn(M_ALIASABLE, LocalMailer->m_flags);
