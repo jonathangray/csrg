@@ -39,9 +39,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)autoconf.c	8.3 (Berkeley) 09/30/93
+ *	@(#)autoconf.c	8.4 (Berkeley) 10/01/93
  *
- * from: $Header: autoconf.c,v 1.37 93/09/28 07:19:48 leres Exp $ (LBL)
+ * from: $Header: autoconf.c,v 1.38 93/10/01 21:24:51 torek Exp $ (LBL)
  */
 
 #include <sys/param.h>
@@ -437,9 +437,9 @@ mainbus_attach(parent, dev, aux)
 	struct romaux ra;
 	static const char *const special[] = {
 		/* find these first (end with empty string) */
+		"memory-error",	/* as early as convenient, in case of error */
 		"eeprom",
 		"counter-timer",
-		"memory-error",
 		"",
 
 		/* ignore these (end with NULL) */
