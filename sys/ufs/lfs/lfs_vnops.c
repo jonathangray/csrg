@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vnops.c	7.86 (Berkeley) 07/05/92
+ *	@(#)lfs_vnops.c	7.87 (Berkeley) 07/07/92
  */
 
 #include <sys/param.h>
@@ -289,6 +289,7 @@ lfs_write(ap)
 	register struct inode *ip = VTOI(vp);
 	register struct lfs *fs;
 	register ioflag = ap->a_ioflag;
+	struct timeval tv;
 	struct buf *bp;
 	daddr_t lbn;
 	off_t osize;
@@ -377,8 +378,10 @@ lfs_write(ap)
 		uio->uio_offset -= resid - uio->uio_resid;
 		uio->uio_resid = resid;
 	}
-	if (!error && (ioflag & IO_SYNC))
-		error = VOP_UPDATE(vp, &time, &time, 1);
+	if (!error && (ioflag & IO_SYNC)) {
+		tv = time;
+		error = VOP_UPDATE(vp, &tv, &tv, 1);
+	}
 	return (error);
 }
 
@@ -394,11 +397,13 @@ lfs_fsync(ap)
 		struct proc *a_p;
 	} */ *ap;
 {
+	struct timeval tv;
 
 #ifdef VERBOSE
 	printf("lfs_fsync\n");
 #endif
-	return (VOP_UPDATE(ap->a_vp, &time, &time, ap->a_waitfor == MNT_WAIT));
+	tv = time;
+	return (VOP_UPDATE(ap->a_vp, &tv, &tv, ap->a_waitfor == MNT_WAIT));
 }
 
 /*
@@ -414,6 +419,7 @@ lfs_inactive(ap)
 	extern int prtactive;
 	register struct vnode *vp = ap->a_vp;
 	register struct inode *ip;
+	struct timeval tv;
 	int mode, error;
 
 #ifdef VERBOSE
@@ -444,8 +450,10 @@ lfs_inactive(ap)
 		ip->i_flag |= IUPD|ICHG;
 		VOP_VFREE(vp, ip->i_number, mode);
 	}
-	if (ip->i_flag&(IUPD|IACC|ICHG|IMOD))
-		VOP_UPDATE(vp, &time, &time, 0);
+	if (ip->i_flag&(IUPD|IACC|ICHG|IMOD)) {
+		tv = time;
+		VOP_UPDATE(vp, &tv, &tv, 0);
+	}
 	IUNLOCK(ip);
 	ip->i_flag = 0;
 	/*
