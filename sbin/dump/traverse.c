@@ -1,4 +1,4 @@
-static	char *sccsid = "@(#)traverse.c	1.2 (Berkeley) 10/31/81";
+static	char *sccsid = "@(#)traverse.c	1.3 (Berkeley) 11/07/81";
 #include "dump.h"
 
 struct	fs	sblock;
