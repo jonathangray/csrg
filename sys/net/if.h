@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if.h	7.9 (Berkeley) 06/28/90
+ *	@(#)if.h	7.10 (Berkeley) 08/30/90
  */
 
 /*
@@ -132,7 +132,8 @@ struct ifnet {
 #define	IFF_SIMPLEX	0x800		/* can't hear own transmissions */
 
 /* flags set internally only: */
-#define	IFF_CANTCHANGE	(IFF_BROADCAST|IFF_POINTOPOINT|IFF_RUNNING|IFF_OACTIVE)
+#define	IFF_CANTCHANGE \
+	(IFF_BROADCAST|IFF_POINTOPOINT|IFF_RUNNING|IFF_OACTIVE|IFF_SIMPLEX)
 
 /*
  * Output queues (ifp->if_snd) and internetwork datagram level (pup level 1)
