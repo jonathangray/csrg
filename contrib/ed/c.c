@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)c.c	5.3 (Berkeley) 02/28/93";
+static char sccsid[] = "@(#)c.c	5.4 (Berkeley) 03/08/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -61,16 +61,16 @@ c(inputt, errnum)
 	FILE *inputt;
 	int *errnum;
 {
-	if (start_default && End_default)
-		start = End = current;
+	if (Start_default && End_default)
+		Start = End = current;
 	else
-		if (start_default)
-			start = End;
-	if (start == NULL) {
+		if (Start_default)
+			Start = End;
+	if (Start == NULL) {
 		*errnum = -1;
 		return;
 	}
-	start_default = End_default = 0;
+	Start_default = End_default = 0;
 
 	/* first delete the lines */
 	d(inputt, errnum);
@@ -81,7 +81,7 @@ c(inputt, errnum)
 	if ((current != NULL) && (current != bottom))
 		current = current->above;
 	add_flag = 1;
-	start_default = End_default = 1;
+	Start_default = End_default = 1;
 	/* now get the "change" lines */
 	input_lines(inputt, errnum);
 	add_flag = 0;
