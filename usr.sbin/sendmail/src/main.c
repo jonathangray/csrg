@@ -7,7 +7,7 @@
 # include <syslog.h>
 # endif LOG
 
-static char	SccsId[] = "@(#)main.c	3.12	08/09/81";
+static char	SccsId[] = "@(#)main.c	3.13	08/09/81";
 
 /*
 **  SENDMAIL -- Post mail to a set of destinations.
@@ -408,7 +408,7 @@ main(argc, argv)
 			fullname = nbuf;
 	}
 	if (fullname != NULL && fullname[0] != '\0')
-		define('x', nbuf);
+		define('x', fullname);
 
 	/*
 	** Get a temp file.
