@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_le.c	8.1 (Berkeley) 06/10/93
+ *	@(#)if_le.c	8.2 (Berkeley) 02/19/95
  */
 
 #include "le.h"
@@ -77,7 +77,8 @@
 #if defined (CCITT) && defined (LLC)
 #include <sys/socketvar.h>
 #include <netccitt/x25.h>
-extern llc_ctlinput(), cons_rtrequest();
+extern int llc_ctlinput();
+extern void cons_rtrequest();
 #endif
 
 #include <machine/cpu.h>
