@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef NAMED_BIND
-static char sccsid[] = "@(#)domain.c	5.28 (Berkeley) 10/02/91 (with name server)";
+static char sccsid[] = "@(#)domain.c	5.29 (Berkeley) 10/05/91 (with name server)";
 #else
-static char sccsid[] = "@(#)domain.c	5.28 (Berkeley) 10/02/91 (without name server)";
+static char sccsid[] = "@(#)domain.c	5.29 (Berkeley) 10/05/91 (without name server)";
 #endif
 #endif /* not lint */
 
@@ -185,6 +185,7 @@ punt:		mxhosts[0] = strcpy(hostbuf, host);
 	return(nmx);
 }
 
+bool
 getcanonname(host, hbsize)
 	char *host;
 	int hbsize;
@@ -196,6 +197,7 @@ getcanonname(host, hbsize)
 	querybuf answer;
 	u_short type;
 	int first, ancount, qdcount, loopcnt;
+	bool rval = FALSE;
 	char nbuf[PACKETSZ];
 
 	loopcnt = 0;
@@ -214,7 +216,7 @@ loop:
 		if (tTd(8, 1))
 			printf("getcanonname:  res_search failed (errno=%d, h_errno=%d)\n",
 			    errno, h_errno);
-		return;
+		return (rval);
 	}
 
 	/* find first satisfactory answer */
@@ -225,13 +227,13 @@ loop:
 	if (ancount == 0) {
 		if (tTd(8, 1))
 			printf("rcode = %d, ancount=%d\n", hp->rcode, ancount);
-		return;
+		return (rval);
 	}
 	cp = (u_char *)&answer + sizeof(HEADER);
 	eom = (u_char *)&answer + n;
 	for (qdcount = ntohs(hp->qdcount); qdcount--; cp += n + QFIXEDSZ)
 		if ((n = dn_skipname(cp, eom)) < 0)
-			return;
+			return (rval);
 
 	/*
 	 * just in case someone puts a CNAME record after another record,
@@ -242,6 +244,7 @@ loop:
 		if ((n = dn_expand((u_char *)&answer,
 		    eom, cp, (u_char *)nbuf, sizeof(nbuf))) < 0)
 			break;
+		rval = TRUE;
 		if (first) {			/* XXX */
 			(void)strncpy(host, nbuf, hbsize);
 			host[hbsize - 1] = '\0';
@@ -267,12 +270,14 @@ loop:
 			goto loop;
 		}
 	}
+	return (rval);
 }
 
 #else /* not NAMED_BIND */
 
 #include <netdb.h>
 
+bool
 getcanonname(host, hbsize)
 	char *host;
 	int hbsize;
@@ -281,12 +286,13 @@ getcanonname(host, hbsize)
 
 	hp = gethostbyname(host);
 	if (hp == NULL)
-		return;
+		return (FALSE);
 
 	if (strlen(hp->h_name) >= hbsize)
-		return;
+		return (FALSE);
 
 	(void) strcpy(host, hp->h_name);
+	return (TRUE);
 }
 
 #endif /* not NAMED_BIND */
