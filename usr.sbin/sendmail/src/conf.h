@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.18 (Berkeley) 07/27/93
+ *	@(#)conf.h	8.19 (Berkeley) 07/28/93
  */
 
 /*
@@ -214,7 +214,7 @@
 **  NeXTstep
 */
 
-#ifdef __NeXT__
+#ifdef NeXT
 # define HASINITGROUPS	1	/* has initgroups(3) call */
 # define HASFLOCK	1	/* has flock(2) call */
 # define sleep		sleepX
