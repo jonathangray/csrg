@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)printgprof.c	5.7 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)printgprof.c	5.8 (Berkeley) 02/24/92";
 #endif /* not lint */
 
 #include "gprof.h"
@@ -174,7 +174,7 @@ gprofline( np )
 	    np -> propself / hz ,
 	    np -> propchild / hz );
     if ( ( np -> ncall + np -> selfcalls ) != 0 ) {
-	printf( " %7d" , np -> ncall );
+	printf( " %7d" , np -> npropcall );
 	if ( np -> selfcalls != 0 ) {
 	    printf( "+%-7d " , np -> selfcalls );
 	} else {
@@ -289,7 +289,7 @@ printparents( childp )
     sortparents( childp );
     for ( arcp = childp -> parents ; arcp ; arcp = arcp -> arc_parentlist ) {
 	parentp = arcp -> arc_parentp;
-	if ( childp == parentp ||
+	if ( childp == parentp || ( arcp -> arc_flags & DEADARC ) ||
 	     ( childp->cycleno != 0 && parentp->cycleno == childp->cycleno ) ) {
 		/*
 		 *	selfcall or call among siblings
@@ -306,7 +306,7 @@ printparents( childp )
 	    printf( "%6.6s %5.5s %7.2f %11.2f %7d/%-7d     " ,
 		    "" , "" ,
 		    arcp -> arc_time / hz , arcp -> arc_childtime / hz ,
-		    arcp -> arc_count , cycleheadp -> ncall );
+		    arcp -> arc_count , cycleheadp -> npropcall );
 	    printname( parentp );
 	    printf( "\n" );
 	}
@@ -323,7 +323,7 @@ printchildren( parentp )
     arcp = parentp -> children;
     for ( arcp = parentp -> children ; arcp ; arcp = arcp -> arc_childlist ) {
 	childp = arcp -> arc_childp;
-	if ( childp == parentp ||
+	if ( childp == parentp || ( arcp -> arc_flags & DEADARC ) ||
 	    ( childp->cycleno != 0 && childp->cycleno == parentp->cycleno ) ) {
 		/*
 		 *	self call or call to sibling
@@ -339,7 +339,7 @@ printchildren( parentp )
 	    printf( "%6.6s %5.5s %7.2f %11.2f %7d/%-7d     " ,
 		    "" , "" ,
 		    arcp -> arc_time / hz , arcp -> arc_childtime / hz ,
-		    arcp -> arc_count , childp -> cyclehead -> ncall );
+		    arcp -> arc_count , childp -> cyclehead -> npropcall );
 	    printname( childp );
 	    printf( "\n" );
 	}
@@ -467,7 +467,7 @@ printcycle( cyclep )
 	    100 * ( cyclep -> propself + cyclep -> propchild ) / printtime ,
 	    cyclep -> propself / hz ,
 	    cyclep -> propchild / hz ,
-	    cyclep -> ncall );
+	    cyclep -> npropcall );
     if ( cyclep -> selfcalls != 0 ) {
 	printf( "+%-7d" , cyclep -> selfcalls );
     } else {
@@ -489,7 +489,7 @@ printmembers( cyclep )
     for ( memberp = cyclep -> cnext ; memberp ; memberp = memberp -> cnext ) {
 	printf( "%6.6s %5.5s %7.2f %11.2f %7d" , 
 		"" , "" , memberp -> propself / hz , memberp -> propchild / hz ,
-		memberp -> ncall );
+		memberp -> npropcall );
 	if ( memberp -> selfcalls != 0 ) {
 	    printf( "+%-7d" , memberp -> selfcalls );
 	} else {
