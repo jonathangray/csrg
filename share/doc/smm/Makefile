@@ -1,7 +1,7 @@
-#	@(#)Makefile	8.1 (Berkeley) 06/08/93
+#	@(#)Makefile	5.5 (Berkeley) 06/10/93
 
 # The following modules do not build/install:
-# 10.named
+# 10.named, 13.amd
 
 # Missing: 03.kdebug 09.uucpimpl 12.uchanges 13.kchanges 17.security
 #	   18.password 19.porttour 21.uucpnet
