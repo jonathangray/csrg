@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.2 (Berkeley) 06/08/93
+#	@(#)Makefile	8.1 (Berkeley) 06/08/93
 
 DIR=	psd/12.make
 SRCS=	tmac.ansp tutorial.ms
