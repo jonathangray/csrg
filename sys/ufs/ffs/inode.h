@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)inode.h	7.25 (Berkeley) 05/31/92
+ *	@(#)inode.h	7.26 (Berkeley) 06/19/92
  */
 
 #include <ufs/ufs/dinode.h>
@@ -157,13 +157,13 @@ struct inode {
 	if ((ip)->i_flag&(IUPD|IACC|ICHG)) { \
 		(ip)->i_flag |= IMOD; \
 		if ((ip)->i_flag&IACC) \
-			(ip)->i_atime.tv_sec = (t1)->tv_sec; \
+			(ip)->i_atime.ts_sec = (t1)->tv_sec; \
 		if ((ip)->i_flag&IUPD) { \
-			(ip)->i_mtime.tv_sec = (t2)->tv_sec; \
+			(ip)->i_mtime.ts_sec = (t2)->tv_sec; \
 			INCRQUAD((ip)->i_modrev); \
 		} \
 		if ((ip)->i_flag&ICHG) \
-			(ip)->i_ctime.tv_sec = time.tv_sec; \
+			(ip)->i_ctime.ts_sec = time.tv_sec; \
 		(ip)->i_flag &= ~(IACC|IUPD|ICHG); \
 	} \
 }
