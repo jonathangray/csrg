@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_bio.c	7.19 (Berkeley) 04/16/91
+ *	@(#)nfs_bio.c	7.20 (Berkeley) 12/15/91
  */
 
 #include "param.h"
@@ -46,9 +46,9 @@
 #include "mount.h"
 #include "resourcevar.h"
 
-#include "nfsnode.h"
 #include "nfsv2.h"
 #include "nfs.h"
+#include "nfsnode.h"
 #include "nfsiom.h"
 #include "nfsmount.h"
 
