@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.22 (Berkeley) 08/20/93";
+static char sccsid[] = "@(#)main.c	8.23 (Berkeley) 08/20/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -103,8 +103,6 @@ char		*CommandLineArgs;	/* command line args for pid file */
 /*
 **  Pointers for setproctitle.
 **	This allows "ps" listings to give more useful information.
-**	These must be kept out of BSS for frozen configuration files
-**		to work.
 */
 
 # ifdef SETPROCTITLE
@@ -138,7 +136,6 @@ main(argc, argv, envp)
 	register int i;
 	int j;
 	bool queuemode = FALSE;		/* process queue requests */
-	bool nothaw;
 	bool safecf = TRUE;
 	static bool reenter = FALSE;
 	char *argv0 = argv[0];
@@ -247,12 +244,8 @@ main(argc, argv, envp)
 
 	/*
 	**  Do a quick prescan of the argument list.
-	**	We do this to find out if we can potentially thaw the
-	**	configuration file.  If not, we do the thaw now so that
-	**	the argument processing applies to this run rather than
-	**	to the run that froze the configuration.
 	*/
-	nothaw = FALSE;
+
 #if defined(__osf__) || defined(_AIX3)
 # define OPTIONS	"B:b:C:cd:e:F:f:h:Iimno:p:q:r:sTtvX:x"
 #else
@@ -266,19 +259,6 @@ main(argc, argv, envp)
 	{
 		switch (j)
 		{
-		  case 'b':
-			if (optarg[0] == 'z' && optarg[1] == '\0')
-				nothaw = TRUE;
-			break;
-
-		  case 'C':
-			ConfFile = optarg;
-			(void) setgid(RealGid);
-			(void) setuid(RealUid);
-			safecf = FALSE;
-			nothaw = TRUE;
-			break;
-
 		  case 'd':
 			tTsetup(tTdvect, sizeof tTdvect, "0-99.1");
 			tTflag(optarg);
@@ -463,12 +443,13 @@ main(argc, argv, envp)
 				auth_warning(CurEnv,
 					"Processed by %s with -C %s",
 					RealUserName, optarg);
+			ConfFile = optarg;
+			(void) setgid(RealGid);
+			(void) setuid(RealUid);
+			safecf = FALSE;
 			break;
 
-		  case 'd':	/* debugging -- redo in case frozen */
-			tTsetup(tTdvect, sizeof tTdvect, "0-99.1");
-			tTflag(optarg);
-			setbuf(stdout, (char *) NULL);
+		  case 'd':	/* debugging -- already done */
 			break;
 
 		  case 'f':	/* from address */
