@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)0.t	6.4 (Berkeley) 04/17/91
+.\"	@(#)0.t	6.5 (Berkeley) 06/05/93
 .\"
 .EQ
 delim $$
@@ -37,8 +37,8 @@ delim $$
 .if n .ND
 .TL
 A Fast File System for UNIX*
-.EH 'SMM:14-%''A Fast File System for \s-2UNIX\s+2'
-.OH 'A Fast File System for \s-2UNIX\s+2''SMM:14-%'
+.EH 'SMM:05-%''A Fast File System for \s-2UNIX\s+2'
+.OH 'A Fast File System for \s-2UNIX\s+2''SMM:05-%'
 .AU
 Marshall Kirk McKusick, William N. Joy\(dg,
 Samuel J. Leffler\(dd, Robert S. Fabry
