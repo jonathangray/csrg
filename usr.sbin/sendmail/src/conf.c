@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	6.22 (Berkeley) 02/21/93";
+static char sccsid[] = "@(#)conf.c	6.23 (Berkeley) 02/21/93";
 #endif /* not lint */
 
 # include <sys/ioctl.h>
@@ -785,6 +785,8 @@ shouldqueue(pri, ctime)
 {
 	if (CurrentLA < QueueLA)
 		return (FALSE);
+	if (CurrentLA >= RefuseLA)
+		return (TRUE);
 	return (pri > (QueueFactor / (CurrentLA - QueueLA + 1)));
 }
 /*
@@ -806,7 +808,7 @@ bool
 refuseconnections()
 {
 	/* this is probably too simplistic */
-	return (CurrentLA > RefuseLA);
+	return (CurrentLA >= RefuseLA);
 }
 /*
 **  SETPROCTITLE -- set process title for ps
