@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: uipc_shm.c 1.9 89/08/14$
  *
- *	@(#)sysv_shm.c	7.1 (Berkeley) 05/08/90
+ *	@(#)sysv_shm.c	7.2 (Berkeley) 05/15/90
  */
 
 /*
@@ -315,7 +315,7 @@ shmat(ap)
 	prot |= MM_CI;
 #endif
 	size = ctob(clrnd(btoc(shp->shm_segsz)));
-	mp = mmalloc(uap->shmid, &uva, (size_t)size, prot, &shmops);
+	mp = mmalloc(uap->shmid, &uva, (segsz_t)size, prot, &shmops);
 	if (mp == MMNIL)
 		return;
 	if (!mmmapin(mp, shmmapin)) {
