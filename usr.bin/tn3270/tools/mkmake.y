@@ -1,8 +1,8 @@
 %{
 
 /*-
- * Copyright (c) 1988 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1988, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -34,7 +34,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)mkmake.y	4.2 (Berkeley) 04/26/91";
+static char sccsid[] = "@(#)mkmake.y	8.1 (Berkeley) 06/06/93";
 #endif /* not lint */
 
 typedef struct string {
