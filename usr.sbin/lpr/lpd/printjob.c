@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)printjob.c	8.2 (Berkeley) 04/16/94";
+static char sccsid[] = "@(#)printjob.c	8.3 (Berkeley) 04/27/95";
 #endif /* not lint */
 
 
@@ -135,7 +135,7 @@ printjob()
 	register struct queue *q, **qp;
 	struct queue **queue;
 	register int i, nitems;
-	long pidoff;
+	off_t pidoff;
 	int count = 0;
 
 	init();					/* set up capabilities */
@@ -210,7 +210,7 @@ again:
 		if (stat(q->q_name, &stb) < 0)
 			continue;
 	restart:
-		(void) lseek(lfd, (off_t)pidoff, 0);
+		(void) lseek(lfd, pidoff, 0);
 		(void) sprintf(line, "%s\n", q->q_name);
 		i = strlen(line);
 		if (write(lfd, line, i) != i)
@@ -537,6 +537,7 @@ print(format, file)
 		if ((prchild = dofork(DORETURN)) == 0) {	/* child */
 			dup2(fi, 0);		/* file is stdin */
 			dup2(p[1], 1);		/* pipe is stdout */
+			closelog();
 			for (n = 3; n < NOFILE; n++)
 				(void) close(n);
 			execl(_PATH_PR, "pr", width, length,
@@ -650,6 +651,7 @@ start:
 		n = open(tempfile, O_WRONLY|O_CREAT|O_TRUNC, 0664);
 		if (n >= 0)
 			dup2(n, 2);
+		closelog();
 		for (n = 3; n < NOFILE; n++)
 			(void) close(n);
 		execv(prog, av);
@@ -809,7 +811,7 @@ sendfile(type, file)
 	if ((stb.st_mode & S_IFMT) == S_IFLNK && fstat(f, &stb) == 0 &&
 	    (stb.st_dev != fdev || stb.st_ino != fino))
 		return(ACCESS);
-	(void) sprintf(buf, "%c%qd %s\n", type, stb.st_size, file);
+	(void) sprintf(buf, "%c%ld %s\n", type, (long)stb.st_size, file);
 	amt = strlen(buf);
 	for (i = 0;  ; i++) {
 		if (write(pfd, buf, amt) != amt ||
@@ -1007,6 +1009,7 @@ sendmail(user, bombed)
 	pipe(p);
 	if ((s = dofork(DORETURN)) == 0) {		/* child */
 		dup2(p[0], 0);
+		closelog();
 		for (i = 3; i < NOFILE; i++)
 			(void) close(i);
 		if ((cp = rindex(_PATH_SENDMAIL, '/')) != NULL)
@@ -1251,6 +1254,7 @@ openpr()
 		if ((ofilter = dofork(DOABORT)) == 0) {	/* child */
 			dup2(p[0], 0);		/* pipe is std in */
 			dup2(pfd, 1);		/* printer is std out */
+			closelog();
 			for (i = 3; i < NOFILE; i++)
 				(void) close(i);
 			if ((cp = rindex(OF, '/')) == NULL)
