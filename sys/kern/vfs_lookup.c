@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_lookup.c	7.37 (Berkeley) 02/21/92
+ *	@(#)vfs_lookup.c	7.38 (Berkeley) 03/02/92
  */
 
 #include "param.h"
@@ -367,8 +367,7 @@ dirloop:
 #ifdef NAMEI_DIAGNOSTIC
 		printf("not found\n");
 #endif
-		if (cnp->cn_nameiop == LOOKUP || cnp->cn_nameiop == DELETE ||
-		    error != ENOENT || *cp != 0)
+		if (error != EJUSTRETURN)
 			goto bad;
 		/*
 		 * If creating and at end of pathname, then can consider
