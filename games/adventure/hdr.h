@@ -1,10 +1,11 @@
 /*-
- * Copyright (c) 1991 The Regents of the University of California.
+ * Copyright (c) 1991, 1993 The Regents of the University of California.
  * All rights reserved.
  *
- * The game adventure was original written Fortran by Will Crowther
- * and Don Woods.  It was later translated to C and enhanced by
- * Jim Gillogly.
+ * The game adventure was originally written in Fortran by Will Crowther
+ * and Don Woods.  It was later translated to C and enhanced by Jim
+ * Gillogly.  This code is derived from software contributed to Berkeley
+ * by Jim Gillogly at The Rand Corporation.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -34,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hdr.h	5.1 (Berkeley) 04/08/91
+ *	@(#)hdr.h	5.2 (Berkeley) 05/12/93
  */
 
 /*   ADVENTURE -- Jim Gillogly, Jul 1977
@@ -52,21 +53,23 @@
 
 /* hdr.h: included by c advent files */
 
-extern int setup;                       /* changed by savec & init      */
 int datfd;                              /* message file descriptor      */
 int delhit;
 int yea;
+extern char data_file[];                /* Virtual data file            */
 
 #define TAB     011
 #define LF      012
 #define FLUSHLINE while (getchar()!='\n')
 #define FLUSHLF   while (next()!=LF)
 
-int loc,newloc,oldloc,oldlc2,wzdark,SHORT,gaveup,kq,k,k2;
+int loc,newloc,oldloc,oldlc2,wzdark,gaveup,kq,k,k2;
 char *wd1,*wd2;                         /* the complete words           */
 int verb,obj,spk;
 extern int blklin;
 int saved,savet,mxscor,latncy;
+
+#define SHORT 50                        /* How short is a demo game?    */
 
 #define MAXSTR  20                      /* max length of user's words   */
 
@@ -76,12 +79,13 @@ struct hashtab                          /* hash table for vocabulary    */
 	char *atab;                     /* pointer to actual string     */
 } voc[HTSIZE];
 
-#define DATFILE "glorkz"                /* all the original msgs        */
-#define TMPFILE "tmp.foo.baz"           /* just the text msgs           */
-
+#define SEED 1815622                    /* "Encryption" seed            */
 
 struct text
+#ifdef OLDSTUFF
 {       int seekadr;                    /* DATFILE must be < 2**16      */
+#endif OLDSTUFF
+{       char *seekadr;                  /* Msg start in virtual disk    */
 	int txtlen;                     /* length of msg starting here  */
 };
 
@@ -139,6 +143,7 @@ int keys,lamp,grate,cage,rod,rod2,steps,/* mnemonics                    */
 	nugget,coins,chest,eggs,tridnt,vase,emrald,pyram,pearl,rug,chain,
 	spices,
 	back,look,cave,null,entrnc,dprssn,
+	enter, stream, pour,
 	say,lock,throw,find,invent;
 
 int chloc,chloc2,dseen[7],dloc[7],      /* dwarf stuff                  */
@@ -152,3 +157,6 @@ int turns,lmwarn,iwest,knfloc,detail,   /* various flags & counters     */
 int demo,newloc,limit;
 
 char *malloc();
+
+/* We need to get a little tricky to avoid strings */
+#define DECR(a,b,c,d,e) decr('a'+'+','b'+'-','c'+'#','d'+'&','e'+'%')
