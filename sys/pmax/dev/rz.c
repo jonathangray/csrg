@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)rz.c	7.3 (Berkeley) 04/19/92
+ *	@(#)rz.c	7.4 (Berkeley) 06/20/92
  */
 
 /*
@@ -58,7 +58,6 @@
 #include "stat.h"
 #include "syslog.h"
 #include "ufs/ffs/fs.h"
-#include "ufs/ufs/ufs_extern.h"
 
 #include "device.h"
 #include "scsi.h"
@@ -66,6 +65,7 @@
 extern int splbio();
 extern void splx();
 extern int physio();
+extern char *readdisklabel();
 
 int	rzprobe();
 void	rzstrategy(), rzstart(), rzdone();
