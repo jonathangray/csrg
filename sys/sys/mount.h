@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mount.h	8.2 (Berkeley) 12/14/93
+ *	@(#)mount.h	8.3 (Berkeley) 12/15/93
  */
 
 #ifndef KERNEL
@@ -89,7 +89,8 @@ struct statfs {
 #define MOUNT_NULL	9
 #define MOUNT_UMAP	10
 #define MOUNT_KERNFS	11
-#define	MOUNT_MAXTYPE	11
+#define MOUNT_PROCFS	12
+#define MOUNT_MAXTYPE	12
 
 #define INITMOUNTNAMES { \
 	"none",		/*  0 MOUNT_NONE */ \
@@ -104,7 +105,8 @@ struct statfs {
 	"null",		/*  9 MOUNT_NULL */ \
 	"umap",		/* 10 MOUNT_UMAP */ \
 	"kernfs",	/* 11 MOUNT_KERNFS */ \
-	0,		/* 12 MOUNT_SPARE */ \
+	"procfs",	/* 12 MOUNT_PROCFS */ \
+	0,		/* 13 MOUNT_SPARE */ \
 }
 
 /*
