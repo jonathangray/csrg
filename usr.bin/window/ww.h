@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ww.h	3.61 (Berkeley) 08/12/90
+ *	@(#)ww.h	3.62 (Berkeley) 08/12/90
  */
 
 #ifdef OLD_TTY
@@ -290,8 +290,8 @@ char wwwintermcap[1024];	/* terminal-specific but window-independent
 
 	/* our functions */
 struct ww *wwopen();
-int wwchild();
-int wwsuspend();
+void wwchild();
+void wwsuspend();
 char **wwalloc();
 char *wwerror();
 
