@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.152 (Berkeley) 04/22/95
+ *	@(#)conf.h	8.153 (Berkeley) 04/24/95
  */
 
 /*
@@ -151,6 +151,7 @@
 # define HASSETREUID	1	/* has setreuid(2) call */
 # define setreuid(r, e)		setresuid(r, e, -1)
 # define LA_TYPE	LA_SUBR
+# define SPT_TYPE	SPT_PSTAT
 # define SFS_TYPE	SFS_VFS	/* use <sys/vfs.h> statfs() implementation */
 # define GIDSET_T	gid_t
 # define _PATH_UNIX	"/hp-ux"
