@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)wd.c	7.2 (Berkeley) 05/09/91
+ *	@(#)wd.c	7.3 (Berkeley) 05/11/92
  */
 
 /* TODO:peel out buffer at low ipl,
@@ -1118,7 +1118,7 @@ outb(0x461,0);	/* disable failsafe timer */
 			blkcnt = secpercyl - (blknum % secpercyl);
 			    /* keep transfer within current cylinder */
 #endif
-		pmap_enter(pmap_kernel(), vmmap, addr, VM_PROT_READ, TRUE);
+		pmap_enter(kernel_pmap, vmmap, addr, VM_PROT_READ, TRUE);
 
 		/* compute disk address */
 		cylin = blknum / secpercyl;
