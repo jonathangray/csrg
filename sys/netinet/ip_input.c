@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ip_input.c	7.27 (Berkeley) 04/18/93
+ *	@(#)ip_input.c	7.28 (Berkeley) 05/31/93
  */
 
 #include <sys/param.h>
@@ -1031,10 +1031,10 @@ ip_forward(m, srcrt)
 	register struct rtentry *rt;
 	int error, type = 0, code;
 	struct mbuf *mcopy;
-	struct in_addr dest;
+	n_long dest;
 	struct ifnet *destifp;
 
-	dest.s_addr = 0;
+	dest = 0;
 #ifdef DIAGNOSTIC
 	if (ipprintfs)
 		printf("forward: src %x dst %x ttl %x\n", ip->ip_src,
@@ -1047,7 +1047,7 @@ ip_forward(m, srcrt)
 	}
 	ip->ip_id = htons(ip->ip_id);
 	if (ip->ip_ttl <= IPTTLDEC) {
-		icmp_error(m, ICMP_TIMXCEED, ICMP_TIMXCEED_INTRANS, dest);
+		icmp_error(m, ICMP_TIMXCEED, ICMP_TIMXCEED_INTRANS, dest, 0);
 		return;
 	}
 	ip->ip_ttl -= IPTTLDEC;
@@ -1065,7 +1065,7 @@ ip_forward(m, srcrt)
 
 		rtalloc(&ipforward_rt);
 		if (ipforward_rt.ro_rt == 0) {
-			icmp_error(m, ICMP_UNREACH, ICMP_UNREACH_HOST, dest);
+			icmp_error(m, ICMP_UNREACH, ICMP_UNREACH_HOST, dest, 0);
 			return;
 		}
 		rt = ipforward_rt.ro_rt;
@@ -1101,15 +1101,15 @@ ip_forward(m, srcrt)
 		if (RTA(rt) &&
 		    (src & RTA(rt)->ia_subnetmask) == RTA(rt)->ia_subnet) {
 		    if (rt->rt_flags & RTF_GATEWAY)
-			dest = satosin(rt->rt_gateway)->sin_addr;
+			dest = satosin(rt->rt_gateway)->sin_addr.s_addr;
 		    else
-			dest = ip->ip_dst;
+			dest = ip->ip_dst.s_addr;
 		    /* Router requirements says to only send host redirects */
 		    type = ICMP_REDIRECT;
 		    code = ICMP_REDIRECT_HOST;
 #ifdef DIAGNOSTIC
 		    if (ipprintfs)
-		        printf("redirect (%d) to %x\n", code, dest.s_addr);
+		        printf("redirect (%d) to %lx\n", code, (u_long)dest);
 #endif
 		}
 	}
