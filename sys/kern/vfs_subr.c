@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	8.3 (Berkeley) 01/05/94
+ *	@(#)vfs_subr.c	8.4 (Berkeley) 01/05/94
  */
 
 /*
@@ -185,11 +185,11 @@ static u_short xxxfs_mntid;
 
 	fsid_t tfsid;
 
-	mp->mnt_stat.f_fsid.val[0] = makedev(nblkdev + 11, 0);	/* XXX */
+	mp->mnt_stat.f_fsid.val[0] = makedev(nblkdev + mtype, 0);
 	mp->mnt_stat.f_fsid.val[1] = mtype;
 	if (xxxfs_mntid == 0)
 		++xxxfs_mntid;
-	tfsid.val[0] = makedev(nblkdev, xxxfs_mntid);
+	tfsid.val[0] = makedev(nblkdev + mtype, xxxfs_mntid);
 	tfsid.val[1] = mtype;
 	if (mountlist.tqh_first != NULL) {
 		while (getvfs(&tfsid)) {
