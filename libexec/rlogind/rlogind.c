@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1983, 1988 The Regents of the University of California.
+ * Copyright (c) 1983, 1988, 1989 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms are permitted
@@ -17,12 +17,12 @@
 
 #ifndef lint
 char copyright[] =
-"@(#) Copyright (c) 1983, 1988 The Regents of the University of California.\n\
+"@(#) Copyright (c) 1983, 1988, 1989 The Regents of the University of California.\n\
  All rights reserved.\n";
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)rlogind.c	5.22.1.7 (Berkeley) 09/11/89";
+static char sccsid[] = "@(#)rlogind.c	5.38 (Berkeley) 09/11/89";
 #endif /* not lint */
 
 #ifdef KERBEROS
@@ -136,7 +136,7 @@ main(argc, argv)
 #ifdef	KERBEROS
 	if (use_kerberos && vacuous) {
 		usage();
-		fatal("only one of -k and -v allowed\n");
+		fatal("only one of -k and -v allowed");
 	}
 #endif
 	fromlen = sizeof (from);
@@ -177,7 +177,7 @@ doit(f, fromp)
 	if(c != 0)
 		exit(1);
 #ifdef	KERBEROS
-	if(vacuous)
+	if (vacuous)
 		fatal(f, "Remote host requires Kerberos authentication");
 
 	alarm(0);
@@ -230,7 +230,7 @@ doit(f, fromp)
 		else if (retval > 0)
 			fatal(f, krb_err_txt[retval]);
 		else if(!hostok)
-			fatal(f, "krlogind: Host address mismatch.\r\n");
+			fatal(f, "krlogind: Host address mismatch.");
 	} else
 #ifndef OLD_LOGIN
 	{
@@ -284,15 +284,7 @@ gotpty:
 	if (t < 0)
 		fatalperror(f, line);
 	setup_term(t);
-#ifndef DEBUG
-	{
-		int tt = open("/dev/tty", O_RDWR);
-		if (tt > 0) {
-			(void)ioctl(tt, TIOCNOTTY, 0);
-			(void)close(tt);
-		}
-	}
-#endif
+
 	pid = fork();
 	if (pid < 0)
 		fatalperror(f, "");
