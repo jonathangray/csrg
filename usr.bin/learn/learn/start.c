@@ -8,7 +8,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)start.c	4.8 (Berkeley) 04/17/91";
+static char sccsid[] = "@(#)start.c	4.9 (Berkeley) 06/03/93";
 #endif /* not lint */
 
 #include "stdio.h"
@@ -17,7 +17,7 @@ static char sccsid[] = "@(#)start.c	4.8 (Berkeley) 04/17/91";
 #include <dirent.h>
 #include <unistd.h>
 
-start(lesson)
+lstart(lesson)
 char *lesson;
 {
 	register struct dirent *ep;
