@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_x25subr.c	7.18 (Berkeley) 12/08/92
+ *	@(#)if_x25subr.c	7.19 (Berkeley) 12/08/92
  */
 
 #include <sys/param.h>
@@ -44,6 +44,8 @@
 #include <sys/errno.h>
 #include <sys/syslog.h>
 
+#include <machine/mtpr.h>
+
 #include <net/if.h>
 #include <net/if_types.h>
 #include <net/netisr.h>
@@ -53,8 +55,6 @@
 #include <netccitt/x25err.h>
 #include <netccitt/pk.h>
 #include <netccitt/pk_var.h>
-
-#include <machine/mtpr.h>
 
 #ifdef INET
 #include <netinet/in.h>
@@ -394,7 +394,7 @@ struct ifnet *ifp;
 	register struct pklcd **lcpp, *lcp;
 	int s = splimp();
 
-	for (pkcb = pkcbhead; pkcb; pkcb = pkcb->pk_next)
+	FOR_ALL_PKCBS(pkcb)
 	    if (pkcb->pk_ia->ia_ifp == ifp)
 		for (lcpp = pkcb->pk_chan + pkcb->pk_maxlcn;
 		     --lcpp > pkcb->pk_chan;)
