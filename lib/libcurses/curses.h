@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)curses.h	5.28 (Berkeley) 02/13/93
+ *	@(#)curses.h	5.29 (Berkeley) 02/18/93
  */
 
 #ifndef _CURSES_H_
@@ -102,7 +102,7 @@ extern char	 __unctrllen[256];	/* Control strings length. */
  * IMPORTANT: the __LDATA structure must NOT induce any padding, so if new
  * fields are added -- padding fields with *constant values* should ensure 
  * that the compiler will not generate any padding when storing an array of
- *  __LDATA structures.  This is to enable consistent use of bcmp, and bcopy
+ *  __LDATA structures.  This is to enable consistent use of memcmp, and memcpy
  * for comparing and copying arrays.
  */
 typedef struct {
