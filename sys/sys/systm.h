@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)systm.h	7.24 (Berkeley) 07/08/92
+ *	@(#)systm.h	7.25 (Berkeley) 07/19/92
  */
 
 extern const char *panicstr;	/* panic message */
@@ -78,6 +78,7 @@ int	enoioctl __P((void));
 int	enxio __P((void));
 int	eopnotsupp __P((void));
 int	seltrue __P((dev_t dev, int which, struct proc *p));
+void	*hashinit __P((int count, int type, u_long *hashmask));
 
 #ifdef __GNUC__
 volatile void	panic __P((const char *, ...));
