@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)verify.c	5.6 (Berkeley) 06/25/90";
+static char sccsid[] = "@(#)verify.c	5.7 (Berkeley) 07/01/90";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -61,6 +61,7 @@ vwalk()
 	register FTSENT *p;
 	register NODE *ep, *level;
 	char *argv[2];
+	int ftsdepth = 0, specdepth = 0;
 
 	argv[0] = ".";
 	argv[1] = (char *)NULL;
@@ -75,22 +76,23 @@ vwalk()
 		case FTS_D:
 			if (!strcmp(p->fts_name, "."))
 				continue;
+			ftsdepth++; 
 			break;
 		case FTS_DC:
 			(void)fprintf(stderr,
 			    "mtree: directory cycle: %s.\n", RP(p));
 			continue;
 		case FTS_DNR:
-			(void)fprintf(stderr,
-			    "mtree: %s: unable to read.\n", RP(p));
-			continue;
 		case FTS_DNX:
 			(void)fprintf(stderr,
-			    "mtree: %s: unable to search.\n", RP(p));
-			continue;
+			    "mtree: %s: unable to read or search.\n", RP(p));
 		case FTS_DP:
-			for (level = level->parent; level->prev;
-			    level = level->prev);
+			ftsdepth--; 
+			if (specdepth > ftsdepth) {
+				for (level = level->parent; level->prev;
+				      level = level->prev);  
+				specdepth--;
+			}
 			continue;
 		case FTS_ERR:
 			(void)fprintf(stderr, "mtree: %s: %s.\n",
@@ -116,10 +118,13 @@ vwalk()
 				}
 				compare(ep->name, ep, p);
 				if (ep->child && ep->type == F_DIR &&
-				    p->fts_info == FTS_D)
+				    p->fts_info == FTS_D) {
 					level = ep->child;
+					specdepth++;
+				}
 				break;
 			}
+
 		if (ep)
 			continue;
 		if (!eflag) {
