@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_exec.c	7.63 (Berkeley) 07/03/92
+ *	@(#)kern_exec.c	7.64 (Berkeley) 07/08/92
  */
 
 #include "param.h"
@@ -729,7 +729,6 @@ badmap:
 	vm->vm_tsize = btoc(xts);
 	vm->vm_dsize = ds;
 	vm->vm_ssize = btoc(ssize);
-	p->p_stats->p_prof.pr_scale = 0;
 	if (p->p_flag & SPROFIL)
 		stopprofclock(p);
 #if defined(tahoe)
