@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)fs.h	7.3 (Berkeley) 04/02/87
+ *	@(#)fs.h	7.4 (Berkeley) 09/09/87
  */
 
 /*
