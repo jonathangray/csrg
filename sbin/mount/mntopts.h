@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mntopts.h	8.4 (Berkeley) 06/16/94
+ *	@(#)mntopts.h	8.5 (Berkeley) 06/23/94
  */
 
 struct mntopt {
@@ -47,6 +47,8 @@ struct mntopt {
 #define MOPT_RDONLY		{ "rdonly",	0, MNT_RDONLY }
 #define MOPT_SYNC		{ "sync",	0, MNT_SYNCHRONOUS }
 #define MOPT_UNION		{ "union",	0, MNT_UNION }
+#define MOPT_USERQUOTA		{ "userquota",	0, 0 }
+#define MOPT_GROUPQUOTA		{ "groupquota",	0, 0 }
 
 /* Control flags. */
 #define MOPT_FORCE		{ "force",	1, MNT_FORCE }
@@ -64,6 +66,8 @@ struct mntopt {
 
 /* Standard options which all mounts can understand. */
 #define MOPT_STDOPTS							\
+	MOPT_USERQUOTA,							\
+	MOPT_GROUPQUOTA,						\
 	MOPT_FSTAB_COMPAT,						\
 	MOPT_NODEV,							\
 	MOPT_NOEXEC,							\
