@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_pcb.c	7.19 (Berkeley) 09/30/91
+ *	@(#)tp_pcb.c	7.20 (Berkeley) 10/02/91
  */
 
 /***********************************************************
@@ -98,10 +98,6 @@ SOFTWARE.
 #include "tp_meas.h"
 #include "tp_seq.h"
 #include "tp_clnp.h"
-
-struct tp_param tp_param = {
-	1,				/*  configured 		*/
-};
 
 /* ticks are in units of: 
  * 500 nano-fortnights ;-) or
@@ -657,10 +653,6 @@ tp_attach(so, protocol)
 	IFTRACE(D_CONN)
 		tptrace(TPPTmisc, "tp_attach:dom so", dom, so, 0, 0);
 	ENDTRACE
-	if ( ! tp_param.tpp_configed ) {
-		error = ENOPROTOOPT; /* protocol not available */
-		goto bad2;
-	}
 
 	if (so->so_pcb != NULL) { 
 		return EISCONN;	/* socket already part of a connection*/
