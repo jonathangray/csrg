@@ -95,7 +95,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)lpr.c	5.11 (Berkeley) 07/21/92";
+static char sccsid[] = "@(#)lpr.c	5.13 (Berkeley) 8/31/92";
 #endif /* not lint */
 
 /*
@@ -124,55 +124,44 @@ static char sccsid[] = "@(#)lpr.c	5.11 (Berkeley) 07/21/92";
 #include "lp.local.h"
 #include "pathnames.h"
 
-char    *tfname;		/* tmp copy of cf before linking */
-char    *cfname;		/* daemon control files, linked from tf's */
-char    *dfname;		/* data files */
+static char	*cfname;	/* daemon control files, linked from tf's */
+static char	*class = host;	/* class title on header page */
+static char	*dfname;		/* data files */
+static char	*fonts[4];	/* troff font names */
+static char	 format = 'f';	/* format char for printing files */
+static int	 hdr = 1;	/* print header or not (default is yes) */
+static int	 iflag;		/* indentation wanted */
+static int	 inchar;	/* location to increment char in file names */
+static int	 indent;	/* amount to indent */
+static char	*jobname;	/* job name on header page */
+static int	 mailflg;	/* send mail */
+static int	 nact;		/* number of jobs to act on */
+static int	 ncopies = 1;	/* # of copies to make */
+static char	*person;	/* user name */
+static int	 qflag;		/* q job, but don't exec daemon */
+static int	 rflag;		/* remove files upon completion */	
+static int	 sflag;		/* symbolic link flag */
+static int	 tfd;		/* control file descriptor */
+static char	*tfname;	/* tmp copy of cf before linking */
+static char	*title;		/* pr'ing title */
+static int	 userid;	/* user id */
+static char	*width;		/* width for versatec printing */
 
-int	nact;			/* number of jobs to act on */
-int	tfd;			/* control file descriptor */
-int     mailflg;		/* send mail */
-int	qflag;			/* q job, but don't exec daemon */
-char	format = 'f';		/* format char for printing files */
-int	rflag;			/* remove files upon completion */	
-int	sflag;			/* symbolic link flag */
-int	inchar;			/* location to increment char in file names */
-int     ncopies = 1;		/* # of copies to make */
-int	iflag;			/* indentation wanted */
-int	indent;			/* amount to indent */
-int	hdr = 1;		/* print header or not (default is yes) */
-int     userid;			/* user id */
-char	*person;		/* user name */
-char	*title;			/* pr'ing title */
-char	*fonts[4];		/* troff font names */
-char	*width;			/* width for versatec printing */
-char	host[MAXHOSTNAMELEN];	/* host name */
-char	*class = host;		/* class title on header page */
-char    *jobname;		/* job name on header page */
-char	*name;			/* program name */
-char	*printer;		/* printer name */
-struct	stat statb;
+static struct stat statb;
 
-int	MX;			/* maximum number of blocks to copy */
-int	MC;			/* maximum number of copies allowed */
-int	DU;			/* daemon user-id */
-char	*SD;			/* spool directory */
-char	*LO;			/* lock file name */
-char	*RG;			/* restrict group */
-short	SC;			/* suppress multiple copies */
+static void	 card __P((int, char *));
+static void	 chkprinter __P((char *));
+static void	 cleanup __P((int));
+static void	 copy __P((int, char []));
+static void	 fatal2 __P((const char *, ...));
+static char	*itoa __P((int));
+static char	*linked __P((char *));
+static char	*lmktemp __P((char *, int, int));
+static void	 mktemps __P((void));
+static int	 nfile __P((char *));
+static int	 test __P((char *));
 
-void	 card __P((int, char *));
-void	 chkprinter __P((char *));
-void	 cleanup __P((int));
-void	 copy __P((int, char []));
-void	 fatal __P((const char *, ...));
-char	*itoa __P((int));
-char	*linked __P((char *));
-char	*lmktemp __P((char *, int, int));
-void	 mktemps __P((void));
-int	 nfile __P((char *));
-int	 test __P((char *));
-
-int
+void
 main(argc, argv)
 	int argc;
 	char *argv[];
@@ -317,9 +306,9 @@ main(argc, argv)
 		printer = DEFLP;
 	chkprinter(printer);
 	if (SC && ncopies > 1)
-		fatal("multiple copies are not allowed");
+		fatal2("multiple copies are not allowed");
 	if (MC > 0 && ncopies > MC)
-		fatal("only %d copies are allowed", MC);
+		fatal2("only %d copies are allowed", MC);
 	/*
 	 * Get the identity of the person doing the lpr using the same
 	 * algorithm as lprm. 
@@ -327,7 +316,7 @@ main(argc, argv)
 	userid = getuid();
 	if (userid != DU || person == 0) {
 		if ((pw = getpwuid(userid)) == NULL)
-			fatal("Who are you?");
+			fatal2("Who are you?");
 		person = pw->pw_name;
 	}
 	/*
@@ -335,7 +324,7 @@ main(argc, argv)
 	 */
 	if (RG != NULL && userid != DU) {
 		if ((gptr = getgrnam(RG)) == NULL)
-			fatal("Restricted group specified incorrectly");
+			fatal2("Restricted group specified incorrectly");
 		if (gptr->gr_gid != getgid()) {
 			while (*gptr->gr_mem != NULL) {
 				if ((strcmp(person, *gptr->gr_mem)) == 0)
@@ -343,7 +332,7 @@ main(argc, argv)
 				gptr->gr_mem++;
 			}
 			if (*gptr->gr_mem == NULL)
-				fatal("Not a member of the restricted group");
+				fatal2("Not a member of the restricted group");
 		}
 	}
 	/*
@@ -351,7 +340,7 @@ main(argc, argv)
 	 */
 	(void) sprintf(buf, "%s/%s", SD, LO);
 	if (userid && stat(buf, &stb) == 0 && (stb.st_mode & 010))
-		fatal("Printer queue is disabled");
+		fatal2("Printer queue is disabled");
 	/*
 	 * Initialize the control file.
 	 */
@@ -455,7 +444,7 @@ main(argc, argv)
 /*
  * Create the file n and copy from file descriptor f.
  */
-void
+static void
 copy(f, n)
 	int f;
 	char n[];
@@ -497,7 +486,7 @@ copy(f, n)
  * Try and link the file to dfname. Return a pointer to the full
  * path name if successful.
  */
-char *
+static char *
 linked(file)
 	register char *file;
 {
@@ -532,7 +521,7 @@ linked(file)
 /*
  * Put a line into the control file.
  */
-void
+static void
 card(c, p2)
 	register int c;
 	register char *p2;
@@ -553,7 +542,7 @@ card(c, p2)
 /*
  * Create a new file in the spool directory.
  */
-int
+static int
 nfile(n)
 	char *n;
 {
@@ -584,7 +573,7 @@ nfile(n)
 /*
  * Cleanup after interrupts and errors.
  */
-void
+static void
 cleanup(signo)
 	int signo;
 {
@@ -618,7 +607,7 @@ cleanup(signo)
  * Return -1 if it is not, 0 if its printable, and 1 if
  * we should remove it after printing.
  */
-int
+static int
 test(file)
 	char *file;
 {
@@ -680,7 +669,7 @@ error1:
 /*
  * itoa - integer to string conversion
  */
-char *
+static char *
 itoa(i)
 	register int i;
 {
@@ -697,37 +686,34 @@ itoa(i)
 /*
  * Perform lookup for printer name or abbreviation --
  */
-void
+static void
 chkprinter(s)
 	char *s;
 {
 	int status;
-	char buf[BUFSIZ];
-	static char pbuf[BUFSIZ/2];
-	char *bp = pbuf;
 
-	if ((status = pgetent(buf, s)) < 0)
-		fatal("cannot open printer description file");
-	else if (status == 0)
-		fatal("%s: unknown printer", s);
-	if ((SD = pgetstr("sd", &bp)) == NULL)
+	if ((status = cgetent(&bp, printcapdb, s)) == -2)
+		fatal2("cannot open printer description file");
+	else if (status == -1)
+		fatal2("%s: unknown printer", s);
+	if (cgetstr(bp, "sd", &SD) == -1)
 		SD = _PATH_DEFSPOOL;
-	if ((LO = pgetstr("lo", &bp)) == NULL)
+	if (cgetstr(bp, "lo", &LO) == -1)
 		LO = DEFLOCK;
-	RG = pgetstr("rg", &bp);
-	if ((MX = pgetnum("mx")) < 0)
+	cgetstr(bp, "rg", &RG);
+	if (cgetnum(bp, "mx", &MX) < 0)
 		MX = DEFMX;
-	if ((MC = pgetnum("mc")) < 0)
+	if (cgetnum(bp,"mc", &MC) < 0)
 		MC = DEFMAXCOPIES;
-	if ((DU = pgetnum("du")) < 0)
+	if (cgetnum(bp, "du", &DU) < 0)
 		DU = DEFUID;
-	SC = pgetflag("sc");
+	SC = (cgetcap(bp, "sc", ':') != NULL);
 }
 
 /*
  * Make the temp files.
  */
-void
+static void
 mktemps()
 {
 	register int len, fd, n;
@@ -767,7 +753,7 @@ mktemps()
 /*
  * Make a temp file name.
  */
-char *
+static char *
 lmktemp(id, num, len)
 	char	*id;
 	int	num, len;
@@ -775,7 +761,7 @@ lmktemp(id, num, len)
 	register char *s;
 
 	if ((s = malloc(len)) == NULL)
-		fatal("out of memory");
+		fatal2("out of memory");
 	(void) sprintf(s, "%s/%sA%03d%s", SD, id, num, host);
 	return(s);
 }
@@ -786,11 +772,11 @@ lmktemp(id, num, len)
 #include <varargs.h>
 #endif
 
-void
+static void
 #if __STDC__
-fatal(const char *msg, ...)
+fatal2(const char *msg, ...)
 #else
-fatal(msg, va_alist)
+fatal2(msg, va_alist)
 	char *msg;
         va_dcl
 #endif
