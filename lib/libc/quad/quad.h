@@ -30,14 +30,16 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)quad.h	5.1 (Berkeley) 05/12/92
+ *	@(#)quad.h	5.2 (Berkeley) 05/12/92
  */
 
 /* More subroutines needed by GCC output code on some machines.  */
 /* Compile this one with gcc.  */
+#include <sys/param.h>
 
-#include "config.h"
 #include <stddef.h>
+
+#define	BITS_PER_WORD	(NBBY * sizeof(long))
 
 #ifndef SItype
 #define SItype long int
