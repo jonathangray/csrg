@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_balloc.c	7.29 (Berkeley) 05/15/92
+ *	@(#)lfs_balloc.c	7.30 (Berkeley) 05/15/92
  */
 
 #include <sys/param.h>
@@ -59,10 +59,6 @@ int lfs_getlbns __P((struct vnode *, daddr_t, INDIR *, int *));
 int
 lfs_bmap (ap)
 	struct vop_bmap_args *ap;
-#define vp (ap->a_vp)
-#define bn (ap->a_bn)
-#define vpp (ap->a_vpp)
-#define bnp (ap->a_bnp)
 {
 #ifdef VERBOSE
 	printf("lfs_bmap\n");
@@ -71,17 +67,13 @@ lfs_bmap (ap)
 	 * Check for underlying vnode requests and ensure that logical
 	 * to physical mapping is requested.
 	 */
-	if (vpp != NULL)
-		*vpp = VTOI(vp)->i_devvp;
-	if (bnp == NULL)
+	if (ap->a_vpp != NULL)
+		*ap->a_vpp = VTOI(ap->a_vp)->i_devvp;
+	if (ap->a_bnp == NULL)
 		return (0);
 
-	return (lfs_bmaparray(vp, bn, bnp, NULL, NULL));
+	return (lfs_bmaparray(ap->a_vp, ap->a_bn, ap->a_bnp, NULL, NULL));
 }
-#undef vp
-#undef bn
-#undef vpp
-#undef bnp
 
 /*
  * LFS has a different version of bmap from FFS because of a naming conflict.
