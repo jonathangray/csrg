@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsnode.h	7.19 (Berkeley) 04/21/92
+ *	@(#)nfsnode.h	7.20 (Berkeley) 05/13/92
  */
 
 /*
@@ -63,7 +63,7 @@ struct nfsnode {
 	time_t	n_attrstamp;		/* Time stamp for cached attributes */
 	struct	vattr n_vattr;		/* Vnode attribute cache */
 	struct	sillyrename *n_sillyrename; /* Ptr to silly rename struct */
-	u_long	n_size;			/* Current size of file */
+	off_t	n_size;			/* Current size of file */
 	int	n_error;		/* Save write error value */
 	u_long	n_direofoffset;		/* Dir. EOF offset cache */
 	union {
@@ -80,7 +80,7 @@ struct nfsnode {
 		} un_nqnfs;
 	} n_un;
 	struct	sillyrename n_silly;	/* Silly rename struct */
-	long	n_spare[11];		/* Up to a power of 2 */
+	long	n_spare[9];		/* Up to a power of 2 */
 };
 
 #define	n_mtime		n_un.un_nfs.un_mtime
