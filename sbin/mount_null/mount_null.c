@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mount_null.c	8.2 (Berkeley) 02/17/94
+ *	@(#)mount_null.c	8.3 (Berkeley) 02/18/94
  */
 
 #include <sys/param.h>
@@ -76,7 +76,7 @@ main(argc, argv)
 		usage();
 
 	if (realpath(argv[0], target) == 0) {
-		(void)fprintf(stderr, "mount_lofs: %s: %s\n",
+		(void)fprintf(stderr, "mount_null: %s: %s\n",
 				target, strerror(errno));
 		exit(1);
 	}
