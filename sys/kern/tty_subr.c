@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)tty_subr.c	7.11 (Berkeley) 10/11/92
+ *	@(#)tty_subr.c	7.12 (Berkeley) 05/24/93
  */
 
 #include <sys/param.h>
@@ -562,4 +562,4 @@ putw(c, p)
 	splx(s);
 	return (0);
 }
-#endif unneeded
+#endif /* unneeded */
