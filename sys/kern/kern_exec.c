@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_exec.c	7.33 (Berkeley) 12/05/90
+ *	@(#)kern_exec.c	7.34 (Berkeley) 12/16/90
  */
 
 #include "param.h"
@@ -60,7 +60,7 @@
 #include "../vm/vm_pager.h"
 
 #ifdef HPUXCOMPAT
-#include "../hpux/hpux_exec.h"
+#include "hp300/hpux/hpux_exec.h"
 #endif
 
 /*
