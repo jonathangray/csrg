@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hd_input.c	7.2 (Berkeley) 05/11/90
+ *	@(#)hd_input.c	7.3 (Berkeley) 06/21/90
  */
 
 #include "../h/param.h"
@@ -375,7 +375,7 @@ register struct Hdlc_iframe *frame;
 				hdp->hd_rrtimer = hd_t3;
 
 		/* Forward iframe to packet level of X.25. */
-		fbuf -> m_off += HDHEADERLN;
+		fbuf -> m_data += HDHEADERLN;
 		fbuf -> m_len -= HDHEADERLN;
 #ifdef BSD4_3
 		fbuf->m_act = 0;	/* probably not necessary */
