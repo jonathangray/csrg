@@ -482,7 +482,7 @@ printsub(direction, pointer, length)
 	    break;
 #endif
 
-#if	defined(ENCRYPTION)
+#ifdef	ENCRYPTION
 	case TELOPT_ENCRYPT:
 	    fprintf(NetTrace, "ENCRYPT");
 	    if (length < 2) {
@@ -551,7 +551,7 @@ printsub(direction, pointer, length)
 		break;
 	    }
 	    break;
-#endif
+#endif	/* ENCRYPTION */
 
 	case TELOPT_LINEMODE:
 	    fprintf(NetTrace, "LINEMODE ");
