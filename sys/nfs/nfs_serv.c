@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_serv.c	7.60 (Berkeley) 09/30/92
+ *	@(#)nfs_serv.c	7.61 (Berkeley) 11/01/92
  */
 
 /*
@@ -272,6 +272,7 @@ nfsrv_lookup(nfsd, mrep, md, dpos, cred, nam, mrq)
 	u_quad_t frev, frev2;
 
 	fhp = &nfh.fh_generic;
+	duration2 = 0;
 	if (nfsd->nd_nqlflag != NQL_NOVAL) {
 		nfsm_dissect(tl, u_long *, NFSX_UNSIGNED);
 		duration2 = fxdr_unsigned(int, *tl);
