@@ -1,4 +1,4 @@
-/*	vplotf.c	4.1	83/05/03	*/
+/*	vplotf.c	4.2	83/05/16	*/
 /*
  *  Lpd filter to read standard graphics input and produce a plot on the
  *  Varian or Versatec
@@ -16,7 +16,7 @@
 #define DOTDASHED 054
 #define LONGDASHED 074
 
-static char *Sid = "@(#)\t05/03/83";
+static char *Sid = "@(#)\t05/16/83";
 
 int	linmod = SOLID;
 int	done1;
