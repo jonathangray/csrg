@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_balloc.c	7.19 (Berkeley) 11/01/91
+ *	@(#)lfs_balloc.c	7.20 (Berkeley) 11/05/91
  */
 
 #include <sys/param.h>
@@ -55,20 +55,31 @@
  * number to index into the array of block pointers described by the dinode.
  */
 int
-lfs_bmap(ip, bn, bnp)
-	register struct inode *ip;
+lfs_bmap(vp, bn, vpp, bnp)
+	struct vnode *vp;
 	register daddr_t bn;
-	daddr_t	*bnp;
+	struct vnode **vpp;
+	daddr_t *bnp;
 {
+	register struct inode *ip;
 	register struct lfs *fs;
 	register daddr_t nb;
-	struct vnode *devvp, *vp;
+	struct vnode *devvp;
 	struct buf *bp;
 	daddr_t *bap, daddr;
 	daddr_t lbn_ind;
 	int j, off, sh;
 	int error;
 
+	/*
+	 * Check for underlying vnode requests and ensure that logical
+	 * to physical mapping is requested.
+	 */
+	ip = VTOI(vp);
+	if (vpp != NULL)
+		*vpp = ip->i_devvp;
+	if (bnp == NULL)
+		return (0);
 printf("lfs_bmap: block number %d, inode %d\n", bn, ip->i_number);
 	fs = ip->i_lfs;
 
