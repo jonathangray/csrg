@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)set.c	5.12 (Berkeley) 06/14/91";
+static char sccsid[] = "@(#)set.c	5.13 (Berkeley) 07/19/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -65,8 +65,10 @@ static void	 balance __P((struct varent *, int, int));
  */
 
 void
-doset(v)
-    register Char **v;
+/*ARGSUSED*/
+doset(v, t)
+    Char **v;
+    struct command *t;
 {
     register Char *p;
     Char   *vp, op;
@@ -133,7 +135,7 @@ doset(v)
 	    set(vp, Strsave(p));
 	if (eq(vp, STRpath)) {
 	    exportpath(adrof(STRpath)->vec);
-	    dohash();
+	    dohash(NULL, NULL);
 	}
 	else if (eq(vp, STRhistchars)) {
 	    register Char *pn = value(STRhistchars);
@@ -217,8 +219,10 @@ getvx(vp, subscr)
 }
 
 void
-dolet(v)
-    Char  **v;
+/*ARGSUSED*/
+dolet(v, t)
+    Char **v;
+    struct command *t;
 {
     register Char *p;
     Char   *vp, c, op;
@@ -293,7 +297,7 @@ dolet(v)
 	    set(vp, operate(op, value(vp), p));
 	if (eq(vp, STRpath)) {
 	    exportpath(adrof(STRpath)->vec);
-	    dohash();
+	    dohash(NULL, NULL);
 	}
 	xfree((ptr_t) vp);
 	if (c != '=')
@@ -522,8 +526,10 @@ found:
 }
 
 void
-unset(v)
-    Char   *v[];
+/*ARGSUSED*/
+unset(v, t)
+    Char **v;
+    struct command *t;
 {
     unset1(v, &shvhed);
 #ifdef FILEC
@@ -616,8 +622,10 @@ setNS(cp)
 }
 
 void
-shift(v)
-    register Char **v;
+/*ARGSUSED*/
+shift(v, t)
+    Char **v;
+    struct command *t;
 {
     register struct varent *argv;
     register Char *name;
@@ -646,7 +654,8 @@ exportpath(val)
     if (val)
 	while (*val) {
 	    if (Strlen(*val) + Strlen(exppath) + 2 > BUFSIZ) {
-		xprintf("Warning: ridiculously long PATH truncated\n");
+		(void) fprintf(csherr,
+			       "Warning: ridiculously long PATH truncated\n");
 		break;
 	    }
 	    (void) Strcat(exppath, *val++);
@@ -808,14 +817,14 @@ x:
 	if (p->v_parent == 0)	/* is it the header? */
 	    return;
 	len = blklen(p->vec);
-	xprintf(short2str(p->v_name));
-	xputchar('\t');
+	(void) fprintf(cshout, short2str(p->v_name));
+	(void) fputc('\t', cshout);
 	if (len != 1)
-	    xputchar('(');
-	blkpr(p->vec);
+	    (void) fputc('(', cshout);
+	blkpr(cshout, p->vec);
 	if (len != 1)
-	    xputchar(')');
-	xputchar('\n');
+	    (void) fputc(')', cshout);
+	(void) fputc('\n', cshout);
 	if (p->v_right) {
 	    p = p->v_right;
 	    continue;
