@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sun_misc.c	8.2 (Berkeley) 09/23/93
+ *	@(#)sun_misc.c	8.3 (Berkeley) 06/06/94
  *
  * from: $Header: sun_misc.c,v 1.16 93/04/07 02:46:27 torek Exp $
  */
@@ -297,7 +297,7 @@ again:
 	 * First we read into the malloc'ed buffer, then
 	 * we massage it into user space, one record at a time.
 	 */
-	if (error = VOP_READDIR(vp, &auio, fp->f_cred, &eofflag))
+	if (error = VOP_READDIR(vp, &auio, fp->f_cred, &eofflag, (u_long *)0,0))
 		goto out;
 	inp = buf;
 	outp = uap->buf;
