@@ -30,8 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)routed.h	5.2 (Berkeley) 06/25/90
+ *	@(#)routed.h	5.3 (Berkeley) 04/03/91
  */
+
+#ifndef _ROUTED_H_
+#define	_ROUTED_H_
 
 /*
  * Routing Information Protocol
@@ -97,3 +100,5 @@ char *ripcmds[RIPCMD_MAX] =
 
 #define	EXPIRE_TIME		180	/* time to mark entry invalid */
 #define	GARBAGE_TIME		240	/* time to garbage collect */
+
+#endif /* !_ROUTED_H_ */
