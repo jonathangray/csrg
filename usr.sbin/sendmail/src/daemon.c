@@ -38,9 +38,9 @@
 
 #ifndef lint
 #ifdef DAEMON
-static char sccsid[] = "@(#)daemon.c	8.5 (Berkeley) 07/26/93 (with daemon mode)";
+static char sccsid[] = "@(#)daemon.c	8.6 (Berkeley) 07/29/93 (with daemon mode)";
 #else
-static char sccsid[] = "@(#)daemon.c	8.5 (Berkeley) 07/26/93 (without daemon mode)";
+static char sccsid[] = "@(#)daemon.c	8.6 (Berkeley) 07/29/93 (without daemon mode)";
 #endif
 #endif /* not lint */
 
@@ -581,7 +581,8 @@ getauthinfo(fd)
 		return hbuf;
 	}
 
-	RealHostName = newstr(hostnamebyanyaddr(&fa));
+	p = hostnamebyanyaddr(&fa);
+	RealHostName = newstr(p);
 	RealHostAddr = fa;
 
 #ifdef IDENTPROTO
