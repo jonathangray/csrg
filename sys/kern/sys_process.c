@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)sys_process.c	7.21 (Berkeley) 05/09/91
+ *	@(#)sys_process.c	7.22 (Berkeley) 05/11/91
  */
 
 #define IPCREG
@@ -45,7 +45,7 @@ struct {
 } ipc;
 
 /*
- * sys-trace system call.
+ * Process debugging system call.
  */
 ptrace(curp, uap, retval)
 	struct proc *curp;
@@ -104,9 +104,9 @@ ptrace(curp, uap, retval)
 #endif
 
 /*
- * Code that the child process
- * executes to implement the command
- * of the parent process in tracing.
+ * Transmit a tracing request from the parent to the child process
+ * being debugged. This code runs in the context of the child process
+ * to fulfill the command requested by the parent.
  */
 procxmt(p)
 	register struct proc *p;
@@ -229,6 +229,9 @@ procxmt(p)
 	return (0);
 }
 
+/*
+ * Process debugging system call.
+ */
 /* ARGSUSED */
 profil(p, uap, retval)
 	struct proc *p;
