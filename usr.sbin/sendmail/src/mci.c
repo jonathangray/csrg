@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)mci.c	8.16 (Berkeley) 04/21/95";
+static char sccsid[] = "@(#)mci.c	8.17 (Berkeley) 05/28/95";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -65,6 +65,8 @@ static char sccsid[] = "@(#)mci.c	8.16 (Berkeley) 04/21/95";
 */
 
 MCI	**MciCache;		/* the open connection cache */
+
+extern void	mci_uncache __P((MCI **, bool));
 /*
 **  MCI_CACHE -- enter a connection structure into the open connection cache
 **
@@ -77,6 +79,7 @@ MCI	**MciCache;		/* the open connection cache */
 **		none.
 */
 
+void
 mci_cache(mci)
 	register MCI *mci;
 {
@@ -188,6 +191,7 @@ mci_scan(savemci)
 **		none.
 */
 
+void
 mci_uncache(mcislot, doquit)
 	register MCI **mcislot;
 	bool doquit;
@@ -248,6 +252,7 @@ mci_uncache(mcislot, doquit)
 **		none.
 */
 
+void
 mci_flush(doquit, allbut)
 	bool doquit;
 	MCI *allbut;
@@ -341,6 +346,7 @@ mci_get(host, m)
 **		none.
 */
 
+void
 mci_dump(mci, logit)
 	register MCI *mci;
 	bool logit;
@@ -391,6 +397,7 @@ printit:
 **		none.
 */
 
+void
 mci_dump_all(logit)
 	bool logit;
 {
