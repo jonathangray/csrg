@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)csh.1	8.2 (Berkeley) 01/21/94
+.\"     @(#)csh.1	8.3 (Berkeley) 05/04/94
 .\"
 .Dd 
 .Dt CSH 1
@@ -57,8 +57,7 @@ and user name completion (see
 and a C-like syntax. It is used both as an interactive
 login shell and a shell script command processor.
 .Ss Argument list processing
-If the first argument (argument 0) to the shell is
-.Ql Fl \& ,
+If the first argument (argument 0) to the shell is `-',
 .Bl -tag -width 5n
 .It Fl b
 This flag forces a ``break'' from option processing, causing any further
