@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)list.c	8.4 (Berkeley) 04/21/95";
+static char sccsid[] = "@(#)list.c	8.4 (Berkeley) 05/01/95";
 #endif /* not lint */
 
 #include "rcv.h"
@@ -744,7 +744,7 @@ matchsubj(str, mesg)
 		    str[2] == ':')
 			return(matchto(cp, mesg));
 		*cp++ = '\0';
-		cp2 = hfield(str, mp);
+		cp2 = hfield(*str ? str : "subject", mp);
 		cp[-1] = ':';
 		str = cp;
 	} else {
