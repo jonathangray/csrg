@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)cmds.c	5.27 (Berkeley) 10/31/91";
+static char sccsid[] = "@(#)cmds.c	5.28 (Berkeley) 06/18/92";
 #endif /* not lint */
 
 /*
@@ -638,7 +638,7 @@ mget(argc, argv)
 {
 	extern jmp_buf jabort;
 	sig_t oldintr;
-	int ointer;
+	int ch, ointer;
 	char *cp, *tp, *tp2, tmpbuf[MAXPATHLEN];
 	void mabort();
 
@@ -659,20 +659,8 @@ mget(argc, argv)
 		if (mflag && confirm(argv[0], cp)) {
 			tp = cp;
 			if (mcase) {
-				while (*tp && !islower(*tp)) {
-					tp++;
-				}
-				if (!*tp) {
-					tp = cp;
-					tp2 = tmpbuf;
-					while ((*tp2 = *tp) != NULL) {
-						if (isupper(*tp2)) {
-							*tp2 = 'a' + *tp2 - 'A';
-						}
-						tp++;
-						tp2++;
-					}
-				}
+				for (tp2 = tmpbuf; ch = *tp++;)
+					*tp2++ = isupper(ch) ? tolower(ch) : ch;
 				tp = tmpbuf;
 			}
 			if (ntflag) {
