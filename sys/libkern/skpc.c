@@ -30,8 +30,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)skpc.c	7.2 (Berkeley) 06/21/92
+ *	@(#)skpc.c	7.3 (Berkeley) 06/21/92
  */
+
+#include "libkern.h"
 
 int
 skpc(mask0, size, cp0)
@@ -39,10 +41,10 @@ skpc(mask0, size, cp0)
 	int size;
 	char *cp0;
 {
-	register unsigned char *cp, *end, mask;
+	register u_char *cp, *end, mask;
 
 	mask = mask0;
-	cp = (unsigned char *)cp0;
+	cp = (u_char *)cp0;
 	for (end = &cp[size]; cp < end && *cp == mask; ++cp);
 	return (end - cp);
 }
