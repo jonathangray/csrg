@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)param.h	5.6 (Berkeley) 06/08/91
+ *	@(#)param.h	5.7 (Berkeley) 06/26/91
  */
 
 /*
@@ -41,6 +41,13 @@
  */
 
 #define MACHINE "i386"
+
+/*
+ * Round p (pointer or byte index) up to a correctly-aligned value
+ * for all data types (int, long, ...).   The result is u_int and
+ * must be cast to any desired pointer type.
+ */
+#define	ALIGN(p)	(((u_int)(p) + (sizeof(int) - 1)) &~ (sizeof(int) - 1))
 
 #define	NBPG		4096		/* bytes/page */
 #define	PGOFSET		(NBPG-1)	/* byte offset into page */
