@@ -30,10 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_socket.c	7.34 (Berkeley) 03/13/92
+ *	@(#)uipc_socket.c	7.35 (Berkeley) 07/12/92
  */
 
 #include "param.h"
+#include "systm.h"
 #include "proc.h"
 #include "file.h"
 #include "malloc.h"
