@@ -33,13 +33,11 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)err.c	8.31 (Berkeley) 03/31/95";
+static char sccsid[] = "@(#)err.c	8.32 (Berkeley) 03/31/95";
 #endif /* not lint */
 
 # include "sendmail.h"
 # include <errno.h>
-# include <netdb.h>
-# include <pwd.h>
 
 /*
 **  SYSERR -- Print error message.
@@ -131,7 +129,7 @@ syserr(fmt, va_alist)
 	}
 
 # ifdef LOG
-	pw = getpwuid(getuid());
+	pw = sm_getpwuid(getuid());
 	if (pw != NULL)
 		uname = pw->pw_name;
 	else
