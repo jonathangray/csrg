@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)sprint.c	5.10 (Berkeley) 07/27/91";
+static char sccsid[] = "@(#)sprint.c	5.11 (Berkeley) 10/27/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -48,8 +48,6 @@ static char sccsid[] = "@(#)sprint.c	5.10 (Berkeley) 07/27/91";
 #include <string.h>
 #include "finger.h"
 
-static int	  psort __P((const void *, const void *));
-static PERSON	**sort __P((void));
 static void	  stimeprint __P((WHERE *));
 
 void
@@ -58,11 +56,10 @@ sflag_print()
 	extern time_t now;
 	register PERSON *pn;
 	register WHERE *w;
-	register int cnt;
+	register int sflag, r;
 	register char *p;
-	PERSON **list;
+	DBT data, key;
 
-	list = sort();
 	/*
 	 * short format --
 	 *	login name
@@ -79,8 +76,15 @@ sflag_print()
 #define	MAXREALNAME	20
 	(void)printf("%-*s %-*s %s\n", UT_NAMESIZE, "Login", MAXREALNAME,
 	    "Name", "Tty  Idle  Login Time   Office     Office Phone");
-	for (cnt = 0; cnt < entries; ++cnt) {
-		pn = list[cnt];
+
+	for (sflag = R_FIRST;; sflag = R_NEXT) {
+		r = (*db->seq)(db, &key, &data, sflag);
+		if (r == -1)
+			err("db seq: %s", strerror(errno));
+		if (r == 1)
+			break;
+		pn = *(PERSON **)data.data;
+
 		for (w = pn->whead; w != NULL; w = w->next) {
 			(void)printf("%-*.*s %-*.*s ", UT_NAMESIZE, UT_NAMESIZE,
 			    pn->name, MAXREALNAME, MAXREALNAME,
@@ -118,35 +122,6 @@ office:			if (pn->office)
 			putchar('\n');
 		}
 	}
-}
-
-static PERSON **
-sort()
-{
-	register PERSON **lp;
-	register int sflag, r;
-	PERSON **list;
-	DBT data, key;
-
-	if ((list = malloc((u_int)(entries * sizeof(PERSON *)))) == NULL)
-		err("%s", strerror(errno));
-	for (sflag = R_FIRST, lp = list;; sflag = R_NEXT) {
-		r = (*db->seq)(db, &key, &data, sflag);
-		if (r == -1)
-			err("db seq: %s", strerror(errno));
-		if (r == 1)
-			break;
-		*lp++ = *(PERSON **)data.data;
-	}
-	(void)qsort(list, entries, sizeof(PERSON *), psort);
-	return(list);
-}
-
-
-psort(a, b)
-	const void *a, *b;
-{
-	return(strcmp((*(PERSON **)a)->name, (*(PERSON **)b)->name));
 }
 
 static void
