@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)curses.h	5.38 (Berkeley) 06/04/93
+ *	@(#)curses.h	8.1 (Berkeley) 06/04/93
  */
 
 #ifndef _CURSES_H_
