@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_quota.c	8.1 (Berkeley) 06/11/93
+ *	@(#)ufs_quota.c	8.2 (Berkeley) 12/30/93
  */
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -409,18 +409,18 @@ quotaon(p, mp, type, fname)
 	 * NB: only need to add dquot's for inodes being modified.
 	 */
 again:
-	for (vp = mp->mnt_mounth; vp; vp = nextvp) {
-		nextvp = vp->v_mountf;
+	for (vp = mp->mnt_vnodelist.lh_first; vp != NULL; vp = nextvp) {
+		nextvp = vp->v_mntvnodes.le_next;
 		if (vp->v_writecount == 0)
 			continue;
-		if (vget(vp))
+		if (vget(vp, 1))
 			goto again;
 		if (error = getinoquota(VTOI(vp))) {
 			vput(vp);
 			break;
 		}
 		vput(vp);
-		if (vp->v_mountf != nextvp || vp->v_mount != mp)
+		if (vp->v_mntvnodes.le_next != nextvp || vp->v_mount != mp)
 			goto again;
 	}
 	ump->um_qflags[type] &= ~QTF_OPENING;
@@ -456,16 +456,16 @@ quotaoff(p, mp, type)
 	 * deleting any references to quota file being closed.
 	 */
 again:
-	for (vp = mp->mnt_mounth; vp; vp = nextvp) {
-		nextvp = vp->v_mountf;
-		if (vget(vp))
+	for (vp = mp->mnt_vnodelist.lh_first; vp != NULL; vp = nextvp) {
+		nextvp = vp->v_mntvnodes.le_next;
+		if (vget(vp, 1))
 			goto again;
 		ip = VTOI(vp);
 		dq = ip->i_dquot[type];
 		ip->i_dquot[type] = NODQUOT;
 		dqrele(vp, dq);
 		vput(vp);
-		if (vp->v_mountf != nextvp || vp->v_mount != mp)
+		if (vp->v_mntvnodes.le_next != nextvp || vp->v_mount != mp)
 			goto again;
 	}
 	dqflush(qvp);
@@ -636,11 +636,11 @@ qsync(mp)
 	 * synchronizing any modified dquot structures.
 	 */
 again:
-	for (vp = mp->mnt_mounth; vp; vp = nextvp) {
-		nextvp = vp->v_mountf;
+	for (vp = mp->mnt_vnodelist.lh_first; vp != NULL; vp = nextvp) {
+		nextvp = vp->v_mntvnodes.le_next;
 		if (VOP_ISLOCKED(vp))
 			continue;
-		if (vget(vp))
+		if (vget(vp, 1))
 			goto again;
 		for (i = 0; i < MAXQUOTAS; i++) {
 			dq = VTOI(vp)->i_dquot[i];
@@ -648,7 +648,7 @@ again:
 				dqsync(vp, dq);
 		}
 		vput(vp);
-		if (vp->v_mountf != nextvp || vp->v_mount != mp)
+		if (vp->v_mntvnodes.le_next != nextvp || vp->v_mount != mp)
 			goto again;
 	}
 	return (0);
