@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)user.h	7.20 (Berkeley) 02/05/92
+ *	@(#)user.h	7.21 (Berkeley) 06/19/92
  */
 
 #include <machine/pcb.h>
@@ -66,6 +66,7 @@ struct	user {
 	 * not valid at other times!
 	 */
 	struct	kinfo_proc u_kproc;	/* proc + eproc */
+	struct	md_coredump u_md;	/* machine dependent glop */
 };
 
 /*
