@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)clock.c	5.8 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)clock.c	5.9 (Berkeley) 03/02/91";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -57,6 +57,8 @@ static char sccsid[] = "@(#)clock.c	5.8 (Berkeley) 06/01/90";
 **		none.
 */
 
+static void tick();
+
 EVENT *
 setevent(intvl, func, arg)
 	time_t intvl;
@@ -66,7 +68,6 @@ setevent(intvl, func, arg)
 	register EVENT **evp;
 	register EVENT *ev;
 	auto time_t now;
-	extern tick();
 
 	if (intvl <= 0)
 	{
@@ -155,6 +156,7 @@ clrevent(ev)
 **		calls the next function in EventQueue.
 */
 
+void
 tick()
 {
 	register time_t now;
@@ -232,7 +234,7 @@ static bool	SleepDone;
 sleep(intvl)
 	unsigned int intvl;
 {
-	extern endsleep();
+	static int endsleep();
 
 	if (intvl == 0)
 		return;
