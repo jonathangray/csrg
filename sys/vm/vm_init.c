@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_init.c	7.4 (Berkeley) 07/25/91
+ *	@(#)vm_init.c	7.5 (Berkeley) 08/29/91
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -90,7 +90,8 @@ void vm_mem_init()
 	 *	and we use only virtual addresses.
 	 */
 	vm_set_page_size();
-	virtual_avail = vm_page_startup(avail_start, avail_end, virtual_avail);
+	vm_page_startup(&avail_start, &avail_end);
+
 	/*
 	 * Initialize other VM packages
 	 */
