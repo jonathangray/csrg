@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_ne.c	7.2 (Berkeley) 05/12/91
+ *	@(#)if_ne.c	7.3 (Berkeley) 05/12/91
  *
  * Parts inspired from Tim Tucker's if_wd driver for the wd8003,
  * insight on the ne2000 gained from Robert Clements PC/FTP driver.
@@ -79,6 +79,9 @@ struct	isa_driver nedriver = {
 };
 
 struct	mbuf *neget();
+
+#define ETHER_MIN_LEN 64
+#define ETHER_MAX_LEN 1536
 
 /*
  * Ethernet software status per interface.
