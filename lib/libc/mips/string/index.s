@@ -34,11 +34,11 @@
  * SUCH DAMAGE.
  */
 
-#if defined(LIBC_SCCS) && !defined(lint)
-	ASMSTR("@(#)index.s	5.1 (Berkeley) 02/29/92")
-#endif /* LIBC_SCCS and not lint */
-
 #include "DEFS.h"
+
+#if defined(LIBC_SCCS) && !defined(lint)
+	ASMSTR("@(#)index.s	5.2 (Berkeley) 02/29/92")
+#endif /* LIBC_SCCS and not lint */
 
 LEAF(index)
 	lbu	a2, 0(a0)		# get a byte
