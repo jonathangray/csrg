@@ -3,7 +3,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	5.5 (Berkeley) 05/31/87
+#	@(#)Makefile	5.6 (Berkeley) 06/03/87
 #
 DESTDIR=
 CC = /bin/cc
