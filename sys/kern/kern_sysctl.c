@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sysctl.c	7.26 (Berkeley) 02/04/93
+ *	@(#)kern_sysctl.c	7.27 (Berkeley) 02/10/93
  */
 
 /*
@@ -583,8 +583,14 @@ fill_eproc(p, ep)
 }
 
 #ifdef COMPAT_43
-#include <sys/kinfo.h>
 #include <sys/socket.h>
+#define	KINFO_PROC		(0<<8)
+#define	KINFO_RT		(1<<8)
+#define	KINFO_VNODE		(2<<8)
+#define	KINFO_FILE		(3<<8)
+#define	KINFO_METER		(4<<8)
+#define	KINFO_LOADAVG		(5<<8)
+#define	KINFO_CLOCKRATE		(6<<8)
 
 struct getkerninfo_args {
 	int	op;
@@ -604,7 +610,7 @@ getkerninfo(p, uap, retval)
 	if (error = copyin((caddr_t)uap->size, (caddr_t)&size, sizeof(size)))
 		return (error);
 
-	switch (ki_type(uap->op)) {
+	switch (uap->op & 0xff00) {
 
 	case KINFO_RT:
 		name[0] = PF_ROUTE;
