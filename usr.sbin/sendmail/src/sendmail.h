@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.72 (Berkeley) 11/19/94
+ *	@(#)sendmail.h	8.73 (Berkeley) 11/20/94
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.72		11/19/94";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.73		11/20/94";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -1073,6 +1073,7 @@ extern bool		usershellok __P((char *));
 extern void		commaize __P((HDR *, char *, int, MCI *, ENVELOPE *));
 extern char		*hvalue __P((char *, HDR *));
 extern char		*defcharset __P((ENVELOPE *));
+extern bool		emptyaddr __P((ADDRESS *));
 
 /* ellipsis is a different case though */
 #ifdef __STDC__
