@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)exec.h	7.5.1.1 (Berkeley) 11/20/91
+ *	@(#)exec.h	7.7 (Berkeley) 11/20/91
  */
 
 #ifndef	_EXEC_H_
