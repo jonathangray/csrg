@@ -30,21 +30,22 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sys_machdep.c	7.9 (Berkeley) 07/10/92
+ *	@(#)sys_machdep.c	7.10 (Berkeley) 10/11/92
  */
 
-#include "sys/param.h"
-#include "sys/systm.h"
-#include "sys/ioctl.h"
-#include "sys/file.h"
-#include "sys/time.h"
-#include "sys/proc.h"
-#include "sys/uio.h"
-#include "sys/kernel.h"
-#include "sys/mtio.h"
-#include "sys/buf.h"
-#include "sys/trace.h"
-#include "vm/vm.h"
+#include <sys/param.h>
+#include <sys/systm.h>
+#include <sys/ioctl.h>
+#include <sys/file.h>
+#include <sys/time.h>
+#include <sys/proc.h>
+#include <sys/uio.h>
+#include <sys/kernel.h>
+#include <sys/mtio.h>
+#include <sys/buf.h>
+#include <sys/trace.h>
+
+#include <vm/vm.h>
 
 #ifdef TRACE
 int	nvualarm;
@@ -102,7 +103,7 @@ vdoualarm(arg)
 }
 #endif
 
-#include "../include/cpu.h"
+#include <machine/cpu.h>
 
 /* XXX should be in an include file somewhere */
 #define CC_PURGE	1
