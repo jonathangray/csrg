@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)7.t	1.4 (Berkeley) 10/14/90
+.\"	@(#)7.t	5.1 (Berkeley) 04/17/91
 .\"
 .ds RH Conclusions
 .NH
