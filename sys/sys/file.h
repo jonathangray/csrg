@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)file.h	8.2 (Berkeley) 08/20/94
+ *	@(#)file.h	8.3 (Berkeley) 01/09/95
  */
 
 #include <sys/fcntl.h>
@@ -60,7 +60,7 @@ struct file {
 					    struct ucred *cred));
 		int	(*fo_write)	__P((struct file *fp, struct uio *uio,
 					    struct ucred *cred));
-		int	(*fo_ioctl)	__P((struct file *fp, int com,
+		int	(*fo_ioctl)	__P((struct file *fp, u_long com,
 					    caddr_t data, struct proc *p));
 		int	(*fo_select)	__P((struct file *fp, int which,
 					    struct proc *p));
