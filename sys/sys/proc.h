@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)proc.h	8.13 (Berkeley) 01/09/95
+ *	@(#)proc.h	8.14 (Berkeley) 05/17/95
  */
 
 #ifndef _SYS_PROC_H_
@@ -132,7 +132,8 @@ struct	proc {
 
 	struct	vnode *p_textvp;	/* Vnode of executable. */
 
-	long	p_spare[3];		/* pad to 256, avoid shifting eproc. */
+	int	p_locks;		/* DEBUG: lockmgr count of held locks */
+	long	p_spare[2];		/* pad to 256, avoid shifting eproc. */
 
 /* End area that is zeroed on creation. */
 #define	p_endzero	p_hash.le_next
