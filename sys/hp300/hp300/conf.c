@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.c	7.5 (Berkeley) 03/19/91
+ *	@(#)conf.c	7.6 (Berkeley) 05/07/91
  */
 
 #include "sys/param.h"
@@ -94,6 +94,19 @@ int	cdopen(),cdstrategy(),cdread(),cdwrite(),cddump(),cdioctl(),cdsize();
 #define	cdsize		0
 #endif
  
+#include "vn.h"
+#if NVN > 0
+int	vnopen(),vnstrategy(),vnread(),vnwrite(),vndump(),vnioctl(),vnsize();
+#else
+#define	vnopen		enxio
+#define	vnstrategy	enxio
+#define	vnread		enxio
+#define	vnwrite		enxio
+#define	vndump		enxio
+#define	vnioctl		enxio
+#define	vnsize		0
+#endif
+ 
 struct bdevsw	bdevsw[] =
 {
 	{ ctopen,	ctclose,	ctstrategy,	ctioctl,	/*0*/
@@ -108,7 +121,8 @@ struct bdevsw	bdevsw[] =
 	  sddump,	sdsize,		0 },
 	{ cdopen,	nullop,		cdstrategy,	cdioctl,	/*5*/
 	  cddump,	cdsize,		0 },
-	/* 6 was "fd" vnode device */
+	{ vnopen,	nullop,		vnstrategy,	vnioctl,	/*6*/
+	  vndump,	vnsize,		0 },
 };
 int	nblkdev = sizeof (bdevsw) / sizeof (bdevsw[0]);
 
@@ -284,15 +298,9 @@ struct cdevsw	cdevsw[] =
 	{ clockopen,	clockclose,	nullop,		nullop,		/*18*/
 	  clockioctl,	enodev,		nullop,		NULL,
 	  nullop,	clockmap,	NULL },
-#ifdef notdef
-	{ fdopen,	nullop,		fdread,		fdwrite,	/*19*/
-	  fdioctl,	enodev,		nullop,		NULL,
+	{ vnopen,	nullop,		vnread,		vnwrite,	/*19*/
+	  vnioctl,	enodev,		nullop,		NULL,
 	  seltrue,	enodev,		NULL },
-#else
-	{ enodev,	enodev,		enodev,		enodev,		/*19*/
-	  enodev,	enodev,		nullop,		NULL,
-	  seltrue,	enodev,		NULL },
-#endif
 	{ enodev,	enodev,		enodev,		enodev,		/*20*/
 	  enodev,	enodev,		nullop,		NULL,
 	  seltrue,	enodev,		NULL },
