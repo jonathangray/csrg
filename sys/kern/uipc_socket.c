@@ -585,9 +585,9 @@ panic("receive 3a");
 		} else {
 			sbfree(&so->so_rcv, m);
 			if (controlp) {
-				if (mtod(m, struct cmsghdr *)->cmsg_type ==
-				    SCM_RIGHTS &&
-				    pr->pr_domain->dom_externalize)
+				if (pr->pr_domain->dom_externalize &&
+				    mtod(m, struct cmsghdr *)->cmsg_type ==
+				    SCM_RIGHTS)
 				   error = (*pr->pr_domain->dom_externalize)(m);
 				*controlp = m;
 				so->so_rcv.sb_mb = m->m_next;
