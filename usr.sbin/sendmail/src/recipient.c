@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recipient.c	6.40 (Berkeley) 05/01/93";
+static char sccsid[] = "@(#)recipient.c	6.41 (Berkeley) 05/27/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -143,7 +143,6 @@ sendto(list, copyf, ctladdr, qflags)
 	{
 		register ADDRESS *a = al;
 		extern ADDRESS *recipient();
-		extern ADDRESS *recipient();
 
 		al = a->q_next;
 		sibl = recipient(a);
@@ -222,8 +221,6 @@ addrref(a, r)
 **	Side Effects:
 **		none.
 */
-
-extern ADDRESS *getctladdr();
 
 ADDRESS *
 ADDRESS *
