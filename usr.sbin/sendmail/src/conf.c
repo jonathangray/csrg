@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.186 (Berkeley) 05/31/95";
+static char sccsid[] = "@(#)conf.c	8.187 (Berkeley) 06/05/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1558,7 +1558,7 @@ shouldqueue(pri, ctime)
 bool
 refuseconnections()
 {
-	extern bool enoughspace();
+	extern bool enoughdiskspace();
 
 #ifdef XLA
 	if (!xla_smtp_ok())
@@ -1566,7 +1566,7 @@ refuseconnections()
 #endif
 
 	/* this is probably too simplistic */
-	return CurrentLA >= RefuseLA || !enoughspace(MinBlocksFree + 1);
+	return CurrentLA >= RefuseLA || !enoughdiskspace(MinBlocksFree + 1);
 }
 /*
 **  SETPROCTITLE -- set process title for ps
@@ -2353,7 +2353,7 @@ usershellok(shell)
 #endif
 }
 /*
-**  FREESPACE -- see how much free space is on the queue filesystem
+**  FREEDISKSPACE -- see how much free space is on the queue filesystem
 **
 **	Only implemented if you have statfs.
 **
@@ -2400,7 +2400,7 @@ usershellok(shell)
 #endif
 
 long
-freespace(dir, bsize)
+freediskspace(dir, bsize)
 	char *dir;
 	long *bsize;
 {
@@ -2455,7 +2455,7 @@ freespace(dir, bsize)
 	return (-1);
 }
 /*
-**  ENOUGHSPACE -- check to see if there is enough free space on the queue fs
+**  ENOUGHDISKSPACE -- is there enough free space on the queue fs?
 **
 **	Only implemented if you have statfs.
 **
@@ -2470,7 +2470,7 @@ freespace(dir, bsize)
 */
 
 bool
-enoughspace(msize)
+enoughdiskspace(msize)
 	long msize;
 {
 	long bfree, bsize;
@@ -2478,14 +2478,14 @@ enoughspace(msize)
 	if (MinBlocksFree <= 0 && msize <= 0)
 	{
 		if (tTd(4, 80))
-			printf("enoughspace: no threshold\n");
+			printf("enoughdiskspace: no threshold\n");
 		return TRUE;
 	}
 
-	if ((bfree = freespace(QueueDir, &bsize)) >= 0)
+	if ((bfree = freediskspace(QueueDir, &bsize)) >= 0)
 	{
 		if (tTd(4, 80))
-			printf("enoughspace: bavail=%ld, need=%ld\n",
+			printf("enoughdiskspace: bavail=%ld, need=%ld\n",
 				bfree, msize);
 
 		/* convert msize to block count */
@@ -2508,7 +2508,7 @@ enoughspace(msize)
 		}
 	}
 	else if (tTd(4, 80))
-		printf("enoughspace failure: min=%ld, need=%ld: %s\n",
+		printf("enoughdiskspace failure: min=%ld, need=%ld: %s\n",
 			MinBlocksFree, msize, errstring(errno));
 	return TRUE;
 }
