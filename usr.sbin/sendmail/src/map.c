@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)map.c	6.15 (Berkeley) 05/21/93";
+static char sccsid[] = "@(#)map.c	6.16 (Berkeley) 05/21/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -128,10 +128,6 @@ map_parseargs(map, ap)
 		  case 'a':
 			map->map_app = ++p;
 			break;
-
-		  case 'd':
-			map->map_domain = ++p;
-			break;
 		}
 		while (*p != '\0' && !(isascii(*p) && isspace(*p)))
 			p++;
@@ -140,8 +136,6 @@ map_parseargs(map, ap)
 	}
 	if (map->map_app != NULL)
 		map->map_app = newstr(map->map_app);
-	if (map->map_domain != NULL)
-		map->map_domain = newstr(map->map_domain);
 
 	if (*p != '\0')
 	{
@@ -617,6 +611,9 @@ nis_map_open(map, mode)
 	int mode;
 {
 	int yperr;
+	register char *p;
+	auto char *vp;
+	auto int vsize;
 	char *master;
 
 	if (tTd(27, 2))
@@ -628,29 +625,6 @@ nis_map_open(map, mode)
 		return FALSE;
 	}
 
-	if (map->map_domain == NULL)
-		yp_get_default_domain(&map->map_domain);
-
-	/* check to see if this map actually exists */
-	yperr = yp_master(map->map_domain, map->map_file, &master);
-	if (yperr == 0)
-		return TRUE;
-	if (!bitset(MF_OPTIONAL, map->map_mflags))
-		syserr("Cannot bind to domain %s: %s", map->map_domain,
-			yperr_string(yperr));
-	return FALSE;
-}
-
-bool
-nis_map_open(map, mode)
-	MAP *map;
-	int mode;
-{
-	register char *p;
-	int yperr;
-	auto char *vp;
-	auto int vsize;
-
 	p = strchr(map->map_file, '@');
 	if (p != NULL)
 	{
@@ -658,12 +632,14 @@ nis_map_open(map, mode)
 		if (*p != '\0')
 			map->map_domain = p;
 	}
+
 	if (map->map_domain == NULL)
 		yp_get_default_domain(&map->map_domain);
 
 	if (*map->map_file == '\0')
 		map->map_file = "mail.aliases";
 
+	/* check to see if this map actually exists */
 	yperr = yp_match(map->map_domain, map->map_file, "@", 1,
 			&vp, &vsize);
 	if (tTd(27, 10))
@@ -671,6 +647,11 @@ nis_map_open(map, mode)
 			map->map_domain, map->map_file, yperr_string(yperr));
 	if (yperr == 0 || yperr == YPERR_KEY || yperr == YPERR_BUSY)
 		return TRUE;
+
+	if (!bitset(MF_OPTIONAL, map->map_mflags))
+		syserr("Cannot bind to domain %s: %s", map->map_domain,
+			yperr_string(yperr));
+
 	return FALSE;
 }
 
@@ -689,6 +670,7 @@ nis_map_lookup(map, name, av, statp)
 	char *vp;
 	auto int vsize;
 	int buflen;
+	int yperr;
 	char keybuf[MAXNAME + 1];
 
 	if (tTd(27, 20))
@@ -707,12 +689,12 @@ nis_map_lookup(map, name, av, statp)
 	if (yperr != 0)
 	{
 		if (yperr != YPERR_KEY && yperr != YPERR_BUSY)
-			map->map_mflags &= ~MF_VALID;
+			map->map_mflags &= ~(MF_VALID|MF_OPEN);
 		return NULL;
 	}
 	if (bitset(MF_MATCHONLY, map->map_mflags))
 		av = NULL;
-	return map_rewrite(map, val.dptr, val.dsize, av);
+	return map_rewrite(map, vp, vsize, av);
 }
 
 
