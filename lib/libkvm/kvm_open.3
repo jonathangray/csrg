@@ -33,7 +33,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)kvm_open.3	8.2 (Berkeley) 12/11/93
+.\"     @(#)kvm_open.3	8.3 (Berkeley) 04/19/94
 .\"
 .Dd 
 .Dt KVM_OPEN 3
@@ -169,7 +169,7 @@ writes the error message into
 .Pp
 The
 .Fn kvm_close
-function returns 0 on sucess and -1 on failure.
+function returns 0 on success and -1 on failure.
 .Sh BUGS
 There should not be two open calls.  The ill-defined error semantics
 of the Sun library and the desire to have a backward-compatible library
