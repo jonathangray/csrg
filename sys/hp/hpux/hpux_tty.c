@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: hpux_tty.c 1.1 90/07/09$
  *
- *	@(#)hpux_tty.c	7.8 (Berkeley) 04/20/91
+ *	@(#)hpux_tty.c	7.9 (Berkeley) 05/30/91
  */
 
 /*
@@ -292,9 +292,9 @@ hpuxtermio(fp, com, data, p)
 			line = (tiop->c_cc[HPUXVMIN] == 0 &&
 				tiop->c_cc[HPUXVTIME] == 0);
 			if (line)
-				fp->f_flag |= FNDELAY;
+				fp->f_flag |= FNONBLOCK;
 			else
-				fp->f_flag &= ~FNDELAY;
+				fp->f_flag &= ~FNONBLOCK;
 			(void) (*ioctlrout)(fp, FIONBIO, (caddr_t)&line, p);
 		}
 		break;
