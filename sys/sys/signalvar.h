@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)signalvar.h	7.3 (Berkeley) 02/05/92
+ *	@(#)signalvar.h	7.4 (Berkeley) 02/05/92
  */
 
 #ifndef	_SIGNALVAR_H_		/* tmp for user.h */
@@ -53,9 +53,10 @@ struct	sigacts {
 	sigset_t ps_oldmask;		/* saved mask from before sigpause */
 	int	ps_flags;		/* signal flags, below */
 	struct	sigstack ps_sigstack;	/* sp & on stack state variable */
-	sigset_t ps_usertramp;		/* SunOS compat; libc sigtramp XXX */
 	int	ps_sig;			/* for core dump/debugger XXX */
 	int	ps_code;		/* for core dump/debugger XXX */
+	int	ps_addr;		/* for core dump/debugger XXX */
+	sigset_t ps_usertramp;		/* SunOS compat; libc sigtramp XXX */
 };
 
 #define	ps_onstack	ps_sigstack.ss_onstack
