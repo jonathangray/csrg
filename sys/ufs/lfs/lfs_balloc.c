@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_balloc.c	7.30 (Berkeley) 05/15/92
+ *	@(#)lfs_balloc.c	7.31 (Berkeley) 07/05/92
  */
 
 #include <sys/param.h>
@@ -57,8 +57,13 @@ int lfs_getlbns __P((struct vnode *, daddr_t, INDIR *, int *));
  * number to index into the array of block pointers described by the dinode.
  */
 int
-lfs_bmap (ap)
-	struct vop_bmap_args *ap;
+lfs_bmap(ap)
+	struct vop_bmap_args /* {
+		struct vnode *a_vp;
+		daddr_t  a_bn;
+		struct vnode **a_vpp;
+		daddr_t *a_bnp;
+	} */ *ap;
 {
 #ifdef VERBOSE
 	printf("lfs_bmap\n");
@@ -100,7 +105,6 @@ lfs_bmaparray(vp, bn, bnp, ap, nump)
 	INDIR *ap;
 	int *nump;
 {
-	USES_VOP_STRATEGY;
 	register struct inode *ip;
 	struct buf *bp;
 	struct lfs *fs;
@@ -109,7 +113,7 @@ lfs_bmaparray(vp, bn, bnp, ap, nump)
 	daddr_t *bap, daddr;
 	long metalbn;
 	int error, num, off;
-
+	struct vop_strategy_args vop_strategy_a;
 
 	ip = VTOI(vp);
 #ifdef VERBOSE
@@ -209,12 +213,14 @@ lfs_getlbns(vp, bn, ap, nump)
 {
 	struct lfs *fs;
 	long metalbn, realbn;
-	int j, off, sh;
+	int j, numlevels, off, sh;
 
 #ifdef VERBOSE
 	printf("lfs_getlbns: bn %d, inode %d\n", bn, VTOI(vp)->i_number);
 #endif
-	*nump = 0;
+	if (nump)
+		*nump = 0;
+	numlevels = 0;
 	realbn = bn;
 	if ((long)bn < 0)
 		bn = -(long)bn;
@@ -253,7 +259,7 @@ lfs_getlbns(vp, bn, ap, nump)
 	 * The logical block number and the offset in that block are stored
 	 * into the argument array.
 	 */
-	++*nump;
+	++numlevels;
 	ap->in_lbn = metalbn;
 	ap->in_off = off = NIADDR - j;
 	ap++;
@@ -265,13 +271,15 @@ lfs_getlbns(vp, bn, ap, nump)
 		sh /= NINDIR(fs);
 		off = (bn / sh) % NINDIR(fs);
 
-		++*nump;
+		++numlevels;
 		ap->in_lbn = metalbn;
 		ap->in_off = off;
 		++ap;
 
 		metalbn -= -1 + off * sh;
 	}
+	if (nump)
+		*nump = numlevels;
 	return (0);
 }
 
@@ -282,7 +290,6 @@ lfs_balloc(vp, iosize, lbn, bpp)
 	daddr_t lbn;
 	struct buf **bpp;
 {
-	USES_VOP_BMAP;
 	struct buf *bp;
 	struct inode *ip;
 	struct lfs *fs;
