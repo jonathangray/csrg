@@ -30,13 +30,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	5.2 (Berkeley) 06/01/90
+ *	@(#)pathnames.h	5.3 (Berkeley) 04/19/91
  */
 
-char *fillst[] = {
-	"/bin",
-	"/usr",
-	"/usr/bin",
-	"/usr/lib",
-	NULL,
-};
+#define	_PATH_BIN	"/bin"
+#define	_PATH_USR	"/usr"
+#define	_PATH_USRBIN	"/usr/bin"
+#define	_PATH_USRLIB	"/usr/lib"
