@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	6.48 (Berkeley) 03/26/93";
+static char sccsid[] = "@(#)main.c	6.49 (Berkeley) 03/29/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -1433,7 +1433,7 @@ obsolete(argv)
 
 		/* if -d doesn't have an argument, use 0-99.1 */
 		if (ap[1] == 'd' && ap[2] == '\0' &&
-		    (argv[1] == NULL || argv[1][0] == '-'))
+		    (argv[1] == NULL || !isdigit(argv[1][0])))
 			*argv = "-d0-99.1";
 	}
 }
