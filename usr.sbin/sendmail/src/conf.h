@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.192 (Berkeley) 06/20/95
+ *	@(#)conf.h	8.193 (Berkeley) 06/20/95
  */
 
 /*
@@ -1329,7 +1329,9 @@ extern int	errno;
 # ifndef _PATH_UNIX
 #  define _PATH_UNIX		"/unix"
 # endif
-# define _PATH_VENDOR_CF	"/usr/ucblib/sendmail.cf"
+# ifndef _PATH_VENDOR_CF
+#  define _PATH_VENDOR_CF	"/usr/ucblib/sendmail.cf"
+# endif
 # ifndef _PATH_SENDMAILPID
 #  define _PATH_SENDMAILPID	"/usr/ucblib/sendmail.pid"
 # endif
