@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)rx50.c	7.4 (Berkeley) 06/28/90
+ *	@(#)rx50.c	7.5 (Berkeley) 12/16/90
  */
 
 #if VAX8200
@@ -42,15 +42,15 @@
  * Routines to handle the console RX50.
  */
 
-#include "param.h"
-#include "time.h"
-#include "kernel.h"
-#include "vmmac.h"
-#include "buf.h"
-#include "errno.h"
-#include "uio.h"
+#include "sys/param.h"
+#include "sys/time.h"
+#include "sys/kernel.h"
+#include "sys/vmmac.h"
+#include "sys/buf.h"
+#include "sys/errno.h"
+#include "sys/uio.h"
 
-#include "cpu.h"
+#include "../include/cpu.h"
 #include "rx50reg.h"
 
 struct	rx50device rx50device;
