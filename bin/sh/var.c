@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)var.c	5.6 (Berkeley) 06/23/92";
+static char sccsid[] = "@(#)var.c	5.7 (Berkeley) 07/15/92";
 #endif /* not lint */
 
 /*
@@ -70,6 +70,7 @@ struct varinit {
 #if ATTY
 struct var vatty;
 #endif
+struct var vhistsize;
 struct var vifs;
 struct var vmail;
 struct var vmpath;
@@ -85,6 +86,7 @@ const struct varinit varinit[] = {
 #if ATTY
 	{&vatty,	VSTRFIXED|VTEXTFIXED|VUNSET,	"ATTY="},
 #endif
+	{&vhistsize,	VSTRFIXED|VTEXTFIXED|VUNSET,	"HISTSIZE="},
 	{&vifs,	VSTRFIXED|VTEXTFIXED,		"IFS= \t\n"},
 	{&vmail,	VSTRFIXED|VTEXTFIXED|VUNSET,	"MAIL="},
 	{&vmpath,	VSTRFIXED|VTEXTFIXED|VUNSET,	"MAILPATH="},
@@ -236,6 +238,8 @@ setvareq(s, flags)
 			vp->text = s;
 			if (vp == &vmpath || (vp == &vmail && ! mpathset()))
 				chkmail(1);
+			if (vp == &vhistsize)
+				sethistsize();
 			INTON;
 			return;
 		}
@@ -491,8 +495,8 @@ mklocal(name)
 	INTOFF;
 	lvp = ckmalloc(sizeof (struct localvar));
 	if (name[0] == '-' && name[1] == '\0') {
-		lvp->text = ckmalloc(sizeof optval);
-		bcopy(optval, lvp->text, sizeof optval);
+		lvp->text = ckmalloc(sizeof optlist);
+		bcopy(optlist, lvp->text, sizeof optlist);
 		vp = NULL;
 	} else {
 		vpp = hashvar(name);
@@ -533,7 +537,7 @@ poplocalvars() {
 		localvars = lvp->next;
 		vp = lvp->vp;
 		if (vp == NULL) {	/* $- saved */
-			bcopy(lvp->text, optval, sizeof optval);
+			bcopy(lvp->text, optlist, sizeof optlist);
 			ckfree(lvp->text);
 		} else if ((lvp->flags & (VUNSET|VSTRFIXED)) == VUNSET) {
 			(void)unsetvar(vp->text);
