@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1983 Eric P. Allman
+ * Copyright (c) 1983, 1995 Eric P. Allman
  * Copyright (c) 1988, 1993
  *	The Regents of the University of California.  All rights reserved.
  *
@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.102 (Berkeley) 04/19/95";
+static char sccsid[] = "@(#)main.c	8.103 (Berkeley) 04/21/95";
 #endif /* not lint */
 
 #define	_DEFINE
