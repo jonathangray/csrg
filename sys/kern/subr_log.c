@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_log.c	7.16 (Berkeley) 07/12/92
+ *	@(#)subr_log.c	7.17 (Berkeley) 07/12/92
  */
 
 /*
@@ -38,6 +38,7 @@
  */
 
 #include "param.h"
+#include "systm.h"
 #include "proc.h"
 #include "vnode.h"
 #include "ioctl.h"
