@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)eval.c	5.4 (Berkeley) 04/16/92";
+static char sccsid[] = "@(#)eval.c	5.4 (Berkeley) 4/16/92";
 #endif /* not lint */
 
 /*
@@ -330,7 +330,7 @@ evalfor(n)
 	setstackmark(&smark);
 	arglist.lastp = &arglist.list;
 	for (argp = n->nfor.args ; argp ; argp = argp->narg.next) {
-		expandarg(argp, &arglist, 1);
+		expandarg(argp, &arglist, EXP_FULL | EXP_TILDE);
 		if (evalskip)
 			goto out;
 	}
@@ -369,7 +369,7 @@ evalcase(n, flags)
 
 	setstackmark(&smark);
 	arglist.lastp = &arglist.list;
-	expandarg(n->ncase.expr, &arglist, 0);
+	expandarg(n->ncase.expr, &arglist, EXP_TILDE);
 	for (cp = n->ncase.cases ; cp && evalskip == 0 ; cp = cp->nclist.next) {
 		for (patp = cp->nclist.pattern ; patp ; patp = patp->narg.next) {
 			if (casematch(patp, arglist.list->text)) {
@@ -430,7 +430,7 @@ expredir(n)
 		 || redir->type == NAPPEND) {
 			struct arglist fn;
 			fn.lastp = &fn.list;
-			expandarg(redir->nfile.fname, &fn, 0);
+			expandarg(redir->nfile.fname, &fn, EXP_TILDE | EXP_REDIR);
 			redir->nfile.expfname = fn.list->text;
 		}
 	}
@@ -596,11 +596,11 @@ evalcommand(cmd, flags, backcmd)
 				p++;
 			} while (is_in_name(*p));
 			if (*p == '=') {
-				expandarg(argp, &varlist, 0);
+				expandarg(argp, &varlist, EXP_VARTILDE);
 				continue;
 			}
 		}
-		expandarg(argp, &arglist, 1);
+		expandarg(argp, &arglist, EXP_FULL | EXP_TILDE);
 		varflag = 0;
 	}
 	*arglist.lastp = NULL;
@@ -610,8 +610,10 @@ evalcommand(cmd, flags, backcmd)
 	for (sp = arglist.list ; sp ; sp = sp->next)
 		argc++;
 	argv = stalloc(sizeof (char *) * (argc + 1));
-	for (sp = arglist.list ; sp ; sp = sp->next)
+	for (sp = arglist.list ; sp ; sp = sp->next) {
+		TRACE(("evalcommand arg: %s\n", sp->text));
 		*argv++ = sp->text;
+	}
 	*argv = NULL;
 	lastarg = NULL;
 	if (iflag && funcnest == 0 && argc > 0)
