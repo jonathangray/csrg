@@ -34,9 +34,9 @@ divert(-1)
 #
 
 include(`../m4/cf.m4')
-VERSIONID(`@(#)mail.eecs.mc	8.3 (Berkeley) 01/06/95')
+VERSIONID(`@(#)mail.eecs.mc	8.4 (Berkeley) 02/06/95')
 OSTYPE(ultrix4.1)dnl
-DOMAIN(eecs.hidden)dnl
+DOMAIN(eecs.exposed)dnl
 FEATURE(use_cw_file)dnl
 MAILER(local)dnl
 MAILER(smtp)dnl
