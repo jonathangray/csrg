@@ -35,9 +35,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode_pager.c	8.7 (Berkeley) 02/13/94
+ *	@(#)vnode_pager.c	8.8 (Berkeley) 02/13/94
  */
 
+/*
  * Page to/from files (vnodes).
  *
  * TODO:
