@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_lookup.c	7.25 (Berkeley) 02/21/91
+ *	@(#)vfs_lookup.c	7.26 (Berkeley) 02/28/91
  */
 
 #include "param.h"
@@ -116,7 +116,7 @@ namei(ndp)
 	lockparent = ndp->ni_nameiop & LOCKPARENT;
 	docache = (ndp->ni_nameiop & NOCACHE) ^ NOCACHE;
 	getbuf = (ndp->ni_nameiop & HASBUF) ^ HASBUF;
-	if (flag == DELETE || wantparent)
+	if (flag == DELETE || (wantparent && flag != CREATE))
 		docache = 0;
 	rdonly = MNT_RDONLY;
 	if (ndp->ni_nameiop & REMOTE)
