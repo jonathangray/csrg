@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	6.39 (Berkeley) 03/29/93
+ *	@(#)sendmail.h	6.40 (Berkeley) 03/30/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	6.39		03/29/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	6.40		03/30/93";
 # endif lint
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -75,6 +75,12 @@ static char SmailSccsId[] =	"@(#)sendmail.h	6.39		03/29/93";
 # endif
 # ifdef NETISO
 # include <netiso/iso.h>
+# endif
+# ifdef NETNS
+# include <netns/ns.h>
+# endif
+# ifdef NETX25
+# include <netccitt/x25.h>
 # endif
 
 
@@ -644,6 +650,12 @@ union bigsockaddr
 #endif
 #ifdef NETISO
 	struct sockaddr_iso	siso;	/* ISO family */
+#endif
+#ifdef NETNS
+	struct sockaddr_ns	sns;	/* XNS family */
+#endif
+#ifdef NETX25
+	struct sockaddr_x25	sx25;	/* X.25 family */
 #endif
 };
 
