@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	8.114 (Berkeley) 11/25/94";
+static char sccsid[] = "@(#)deliver.c	8.115 (Berkeley) 11/27/94";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -837,6 +837,12 @@ deliver(e, firstto)
 		/* compute effective uid/gid when sending */
 		if (bitnset(M_RUNASRCPT, to->q_mailer->m_flags))
 			ctladdr = getctladdr(to);
+
+		if (tTd(10, 2))
+		{
+			printf("ctladdr=");
+			printaddr(ctladdr, FALSE);
+		}
 
 		user = to->q_user;
 		e->e_to = to->q_paddr;
