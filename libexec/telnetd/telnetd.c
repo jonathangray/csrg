@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)telnetd.c	5.45 (Berkeley) 06/28/90";
+static char sccsid[] = "@(#)telnetd.c	5.46 (Berkeley) 06/28/90";
 #endif /* not lint */
 
 #include "telnetd.h"
@@ -475,7 +475,14 @@ doit(who)
 	char *host, *inet_ntoa();
 	int t;
 	struct hostent *hp;
+#if BSD > 43
+	extern char *line;
 
+	if (openpty(&pty, &t, line, NULL, NULL) == -1)
+		fatal(net, "All network ports in use");
+	init_termbuf();
+#else
+	
 	/*
 	 * Find an available pty to use.
 	 */
@@ -484,6 +491,7 @@ doit(who)
 		fatal(net, "All network ports in use");
 
 	t = getptyslave();
+#endif
 
 	/* get name of connected client */
 	hp = gethostbyaddr((char *)&who->sin_addr, sizeof (struct in_addr),
