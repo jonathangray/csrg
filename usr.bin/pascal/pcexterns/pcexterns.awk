@@ -1,7 +1,7 @@
 #!/bin/sh -
 #
-# Copyright (c) 1982 The Regents of the University of California.
-# All rights reserved.
+# Copyright (c) 1982, 1993
+#	The Regents of the University of California.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -31,7 +31,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)pcexterns.awk	5.2 (Berkeley) 04/16/91
+#	@(#)pcexterns.awk	8.1 (Berkeley) 06/06/93
 #
 
 # This generates .stabs for all the global routines and variables
