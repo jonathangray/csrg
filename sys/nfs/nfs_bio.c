@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_bio.c	7.34 (Berkeley) 11/01/92
+ *	@(#)nfs_bio.c	7.35 (Berkeley) 11/05/92
  */
 
 #include <sys/param.h>
@@ -220,7 +220,8 @@ again:
 	    case VDIR:
 		nfsstats.biocache_readdirs++;
 		on = 0;
-		error = bread(vp, uio->uio_offset, NFS_DIRBLKSIZ, cred, &bp);
+		error = bread(vp, (daddr_t)uio->uio_offset, NFS_DIRBLKSIZ,
+		    cred, &bp);
 		n = min(uio->uio_resid, NFS_DIRBLKSIZ - bp->b_resid);
 		break;
 	    };
