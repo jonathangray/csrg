@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_prot.c	8.3 (Berkeley) 01/05/94
+ *	@(#)kern_prot.c	8.4 (Berkeley) 01/06/94
  */
 
 /*
@@ -475,13 +475,11 @@ crget()
 crfree(cr)
 	struct ucred *cr;
 {
-	int s = splimp();			/* ??? */
+	int s;
 
-	if (--cr->cr_ref != 0) {
-		(void) splx(s);
-		return;
-	}
-	FREE((caddr_t)cr, M_CRED);
+	s = splimp();				/* ??? */
+	if (--cr->cr_ref == 0)
+		FREE((caddr_t)cr, M_CRED);
 	(void) splx(s);
 }
 
