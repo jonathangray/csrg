@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: trap.c 1.32 91/04/06$
  *
- *	@(#)trap.c	7.14.1.1 (Berkeley) 05/19/91
+ *	@(#)trap.c	7.14.1.2 (Berkeley) 05/28/91
  */
 
 #include "param.h"
@@ -524,6 +524,8 @@ syscall(code, frame)
 		panic("syscall: M_NAMEI");
 	if (curproc->p_spare[1])
 		panic("syscall: STARTSAVE");
+	if (curproc->p_spare[2])
+		panic("syscall: LOCK COUNT");
 #endif
 	if (error == ERESTART)
 		frame.f_pc = opc;
