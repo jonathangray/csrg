@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)procfs.h	8.4 (Berkeley) 01/21/94
+ *	@(#)procfs.h	8.5 (Berkeley) 01/27/94
  *
  * From:
  *	$Id: procfs.h,v 3.2 1993/12/15 09:40:17 jsp Exp $
@@ -49,6 +49,7 @@ typedef enum {
 	Pfile,		/* the executable file */
 	Pmem,		/* the process's memory image */
 	Pregs,		/* the process's register set */
+	Pfpregs,	/* the process's FP register set */
 	Pctl,		/* process control */
 	Pstatus,	/* process status */
 	Pnote,		/* process notifier */
@@ -123,8 +124,11 @@ extern int procfs_sstep __P((struct proc *));
 extern void procfs_fix_sstep __P((struct proc *));
 extern int procfs_read_regs __P((struct proc *, struct reg *));
 extern int procfs_write_regs __P((struct proc *, struct reg *));
+extern int procfs_read_fpregs __P((struct proc *, struct fpreg *));
+extern int procfs_write_fpregs __P((struct proc *, struct fpreg *));
 extern int procfs_donote __P((struct proc *, struct proc *, struct pfsnode *pfsp, struct uio *uio));
 extern int procfs_doregs __P((struct proc *, struct proc *, struct pfsnode *pfsp, struct uio *uio));
+extern int procfs_dofpregs __P((struct proc *, struct proc *, struct pfsnode *pfsp, struct uio *uio));
 extern int procfs_domem __P((struct proc *, struct proc *, struct pfsnode *pfsp, struct uio *uio));
 extern int procfs_doctl __P((struct proc *, struct proc *, struct pfsnode *pfsp, struct uio *uio));
 extern int procfs_dostatus __P((struct proc *, struct proc *, struct pfsnode *pfsp, struct uio *uio));
