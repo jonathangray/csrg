@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.h	7.4 (Berkeley) 05/12/91
+ *	@(#)pmap.h	7.5 (Berkeley) 02/19/92
  */
 
 /*
@@ -187,7 +187,8 @@ struct pmap {
 typedef struct pmap	*pmap_t;
 
 #ifdef KERNEL
-extern pmap_t		kernel_pmap;
+extern struct pmap	kernel_pmap_store;
+#define kernel_pmap (&kernel_pmap_store)
 #endif
 
 /*
