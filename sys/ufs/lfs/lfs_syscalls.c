@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_syscalls.c	7.28 (Berkeley) 12/10/92
+ *	@(#)lfs_syscalls.c	7.29 (Berkeley) 02/02/93
  */
 
 #include <sys/param.h>
@@ -77,14 +77,15 @@ struct buf *lfs_fakebuf __P((struct vnode *, int, size_t, caddr_t));
  *  0 on success
  * -1/errno is return on error.
  */
+struct lfs_markv_args {
+	fsid_t fsid;		/* file system */
+	BLOCK_INFO *blkiov;	/* block array */
+	int blkcnt;		/* count of block array entries */
+};
 int
 lfs_markv(p, uap, retval)
 	struct proc *p;
-	struct args {
-		fsid_t fsid;		/* file system */
-		BLOCK_INFO *blkiov;	/* block array */
-		int blkcnt;		/* count of block array entries */
-	} *uap;
+	struct lfs_markv_args *uap;
 	int *retval;
 {
 	struct segment *sp;
@@ -245,14 +246,15 @@ err1:
  *  0 on success
  * -1/errno is return on error.
  */
+struct lfs_bmapv_args {
+	fsid_t fsid;		/* file system */
+	BLOCK_INFO *blkiov;	/* block array */
+	int blkcnt;		/* count of block array entries */
+};
 int
 lfs_bmapv(p, uap, retval)
 	struct proc *p;
-	struct args {
-		fsid_t fsid;		/* file system */
-		BLOCK_INFO *blkiov;	/* block array */
-		int blkcnt;		/* count of block array entries */
-	} *uap;
+	struct lfs_bmapv_args *uap;
 	int *retval;
 {
 	BLOCK_INFO *blkp;
@@ -300,13 +302,14 @@ lfs_bmapv(p, uap, retval)
  *  0 on success
  * -1/errno is return on error.
  */
+struct lfs_segclean_args {
+	fsid_t fsid;		/* file system */
+	u_long segment;		/* segment number */
+}; 
 int
 lfs_segclean(p, uap, retval)
 	struct proc *p;
-	struct args {
-		fsid_t fsid;		/* file system */
-		u_long segment;		/* segment number */
-	} *uap;
+	struct lfs_segclean_args *uap;
 	int *retval;
 {
 	CLEANERINFO *cip;
@@ -356,13 +359,14 @@ lfs_segclean(p, uap, retval)
  *  1 on timeout
  * -1/errno is return on error.
  */
+struct lfs_segwait_args {
+	fsid_t fsid;		/* file system */
+	struct timeval *tv;	/* timeout */
+};
 int
 lfs_segwait(p, uap, retval)
 	struct proc *p;
-	struct args {
-		fsid_t fsid;		/* file system */
-		struct timeval *tv;	/* timeout */
-	} *uap;
+	struct lfs_segwait_args *uap;
 	int *retval;
 {
 	extern int lfs_allclean_wakeup;
