@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)esis.c	8.2 (Berkeley) 02/09/95
+ *	@(#)esis.c	8.3 (Berkeley) 03/20/95
  */
 
 /***********************************************************
@@ -115,6 +115,7 @@ extern char		all_es_snpa[], all_is_snpa[];
 	} else {\
 		(m) = (m)->m_next;\
 		(cp) = mtod((m), caddr_t);\
+		(m)->m_len = 0;\
 	}
 /*
  * FUNCTION:		esis_init
