@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_alloc.c	7.29 (Berkeley) 11/05/91
+ *	@(#)ffs_alloc.c	7.30 (Berkeley) 11/20/91
  */
 
 #include <sys/param.h>
@@ -610,7 +610,7 @@ ffs_fragextend(ip, cg, bprev, osize, nsize)
  * Check to see if a block of the apprpriate size is available,
  * and if it is, allocate it.
  */
-daddr_t
+static daddr_t
 ffs_alloccg(ip, cg, bpref, size)
 	struct inode *ip;
 	int cg;
