@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	6.40 (Berkeley) 03/07/93";
+static char sccsid[] = "@(#)deliver.c	6.41 (Berkeley) 03/13/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -809,7 +809,7 @@ openmailer(m, pvp, ctladdr, clever, e)
 		while (*curhost != '\0')
 		{
 			register char *p;
-			char hostbuf[MAXNAME];
+			static char hostbuf[MAXNAME];
 
 			/* pull the next host from the signature */
 			p = strchr(curhost, ':');
@@ -1075,6 +1075,7 @@ giveresponse(stat, m, mci, e)
 	extern int h_errno;
 #endif
 	char buf[MAXLINE];
+	extern char *errstring();
 
 	/*
 	**  Compute status message from code.
@@ -1091,23 +1092,15 @@ giveresponse(stat, m, mci, e)
 	}
 	else if (stat == EX_TEMPFAIL)
 	{
-		(void) strcpy(buf, SysExMsg[i]);
+		(void) strcpy(buf, SysExMsg[i] + 1);
 #ifdef NAMED_BIND
 		if (h_errno == TRY_AGAIN)
-		{
-			extern char *errstring();
-
 			statmsg = errstring(h_errno+MAX_ERRNO);
-		}
 		else
 #endif
 		{
 			if (errno != 0)
-			{
-				extern char *errstring();
-
 				statmsg = errstring(errno);
-			}
 			else
 			{
 #ifdef SMTP
@@ -1129,6 +1122,11 @@ giveresponse(stat, m, mci, e)
 	else
 	{
 		statmsg = SysExMsg[i];
+		if (*statmsg++ == ':')
+		{
+			(void) sprintf(buf, "%s: %s", statmsg, errstring(errno));
+			statmsg = buf;
+		}
 	}
 
 	/*
@@ -1921,6 +1919,10 @@ hostsignature(m, host, e)
 	auto int rcode;
 	char *mxhosts[MAXMXHOSTS + 1];
 	static char myhostbuf[MAXNAME];
+#ifdef SETPROCTITLE
+	char ptbuf[MAXNAME];
+	extern char ProcTitleBuf[MAXNAME];
+#endif
 #endif
 
 	/*
@@ -1957,7 +1959,17 @@ hostsignature(m, host, e)
 	if (myhostbuf[0] == '\0')
 		expand("\201j", myhostbuf, &myhostbuf[sizeof myhostbuf - 1], e);
 
+#ifdef SETPROCTITLE
+	(void) strcpy(ptbuf, ProcTitleBuf);
+	setproctitle("getmxrr(%s)", host);
+#endif
+
 	nmx = getmxrr(host, mxhosts, myhostbuf, &rcode);
+
+#ifdef SETPROCTITLE
+	setproctitle(NULL, ptbuf);
+#endif
+
 	if (nmx <= 0)
 	{
 		register MCI *mci;
