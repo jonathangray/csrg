@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)doc-ditroff	5.3 (Berkeley) 03/15/91
+.\"     @(#)doc-ditroff	5.4 (Berkeley) 03/15/91
 .\"
 .\" tmac.mdoc-ditroff
 .\"     %beginstrip%
@@ -198,7 +198,10 @@
 .		na
 .		nr nS 1
 .	\}
-.       if "\\$1"SEE" .nr nA 1
+.       if "\\$1"SEE" \{\
+.               nr nA 1
+.               na
+.       \}
 .       if "\\$1"FILES" .nr nF 1
 .       in 0
 .       nr aN 0
