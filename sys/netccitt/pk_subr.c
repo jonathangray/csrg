@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pk_subr.c	7.12 (Berkeley) 05/03/91
+ *	@(#)pk_subr.c	7.13 (Berkeley) 05/09/91
  */
 
 #include "param.h"
@@ -79,13 +79,13 @@ struct socket *so;
 	if (lcp) {
 		bzero ((caddr_t)lcp, sizeof (*lcp));
 		insque (&lcp -> lcd_q, &pklcd_q);
+		lcp -> lcd_state = READY;
+		lcp -> lcd_send = pk_output;
 		if (so) {
 			error = soreserve (so, pk_sendspace, pk_recvspace);
 			lcp -> lcd_so = so;
 			if (so -> so_options & SO_ACCEPTCONN)
 				lcp -> lcd_state = LISTEN;
-			else
-				lcp -> lcd_state = READY;
 		} else
 			sbreserve (&lcp -> lcd_sb, pk_sendspace);
 	}
@@ -93,7 +93,6 @@ struct socket *so;
 		so -> so_pcb = (caddr_t) lcp;
 		so -> so_error = error;
 	}
-	lcp -> lcd_send = pk_output;
 	return (lcp);
 }
 
@@ -185,7 +184,7 @@ int lcn, type;
 	 * be enough room for the link level to insert its header.
 	 */
 	m -> m_data += max_linkhdr;
-	m -> m_len = PKHEADERLN;
+	m -> m_pkthdr.len = m -> m_len = PKHEADERLN;
 
 	xp = mtod (m, struct x25_packet *);
 	*(long *)xp = 0;		/* ugly, but fast */
@@ -236,7 +235,7 @@ int restart_cause;
 	pkp -> pk_state = DTE_SENT_RESTART;
 	lcp = pkp -> pk_chan[0];
 	m = lcp -> lcd_template = pk_template (lcp -> lcd_lcn, X25_RESTART);
-	m -> m_len += 2;
+	m -> m_pkthdr.len = m -> m_len += 2;
 	mtod (m, struct x25_packet *) -> packet_data = 0;	/* DTE only */
 	mtod (m, octet *)[4]  = restart_cause;
 	pk_output (lcp);
@@ -461,7 +460,7 @@ register struct x25config *xcp;
 	to_bcd (&cp, (int)a -> calling_addrlen, xcp -> xc_addr.x25_addr, &posn);
 	if (posn & 0x01)
 		*cp++ &= 0xf0;
-	m -> m_len += cp - (octet *) a;
+	m -> m_pkthdr.len = m -> m_len += cp - (octet *) a;
 
 	if (lcp -> lcd_facilities) {
 		m -> m_pkthdr.len += 
@@ -622,7 +621,7 @@ register struct pklcd *lcp;
 	lcp -> lcd_output_window = lcp -> lcd_input_window =
 		lcp -> lcd_last_transmitted_pr = 0;
 	m = lcp -> lcd_template = pk_template (lcp -> lcd_lcn, X25_RESET);
-	m -> m_len += 2;
+	m -> m_pkthdr.len = m -> m_len += 2;
 	mtod (m, struct x25_packet *) -> packet_data = 0;
 	mtod (m, octet *)[4] = diagnostic;
 	pk_output (lcp);
@@ -717,8 +716,6 @@ unsigned pr;
 
 	if (so && ((so -> so_snd.sb_flags & SB_WAIT) || so -> so_snd.sb_sel))
 		sowwakeup (so);
-	if (lcp -> lcd_upper)
-		(*lcp -> lcd_upper) (lcp, 0);
 
 	return (PACKET_OK);
 }
@@ -895,7 +892,8 @@ register struct x25_packet *xp;
 
 	if (code > MAXCLEARCAUSE)
 		code = 5;	/* EXRNCG */
-	lcp -> lcd_so -> so_error = Clear_cause[code];
+	if (lcp -> lcd_so)
+		lcp -> lcd_so -> so_error = Clear_cause[code];
 }
 
 char *
@@ -949,7 +947,7 @@ register struct pklcd *lcp;
 	int totlen, psize = 1 << (lcp -> lcd_packetsize);
 
 	if (m == 0)
-		return;
+		return 0;
 	if (m -> m_flags & M_PKTHDR == 0)
 		panic ("pk_fragment");
 	totlen = m -> m_pkthdr.len;
