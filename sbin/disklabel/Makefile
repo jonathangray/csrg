@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.5 (Berkeley) 07/01/90
+#	@(#)Makefile	5.6 (Berkeley) 01/15/91
 
 PROG=	disklabel
 MAN8=	disklabel.0
