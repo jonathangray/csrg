@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)rec_get.c	5.2 (Berkeley) 09/11/91";
+static char sccsid[] = "@(#)rec_get.c	5.3 (Berkeley) 06/23/92";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -67,7 +67,7 @@ __rec_get(dbp, key, data, flags)
 	BTREE *t;
 	EPG *e;
 	recno_t nrec;
-	int exact, status;
+	int status;
 
 	if (flags || (nrec = *(recno_t *)key->data) == 0) {
 		errno = EINVAL;
@@ -79,18 +79,13 @@ __rec_get(dbp, key, data, flags)
 	 * original file.
 	 */
 	t = dbp->internal;
-	if (nrec > t->bt_nrecs && 
-	   (status = t->bt_irec(t, nrec)) != RET_SUCCESS)
+	if (nrec > t->bt_nrecs &&
+	    (status = t->bt_irec(t, nrec)) != RET_SUCCESS)
 			return (status);
 
 	--nrec;
 	if ((e = __rec_search(t, nrec, SEARCH)) == NULL)
 		return (RET_ERROR);
-
-	if (!exact) {
-		mpool_put(t->bt_mp, e->page, 0);
-		return (RET_SPECIAL);
-	}
 
 	status = __rec_ret(t, e, data);
 	mpool_put(t->bt_mp, e->page, 0);
@@ -112,14 +107,13 @@ __rec_fpipe(t, top)
 	BTREE *t;
 	recno_t top;
 {
-	static int eof;
 	DBT data;
 	recno_t nrec;
 	size_t len;
 	int ch;
 	char *p;
 
-	if (eof)
+	if (t->bt_reof)
 		return (RET_SPECIAL);
 
 	data.data = t->bt_dbuf;
@@ -142,7 +136,7 @@ __rec_fpipe(t, top)
 			break;
 	}
 	if (nrec < top) {
-		eof = 1;
+		t->bt_reof = 1;
 		return (RET_SPECIAL);
 	}
 	return (RET_SUCCESS);
@@ -163,7 +157,6 @@ __rec_vpipe(t, top)
 	BTREE *t;
 	recno_t top;
 {
-	static int eof;
 	DBT data;
 	recno_t nrec;
 	index_t len;
@@ -171,7 +164,7 @@ __rec_vpipe(t, top)
 	int bval, ch;
 	char *p;
 
-	if (eof)
+	if (t->bt_reof)
 		return (RET_SPECIAL);
 
 	bval = t->bt_bval;
@@ -198,7 +191,7 @@ __rec_vpipe(t, top)
 			break;
 	}
 	if (nrec < top) {
-		eof = 1;
+		t->bt_reof = 1;
 		return (RET_SPECIAL);
 	}
 	return (RET_SUCCESS);
@@ -219,14 +212,13 @@ __rec_fmap(t, top)
 	BTREE *t;
 	recno_t top;
 {
-	static int eof;
 	DBT data;
 	recno_t nrec;
 	caddr_t sp, ep;
 	size_t len;
 	char *p;
 
-	if (eof)
+	if (t->bt_reof)
 		return (RET_SPECIAL);
 
 	sp = t->bt_smap;
@@ -241,7 +233,7 @@ __rec_fmap(t, top)
 	}
 	for (nrec = t->bt_nrecs; nrec < top; ++nrec) {
 		if (sp >= ep) {
-			eof = 1;
+			t->bt_reof = 1;
 			return (RET_SPECIAL);
 		}
 		len = t->bt_reclen;
@@ -269,13 +261,12 @@ __rec_vmap(t, top)
 	BTREE *t;
 	recno_t top;
 {
-	static int eof;
 	DBT data;
 	caddr_t sp, ep;
 	recno_t nrec;
 	int bval;
 
-	if (eof)
+	if (t->bt_reof)
 		return (RET_SPECIAL);
 
 	sp = t->bt_smap;
@@ -284,7 +275,7 @@ __rec_vmap(t, top)
 
 	for (nrec = t->bt_nrecs; nrec < top; ++nrec) {
 		if (sp >= ep) {
-			eof = 1;
+			t->bt_reof = 1;
 			return (RET_SPECIAL);
 		}
 		for (data.data = sp; sp < ep && *sp != bval; ++sp);
