@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sd.c	7.14 (Berkeley) 07/12/92
+ *	@(#)sd.c	7.15 (Berkeley) 07/20/92
  */
 
 /*
@@ -53,6 +53,7 @@ static char rcsid[] = "$Header: /usr/src/sys/hp300/dev/RCS/sd.c,v 1.2 92/04/10 2
 #include "sys/disklabel.h"
 #include "sys/malloc.h"
 #include "sys/proc.h"
+#include "sys/ioctl.h"
 
 #include "hp/dev/device.h"
 #include "scsireg.h"
