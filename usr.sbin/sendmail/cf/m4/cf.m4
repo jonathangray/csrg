@@ -32,8 +32,6 @@ divert(0)dnl
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)cf.m4	2.16 (Berkeley) 11/13/92
-#
 
 
 ######################################################################
@@ -79,8 +77,9 @@ define(`SITE', `ifelse(CONCAT($'2`, $3), SU,
 sinclude(../siteconfig/$1.m4)')
 define(`LOCAL_NAME', `PUSHDIVERT(5)CL$1
 POPDIVERT`'dnl')
-define(`DOIT', `include(`../m4/proto.m4')')
+define(`DOIT', ifdef(`m4wrap', ``dnl'', ``include(`../m4/proto.m4')''))
 
-m4wrap(`DOIT')
+m4wrap(`include(`../m4/proto.m4')')
 
 divert(0)dnl
+VERSIONID(`@(#)cf.m4	2.17 (Berkeley) 11/13/92')
