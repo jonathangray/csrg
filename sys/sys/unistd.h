@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)unistd.h	5.13 (Berkeley) 02/22/91
+ *	@(#)unistd.h	5.14 (Berkeley) 04/01/91
  */
 
 #ifndef _SYS_UNISTD_H_
@@ -38,7 +38,9 @@
 
 /* compile-time symbolic constants */
 #define	_POSIX_JOB_CONTROL	/* implementation supports job control */
-/*#define	_POSIX_SAVED_IDS	/* saved set-user-ID and set-group-ID */
+#ifdef _NOTYET
+#define	_POSIX_SAVED_IDS	/* saved set-user-ID and set-group-ID */
+#endif
 #define	_POSIX_VERSION		198808L
 
 /* execution-time symbolic constants */
