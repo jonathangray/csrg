@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.10 (Berkeley) 04/27/93
+#	@(#)Makefile	8.1 (Berkeley) 05/31/93
 
 PROG=	ps
 SRCS=	devname.c fmt.c keyword.c nlist.c print.c ps.c
