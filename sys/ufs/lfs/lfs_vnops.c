@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)lfs_vnops.c	6.20 (Berkeley) 08/26/85
+ *	@(#)lfs_vnops.c	6.21 (Berkeley) 09/04/85
  */
 
 #include "param.h"
