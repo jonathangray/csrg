@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mfs_vfsops.c	8.5 (Berkeley) 03/30/95
+ *	@(#)mfs_vfsops.c	8.6 (Berkeley) 05/09/95
  */
 
 #include <sys/param.h>
@@ -128,7 +128,7 @@ mfs_mountroot()
 		free(mfsp, M_MFSNODE);
 		return (error);
 	}
-	TAILQ_INSERT_TAIL(&mountlist, mp, mnt_list);
+	CIRCLEQ_INSERT_TAIL(&mountlist, mp, mnt_list);
 	mp->mnt_flag |= MNT_ROOTFS;
 	mp->mnt_vnodecovered = NULLVP;
 	ump = VFSTOUFS(mp);
