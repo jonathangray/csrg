@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_input.c	8.7 (Berkeley) 10/27/94
+ *	@(#)tcp_input.c	8.8 (Berkeley) 03/10/95
  */
 
 #ifndef TUBA_INCLUDE
@@ -353,6 +353,15 @@ findpcb:
 			tcp_saveti = *ti;
 		}
 		if (so->so_options & SO_ACCEPTCONN) {
+			if ((tiflags & (TH_RST|TH_ACK|TH_SYN)) != TH_SYN) {
+				/*
+				 * Note: dropwithreset makes sure we don't
+				 * send a reset in response to a RST.
+				 */
+				if (tiflags & (TH_ACK|TH_RST))
+					goto dropwithreset;
+				goto drop;
+			}
 			so = sonewconn(so, 0);
 			if (so == 0)
 				goto drop;
@@ -743,7 +752,6 @@ trimthenstep6:
 			   ) {
 				todrop = ti->ti_len;
 				tiflags &= ~TH_FIN;
-				tp->t_flags |= TF_ACKNOW;
 			} else {
 				/*
 				 * Handle the case when a bound socket connects
@@ -753,6 +761,7 @@ trimthenstep6:
 				if (todrop != 0 || (tiflags & TH_ACK) == 0)
 					goto dropafterack;
 			}
+			tp->t_flags |= TF_ACKNOW;
 		} else {
 			tcpstat.tcps_rcvpartduppack++;
 			tcpstat.tcps_rcvpartdupbyte += todrop;
