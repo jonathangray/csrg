@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_input.c	7.19 (Berkeley) 06/27/91
+ *	@(#)tp_input.c	7.20 (Berkeley) 07/18/91
  */
 
 /***********************************************************
@@ -801,8 +801,8 @@ again:
 			 * kind of like a pcbconnect() but don't need
 			 * or want all those checks.
 			 */
-			(tpcb->tp_nlproto->nlp_putnetaddr)(so->so_pcb, faddr, TP_FOREIGN);
-			(tpcb->tp_nlproto->nlp_putnetaddr)(so->so_pcb, laddr, TP_LOCAL);
+			(tpcb->tp_nlproto->nlp_putnetaddr)(tpcb->tp_npcb, faddr, TP_FOREIGN);
+			(tpcb->tp_nlproto->nlp_putnetaddr)(tpcb->tp_npcb, laddr, TP_LOCAL);
 
 			/* stash the f suffix in the new tpcb */
 			bcopy(fsufxloc, tpcb->tp_fsuffix, fsufxlen);
@@ -810,9 +810,9 @@ again:
 			if (intercepted)
 				bcopy(lsufxloc, tpcb->tp_lsuffix, lsufxlen);
 			(tpcb->tp_nlproto->nlp_putsufx)
-					(so->so_pcb, fsufxloc, fsufxlen, TP_FOREIGN);
+					(tpcb->tp_npcb, fsufxloc, fsufxlen, TP_FOREIGN);
 			(tpcb->tp_nlproto->nlp_putsufx)
-					(so->so_pcb, lsufxloc, lsufxlen, TP_LOCAL);
+					(tpcb->tp_npcb, lsufxloc, lsufxlen, TP_LOCAL);
 #ifdef TP_PERF_MEAS
 			if( tpcb->tp_perf_on = perf_meas ) { /* assignment */
 				/* ok, let's create an mbuf for stashing the
@@ -841,7 +841,7 @@ again:
 			 * Get the maximum transmission unit from the lower layer(s)
 			 * so we can negotiate a reasonable max TPDU size.
 			 */
-			(tpcb->tp_nlproto->nlp_mtu)(so, so->so_pcb,
+			(tpcb->tp_nlproto->nlp_mtu)(so, tpcb->tp_npcb,
 						&tpcb->tp_l_tpdusize, &tpcb->tp_tpdusize, 0);
 			tpcb->tp_peer_acktime = acktime;
 
@@ -1150,7 +1150,7 @@ again:
 			 * It would be nice if the arguments to this
 			 * were more reasonable.
 			 */
-			(tpcb->tp_nlproto->nlp_mtu)(tpcb->tp_sock, tpcb->tp_sock->so_pcb,
+			(tpcb->tp_nlproto->nlp_mtu)(tpcb->tp_sock, tpcb->tp_npcb,
 						&tpcb->tp_l_tpdusize, &tpcb->tp_tpdusize, 0);
 
 
