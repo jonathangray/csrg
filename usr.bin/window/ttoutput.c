@@ -2,6 +2,9 @@
  * Copyright (c) 1983 Regents of the University of California.
  * All rights reserved.
  *
+ * This code is derived from software contributed to Berkeley by
+ * Edward Wang at The University of California, Berkeley.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -32,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)ttoutput.c	3.8 (Berkeley) 06/02/90";
+static char sccsid[] = "@(#)ttoutput.c	3.9 (Berkeley) 06/06/90";
 #endif /* not lint */
 
 #include "ww.h"
