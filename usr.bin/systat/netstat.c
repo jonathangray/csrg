@@ -8,7 +8,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)netstat.c	5.10 (Berkeley) 09/02/92";
+static char sccsid[] = "@(#)netstat.c	5.11 (Berkeley) 11/10/92";
 #endif /* not lint */
 
 /*
@@ -52,7 +52,7 @@ static char *inetname __P((struct in_addr));
 static void inetprint __P((struct in_addr *, int, char *));
 
 #define	streq(a,b)	(strcmp(a,b)==0)
-#define	YMAX(w)		((w)->_maxy-1)
+#define	YMAX(w)		((w)->maxy-1)
 
 WINDOW *
 opennetstat()
