@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_exec.c	7.72 (Berkeley) 03/09/93
+ *	@(#)kern_exec.c	7.73 (Berkeley) 04/27/93
  */
 
 #include <sys/param.h>
@@ -35,7 +35,6 @@
 #include <vm/vm_pager.h>
 
 #include <sys/signalvar.h>
-#include <sys/kinfo_proc.h>
 
 #ifdef HPUXCOMPAT
 #include <sys/user.h>			/* for pcb */
