@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fifo_vnops.c	7.5 (Berkeley) 02/01/91
+ *	@(#)fifo_vnops.c	7.6 (Berkeley) 03/17/91
  */
 
 #include "param.h"
@@ -40,6 +40,7 @@
 #include "socket.h"
 #include "socketvar.h"
 #include "stat.h"
+#include "systm.h"
 #include "ioctl.h"
 #include "file.h"
 #include "errno.h"
@@ -71,7 +72,7 @@ int	fifo_lookup(),
 	fifo_advlock(),
 	fifo_ebadf(),
 	fifo_badop(),
-	fifo_nullop();
+	nullop();
 
 struct vnodeops fifo_vnodeops = {
 	fifo_lookup,		/* lookup */
@@ -87,7 +88,7 @@ struct vnodeops fifo_vnodeops = {
 	fifo_ioctl,		/* ioctl */
 	fifo_select,		/* select */
 	fifo_badop,		/* mmap */
-	fifo_nullop,		/* fsync */
+	nullop,			/* fsync */
 	fifo_badop,		/* seek */
 	fifo_badop,		/* remove */
 	fifo_badop,		/* link */
@@ -98,14 +99,14 @@ struct vnodeops fifo_vnodeops = {
 	fifo_badop,		/* readdir */
 	fifo_badop,		/* readlink */
 	fifo_badop,		/* abortop */
-	fifo_nullop,		/* inactive */
-	fifo_nullop,		/* reclaim */
+	nullop,			/* inactive */
+	nullop,			/* reclaim */
 	fifo_lock,		/* lock */
 	fifo_unlock,		/* unlock */
 	fifo_bmap,		/* bmap */
 	fifo_badop,		/* strategy */
 	fifo_print,		/* print */
-	fifo_nullop,		/* islocked */
+	nullop,			/* islocked */
 	fifo_advlock,		/* advlock */
 };
 
@@ -421,13 +422,4 @@ fifo_badop()
 
 	panic("fifo_badop called");
 	/* NOTREACHED */
-}
-
-/*
- * Fifo null operation
- */
-fifo_nullop()
-{
-
-	return (0);
 }
