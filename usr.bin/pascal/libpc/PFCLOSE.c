@@ -1,6 +1,6 @@
 /*-
- * Copyright (c) 1982 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1982, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)PFCLOSE.c	1.4 (Berkeley) 04/09/90";
+static char sccsid[] = "@(#)PFCLOSE.c	8.1 (Berkeley) 06/06/93";
 #endif /* not lint */
 
 /*
