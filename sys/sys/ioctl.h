@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ioctl.h	7.17 (Berkeley) 04/08/91
+ *	@(#)ioctl.h	7.18 (Berkeley) 04/09/91
  */
 
 #ifndef	_IOCTL_H_
@@ -149,6 +149,7 @@ struct ttysize {
 #define	TIOCSCTTY	_IO('t', 97)		/* become controlling tty */
 #define	TIOCEXT		_IOW('t', 96, int)	/* pty: external processing */
 #define	TIOCSIG		_IO('t', 95)		/* pty: generate signal */
+#define TIOCDRAIN	_IO('t', 94)		/* wait till output drained */
 
 #define TTYDISC		0		/* termios tty line discipline */
 #define	TABLDISC	3		/* tablet discipline */
