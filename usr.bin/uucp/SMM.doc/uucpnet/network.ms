@@ -2,10 +2,10 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)network.ms	5.4 (Berkeley) 04/17/91
+.\"	@(#)network.ms	5.5 (Berkeley) 06/05/93
 .\"
-.EH 'SMM:21-%''A Dial-Up Network of \s-2UNIX\s+2 Systems'
-.OH 'Dial-Up Network of \s-2UNIX\s+2 Systems''SMM:21-%'
+.EH 'SMM:15-%''A Dial-Up Network of \s-2UNIX\s+2 Systems'
+.OH 'Dial-Up Network of \s-2UNIX\s+2 Systems''SMM:15-%'
 .if n .ls 2
 .ds RH Nowitz
 .ND "August 18, 1978"
