@@ -39,19 +39,22 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	6.11 (Berkeley) 01/26/93";
+static char sccsid[] = "@(#)main.c	6.12 (Berkeley) 01/28/93";
 #endif /* not lint */
 
 #define	_DEFINE
 
 #include <unistd.h>
 #include <sys/file.h>
+#include <sys/fcntl.h>
 #include <sys/stat.h>
 #include <signal.h>
 #include <sgtty.h>
 #include "sendmail.h"
+#ifdef NAMED_BIND
 #include <arpa/nameser.h>
 #include <resolv.h>
+#endif
 
 # ifdef lint
 char	edata, end;
@@ -1269,7 +1272,11 @@ disconnect(fulldrop)
 	/* drop our controlling TTY completely if possible */
 	if (fulldrop)
 	{
+#ifdef SYSTEM5
+		(void) setpgrp();
+#else
 		(void) setsid();
+#endif
 #ifdef TIOCNOTTY
 		fd = open("/dev/tty", 2);
 		if (fd >= 0)
