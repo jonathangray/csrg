@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.69 (Berkeley) 02/05/92
+ *	@(#)vfs_subr.c	7.70 (Berkeley) 02/25/92
  */
 
 /*
@@ -536,8 +536,10 @@ reassignbuf(bp, newvp)
 {
 	register struct buf *bq, **listheadp;
 
-	if (newvp == NULL)
-		panic("reassignbuf: NULL");
+	if (newvp == NULL) {
+		printf("reassignbuf: NULL");
+		return;
+	}
 	/*
 	 * Delete from old vnode list, if on one.
 	 */
