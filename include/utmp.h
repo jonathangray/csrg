@@ -8,5 +8,6 @@
 struct utmp {
 	char	ut_line[8];		/* tty name */
 	char	ut_name[8];		/* user id */
+	char	ut_host[16];		/* host name, if remote */
 	long	ut_time;		/* time on */
 };
