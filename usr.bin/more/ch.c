@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)ch.c	5.8 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)ch.c	5.9 (Berkeley) 02/05/91";
 #endif /* not lint */
 
 /*
@@ -52,7 +52,6 @@ int file = -1;		/* File descriptor of the input file */
 /*
  * Pool of buffers holding the most recently used blocks of the input file.
  */
-#define	BUFSIZ	1024
 struct buf {
 	struct buf *next, *prev;
 	long block;
