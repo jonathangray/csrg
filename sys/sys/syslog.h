@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)syslog.h	7.21 (Berkeley) 02/21/92
+ *	@(#)syslog.h	7.22 (Berkeley) 06/22/92
  */
 
 #define	_PATH_LOG	"/dev/log"
@@ -179,7 +179,7 @@ void	closelog __P((void));
 void	openlog __P((const char *, int, int));
 int	setlogmask __P((int));
 void	syslog __P((int, const char *, ...));
-void	vsyslog __P((int, const char *, _VA_LIST_));
+void	vsyslog __P((int, const char *, _BSD_VA_LIST_));
 __END_DECLS
 
 #endif /* !KERNEL */
