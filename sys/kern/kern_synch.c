@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_synch.c	7.17 (Berkeley) 05/09/91
+ *	@(#)kern_synch.c	7.18 (Berkeley) 06/27/91
  */
 
 #include "param.h"
@@ -322,7 +322,6 @@ tsleep(chan, pri, wmesg, timo)
 		}
 	}
 	p->p_stat = SSLEEP;
-	(void) spl0();
 	p->p_stats->p_ru.ru_nvcsw++;
 	swtch();
 resume:
@@ -410,7 +409,6 @@ sleep(chan, pri)
 		*qp->sq_tailp = p;
 	*(qp->sq_tailp = &p->p_link) = 0;
 	p->p_stat = SSLEEP;
-	(void) spl0();
 	p->p_stats->p_ru.ru_nvcsw++;
 	swtch();
 	curpri = p->p_usrpri;
