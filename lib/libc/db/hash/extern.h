@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	8.1 (Berkeley) 06/04/93
+ *	@(#)extern.h	8.2 (Berkeley) 02/21/94
  */
 
 BUFHEAD	*__add_ovflpage __P((HTAB *, BUFHEAD *));
@@ -58,7 +58,7 @@ void	 __reclaim_buf __P((HTAB *, BUFHEAD *));
 int	 __split_page __P((HTAB *, u_int, u_int));
 
 /* Default hash routine. */
-extern int	(*__default_hash) __P((u_char *, int));
+extern u_int32_t (*__default_hash) __P((const void *, size_t));
 
 #ifdef HASH_STATISTICS
 extern long hash_accesses, hash_collisions, hash_expansions, hash_overflows;
