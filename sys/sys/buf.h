@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)buf.h	7.12 (Berkeley) 11/01/91
+ *	@(#)buf.h	7.13 (Berkeley) 01/09/92
  */
 
 /*
@@ -102,6 +102,8 @@ struct buf
 	int	b_dirtyoff;		/* offset in buffer of dirty region */
 	int	b_dirtyend;		/* offset of end of dirty region */
 	caddr_t	b_saveaddr;		/* original b_addr for PHYSIO */
+	int	b_validoff;		/* offset in buffer of valid region */
+	int	b_validend;		/* offset of end of valid region */
 };
 
 #define	BQUEUES		4		/* number of free buffer queues */
