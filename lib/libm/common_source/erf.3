@@ -30,7 +30,7 @@ From Prof. Kahan at UC at Berkeley
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)erf.3	6.3 (Berkeley) 04/19/91
+.\"     @(#)erf.3	6.4 (Berkeley) 04/20/91
 .\"
 .Dd 
 .Dt ERF 3
@@ -66,13 +66,12 @@ function calculates the complementary error function of
 .Fa x ;
 that is
 .Fn erfc
-subtracts the result of
-the error function
+subtracts the result of the error function
 .Fn erf x
 from 1.0.
 This is useful, since for large
-.Fa x ,
-such as x = 10, 12 places disappear.
+.Fa x
+places disappear.
 .Sh SEE ALSO
 .Xr math 3
 .Sh HISTORY
@@ -80,6 +79,5 @@ The
 .Fn erf
 and
 .Fn erfc
-functions
-appeared in
+functions appeared in
 .Bx 4.3 .
