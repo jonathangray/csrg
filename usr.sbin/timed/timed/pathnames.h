@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 1985 Regents of the University of California.
+/*-
+ * Copyright (c) 1985 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,8 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
+ *
+ *	@(#)pathnames.h	5.6 (Berkeley) 05/11/93
  */
 
 #include <paths.h>
