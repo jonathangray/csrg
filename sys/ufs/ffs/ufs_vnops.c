@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	7.80 (Berkeley) 02/25/92
+ *	@(#)ufs_vnops.c	7.81 (Berkeley) 03/02/92
  */
 
 #include <sys/param.h>
@@ -704,8 +704,7 @@ relookup(dvp, vpp, cnp)
 		if (*vpp != NULL)
 			panic("leaf should be empty");
 #endif
-		if (cnp->cn_nameiop == LOOKUP || cnp->cn_nameiop == DELETE ||
-		    error != ENOENT)
+		if (error != EJUSTRETURN)
 			goto bad;
 		/*
 		 * If creating and at end of pathname, then can consider
