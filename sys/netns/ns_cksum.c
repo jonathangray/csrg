@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1982, 1988 Regents of the University of California.
+ * Copyright (c) 1982, 1992 Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ns_cksum.c	7.8 (Berkeley) 03/02/92
+ *	@(#)ns_cksum.c	7.9 (Berkeley) 03/02/92
  */
 
 #include "param.h"
