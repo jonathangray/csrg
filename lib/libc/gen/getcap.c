@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)getcap.c	5.12 (Berkeley) 03/04/93";
+static char sccsid[] = "@(#)getcap.c	5.13 (Berkeley) 03/04/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -730,7 +730,7 @@ cgetnext(bp, db_array)
 						(void)cgetclose();
 						return (-1);
 					}
-				} else {
+				} else
 					line[len - 1] = '\0';
 			}
 		}
