@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs.h	7.24 (Berkeley) 09/03/92
+ *	@(#)lfs.h	7.25 (Berkeley) 10/01/92
  */
 
 #define	LFS_LABELPAD	8192		/* LFS label size */
@@ -96,7 +96,7 @@ struct lfs {
 	ino_t	lfs_free;		/* start of the free list */
 	u_long	lfs_bfree;		/* number of free disk blocks */
 	u_long	lfs_nfiles;		/* number of allocated inodes */
-	u_long	lfs_avail;		/* blocks available for writing */
+	long	lfs_avail;		/* blocks available for writing */
 	u_long  lfs_uinodes;		/* inodes in cache not yet on disk */
 	daddr_t	lfs_idaddr;		/* inode file disk address */
 	ino_t	lfs_ifile;		/* inode file inode number */
@@ -290,8 +290,8 @@ struct segsum {
  * the segment usage table, plus an ifile page.
  */
 #define LFS_FITS(fs, db)						\
-	((db + ((fs)->lfs_uinodes + INOPB((fs))) / INOPB((fs)) +	\
-	fsbtodb(fs, 1) + LFS_SUMMARY_SIZE / DEV_BSIZE + (fs)->lfs_segtabsz)\
+	((long)((db + ((fs)->lfs_uinodes + INOPB((fs))) / INOPB((fs)) +	\
+	fsbtodb(fs, 1) + LFS_SUMMARY_SIZE / DEV_BSIZE + (fs)->lfs_segtabsz))\
 	< (fs)->lfs_avail)
 
 /* Determine if a buffer belongs to the ifile */
