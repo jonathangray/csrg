@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	5.15 (Berkeley) 10/20/91";
+static char sccsid[] = "@(#)parseaddr.c	5.16 (Berkeley) 11/15/91";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1009,7 +1009,7 @@ buildaddr(tv, a)
 		return (NULL);
 	}
 
-	if (m == LocalMailer && tv[1] != NULL && strcmp(tv[1], ":") == 0)
+	if (m == LocalMailer && tv[1] != NULL && strcmp(tv[1], "@") == 0)
 	{
 		tv++;
 		a->q_flags |= QNOTREMOTE;
