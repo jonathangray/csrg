@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	5.23 (Berkeley) 01/04/92
+ *	@(#)conf.h	5.24 (Berkeley) 01/05/92
  */
 
 /*
@@ -57,6 +57,9 @@
 # define QUEUESIZE	600		/* max # of jobs per queue run */
 # define MAXMXHOSTS	10		/* max # of MX records */
 # define SMTPLINELIM	990		/* maximum SMTP line length */
+# ifndef FORK
+# define FORK		vfork		/* function to call to fork mailer */
+# endif
 
 /*
 **  Compilation options.
