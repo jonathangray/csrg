@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_extern.h	8.1 (Berkeley) 06/11/93
+ *	@(#)ffs_extern.h	8.2 (Berkeley) 02/03/94
  */
 
 struct buf;
@@ -68,6 +68,7 @@ int	ffs_mount __P((struct mount *,
 int	ffs_mountfs __P((struct vnode *, struct mount *, struct proc *));
 int	ffs_mountroot __P((void));
 int	ffs_read __P((struct vop_read_args *));
+int	ffs_reallocblks __P((struct vop_reallocblks_args *));
 int	ffs_realloccg __P((struct inode *,
 	    daddr_t, daddr_t, int, int, struct ucred *, struct buf **));
 int	ffs_reclaim __P((struct vop_reclaim_args *));
