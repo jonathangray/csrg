@@ -1,8 +1,4 @@
-/* $Id: os-sos4.h,v 5.2.1.2 91/03/03 20:50:41 jsp Alpha $ */
-
 /*
- * SunOS 4.0 definitions for Amd (automounter)
- *
  * Copyright (c) 1989 Jan-Simon Pendry
  * Copyright (c) 1989 Imperial College of Science, Technology & Medicine
  * Copyright (c) 1989 The Regents of the University of California.
@@ -39,7 +35,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)os-sos4.h	5.2 (Berkeley) 03/17/91
+ *	@(#)os-sos4.h	5.3 (Berkeley) 05/12/91
+ *
+ * $Id: os-sos4.h,v 5.2.1.3 91/05/07 22:19:57 jsp Alpha $
+ *
+ * SunOS 4.0 definitions for Amd (automounter)
  */
 
 /*
