@@ -1,0 +1,101 @@
+.\" Copyright (c) 1990 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" This code is derived from software contributed to Berkeley by
+.\" Chris Torek.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"	@(#)fflush.3	5.1 (Berkeley) 03/05/91
+.\"
+.TH FFLUSH 3 ""
+.UC 7
+.SH NAME
+fflush, fpurge \- flush a stream
+.SH SYNOPSIS
+.nf
+.ft B
+#include <stdio.h>
+
+int
+fflush(FILE *stream);
+
+int
+fpurge(FILE *stream);
+.ft R
+.fi
+.SH DESCRIPTION
+.I Fflush
+writes any buffered data for the given output
+.I stream
+via the stream's underlying write function.
+The stream remains open.
+.PP
+If the
+.I stream
+argument is NULL,
+.I fflush
+flushes
+.I all
+open output streams.
+.PP
+.I Fpurge
+erases any input or output buffered in the given
+.IR stream .
+For output streams this discards any unwritten output.
+For input streams this discards any input read from the underlying object
+but not yet obtained via
+.IR getc ;
+this includes any text pushed back via
+.IR ungetc .
+.SH "RETURN VALUE"
+Upon successful completion 0 is returned.
+Otherwise,
+.B EOF
+is returned and the global variable
+.I errno
+is set to indicate the error.
+.SH ERRORS
+.TP 15
+[EBADF]
+.I Stream
+is not an open stream, or, in the case of
+.IR fflush ,
+not a stream open for writing.
+.PP
+.I Fflush
+may also fail and set
+.I errno
+for any of the errors specified for the routine
+.IR write (2).
+.SH "SEE ALSO"
+write(2), fopen(3), fclose(3), setbuf(3)
+.SH STANDARDS
+.I Fflush
+conforms to ANSI X3.159-1989 (``ANSI C'').
