@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_proc.c	7.18 (Berkeley) 11/19/91
+ *	@(#)kern_proc.c	7.19 (Berkeley) 02/14/92
  */
 
 #include <sys/param.h>
@@ -98,6 +98,7 @@ pgfind(pgid)
 enterpgrp(p, pgid, mksess)
 	register struct proc *p;
 	pid_t pgid;
+	int mksess;
 {
 	register struct pgrp *pgrp = pgfind(pgid);
 	register struct proc **pp;
@@ -226,7 +227,7 @@ done:
 	FREE(pgrp, M_PGRP);
 }
 
-static orphanpg();
+static void orphanpg();
 
 /*
  * Adjust pgrp jobc counters when specified process changes process group.
@@ -277,7 +278,7 @@ fixjobc(p, pgrp, entering)
  * if there are any stopped processes in the group,
  * hang-up all process in that group.
  */
-static
+static void
 orphanpg(pg)
 	struct pgrp *pg;
 {
