@@ -35,7 +35,7 @@
  */
 
 #if !defined(lint) && !defined(SCCSID)
-static char sccsid[] = "@(#)search.c	5.2 (Berkeley) 07/03/92";
+static char sccsid[] = "@(#)search.c	5.3 (Berkeley) 07/03/92";
 #endif /* not lint && not SCCSID */
 
 /*
@@ -43,7 +43,7 @@ static char sccsid[] = "@(#)search.c	5.2 (Berkeley) 07/03/92";
  */
 #include "sys.h"
 #include <stdlib.h>
-#ifndef sun
+#ifdef REGEXP
 #include <regexp.h>
 #endif
 #include "el.h"
@@ -82,7 +82,7 @@ search_end(el)
     el->el_search.patbuf = NULL;
 }
 
-#ifndef sun
+#ifdef REGEXP
 /* regerror():
  *	Handle regular expression errors
  */
@@ -102,7 +102,7 @@ el_match(str, pat)
     const char *str;
     const char *pat;
 {
-#ifdef sun
+#ifndef REGEXP
     extern char *re_comp __P((const char *));
     extern int re_exec __P((const char *));
 #else
@@ -112,7 +112,7 @@ el_match(str, pat)
 
     if (strstr(str, pat) != NULL)
 	return 1;
-#ifdef sun
+#ifndef REGEXP
     if (re_comp(pat) != NULL)
 	return 0;
     else
