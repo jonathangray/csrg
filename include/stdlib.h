@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stdlib.h	8.3 (Berkeley) 02/16/94
+ *	@(#)stdlib.h	8.4 (Berkeley) 04/27/95
  */
 
 #ifndef _STDLIB_H_
@@ -139,13 +139,6 @@ int	 cgetustr __P((char *, char *, char **));
 int	 daemon __P((int, int));
 char	*devname __P((int, int));
 int	 getloadavg __P((double [], int));
-
-extern char *optarg;			/* getopt(3) external variables */
-extern int opterr, optind, optopt;
-int	 getopt __P((int, char * const *, const char *));
-
-extern char *suboptarg;			/* getsubopt(3) external variable */
-int	 getsubopt __P((char **, char * const *, char **));
 
 char	*group_from_gid __P((unsigned long, int));
 int	 heapsort __P((void *, size_t, size_t,
