@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_subs.c	7.31 (Berkeley) 10/02/90
+ *	@(#)nfs_subs.c	7.32 (Berkeley) 10/06/90
  */
 
 /*
@@ -951,7 +951,7 @@ nfs_compress(m0)
 	olen = om->m_len = 5;
 	oleft = M_TRAILINGSPACE(om);
 	op = mtod(om, u_char *);
-	bcopy(ip, op, sizeof(u_long));
+	*((u_long *)op) = *((u_long *)ip);
 	ip += 7;
 	op += 4;
 	*op++ = *ip++ + 1;
@@ -1011,10 +1011,12 @@ doit:
 		m_freem(m0);
 		if (i = (olen & 0x3)) {
 			i = 4 - i;
-			while (i-- > 0)
+			while (i-- > 0) {
 				nfscput('\0');
+			}
 		}
 		retm->m_pkthdr.len = olen;
+		retm->m_pkthdr.rcvif = (struct ifnet *)0;
 		return (retm);
 	} else {
 		m_freem(retm);
@@ -1032,13 +1034,19 @@ nfs_uncompress(m0)
 	int i, j, noteof, clget, ileft, oleft, olen;
 
 	m = m0;
-	if (m->m_pkthdr.len < 6)
+	i = 0;
+	while (m && i < MINCLSIZE) {
+		i += m->m_len;
+		m = m->m_next;
+	}
+	if (i < 6)
 		return (m0);
-	if (m->m_pkthdr.len >= MINCLSIZE)
+	if (i >= MINCLSIZE)
 		clget = 1;
 	else
 		clget = 0;
-	MGETHDR(om, M_WAIT, MT_DATA);
+	m = m0;
+	MGET(om, M_WAIT, MT_DATA);
 	if (clget)
 		MCLGET(om, M_WAIT);
 	olen = om->m_len = 8;
@@ -1098,10 +1106,7 @@ readit:
 		}
 	}
 	m_freem(m0);
-	if (i = (olen & 0x3)) {
-		olen -= i;
+	if (i = (olen & 0x3))
 		om->m_len -= i;
-	}
-	retm->m_pkthdr.len = olen;
 	return (retm);
 }
