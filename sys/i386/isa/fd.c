@@ -23,7 +23,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)fd.c	5.4 (Berkeley) 01/08/91
+ *	@(#)fd.c	5.5 (Berkeley) 05/09/91
  */
 
 /****************************************************************************/
@@ -34,17 +34,13 @@
 #include "systm.h"
 #include "conf.h"
 #include "file.h"
-#include "dir.h"
-#include "user.h"
 #include "ioctl.h"
 #include "disk.h"
 #include "buf.h"
-#include "vm.h"
 #include "uio.h"
-#include "machine/pte.h"
-#include "machine/isa/isa_device.h"
-#include "machine/isa/fdreg.h"
-#include "icu.h"
+#include "i386/isa/isa_device.h"
+#include "i386/isa/fdreg.h"
+#include "i386/isa/icu.h"
 
 #define	FDUNIT(s)	((s)&1)
 #define	FDTYPE(s)	(((s)>>1)&7)
@@ -287,7 +283,7 @@ check_fdc()
 /****************************************************************************/
 /*                           fdopen/fdclose                                 */
 /****************************************************************************/
-fdopen(dev, flags)
+Fdopen(dev, flags)
 	dev_t	dev;
 	int	flags;
 {
@@ -306,7 +302,7 @@ fdopen(dev, flags)
 	return 0;
 }
 
-fdclose(dev)
+fdclose(dev, flags)
 	dev_t dev;
 {
 }
@@ -376,7 +372,7 @@ printf("Seek %d %d\n", bp->b_cylin, dp->b_step);
 		out_fdc(15);	/* Seek function */
 		out_fdc(unit);	/* Drive number */
 		out_fdc(bp->b_cylin * dp->b_step);
-		} else fdintr(0);
+		} else fdintr(0xff);
 	}
 	splx(s);
 }
@@ -406,8 +402,7 @@ int x;
 /****************************************************************************/
 /*                                 fdintr                                   */
 /****************************************************************************/
-fdintr(vec)
-int vec;
+fdintr(unit)
 {
 	register struct buf *dp,*bp;
 	struct buf *dpother;
@@ -416,7 +411,7 @@ int vec;
 	struct fd_type *ft;
 
 #ifdef FDTEST
-	printf("state %d, vec %d, dr %d|",fd_state,vec,fd_drive);
+	printf("state %d, unit %d, dr %d|",fd_state,unit,fd_drive);
 #endif
 
 	dp = &fd_unit[fd_drive].head;
@@ -427,7 +422,7 @@ int vec;
 	switch (fd_state) {
 	case 1 : /* SEEK DONE, START DMA */
 		/* Make sure seek really happened*/
-		if (vec) {
+		if (unit != 0xff) {
 			out_fdc(0x8);
 			i = in_fdc();
 			cyl = in_fdc();
@@ -518,7 +513,7 @@ printf("Seek|");
 				out_fdc(fd_drive);/* Drive number */
 				out_fdc(bp->b_cylin * dp->b_step);
 				break;
-			} else fdintr(0);
+			} else fdintr(0xff);
 		}
 		break;
 	case 3:
@@ -575,7 +570,7 @@ retry:
 	case 4:
 		fd_retry++;
 		fd_state = 5;
-		fdintr(0);
+		fdintr(0xff);
 		return;
 	case 5: case 6: case 7:
 		break;
@@ -588,7 +583,7 @@ retry:
 	}
 	fd_state = 1;
 	fd_retry++;
-	fdintr(0);
+	fdintr(0xff);
 }
 
 badtrans(dp,bp)
