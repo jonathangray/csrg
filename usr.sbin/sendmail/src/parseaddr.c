@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	5.20 (Berkeley) 07/12/92";
+static char sccsid[] = "@(#)parseaddr.c	5.21 (Berkeley) 07/12/92";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -89,7 +89,6 @@ parseaddr(addr, a, copyf, delim, e)
 	register ENVELOPE *e;
 {
 	register char **pvp;
-	register struct mailer *m;
 	char pvpbuf[PSBUFSIZE];
 	extern char **prescan();
 	extern ADDRESS *buildaddr();
