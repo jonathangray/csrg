@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)device.h	7.4 (Berkeley) 07/10/92
+ *	@(#)device.h	7.5 (Berkeley) 11/16/92
  *
  * from: $Header: device.h,v 1.6 92/06/11 17:56:45 torek Exp $ (LBL)
  */
