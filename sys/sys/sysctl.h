@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sysctl.h	7.23 (Berkeley) 05/01/93
+ *	@(#)sysctl.h	7.24 (Berkeley) 05/03/93
  */
 
 #ifndef _SYS_SYSCTL_H_
