@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_extern.h	7.6 (Berkeley) 04/21/92
+ *	@(#)ffs_extern.h	7.7 (Berkeley) 05/13/92
  */
 
 struct buf;
@@ -94,7 +94,8 @@ __END_DECLS
 
 extern int inside[], around[];
 extern u_char *fragtbl[];
-extern struct vnodeops ffs_vnodeops, ffs_specops;
+extern struct vnodeops ffs_vnodeops;
+extern struct vnodeops ffs_specops;
 #ifdef FIFO
 extern struct vnodeops ffs_fifoops;
 #define FFS_FIFOOPS &ffs_fifoops
