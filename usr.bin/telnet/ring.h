@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ring.h	1.10 (Berkeley) 06/28/90
+ *	@(#)ring.h	5.1 (Berkeley) 09/14/90
  */
 
 /*
