@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sig.c	7.45 (Berkeley) 05/14/92
+ *	@(#)kern_sig.c	7.46 (Berkeley) 06/23/92
  */
 
 #define	SIGPROP		/* include signal properties table */
@@ -317,11 +317,11 @@ osigvec(p, uap, retval)
 			return (error);
 #ifdef COMPAT_SUNOS
 		/*
-		 * SunOS uses this bit (SA_NOCLDSTOP) as SV_RESETHAND,
-		 * `reset to SIG_DFL on delivery'. We have no such
-		 * option now or ever!
+		 * SunOS uses this bit (4, aka SA_DISABLE) as SV_RESETHAND,
+		 * `reset to SIG_DFL on delivery'. We have no such option
+		 * now or ever!
 		 */
-		if (sv->sv_flags & SA_NOCLDSTOP)
+		if (sv->sv_flags & SA_DISABLE)
 			return (EINVAL);
 		sv->sv_flags |= SA_USERTRAMP;
 #endif
@@ -360,7 +360,7 @@ osigsetmask(p, uap, retval)
 	(void) spl0();
 	return (0);
 }
-#endif
+#endif /* COMPAT_43 || COMPAT_SUNOS */
 
 /*
  * Suspend process until signal, providing mask to be set
@@ -392,7 +392,7 @@ sigsuspend(p, uap, retval)
 	return (EINTR);
 }
 
-#ifdef COMPAT_43
+#if defined(COMPAT_43) || defined(COMPAT_SUNOS)
 /* ARGSUSED */
 osigstack(p, uap, retval)
 	struct proc *p;
@@ -421,7 +421,7 @@ osigstack(p, uap, retval)
 	}
 	return (error);
 }
-#endif /* COMPAT_43 */
+#endif /* COMPAT_43 || COMPAT_SUNOS */
 
 /* ARGSUSED */
 sigaltstack(p, uap, retval)
@@ -510,7 +510,7 @@ okillpg(p, uap, retval)
 		return (EINVAL);
 	return (killpg1(p, uap->signo, uap->pgid, 0));
 }
-#endif
+#endif /* COMPAT_43 || COMPAT_SUNOS */
 
 /*
  * Common code for kill process group/broadcast kill.
