@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)tee.c	5.11 (Berkeley) 05/06/91";
+static char sccsid[] = "@(#)tee.c	5.12 (Berkeley) 12/16/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -68,6 +68,7 @@ main(argc, argv)
 	int append, ch, exitval;
 	char *buf;
 	off_t lseek();
+#define	BSIZE (8 * 1024)
 
 	append = 0;
 	while ((ch = getopt(argc, argv, "ai")) != EOF)
@@ -86,7 +87,7 @@ main(argc, argv)
 	argv += optind;
 	argc -= optind;
 
-	if (!(buf = malloc((u_int)8 * 1024))) {
+	if (!(buf = malloc((u_int)BSIZE))) {
 		(void)fprintf(stderr, "tee: out of space.\n");
 		exit(1);
 	}
@@ -99,7 +100,7 @@ main(argc, argv)
 		else
 			add(fd, *argv);
 	exitval = 0;
-	while ((rval = read(STDIN_FILENO, buf, sizeof(buf))) > 0)
+	while ((rval = read(STDIN_FILENO, buf, BSIZE)) > 0)
 		for (p = head; p; p = p->next) {
 			n = rval;
 			bp = buf;
