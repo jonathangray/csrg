@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.1 (Berkeley) 06/05/93";
+static char sccsid[] = "@(#)main.c	8.2 (Berkeley) 01/06/94";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -527,7 +527,7 @@ char *
 rawname(cp)
 	char *cp;
 {
-	static char rawbuf[32];
+	static char rawbuf[MAXPATHLEN];
 	char *dp = rindex(cp, '/');
 
 	if (dp == NULL)
