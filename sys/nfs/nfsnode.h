@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsnode.h	7.29 (Berkeley) 09/16/92
+ *	@(#)nfsnode.h	7.30 (Berkeley) 09/30/92
  */
 
 /*
@@ -113,6 +113,7 @@ int	nfsspec_close __P((struct vop_close_args *));
 int	nfsfifo_close __P((struct vop_close_args *));
 #endif
 int	nfs_access __P((struct vop_access_args *));
+int	nfsspec_access __P((struct vop_access_args *));
 int	nfs_getattr __P((struct vop_getattr_args *));
 int	nfs_setattr __P((struct vop_setattr_args *));
 int	nfs_read __P((struct vop_read_args *));
