@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_fault.c	7.6 (Berkeley) 05/07/91
+ *	@(#)vm_fault.c	7.7 (Berkeley) 07/25/91
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -304,7 +304,7 @@ vm_fault(map, vaddr, fault_type, change_wiring)
 				queue_remove(&vm_page_queue_inactive, m,
 						vm_page_t, pageq);
 				m->inactive = FALSE;
-				vm_page_inactive_count--;
+				vm_stat.inactive_count--;
 				vm_stat.reactivations++;
 			} 
 
@@ -312,7 +312,7 @@ vm_fault(map, vaddr, fault_type, change_wiring)
 				queue_remove(&vm_page_queue_active, m,
 						vm_page_t, pageq);
 				m->active = FALSE;
-				vm_page_active_count--;
+				vm_stat.active_count--;
 			}
 			vm_page_unlock_queues();
 
