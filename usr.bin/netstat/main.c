@@ -11,7 +11,7 @@ char copyright[] =
 #endif not lint
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.1 (Berkeley) 06/04/85";
+static char sccsid[] = "@(#)main.c	5.2 (Berkeley) 08/16/85";
 #endif not lint
 
 #include <sys/param.h>
