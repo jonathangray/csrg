@@ -1,4 +1,4 @@
-#	@(#)Makefile	4.3	03/01/83
+#	@(#)Makefile	4.4	05/03/83
 #
 ALL=	ftp ftpd
 DESTDIR=
