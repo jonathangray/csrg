@@ -1,4 +1,4 @@
-/* $Id: os-riscix.h,v 5.2 90/06/23 22:20:51 jsp Rel $ */
+/* $Id: os-riscix.h,v 5.2.1.1 90/10/21 22:31:03 jsp Exp $ */
 
 /*
  * Acorn Archimedes RISC iX definitions for Amd (automounter)
@@ -40,7 +40,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)os-riscix.h	5.1 (Berkeley) 06/29/90
+ *	@(#)os-riscix.h	5.2 (Berkeley) 03/17/91
  */
 
 /*
