@@ -36,7 +36,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conv.c	5.5 (Berkeley) 04/28/93";
+static char sccsid[] = "@(#)conv.c	5.6 (Berkeley) 04/28/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -151,11 +151,17 @@ block()
 		if (ch == '\n')
 			--in.dbcnt;
 
-		/* Pad short records with "spaces". */
+		/* Pad short records with spaces. */
 		if (cnt < cbsz)
 			(void)memset(outp, ctab ? ctab[' '] : ' ', cbsz - cnt);
 		else {
-			++st.trunc;
+			/*
+			 * If the next character wouldn't have ended the
+			 * block, it's a truncation.
+			 */
+			if (!in.dbcnt || *inp != '\n')
+				++st.trunc;
+
 			/* Toss characters to a newline. */
 			for (; in.dbcnt && *inp++ != '\n'; --in.dbcnt);
 			if (!in.dbcnt)
