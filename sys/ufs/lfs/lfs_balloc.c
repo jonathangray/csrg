@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_balloc.c	8.3 (Berkeley) 05/08/95
+ *	@(#)lfs_balloc.c	8.4 (Berkeley) 05/08/95
  */
 #include <sys/param.h>
 #include <sys/buf.h>
@@ -61,7 +61,7 @@ lfs_balloc(vp, offset, iosize, lbn, bpp)
 	struct inode *ip;
 	struct lfs *fs;
 	struct indir indirs[NIADDR+2];
-	ufs_daddr_t	lastblock;
+	ufs_daddr_t	daddr, lastblock;
  	int bb;		/* number of disk blocks in a block disk blocks */
  	int error, frags, i, nsize, osize, num;
 
