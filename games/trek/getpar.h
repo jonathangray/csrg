@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)getpar.h	5.1 (Berkeley) 05/30/85
+ *	@(#)getpar.h	5.2 (Berkeley) 01/29/86
  */
 
 struct cvntab		/* used for getcodpar() paramater list */
