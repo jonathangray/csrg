@@ -32,7 +32,7 @@ divert(0)dnl
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)cf.m4	2.8 (Berkeley) 10/03/91
+#	@(#)cf.m4	2.9 (Berkeley) 10/03/91
 #
 
 
@@ -54,7 +54,9 @@ divert(-1)
 define(`PUSHDIVERT', `pushdef(`__D__', divnum)divert($1)')
 define(`POPDIVERT', `divert(__D__)popdef(`__D__')')
 define(`OSTYPE', `include(../ostype/$1.m4)')
-define(`MAILER', `PUSHDIVERT(7)include(../mailer/$1.m4)POPDIVERT`'')
+define(`MAILER',
+`ifdef(`_MAILER_$1_', `dnl',
+`define(`_MAILER_$1_')PUSHDIVERT(7)include(../mailer/$1.m4)POPDIVERT`'')')
 define(`DOMAIN', `include(../domain/$1.m4)')
 define(`FEATURE', `include(../feature/$1.m4)')
 define(`HACK', `include(../hack/$1.m4)')
@@ -76,5 +78,8 @@ define(`LOCAL_NAME', `PUSHDIVERT(5)CL$1
 POPDIVERT`'dnl')
 
 m4wrap(`include(`../m4/proto.m4')')
+
+# a local mailer is required
+MAILER(local)
 
 divert(0)dnl
