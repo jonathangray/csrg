@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)fstat.1	5.12 (Berkeley) 07/22/91
+.\"     @(#)fstat.1	5.13 (Berkeley) 05/25/93
 .\"
 .Dd 
 .Dt FSTAT 1
@@ -156,6 +156,12 @@ located, or the
 .Fl n
 flag is specified, prints the major/minor device
 number that the special device refers to.
+.It Li R/W
+This column describes the access mode that the file allows.
+The letter ``r'' indicates open for reading;
+the letter ``w'' indicates open for writing.
+This field is useful when trying to find the processes that are
+preventing a filesystem from being down graded to read-only.
 .It Li NAME
 If filename arguments are specified and the
 .Fl f
