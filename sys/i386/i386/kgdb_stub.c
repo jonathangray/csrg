@@ -2,6 +2,15 @@
  * Copyright (c) 1990 Regents of the University of California.
  * All rights reserved.
  *
+ * This software was developed by the Computer Systems Engineering group
+ * at Lawrence Berkeley Laboratory under DARPA contract BG 91-66 and
+ * contributed to Berkeley.
+ *
+ * All advertising materials mentioning features or use of this software
+ * must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Lawrence Berkeley Laboratories.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -30,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kgdb_stub.c	7.4 (Berkeley) 10/11/92
+ *	@(#)kgdb_stub.c	7.5 (Berkeley) 12/16/92
  */
 /*
  * "Stub" to allow remote cpu to debug over a serial line using gdb.
