@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mfs_vnops.c	7.29 (Berkeley) 03/22/92
+ *	@(#)mfs_vnops.c	7.30 (Berkeley) 04/19/92
  */
 
 #include <sys/param.h>
@@ -352,9 +352,11 @@ mfs_inactive(vp, p)
 	struct vnode *vp;
 	struct proc *p;
 {
+	register struct mfsnode *mfsp = VTOMFS(vp);
 
-	if (VTOMFS(vp)->mfs_buflist != (struct buf *)(-1))
-		panic("mfs_inactive: not inactive");
+	if (mfsp->mfs_buflist && mfsp->mfs_buflist != (struct buf *)(-1))
+		panic("mfs_inactive: not inactive (mfs_buflist %x)",
+			mfsp->mfs_buflist);
 	return (0);
 }
 
