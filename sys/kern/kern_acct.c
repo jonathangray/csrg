@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_acct.c	7.22 (Berkeley) 05/14/92
+ *	@(#)kern_acct.c	7.23 (Berkeley) 07/02/92
  */
 
 #include "param.h"
@@ -56,7 +56,6 @@ sysacct(p, uap, retval)
 	} *uap;
 	int *retval;
 {
-	USES_VOP_UNLOCK;
 	register struct vnode *vp;
 	extern int acctwatch();
 	struct vnode *oacctp;
