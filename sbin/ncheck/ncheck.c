@@ -14,7 +14,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)ncheck.c	5.16 (Berkeley) 05/28/92";
+static char sccsid[] = "@(#)ncheck.c	5.17 (Berkeley) 01/15/93";
 #endif /* not lint */
 
 /*
@@ -24,6 +24,7 @@ static char sccsid[] = "@(#)ncheck.c	5.16 (Berkeley) 05/28/92";
 #define	NB		500
 #define	MAXNINDIR	(MAXBSIZE / sizeof (daddr_t))
 
+#include <unistd.h>
 #include <sys/param.h>
 #include <sys/dir.h>
 #include <sys/time.h>
@@ -140,7 +141,7 @@ check(file)
 		nerror++;
 		return;
 	}
-	bread(SBOFF, (char *)sblockp, (long)SBSIZE);
+	bread((daddr_t)SBOFF, (char *)sblockp, (long)SBSIZE);
 	if (sblockp->fs_magic != FS_MAGIC) {
 		(void) printf("%s: not a file system\n", file);
 		nerror++;
@@ -315,7 +316,7 @@ nreaddir(dirp)
 			if(d == 0)
 				return NULL;
 			bread(fsbtodb(sblockp, d), dirp->dbuf,
-			    dblksize(sblockp, dirp->ip, lbn));
+			      (long)dblksize(sblockp, dirp->ip, lbn));
 		}
 		dp = (struct direct *)
 		    (dirp->dbuf + blkoff(sblockp, dirp->loc));
