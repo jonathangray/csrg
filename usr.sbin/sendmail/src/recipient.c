@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recipient.c	8.71 (Berkeley) 03/10/95";
+static char sccsid[] = "@(#)recipient.c	8.72 (Berkeley) 03/14/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -250,7 +250,7 @@ recipient(a, sendq, aliaslevel, e)
 	int findusercount = 0;
 	int i;
 	char *buf;
-	char buf0[MAXNAME];		/* unquoted image of the user name */
+	char buf0[MAXNAME + 1];		/* unquoted image of the user name */
 	extern int safefile();
 
 	e->e_to = a->q_paddr;
@@ -285,7 +285,7 @@ recipient(a, sendq, aliaslevel, e)
 
 	/* get unquoted user for file, program or user.name check */
 	i = strlen(a->q_user);
-	if (i >= sizeof buf)
+	if (i >= sizeof buf0)
 		buf = xalloc(i + 1);
 	else
 		buf = buf0;
@@ -512,7 +512,7 @@ recipient(a, sendq, aliaslevel, e)
 		}
 		else
 		{
-			char nbuf[MAXNAME];
+			char nbuf[MAXNAME + 1];
 
 			if (fuzzy)
 			{
