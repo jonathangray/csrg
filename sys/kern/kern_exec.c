@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_exec.c	7.31 (Berkeley) 10/19/90
+ *	@(#)kern_exec.c	7.32 (Berkeley) 10/19/90
  */
 
 #include "param.h"
@@ -417,7 +417,7 @@ execve(p, uap, retval)
 			cp += len;
 			nc += len;
 			cc -= len;
-		} while (error == ENOENT);
+		} while (error == ENAMETOOLONG);
 		if (error) {
 			if (bp)
 				brelse(bp);
@@ -502,7 +502,7 @@ badarg:
 			cp += len;
 			nc += len;
 			cc -= len;
-		} while (error == ENOENT);
+		} while (error == ENAMETOOLONG);
 		if (error == EFAULT)
 			panic("exec: EFAULT");
 	}
