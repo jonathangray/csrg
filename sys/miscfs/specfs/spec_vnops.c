@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)spec_vnops.c	7.50 (Berkeley) 10/08/92
+ *	@(#)spec_vnops.c	7.51 (Berkeley) 10/12/92
  */
 
 #include <sys/param.h>
@@ -399,7 +399,7 @@ spec_fsync(ap)
 	register struct vnode *vp = ap->a_vp;
 	register struct buf *bp;
 	struct buf *nbp;
-	int s, error, allerror = 0;
+	int s;
 
 	if (vp->v_type == VCHR)
 		return (0);
@@ -417,8 +417,7 @@ loop:
 		bremfree(bp);
 		bp->b_flags |= B_BUSY;
 		splx(s);
-		if (error = bawrite(bp))
-			allerror = error;
+		bawrite(bp);
 		goto loop;
 	}
 	if (ap->a_waitfor == MNT_WAIT) {
@@ -434,7 +433,7 @@ loop:
 #endif
 	}
 	splx(s);
-	return (allerror);
+	return (0);
 }
 
 /*
