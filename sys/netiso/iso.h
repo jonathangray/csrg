@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)iso.h	7.7 (Berkeley) 10/11/92
+ *	@(#)iso.h	7.8 (Berkeley) 11/25/92
  */
 
 /***********************************************************
@@ -78,6 +78,8 @@ SOFTWARE.
 /*
  * Protocols
  */
+#define	ISOPROTO_TCP	6		/* IETF experiment */
+#define	ISOPROTO_UDP	17		/* IETF experiment */
 #define	ISOPROTO_TP0	25		/* connection oriented transport protocol */
 #define	ISOPROTO_TP1	26		/* not implemented */
 #define	ISOPROTO_TP2	27		/* not implemented */
@@ -90,6 +92,7 @@ SOFTWARE.
 #define	ISOPROTO_INACT_NL	33	/* inactive network layer! */
 #define	ISOPROTO_ESIS	34		/* ES-IS protocol */
 #define	ISOPROTO_INTRAISIS	35		/* IS-IS protocol */
+#define	ISOPROTO_IDRP	36		/* Interdomain Routing Protocol */
 
 #define	ISOPROTO_RAW	255		/* raw clnp */
 #define	ISOPROTO_MAX	256
@@ -121,6 +124,8 @@ SOFTWARE.
 #define	ISO9542_ESIS	0x82
 #define ISO9542X25_ESIS	0x8a
 #define ISO10589_ISIS		0x83
+#define ISO8878A_CONS		0x84
+#define ISO10747_IDRP		0x85
 
 
 #ifndef IN_CLASSA_NET
