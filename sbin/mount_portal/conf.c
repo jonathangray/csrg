@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.c	8.1 (Berkeley) 06/05/93
+ *	@(#)conf.c	8.2 (Berkeley) 03/27/94
  *
  * $Id: conf.c,v 1.2 1992/05/27 07:09:27 jsp Exp jsp $
  */
@@ -240,7 +240,7 @@ qelem *xq;
 	 * and free it.
 	 */
 	while (q0->q_forw != q0) {
-		qelem *q = q->q_forw;
+		qelem *q = q0->q_forw;
 		rem_que(q);
 		pfree((path *) q);
 	}
