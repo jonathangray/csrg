@@ -30,8 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)grp.h	5.3 (Berkeley) 02/05/91
+ *	@(#)grp.h	5.4 (Berkeley) 04/03/91
  */
+
+#ifndef _GRP_H_
+#define	_GRP_H_
 
 #ifndef _POSIX_SOURCE
 #define	_PATH_GROUP		"/etc/group"
@@ -57,3 +60,5 @@ void setgrfile __P((const char *));
 int setgroupent __P((int));
 #endif
 __END_DECLS
+
+#endif /* !_GRP_H_ */
