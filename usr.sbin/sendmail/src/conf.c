@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.71 (Berkeley) 02/03/94";
+static char sccsid[] = "@(#)conf.c	8.72 (Berkeley) 02/05/94";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -911,6 +911,9 @@ refuseconnections()
 */
 
 #ifdef SETPROCTITLE
+# ifdef HASSETPROCTITLE
+   *** ERROR ***  Cannot have both SETPROCTITLE and HASSETPROCTITLE defined
+# endif
 # ifdef __hpux
 #  include <sys/pstat.h>
 # endif
