@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)types.h	7.17 (Berkeley) 05/06/91
+ *	@(#)types.h	7.18 (Berkeley) 12/06/91
  */
 
 #ifndef _TYPES_H_
@@ -79,6 +79,11 @@ typedef	_CLOCK_T_	clock_t;
 #ifdef	_SIZE_T_
 typedef	_SIZE_T_	size_t;
 #undef	_SIZE_T_
+#endif
+
+#ifdef	_SSIZE_T_
+typedef	_SSIZE_T_	ssize_t;
+#undef	_SSIZE_T_
 #endif
 
 #ifdef	_TIME_T_
