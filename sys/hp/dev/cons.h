@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: cons.h 1.4 88/12/03$
  *
- *	@(#)cons.h	7.1 (Berkeley) 05/08/90
+ *	@(#)cons.h	7.2 (Berkeley) 05/25/90
  */
 
 struct consdev {
@@ -58,3 +58,9 @@ struct consdev {
 
 /* XXX */
 #define	CONSMAJOR	0
+
+#ifdef KERNEL
+extern	struct consdev constab[];
+extern	struct consdev *cn_tab;
+extern	struct tty *cn_tty;
+#endif
