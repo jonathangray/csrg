@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)exec.h	5.1 (Berkeley) 03/07/91
+ *	@(#)exec.h	5.2 (Berkeley) 06/23/92
  */
 
 /* values of cmdtype */
@@ -62,7 +62,7 @@ int find_builtin(char *);
 void hashcd(void);
 void changepath(char *);
 void defun(char *, union node *);
-void unsetfunc(char *);
+int unsetfunc(char *);
 #else
 void shellexec();
 char *padvance();
@@ -71,5 +71,5 @@ int find_builtin();
 void hashcd();
 void changepath();
 void defun();
-void unsetfunc();
+int unsetfunc();
 #endif
