@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_object.c	8.3 (Berkeley) 01/12/94
+ *	@(#)vm_object.c	8.4 (Berkeley) 03/21/94
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -1243,6 +1243,14 @@ void vm_object_collapse(object)
 			vm_object_reference(object->shadow);
 			object->shadow_offset += backing_object->shadow_offset;
 
+			/*
+			 *	Backing object might have had a copy pointer
+			 *	to us.  If it did, clear it. 
+			 */
+			if (backing_object->copy == object) {
+				backing_object->copy = VM_OBJECT_NULL;
+			}
+	
 			/*	Drop the reference count on backing_object.
 			 *	Since its ref_count was at least 2, it
 			 *	will not vanish; so we don't need to call
