@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsx_ops.c	5.3 (Berkeley) 05/12/91
+ *	@(#)nfsx_ops.c	1.2 (Berkeley) 6/25/91
  *
- * $Id: nfsx_ops.c,v 5.2.1.9 91/05/07 22:18:19 jsp Alpha $
+ * $Id: nfsx_ops.c,v 5.2.2.1 1992/02/09 15:08:49 jsp beta $
  *
  */
 
@@ -221,7 +221,7 @@ mntfs *mf;
 			dlog("nfsx: init mount for %s on %s", xinfo, mp);
 #endif
 			nx->nx_v[i].n_error = -1;
-			nx->nx_v[i].n_mnt = find_mntfs(&nfs_ops, mf->mf_fo, mp, xinfo, "", mf->mf_mopts);
+			nx->nx_v[i].n_mnt = find_mntfs(&nfs_ops, mf->mf_fo, mp, xinfo, "", mf->mf_mopts, mf->mf_remopts);
 		  }
 		  if (rfs) free(rfs);
 		  if (mp) free(mp);
