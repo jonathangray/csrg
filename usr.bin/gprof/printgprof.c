@@ -1,5 +1,5 @@
 #ifndef lint
-    static	char *sccsid = "@(#)printgprof.c	1.13 (Berkeley) 01/15/83";
+    static	char *sccsid = "@(#)printgprof.c	1.14 (Berkeley) 03/30/83";
 #endif lint
 
 #include "gprof.h"
