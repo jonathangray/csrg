@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)utilities.c	5.7 (Berkeley) 10/05/92";
+static char sccsid[] = "@(#)utilities.c	5.8 (Berkeley) 10/06/92";
 #endif /* not lint */
 
 #include "restore.h"
@@ -56,7 +56,7 @@ pathcheck(name)
 		*cp = '\0';
 		ep = lookupname(name);
 		if (ep == NIL) {
-			ep = addentry(name, psearch(name), NODE);
+			ep = addentry(name, pathsearch(name), NODE);
 			newnode(ep);
 		}
 		ep->e_flags |= NEW|KEEP;
@@ -316,7 +316,7 @@ dirlookup(name)
 {
 	ino_t ino;
 
-	ino = psearch(name);
+	ino = pathsearch(name);
 	if (ino == 0 || TSTINO(ino, dumpmap) == 0)
 		fprintf(stderr, "%s is not on tape\n", name);
 	return (ino);
