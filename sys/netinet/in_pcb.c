@@ -30,12 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)in_pcb.c	7.16 (Berkeley) 02/18/92
+ *	@(#)in_pcb.c	7.17 (Berkeley) 02/20/92
  */
 
 #include "param.h"
 #include "systm.h"
-#include "proc.h"
 #include "malloc.h"
 #include "mbuf.h"
 #include "protosw.h"
