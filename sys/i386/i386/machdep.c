@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)machdep.c	7.17 (Berkeley) 05/24/93
+ *	@(#)machdep.c	7.17 (Berkeley) 5/24/93
  */
 
 #include <sys/param.h>
@@ -482,7 +482,7 @@ boot(arghowto)
 extern int cold;
 
 	howto = arghowto;
-	if ((howto&RB_NOSYNC) == 0 && waittime < 0 && bfreelist[0].b_forw) {
+	if ((howto&RB_NOSYNC) == 0 && waittime < 0) {
 		register struct buf *bp;
 		int iter, nbusy;
 
