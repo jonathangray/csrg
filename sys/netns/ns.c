@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ns.c	8.1 (Berkeley) 06/10/93
+ *	@(#)ns.c	8.2 (Berkeley) 11/15/93
  */
 
 #include <sys/param.h>
@@ -43,7 +43,6 @@
 
 #include <net/if.h>
 #include <net/route.h>
-#include <net/af.h>
 
 #include <netns/ns.h>
 #include <netns/ns_if.h>
