@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)apropos.c	8.2 (Berkeley) 01/02/94";
+static char sccsid[] = "@(#)apropos.c	8.3 (Berkeley) 01/02/94";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -55,8 +55,6 @@ static char sccsid[] = "@(#)apropos.c	8.2 (Berkeley) 01/02/94";
 
 #define	MAXLINELEN	1024			/* max line handled */
 
-char *progname;
-
 static int *found, foundman;
 
 int
@@ -68,12 +66,15 @@ main(argc, argv)
 	extern int optind;
 	ENTRY *ep;
 	int ch;
-	char **p, *p_augment, *p_path;
+	char *conffile, **p, *p_augment, *p_path;
 
-	progname = "apropos";
+	conffile = NULL;
 	p_augment = p_path = NULL;
-	while ((ch = getopt(argc, argv, "M:m:P:")) != EOF)
+	while ((ch = getopt(argc, argv, "C:M:m:P:")) != EOF)
 		switch (ch) {
+		case 'C':
+			conffile = optarg;
+			break;
 		case 'M':
 		case 'P':		/* backward compatible */
 			p_path = optarg;
@@ -91,7 +92,7 @@ main(argc, argv)
 	if (argc < 1)
 		usage();
 
-	if ((found = malloc((size_t)argc)) == NULL)
+	if ((found = malloc((u_int)argc)) == NULL)
 		err(1, NULL);
 	memset(found, 0, argc * sizeof(int));
 
@@ -103,7 +104,7 @@ main(argc, argv)
 	if (p_path || (p_path = getenv("MANPATH")))
 		apropos(argv, p_path, 1);
 	else {
-		config();
+		config(conffile);
 		ep = getlist("_whatdb");
 		if (ep != NULL)
 			ep = ep->list.qe_next;
@@ -209,6 +210,6 @@ lowstr(from, to)
 usage()
 {
 	(void)fprintf(stderr,
-	    "usage: apropos [-M path] [-m path] keyword ...\n");
+	    "usage: apropos [-C file] [-M path] [-m path] keyword ...\n");
 	exit(1);
 }
