@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)fingerd.c	5.7 (Berkeley) 02/06/92";
+static char sccsid[] = "@(#)fingerd.c	5.8 (Berkeley) 02/06/92";
 #endif /* not lint */
 
 #include <errno.h>
@@ -79,8 +79,10 @@ main()
 		if (*ap == NULL)
 			break;
 		/* RFC742: "/[Ww]" == "-l" */
-		if ((*ap)[0] == '/' && ((*ap)[1] == 'W' || (*ap)[1] == 'w'))
-			*comp-- = "-l";
+		if ((*ap)[0] == '/' && ((*ap)[1] == 'W' || (*ap)[1] == 'w')) {
+			av[1] = "-l";
+			comp = &av[0];
+		}
 		else if (++ap == av + ENTRIES)
 			break;
 		lp = NULL;
