@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: cpu.h 1.16 91/03/25$
  *
- *	@(#)cpu.h	8.2 (Berkeley) 09/23/93
+ *	@(#)cpu.h	8.3 (Berkeley) 12/10/93
  */
 
 /*
@@ -50,10 +50,10 @@
  */
 #define	COPY_SIGCODE		/* copy sigcode above user stack in exec */
 
-#define	cpu_exec(p)	/* nothing */
-#define	cpu_wait(p)	/* nothing */
-#define cpu_setstack(p, ap) \
-	(p)->p_md.md_regs[SP] = ap
+#define	cpu_exec(p)			/* nothing */
+#define	cpu_wait(p)			/* nothing */
+#define cpu_setstack(p, ap)		(p)->p_md.md_regs[SP] = ap
+#define cpu_set_init_frame(p, fp)	(p)->p_md.md_regs = fp
 
 /*
  * Arguments to hardclock and gatherstats encapsulate the previous
