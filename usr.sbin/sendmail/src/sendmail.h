@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.59 (Berkeley) 08/20/94
+ *	@(#)sendmail.h	8.60 (Berkeley) 08/21/94
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.59		08/20/94";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.60		08/21/94";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -144,7 +144,6 @@ struct address
 	char		*q_home;	/* home dir (local mailer only) */
 	char		*q_fullname;	/* full name if known */
 	char		*q_fullname;	/* full name of this person */
-	time_t		q_timeout;	/* timeout for this address */
 	struct address	*q_next;	/* chain */
 	struct address	*q_alias;	/* parent in alias tree */
 	struct address	*q_sibling;	/* sibling in alias tree */
@@ -372,6 +371,7 @@ ENVELOPE
 	short		e_nsent;	/* number of sends since checkpoint */
 	short		e_sendmode;	/* message send mode */
 	short		e_errormode;	/* error return mode */
+	short		e_timeoutclass;	/* message timeout class */
 	int		(*e_puthdr)__P((MCI *, HDR *, ENVELOPE *));
 					/* function to put header of message */
 	int		(*e_putbody)__P((MCI *, ENVELOPE *, char *));
@@ -560,10 +560,17 @@ MAP
 	char		*map_file;	/* the (nominal) filename */
 	ARBPTR_T	map_db1;	/* the open database ptr */
 	ARBPTR_T	map_db2;	/* an "extra" database pointer */
+	char		*map_keycolnm;	/* key column name */
+	char		*map_valcolnm;	/* value column name */
+	u_char		map_keycolno;	/* key column number */
+	u_char		map_valcolno;	/* value column number */
+	char		map_coldelim;	/* column delimiter */
 	char		*map_app;	/* to append to successful matches */
 	char		*map_domain;	/* the (nominal) NIS domain */
 	char		*map_rebuild;	/* program to run to do auto-rebuild */
 	time_t		map_mtime;	/* last database modification time */
+	MAP		*map_stack[MAXMAPSTACK]; /* list for stacked maps */
+	short		map_return[3];	/* return bitmaps for stacked maps */
 };
 
 /* bit values for map_flags */
@@ -583,6 +590,10 @@ MAP
 # define MF_IMPL_NDBM	0x2000		/* implicit: underlying NDBM database */
 # define MF_UNSAFEDB	0x4000		/* this map is world writable */
 
+/* indices for map_actions */
+# define MA_NOTFOUND	0		/* member map returned "not found" */
+# define MA_UNAVAIL	1		/* member map is not available */
+# define MA_TRYAGAIN	2		/* member map returns temp failure */
 
 /*
 **  The class of a map -- essentially the functions to call
@@ -932,9 +943,14 @@ EXTERN struct
 	time_t	to_ident;	/* IDENT protocol requests */
 	time_t	to_fileopen;	/* opening :include: and .forward files */
 			/* following are per message */
-	time_t	to_q_return;	/* queue return timeout */
-	time_t	to_q_warning;	/* queue warning timeout */
+	time_t	to_q_return[MAXTOCLASS];	/* queue return timeouts */
+	time_t	to_q_warning[MAXTOCLASS];	/* queue warning timeouts */
 } TimeOuts;
+
+/* timeout classes for return and warning timeouts */
+# define TOC_NORMAL	0	/* normal delivery */
+# define TOC_URGENT	1	/* urgent delivery */
+# define TOC_NONURGENT	2	/* non-urgent delivery */
 
 
 /*
