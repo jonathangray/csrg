@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	8.74 (Berkeley) 05/27/95 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	8.75 (Berkeley) 05/28/95 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	8.74 (Berkeley) 05/27/95 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	8.75 (Berkeley) 05/28/95 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -125,6 +125,7 @@ extern char	RealUserName[];
 
 #define MAXBADCOMMANDS	25		/* maximum number of bad commands */
 
+void
 smtp(e)
 	register ENVELOPE *e;
 {
@@ -408,6 +409,7 @@ smtp(e)
 			{
 				char *kp;
 				char *vp = NULL;
+				extern void mail_esmtp_args __P((char *, char *, ENVELOPE *));
 
 				/* locate the beginning of the keyword */
 				while (isascii(*p) && isspace(*p))
@@ -811,6 +813,7 @@ skipword(p, w)
 **		none.
 */
 
+void
 mail_esmtp_args(kp, vp, e)
 	char *kp;
 	char *vp;
@@ -912,6 +915,7 @@ mail_esmtp_args(kp, vp, e)
 **		none.
 */
 
+void
 rcpt_esmtp_args(a, kp, vp, e)
 	ADDRESS *a;
 	char *kp;
@@ -989,6 +993,7 @@ rcpt_esmtp_args(a, kp, vp, e)
 **		Prints the appropriate 250 codes.
 */
 
+void
 printvrfyaddr(a, last)
 	register ADDRESS *a;
 	bool last;
@@ -1028,6 +1033,7 @@ printvrfyaddr(a, last)
 **		outputs the help file to message output.
 */
 
+void
 help(topic)
 	char *topic;
 {
@@ -1097,6 +1103,7 @@ help(topic)
 **		none.
 */
 
+int
 runinchild(label, e)
 	char *label;
 	register ENVELOPE *e;
