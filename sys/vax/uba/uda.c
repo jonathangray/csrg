@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uda.c	7.29 (Berkeley) 11/14/90
+ *	@(#)uda.c	7.30 (Berkeley) 11/28/90
  */
 
 /*
@@ -335,7 +335,7 @@ udaprobe(reg, ctlr, um)
 	 * initialise within ten seconds.  Or so I hear; I have not seen
 	 * this manual myself.
 	 */
-#ifdef QBA
+#if defined(QBA) && !defined(GENERIC)
 	s = spl6();
 #endif
 	tries = 0;
@@ -353,13 +353,17 @@ again:
 
 	/* should have interrupted by now */
 #ifdef QBA
+#ifndef GENERIC
 	sc->sc_ipl = br = qbgetpri();
+#else
+	sc->sc_ipl = br = 0x15;
+#endif
 #endif
 	return (sizeof (struct udadevice));
 bad:
 	if (++tries < 2)
 		goto again;
-#ifdef QBA
+#if defined(QBA) && !defined(GENERIC)
 	splx(s);
 #endif
 	return (0);
