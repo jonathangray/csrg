@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)ttyname.c	5.11 (Berkeley) 09/14/91";
+static char sccsid[] = "@(#)ttyname.c	5.12 (Berkeley) 09/23/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
