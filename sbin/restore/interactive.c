@@ -32,13 +32,24 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)interactive.c	5.16 (Berkeley) 10/06/92";
+static char sccsid[] = "@(#)interactive.c	5.17 (Berkeley) 10/16/92";
 #endif /* not lint */
 
-#include "restore.h"
-#include <protocols/dumprestore.h>
-#include <setjmp.h>
+#include <sys/param.h>
+#include <sys/time.h>
+
+#include <ufs/ffs/fs.h>
+#include <ufs/ufs/dinode.h>
 #include <ufs/ufs/dir.h>
+#include <protocols/dumprestore.h>
+
+#include <setjmp.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "restore.h"
+#include "extern.h"
 
 #define round(a, b) (((a) + (b) - 1) / (b) * (b))
 
@@ -66,13 +77,23 @@ struct arglist {
 	int		nent;	/* maximum size of list */
 	char		*cmd;	/* the current command */
 };
-extern int fcmp();
-extern char *fmtentry();
-char *copynext();
+
+static int	 addg __P((struct direct *, char *, char *, struct arglist *));
+static char	*copynext __P((char *, char *));
+static int	 expand __P((char *, int, struct arglist *));
+static void	 expandarg __P((char *, struct arglist *));
+static int	 fcmp __P((const void *, const void *));
+static char	*fmtentry __P((struct afile *));
+static void	 formatf __P((struct arglist *));
+static void	 getcmd __P((char *, char *, char *, struct arglist *));
+static int	 gmatch __P((char *, char *));
+static int	 mkentry __P((char *, struct direct *, struct arglist *));
+static void	 printlist __P((char *, ino_t, char *));
 
 /*
  * Read and execute commands from the terminal.
  */
+void
 runcmdshell()
 {
 	register struct entry *np;
@@ -128,7 +149,7 @@ loop:
 		if (strncmp(cmd, "delete", strlen(cmd)) != 0)
 			goto bad;
 		np = lookupname(name);
-		if (np == NIL || (np->e_flags & NEW) == 0) {
+		if (np == NULL || (np->e_flags & NEW) == 0) {
 			fprintf(stderr, "%s: not on extraction list\n", name);
 			break;
 		}
@@ -272,6 +293,7 @@ loop:
  * "curdir" is prepended to it. Finally "canon" is called to
  * eliminate any embedded ".." components.
  */
+static void
 getcmd(curdir, cmd, name, ap)
 	char *curdir, *cmd, *name;
 	struct arglist *ap;
@@ -354,7 +376,7 @@ getnext:
 /*
  * Strip off the next token of the input.
  */
-char *
+static char *
 copynext(input, output)
 	char *input, *output;
 {
@@ -404,11 +426,11 @@ copynext(input, output)
  * Canonicalize file names to always start with ``./'' and
  * remove any imbedded "." and ".." components.
  */
+void
 canon(rawname, canonname)
 	char *rawname, *canonname;
 {
 	register char *cp, *np;
-	int len;
 
 	if (strcmp(rawname, ".") == 0 || strncmp(rawname, "./", 2) == 0)
 		(void) strcpy(canonname, "");
@@ -459,6 +481,7 @@ canon(rawname, canonname)
  * "[...]" in params matches character class
  * "[...a-z...]" in params matches a through z.
  */
+static void
 expandarg(arg, ap)
 	char *arg;
 	register struct arglist *ap;
@@ -483,6 +506,7 @@ expandarg(arg, ap)
 /*
  * Expand a file name
  */
+static int
 expand(as, rflg, ap)
 	char *as;
 	int rflg;
@@ -583,6 +607,7 @@ expand(as, rflg, ap)
 /*
  * Check for a name match
  */
+static int
 gmatch(s, p)
 	register char	*s, *p;
 {
@@ -638,6 +663,7 @@ gmatch(s, p)
 /*
  * Construct a matched name.
  */
+static int
 addg(dp, as1, as3, ap)
 	struct direct	*dp;
 	char		*as1, *as3;
@@ -666,11 +692,13 @@ addg(dp, as1, as3, ap)
 	}
 	if (mkentry(buf, dp, ap) == FAIL)
 		return (-1);
+	return (0);
 }
 
 /*
  * Do an "ls" style listing of a directory
  */
+static void
 printlist(name, ino, basename)
 	char *name;
 	ino_t ino;
@@ -718,6 +746,7 @@ printlist(name, ino, basename)
 /*
  * Read the contents of a directory.
  */
+static int
 mkentry(name, dp, ap)
 	char *name;
 	struct direct *dp;
@@ -762,6 +791,7 @@ mkentry(name, dp, ap)
 /*
  * Print out a pretty listing of a directory
  */
+static void
 formatf(ap)
 	register struct arglist *ap;
 {
@@ -776,7 +806,7 @@ formatf(ap)
 	for (fp = ap->head; fp < ap->last; fp++) {
 		fp->ftype = inodetype(fp->fnum);
 		np = lookupino(fp->fnum);
-		if (np != NIL)
+		if (np != NULL)
 			fp->fflags = np->e_flags;
 		else
 			fp->fflags = 0;
@@ -810,17 +840,18 @@ formatf(ap)
 /*
  * Comparison routine for qsort.
  */
+static int
 fcmp(f1, f2)
-	register struct afile *f1, *f2;
+	register const void *f1, *f2;
 {
-
-	return (strcmp(f1->fname, f2->fname));
+	return (strcmp(((struct afile *)f1)->fname,
+	    ((struct afile *)f2)->fname));
 }
 
 /*
  * Format a directory entry.
  */
-char *
+static char *
 fmtentry(fp)
 	register struct afile *fp;
 {
@@ -887,7 +918,8 @@ fmtentry(fp)
  * respond to interrupts
  */
 void
-onintr()
+onintr(signo)
+	int signo;
 {
 	if (command == 'i' && runshell)
 		longjmp(reset, 1);
