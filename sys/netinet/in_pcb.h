@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)in_pcb.h	7.7 (Berkeley) 07/06/92
+ *	@(#)in_pcb.h	7.8 (Berkeley) 04/07/93
  */
 
 /*
@@ -71,5 +71,6 @@ struct inpcb {
 #define	sotoinpcb(so)	((struct inpcb *)(so)->so_pcb)
 
 #ifdef KERNEL
-struct	inpcb *in_pcblookup();
+struct	inpcb *in_pcblookup __P((struct inpcb *, struct in_addr, int,
+				 struct in_addr,  int, int));
 #endif
