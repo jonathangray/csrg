@@ -29,7 +29,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)termcap.src	5.91 (Berkeley) 09/20/91
+#	@(#)termcap.src	5.92 (Berkeley) 09/30/91
 #
 
 #	Termcap source file
