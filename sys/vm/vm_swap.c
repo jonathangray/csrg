@@ -14,7 +14,7 @@
  * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *	@(#)vm_swap.c	7.11 (Berkeley) 03/27/90
+ *	@(#)vm_swap.c	7.12 (Berkeley) 06/21/90
  */
 
 #include "param.h"
