@@ -41,7 +41,7 @@
  *
  * from: hp300/hp300/vm_machdep.c	7.12 (Berkeley) 6/5/92
  *
- *	@(#)vm_machdep.c	7.2 (Berkeley) 10/11/92
+ *	@(#)vm_machdep.c	7.3 (Berkeley) 12/10/92
  */
 
 #include <sys/param.h>
@@ -56,7 +56,7 @@
 
 #include <vm/vm.h>
 #include <vm/vm_kern.h>
-#include <pte.h>
+#include <luna68k/luna68k/pte.h>
 
 /*
  * Finish a fork operation, with process p2 nearly set up.
