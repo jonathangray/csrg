@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_bio.c	8.4 (Berkeley) 12/30/93
+ *	@(#)lfs_bio.c	8.5 (Berkeley) 03/21/95
  */
 
 #include <sys/param.h>
@@ -163,7 +163,7 @@ lfs_flush()
 int
 lfs_check(vp, blkno)
 	struct vnode *vp;
-	daddr_t blkno;
+	ufs_daddr_t blkno;
 {
 	extern int lfs_allclean_wakeup;
 	int error;
