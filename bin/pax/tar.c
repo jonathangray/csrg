@@ -36,7 +36,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)tar.c	8.1 (Berkeley) 05/31/93";
+static char sccsid[] = "@(#)tar.c	8.2 (Berkeley) 04/18/94";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -878,12 +878,12 @@ ustar_rd(arcn, buf)
 		arcn->sb.st_nlink = 2;
 
 		/*
-                 * Some programs that create ustar archives append a '/'
-                 * to the pathname for directories. This clearly violates
-                 * ustar specs, but we will silently strip it off anyway.
-                 */
-                if (arcn->name[arcn->nlen - 1] == '/')
-                        arcn->name[--arcn->nlen] = '\0';
+		 * Some programs that create ustar archives append a '/'
+		 * to the pathname for directories. This clearly violates
+		 * ustar specs, but we will silently strip it off anyway.
+		 */
+		if (arcn->name[arcn->nlen - 1] == '/')
+			arcn->name[--arcn->nlen] = '\0';
 		break;
 	case BLKTYPE:
 	case CHRTYPE:
