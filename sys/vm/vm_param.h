@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_param.h	7.5 (Berkeley) 08/28/91
+ *	@(#)vm_param.h	7.6 (Berkeley) 10/11/92
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -69,11 +69,7 @@
 #ifndef	_VM_PARAM_
 #define	_VM_PARAM_
 
-#ifdef KERNEL
-#include "machine/vmparam.h"
-#else
 #include <machine/vmparam.h>
-#endif
 
 /*
  * This belongs in types.h, but breaks too many existing programs.
