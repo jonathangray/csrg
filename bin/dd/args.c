@@ -36,7 +36,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)args.c	5.2 (Berkeley) 07/27/91";
+static char sccsid[] = "@(#)args.c	5.3 (Berkeley) 07/27/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -123,7 +123,7 @@ jcl(argv)
 		 * just wanted to set both the input and output block sizes
 		 * and didn't want the bs semantics, so we don't warn.
 		 */
-		if (ddflags & (C_BLOCK|C_LCASE|C_SWAB|C_UCASE|C_UNBLOCK))
+		if (ddflags & (C_BLOCK|C_LCASE|C_UCASE|C_UNBLOCK))
 			ddflags &= ~C_BS;
 
 		/* Bs supersedes ibs and obs. */
@@ -389,6 +389,13 @@ get_bsz(val)
 			goto erange;
 		++expr;
 		break;
+	case 'm':
+		t = num;
+		num *= 1048576;
+		if (t > num)
+			goto erange;
+		++expr;
+		break;
 	case 'w':				/* POSIX extension. */
 		t = num;
 		num *= sizeof(int);
@@ -401,8 +408,8 @@ get_bsz(val)
 	switch(*expr) {
 		case '\0':
 			break;
+		case '*':			/* Backward compatible. */
 		case 'x':
-		case '*':
 			t = num;
 			num *= get_bsz(expr + 1);
 			if (t > num)
