@@ -1,4 +1,4 @@
-static	char *sccsid = "@(#)pi.c	1.2 (Berkeley) 01/22/82";
+static	char *sccsid = "@(#)pi.c	1.3 (Berkeley) 07/01/83";
 #include <stdio.h>
 #include <ctype.h>
 #include "error.h"
