@@ -1,38 +1,59 @@
-.\" Copyright (c) 1985 The Regents of the University of California.
+.\" Copyright (c) 1983, 1985, 1990 The Regents of the University of California.
 .\" All rights reserved.
 .\"
-.\" This module is believed to contain source code proprietary to AT&T.
-.\" Use and redistribution is subject to the Berkeley Software License
-.\" Agreement and your Software Agreement with AT&T (Western Electric).
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
 .\"
-.\"	@(#)true.1	6.2 (Berkeley) 04/18/91
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
 .\"
-.TH TRUE 1 ""
-.AT 3
-.SH NAME
-true, false \- provide truth values
-.SH SYNOPSIS
-.B true
-.PP
-.B false
-.SH DESCRIPTION
-.I True
-and
-.I false
-are usually used in a Bourne shell script.
-They test for the appropriate status "true" or "false" before running 
+.\"     @(#)true.1	6.3 (Berkeley) 04/23/91
+.\"
+.Dd 
+.Dt TRUE 1
+.Os
+.Sh NAME
+.Nm true
+.Nd return true value
+.Sh SYNOPSIS
+.Nm true
+.Sh DESCRIPTION
+.Nm True
+is normally used in a Bourne shell script.
+.Nm True
+tests for the appropriate status "false" before running 
 (or failing to run) a list of commands.  
-.SH EXAMPLE
-.IP
-.nf
-     while true 
-     do
-          command list 
-     done
-.SH "SEE ALSO"
-csh(1),
-sh(1),
-false(1)
-.SH DIAGNOSTICS
-.I True 
-has exit status zero.
+.Sh SEE ALSO
+.Xr csh 1 ,
+.Xr sh 1 ,
+.Xr false 1
+.Sh DIAGNOSTICS
+The
+.Nm true
+utility always returns with exit code zero.
+.Sh STANDARDS
+The
+.Nm true
+function is expected to be POSIX 1003.2 compatible.
