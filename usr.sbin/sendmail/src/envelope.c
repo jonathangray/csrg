@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)envelope.c	8.7 (Berkeley) 08/08/93";
+static char sccsid[] = "@(#)envelope.c	8.8 (Berkeley) 08/17/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -211,7 +211,7 @@ dropenvelope(e)
 	{
 		auto ADDRESS *rlist = NULL;
 
-		(void) sendtolist(e->e_receiptto, (ADDRESS *) NULL, &rlist, e);
+		(void) sendtolist(e->e_receiptto, NULLADDR, &rlist, e);
 		(void) returntosender("Return receipt", rlist, FALSE, e);
 	}
 
@@ -231,7 +231,7 @@ dropenvelope(e)
 	{
 		auto ADDRESS *rlist = NULL;
 
-		(void) sendtolist(PostMasterCopy, (ADDRESS *) NULL, &rlist, e);
+		(void) sendtolist(PostMasterCopy, NULLADDR, &rlist, e);
 		(void) returntosender(e->e_message, rlist, FALSE, e);
 	}
 
@@ -580,7 +580,8 @@ setsender(from, e, delimptr, internal)
 
 	delimchar = internal ? '\0' : ' ';
 	if (from == NULL ||
-	    parseaddr(from, &e->e_from, 1, delimchar, delimptr, e) == NULL)
+	    parseaddr(from, &e->e_from, RF_COPYALL|RF_SENDERADDR,
+		      delimchar, delimptr, e) == NULL)
 	{
 		/* log garbage addresses for traceback */
 # ifdef LOG
@@ -606,10 +607,12 @@ setsender(from, e, delimptr, internal)
 		if (from != NULL)
 			SuprErrs = TRUE;
 		if (from == realname ||
-		    parseaddr(from = newstr(realname), &e->e_from, 1, ' ', NULL, e) == NULL)
+		    parseaddr(from = newstr(realname), &e->e_from,
+			      RF_COPYALL|RF_SENDERADDR, ' ', NULL, e) == NULL)
 		{
 			SuprErrs = TRUE;
-			if (parseaddr("postmaster", &e->e_from, 1, ' ', NULL, e) == NULL)
+			if (parseaddr("postmaster", &e->e_from, RF_COPYALL,
+				      ' ', NULL, e) == NULL)
 				syserr("553 setsender: can't even parse postmaster!");
 		}
 	}
@@ -640,7 +643,7 @@ setsender(from, e, delimptr, internal)
 				FullName = NULL;
 
 # ifdef USERDB
-			p = udbsender(from);
+			p = udbsender(e->e_from.q_user);
 
 			if (p != NULL)
 			{
