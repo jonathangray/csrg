@@ -31,8 +31,13 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)shar.sh	5.1 (Berkeley) 05/23/90
+#	@(#)shar.sh	5.2 (Berkeley) 05/23/90
 #
+
+if [ $# -eq 0 ]; then
+	echo 'usage: shar file ...'
+	exit 1
+fi
 
 cat << EOF
 # This is a shell archive.  Save it in a file, remove anything before
@@ -65,3 +70,5 @@ do
 done
 echo exit
 echo ""
+
+exit 0
