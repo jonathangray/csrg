@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_socket.c	7.35 (Berkeley) 07/12/92
+ *	@(#)uipc_socket.c	7.36 (Berkeley) 07/18/92
  */
 
 #include "param.h"
@@ -815,6 +815,7 @@ sosetopt(so, level, optname, m0)
 		case SO_USELOOPBACK:
 		case SO_BROADCAST:
 		case SO_REUSEADDR:
+		case SO_REUSEPORT:
 		case SO_OOBINLINE:
 			if (m == NULL || m->m_len < sizeof (int)) {
 				error = EINVAL;
@@ -930,6 +931,7 @@ sogetopt(so, level, optname, mp)
 		case SO_DEBUG:
 		case SO_KEEPALIVE:
 		case SO_REUSEADDR:
+		case SO_REUSEPORT:
 		case SO_BROADCAST:
 		case SO_OOBINLINE:
 			*mtod(m, int *) = so->so_options & optname;
