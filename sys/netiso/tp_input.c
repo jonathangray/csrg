@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_input.c	7.26 (Berkeley) 12/17/91
+ *	@(#)tp_input.c	7.27 (Berkeley) 02/11/92
  */
 
 /***********************************************************
@@ -149,7 +149,7 @@ tp_inputprep(m)
 		caddr_t ocp = m->m_data;
 
 		m->m_data = (caddr_t)(((int)m->m_data) & ~0x3);
-		ovbcopy(ocp, m->m_data, (unsigned)m->m_len);
+		bcopy(ocp, m->m_data, (unsigned)m->m_len);
 	}
 	CHANGE_MTYPE(m, TPMT_DATA);
 
