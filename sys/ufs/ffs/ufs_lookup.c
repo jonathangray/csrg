@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lookup.c	7.52 (Berkeley) 11/14/92
+ *	@(#)ufs_lookup.c	7.53 (Berkeley) 04/27/93
  */
 
 #include <sys/param.h>
@@ -87,8 +87,6 @@ int	dirchk = 0;
  *	  inode and return info to allow rewrite
  *	if not at end, add name to cache; if at end and neither creating
  *	  nor deleting, add name to cache
- *
- * NOTE: (LOOKUP | LOCKPARENT) currently returns the parent inode unlocked.
  */
 int
 ufs_lookup(ap)
@@ -239,8 +237,7 @@ ufs_lookup(ap)
 searchloop:
 	while (dp->i_offset < endsearch) {
 		/*
-		 * If offset is on a block boundary, read the next directory
-		 * block.  Release previous if it exists.
+		 * If necessary, get the next directory block.
 		 */
 		if ((dp->i_offset & bmask) == 0) {
 			if (bp != NULL)
