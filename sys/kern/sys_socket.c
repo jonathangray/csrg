@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sys_socket.c	7.10 (Berkeley) 04/12/91
+ *	@(#)sys_socket.c	7.11 (Berkeley) 04/16/91
  */
 
 #include "param.h"
@@ -46,7 +46,6 @@
 #include "net/if.h"
 #include "net/route.h"
 
-int	soo_read(), soo_write(), soo_ioctl(), soo_select(), soo_close();
 struct	fileops socketops =
     { soo_read, soo_write, soo_ioctl, soo_select, soo_close };
 
@@ -180,8 +179,10 @@ soo_stat(so, ub)
 	    (struct mbuf *)0));
 }
 
-soo_close(fp)
+/* ARGSUSED */
+soo_close(fp, p)
 	struct file *fp;
+	struct proc *p;
 {
 	int error = 0;
 
