@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)netisr.h	7.7 (Berkeley) 11/29/90
+ *	@(#)netisr.h	7.8 (Berkeley) 05/07/91
  */
 
 /*
@@ -59,6 +59,25 @@
 #define	NETISR_CCITT	10		/* same as AF_CCITT */
 
 #define	schednetisr(anisr)	{ netisr |= 1<<(anisr); setsoftnet(); }
+
+#ifdef i386
+/* XXX Temporary -- soon to vanish - wfj */
+#define	NETISR_SCLK	11		/* softclock */
+#define	NETISR_AST	12		/* ast -- resched */
+
+#undef	schednetisr
+#define	schednetisr(anisr)	{\
+	if(netisr == 0) { \
+		softem++; \
+	} \
+	netisr |= 1<<(anisr); \
+}
+#ifndef LOCORE
+#ifdef KERNEL
+int	softem;	
+#endif
+#endif
+#endif /* i386 */
 
 #ifndef LOCORE
 #ifdef KERNEL
