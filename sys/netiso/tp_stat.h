@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_stat.h	7.6 (Berkeley) 09/06/91
+ *	@(#)tp_stat.h	7.7 (Berkeley) 09/17/91
  */
 
 /***********************************************************
@@ -178,8 +178,8 @@ struct tp_stat {
 	 * 2 --> tp_flags:  TPF_PEER_ON_SAMENET | ~TPF_NL_PDN
 	 * 3 --> tp_flags:  TPF_PEER_ON_SAMENET |  TPF_NL_PDN
 	 */
-	struct timeval ts_rtt[NRTT_CATEGORIES];
-	struct timeval ts_rtv[NRTT_CATEGORIES];
+	int ts_rtt[NRTT_CATEGORIES];
+	int ts_rtv[NRTT_CATEGORIES];
 
 	u_long ts_ackreason[_ACK_NUM_REASONS_];
 		/*  ACK_DONT 0 / ACK_STRAT_EACH 0x1 / ACK_STRAT_FULLWIN 0x4
@@ -221,7 +221,7 @@ struct tp_pmeas {
 		 * Each window size, we keep the running average of the time
 		 * taken by tp_sbsend() for each window size.
 		 */
-		struct timeval	tps_sendtime[TP_PM_MAX+1]; 
+		int	tps_sendtime[TP_PM_MAX+1]; 
 		/*
 		 * n_TMsendack: # times ack sent because timer went off
 		 * n_ack_cuz_eot: # times ack sent due to EOTSDU on incoming packet
