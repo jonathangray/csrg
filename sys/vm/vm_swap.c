@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_swap.c	7.29 (Berkeley) 07/06/93
+ *	@(#)vm_swap.c	8.1 (Berkeley) 07/06/93
  */
 
 #include <sys/param.h>
