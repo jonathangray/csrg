@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dca.c	7.6 (Berkeley) 06/27/90
+ *	@(#)dca.c	7.7 (Berkeley) 06/30/90
  */
 
 #include "dca.h"
@@ -158,7 +158,7 @@ dcaopen(dev, flag)
 {
 	register struct tty *tp;
 	register int unit;
-	int error;
+	int error = 0;
  
 	unit = UNIT(dev);
 	if (unit >= NDCA || (dca_active & (1 << unit)) == 0)
