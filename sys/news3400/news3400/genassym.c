@@ -30,12 +30,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)genassym.c	7.4 (Berkeley) 01/20/93
+ *	@(#)genassym.c	7.5 (Berkeley) 03/09/93
  */
 
 #define KERNEL
-
-#include <machine/fix_machine_type.h>
 
 #include <sys/param.h>
 #include <sys/buf.h>
