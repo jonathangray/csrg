@@ -32,9 +32,7 @@ PUSHDIVERT(-1)
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-ifdef(`SMTP_MAILER_FLAGS',,
-	`define(`SMTP_MAILER_FLAGS',
-		`ifdef(`_OLD_SENDMAIL_', `L', `')')')
+ifdef(`SMTP_MAILER_FLAGS',, `define(`SMTP_MAILER_FLAGS', `')')
 define(_NULL_CLIENT_ONLY_, `1')
 ifelse(_ARG_, `', `errprint(`Feature "nullclient" requires argument')',
 	`define(`MAIL_HUB', _ARG_)')
@@ -47,7 +45,7 @@ POPDIVERT
 #  sendmail.
 #
 
-VERSIONID(`@(#)nullclient.m4	8.3 (Berkeley) 05/10/94')
+VERSIONID(`@(#)nullclient.m4	8.4 (Berkeley) 07/02/94')
 
 PUSHDIVERT(7)
 ############################################
