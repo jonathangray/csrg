@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.130 (Berkeley) 04/28/95
+ *	@(#)sendmail.h	8.131 (Berkeley) 05/05/95
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.130		04/28/95";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.131		05/05/95";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -358,6 +358,7 @@ MCI
 #define MCIF_DSN	0x0800		/* DSN extension supported */
 #define MCIF_8BITOK	0x1000		/* OK to send 8 bit characters */
 #define MCIF_CVT7TO8	0x2000		/* convert from 7 to 8 bits */
+#define MCIF_INMIME	0x4000		/* currently reading MIME header */
 
 /* states */
 #define MCIS_CLOSED	0		/* no traffic on this connection */
