@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)ctrace.c	5.4 (Berkeley) 11/10/92";
+static char sccsid[] = "@(#)ctrace.c	5.5 (Berkeley) 05/16/93";
 #endif /* not lint */
 
 #ifdef DEBUG
@@ -52,9 +52,9 @@ static FILE *tracefp;			/* Curses debugging file descriptor. */
 
 void
 #if __STDC__
-__TRACE(const char *fmt, ...)
+__CTRACE(const char *fmt, ...)
 #else
-__TRACE(fmt, va_alist)
+__CTRACE(fmt, va_alist)
 	char *fmt;
 	va_dcl
 #endif
