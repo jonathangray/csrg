@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)fstat.c	5.43 (Berkeley) 03/31/93";
+static char sccsid[] = "@(#)fstat.c	5.44 (Berkeley) 04/27/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -53,7 +53,6 @@ static char sccsid[] = "@(#)fstat.c	5.43 (Berkeley) 03/31/93";
 #include <sys/protosw.h>
 #include <sys/unpcb.h>
 #include <sys/sysctl.h>
-#include <sys/kinfo_proc.h>
 #include <sys/filedesc.h>
 #define	KERNEL
 #include <sys/file.h>
@@ -74,13 +73,13 @@ static char sccsid[] = "@(#)fstat.c	5.43 (Berkeley) 03/31/93";
 #include <netinet/ip.h>
 #include <netinet/in_pcb.h>
 
+#include <ctype.h>
 #include <errno.h>
-#include <nlist.h>
 #include <kvm.h>
+#include <nlist.h>
+#include <paths.h>
 #include <pwd.h>
 #include <stdio.h>
-#include <paths.h>
-#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 
