@@ -34,7 +34,7 @@ divert(-1)
 #
 divert(0)
 
-VERSIONID(`@(#)proto.m4	6.37 (Berkeley) 05/01/93')
+VERSIONID(`@(#)proto.m4	6.38 (Berkeley) 05/11/93')
 
 MAILER(local)dnl
 
@@ -136,8 +136,8 @@ include(`../m4/version.m4')
 #   Options   #
 ###############
 
-# preserve 8 bits on message body on input?
-CONCAT(O8, confEIGHT_BIT_INPUT)
+# strip message body to 7 bits on input?
+CONCAT(O7, confSEVEN_BIT_INPUT)
 
 # wait (in minutes) for alias file rebuild
 CONCAT(Oa, confALIAS_WAIT)
@@ -198,6 +198,9 @@ CONCAT(Oi, confIGNORE_DOTS)
 ifdef(`confBIND_OPTS',
 	CONCAT(OI, confBIND_OPTS),
 	#OI)
+
+# deliver MIME-encapsulated error messages?
+CONCAT(Oj, confMIME_FORMAT_ERRORS)
 
 # Forward file search path
 ifdef(`confFORWARD_PATH',
@@ -480,6 +483,7 @@ R$*			$@ $>0 $1
 S0
 
 R<@>			$#local $: <>			special case error msgs
+R$*:;<@>		$#error $@ USAGE $: "list:; syntax illegal for recipient addresses"
 
 ifdef(`_MAILER_smtp_',
 `# handle numeric address spec
