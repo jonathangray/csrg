@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)useful.h	6.1 (Berkeley) 12/21/92
+ *	@(#)useful.h	6.2 (Berkeley) 03/31/93
  */
 
 # include <sys/types.h>
@@ -51,7 +51,7 @@ typedef char	bool;
 # ifndef max
 # define max(a, b)	((a) > (b) ? (a) : (b))
 # define min(a, b)	((a) < (b) ? (a) : (b))
-# endif max
+# endif
 
 /* assertions */
 # ifndef NASSERT
@@ -68,6 +68,6 @@ typedef char	bool;
 /* sccs id's */
 # ifndef lint
 # define SCCSID(arg)	static char SccsId[] = "arg";
-# else /* lint */
+# else
 # define SCCSID(arg)
-# endif lint
+# endif
