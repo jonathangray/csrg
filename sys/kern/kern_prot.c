@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 1982, 1986, 1989, 1990 Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1982, 1986, 1989, 1990, 1991 Regents of the University
+ * of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_prot.c	7.18 (Berkeley) 02/06/91
+ *	@(#)kern_prot.c	7.19 (Berkeley) 03/17/91
  */
 
 /*
@@ -40,7 +40,7 @@
 #include "param.h"
 #include "acct.h"
 #include "systm.h"
-#include "user.h"
+#include "ucred.h"
 #include "proc.h"
 #include "timeb.h"
 #include "times.h"
@@ -55,7 +55,7 @@ getpid(p, uap, retval)
 
 	*retval = p->p_pid;
 #ifdef COMPAT_43
-	retval[1] = p->p_ppid;
+	retval[1] = p->p_pptr->p_pid;
 #endif
 	return (0);
 }
@@ -67,20 +67,17 @@ getppid(p, uap, retval)
 	int *retval;
 {
 
-	*retval = p->p_ppid;
+	*retval = p->p_pptr->p_pid;
 	return (0);
 }
 
+/* Get process group ID; note that POSIX getpgrp takes no parameter */
 getpgrp(p, uap, retval)
 	struct proc *p;
-	struct args {
-		int	pid;
-	} *uap;
+	void *uap;
 	int *retval;
 {
 
-	if (uap->pid != 0 && (p = pfind(uap->pid)) == 0)
-		return (ESRCH);
 	*retval = p->p_pgrp->pg_id;
 	return (0);
 }
@@ -92,9 +89,9 @@ getuid(p, uap, retval)
 	int *retval;
 {
 
-	*retval = p->p_ruid;
+	*retval = p->p_cred->p_ruid;
 #ifdef COMPAT_43
-	retval[1] = u.u_cred->cr_uid;
+	retval[1] = p->p_ucred->cr_uid;
 #endif
 	return (0);
 }
@@ -106,7 +103,7 @@ geteuid(p, uap, retval)
 	int *retval;
 {
 
-	*retval = u.u_cred->cr_uid;
+	*retval = p->p_ucred->cr_uid;
 	return (0);
 }
 
@@ -117,9 +114,9 @@ getgid(p, uap, retval)
 	int *retval;
 {
 
-	*retval = p->p_rgid;
+	*retval = p->p_cred->p_rgid;
 #ifdef COMPAT_43
-	retval[1] = u.u_cred->cr_groups[0];
+	retval[1] = p->p_ucred->cr_groups[0];
 #endif
 	return (0);
 }
@@ -135,7 +132,8 @@ getegid(p, uap, retval)
 	void *uap;
 	int *retval;
 {
-	*retval = u.u_cred->cr_groups[0];
+
+	*retval = p->p_ucred->cr_groups[0];
 	return (0);
 }
 
@@ -147,6 +145,7 @@ getgroups(p, uap, retval)
 	} *uap;
 	int *retval;
 {
+	register struct pcred *pc = p->p_cred;
 	register gid_t *gp;
 	register int *lp;
 	register u_int ngrp;
@@ -154,13 +153,13 @@ getgroups(p, uap, retval)
 	int error;
 
 	if ((ngrp = uap->gidsetsize) == 0) {
-		*retval = u.u_cred->cr_ngroups;
+		*retval = pc->pc_ucred->cr_ngroups;
 		return (0);
 	}
-	if (ngrp < u.u_cred->cr_ngroups)
+	if (ngrp < pc->pc_ucred->cr_ngroups)
 		return (EINVAL);
-	ngrp = u.u_cred->cr_ngroups;
-	for (gp = u.u_cred->cr_groups, lp = groups; lp < &groups[ngrp]; )
+	ngrp = pc->pc_ucred->cr_ngroups;
+	for (gp = pc->pc_ucred->cr_groups, lp = groups; lp < &groups[ngrp]; )
 		*lp++ = *gp++;
 	if (error = copyout((caddr_t)groups, (caddr_t)uap->gidset,
 	    ngrp * sizeof (groups[0])))
@@ -171,7 +170,7 @@ getgroups(p, uap, retval)
 
 /* ARGSUSED */
 setsid(p, uap, retval)
-	struct proc *p;
+	register struct proc *p;
 	void *uap;
 	int *retval;
 {
@@ -179,16 +178,16 @@ setsid(p, uap, retval)
 	if (p->p_pgid == p->p_pid || pgfind(p->p_pid)) {
 		return (EPERM);
 	} else {
-		pgmv(p, p->p_pid, 1);
+		enterpgrp(p, p->p_pid, 1);
 		*retval = p->p_pid;
 		return (0);
 	}
 }
 
 /*
- * set process group (setpgrp/setpgid)
+ * set process group (setpgid/old setpgrp)
  *
- * caller does setpgrp(pid, pgid)
+ * caller does setpgid(pid, pgid)
  *
  * pid must be caller or child of caller (ESRCH)
  * if a child
@@ -199,7 +198,7 @@ setsid(p, uap, retval)
  * pid must not be session leader (EPERM)
  */
 /* ARGSUSED */
-setpgrp(cp, uap, retval)
+setpgid(cp, uap, retval)
 	struct proc *cp;
 	register struct args {
 		int	pid;
@@ -228,58 +227,59 @@ setpgrp(cp, uap, retval)
 		    pgrp->pg_mem == NULL ||
 	            pgrp->pg_session != cp->p_session)
 			return (EPERM);
-	pgmv(p, uap->pgid, 0);
+	enterpgrp(p, uap->pgid, 0);
 	return (0);
 }
 
 /* ARGSUSED */
 setuid(p, uap, retval)
-	register struct proc *p;
+	struct proc *p;
 	struct args {
 		int	uid;
 	} *uap;
 	int *retval;
 {
+	register struct pcred *pc = p->p_cred;
 	register uid_t uid;
 	int error;
 
 	uid = uap->uid;
-	if (uid != p->p_ruid && (error = suser(u.u_cred, &u.u_acflag)))
+	if (uid != pc->p_ruid &&
+	    (error = suser(pc->pc_ucred, &p->p_acflag)))
 		return (error);
 	/*
 	 * Everything's okay, do it.  Copy credentials so other references do
 	 * not see our changes.
 	 */
-	u.u_cred = crcopy(u.u_cred);
-	u.u_cred->cr_uid = uid;
-	p->p_uid = uid;
-	p->p_ruid = uid;
-	p->p_svuid = uid;
+	pc->pc_ucred = crcopy(pc->pc_ucred);
+	pc->pc_ucred->cr_uid = uid;
+	pc->p_ruid = uid;
+	pc->p_svuid = uid;
 	return (0);
 }
 
 /* ARGSUSED */
 seteuid(p, uap, retval)
-	register struct proc *p;
+	struct proc *p;
 	struct args {
 		int	euid;
 	} *uap;
 	int *retval;
 {
+	register struct pcred *pc = p->p_cred;
 	register uid_t euid;
 	int error;
 
 	euid = uap->euid;
-	if (euid != p->p_ruid && euid != p->p_svuid &&
-	    (error = suser(u.u_cred, &u.u_acflag)))
+	if (euid != pc->p_ruid && euid != pc->p_svuid &&
+	    (error = suser(pc->pc_ucred, &p->p_acflag)))
 		return (error);
 	/*
 	 * Everything's okay, do it.  Copy credentials so other references do
 	 * not see our changes.
 	 */
-	u.u_cred = crcopy(u.u_cred);
-	u.u_cred->cr_uid = euid;
-	p->p_uid = euid;
+	pc->pc_ucred = crcopy(pc->pc_ucred);
+	pc->pc_ucred->cr_uid = euid;
 	return (0);
 }
 
@@ -291,16 +291,17 @@ setgid(p, uap, retval)
 	} *uap;
 	int *retval;
 {
+	register struct pcred *pc = p->p_cred;
 	register gid_t gid;
 	int error;
 
 	gid = uap->gid;
-	if (gid != p->p_rgid && (error = suser(u.u_cred, &u.u_acflag)))
+	if (gid != pc->p_rgid && (error = suser(pc->pc_ucred, &p->p_acflag)))
 		return (error);
-	u.u_cred = crcopy(u.u_cred);
-	p->p_rgid = gid;
-	u.u_cred->cr_groups[0] = gid;
-	p->p_svgid = gid;		/* ??? */
+	pc->pc_ucred = crcopy(pc->pc_ucred);
+	pc->pc_ucred->cr_groups[0] = gid;
+	pc->p_rgid = gid;
+	pc->p_svgid = gid;		/* ??? */
 	return (0);
 }
 
@@ -312,15 +313,16 @@ setegid(p, uap, retval)
 	} *uap;
 	int *retval;
 {
+	register struct pcred *pc = p->p_cred;
 	register gid_t egid;
 	int error;
 
 	egid = uap->egid;
-	if (egid != p->p_rgid && egid != p->p_svgid &&
-	    (error = suser(u.u_cred, &u.u_acflag)))
+	if (egid != pc->p_rgid && egid != pc->p_svgid &&
+	    (error = suser(pc->pc_ucred, &p->p_acflag)))
 		return (error);
-	u.u_cred = crcopy(u.u_cred);
-	u.u_cred->cr_groups[0] = egid;
+	pc->pc_ucred = crcopy(pc->pc_ucred);
+	pc->pc_ucred->cr_groups[0] = egid;
 	return (0);
 }
 
@@ -334,47 +336,52 @@ osetreuid(p, uap, retval)
 	} *uap;
 	int *retval;
 {
+	register struct pcred *pc = p->p_cred;
 	register uid_t ruid, euid;
 	int error;
 
 	if (uap->ruid == -1)
-	    (error = suser(u.u_cred, &u.u_acflag)))
+	if (ruid != pc->p_ruid && ruid != pc->pc_ucred->cr_uid /* XXX */ &&
+	    (error = suser(pc->pc_ucred, &p->p_acflag)))
 		return (error);
 	if (uap->euid == -1)
-	    euid != p->p_svuid && (error = suser(u.u_cred, &u.u_acflag)))
+	if (euid != pc->pc_ucred->cr_uid && euid != pc->p_ruid &&
+	    euid != pc->p_svuid && (error = suser(pc->pc_ucred, &p->p_acflag)))
 		return (error);
 	/*
 	 * Everything's okay, do it.  Copy credentials so other references do
 	 * not see our changes.
 	 */
-	u.u_cred = crcopy(u.u_cred);
-	u.u_cred->cr_uid = euid;
-	p->p_uid = euid;
-	p->p_ruid = ruid;
+	pc->pc_ucred = crcopy(pc->pc_ucred);
+	pc->pc_ucred->cr_uid = euid;
+	pc->p_ruid = ruid;
 	return (0);
 }
 
 /* ARGSUSED */
 osetregid(p, uap, retval)
-	struct proc *p;
+	register struct proc *p;
 	struct args {
 		int	rgid;
 		int	egid;
 	} *uap;
 	int *retval;
 {
+	register struct pcred *pc = p->p_cred;
 	register gid_t rgid, egid;
 	int error;
 
 	if (uap->rgid == -1)
-	    (error = suser(u.u_cred, &u.u_acflag)))
+	if (rgid != pc->p_rgid && rgid != pc->pc_ucred->cr_groups[0] /* XXX */ &&
+	    (error = suser(pc->pc_ucred, &p->p_acflag)))
 		return (error);
 	if (uap->egid == -1)
-	    egid != p->p_svgid && (error = suser(u.u_cred, &u.u_acflag)))
+	if (egid != pc->pc_ucred->cr_groups[0] && egid != pc->p_rgid &&
+	    egid != pc->p_svgid && (error = suser(pc->pc_ucred, &p->p_acflag)))
 		return (error);
-	u.u_cred = crcopy(u.u_cred);
-	p->p_rgid = rgid;
-	u.u_cred->cr_groups[0] = egid;
+	pc->pc_ucred = crcopy(pc->pc_ucred);
+	pc->pc_ucred->cr_groups[0] = egid;
+	pc->p_rgid = rgid;
 	return (0);
 }
 #endif
@@ -388,22 +395,23 @@ setgroups(p, uap, retval)
 	} *uap;
 	int *retval;
 {
+	register struct pcred *pc = p->p_cred;
 	register gid_t *gp;
 	register u_int ngrp;
 	register int *lp;
 	int error, groups[NGROUPS];
 
-	if (error = suser(u.u_cred, &u.u_acflag))
+	if (error = suser(pc->pc_ucred, &p->p_acflag))
 		return (error);
 	if ((ngrp = uap->gidsetsize) > NGROUPS)
 		return (EINVAL);
 	if (error = copyin((caddr_t)uap->gidset, (caddr_t)groups,
 	    ngrp * sizeof (groups[0])))
 		return (error);
-	u.u_cred = crcopy(u.u_cred);
-	u.u_cred->cr_ngroups = ngrp;
+	pc->pc_ucred = crcopy(pc->pc_ucred);
+	pc->pc_ucred->cr_ngroups = ngrp;
 	/* convert from int's to gid_t's */
-	for (gp = u.u_cred->cr_groups, lp = groups; ngrp--; )
+	for (gp = pc->pc_ucred->cr_groups, lp = groups; ngrp--; )
 		*gp++ = *lp++;
 	return (0);
 }
@@ -464,7 +472,7 @@ crget()
 crfree(cr)
 	struct ucred *cr;
 {
-	int s = splimp();
+	int s = splimp();			/* ??? */
 
 	if (--cr->cr_ref != 0) {
 		(void) splx(s);
@@ -520,10 +528,10 @@ getlogin(p, uap, retval)
 	int *retval;
 {
 
-	if (uap->namelen > sizeof (p->p_logname))
-		uap->namelen = sizeof (p->p_logname);
-	return (copyout((caddr_t)p->p_logname, (caddr_t)uap->namebuf,
-	    uap->namelen));
+	if (uap->namelen > sizeof (p->p_pgrp->pg_session->s_login))
+		uap->namelen = sizeof (p->p_pgrp->pg_session->s_login);
+	return (copyout((caddr_t) p->p_pgrp->pg_session->s_login,
+	    (caddr_t) uap->namebuf, uap->namelen));
 }
 
 /*
@@ -539,11 +547,12 @@ setlogin(p, uap, retval)
 {
 	int error;
 
-	if (error = suser(u.u_cred, &u.u_acflag))
+	if (error = suser(p->p_ucred, &p->p_acflag))
 		return (error);
-	error = copyinstr((caddr_t)uap->namebuf, (caddr_t)p->p_logname,
-	    sizeof (p->p_logname) - 1, (u_int *)0);
-	if (error == ENAMETOOLONG)		/* name too long */
+	error = copyinstr((caddr_t) uap->namebuf,
+	    (caddr_t) p->p_pgrp->pg_session->s_login,
+	    sizeof (p->p_pgrp->pg_session->s_login) - 1, (u_int *)0);
+	if (error == ENAMETOOLONG)
 		error = EINVAL;
 	return (error);
 }
