@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)queue.h	8.3 (Berkeley) 12/13/93
+ *	@(#)queue.h	8.4 (Berkeley) 01/04/94
  */
 
-#ifndef	_QUEUE_H_
-#define	_QUEUE_H_
+#ifndef	_SYS_QUEUE_H_
+#define	_SYS_QUEUE_H_
 
 /*
  * This file defines three types of data structures: lists, tail queues,
@@ -242,4 +242,4 @@ struct {								\
 		(elm)->field.cqe_prev->field.cqe_next =			\
 		    (elm)->field.cqe_next;				\
 }
-#endif	/* !_QUEUE_H_ */
+#endif	/* !_SYS_QUEUE_H_ */
