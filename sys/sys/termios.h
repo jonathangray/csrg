@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1988, 1989, 1993
+ * Copyright (c) 1988, 1989, 1993, 1994
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,12 +30,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)termios.h	8.2 (Berkeley) 01/04/94
+ *	@(#)termios.h	8.3 (Berkeley) 03/28/94
  */
 
-/*
- *  termios structure
- */
 #ifndef _SYS_TERMIOS_H_
 #define _SYS_TERMIOS_H_
 
@@ -218,6 +215,13 @@ struct termios {
 #define B19200	19200
 #define B38400	38400
 #ifndef _POSIX_SOURCE
+#define B7200	7200
+#define B14400	14400
+#define B28800	28800
+#define B57600	57600
+#define B76800	76800
+#define B115200	115200
+#define B230400	230400
 #define EXTA	19200
 #define EXTB	38400
 #endif  /* !_POSIX_SOURCE */
@@ -254,15 +258,21 @@ __END_DECLS
 
 #endif /* !KERNEL */
 
+#ifndef _POSIX_SOURCE
+
+/*
+ * Include tty ioctl's that aren't just for backwards compatibility
+ * with the old tty driver.  These ioctl definitions were previously
+ * in <sys/ioctl.h>.
+ */
+#include <sys/ttycom.h>
+#endif
+
 /*
  * END OF PROTECTED INCLUDE.
  */
 #endif /* !_SYS_TERMIOS_H_ */
 
 #ifndef _POSIX_SOURCE
-#ifdef KERNEL
-#include "ttydefaults.h"
-#else
 #include <sys/ttydefaults.h>
-#endif
 #endif
