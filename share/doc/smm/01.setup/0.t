@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)0.t	1.6 (Berkeley) 05/07/91
+.\"	@(#)0.t	8.1 (Berkeley) 06/08/93
 .\"
 .nr Th 1		\" Tahoe version
 .ds Th Tahoe
