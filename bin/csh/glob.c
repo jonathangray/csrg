@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)glob.c	5.16 (Berkeley) 06/07/91";
+static char sccsid[] = "@(#)glob.c	5.17 (Berkeley) 06/07/91";
 #endif /* not lint */
 
 #include "csh.h"
@@ -57,9 +57,9 @@ static int pargsiz, gargsiz;
 #define RBRK ']'
 #define EOS '\0'
 
-Char  **gargv = (Char **) 0;
+Char  **gargv = NULL;
 long    gargc = 0;
-Char  **pargv = (Char **) 0;
+Char  **pargv = NULL;
 long    pargc = 0;
 
 /*
@@ -71,13 +71,13 @@ long    pargc = 0;
  * handled in glob() which is part of the 4.4BSD libc.
  *
  */
-static Char *globtilde();
-static Char **libglob();
-static Char **globexpand();
-static int globbrace();
-static void pword();
-static void psave();
-static void backeval();
+static Char	*globtilde __P((Char **, Char *));
+static Char	**libglob __P((Char **));
+static Char	**globexpand __P((Char **));
+static int	globbrace __P((Char *, Char *, Char ***));
+static void	pword __P((void));
+static void	psave __P((int));
+static void	backeval __P((Char *, bool));
 
 
 static Char *
@@ -119,7 +119,7 @@ globbrace(s, p, bl)
     int     size = GLOBSPACE;
 
     nv = vl = (Char **) xmalloc((size_t) sizeof(Char *) * size);
-    *vl = (Char *) 0;
+    *vl = NULL;
 
     len = 0;
     /* copy part up to the brace */
@@ -156,7 +156,7 @@ globbrace(s, p, bl)
 	    for (++pm; *pm != RBRK && *pm != EOS; pm++)
 		continue;
 	    if (*pm == EOS) {
-		*vl = (Char *) 0;
+		*vl = NULL;
 		blkfree(nv);
 		return (-RBRK);
 	    }
@@ -192,7 +192,7 @@ globbrace(s, p, bl)
 	    }
 	    break;
 	}
-    *vl = (Char *) 0;
+    *vl = NULL;
     *bl = nv;
     return (len);
 }
@@ -207,7 +207,7 @@ globexpand(v)
 
 
     nv = vl = (Char **) xmalloc((size_t) sizeof(Char *) * size);
-    *vl = (Char *) 0;
+    *vl = NULL;
 
     /*
      * Step 1: expand backquotes.
@@ -227,7 +227,7 @@ globexpand(v)
 		}
 	    }
 	    xfree((ptr_t) pargv);
-	    pargv = (Char **) 0;
+	    pargv = NULL;
 	}
 	else {
 	    *vl++ = Strsave(s);
@@ -239,7 +239,7 @@ globexpand(v)
 	    }
 	}
     }
-    *vl = (Char *) 0;
+    *vl = NULL;
 
     if (noglob)
 	return (nv);
@@ -367,7 +367,7 @@ libglob(vl)
 	if (!nonomatch && (globv.gl_matchc == 0) &&
 	    (globv.gl_flags & GLOB_MAGCHAR)) {
 	    globfree(&globv);
-	    return ((Char **) 0);
+	    return (NULL);
 	}
 	gflgs |= GLOB_APPEND;
     }
@@ -399,7 +399,7 @@ globone(str, action)
 	 */
 	vo = globexpand(v);
 	if (noglob || (gflag & G_GLOB) == 0) {
-	    if (vo[1] != (Char *) 0)
+	    if (vo[1] != NULL)
 		return (handleone(str, vo, action));
 	    else {
 		str = strip(vo[0]);
@@ -416,7 +416,7 @@ globone(str, action)
     vl = libglob(vo);
     if (gflag & G_CSH)
 	blkfree(vo);
-    if (vl == (Char **) 0) {
+    if (vl == NULL) {
 	setname(short2str(str));
 	stderror(ERR_NAME | ERR_NOMATCH);
     }
@@ -635,7 +635,7 @@ backeval(cp, literal)
     xfree((ptr_t) cp);
     (void) close(pvec[1]);
     c = 0;
-    ip = (Char *) 0;
+    ip = NULL;
     do {
 	int     cnt = 0;
 
@@ -690,7 +690,7 @@ backeval(cp, literal)
 
 static void
 psave(c)
-    Char    c;
+    int    c;
 {
     if (--pnleft <= 0)
 	stderror(ERR_WTOOLONG);
