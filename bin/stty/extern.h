@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.3 (Berkeley) 06/05/91
+ *	@(#)extern.h	5.4 (Berkeley) 06/10/91
  */
 
 __BEGIN_DECLS
@@ -49,5 +49,4 @@ void	warn __P((const char *, ...));
 __END_DECLS
 
 extern struct cchar cchars1[], cchars2[];
-extern struct modes cmodes[], imodes[], lmodes[], omodes[];
 extern char *usage;
