@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)rcp.1	6.14.1.1 (Berkeley) 08/20/91
+.\"	@(#)rcp.1	6.15 (Berkeley) 06/20/92
 .\"
 .Dd 
 .Dt RCP 1
@@ -43,8 +43,7 @@
 .Op Fl k Ar realm
 .Ar file1 file2
 .Nm rcp
-.Op Fl p
-.Op Fl r
+.Op Fl Kprx
 .Op Fl k Ar realm
 .Ar file ...
 .Ar directory
@@ -59,6 +58,10 @@ form ``rname@rhost:path'', or a local file name (containing no `:' characters,
 or a `/' before any `:'s).
 .Pp
 .Bl -tag -width flag
+.It Fl K
+The
+.Fl K
+option turns off all Kerberos authentication.
 .It Fl r
 If any of the source files are directories,
 .Nm rcp
