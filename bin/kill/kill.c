@@ -38,11 +38,13 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)kill.c	4.6 (Berkeley) 05/31/90";
+static char sccsid[] = "@(#)kill.c	4.7 (Berkeley) 02/25/91";
 #endif /* not lint */
 
 #include <signal.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
 
 static char *signals[] = {
@@ -112,7 +114,6 @@ error:			printf("kill: unknown signal %s; valid signals:\n", *argv);
 	exit(errors);
 }
 
-static
 printsig()
 {
 	register char **p;
@@ -125,7 +126,6 @@ printsig()
 	printf("\n");
 }
 
-static
 usage()
 {
 	printf("usage: kill [-l] [-sig] pid ...\n");
