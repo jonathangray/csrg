@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)rlogin.c	5.32 (Berkeley) 10/21/90";
+static char sccsid[] = "@(#)rlogin.c	5.32.1.1 (Berkeley) 10/21/90";
 #endif /* not lint */
 
 /*
@@ -187,14 +187,6 @@ main(argc, argv)
 		case 'l':
 			user = optarg;
 			break;
-#ifdef CRYPT
-#ifdef KERBEROS
-		case 'x':
-			encrypt = 1;
-			des_set_key(cred.session, schedule);
-			break;
-#endif
-#endif
 		case '?':
 		default:
 			usage();
@@ -255,12 +247,6 @@ try_connect:
 		if (dest_realm == NULL)
 			dest_realm = krb_realmofhost(host);
 
-#ifdef CRYPT
-		if (encrypt)
-			rem = krcmd_mutual(&host, sp->s_port, user, term, 0,
-			    dest_realm, &cred, schedule);
-		else
-#endif /* CRYPT */
 			rem = krcmd(&host, sp->s_port, user, term, 0,
 			    dest_realm);
 		if (rem < 0) {
@@ -278,13 +264,6 @@ try_connect:
 			goto try_connect;
 		}
 	} else {
-#ifdef CRYPT
-		if (encrypt) {
-			(void)fprintf(stderr,
-			    "rlogin: the -x flag requires Kerberos authentication.\n");
-			exit(1);
-		}
-#endif /* CRYPT */
 		rem = rcmd(&host, sp->s_port, pw->pw_name, user, term, 0);
 	}
 #else
@@ -472,26 +451,9 @@ writer()
 				continue;
 			}
 			if (c != escapechar)
-#ifdef CRYPT
-#ifdef KERBEROS
-				if (encrypt)
-					(void)des_write(rem, &escapechar, 1);
-				else
-#endif
-#endif
 					(void)write(rem, &escapechar, 1);
 		}
 
-#ifdef CRYPT
-#ifdef KERBEROS
-		if (encrypt) {
-			if (des_write(rem, &c, 1) == 0) {
-				msg("line gone");
-				break;
-			}
-		} else
-#endif
-#endif
 			if (write(rem, &c, 1) == 0) {
 				msg("line gone");
 				break;
@@ -565,13 +527,6 @@ sendwindow()
 	wp->ws_xpixel = htons(winsize.ws_xpixel);
 	wp->ws_ypixel = htons(winsize.ws_ypixel);
 
-#ifdef CRYPT
-#ifdef KERBEROS
-	if(encrypt)
-		(void)des_write(rem, obuf, sizeof(obuf));
-	else
-#endif
-#endif
 		(void)write(rem, obuf, sizeof(obuf));
 }
 
@@ -709,13 +664,6 @@ reader(omask)
 		rcvcnt = 0;
 		rcvstate = READING;
 
-#ifdef CRYPT
-#ifdef KERBEROS
-		if (encrypt)
-			rcvcnt = des_read(rem, rcvbuf, sizeof(rcvbuf));
-		else
-#endif
-#endif
 			rcvcnt = read(rem, rcvbuf, sizeof (rcvbuf));
 		if (rcvcnt == 0)
 			return (0);
@@ -812,11 +760,7 @@ usage()
 	(void)fprintf(stderr,
 	    "usage: rlogin [ -%s]%s[-e char] [ -l username ] host\n",
 #ifdef KERBEROS
-#ifdef CRYPT
-	    "8ELx", " [-k realm] ");
-#else
 	    "8EL", " [-k realm] ");
-#endif
 #else
 	    "8EL", " ");
 #endif
