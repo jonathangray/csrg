@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_cache.c	7.7 (Berkeley) 08/24/90
+ *	@(#)vfs_cache.c	7.8 (Berkeley) 02/28/91
  */
 
 #include "param.h"
@@ -122,21 +122,24 @@ cache_lookup(ndp)
 	if (!ndp->ni_makeentry) {
 		nchstats.ncs_badhits++;
 	} else if (ncp->nc_vp == NULL) {
-		nchstats.ncs_neghits++;
-		/*
-		 * move this slot to end of LRU chain, if not already there
-		 */
-		if (ncp->nc_nxt) {
-			/* remove from LRU chain */
-			*ncp->nc_prev = ncp->nc_nxt;
-			ncp->nc_nxt->nc_prev = ncp->nc_prev;
-			/* and replace at end of it */
-			ncp->nc_nxt = NULL;
-			ncp->nc_prev = nchtail;
-			*nchtail = ncp;
-			nchtail = &ncp->nc_nxt;
+		if ((ndp->ni_nameiop & OPMASK) != CREATE) {
+			nchstats.ncs_neghits++;
+			/*
+			 * Move this slot to end of LRU chain,
+			 * if not already there.
+			 */
+			if (ncp->nc_nxt) {
+				/* remove from LRU chain */
+				*ncp->nc_prev = ncp->nc_nxt;
+				ncp->nc_nxt->nc_prev = ncp->nc_prev;
+				/* and replace at end of it */
+				ncp->nc_nxt = NULL;
+				ncp->nc_prev = nchtail;
+				*nchtail = ncp;
+				nchtail = &ncp->nc_nxt;
+			}
+			return (ENOENT);
 		}
-		return (ENOENT);
 	} else if (ncp->nc_vpid != ncp->nc_vp->v_id) {
 		nchstats.ncs_falsehits++;
 	} else {
