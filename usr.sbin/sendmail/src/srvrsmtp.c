@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	6.35.1.1 (Berkeley) 03/30/93 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.36 (Berkeley) 04/01/93 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	6.35.1.1 (Berkeley) 03/30/93 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.36 (Berkeley) 04/01/93 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -470,6 +470,13 @@ smtp(e)
 			e->e_xfp = freopen(queuename(e, 'x'), "w", e->e_xfp);
 			id = e->e_id;
 
+			/* check to see if we need to re-expand aliases */
+			for (a = e->e_sendqueue; a != NULL; a = a->q_next)
+			{
+				if (bitset(QVERIFIED, a->q_flags))
+					break;
+			}
+
 			/* send to all recipients */
 			sendall(e, Verbose ? SM_DELIVER : SM_QUEUE);
 			e->e_to = NULL;
@@ -484,6 +491,14 @@ smtp(e)
 				message("250 %s Message accepted for delivery", id);
 			else
 				e->e_flags &= ~EF_FATALERRS;
+
+			/* if we just queued, poke it */
+			if (a != NULL && e->e_sendmode != SM_QUEUE)
+			{
+				unlockqueue(e);
+				dowork(id, TRUE, e);
+				e->e_id = NULL;
+			}
 
 			/* now make it really happen */
 			if (!Verbose && e->e_sendmode != SM_QUEUE)
