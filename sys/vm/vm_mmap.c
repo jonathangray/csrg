@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: vm_mmap.c 1.3 90/01/21$
  *
- *	@(#)vm_mmap.c	7.2 (Berkeley) 01/10/91
+ *	@(#)vm_mmap.c	7.3 (Berkeley) 04/20/91
  */
 
 /*
@@ -46,7 +46,6 @@
 
 #include "param.h"
 #include "systm.h"
-#include "user.h"
 #include "filedesc.h"
 #include "proc.h"
 #include "vnode.h"
@@ -55,10 +54,10 @@
 #include "mman.h"
 #include "conf.h"
 
-#include "../vm/vm_param.h"
-#include "../vm/vm_map.h"
-#include "../vm/vm_pager.h"
-#include "../vm/vm_prot.h"
+#include "vm.h"
+#include "vm_pager.h"
+#include "vm_prot.h"
+#include "vm_statistics.h"
 
 #ifdef DEBUG
 int mmapdebug = 0;
@@ -70,7 +69,7 @@ int mmapdebug = 0;
 /* ARGSUSED */
 getpagesize(p, uap, retval)
 	struct proc *p;
-	struct args *uap;
+	void *uap;
 	int *retval;
 {
 
@@ -154,8 +153,8 @@ smmap(p, uap, retval)
 	 * Mapping file or named anonymous, get fp for validation
 	 */
 	if (mtype == MAP_FILE || uap->fd != -1) {
-		if (((unsigned)uap->fd) >= fdp->fd_maxfiles ||
-		    (fp = OFILE(fdp, uap->fd)) == NULL)
+		if (((unsigned)uap->fd) >= fdp->fd_nfiles ||
+		    (fp = fdp->fd_ofiles[uap->fd]) == NULL)
 			return(EBADF);
 	}
 	/*
@@ -196,7 +195,7 @@ smmap(p, uap, retval)
 	if (uap->prot & PROT_EXEC)
 		prot |= VM_PROT_EXECUTE;
 
-	error = vm_mmap(p->p_map, &addr, size, prot,
+	error = vm_mmap(&p->p_vmspace->vm_map, &addr, size, prot,
 			uap->flags, handle, (vm_offset_t)uap->pos);
 	if (error == 0)
 		*retval = (int) addr;
@@ -231,13 +230,14 @@ msync(p, uap, retval)
 	/*
 	 * Region must be entirely contained in a single entry
 	 */
-	if (!vm_map_is_allocated(p->p_map, addr, addr+osize, TRUE))
+	if (!vm_map_is_allocated(&p->p_vmspace->vm_map, addr, addr+osize,
+	    TRUE))
 		return(EINVAL);
 	/*
 	 * Determine the object associated with that entry
 	 * (object is returned locked on KERN_SUCCESS)
 	 */
-	rv = vm_region(p->p_map, &addr, &size, &prot, &mprot,
+	rv = vm_region(&p->p_vmspace->vm_map, &addr, &size, &prot, &mprot,
 		       &inherit, &shared, &object, &objoff);
 	if (rv != KERN_SUCCESS)
 		return(EINVAL);
@@ -249,7 +249,7 @@ msync(p, uap, retval)
 	/*
 	 * Do not msync non-vnoded backed objects.
 	 */
-	if (object->internal || object->pager == vm_pager_null ||
+	if (object->internal || object->pager == NULL ||
 	    object->pager->pg_type != PG_VNODE) {
 		vm_object_unlock(object);
 		return(EINVAL);
@@ -297,10 +297,11 @@ munmap(p, uap, retval)
 		return(EINVAL);
 	if (size == 0)
 		return(0);
-	if (!vm_map_is_allocated(p->p_map, addr, addr+size, FALSE))
+	if (!vm_map_is_allocated(&p->p_vmspace->vm_map, addr, addr+size,
+	    FALSE))
 		return(EINVAL);
 	/* returns nothing but KERN_SUCCESS anyway */
-	(void) vm_map_remove(p->p_map, addr, addr+size);
+	(void) vm_map_remove(&p->p_vmspace->vm_map, addr, addr+size);
 	return(0);
 }
 
@@ -308,13 +309,13 @@ munmapfd(fd)
 {
 #ifdef DEBUG
 	if (mmapdebug & MDB_FOLLOW)
-		printf("munmapfd(%d): fd %d\n", u.u_procp->p_pid, fd);
+		printf("munmapfd(%d): fd %d\n", curproc->p_pid, fd);
 #endif
 
 	/*
 	 * XXX -- should vm_deallocate any regions mapped to this file
 	 */
-	OFILEFLAGS(u.u_procp->p_fd, fd) &= ~UF_MAPPED;
+	curproc->p_fd->fd_ofileflags[fd] &= ~UF_MAPPED;
 }
 
 mprotect(p, uap, retval)
@@ -351,7 +352,8 @@ mprotect(p, uap, retval)
 	if (uap->prot & PROT_EXEC)
 		prot |= VM_PROT_EXECUTE;
 
-	switch (vm_map_protect(p->p_map, addr, addr+size, prot, FALSE)) {
+	switch (vm_map_protect(&p->p_vmspace->vm_map, addr, addr+size, prot,
+	    FALSE)) {
 	case KERN_SUCCESS:
 		return (0);
 	case KERN_PROTECTION_FAILURE:
@@ -440,7 +442,7 @@ vm_mmap(map, addr, size, prot, flags, handle, foff)
 			type = PG_VNODE;
 	}
 	pager = vm_pager_allocate(type, handle, size, prot);
-	if (pager == VM_PAGER_NULL)
+	if (pager == NULL)
 		return (type == PG_DEVICE ? EINVAL : ENOMEM);
 	/*
 	 * Find object and release extra reference gained by lookup
@@ -469,7 +471,7 @@ vm_mmap(map, addr, size, prot, flags, handle, foff)
 #ifdef DEBUG
 		if (mmapdebug & MDB_MAPIT)
 			printf("vm_mmap(%d): ANON *addr %x size %x pager %x\n",
-			       u.u_procp->p_pid, *addr, size, pager);
+			       curproc->p_pid, *addr, size, pager);
 #endif
 	}
 	/*
@@ -497,7 +499,7 @@ vm_mmap(map, addr, size, prot, flags, handle, foff)
 	 */
 	else {
 #ifdef DEBUG
-		if (object == VM_OBJECT_NULL)
+		if (object == NULL)
 			printf("vm_mmap: no object: vp %x, pager %x\n",
 			       vp, pager);
 #endif
@@ -536,7 +538,7 @@ vm_mmap(map, addr, size, prot, flags, handle, foff)
 			vm_offset_t off;
 
 			/* locate and allocate the target address space */
-			rv = vm_map_find(map, VM_OBJECT_NULL, (vm_offset_t)0,
+			rv = vm_map_find(map, NULL, (vm_offset_t)0,
 					 addr, size, fitit);
 			if (rv != KERN_SUCCESS) {
 				vm_object_deallocate(object);
@@ -607,7 +609,7 @@ vm_mmap(map, addr, size, prot, flags, handle, foff)
 #ifdef DEBUG
 		if (mmapdebug & MDB_MAPIT)
 			printf("vm_mmap(%d): FILE *addr %x size %x pager %x\n",
-			       u.u_procp->p_pid, *addr, size, pager);
+			       curproc->p_pid, *addr, size, pager);
 #endif
 	}
 	/*
@@ -676,7 +678,7 @@ vm_region(map, addr, size, prot, max_prot, inheritance, shared, object, objoff)
 	vm_offset_t	tmp_offset;
 	vm_offset_t	start;
 
-	if (map == VM_MAP_NULL)
+	if (map == NULL)
 		return(KERN_INVALID_ARGUMENT);
 	
 	start = *addr;
@@ -745,7 +747,7 @@ vm_allocate_with_pager(map, addr, size, fitit, pager, poffset, internal)
 	register vm_object_t	object;
 	register int		result;
 
-	if (map == VM_MAP_NULL)
+	if (map == NULL)
 		return(KERN_INVALID_ARGUMENT);
 
 	*addr = trunc_page(*addr);
@@ -758,7 +760,7 @@ vm_allocate_with_pager(map, addr, size, fitit, pager, poffset, internal)
 	 */
 	object = vm_object_lookup(pager);
 	vm_stat.lookups++;
-	if (object == VM_OBJECT_NULL) {
+	if (object == NULL) {
 		object = vm_object_allocate(size);
 		vm_object_enter(object, pager);
 	} else
@@ -768,7 +770,7 @@ vm_allocate_with_pager(map, addr, size, fitit, pager, poffset, internal)
 	result = vm_map_find(map, object, poffset, addr, size, fitit);
 	if (result != KERN_SUCCESS)
 		vm_object_deallocate(object);
-	else if (pager != vm_pager_null)
+	else if (pager != NULL)
 		vm_object_setpager(object, pager, (vm_offset_t) 0, TRUE);
 	return(result);
 }
@@ -822,7 +824,6 @@ vm_map_is_allocated(map, start, end, single_entry)
  * Doesn't trust the COW bit in the page structure.
  * vm_fault can improperly set it.
  */
-void
 vm_object_pmap_force_copy(object, start, end)
 	register vm_object_t	object;
 	register vm_offset_t	start;
@@ -830,7 +831,7 @@ vm_object_pmap_force_copy(object, start, end)
 {
 	register vm_page_t	p;
 
-	if (object == VM_OBJECT_NULL)
+	if (object == NULL)
 		return;
 
 	vm_object_lock(object);
