@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_inode.c	7.38 (Berkeley) 03/19/91
+ *	@(#)ufs_inode.c	7.39 (Berkeley) 04/16/91
  */
 
 #include "param.h"
@@ -256,8 +256,9 @@ iput(ip)
  * Last reference to an inode, write the inode out and if necessary,
  * truncate and deallocate the file.
  */
-ufs_inactive(vp)
+ufs_inactive(vp, p)
 	struct vnode *vp;
+	struct proc *p;
 {
 	register struct inode *ip = VTOI(vp);
 	int mode, error = 0;
