@@ -1,4 +1,4 @@
-/*	machdep.c	4.52.1.2	82/06/14	*/
+/*	machdep.c	4.55	82/06/14	*/
 
 #include "../h/param.h"
 #include "../h/systm.h"
