@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dev.c	7.11 (Berkeley) 05/04/91
+ *	@(#)dev.c	7.12 (Berkeley) 05/04/91
  */
 
 #include "sys/param.h"
@@ -55,7 +55,7 @@ devread(io)
 	cc = (*devsw[io->i_dev].dv_strategy)(io, F_READ);
 	io->i_flgs &= ~F_TYPEMASK;
 	if (scankbd())
-		_longjmp(&exception, 1);
+		_longjmp(exception, 1);
 	return (cc);
 }
 
@@ -69,7 +69,7 @@ devwrite(io)
 	cc = (*devsw[io->i_dev].dv_strategy)(io, F_WRITE);
 	io->i_flgs &= ~F_TYPEMASK;
 	if (scankbd())
-		_longjmp(&exception, 1);
+		_longjmp(exception, 1);
 	return (cc);
 }
 
