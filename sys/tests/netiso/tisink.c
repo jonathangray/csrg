@@ -31,7 +31,7 @@
  * SUCH DAMAGE.
  */
 #ifndef lint
-static char sccsid[] = "@(#)tisink.c	7.1 (Berkeley) 06/27/90";
+static char sccsid[] = "@(#)tisink.c	7.2 (Berkeley) 06/28/90";
 #endif /* not lint */
 
 /*
@@ -65,7 +65,7 @@ struct  sockaddr_iso faddr, laddr = { sizeof(laddr), AF_ISO };
 struct  sockaddr_iso *siso = &laddr;
 
 long size, count = 10, forkp, confp, echop, mynamep, verbose = 1, playtag = 0;
-long records;
+long records, intercept;
 
 char buf[2048];
 char your_it[] = "You're it!";
@@ -157,6 +157,10 @@ tisink()
 	/*try(setsockopt, (s, SOL_SOCKET, SO_DEBUG, &on, sizeof (on)), ""); */
 
 	try(listen, (s, 5), "");
+	if (intercept) {
+	    try(setsockopt,
+		(s, SOL_TRANSPORT, TPOPT_INTERCEPT, &on, sizeof(on)), "");
+	}
 	for(;;) {
 		int child, ns;
 		int addrlen = sizeof(faddr);
