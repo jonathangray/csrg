@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1988 Regents of the University of California.
+ * Copyright (c) 1988, 1990 Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)externs.h	1.25 (Berkeley) 06/28/90
+ *	@(#)externs.h	5.1 (Berkeley) 09/14/90
  */
 
 #ifndef	BSD
@@ -63,6 +63,17 @@
 typedef char cc_t;
 # else
 typedef unsigned char cc_t;
+# endif
+#endif
+
+#ifndef	_POSIX_VDISABLE
+# ifdef sun
+#  include <sys/param.h>	/* pick up VDISABLE definition, mayby */
+# endif
+# ifdef VDISABLE
+#  define _POSIX_VDISABLE VDISABLE
+# else
+#  define _POSIX_VDISABLE ((unsigned char)'\377')
 # endif
 #endif
 
@@ -248,6 +259,7 @@ extern struct	sgttyb nttyb;
 # define termStopChar		ntc.t_stopc
 # define termForw1Char		ntc.t_brkc
 extern cc_t termForw2Char;
+extern cc_t termAytChar;
 
 # define termEofCharp		(cc_t *)&ntc.t_eofc
 # define termEraseCharp		(cc_t *)&nttyb.sg_erase
@@ -263,6 +275,7 @@ extern cc_t termForw2Char;
 # define termStopCharp		(cc_t *)&ntc.t_stopc
 # define termForw1Charp		(cc_t *)&ntc.t_brkc
 # define termForw2Charp		(cc_t *)&termForw2Char
+# define termAytCharp		(cc_t *)&termAytChar
 
 # else
 
@@ -279,13 +292,13 @@ extern cc_t termSuspChar;
 # else
 #  define termSuspChar		new_tc.c_cc[VSUSP]
 # endif
-# if	!defined(VFLUSHO) && defined(VDISCARD)
-#  define VFLUSHO VDISCARD
+# if	defined(VFLUSHO) && !defined(VDISCARD)
+#  define VDISCARD VFLUSHO
 # endif
-# ifndef	VFLUSHO
+# ifndef	VDISCARD
 extern cc_t termFlushChar;
 # else
-#  define termFlushChar		new_tc.c_cc[VFLUSHO]
+#  define termFlushChar		new_tc.c_cc[VDISCARD]
 # endif
 # ifndef VWERASE
 extern cc_t termWerasChar;
@@ -322,8 +335,13 @@ extern cc_t termForw2Char;
 # else
 #  define termForw2Char		new_tc.c_cc[VEOL]
 # endif
+# ifndef	VSTATUS
+extern cc_t termAytChar;
+#else
+#  define termAytChar		new_tc.c_cc[VSTATUS]
+#endif
 
-# ifndef CRAY
+# if !defined(CRAY) || defined(__STDC__)
 #  define termEofCharp		&termEofChar
 #  define termEraseCharp	&termEraseChar
 #  define termIntCharp		&termIntChar
@@ -338,6 +356,7 @@ extern cc_t termForw2Char;
 #  define termStopCharp		&termStopChar
 #  define termForw1Charp	&termForw1Char
 #  define termForw2Charp	&termForw2Char
+#  define termAytCharp		&termAytChar
 # else
 	/* Work around a compiler bug */
 #  define termEofCharp		0
@@ -354,6 +373,7 @@ extern cc_t termForw2Char;
 #  define termStopCharp		0
 #  define termForw1Charp	0
 #  define termForw2Charp	0
+#  define termAytCharp		0
 # endif
 #endif
 
