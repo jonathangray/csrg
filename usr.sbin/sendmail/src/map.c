@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)map.c	8.11 (Berkeley) 08/30/93";
+static char sccsid[] = "@(#)map.c	8.12 (Berkeley) 09/02/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -453,7 +453,7 @@ ndbm_map_lookup(map, name, av, statp)
 		key.dptr = keybuf;
 	}
 	fd = dbm_dirfno((DBM *) map->map_db1);
-	if (fd >= 0)
+	if (fd >= 0 && !bitset(MF_LOCKED, map->map_mflags))
 		(void) lockfile(fd, map->map_file, ".dir", LOCK_SH);
 	val.dptr = NULL;
 	if (bitset(MF_TRY0NULL, map->map_mflags))
@@ -469,7 +469,7 @@ ndbm_map_lookup(map, name, av, statp)
 		if (val.dptr != NULL)
 			map->map_mflags &= ~MF_TRY0NULL;
 	}
-	if (fd >= 0)
+	if (fd >= 0 && !bitset(MF_LOCKED, map->map_mflags))
 		(void) lockfile(fd, map->map_file, ".dir", LOCK_UN);
 	if (val.dptr == NULL)
 		return NULL;
@@ -617,10 +617,15 @@ bt_map_open(map, mode)
 	fd = db->fd(db);
 # if !defined(O_EXLOCK)
 	if (mode == O_RDWR && fd >= 0)
-		(void) lockfile(fd, map->map_file, ".db", LOCK_EX);
+	{
+		if (lockfile(fd, map->map_file, ".db", LOCK_EX))
+			map->map_mflags |= MF_LOCKED;
+	}
 # else
 	if (mode == O_RDONLY && fd >= 0)
 		(void) lockfile(fd, map->map_file, ".db", LOCK_UN);
+	else
+		map->map_mflags |= MF_LOCKED;
 # endif
 #endif
 
@@ -691,10 +696,15 @@ hash_map_open(map, mode)
 	fd = db->fd(db);
 # if !defined(O_EXLOCK)
 	if (mode == O_RDWR && fd >= 0)
-		(void) lockfile(fd, map->map_file, ".db", LOCK_EX);
+	{
+		if (lockfile(fd, map->map_file, ".db", LOCK_EX))
+			map->map_mflags |= MF_LOCKED;
+	}
 # else
 	if (mode == O_RDONLY && fd >= 0)
 		(void) lockfile(fd, map->map_file, ".db", LOCK_UN);
+	else
+		map->map_mflags |= MF_LOCKED;
 # endif
 #endif
 
@@ -745,7 +755,9 @@ db_map_lookup(map, name, av, statp)
 	if (!bitset(MF_NOFOLDCASE, map->map_mflags))
 		makelower(keybuf);
 #ifndef OLD_NEWDB
-	(void) lockfile(db->fd(db), map->map_file, ".db", LOCK_SH);
+	fd = db->fd(db);
+	if (fd >= 0 && !bitset(MF_LOCKED, map->map_mflags))
+		(void) lockfile(db->fd(db), map->map_file, ".db", LOCK_SH);
 #endif
 	st = 1;
 	if (bitset(MF_TRY0NULL, map->map_mflags))
@@ -763,8 +775,7 @@ db_map_lookup(map, name, av, statp)
 	}
 	saveerrno = errno;
 #ifndef OLD_NEWDB
-	fd = db->fd(db);
-	if (fd >= 0)
+	if (fd >= 0 && !bitset(MF_LOCKED, map->map_mflags))
 		(void) lockfile(fd, map->map_file, ".db", LOCK_UN);
 #endif
 	if (st != 0)
