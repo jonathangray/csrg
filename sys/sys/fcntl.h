@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fcntl.h	5.15 (Berkeley) 06/29/92
+ *	@(#)fcntl.h	5.16 (Berkeley) 05/28/93
  */
 
 #ifndef _FCNTL_H_
@@ -152,11 +152,11 @@
  * information passed to system by user
  */
 struct flock {
-	short	l_type;		/* lock type: read/write, etc. */
-	short	l_whence;	/* type of l_start */
 	off_t	l_start;	/* starting offset */
 	off_t	l_len;		/* len = 0 means until end of file */
 	pid_t	l_pid;		/* lock owner */
+	short	l_type;		/* lock type: read/write, etc. */
+	short	l_whence;	/* type of l_start */
 };
 
 
