@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)rm.c	8.6 (Berkeley) 07/28/94";
+static char sccsid[] = "@(#)rm.c	8.7 (Berkeley) 10/18/94";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -211,7 +211,7 @@ rm_tree(argv)
 			break;
 
 		case FTS_W:
-			if (!unwhiteout(p->fts_accpath) ||
+			if (!undelete(p->fts_accpath) ||
 			    fflag && errno == ENOENT)
 				continue;
 			break;
@@ -268,7 +268,7 @@ rm_file(argv)
 		if (!fflag && !S_ISWHT(sb.st_mode) && !check(f, f, &sb))
 			continue;
 		if (S_ISWHT(sb.st_mode))
-			rval = unwhiteout(f);
+			rval = undelete(f);
 		else if (S_ISDIR(sb.st_mode))
 			rval = rmdir(f);
 		else {
