@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_bio.c	8.2 (Berkeley) 09/21/93
+ *	@(#)lfs_bio.c	8.3 (Berkeley) 09/23/93
  */
 
 #include <sys/param.h>
@@ -105,9 +105,9 @@ lfs_bwrite(ap)
 			}
 		}
 		ip = VTOI((bp)->b_vp);
-		if (!(ip->i_flag & IMODIFIED))
+		if (!(ip->i_flag & IN_MODIFIED))
 			++fs->lfs_uinodes;
-		ip->i_flag |= IMODIFIED | ICHANGE | IUPDATE;
+		ip->i_flag |= IN_CHANGE | IN_MODIFIED | IN_UPDATE;
 		fs->lfs_avail -= fsbtodb(fs, 1);
 		++locked_queue_count;
 		bp->b_flags |= B_DELWRI | B_LOCKED;
