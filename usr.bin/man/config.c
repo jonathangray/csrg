@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)config.c	5.5 (Berkeley) 06/29/90";
+static char sccsid[] = "@(#)config.c	5.6 (Berkeley) 03/01/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -62,6 +62,7 @@ getpath(sects)
 	register char **av, *p;
 	size_t len;
 	char line[MAXLINE];
+	static int openconfig();
 
 	openconfig();
 	while (fgets(line, sizeof(line), cfp)) {
