@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)up.c	6.10 (Berkeley) 02/23/86
+ *	@(#)up.c	6.11 (Berkeley) 05/02/86
  */
 
 #include "up.h"
