@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_node.c	7.37 (Berkeley) 01/22/92
+ *	@(#)nfs_node.c	7.38 (Berkeley) 05/13/92
  */
 
 #include "param.h"
