@@ -1,5 +1,5 @@
-/* 
- * Copyright (c) 1991 Regents of the University of California.
+/*-
+ * Copyright (c) 1991 The Regents of the University of California.
  * All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.c	7.7 (Berkeley)	5/12/91
+ *	@(#)pmap.c	7.9 (Berkeley) 02/05/92
  */
 
 /*
