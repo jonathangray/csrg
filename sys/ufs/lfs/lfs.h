@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs.h	5.1 (Berkeley) 09/18/91
+ *	@(#)lfs.h	5.2 (Berkeley) 09/18/91
  */
 
 #define	MAXMNTLEN	512		/* XXX move from fs.h to mount.h */
