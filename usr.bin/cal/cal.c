@@ -41,7 +41,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)cal.c	8.1 (Berkeley) 06/06/93";
+static char sccsid[] = "@(#)cal.c	8.2 (Berkeley) 09/30/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -199,6 +199,7 @@ monthly(month, year)
 		for (col = 0, p = lineout; col < 7; col++,
 		    p += julian ? J_DAY_LEN : DAY_LEN)
 			ascii_day(p, days[row * 7 + col]);
+		*p = '\0';
 		trim_trailing_spaces(lineout);
 		(void)printf("%s\n", lineout);
 	}
@@ -231,6 +232,7 @@ j_yearly(year)
 				for (col = 0; col < 7; col++, p += J_DAY_LEN)
 					ascii_day(p, *dp++);
 			}
+			*p = '\0';
 			trim_trailing_spaces(lineout);
 			(void)printf("%s\n", lineout);
 		}
@@ -266,6 +268,7 @@ yearly(year)
 				for (col = 0; col < 7; col++, p += DAY_LEN)
 					ascii_day(p, *dp++);
 			}
+			*p = '\0';
 			trim_trailing_spaces(lineout);
 			(void)printf("%s\n", lineout);
 		}
