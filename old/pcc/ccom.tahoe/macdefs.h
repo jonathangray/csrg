@@ -77,7 +77,6 @@ typedef	long	OFFSZ;		/* size in which offsets are kept */
 #define aobeg()
 #define aocode(p)
 #define aoend()
-#define deflab(m)	if (!nerrors) printf("L%d:\n", m); else
 
 #define	PRTDCON			/* use machine-specific prtdcon routine */
 extern	prtdcon();
