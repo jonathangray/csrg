@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)bpf.c	7.2 (Berkeley) 05/14/91
+ *	@(#)bpf.c	7.3 (Berkeley) 05/14/91
  *
  * static char rcsid[] =
  * "$Header: bpf.c,v 1.23 91/01/30 18:22:13 mccanne Exp $";
@@ -1085,6 +1085,7 @@ ifpromisc(ifp, pswitch)
 	struct ifnet *ifp;
 	int pswitch;
 {
+	struct ifreq ifr;
 	/* 
 	 * If the device is not configured up, we cannot put it in
 	 * promiscuous mode.
@@ -1101,7 +1102,8 @@ ifpromisc(ifp, pswitch)
 			return (0);
 		ifp->if_flags &= ~IFF_PROMISC;
 	}
-	return ((*ifp->if_ioctl)(ifp, SIOCSIFFLAGS, (caddr_t)0));
+	ifr.ifr_flags = ifp->if_flags;
+	return ((*ifp->if_ioctl)(ifp, SIOCSIFFLAGS, (caddr_t)&ifr));
 }
 
 #endif (NBPFILTER > 0)
