@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)sys_process.c	7.24 (Berkeley) 02/05/92
+ *	@(#)sys_process.c	7.25 (Berkeley) 06/04/92
  */
 
 #define IPCREG
@@ -195,7 +195,7 @@ procxmt(p)
 #endif
 			goto ok;
 		}
-#if defined(hp300)
+#if defined(hp300) || defined(luna68k)
 #ifdef FPCOPROC
 		if (poff >= (int *)&((struct user *)kstack)->u_pcb.pcb_fpregs.fpf_regs &&
 		    poff <= (int *)&((struct user *)kstack)->u_pcb.pcb_fpregs.fpf_fpiar)
