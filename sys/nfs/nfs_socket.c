@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_socket.c	7.30 (Berkeley) 05/11/92
+ *	@(#)nfs_socket.c	7.31 (Berkeley) 07/02/92
  */
 
 /*
@@ -986,7 +986,7 @@ tryagain:
 	/*
 	 * Wait for the reply from our send or the timer's.
 	 */
-	if (!error)
+	if (!error || error == EPIPE)
 		error = nfs_reply(rep);
 
 	/*
