@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kgdb_stub.c	8.2 (Berkeley) 01/12/94
+ *	@(#)kgdb_stub.c	8.3 (Berkeley) 01/12/94
  */
 
 /*
@@ -320,7 +320,7 @@ regs_to_gdb(fp, regs)
 static inline void
 gdb_to_regs(fp, regs)
 	struct frame *fp;
-	u_long regs;
+	u_long *regs;
 {
 	kgdb_copy((u_char *)regs, (u_char *)fp->f_regs, 16*4);
 	kgdb_copy((u_char *)&regs[GDB_SR], (u_char *)&fp->f_stackadj, 2*4);
