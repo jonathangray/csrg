@@ -30,11 +30,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_conf.c	7.4 (Berkeley) 11/01/91
+ *	@(#)vfs_conf.c	7.5 (Berkeley) 11/01/91
  */
 
 #include <sys/param.h>
 #include <sys/mount.h>
+
+#ifdef FFS
 #include <ufs/ffs/ffs_extern.h>
 
 /*
@@ -42,6 +44,7 @@
  * This specification should be done by /etc/config.
  */
 int (*mountroot)() = ffs_mountroot;
+#endif
 
 /*
  * These define the root filesystem and device.
@@ -53,7 +56,9 @@ struct vnode *rootdir;
  * Set up the filesystem operations for vnodes.
  * The types are defined in mount.h.
  */
+#ifdef FFS
 extern	struct vfsops ufs_vfsops;
+#endif
 
 #ifdef LFS
 extern	struct vfsops lfs_vfsops;
@@ -69,7 +74,11 @@ extern	struct vfsops nfs_vfsops;
 
 struct vfsops *vfssw[] = {
 	NULL,			/* 0 = MOUNT_NONE */
+#ifdef FFS
 	&ufs_vfsops,		/* 1 = MOUNT_UFS */
+#else
+	NULL,
+#endif
 #ifdef NFS
 	&nfs_vfsops,		/* 2 = MOUNT_NFS */
 #else
