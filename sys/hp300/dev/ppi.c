@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ppi.c	7.6 (Berkeley) 10/11/92
+ *	@(#)ppi.c	8.1 (Berkeley) 06/10/93
  */
 
 /*
