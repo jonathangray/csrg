@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	6.42 (Berkeley) 04/13/93 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.43 (Berkeley) 04/13/93 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	6.42 (Berkeley) 04/13/93 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.43 (Berkeley) 04/13/93 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -130,11 +130,10 @@ smtp(e)
 	ADDRESS *a;
 
 	hasmail = FALSE;
-	if (OutChannel != stdout)
+	if (fileno(OutChannel) != fileno(stdout))
 	{
 		/* arrange for debugging output to go to remote host */
-		(void) close(1);
-		(void) dup(fileno(OutChannel));
+		(void) dup2(fileno(OutChannel), fileno(stdout));
 	}
 	settime(e);
 	CurHostName = RealHostName;
