@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.147 (Berkeley) 04/09/95
+ *	@(#)conf.h	8.148 (Berkeley) 04/12/95
  */
 
 /*
@@ -87,8 +87,8 @@
 # define NETINET	1	/* include internet support */
 # define MATCHGECOS	1	/* match user names from gecos field */
 # define XDEBUG		1	/* enable extended debugging */
-# ifdef NEWDB
-# define USERDB		1	/* look in user database (requires NEWDB) */
+# if (defined(NEWDB) || defined(HESIOD)) && !defined(USERDB)
+# define USERDB		1	/* look in user database */
 # endif
 
 /**********************************************************************
