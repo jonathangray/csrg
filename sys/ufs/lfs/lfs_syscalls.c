@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_syscalls.c	7.13 (Berkeley) 06/23/92
+ *	@(#)lfs_syscalls.c	7.14 (Berkeley) 07/02/92
  */
 
 #include <sys/param.h>
