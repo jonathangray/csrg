@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)netdb.h	5.3 (Berkeley) 08/25/85
+ *	@(#)netdb.h	5.4 (Berkeley) 08/26/85
  */
 
 /*
