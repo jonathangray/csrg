@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fifo_vnops.c	7.13 (Berkeley) 05/13/92
+ *	@(#)fifo_vnops.c	7.13 (Berkeley) 05/14/92
  */
 
 #include "param.h"
