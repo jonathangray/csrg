@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_glue.c	8.5 (Berkeley) 01/05/94
+ *	@(#)vm_glue.c	8.6 (Berkeley) 01/05/94
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -70,6 +70,8 @@
 #include <vm/vm.h>
 #include <vm/vm_page.h>
 #include <vm/vm_kern.h>
+
+#include <machine/cpu.h>
 
 int	avefree = 0;		/* XXX */
 unsigned maxdmap = MAXDSIZ;	/* XXX */
