@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)ftp.c	5.36 (Berkeley) 06/29/90";
+static char sccsid[] = "@(#)ftp.c	5.37 (Berkeley) 03/01/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -296,7 +296,7 @@ va_dcl
 	cpend = 1;
 	r = getreply(!strcmp(fmt, "QUIT"));
 	if (abrtflag && oldintr != SIG_IGN)
-		(*oldintr)();
+		(*oldintr)(SIGINT);
 	(void) signal(SIGINT, oldintr);
 	return(r);
 }
@@ -403,7 +403,7 @@ getreply(expecteof)
 		if (code == 421 || originalcode == 421)
 			lostpeer();
 		if (abrtflag && oldintr != cmdabort && oldintr != SIG_IGN)
-			(*oldintr)();
+			(*oldintr)(SIGINT);
 		return (n - '0');
 	}
 }
@@ -1179,7 +1179,7 @@ pswitch(flag)
 	(void) signal(SIGINT, oldintr);
 	if (abrtflag) {
 		abrtflag = 0;
-		(*oldintr)();
+		(*oldintr)(SIGINT);
 	}
 }
 
