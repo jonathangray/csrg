@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)mmap.2	6.3 (Berkeley) 10/29/91
+.\"	@(#)mmap.2	6.4 (Berkeley) 06/21/92
 .\"
 .Dd ""
 .Dt MMAP 2
@@ -41,7 +41,7 @@
 .Fd #include <sys/types.h>
 .Fd #include <sys/mman.h>
 .Ft caddr_t
-.Fn mmap "caddr_t addr" "int len" "int prot" "int flags" "int fd" "off_t offset"
+.Fn mmap "caddr_t addr" "size_t len" "int prot" "int flags" "int fd" "off_t offset"
 .Sh DESCRIPTION
 The
 .Nm mmap
