@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)proc.h	7.37 (Berkeley) 12/27/92
+ *	@(#)proc.h	7.38 (Berkeley) 05/28/93
  */
 
 #ifndef _PROC_H_
@@ -90,7 +90,7 @@ struct	proc {
 
 	int	p_flag;
 	char	p_stat;
-	char	p_pad1;
+	char	p_pad1[3];
 
 	pid_t	p_pid;		/* unique process id */
 	struct	proc *p_hash;	/* hashed based on p_pid for kill+exit+... */
@@ -103,7 +103,7 @@ struct	proc {
 	struct	proc *p_ysptr;	/* pointer to younger siblings */
 	struct	proc *p_cptr;	/* pointer to youngest living child */
 	pid_t	p_oppid;	/* save parent pid during ptrace XXX */
-	short	p_dupfd;	/* sideways return value from fdopen XXX */
+	int	p_dupfd;	/* sideways return value from fdopen XXX */
 
 	/* scheduling */
 	u_int	p_cpu;		/* cpu usage for scheduling */
@@ -125,7 +125,7 @@ struct	proc {
 
 	int	p_sig;		/* signals pending to this process */
 
-	long	p_spare[6];	/* tmp spares to avoid shifting eproc */
+	long	p_spare[6];	/* pad to 256 and to avoid shifting eproc */
 
 /* end area that is zeroed on creation */
 #define	p_endzero	p_startcopy
