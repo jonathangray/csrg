@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_le.c	7.15 (Berkeley) 12/28/92
+ *	@(#)if_le.c	7.16 (Berkeley) 03/11/93
  */
 
 #include "le.h"
@@ -707,9 +707,9 @@ leread(unit, buf, len)
 	 * the type and length which are at the front of any trailer data.
 	 */
 	m = m_devget((char *)(et + 1), len, off, &le->sc_if, 0);
-	m->m_flags |= flags;
 	if (m == 0)
 		return;
+	m->m_flags |= flags;
 	ether_input(&le->sc_if, et, m);
 }
 
