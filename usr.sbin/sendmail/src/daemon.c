@@ -38,9 +38,9 @@
 
 #ifndef lint
 #ifdef DAEMON
-static char sccsid[] = "@(#)daemon.c	8.45 (Berkeley) 04/17/94 (with daemon mode)";
+static char sccsid[] = "@(#)daemon.c	8.46 (Berkeley) 04/17/94 (with daemon mode)";
 #else
-static char sccsid[] = "@(#)daemon.c	8.45 (Berkeley) 04/17/94 (without daemon mode)";
+static char sccsid[] = "@(#)daemon.c	8.46 (Berkeley) 04/17/94 (without daemon mode)";
 #endif
 #endif /* not lint */
 
@@ -150,7 +150,7 @@ getrequests()
 		printf("getrequests: port 0x%x\n", DaemonAddr.sin.sin_port);
 
 	/* get a socket for the SMTP connection */
-	socksize = opendaemonsocket();
+	socksize = opendaemonsocket(TRUE);
 
 	(void) setsignal(SIGCHLD, reapchild);
 
