@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_emit.c	7.14 (Berkeley) 05/27/92
+ *	@(#)tp_emit.c	7.15 (Berkeley) 09/21/92
  */
 
 /***********************************************************
@@ -80,6 +80,7 @@ SOFTWARE.
  */
 
 #include "param.h"
+#include "systm.h"
 #include "mbuf.h"
 #include "socket.h"
 #include "socketvar.h"
