@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fd.c	7.6 (Berkeley) 02/05/92
+ *	@(#)fd.c	7.7 (Berkeley) 05/20/92
  */
 
 #include "fd.h"
@@ -326,6 +326,7 @@ Fdopen(dev, flags)
 Fdclose(dev, flags)
 	dev_t dev;
 {
+	return (0);
 }
 
 /****************************************************************************/
