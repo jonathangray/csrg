@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_alloc.c	7.30 (Berkeley) 11/20/91
+ *	@(#)ffs_alloc.c	7.31 (Berkeley) 03/26/92
  */
 
 #include <sys/param.h>
@@ -141,7 +141,7 @@ nospace:
  */
 ffs_realloccg(ip, lbprev, bpref, osize, nsize, bpp)
 	register struct inode *ip;
-	off_t lbprev;
+	daddr_t lbprev;
 	daddr_t bpref;
 	int osize, nsize;
 	struct buf **bpp;
@@ -258,10 +258,10 @@ ffs_realloccg(ip, lbprev, bpref, osize, nsize, bpp)
 #else SECSIZE
 			munhash(ip->i_dev, bn + i * CLBYTES / DEV_BSIZE);
 #endif SECSIZE
-		ffs_blkfree(ip, bprev, (off_t)osize);
+		ffs_blkfree(ip, bprev, (long)osize);
 		if (nsize < request)
 			ffs_blkfree(ip, bno + numfrags(fs, nsize),
-			    (off_t)(request - nsize));
+			    (long)(request - nsize));
 		ip->i_blocks += btodb(nsize - osize);
 		ip->i_flag |= IUPD|ICHG;
 		allocbuf(bp, nsize);
@@ -905,7 +905,7 @@ gotit:
 ffs_blkfree(ip, bno, size)
 	register struct inode *ip;
 	daddr_t bno;
-	off_t size;
+	long size;
 {
 	register struct fs *fs;
 	register struct cg *cgp;
