@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_segment.c	7.25 (Berkeley) 07/23/92
+ *	@(#)lfs_segment.c	7.26 (Berkeley) 07/25/92
  */
 
 #include <sys/param.h>
@@ -462,14 +462,15 @@ lfs_writeinode(fs, sp, ip)
 	 * address and access times for this inode in the ifile.
 	 */
 	ino = ip->i_number;
-	if (ino == LFS_IFILE_INUM)
+	if (ino == LFS_IFILE_INUM) {
+		daddr = fs->lfs_idaddr;
 		fs->lfs_idaddr = bp->b_blkno;
-
-	LFS_IENTRY(ifp, fs, ino, ibp);
-	daddr = ifp->if_daddr;
-	ifp->if_daddr = bp->b_blkno;
-	LFS_UBWRITE(ibp);
-	redo_ifile = (ino == LFS_IFILE_INUM && !(ibp->b_flags & B_GATHERED));
+	} else {
+		LFS_IENTRY(ifp, fs, ino, ibp);
+		daddr = ifp->if_daddr;
+		ifp->if_daddr = bp->b_blkno;
+		LFS_UBWRITE(ibp);
+	}
 
 	/*
 	 * No need to update segment usage if there was no former inode address
@@ -488,8 +489,7 @@ lfs_writeinode(fs, sp, ip)
 #endif
 		sup->su_nbytes -= sizeof(struct dinode);
 		LFS_UBWRITE(bp);
-		redo_ifile |= 
-		    (ino == LFS_IFILE_INUM && !(bp->b_flags & B_GATHERED));
+		redo_ifile = (ino == LFS_IFILE_INUM && !(bp->b_flags & B_GATHERED));
 	}
 	return (redo_ifile);
 }
