@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)bdisp.c	8.1 (Berkeley) 07/24/94";
+static char sccsid[] = "@(#)bdisp.c	8.2 (Berkeley) 05/03/95";
 #endif /* not lint */
 
 #include "gomoku.h"
@@ -46,6 +46,7 @@ static char sccsid[] = "@(#)bdisp.c	8.1 (Berkeley) 07/24/94";
 #define	SCRNW		80		/* assume 80 chars for the moment */
 
 static	int	lastline;
+static	char	pcolor[] = "*O.?";
 
 /*
  * Initialize screen display.
@@ -146,7 +147,7 @@ bdisp()
 				else
 					c = '.';
 			} else
-				c = "*O.?"[sp->s_occ];
+				c = pcolor[sp->s_occ];
 			addch(c);
 		}
 	}
@@ -179,7 +180,7 @@ bdump(fp)
 				else
 					c = '.';
 			} else
-				c = "*O.?"[sp->s_occ];
+				c = pcolor[sp->s_occ];
 			putc(c, fp);
 			putc(' ', fp);
 		}
@@ -255,6 +256,10 @@ getline(buf, size)
 				break;
 			case '\b':
 			case 0x7f: /* DEL */
+				if (cp == buf + 1) {
+					cp--;
+					continue;
+				}
 				cp -= 2;
 				addch('\b');
 				c = ' ';
