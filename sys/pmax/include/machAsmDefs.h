@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)machAsmDefs.h	7.2 (Berkeley) 02/29/92
+ *	@(#)machAsmDefs.h	7.3 (Berkeley) 02/21/93
  */
 
 /*
@@ -59,6 +59,21 @@
 #include <machine/regdef.h>
 
 /*
+ * Define -pg profile entry code.
+ */
+#ifdef PROF
+#define	MCOUNT	.set noreorder; \
+		.set noat; \
+		move $1,$31; \
+		jal _mount; \
+		subu sp,sp,8;
+		.set reorder; \
+		.set at;
+#else
+#define	MCOUNT
+#endif PROF
+
+/*
  * LEAF(x)
  *
  *	Declare a leaf routine.
@@ -67,10 +82,22 @@
 	.globl x; \
 	.ent x, 0; \
 x: ; \
+	.frame sp, 0, ra \
+	MCOUNT
+
+/*
+ * NLEAF(x)
+ *
+ *	Declare a non-profiled leaf routine.
+ */
+#define NLEAF(x) \
+	.globl x; \
+	.ent x, 0; \
+x: ; \
 	.frame sp, 0, ra
 
 /*
- * ALEAF -- declare alternate entry to leaf routine
+ * ALEAF -- declare alternate entry to a leaf routine.
  */
 #define	ALEAF(x)					\
 	.globl	x;					\
@@ -86,7 +113,8 @@ x:
 	.globl x; \
 	.ent x, 0; \
 x: ; \
-	.frame sp, fsize, retpc
+	.frame sp, fsize, retpc \
+	MCOUNT
 
 /*
  * END(x)
