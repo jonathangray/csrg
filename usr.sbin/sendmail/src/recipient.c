@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recipient.c	8.12 (Berkeley) 07/28/93";
+static char sccsid[] = "@(#)recipient.c	8.13 (Berkeley) 08/07/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -87,6 +87,12 @@ sendto(list, copyf, ctladdr, qflags)
 	char *oldto = e->e_to;
 	ADDRESS *sibl;		/* sibling pointer in tree */
 	ADDRESS *prev;		/* previous sibling */
+
+	if (list == NULL)
+	{
+		syserr("sendtolist: null list");
+		return 0;
+	}
 
 	if (tTd(25, 1))
 	{
