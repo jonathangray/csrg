@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_socket2.c	7.16 (Berkeley) 02/19/91
+ *	@(#)uipc_socket2.c	7.17 (Berkeley) 05/04/91
  */
 
 #include "param.h"
