@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode.h	7.67 (Berkeley) 03/08/93
+ *	@(#)vnode.h	7.68 (Berkeley) 03/19/93
  */
 
 #ifndef KERNEL
@@ -135,6 +135,7 @@ struct vattr {
 	u_quad_t	va_bytes;	/* bytes of disk space held by file */
 	u_quad_t	va_filerev;	/* file modification number */
 	u_int		va_vaflags;	/* operations flags, see below */
+	long		va_spare;	/* remain quad aligned */
 };
 
 /*
