@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	5.13.1.2 (Berkeley) 09/22/92";
+static char sccsid[] = "@(#)parseaddr.c	5.22 (Berkeley) 11/04/92";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -678,6 +678,11 @@ _rewrite(pvp, ruleset)
 		printf("rewrite: ruleset %2d   input:", ruleset);
 		printcav(pvp);
 	}
+	if (ruleset < 0 || ruleset >= MAXRWSETS)
+	{
+		syserr("rewrite: illegal ruleset number %d", ruleset);
+		return;
+	}
 	if (pvp == NULL)
 		return;
 
@@ -760,6 +765,8 @@ _rewrite(pvp, ruleset)
 			if (++loopcount > 100)
 			{
 				syserr("Infinite loop in ruleset %d", ruleset);
+				printf("workspace: ");
+				printav(pvp);
 				break;
 			}
 			rp = *rvp;
@@ -1104,7 +1111,7 @@ backup:
 			{
 				/* substitute from LHS */
 				m = &mlist[rp[1] - '1'];
-				if (m >= mlp)
+				if (m < mlist || m >= mlp)
 				{
 				  toolong:
 					syserr("rewrite: ruleset %d: replacement #%c out of bounds",
