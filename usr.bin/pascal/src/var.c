@@ -1,7 +1,7 @@
 /* Copyright (c) 1979 Regents of the University of California */
 
 #ifndef lint
-static char sccsid[] = "@(#)var.c 1.16.1.1 03/15/85";
+static char sccsid[] = "@(#)var.c 2.2 03/15/85";
 #endif
 
 #include "whoami.h"
@@ -150,8 +150,7 @@ var(vline, vidl, vtype)
 			putprintf( EXTFORMAT , 1 , (int) vidl->list_node.list );
 			putprintf( ",%d" , 0 , (int) w );
 			putprintf( "	.text" , 0 );
-			stabgvar((char *) vidl->list_node.list , p2type( np ) ,
-				o2 , (int) w , line );
+			stabgvar( vp , w , line );
 			vp -> extra_flags |= NGLOBAL;
 		    } else {
 			vp -> extra_flags |= NLOCAL;
