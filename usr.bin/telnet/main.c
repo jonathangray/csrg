@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.1 (Berkeley) 06/06/93";
+static char sccsid[] = "@(#)main.c	8.2 (Berkeley) 12/15/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -46,6 +46,15 @@ static char sccsid[] = "@(#)main.c	8.1 (Berkeley) 06/06/93";
 #include "ring.h"
 #include "externs.h"
 #include "defines.h"
+
+/* These values need to be the same as defined in libtelnet/kerberos5.c */
+/* Either define them in both places, or put in some common header file. */
+#define OPTS_FORWARD_CREDS           0x00000002
+#define OPTS_FORWARDABLE_CREDS       0x00000001
+
+#if 0
+#define FORWARD
+#endif
 
 /*
  * Initialize variables.
@@ -73,7 +82,7 @@ usage()
 	    prompt,
 #ifdef	AUTHENTICATION
 	    "[-8] [-E] [-K] [-L] [-S tos] [-X atype] [-a] [-c] [-d] [-e char]",
-	    "\n\t[-k realm] [-l user] [-n tracefile] ",
+	    "\n\t[-k realm] [-l user] [-f/-F] [-n tracefile] ",
 #else
 	    "[-8] [-E] [-L] [-S tos] [-a] [-c] [-d] [-e char] [-l user]",
 	    "\n\t[-n tracefile]",
@@ -109,6 +118,9 @@ main(argc, argv)
 	extern int optind;
 	int ch;
 	char *user, *strrchr();
+#ifdef	FORWARD
+	extern int forward_flags;
+#endif	/* FORWARD */
 
 	tninit();		/* Clear out things */
 #if	defined(CRAY) && !defined(__STDC__)
@@ -127,7 +139,7 @@ main(argc, argv)
 	rlogin = (strncmp(prompt, "rlog", 4) == 0) ? '~' : _POSIX_VDISABLE;
 	autologin = -1;
 
-	while ((ch = getopt(argc, argv, "8EKLS:X:acde:k:l:n:rt:x")) != EOF) {
+	while ((ch = getopt(argc, argv, "8EKLS:X:acde:fFk:l:n:rt:x")) != EOF) {
 		switch(ch) {
 		case '8':
 			eight = 3;	/* binary output and input */
@@ -176,6 +188,37 @@ main(argc, argv)
 			break;
 		case 'e':
 			set_escape_char(optarg);
+			break;
+		case 'f':
+#if defined(AUTHENTICATION) && defined(KRB5) && defined(FORWARD)
+			if (forward_flags & OPTS_FORWARD_CREDS) {
+			    fprintf(stderr, 
+				    "%s: Only one of -f and -F allowed.\n",
+				    prompt);
+			    usage();
+			}
+			forward_flags |= OPTS_FORWARD_CREDS;
+#else
+			fprintf(stderr,
+			 "%s: Warning: -f ignored, no Kerberos V5 support.\n", 
+				prompt);
+#endif
+			break;
+		case 'F':
+#if defined(AUTHENTICATION) && defined(KRB5) && defined(FORWARD)
+			if (forward_flags & OPTS_FORWARD_CREDS) {
+			    fprintf(stderr, 
+				    "%s: Only one of -f and -F allowed.\n",
+				    prompt);
+			    usage();
+			}
+			forward_flags |= OPTS_FORWARD_CREDS;
+			forward_flags |= OPTS_FORWARDABLE_CREDS;
+#else
+			fprintf(stderr,
+			 "%s: Warning: -F ignored, no Kerberos V5 support.\n", 
+				prompt);
+#endif
 			break;
 		case 'k':
 #if defined(AUTHENTICATION) && defined(KRB4)
