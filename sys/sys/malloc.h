@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)malloc.h	7.18 (Berkeley) 10/23/90
+ *	@(#)malloc.h	7.19 (Berkeley) 12/05/90
  */
 
 #define KMEMSTATS
@@ -246,7 +246,7 @@ struct kmembuckets {
 
 extern struct kmemstats kmemstats[];
 extern struct kmemusage *kmemusage;
-extern char kmembase[];
+extern char *kmembase;
 extern struct kmembuckets bucket[];
 extern qaddr_t malloc();
 extern void free();
