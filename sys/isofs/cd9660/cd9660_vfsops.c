@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cd9660_vfsops.c	8.2 (Berkeley) 01/23/94
+ *	@(#)cd9660_vfsops.c	8.3 (Berkeley) 01/31/94
  */
 
 #include <sys/param.h>
@@ -298,7 +298,8 @@ static iso_mountfs(devvp, mp, p, argp)
 	
 	rootp = (struct iso_directory_record *)pri->root_directory_record;
 	
-	isomp = (struct iso_mnt *)malloc(sizeof *isomp,M_ISOFSMNT,M_WAITOK);
+	isomp = malloc(sizeof *isomp, M_ISOFSMNT, M_WAITOK);
+	bzero((caddr_t)isomp, sizeof *isomp);
 	isomp->logical_block_size = logical_block_size;
 	isomp->volume_space_size = isonum_733 (pri->volume_space_size);
 	bcopy (rootp, isomp->root, sizeof isomp->root);
