@@ -30,19 +30,23 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	5.5 (Berkeley) 06/28/90
+ *	@(#)pathnames.h	5.6 (Berkeley) 04/05/93
  */
 
 #if BSD > 43
 
 # include <paths.h>
 
-# define	_PATH_LOGIN	"/usr/bin/login"
+# ifndef _PATH_LOGIN
+#  define	_PATH_LOGIN	"/usr/bin/login"
+# endif
 
 #else
  
 # define	_PATH_TTY	"/dev/tty"
-# define	_PATH_LOGIN	"/bin/login"
+# ifndef _PATH_LOGIN
+#  define	_PATH_LOGIN	"/bin/login"
+# endif
 
 #endif
 
