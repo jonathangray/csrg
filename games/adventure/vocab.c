@@ -1,10 +1,11 @@
 /*-
- * Copyright (c) 1991 The Regents of the University of California.
+ * Copyright (c) 1991, 1993 The Regents of the University of California.
  * All rights reserved.
  *
- * The game adventure was original written Fortran by Will Crowther
- * and Don Woods.  It was later translated to C and enhanced by
- * Jim Gillogly.
+ * The game adventure was originally written in Fortran by Will Crowther
+ * and Don Woods.  It was later translated to C and enhanced by Jim
+ * Gillogly.  This code is derived from software contributed to Berkeley
+ * by Jim Gillogly at The Rand Corporation.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -36,7 +37,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)vocab.c	5.1 (Berkeley) 04/08/91";
+static char sccsid[] = "@(#)vocab.c	5.2 (Berkeley) 05/12/93";
 #endif /* not lint */
 
 /*      Re-coding of advent in C: data structure routines               */
@@ -51,6 +52,7 @@ int object;
 juggle(object)
 int object;
 {       register int i,j;
+
 	i=place[object];
 	j=fixed[object];
 	move(object,i);
@@ -61,6 +63,7 @@ int object;
 move(object,where)
 int object,where;
 {       register int from;
+
 	if (object<=100)
 		from=place[object];
 	else
@@ -76,11 +79,10 @@ int object,where,pval;
 	return(-1-pval);
 }
 
-
-
 carry(object,where)
 int object,where;
 {       register int temp;
+
 	if (object<=100)
 	{       if (place[object]== -1) return;
 		place[object] = -1;
@@ -93,8 +95,6 @@ int object,where;
 	for (temp=atloc[where]; link[temp]!=object; temp=link[temp]);
 	link[temp]=link[object];
 }
-
-
 
 
 drop(object,where)
@@ -118,6 +118,7 @@ int value;                              /* used for storing only        */
 	register char *s,*t;
 	int hash, i;
 	struct hashtab *h;
+
 	for (hash=0,s=word,i=0; i<5 &&*s; i++)  /* some kind of hash    */
 		hash += *s++;           /* add all chars in the word    */
 	hash = (hash*3719)&077777;      /* pulled that one out of a hat */
@@ -220,4 +221,3 @@ prht()                                  /* print hash table             */
 		putchar('\n');
 	}
 }
-
