@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.71 (Berkeley) 05/04/92
+ *	@(#)vfs_subr.c	7.72 (Berkeley) 05/13/92
  */
 
 /*
@@ -190,7 +190,8 @@ void vattr_null(vap)
  * Routines having to do with the management of the vnode table.
  */
 struct vnode *vfreeh, **vfreet;
-extern struct vnodeops dead_vnodeops, spec_vnodeops;
+extern struct vnodeops dead_vnodeops;
+extern struct vnodeops spec_vnodeops;
 extern void vclean();
 long numvnodes;
 struct vattr va_null;
