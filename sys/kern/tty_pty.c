@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty_pty.c	7.19 (Berkeley) 04/20/91
+ *	@(#)tty_pty.c	7.20 (Berkeley) 05/16/91
  */
 
 /*
@@ -127,13 +127,15 @@ ptsopen(dev, flag, devtype, p)
 	return (error);
 }
 
-ptsclose(dev)
+ptsclose(dev, flag, mode, p)
 	dev_t dev;
+	int flag, mode;
+	struct proc *p;
 {
 	register struct tty *tp;
 
 	tp = &pt_tty[minor(dev)];
-	(*linesw[tp->t_line].l_close)(tp);
+	(*linesw[tp->t_line].l_close)(tp, flag);
 	ttyclose(tp);
 	ptcwakeup(tp, FREAD|FWRITE);
 	return (0);
@@ -759,7 +761,7 @@ ptyioctl(dev, cmd, data, flag)
 	 * really is.
 	 */
 	if (linesw[tp->t_line].l_rint != ttyinput) {
-		(*linesw[tp->t_line].l_close)(tp);
+		(*linesw[tp->t_line].l_close)(tp, flag);
 		tp->t_line = TTYDISC;
 		(void)(*linesw[tp->t_line].l_open)(dev, tp, flag);
 		error = ENOTTY;
