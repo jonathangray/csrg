@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 1992, 1993
  *	The Regents of the University of California.  All rights reserved.
- * All rights reserved.
  *
  * This code is derived from software donated to Berkeley by
  * Jan-Simon Pendry.
@@ -34,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kernfs.h	8.3 (Berkeley) 01/04/94
+ *	@(#)kernfs.h	8.4 (Berkeley) 01/21/94
  */
 
 #define	_PATH_KERNFS	"/kern"		/* Default mountpoint */
