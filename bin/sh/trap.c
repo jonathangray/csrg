@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)trap.c	8.4 (Berkeley) 06/05/95";
+static char sccsid[] = "@(#)trap.c	8.5 (Berkeley) 06/05/95";
 #endif /* not lint */
 
 #include <signal.h>
@@ -76,6 +76,8 @@ char *trap[NSIG+1];		/* trap handler commands */
 MKINIT char sigmode[NSIG];	/* current value of signal */
 char gotsig[NSIG];		/* indicates specified signal received */
 int pendingsigs;			/* indicates some signal received */
+
+static int getsigaction __P((int, sig_t *));
 
 /*
  * The trap builtin.
@@ -156,7 +158,6 @@ setsignal(signo)
 	sig_t sigact = SIG_DFL;
 	char *t;
 	extern void onsig();
-	extern sig_t getsigaction();
 
 	if ((t = trap[signo]) == NULL)
 		action = S_DFL;
@@ -194,16 +195,19 @@ setsignal(signo)
 		}
 	}
 
-	if (signo == SIGKILL) 
-		/* Pretend it worked */
-		return 0;
-
 	t = &sigmode[signo - 1];
 	if (*t == 0) {	
 		/* 
 		 * current setting unknown 
 		 */
-		sigact = getsigaction(signo);
+		if (!getsigaction(signo, &sigact)) {
+			/*
+			 * Pretend it worked; maybe we should give a warning
+			 * here, but other shells don't. We don't alter
+			 * sigmode, so that we retry every time.
+			 */
+			return 0;
+		}
 		if (sigact == SIG_IGN) {
 			if (mflag && (signo == SIGTSTP || 
 			     signo == SIGTTIN || signo == SIGTTOU)) {
@@ -228,16 +232,17 @@ setsignal(signo)
 /*
  * Return the current setting for sig w/o changing it.
  */
-sig_t
-getsigaction(signo) 
+static int
+getsigaction(signo, sigact) 
 	int signo;
+	sig_t *sigact;
 {
 	struct sigaction sa;
 
 	if (sigaction(signo, (struct sigaction *)0, &sa) == -1)
-		error("Sigaction system call failed");
-
-	return (sig_t) sa.sa_handler;
+		return 0;
+	*sigact = (sig_t) sa.sa_handler;
+	return 1;
 }
 
 /*
