@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)spec.c	5.5 (Berkeley) 05/25/90";
+static char sccsid[] = "@(#)spec.c	5.6 (Berkeley) 05/25/90";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -53,7 +53,7 @@ spec()
 	ENTRY *centry, *last;
 	INFO info, ginfo;
 	char buf[2048];
-	void *emalloc();
+	ENTRY *emalloc();
 
 	ginfo.flags = info.flags = 0;
 	ginfo.type = info.type = F_NONE;
@@ -105,9 +105,11 @@ spec()
 			continue;
 		}
 
-		centry = (ENTRY *)emalloc(sizeof(ENTRY));
-		if (!(centry->name = strdup(p)))
-			nomem();
+		centry = emalloc(sizeof(ENTRY) + strlen(p));
+		(void)strcpy(centry->name, p);
+#define	MAGIC	"?*["
+		if (strpbrk(p, MAGIC))
+			centry->flags |= F_MAGIC;
 		centry->info = ginfo;
 		set(&centry->info);
 
@@ -313,7 +315,7 @@ specerr()
 	exit(1);
 }
 
-static void *
+static ENTRY *
 emalloc(size)
 	int size;
 {
@@ -323,7 +325,7 @@ emalloc(size)
 	if (!(p = malloc((u_int)size)))
 		nomem();
 	bzero(p, size);
-	return(p);
+	return((ENTRY *)p);
 }
 
 static
