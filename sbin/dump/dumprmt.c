@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)dumprmt.c	5.17 (Berkeley) 01/25/93";
+static char sccsid[] = "@(#)dumprmt.c	5.18 (Berkeley) 05/11/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -113,8 +113,8 @@ void
 rmtgetconn()
 {
 	register char *cp;
-	static struct servent *sp = 0;
-	static struct passwd *pwd = 0;
+	static struct servent *sp = NULL;
+	static struct passwd *pwd = NULL;
 #ifdef notdef
 	static int on = 1;
 #endif
@@ -122,20 +122,20 @@ rmtgetconn()
 	int size;
 	int maxseg;
 
-	if (sp == 0) {
+	if (sp == NULL) {
 		sp = getservbyname("shell", "tcp");
-		if (sp == 0) {
+		if (sp == NULL) {
 			(void) fprintf(stderr,
 			    "rdump: shell/tcp: unknown service\n");
 			exit(1);
 		}
 		pwd = getpwuid(getuid());
-		if (pwd == 0) {
+		if (pwd == NULL) {
 			(void) fprintf(stderr, "rdump: who are you?\n");
 			exit(1);
 		}
 	}
-	if (cp = index(rmtpeer, '@')) {
+	if ((cp = index(rmtpeer, '@')) != NULL) {
 		tuser = rmtpeer;
 		*cp = '\0';
 		if (!okname(tuser))
@@ -287,7 +287,7 @@ rmtstatus()
 	register char *cp;
 
 	if (rmtstate != TS_OPEN)
-		return (0);
+		return (NULL);
 	rmtcall("status", "S\n");
 	for (i = 0, cp = (char *)&mts; i < sizeof(mts); i++)
 		*cp++ = rmtgetb();
@@ -320,12 +320,13 @@ static int
 rmtreply(cmd)
 	char *cmd;
 {
+	register char *cp;
 	char code[30], emsg[BUFSIZ];
 
 	rmtgets(code, sizeof (code));
 	if (*code == 'E' || *code == 'F') {
 		rmtgets(emsg, sizeof (emsg));
-		msg("%s: %s\n", cmd, emsg, code + 1);
+		msg("%s: %s", cmd, emsg);
 		if (*code == 'F') {
 			rmtstate = TS_CLOSED;
 			return (-1);
@@ -333,7 +334,12 @@ rmtreply(cmd)
 		return (-1);
 	}
 	if (*code != 'A') {
-		msg("Protocol to remote tape server botched (code %s?).\n",
+		/* Kill trailing newline */
+		cp = code + strlen(code);
+		if (cp > code && *--cp == '\n')
+			*cp = '\0';
+
+		msg("Protocol to remote tape server botched (code \"%s\").\n",
 		    code);
 		rmtconnaborted();
 	}
@@ -350,6 +356,7 @@ rmtgetb()
 	return (c);
 }
 
+/* Get a line (guaranteed to have a trailing newline). */
 void
 rmtgets(line, len)
 	char *line;
@@ -360,13 +367,13 @@ rmtgets(line, len)
 	while (len > 1) {
 		*cp = rmtgetb();
 		if (*cp == '\n') {
-			cp[1] = 0;
+			cp[1] = '\0';
 			return;
 		}
 		cp++;
 		len--;
 	}
-	*cp = 0;
+	*cp = '\0';
 	msg("Protocol to remote tape server botched.\n");
 	msg("(rmtgets got \"%s\").\n", line);
 	rmtconnaborted();
