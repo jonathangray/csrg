@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	8.20 (Berkeley) 02/08/94";
+static char sccsid[] = "@(#)readcf.c	8.21 (Berkeley) 02/16/94";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -600,6 +600,9 @@ fileclass(class, filename, fmt, safe, optional)
 	struct stat stbuf;
 	char buf[MAXLINE];
 
+	if (tTd(37, 2))
+		printf("fileclass(%s, fmt=%s)\n", filename, fmt);
+
 	if (filename[0] == '|')
 	{
 		syserr("fileclass: pipes (F%c%s) not supported due to security problems",
@@ -608,6 +611,8 @@ fileclass(class, filename, fmt, safe, optional)
 	}
 	if (stat(filename, &stbuf) < 0)
 	{
+		if (tTd(37, 2))
+			printf("  cannot stat (%s)\n", errstring(errno));
 		if (!optional)
 			syserr("fileclass: cannot stat %s", filename);
 		return;
@@ -665,8 +670,7 @@ fileclass(class, filename, fmt, safe, optional)
 				*p++ = '\0';
 
 			/* enter the word in the symbol table */
-			s = stab(q, ST_CLASS, ST_ENTER);
-			setbitn(class, s->s_class);
+			setclass(class, q);
 		}
 	}
 
