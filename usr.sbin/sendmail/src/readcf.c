@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	8.47 (Berkeley) 11/13/94";
+static char sccsid[] = "@(#)readcf.c	8.48 (Berkeley) 11/20/94";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -2093,7 +2093,7 @@ settimeout(name, val)
 	else if (strcasecmp(name, "queuewarn") == 0)
 	{
 		to = convtime(val, 'h');
-		if (p == NULL || strcmp(p, "*") == NULL)
+		if (p == NULL || strcmp(p, "*") == 0)
 		{
 			TimeOuts.to_q_warning[TOC_NORMAL] = to;
 			TimeOuts.to_q_warning[TOC_URGENT] = to;
