@@ -16,7 +16,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)fstab.c	5.4 (Berkeley) 08/15/88";
+static char sccsid[] = "@(#)fstab.c	5.5 (Berkeley) 09/16/88";
 #endif /* LIBC_SCCS and not lint */
 
 #include <fstab.h>
