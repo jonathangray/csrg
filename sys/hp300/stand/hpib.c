@@ -30,19 +30,19 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hpib.c	7.6 (Berkeley) 06/18/92
+ *	@(#)hpib.c	7.7 (Berkeley) 10/11/92
  */
 
 /*
  * HPIB driver
  */
-#include "sys/param.h"
-#include "sys/reboot.h"
-#include "hp/dev/device.h"
-#include "hpibvar.h"
+#include <sys/param.h>
+#include <sys/reboot.h>
+#include <hp/dev/device.h>
+#include <hp300/stand/hpibvar.h>
 
-#include "saio.h"
-#include "samachdep.h"
+#include <stand/saio.h>
+#include <hp300/stand/samachdep.h>
 
 int	internalhpib = IIOV(0x478000);
 int	fhpibppoll(), nhpibppoll();
