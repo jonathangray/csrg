@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	8.53 (Berkeley) 02/05/95 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	8.54 (Berkeley) 02/10/95 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	8.53 (Berkeley) 02/05/95 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	8.54 (Berkeley) 02/10/95 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -453,7 +453,6 @@ smtp(e)
 						usrerr("501 BODY requires a value");
 						/* NOTREACHED */
 					}
-					e->e_bodytype = newstr(vp);
 					if (strcasecmp(vp, "8bitmime") == 0)
 					{
 						SevenBitInput = FALSE;
@@ -468,6 +467,7 @@ smtp(e)
 							vp);
 						/* NOTREACHED */
 					}
+					e->e_bodytype = newstr(vp);
 				}
 				else if (strcasecmp(kp, "envid") == 0)
 				{
