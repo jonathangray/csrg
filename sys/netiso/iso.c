@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)iso.c	7.18 (Berkeley) 07/09/92
+ *	@(#)iso.c	7.19 (Berkeley) 09/21/92
  */
 
 /***********************************************************
@@ -66,8 +66,8 @@ SOFTWARE.
  * iso.c: miscellaneous routines to support the iso address family
  */
 
-#include "types.h"
 #include "param.h"
+#include "systm.h"
 #include "ioctl.h"
 #include "mbuf.h"
 #include "domain.h"
