@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_vfsops.c	8.2 (Berkeley) 02/10/94
+ *	@(#)union_vfsops.c	8.3 (Berkeley) 02/11/94
  */
 
 /*
@@ -412,7 +412,7 @@ union_statfs(mp, sbp, p)
 	if (error)
 		return (error);
 
-	sbp->f_type = mstat.f_type;
+	sbp->f_type = MOUNT_UNION;
 	sbp->f_flags = mstat.f_flags;
 	sbp->f_bsize = mstat.f_bsize;
 	sbp->f_iosize = mstat.f_iosize;
