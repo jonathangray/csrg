@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_inode.c	7.76 (Berkeley) 07/29/92
+ *	@(#)lfs_inode.c	7.77 (Berkeley) 08/01/92
  */
 
 #include <sys/param.h>
@@ -56,9 +56,6 @@
 int
 lfs_init()
 {
-#ifdef VERBOSE
-	printf("lfs_init\n");
-#endif
 	return (ufs_init());
 }
 
@@ -72,9 +69,6 @@ lfs_ifind(fs, ino, dip)
 	register int cnt;
 	register struct dinode *ldip;
 
-#ifdef VERBOSE
-	printf("lfs_ifind: inode %d\n", ino);
-#endif
 	for (cnt = INOPB(fs), ldip = dip + (cnt - 1); cnt--; --ldip)
 		if (ldip->di_inum == ino)
 			return (ldip);
@@ -95,9 +89,6 @@ lfs_update(ap)
 	struct vnode *vp = ap->a_vp;
 	struct inode *ip;
 
-#ifdef VERBOSE
-	printf("lfs_update\n");
-#endif
 	if (vp->v_mount->mnt_flag & MNT_RDONLY)
 		return (0);
 	ip = VTOI(vp);
@@ -171,9 +162,6 @@ lfs_truncate(ap)
 	long off, blocksreleased;
 	int e1, e2, depth, lastseg, num, offset, seg, size;
 
-#ifdef VERBOSE
-	printf("lfs_truncate\n");
-#endif
 	ip = VTOI(vp);
 	tv = time;
 	if (vp->v_type == VLNK && vp->v_mount->mnt_maxsymlinklen > 0) {
