@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)unistd.h	5.26 (Berkeley) 03/03/93
+ *	@(#)unistd.h	5.27 (Berkeley) 05/02/93
  */
 
 #ifndef _UNISTD_H_
@@ -78,8 +78,10 @@ pid_t	 getppid __P((void));
 uid_t	 getuid __P((void));
 int	 isatty __P((int));
 int	 link __P((const char *, const char *));
+#ifndef lseek
 #define	 lseek __lseek
 off_t	 lseek __P((int, off_t, int));
+#endif
 long	 pathconf __P((const char *, int));	/* not yet */
 int	 pause __P((void));
 int	 pipe __P((int *));
