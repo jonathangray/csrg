@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vfsops.c	8.24 (Berkeley) 05/09/95
+ *	@(#)ffs_vfsops.c	8.25 (Berkeley) 05/10/95
  */
 
 #include <sys/param.h>
@@ -128,7 +128,7 @@ ffs_mountroot()
 	mp->mnt_vnodecovered = NULLVP;
 	vfsp->vfc_refcount++;
 	mp->mnt_stat.f_type = vfsp->vfc_typenum;
-	mp->mnt_flag |= (vfsp->vfc_flags & MNT_VISFLAGMASK) | MNT_ROOTFS;
+	mp->mnt_flag |= vfsp->vfc_flags & MNT_VISFLAGMASK;
 	strncpy(mp->mnt_stat.f_fstypename, vfsp->vfc_name, MFSNAMELEN);
 	ump = VFSTOUFS(mp);
 	fs = ump->um_fs;
@@ -592,11 +592,8 @@ ffs_unmount(mp, mntflags, p)
 	int error, flags;
 
 	flags = 0;
-	if (mntflags & MNT_FORCE) {
-		if (mp->mnt_flag & MNT_ROOTFS)
-			return (EINVAL);
+	if (mntflags & MNT_FORCE)
 		flags |= FORCECLOSE;
-	}
 	if (error = ffs_flushfiles(mp, flags, p))
 		return (error);
 	ump = VFSTOUFS(mp);
@@ -627,12 +624,9 @@ ffs_flushfiles(mp, flags, p)
 	int flags;
 	struct proc *p;
 {
-	extern int doforce;
 	register struct ufsmount *ump;
 	int i, error;
 
-	if (!doforce)
-		flags &= ~FORCECLOSE;
 	ump = VFSTOUFS(mp);
 		return (error);
 #ifdef QUOTA
@@ -705,7 +699,7 @@ ffs_sync(mp, waitfor, cred, p)
 	int error, allerror = 0;
 
 	fs = ump->um_fs;
-	if (fs->fs_ronly != 0) {		/* XXX */
+	if (fs->fs_fmod != 0 && fs->fs_ronly != 0) {		/* XXX */
 		printf("fs = %s\n", fs->fs_fsmnt);
 		panic("update: rofs mod");
 	}
