@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_socket.c	8.1 (Berkeley) 06/10/93
+ *	@(#)nfs_socket.c	7.44 (Berkeley) 06/16/93
  */
 
 /*
@@ -1472,11 +1472,14 @@ nfs_realign(m, hsiz)
 	    if ((m->m_len & 0x3) || (mtod(m, int) & 0x3)) {
 		olen = m->m_len;
 		fcp = mtod(m, caddr_t);
-		m->m_flags &= ~M_PKTHDR;
-		if (m->m_flags & M_EXT)
-			m->m_data = m->m_ext.ext_buf;
-		else
-			m->m_data = m->m_dat;
+		if ((int)fcp & 0x3) {
+			m->m_flags &= ~M_PKTHDR;
+			if (m->m_flags & M_EXT)
+				m->m_data = m->m_ext.ext_buf +
+					((m->m_ext.ext_size - olen) & ~0x3);
+			else
+				m->m_data = m->m_dat;
+		}
 		m->m_len = 0;
 		tcp = mtod(m, caddr_t);
 		mnew = m;
@@ -1486,10 +1489,9 @@ nfs_realign(m, hsiz)
 		 * If possible, only put the first invariant part
 		 * of the RPC header in the first mbuf.
 		 */
-		if (olen <= hsiz)
+		mlen = M_TRAILINGSPACE(m);
+		if (olen <= hsiz && mlen > hsiz)
 			mlen = hsiz;
-		else
-			mlen = M_TRAILINGSPACE(m);
 	
 		/*
 		 * Loop through the mbuf list consolidating data.
