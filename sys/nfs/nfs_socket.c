@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_socket.c	7.35 (Berkeley) 07/12/92
+ *	@(#)nfs_socket.c	7.36 (Berkeley) 07/12/92
  */
 
 /*
@@ -1234,7 +1234,9 @@ nfs_rephead(siz, nd, err, cache, frev, mrq, mbp, bposp)
  * To avoid retransmission attempts on STREAM sockets (in the future) make
  * sure to set the r_retry field to 0 (implies nm_retry == 0).
  */
-nfs_timer()
+void
+nfs_timer(arg)
+	void *arg;
 {
 	register struct nfsreq *rep;
 	register struct mbuf *m;
