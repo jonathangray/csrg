@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)bt_open.c	5.28 (Berkeley) 05/07/93";
+static char sccsid[] = "@(#)bt_open.c	5.29 (Berkeley) 05/16/93";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -171,7 +171,7 @@ __bt_open(fname, flags, mode, openinfo)
 	t->bt_pfx = b.prefix;
 	t->bt_flags = 0;
 	if (t->bt_lorder != machine_lorder)
-		SET(t, BTF_NEEDSWAP);
+		SET(t, B_NEEDSWAP);
 
 	dbp->type = DB_BTREE;
 	dbp->internal = t;
@@ -189,7 +189,7 @@ __bt_open(fname, flags, mode, openinfo)
 	if (fname) {
 		switch(flags & O_ACCMODE) {
 		case O_RDONLY:
-			SET(t, BTF_RDONLY);
+			SET(t, B_RDONLY);
 			break;
 		case O_RDWR:
 			break;
@@ -207,7 +207,7 @@ __bt_open(fname, flags, mode, openinfo)
 			goto einval;
 		if ((t->bt_fd = tmp()) == -1)
 			goto err;
-		SET(t, BTF_INMEM);
+		SET(t, B_INMEM);
 	}
 
 	if (fcntl(t->bt_fd, F_SETFD, 1) == -1)
@@ -231,9 +231,9 @@ __bt_open(fname, flags, mode, openinfo)
 		 * bit.
 		 */
 		if (m.m_magic == BTREEMAGIC)
-			CLR(t, BTF_NEEDSWAP);
+			CLR(t, B_NEEDSWAP);
 		else {
-			SET(t, BTF_NEEDSWAP);
+			SET(t, B_NEEDSWAP);
 			BLSWAP(m.m_magic);
 			BLSWAP(m.m_version);
 			BLSWAP(m.m_psize);
@@ -267,11 +267,11 @@ __bt_open(fname, flags, mode, openinfo)
 
 		/* Set flag if duplicates permitted. */
 		if (!(b.flags & R_DUP))
-			SET(t, BTF_NODUPS);
+			SET(t, B_NODUPS);
 
 		t->bt_free = P_INVALID;
 		t->bt_nrecs = 0;
-		SET(t, BTF_METADIRTY);
+		SET(t, B_METADIRTY);
 	}
 
 	t->bt_psize = b.psize;
@@ -306,7 +306,7 @@ __bt_open(fname, flags, mode, openinfo)
 	if ((t->bt_mp =
 	    mpool_open(NULL, t->bt_fd, t->bt_psize, ncache)) == NULL)
 		goto err;
-	if (!ISSET(t, BTF_INMEM))
+	if (!ISSET(t, B_INMEM))
 		mpool_filter(t->bt_mp, __bt_pgin, __bt_pgout, t);
 
 	/* Create a root page if new tree. */
