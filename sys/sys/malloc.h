@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)malloc.h	7.32 (Berkeley) 10/09/92
+ *	@(#)malloc.h	7.33 (Berkeley) 10/22/92
  */
 
 #ifndef _MALLOC_H_
@@ -181,6 +181,8 @@ struct kmemstats {
 	u_short	ks_mapblocks;	/* number of times blocked for kernel map */
 	long	ks_maxused;	/* maximum number ever used */
 	long	ks_limit;	/* most that are allowed to exist */
+	long	ks_size;	/* sizes of this thing that are allocated */
+	long	ks_spare;
 };
 
 /*
