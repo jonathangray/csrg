@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.9 (Berkeley) 02/24/93
+#	@(#)Makefile	5.10 (Berkeley) 02/24/93
 
 # BROKEN pstat
 SUBDIR=	ac accton amd arp chown chroot config cron dev_mkdb diskpart \
@@ -20,7 +20,7 @@ SUBDIR+=config.new timed
 .elif ${MACHINE} == "tahoe"
 SUBDIR+=config dlmpcc iostat timed
 .elif ${MACHINE} == "vax"
-SUBDIR+=arff bad144 config flcopy iostat rxformat timed
+SUBDIR+=bad144 config iostat timed
 .endif
 
 .include <bsd.subdir.mk>
