@@ -32,7 +32,6 @@ divert(-1)
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-VERSIONID(`@(#)sunos4.1.m4	2.4 (Berkeley) 11/13/92')
-#
 
 divert(0)
+VERSIONID(`@(#)sunos4.1.m4	2.5 (Berkeley) 11/14/92')
