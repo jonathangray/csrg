@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.137 (Berkeley) 05/29/95
+ *	@(#)sendmail.h	8.138 (Berkeley) 05/30/95
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.137		05/29/95";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.138		05/30/95";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -994,8 +994,9 @@ EXTERN bool	HasEightBits;	/* has at least one eight bit input byte */
 EXTERN time_t	SafeAlias;	/* interval to wait until @:@ in alias file */
 EXTERN FILE	*InChannel;	/* input connection */
 EXTERN FILE	*OutChannel;	/* output connection */
-EXTERN uid_t	RealUid;	/* when Daemon, real uid of caller */
-EXTERN gid_t	RealGid;	/* when Daemon, real gid of caller */
+EXTERN char	*RealUserName;	/* real user name of caller */
+EXTERN uid_t	RealUid;	/* real uid of caller */
+EXTERN gid_t	RealGid;	/* real gid of caller */
 EXTERN uid_t	DefUid;		/* default uid to run as */
 EXTERN gid_t	DefGid;		/* default gid to run as */
 EXTERN char	*DefUser;	/* default user to run as (from DefUid) */
