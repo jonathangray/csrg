@@ -1,6 +1,6 @@
 | Copyright (c) 1988 University of Utah
-| Copyright (c) 1990 Regents of the University of California.
-| All rights reserved.
+| Copyright (c) 1990, 1993
+|	Regents of the University of California.  All rights reserved.
 |
 | Redistribution and use in source and binary forms, with or without
 | modification, are permitted provided that the following conditions
@@ -32,7 +32,7 @@
 |
 | from: hp300/hp300/vectors.s	7.3 (Berkeley) 6/5/92
 |
-|	@(#)vectors.s	7.3 (Berkeley) 05/12/93
+|	@(#)vectors.s	8.1 (Berkeley) 06/10/93
 |
 
 #ifdef HPFPLIB
