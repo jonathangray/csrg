@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fts.h	5.22 (Berkeley) 03/01/92
+ *	@(#)fts.h	5.23 (Berkeley) 03/05/92
  */
 
 #ifndef	_FTS_H_
@@ -65,12 +65,8 @@ typedef struct _ftsent {
 	struct _ftsent *fts_cycle;	/* cycle node */
 	struct _ftsent *fts_parent;	/* parent directory */
 	struct _ftsent *fts_link;	/* next file in directory */
-	union {
-		long number;		/* local numeric value */
-		void *pointer;		/* local address value */
-	} fts_local;
-#define	fts_number	fts_local.number
-#define	fts_pointer	fts_local.pointer
+	long fts_number;	        /* local numeric value */
+	void *fts_pointer;	        /* local address value */
 	char *fts_accpath;		/* access path */
 	char *fts_path;			/* root path */
 	int fts_errno;			/* errno for this node */
