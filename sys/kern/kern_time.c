@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_time.c	8.1 (Berkeley) 06/10/93
+ *	@(#)kern_time.c	8.2 (Berkeley) 08/10/94
  */
 
 #include <sys/param.h>
@@ -111,7 +111,9 @@ settimeofday(p, uap, retval)
 		timevalfix(&boottime);
 		timevaladd(&runtime, &delta);
 		timevalfix(&runtime);
-		LEASE_UPDATETIME(delta.tv_sec);
+#		ifdef NFS
+			lease_updatetime(delta.tv_sec);
+#		endif
 		splx(s);
 		resettodr();
 	}
