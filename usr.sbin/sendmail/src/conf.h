@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	5.30 (Berkeley) 11/16/92
+ *	@(#)conf.h	5.31 (Berkeley) 12/15/92
  */
 
 /*
@@ -45,7 +45,6 @@
 
 # define MAXLINE	1024		/* max line length */
 # define MAXNAME	256		/* max length of a name */
-# define MAXFIELD	4096		/* max total length of a hdr field */
 # define MAXPV		40		/* max # of parms to mailers */
 # define MAXHOP		17		/* max value of HopCount */
 # define MAXATOM	100		/* max atoms per address */
