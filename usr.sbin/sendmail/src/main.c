@@ -4,7 +4,7 @@
 # include "sendmail.h"
 # include <sys/file.h>
 
-SCCSID(@(#)main.c	3.159		04/30/83);
+SCCSID(@(#)main.c	3.160		05/07/83);
 
 /*
 **  SENDMAIL -- Post mail to a set of destinations.
@@ -162,7 +162,7 @@ main(argc, argv)
 	initmacros();
 
 	/* hostname */
-	av = myhostname(jbuf);
+	av = myhostname(jbuf, sizeof jbuf);
 	if (jbuf[0] != '\0')
 	{
 		p = newstr(jbuf);
