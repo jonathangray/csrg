@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)spec_vnops.c	7.34 (Berkeley) 04/15/91
+ *	@(#)spec_vnops.c	7.35 (Berkeley) 05/04/91
  */
 
 #include "param.h"
@@ -182,7 +182,7 @@ spec_read(vp, uio, ioflag, cred)
 			return (EINVAL);
 		VOP_UNLOCK(vp);
 		error = (*cdevsw[major(vp->v_rdev)].d_read)
-			(vp->v_rdev, uio, ioflag, p);
+			(vp->v_rdev, uio, ioflag);
 		VOP_LOCK(vp);
 		return (error);
 
@@ -262,7 +262,7 @@ spec_write(vp, uio, ioflag, cred)
 			return (EINVAL);
 		VOP_UNLOCK(vp);
 		error = (*cdevsw[major(vp->v_rdev)].d_write)
-			(vp->v_rdev, uio, ioflag, p);
+			(vp->v_rdev, uio, ioflag);
 		VOP_LOCK(vp);
 		return (error);
 
