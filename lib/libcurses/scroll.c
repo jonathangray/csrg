@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)scroll.c	5.10 (Berkeley) 01/11/93";
+static char sccsid[] = "@(#)scroll.c	5.11 (Berkeley) 01/24/93";
 #endif /* not lint */
 
 #include <curses.h>
@@ -62,7 +62,7 @@ scroll(win)
 
 	if (win == curscr) {
 		putchar('\n');
-		if (origtermio.c_oflag & ONLCR)
+		if (__orig_termios.c_oflag & ONLCR)
 			win->curx = 0;
 #ifdef DEBUG
 		__TRACE("scroll: win == curscr\n");
