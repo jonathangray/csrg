@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)player.h	5.4 (Berkeley) 06/01/90
+ *	@(#)player.h	5.5 (Berkeley) 12/30/92
  */
 
 #include <curses.h>
