@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_ihash.c	7.5 (Berkeley) 07/20/92
+ *	@(#)ufs_ihash.c	7.6 (Berkeley) 11/14/92
  */
 
 #include <sys/param.h>
@@ -104,7 +104,9 @@ ufs_ihashins(ip)
 	ip->i_next = iq;
 	ip->i_prev = ipp;
 	*ipp = ip;
-	ILOCK(ip);
+	if ((ip->i_flag & ILOCKED) != 0)
+		panic("ufs_ihashins: already locked");
+	ip->i_flag |= ILOCKED;
 }
 
 /*
