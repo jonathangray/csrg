@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)types.h	8.1 (Berkeley) 06/11/93
+ *	@(#)types.h	8.2 (Berkeley) 01/04/94
  *
  * from: $Header: types.h,v 1.5 92/11/26 02:00:07 torek Exp $ (LBL)
  */
@@ -57,8 +57,8 @@ typedef struct label_t {
 } label_t;
 #endif
 
-typedef	u_long	vm_offset_t;
-typedef	u_long	vm_size_t;
+typedef	unsigned long	vm_offset_t;
+typedef	unsigned long	vm_size_t;
 
 /*
  * Basic integral types.  Omit the typedef if
