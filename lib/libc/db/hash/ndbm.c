@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)ndbm.c	5.11 (Berkeley) 09/11/91";
+static char sccsid[] = "@(#)ndbm.c	5.12 (Berkeley) 07/17/92";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -193,6 +193,7 @@ dbm_clearerr(db)
 	return (0);
 }
 
+extern int
 dbm_dirfno(db)
 	DBM *db;
 {
