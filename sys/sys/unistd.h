@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)unistd.h	5.14 (Berkeley) 04/01/91
+ *	@(#)unistd.h	5.15 (Berkeley) 04/21/92
  */
 
 #ifndef _SYS_UNISTD_H_
