@@ -30,13 +30,16 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	8.1 (Berkeley) 06/06/93
+ *	@(#)extern.h	8.2 (Berkeley) 04/01/94
  */
+
+#define OK_EXIT		0
+#define DIFF_EXIT	1
+#define ERR_EXIT	2	/* error exit code */
 
 void	c_regular __P((int, char *, off_t, off_t, int, char *, off_t, off_t));
 void	c_special __P((int, char *, off_t, int, char *, off_t));
 void	diffmsg __P((char *, char *, off_t, off_t));
 void	eofmsg __P((char *));
-void	err __P((const char *fmt, ...));
 
 extern int lflag, sflag;
