@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sio.c	7.7 (Berkeley) 02/04/93
+ *	@(#)sio.c	7.8 (Berkeley) 05/02/93
  */
 
 /*
@@ -75,18 +75,14 @@ struct	driver siodriver = {
 	sioprobe, "sio",
 };
 
-#define NPORT	2					/* uPD7201A has 2 serial-port */
-#define NLINE	1					/* number of active line */
-
 struct	sio_portc sio_portc[NPORT] = {
-	{ -1, -1, (struct siodevice *) 0x51000000, (int (*)()) 0 },
-	{ -1, -1, (struct siodevice *) 0x51000004, (int (*)()) 0 }
+	{ -1, -1, 0, (struct siodevice *) 0x51000000, (int (*)()) 0 },
+	{ -1, -1, 1, (struct siodevice *) 0x51000004, (int (*)()) 0 }
 };
 
-struct	sio_softc sio_softc[NLINE];
+struct	sio_softc sio_softc[NSIO];
 
 int	sio_init_done = 0;
-int	siounitbase = 0;				/* This counter is used unit number assignment */
 
 int	siosoftCAR;
 int	sio_active;
@@ -94,7 +90,7 @@ int	sioconsole = -1;
 int	siodefaultrate = TTYDEF_SPEED;
 int	siomajor = 12;
 
-struct	tty sio_tty[NLINE];
+struct	tty sio_tty[NSIO];
 
 struct speedtab siospeedtab[] = {
 	2400,	WR4_BAUD24,
@@ -113,46 +109,25 @@ extern	struct tty *constty;
 sioprobe(hd)
 	register struct hp_device *hd;
 {
-	register int port;
+	int unit = hd->hp_unit;
+	register struct sio_softc *sc = &sio_softc[unit];
 	register struct sio_portc *pc;
-	register struct sio_softc *sc;
 
-	sioinit((struct siodevice *) hd->hp_addr, siodefaultrate);
-
-	/* locate the major number */
-	for (siomajor = 0; siomajor < nchrdev; siomajor++)
-		if (cdevsw[siomajor].d_open == sioopen)
-			break;
-
-	for (port = 0; port < NPORT; port++) {
-		pc = &sio_portc[port];
-
-		if (pc->pc_major != -1) {
-			printf("%s%d: port %d, address 0x%x, intr 0x%x (console)\n",
-			       (pc->pc_major == siomajor ? "sio" : "bmc" ),
-			       pc->pc_unit, port, pc->pc_addr, pc->pc_intr);
-			continue;
-		}
-
-		pc->pc_addr =
-			(struct siodevice *)((u_long) hd->hp_addr + (sizeof(struct siodevice) * port));
-#if NBMC > 0
-		if (bmcinit(port))
-			continue;
-#endif
-		if (++siounitbase < NLINE) {
-			pc->pc_major = siomajor;
-			pc->pc_intr  = siointr;
-			pc->pc_unit  = siounitbase;
-			printf("sio%d: port %d, address 0x%x\n", pc->pc_unit, port, pc->pc_addr);
-
-			sc = &sio_softc[pc->pc_unit];
-			sc->sc_pc = pc;
-
-			sio_active |= 1 << pc->pc_unit;
-			siosoftCAR |= 1 << pc->pc_unit;
-		}
+	if (sc->sc_pc != 0) {
+		pc = sc->sc_pc;
+		printf("sio%d: port %d, address 0x%x, intr 0x%x (console)\n",
+		       pc->pc_unit, pc->pc_port, pc->pc_addr, pc->pc_intr);
+		return(0);
 	}
+
+	sc->sc_pc = pc = sio_port_assign(SIO_PORT, siomajor, unit, siointr);
+
+	printf("sio%d: port %d, address 0x%x, intr 0x%x\n",
+	       pc->pc_unit, pc->pc_port, pc->pc_addr, pc->pc_intr);
+
+	sio_active |= 1 << unit;
+	siosoftCAR |= 1 << unit;
+	return(1);
 }
 
 struct sio_portc *
@@ -164,10 +139,6 @@ sio_port_assign(port, major, unit, intr)
 
 	pc = &sio_portc[port];
 
-/*
-	if ((pc->pc_major != -1) && (major != 2))
-		return((struct sio_portc *) 0);
- */
 	pc->pc_major = major;
 	pc->pc_intr  = intr;
 	pc->pc_unit  = unit;
@@ -215,7 +186,7 @@ sioopen(dev, flag, mode, p)
 	int error = 0;
 
 	unit = siounit(dev);
-	if (unit >= NLINE || (sio_active & (1 << unit)) == 0)
+	if (unit >= NSIO || (sio_active & (1 << unit)) == 0)
 		return (ENXIO);
 	tp = &sio_tty[unit];
 	tp->t_oproc = siostart;
@@ -549,8 +520,6 @@ siocnprobe(cp)
 		if (cdevsw[siomajor].d_open == sioopen)
 			break;
 
-	siounitbase = -1;
-
 	/* initialize required fields */
 	cp->cn_dev = makedev(siomajor, unit);
 	cp->cn_tp  = &sio_tty[unit];
@@ -566,11 +535,9 @@ siocninit(cp)
 	sioinit((struct siodevice *) SIO_HARDADDR, siodefaultrate);
 
 	/* port assign */
-	sc->sc_pc = sio_port_assign(0, siomajor, unit, siointr);
+	sc->sc_pc = sio_port_assign(SIO_PORT, siomajor, unit, siointr);
 
 	sioconsole = unit;
-	siounitbase = 0;
-	
 	sio_active |= 1 << unit;
 	siosoftCAR |= 1 << unit;
 }
