@@ -30,13 +30,15 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sysctl.h	7.4 (Berkeley) 06/28/90
+ *	@(#)sysctl.h	7.5 (Berkeley) 02/05/91
  */
+
+#ifndef _KINFO_H_
+#define	_KINFO_H_
 
 /*
  * Get kernel info
  */
-
 #define ki_op(x)		((x)&0x0000ffff)
 #define ki_type(x)		((x)&0x0000ff00)
 
@@ -78,3 +80,5 @@ struct kinfo_lock {
 #ifdef KERNEL
 extern struct kinfo_lock kinfo_lock;
 #endif
+
+#endif /* !_KINFO_H_ */
