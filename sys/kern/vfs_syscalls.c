@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	8.19 (Berkeley) 07/28/94
+ *	@(#)vfs_syscalls.c	8.20 (Berkeley) 08/11/94
  */
 
 #include <sys/param.h>
@@ -765,7 +765,7 @@ mknod(p, uap, retval)
 		error = VOP_WHITEOUT(nd.ni_dvp, &nd.ni_cnd, CREATE);
 		vput(nd.ni_dvp);
 	} else if (!error) {
-		LEASE_CHECK(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
+		VOP_LEASE(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
 		error = VOP_MKNOD(nd.ni_dvp, &nd.ni_vp, &nd.ni_cnd, &vattr);
 	} else {
 		VOP_ABORTOP(nd.ni_dvp, &nd.ni_cnd);
@@ -815,7 +815,7 @@ mkfifo(p, uap, retval)
 	VATTR_NULL(&vattr);
 	vattr.va_type = VFIFO;
 	vattr.va_mode = (uap->mode & ALLPERMS) &~ p->p_fd->fd_cmask;
-	LEASE_CHECK(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
+	VOP_LEASE(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
 	return (VOP_MKNOD(nd.ni_dvp, &nd.ni_vp, &nd.ni_cnd, &vattr));
 #endif /* FIFO */
 }
@@ -851,10 +851,9 @@ link(p, uap, retval)
 			if (nd.ni_vp != NULL)
 				error = EEXIST;
 			if (!error) {
-				LEASE_CHECK(nd.ni_dvp,
-				    p, p->p_ucred, LEASE_WRITE);
-				LEASE_CHECK(vp,
-				    p, p->p_ucred, LEASE_WRITE);
+				VOP_LEASE(nd.ni_dvp, p, p->p_ucred,
+				    LEASE_WRITE);
+				VOP_LEASE(vp, p, p->p_ucred, LEASE_WRITE);
 				error = VOP_LINK(nd.ni_dvp, vp, &nd.ni_cnd);
 			} else {
 				VOP_ABORTOP(nd.ni_dvp, &nd.ni_cnd);
@@ -909,7 +908,7 @@ symlink(p, uap, retval)
 	}
 	VATTR_NULL(&vattr);
 	vattr.va_mode = ACCESSPERMS &~ p->p_fd->fd_cmask;
-	LEASE_CHECK(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
+	VOP_LEASE(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
 	error = VOP_SYMLINK(nd.ni_dvp, &nd.ni_vp, &nd.ni_cnd, &vattr, path);
 out:
 	FREE(path, M_NAMEI);
@@ -948,7 +947,7 @@ unwhiteout(p, uap, retval)
 		return (EEXIST);
 	}
 
-	LEASE_CHECK(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
+	VOP_LEASE(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
 	error = VOP_WHITEOUT(nd.ni_dvp, &nd.ni_cnd, DELETE);
 	if (error != 0)
 		VOP_ABORTOP(nd.ni_dvp, &nd.ni_cnd);
@@ -977,7 +976,7 @@ unlink(p, uap, retval)
 	if (error = namei(&nd))
 		return (error);
 	vp = nd.ni_vp;
-	LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
+	VOP_LEASE(vp, p, p->p_ucred, LEASE_WRITE);
 	VOP_LOCK(vp);
 
 	if (vp->v_type != VDIR ||
@@ -992,7 +991,7 @@ unlink(p, uap, retval)
 	}
 
 	if (!error) {
-		LEASE_CHECK(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
+		VOP_LEASE(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
 		error = VOP_REMOVE(nd.ni_dvp, nd.ni_vp, &nd.ni_cnd);
 	} else {
 		VOP_ABORTOP(nd.ni_dvp, &nd.ni_cnd);
@@ -1391,7 +1390,7 @@ chflags(p, uap, retval)
 	if (error = namei(&nd))
 		return (error);
 	vp = nd.ni_vp;
-	LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
+	VOP_LEASE(vp, p, p->p_ucred, LEASE_WRITE);
 	VOP_LOCK(vp);
 	if (vp->v_mount->mnt_flag & MNT_RDONLY)
 		error = EROFS;
@@ -1425,7 +1424,7 @@ fchflags(p, uap, retval)
 	if (error = getvnode(p->p_fd, uap->fd, &fp))
 		return (error);
 	vp = (struct vnode *)fp->f_data;
-	LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
+	VOP_LEASE(vp, p, p->p_ucred, LEASE_WRITE);
 	VOP_LOCK(vp);
 	if (vp->v_mount->mnt_flag & MNT_RDONLY)
 		error = EROFS;
@@ -1460,7 +1459,7 @@ chmod(p, uap, retval)
 	if (error = namei(&nd))
 		return (error);
 	vp = nd.ni_vp;
-	LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
+	VOP_LEASE(vp, p, p->p_ucred, LEASE_WRITE);
 	VOP_LOCK(vp);
 	if (vp->v_mount->mnt_flag & MNT_RDONLY)
 		error = EROFS;
@@ -1494,7 +1493,7 @@ fchmod(p, uap, retval)
 	if (error = getvnode(p->p_fd, uap->fd, &fp))
 		return (error);
 	vp = (struct vnode *)fp->f_data;
-	LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
+	VOP_LEASE(vp, p, p->p_ucred, LEASE_WRITE);
 	VOP_LOCK(vp);
 	if (vp->v_mount->mnt_flag & MNT_RDONLY)
 		error = EROFS;
@@ -1530,7 +1529,7 @@ chown(p, uap, retval)
 	if (error = namei(&nd))
 		return (error);
 	vp = nd.ni_vp;
-	LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
+	VOP_LEASE(vp, p, p->p_ucred, LEASE_WRITE);
 	VOP_LOCK(vp);
 	if (vp->v_mount->mnt_flag & MNT_RDONLY)
 		error = EROFS;
@@ -1566,7 +1565,7 @@ fchown(p, uap, retval)
 	if (error = getvnode(p->p_fd, uap->fd, &fp))
 		return (error);
 	vp = (struct vnode *)fp->f_data;
-	LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
+	VOP_LEASE(vp, p, p->p_ucred, LEASE_WRITE);
 	VOP_LOCK(vp);
 	if (vp->v_mount->mnt_flag & MNT_RDONLY)
 		error = EROFS;
@@ -1610,7 +1609,7 @@ utimes(p, uap, retval)
 	if (error = namei(&nd))
 		return (error);
 	vp = nd.ni_vp;
-	LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
+	VOP_LEASE(vp, p, p->p_ucred, LEASE_WRITE);
 	VOP_LOCK(vp);
 	if (vp->v_mount->mnt_flag & MNT_RDONLY)
 		error = EROFS;
@@ -1648,7 +1647,7 @@ truncate(p, uap, retval)
 	if (error = namei(&nd))
 		return (error);
 	vp = nd.ni_vp;
-	LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
+	VOP_LEASE(vp, p, p->p_ucred, LEASE_WRITE);
 	VOP_LOCK(vp);
 	if (vp->v_type == VDIR)
 		error = EISDIR;
@@ -1686,7 +1685,7 @@ ftruncate(p, uap, retval)
 	if ((fp->f_flag & FWRITE) == 0)
 		return (EINVAL);
 	vp = (struct vnode *)fp->f_data;
-	LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
+	VOP_LEASE(vp, p, p->p_ucred, LEASE_WRITE);
 	VOP_LOCK(vp);
 	if (vp->v_type == VDIR)
 		error = EISDIR;
@@ -1823,11 +1822,11 @@ rename(p, uap, retval)
 		error = -1;
 out:
 	if (!error) {
-		LEASE_CHECK(tdvp, p, p->p_ucred, LEASE_WRITE);
+		VOP_LEASE(tdvp, p, p->p_ucred, LEASE_WRITE);
 		if (fromnd.ni_dvp != tdvp)
-			LEASE_CHECK(fromnd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
+			VOP_LEASE(fromnd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
 		if (tvp)
-			LEASE_CHECK(tvp, p, p->p_ucred, LEASE_WRITE);
+			VOP_LEASE(tvp, p, p->p_ucred, LEASE_WRITE);
 		error = VOP_RENAME(fromnd.ni_dvp, fromnd.ni_vp, &fromnd.ni_cnd,
 				   tond.ni_dvp, tond.ni_vp, &tond.ni_cnd);
 	} else {
@@ -1892,7 +1891,7 @@ mkdir(p, uap, retval)
 	VATTR_NULL(&vattr);
 	vattr.va_type = VDIR;
 	vattr.va_mode = (uap->mode & ACCESSPERMS) &~ p->p_fd->fd_cmask;
-	LEASE_CHECK(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
+	VOP_LEASE(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
 	error = VOP_MKDIR(nd.ni_dvp, &nd.ni_vp, &nd.ni_cnd, &vattr);
 	if (!error)
 		vput(nd.ni_vp);
@@ -1939,8 +1938,8 @@ rmdir(p, uap, retval)
 		error = EBUSY;
 out:
 	if (!error) {
-		LEASE_CHECK(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
-		LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
+		VOP_LEASE(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
+		VOP_LEASE(vp, p, p->p_ucred, LEASE_WRITE);
 		error = VOP_RMDIR(nd.ni_dvp, nd.ni_vp, &nd.ni_cnd);
 	} else {
 		VOP_ABORTOP(nd.ni_dvp, &nd.ni_cnd);
