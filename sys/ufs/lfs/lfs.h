@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs.h	7.8 (Berkeley) 12/31/91
+ *	@(#)lfs.h	7.9 (Berkeley) 01/08/92
  */
 
 typedef struct buf	BUF;
@@ -71,7 +71,7 @@ struct finfo {
 
 /* On-disk and in-memory super block. */
 struct lfs {
-#define	LFS_MAGIC	0xbedead
+#define	LFS_MAGIC	0x070162
 	u_long	lfs_magic;		/* magic number */
 #define	LFS_VERSION	1
 	u_long	lfs_version;		/* version number */
