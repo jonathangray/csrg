@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)bpf.c	7.9 (Berkeley) 06/07/92
+ *      @(#)bpf.c	7.10 (Berkeley) 07/11/92
  *
  * static char rcsid[] =
  * "$Header: bpf.c,v 1.33 91/10/27 21:21:58 mccanne Exp $";
@@ -48,7 +48,7 @@
 #ifndef __GNUC__
 #define inline
 #else
-#define inline __inline__
+#define inline __inline
 #endif
 
 #include <sys/param.h>
