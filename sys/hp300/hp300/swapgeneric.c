@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)swapgeneric.c	7.6 (Berkeley) 06/05/92
+ *	@(#)swapgeneric.c	7.7 (Berkeley) 07/25/92
  */
 
 #include "sys/param.h"
@@ -95,6 +95,7 @@ retry:
 		printf("\n");
 		goto retry;
 gotit:
+		cp = &name[1];
 		if (*++cp < '0' || *cp > '9') {
 			printf("bad/missing unit number\n");
 			goto retry;
@@ -137,7 +138,7 @@ gets(cp)
 
 	lp = cp;
 	for (;;) {
-		cnputc(c = cngetc());
+		cnputc(c = (cngetc() & 0177));
 		switch (c) {
 		case '\n':
 		case '\r':
