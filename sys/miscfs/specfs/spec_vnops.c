@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)spec_vnops.c	7.30 (Berkeley) 02/01/91
+ *	@(#)spec_vnops.c	7.31 (Berkeley) 03/17/91
  */
 
 #include "param.h"
@@ -71,8 +71,9 @@ int	spec_lookup(),
 	spec_print(),
 	spec_advlock(),
 	spec_ebadf(),
-	spec_badop(),
-	spec_nullop();
+	spec_badop();
+
+int	nullop();
 
 struct vnodeops spec_vnodeops = {
 	spec_lookup,		/* lookup */
@@ -88,7 +89,7 @@ struct vnodeops spec_vnodeops = {
 	spec_ioctl,		/* ioctl */
 	spec_select,		/* select */
 	spec_badop,		/* mmap */
-	spec_nullop,		/* fsync */
+	nullop,			/* fsync */
 	spec_badop,		/* seek */
 	spec_badop,		/* remove */
 	spec_badop,		/* link */
@@ -99,14 +100,14 @@ struct vnodeops spec_vnodeops = {
 	spec_badop,		/* readdir */
 	spec_badop,		/* readlink */
 	spec_badop,		/* abortop */
-	spec_nullop,		/* inactive */
-	spec_nullop,		/* reclaim */
+	nullop,			/* inactive */
+	nullop,			/* reclaim */
 	spec_lock,		/* lock */
 	spec_unlock,		/* unlock */
 	spec_bmap,		/* bmap */
 	spec_strategy,		/* strategy */
 	spec_print,		/* print */
-	spec_nullop,		/* islocked */
+	nullop,			/* islocked */
 	spec_advlock,		/* advlock */
 };
 
@@ -134,6 +135,7 @@ spec_open(vp, mode, cred)
 	int mode;
 	struct ucred *cred;
 {
+	struct proc *p = curproc;		/* XXX */
 	dev_t dev = (dev_t)vp->v_rdev;
 	register int maj = major(dev);
 	int error;
@@ -146,14 +148,14 @@ spec_open(vp, mode, cred)
 	case VCHR:
 		if ((u_int)maj >= nchrdev)
 			return (ENXIO);
-		return ((*cdevsw[maj].d_open)(dev, mode, S_IFCHR));
+		return ((*cdevsw[maj].d_open)(dev, mode, S_IFCHR, p));
 
 	case VBLK:
 		if ((u_int)maj >= nblkdev)
 			return (ENXIO);
 		if (error = mountedon(vp))
 			return (error);
-		return ((*bdevsw[maj].d_open)(dev, mode, S_IFBLK));
+		return ((*bdevsw[maj].d_open)(dev, mode, S_IFBLK, p));
 	}
 	return (0);
 }
@@ -168,6 +170,7 @@ spec_read(vp, uio, ioflag, cred)
 	int ioflag;
 	struct ucred *cred;
 {
+	struct proc *p = curproc;		/* XXX */
 	struct buf *bp;
 	daddr_t bn;
 	long bsize, bscale;
@@ -191,7 +194,7 @@ spec_read(vp, uio, ioflag, cred)
 			return (EINVAL);
 		VOP_UNLOCK(vp);
 		error = (*cdevsw[major(vp->v_rdev)].d_read)
-			(vp->v_rdev, uio, ioflag);
+			(vp->v_rdev, uio, ioflag, p);
 		VOP_LOCK(vp);
 		return (error);
 
@@ -200,7 +203,7 @@ spec_read(vp, uio, ioflag, cred)
 			return (EINVAL);
 		bsize = BLKDEV_IOSIZE;
 		if ((*bdevsw[major(vp->v_rdev)].d_ioctl)(vp->v_rdev, DIOCGPART,
-		    (caddr_t)&dpart, FREAD) == 0) {
+		    (caddr_t)&dpart, FREAD, p) == 0) {
 			if (dpart.part->p_fstype == FS_BSDFFS &&
 			    dpart.part->p_frag != 0 && dpart.part->p_fsize != 0)
 				bsize = dpart.part->p_frag *
@@ -245,6 +248,7 @@ spec_write(vp, uio, ioflag, cred)
 	int ioflag;
 	struct ucred *cred;
 {
+	struct proc *p = curproc;		/* XXX */
 	struct buf *bp;
 	daddr_t bn;
 	int bsize, blkmask;
@@ -266,7 +270,7 @@ spec_write(vp, uio, ioflag, cred)
 			return (EINVAL);
 		VOP_UNLOCK(vp);
 		error = (*cdevsw[major(vp->v_rdev)].d_write)
-			(vp->v_rdev, uio, ioflag);
+			(vp->v_rdev, uio, ioflag, p);
 		VOP_LOCK(vp);
 		return (error);
 
@@ -277,7 +281,7 @@ spec_write(vp, uio, ioflag, cred)
 			return (EINVAL);
 		bsize = BLKDEV_IOSIZE;
 		if ((*bdevsw[major(vp->v_rdev)].d_ioctl)(vp->v_rdev, DIOCGPART,
-		    (caddr_t)&dpart, FREAD) == 0) {
+		    (caddr_t)&dpart, FREAD, p) == 0) {
 			if (dpart.part->p_fstype == FS_BSDFFS &&
 			    dpart.part->p_frag != 0 && dpart.part->p_fsize != 0)
 				bsize = dpart.part->p_frag *
@@ -323,12 +327,14 @@ spec_ioctl(vp, com, data, fflag, cred)
 	int fflag;
 	struct ucred *cred;
 {
+	struct proc *p = curproc;		/* XXX */
 	dev_t dev = vp->v_rdev;
 
 	switch (vp->v_type) {
 
 	case VCHR:
-		return ((*cdevsw[major(dev)].d_ioctl)(dev, com, data, fflag));
+		return ((*cdevsw[major(dev)].d_ioctl)(dev, com, data,
+		    fflag, p));
 
 	case VBLK:
 		if (com == 0 && (int)data == B_TAPE)
@@ -336,7 +342,8 @@ spec_ioctl(vp, com, data, fflag, cred)
 				return (0);
 			else
 				return (1);
-		return ((*bdevsw[major(dev)].d_ioctl)(dev, com, data, fflag));
+		return ((*bdevsw[major(dev)].d_ioctl)(dev, com, data,
+		   fflag, p));
 
 	default:
 		panic("spec_ioctl");
@@ -350,6 +357,7 @@ spec_select(vp, which, fflags, cred)
 	int which, fflags;
 	struct ucred *cred;
 {
+	struct proc *p = curproc;		/* XXX */
 	register dev_t dev;
 
 	switch (vp->v_type) {
@@ -359,7 +367,7 @@ spec_select(vp, which, fflags, cred)
 
 	case VCHR:
 		dev = vp->v_rdev;
-		return (*cdevsw[major(dev)].d_select)(dev, which);
+		return (*cdevsw[major(dev)].d_select)(dev, which, p);
 	}
 }
 
@@ -419,6 +427,7 @@ spec_close(vp, flag, cred)
 	int flag;
 	struct ucred *cred;
 {
+	struct proc *p = curproc;		/* XXX */
 	dev_t dev = vp->v_rdev;
 	int (*cfunc)();
 	int mode;
@@ -465,7 +474,7 @@ spec_close(vp, flag, cred)
 		panic("spec_close: not special");
 	}
 
-	return ((*cfunc)(dev, flag, mode));
+	return ((*cfunc)(dev, flag, mode, p));
 }
 
 /*
@@ -510,13 +519,4 @@ spec_badop()
 
 	panic("spec_badop called");
 	/* NOTREACHED */
-}
-
-/*
- * Special device null operation
- */
-spec_nullop()
-{
-
-	return (0);
 }
