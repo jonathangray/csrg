@@ -7,7 +7,7 @@
 # include <syslog.h>
 # endif LOG
 
-SCCSID(@(#)main.c	3.87		07/14/82);
+SCCSID(@(#)main.c	3.88		07/14/82);
 
 /*
 **  SENDMAIL -- Post mail to a set of destinations.
@@ -471,6 +471,14 @@ main(argc, argv)
 
 	if (Mode == MD_DAEMON)
 	{
+		if (Debug == 0)
+		{
+			i = fork();
+			if (i < 0)
+				syserr("daemon: cannot fork");
+			if (i != 0)
+				exit(0);
+		}
 # ifdef QUEUE
 		if (queuemode)
 			runqueue(TRUE);
