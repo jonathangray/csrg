@@ -23,7 +23,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)fd.c	5.2 (Berkeley) 11/08/90
+ *	@(#)fd.c	5.3 (Berkeley) 11/18/90
  */
 
 /****************************************************************************/
@@ -42,7 +42,7 @@
 #include "vm.h"
 #include "uio.h"
 #include "machine/pte.h"
-#include "machine/isa/device.h"
+#include "machine/isa/isa_device.h"
 #include "machine/isa/fdreg.h"
 #include "icu.h"
 
