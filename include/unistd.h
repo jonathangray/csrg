@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)unistd.h	5.19 (Berkeley) 06/28/92
+ *	@(#)unistd.h	5.20 (Berkeley) 06/29/92
  */
 
 #ifndef _UNISTD_H_
@@ -131,6 +131,7 @@ char	*getpass __P((const char *));
 char	*getusershell __P((void));
 char	*getwd __P((char *));			/* obsoleted by getcwd() */
 int	 initgroups __P((const char *, int));
+int	 iruserok __P((u_long, int, const char *, const char *));
 int	 mknod __P((const char *, mode_t, dev_t));
 int	 mkstemp __P((char *));
 char	*mktemp __P((char *));
