@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vfsops.c	8.4 (Berkeley) 04/16/94
+ *	@(#)ufs_vfsops.c	8.5 (Berkeley) 02/15/95
  */
 
 #include <sys/param.h>
@@ -114,8 +114,9 @@ ufs_quotactl(mp, cmds, uid, arg, p)
 	cmd = cmds >> SUBCMDSHIFT;
 
 	switch (cmd) {
-	case Q_GETQUOTA:
 	case Q_SYNC:
+		break;
+	case Q_GETQUOTA:
 		if (uid == p->p_cred->p_ruid)
 			break;
 		/* fall through */
@@ -124,7 +125,7 @@ ufs_quotactl(mp, cmds, uid, arg, p)
 			return (error);
 	}
 
-	type = cmd & SUBCMDMASK;
+	type = cmds & SUBCMDMASK;
 	if ((u_int)type >= MAXQUOTAS)
 		return (EINVAL);
 
