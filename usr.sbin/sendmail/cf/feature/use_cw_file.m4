@@ -33,7 +33,7 @@ divert(-1)
 # SUCH DAMAGE.
 #
 
-VERSIONID(@(#)use_cw_file.m4	2.3 (Berkeley) 11/13/92)
+VERSIONID(`@(#)use_cw_file.m4	2.4 (Berkeley) 11/13/92')
 
 # if defined, the sendmail.cf will read the /etc/sendmail.cw file
 # to find alternate names for this host.  Typically only used when
