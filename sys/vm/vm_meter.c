@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_meter.c	7.15 (Berkeley) 05/04/92
+ *	@(#)vm_meter.c	7.16 (Berkeley) 06/03/92
  */
 
 #include <sys/param.h>
@@ -172,7 +172,6 @@ vmtotal(totalp)
 	/*
 	 * Mark all objects as inactive.
 	 */
-	simple_unlock(&vm_object_list_lock);
 	simple_lock(&vm_object_list_lock);
 	object = (vm_object_t) queue_first(&vm_object_list);
 	while (!queue_end(&vm_object_list, (queue_entry_t) object)) {
