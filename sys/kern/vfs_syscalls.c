@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	7.63 (Berkeley) 01/10/91
+ *	@(#)vfs_syscalls.c	7.64 (Berkeley) 02/22/91
  */
 
 #include "param.h"
@@ -578,7 +578,7 @@ open(p, uap, retval)
 	if (error = falloc(p, &nfp, &indx))
 		RETURN (error);
 	fp = nfp;
-	fmode = uap->mode - FOPEN;
+	fmode = FFLAGS(uap->mode);
 	cmode = ((uap->crtmode &~ fdp->fd_cmask) & 07777) &~ S_ISVTX;
 	ndp->ni_segflg = UIO_USERSPACE;
 	ndp->ni_dirp = uap->fname;
