@@ -190,8 +190,8 @@ void vattr_null(vap)
  * Routines having to do with the management of the vnode table.
  */
 extern struct vnode *vfreeh, **vfreet;
-extern struct vnodeops dead_vnodeops;
-extern struct vnodeops spec_vnodeops;
+extern int (**dead_vnodeop_p)();
+extern int (**spec_vnodeop_p)();
 extern void vclean();
 long numvnodes;
 extern struct vattr va_null;
@@ -287,6 +287,7 @@ mntflushbuf(mountp, flags)
 	struct mount *mountp;
 	int flags;
 {
+	USES_VOP_ISLOCKED;
 	register struct vnode *vp;
 
 	if ((mountp->mnt_flag & MNT_MPBUSY) == 0)
@@ -410,6 +411,7 @@ vinvalbuf(vp, save)
 	register struct vnode *vp;
 	int save;
 {
+	USES_VOP_BWRITE;
 	register struct buf *bp;
 	struct buf *nbp, *blist;
 	int s, dirty = 0;
@@ -557,7 +559,7 @@ bdevvp(dev, vpp)
 
 	if (dev == NODEV)
 		return (0);
-	error = getnewvnode(VT_NON, (struct mount *)0, &spec_vnodeops, &nvp);
+	error = getnewvnode(VT_NON, (struct mount *)0, spec_vnodeop_p, &nvp);
 	if (error) {
 		*vpp = 0;
 		return (error);
@@ -586,6 +588,7 @@ checkalias(nvp, nvp_rdev, mp)
 	dev_t nvp_rdev;
 	struct mount *mp;
 {
+	USES_VOP_UNLOCK;
 	register struct vnode *vp;
 	struct vnode **vpp;
 
@@ -643,6 +646,7 @@ loop:
 vget(vp)
 	register struct vnode *vp;
 {
+	USES_VOP_LOCK;
 	register struct vnode *vq;
 
 	if (vp->v_flag & VXLOCK) {
@@ -686,6 +690,7 @@ void vref(vp)
 void vput(vp)
 	register struct vnode *vp;
 {
+	USES_VOP_UNLOCK;
 
 	VOP_UNLOCK(vp);
 	vrele(vp);
@@ -698,6 +703,7 @@ void vput(vp)
 void vrele(vp)
 	register struct vnode *vp;
 {
+	USES_VOP_INACTIVE;
 	struct proc *p = curproc;		/* XXX */
 
 #ifdef DIAGNOSTIC
@@ -809,7 +815,7 @@ loop:
 				vgone(vp);
 			} else {
 				vclean(vp, 0);
-				vp->v_op = &spec_vnodeops;
+				vp->v_op = spec_vnodeop_p;
 				insmntque(vp, (struct mount *)0);
 			}
 			continue;
@@ -830,6 +836,8 @@ void vclean(vp, flags)
 	register struct vnode *vp;
 	int flags;
 {
+	USES_VOP_INACTIVE;
+	USES_VOP_LOCK;
 	struct vnodeops *origops;
 	int active;
 	struct proc *p = curproc;	/* XXX */
@@ -864,21 +872,25 @@ void vclean(vp, flags)
 	 * being passed through to the old file system.
 	 */
 	origops = vp->v_op;
-	vp->v_op = &dead_vnodeops;
+	vp->v_op = dead_vnodeop_p;
 	vp->v_tag = VT_NON;
 	/*
 	 * If purging an active vnode, it must be unlocked, closed,
 	 * and deactivated before being reclaimed.
 	 */
+/* NEEDSWORK: Following line has potential by-hand ops invocation */
 	(*(origops->vop_unlock))(vp);
 	if (active) {
 		if (flags & DOCLOSE)
+/* NEEDSWORK: Following line has potential by-hand ops invocation */
 			(*(origops->vop_close))(vp, IO_NDELAY, NOCRED, p);
+/* NEEDSWORK: Following line has potential by-hand ops invocation */
 		(*(origops->vop_inactive))(vp, p);
 	}
 	/*
 	 * Reclaim the vnode.
 	 */
+/* NEEDSWORK: Following line has potential by-hand ops invocation */
 	if ((*(origops->vop_reclaim))(vp))
 		panic("vclean: cannot reclaim");
 	if (active)
@@ -1078,6 +1090,7 @@ vprint(label, vp)
 	char *label;
 	register struct vnode *vp;
 {
+	USES_VOP_PRINT;
 	char buf[64];
 
 	if (label != NULL)
@@ -1113,6 +1126,7 @@ vprint(label, vp)
  */
 printlockedvnodes()
 {
+	USES_VOP_ISLOCKED;
 	register struct mount *mp;
 	register struct vnode *vp;
 
