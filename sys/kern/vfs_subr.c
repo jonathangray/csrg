@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.81 (Berkeley) 06/23/92
+ *	@(#)vfs_subr.c	7.80 (Berkeley) 06/23/92
  */
 
 /*
@@ -202,15 +202,12 @@ void vattr_null(vap)
 
 	vap->va_type = VNON;
 	vap->va_size = vap->va_bytes = VNOVAL;
-#ifdef _NOQUAD
-	vap->va_size_rsv = vap->va_bytes_rsv = VNOVAL;
-#endif
 	vap->va_mode = vap->va_nlink = vap->va_uid = vap->va_gid =
 		vap->va_fsid = vap->va_fileid =
 		vap->va_blocksize = vap->va_rdev =
-		vap->va_atime.tv_sec = vap->va_atime.tv_usec =
-		vap->va_mtime.tv_sec = vap->va_mtime.tv_usec =
-		vap->va_ctime.tv_sec = vap->va_ctime.tv_usec =
+		vap->va_atime.ts_sec = vap->va_atime.ts_nsec =
+		vap->va_mtime.ts_sec = vap->va_mtime.ts_nsec =
+		vap->va_ctime.ts_sec = vap->va_ctime.ts_nsec =
 		vap->va_flags = vap->va_gen = VNOVAL;
 }
 
@@ -235,7 +232,8 @@ getnewvnode(tag, mp, vops, vpp)
 {
 	register struct vnode *vp, *vq;
 
-	if (numvnodes < desiredvnodes) {
+	if ((vfreeh == NULL && numvnodes < 2 * desiredvnodes) ||
+	    numvnodes < desiredvnodes) {
 		vp = (struct vnode *)malloc((u_long)sizeof *vp,
 		    M_VNODE, M_WAITOK);
 		bzero((char *)vp, sizeof *vp);
@@ -860,7 +858,8 @@ loop:
 /*
  * Disassociate the underlying file system from a vnode.
  */
-void vclean(vp, flags)
+void
+vclean(vp, flags)
 	register struct vnode *vp;
 	int flags;
 {
