@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.29 (Berkeley) 07/06/92";
+static char sccsid[] = "@(#)main.c	5.30 (Berkeley) 07/07/92";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -356,7 +356,7 @@ main(argc, argv)
 		exit(1);
 	}
 	if (mflag) {
-		mbpr((off_t)nl[N_MBSTAT].n_value);
+		mbpr(nl[N_MBSTAT].n_value);
 		exit(0);
 	}
 	if (pflag) {
@@ -383,19 +383,19 @@ main(argc, argv)
 	}
 	if (rflag) {
 		if (sflag)
-			rt_stats((off_t)nl[N_RTSTAT].n_value);
+			rt_stats(nl[N_RTSTAT].n_value);
 		else
-			routepr((off_t)nl[N_RTREE].n_value);
+			routepr(nl[N_RTREE].n_value);
 		exit(0);
 	}
 	if (Bflag) {
 		if (sflag)
-			mrt_stats((off_t)nl[N_MRTPROTO].n_value,
-			    (off_t)nl[N_MRTSTAT].n_value);
+			mrt_stats(nl[N_MRTPROTO].n_value,
+			    nl[N_MRTSTAT].n_value);
 		else
-			mroutepr((off_t)nl[N_MRTPROTO].n_value,
-			    (off_t)nl[N_MRTTABLE].n_value,
-			    (off_t)nl[N_VIFTABLE].n_value);
+			mroutepr(nl[N_MRTPROTO].n_value,
+			    nl[N_MRTTABLE].n_value,
+			    nl[N_VIFTABLE].n_value);
 		exit(0);
 	}
 
@@ -415,7 +415,7 @@ main(argc, argv)
  */
 int
 kread(addr, buf, size)
-	off_t addr;
+	u_long addr;
 	char *buf;
 	int size;
 {
