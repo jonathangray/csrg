@@ -32,7 +32,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#       @(#)makesendmail	8.2 (Berkeley) 08/15/93
+#       @(#)makesendmail	8.3 (Berkeley) 09/26/93
 #
 
 #
@@ -72,7 +72,7 @@ elif [ -r Makefile.$os ]; then
 	obj=obj.$os.$arch.$rel
 	echo "Creating $obj using Makefile.$os"
 	mkdir $obj
-	(cd $obj; ln -s ../*.[ch] .; ln -s ../Makefile.$os Makefile)
+	(cd $obj; ln -s ../*.[ch158] ../sendmail.hf .; ln -s ../Makefile.$os Makefile)
 else
 	echo "Warning: no recognized support for $arch.$os.$rel"
 	echo "	... winging it ..."
