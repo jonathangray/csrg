@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_subr.c	8.14 (Berkeley) 09/29/94
+ *	@(#)union_subr.c	8.15 (Berkeley) 12/02/94
  */
 
 #include <sys/param.h>
@@ -803,21 +803,20 @@ union_mkwhiteout(um, dvp, cnp, path)
 	int error;
 	struct vattr va;
 	struct proc *p = cnp->cn_proc;
-	struct vnode **vpp;
+	struct vnode *wvp;
 	struct componentname cn;
 
 	VOP_UNLOCK(dvp);
-	error = union_relookup(um, dvp, vpp, cnp, &cn, path, strlen(path));
+	error = union_relookup(um, dvp, &wvp, cnp, &cn, path, strlen(path));
 	if (error) {
 		VOP_LOCK(dvp);
 		return (error);
 	}
 
-	if (*vpp) {
+	if (wvp) {
 		VOP_ABORTOP(dvp, &cn);
 		vrele(dvp);
-		vrele(*vpp);
-		*vpp = NULLVP;
+		vrele(wvp);
 		return (EEXIST);
 	}
 
