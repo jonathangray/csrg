@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)trap.c	7.10 (Berkeley) 05/11/92
+ *	@(#)trap.c	7.11 (Berkeley) 05/20/92
  */
 
 /*
@@ -91,8 +91,8 @@ if(cold) goto we_re_toast;
 	frame.tf_eflags &= ~PSL_NT;	/* clear nested trap XXX */
 	type = frame.tf_trapno;
 	
-	if (curpcb->pcb_onfault && frame.tf_trapno != 0xc) {
-		frame.tf_eip = (int)curpcb->pcb_onfault;
+	if (curpcb && curpcb->pcb_onfault && frame.tf_trapno != 0xc) {
+copyfault:	frame.tf_eip = (int)curpcb->pcb_onfault;
 		return;
 	}
 
@@ -124,8 +124,8 @@ if(cold) goto we_re_toast;
 		/*NOTREACHED*/
 
 	case T_SEGNPFLT|T_USER:
+	case T_STKFLT|T_USER:		/* 386bsd */
 	case T_PROTFLT|T_USER:		/* protection fault */
-copyfault:
 		ucode = code + BUS_SEGM_FAULT ;
 		i = SIGBUS;
 		break;
