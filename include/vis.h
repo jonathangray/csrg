@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vis.h	5.4 (Berkeley) 06/26/90
+ *	@(#)vis.h	5.5 (Berkeley) 02/05/91
  */
 
 /*
@@ -68,12 +68,10 @@
  */
 #define	UNVIS_END	1	/* no more characters */
 
-#if __STDC__ || c_plusplus
-char *vis(char *, char, char, int);
-int   strvis(char *, const char *, int);
-int   strvisx(char *, const char *, size_t, int);
-#else
-char *vis();
-int   strvis();
-int   strvisx();
-#endif
+#include <sys/cdefs.h>
+
+__BEGIN_DECLS
+char	*vis __P((char *, char, char, int));
+int	strvis __P((char *, const char *, int));
+int	strvisx __P((char *, const char *, size_t, int));
+__END_DECLS
