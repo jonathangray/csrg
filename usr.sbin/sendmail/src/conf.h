@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.38 (Berkeley) 10/15/93
+ *	@(#)conf.h	8.39 (Berkeley) 10/17/93
  */
 
 /*
@@ -118,6 +118,8 @@
 */
 
 # ifdef __hpux
+/* avoid m_flags conflict between db.h & sys/sysmacros.h on HP 300 */
+# undef m_flags
 # define SYSTEM5	1	/* include all the System V defines */
 # define HASINITGROUPS	1	/* has initgroups(3) call */
 # define HASSTATFS	1	/* has the statfs(2) syscall */
@@ -147,6 +149,7 @@
 */
 
 # ifdef IRIX
+# include <sys/sysmacros.h>
 # define HASSETREUID	1	/* has setreuid(2) call */
 # define HASINITGROUPS	1	/* has initgroups(3) call */
 # define HASSTATFS	1	/* has the statfs(2) syscall */
