@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: vm_machdep.c 1.21 91/04/06$
  *
- *	@(#)vm_machdep.c	8.4 (Berkeley) 11/14/93
+ *	@(#)vm_machdep.c	8.5 (Berkeley) 01/04/94
  */
 
 #include <sys/param.h>
@@ -133,8 +133,6 @@ cpu_coredump(p, vp, cred)
 	struct vnode *vp;
 	struct ucred *cred;
 {
-	int error;
-
 #ifdef HPUXCOMPAT
 	/*
 	 * If we loaded from an HP-UX format binary file we dump enough
