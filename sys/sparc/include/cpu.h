@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cpu.h	8.2 (Berkeley) 09/23/93
+ *	@(#)cpu.h	8.3 (Berkeley) 12/10/93
  *
  * from: $Header: cpu.h,v 1.12 93/05/25 10:36:34 torek Exp $ (LBL)
  */
