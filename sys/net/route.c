@@ -30,8 +30,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)route.c	8.1 (Berkeley) 06/11/93
+ *	@(#)route.c	7.35 (Berkeley) 06/11/93
  */
+
 #include <sys/param.h>
 #include <sys/systm.h>
 #include <sys/proc.h>
@@ -154,21 +155,16 @@ rtfree(rt)
 	}
 }
 
-int ifafree_verbose = 1;
-/*
- * We are still debugging potential overfreeing of ifaddr's
- */
 void
 ifafree(ifa)
 	register struct ifaddr *ifa;
 {
-	if (ifa == 0)
+	if (ifa == NULL)
 		panic("ifafree");
-	if (ifa->ifa_refcnt < 0)
-		printf("ifafree: %x ref %d\n", ifa, ifa->ifa_refcnt);
-	if (ifa->ifa_refcnt == 0 && ifafree_verbose)
-		printf("ifafree: %x not freed.\n", ifa);
-	ifa->ifa_refcnt--;
+	if (ifa->ifa_refcnt == 0)
+		free(ifa, M_IFADDR);
+	else
+		ifa->ifa_refcnt--;
 }
 
 /*
@@ -477,6 +473,7 @@ rt_maskedcopy(src, dst, netmask)
 	if (cp2 < cplim2)
 		bzero((caddr_t)cp2, (unsigned)(cplim2 - cp2));
 }
+
 /*
  * Set up a routing table entry, normally
  * for an interface.
