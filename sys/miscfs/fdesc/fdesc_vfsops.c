@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 1992, 1993
  *	The Regents of the University of California.  All rights reserved.
- * All rights reserved.
  *
  * This code is derived from software donated to Berkeley by
  * Jan-Simon Pendry.
@@ -34,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fdesc_vfsops.c	8.3 (Berkeley) 01/05/94
+ *	@(#)fdesc_vfsops.c	8.4 (Berkeley) 01/21/94
  *
  * $Id: fdesc_vfsops.c,v 1.9 1993/04/06 15:28:33 jsp Exp $
  */
