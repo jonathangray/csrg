@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)exec.c	8.1 (Berkeley) 05/31/93";
+static char sccsid[] = "@(#)exec.c	8.2 (Berkeley) 03/22/95";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -116,6 +116,7 @@ doexec(v, t)
     register bool slash;
     register int hashval = 0, hashval1, i;
     Char   *blk[2];
+    sigset_t sigset;
 
     /*
      * Glob the command name. We will search $path even if this does something,
@@ -191,7 +192,8 @@ doexec(v, t)
      * We must do this AFTER any possible forking (like `foo` in glob) so that
      * this shell can still do subprocesses.
      */
-    (void) sigsetmask((sigset_t) 0);
+    sigemptyset(&sigset);
+    sigprocmask(SIG_SETMASK, &sigset, NULL);
     /*
      * If no path, no words in path, or a / in the filename then restrict the
      * command search.
