@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)misc.c	5.18 (Berkeley) 11/06/91";
+static char sccsid[] = "@(#)misc.c	5.19 (Berkeley) 05/22/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -85,7 +85,7 @@ strsave(s)
     for (p = s; *p++;)
 	continue;
     n = p = (char *) xmalloc((size_t) ((p - s) * sizeof(char)));
-    while (*p++ = *s++)
+    while ((*p++ = *s++) != '\0')
 	continue;
     return (n);
 }
@@ -132,7 +132,7 @@ blkcpy(oav, bv)
 {
     register Char **av = oav;
 
-    while (*av++ = *bv++)
+    while ((*av++ = *bv++) != NULL)
 	continue;
     return (oav);
 }
@@ -297,7 +297,7 @@ dcopy(i, j)
     register int i, j;
 {
 
-    if (i == j || i < 0 || j < 0 && i > 2)
+    if (i == j || i < 0 || (j < 0 && i > 2))
 	return (i);
     if (j >= 0) {
 	(void) dup2(i, j);
@@ -380,7 +380,7 @@ strend(cp)
     return (cp);
 }
 
-#endif				/* SHORT_STRINGS */
+#endif /* SHORT_STRINGS */
 
 Char   *
 strip(cp)
@@ -390,7 +390,7 @@ strip(cp)
 
     if (!cp)
 	return (cp);
-    while (*dp++ &= TRIM)
+    while ((*dp++ &= TRIM) != '\0')
 	continue;
     return (cp);
 }
