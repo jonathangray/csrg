@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)rogue.h	5.5 (Berkeley) 06/01/90
+ *	@(#)rogue.h	5.6 (Berkeley) 02/28/91
  */
 
 /*
@@ -460,7 +460,7 @@ unsigned short gr_what_is();
 long rrandom();
 long lget_number();
 long xxx();
-int byebye(), onintr(), error_save();
+void byebye(), onintr(), error_save();
 
 struct rogue_time {
 	short year;		/* >= 1987 */
