@@ -14,7 +14,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)dc.c	5.1 (Berkeley) 04/17/91";
+static char sccsid[] = "@(#)dc.c	5.2 (Berkeley) 02/23/93";
 #endif /* not lint */
 
 #include <sys/signal.h>
@@ -134,7 +134,7 @@ casediv:
 				savk = k;
 			}
 			arg1 = add0(p,n);
-			arg2 = sqrt(arg1);
+			arg2 = dcsqrt(arg1);
 			sputc(arg2,savk);
 			pushp(arg2);
 			continue;
@@ -782,7 +782,7 @@ struct blk *p;
 	return(r);
 }
 struct blk *
-sqrt(p)
+dcsqrt(p)
 struct blk *p;
 {
 	struct blk *t;
