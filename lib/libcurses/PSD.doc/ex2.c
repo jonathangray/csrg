@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)ex2.c	1.1 (Berkeley) 12/30/92
+.\"     @(#)ex2.c	8.1 (Berkeley) 06/04/93
 .\"
 #include <curses.h>
 #include <stdio.h>
