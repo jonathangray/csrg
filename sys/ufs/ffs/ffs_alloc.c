@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_alloc.c	7.33 (Berkeley) 05/04/92
+ *	@(#)ffs_alloc.c	7.34 (Berkeley) 05/13/92
  */
 
 #include <sys/param.h>
