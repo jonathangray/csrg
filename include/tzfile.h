@@ -3,7 +3,7 @@
  * All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
- * Arthur Olson.
+ * Arthur David Olson of the National Cancer Institute.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tzfile.h	5.8 (Berkeley) 06/01/90
+ *	@(#)tzfile.h	5.9 (Berkeley) 06/11/90
  */
 
 /*
