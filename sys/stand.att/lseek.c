@@ -6,12 +6,13 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)lseek.c	7.2 (Berkeley) 10/11/92
+ *	@(#)lseek.c	7.3 (Berkeley) 05/24/93
  */
 
 #include <sys/param.h>
-#include <stand/saio.h>
+#include <stand.att/saio.h>
 
+off_t
 lseek(fdesc, addr, ptr)
 	int fdesc, ptr;
 	off_t addr;
