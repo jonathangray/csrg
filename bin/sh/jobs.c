@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)jobs.c	8.2 (Berkeley) 04/27/95";
+static char sccsid[] = "@(#)jobs.c	8.3 (Berkeley) 04/27/95";
 #endif /* not lint */
 
 #include "shell.h"
@@ -120,8 +120,8 @@ setjobctl(on) {
 				return;
 			}
 			if (initialpgrp == -1)
-				initialpgrp = getpgrp(0);
-			else if (initialpgrp != getpgrp(0)) {
+				initialpgrp = getpgrp();
+			else if (initialpgrp != getpgrp()) {
 				killpg(initialpgrp, SIGTTIN);
 				continue;
 			}
@@ -626,7 +626,7 @@ waitforjob(jp)
 	register struct job *jp;
 	{
 #if JOBS
-	int mypgrp = getpgrp(0);
+	int mypgrp = getpgrp();
 #endif
 	int status;
 	int st;
