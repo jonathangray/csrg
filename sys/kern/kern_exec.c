@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_exec.c	7.66 (Berkeley) 10/11/92
+ *	@(#)kern_exec.c	7.67 (Berkeley) 11/03/92
  */
 
 #include <sys/param.h>
@@ -403,10 +403,17 @@ execve(p, uap, retval)
 	ucp -= nc;
 	ssize += sizeof(struct rwindow);
 #else
+#ifdef mips
+	ucp = USRSTACK;
+	ssize = (nc + (na + 3) * NBPW + 7) & ~7;
+	ap = ucp - ssize;
+	ucp -= nc;
+#else
 	ssize = (na + 3) * NBPW;
 	ucp = USRSTACK - nc;
 	ap = ucp - ssize;
 	ssize += nc;
+#endif
 #endif
 	error = getxfile(p, vp, &exdata.ex_exec, paged, ssize, uid, gid);
 	if (error)
