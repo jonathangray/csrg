@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	6.27 (Berkeley) 03/07/93
+ *	@(#)sendmail.h	6.28 (Berkeley) 03/16/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	6.27		03/07/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	6.28		03/16/93";
 # endif lint
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -275,8 +275,6 @@ struct envelope
 	char		*e_to;		/* the target person */
 	char		*e_receiptto;	/* return receipt address */
 	ADDRESS		e_from;		/* the person it is from */
-	char		*e_sender;	/* string version of from person */
-	char		*e_returnpath;	/* string version of return path */
 	char		**e_fromdomain;	/* the domain part of the sender */
 	ADDRESS		*e_returnto;	/* place to return the message to */
 	ADDRESS		*e_sendqueue;	/* list of message recipients */
