@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)disktab.h	5.5 (Berkeley) 04/03/91
+ *	@(#)disktab.h	5.6 (Berkeley) 04/20/91
  */
 
 #ifndef	_DISKTAB_H_
@@ -57,7 +57,5 @@ struct	disktab {
 		short	p_fsize;	/* frag size in bytes */
 	} d_partitions[8];
 };
-
-struct	disktab *getdiskbyname();
 
 #endif /* !_DISKTAB_H_ */
