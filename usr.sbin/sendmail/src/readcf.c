@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	6.17 (Berkeley) 03/14/93";
+static char sccsid[] = "@(#)readcf.c	6.18 (Berkeley) 03/19/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -940,6 +940,7 @@ printrules()
 **		val -- option value (as a text string).
 **		sticky -- if set, don't let other setoptions override
 **			this value.
+**		e -- the main envelope.
 **
 **	Returns:
 **		none.
@@ -977,6 +978,7 @@ setoption(opt, val, sticky)
 	char opt;
 	char *val;
 	bool sticky;
+	register ENVELOPE *e;
 {
 	register char *p;
 	extern bool atobool();
@@ -1045,7 +1047,7 @@ setoption(opt, val, sticky)
 		switch (*val)
 		{
 		  case '\0':
-			SendMode = SM_DELIVER;
+			e->e_sendmode = SM_DELIVER;
 			break;
 
 		  case SM_QUEUE:	/* queue only */
@@ -1056,7 +1058,7 @@ setoption(opt, val, sticky)
 
 		  case SM_DELIVER:	/* do everything */
 		  case SM_FORK:		/* fork after verification */
-			SendMode = *val;
+			e->e_sendmode = *val;
 			break;
 
 		  default:
@@ -1085,7 +1087,7 @@ setoption(opt, val, sticky)
 			/* fall through... */
 
 		  case EM_PRINT:	/* print errors normally (default) */
-			ErrorMode = *val;
+			e->e_errormode = *val;
 			break;
 		}
 		break;
