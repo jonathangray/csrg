@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.111 (Berkeley) 05/17/95";
+static char sccsid[] = "@(#)main.c	8.112 (Berkeley) 05/19/95";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -325,6 +325,7 @@ main(argc, argv, envp)
 	environ = (char **) xalloc(sizeof (char *) * i);
 	for (i = 0; envp[i] != NULL; i++)
 		environ[i] = newstr(envp[i]);
+	environ[i] = NULL;
 
 	/* and prime the child environment */
 	setuserenv("AGENT", "sendmail");
