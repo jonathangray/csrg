@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef QUEUE
-static char sccsid[] = "@(#)queue.c	8.18 (Berkeley) 09/21/93 (with queueing)";
+static char sccsid[] = "@(#)queue.c	8.19 (Berkeley) 09/26/93 (with queueing)";
 #else
-static char sccsid[] = "@(#)queue.c	8.18 (Berkeley) 09/21/93 (without queueing)";
+static char sccsid[] = "@(#)queue.c	8.19 (Berkeley) 09/26/93 (without queueing)";
 #endif
 #endif /* not lint */
 
@@ -497,6 +497,9 @@ runqueue(forkflag)
 # ifdef DAEMON
 	clrdaemon();
 # endif /* DAEMON */
+
+	/* force it to run expensive jobs */
+	NoConnect = FALSE;
 
 	/*
 	**  Create ourselves an envelope
