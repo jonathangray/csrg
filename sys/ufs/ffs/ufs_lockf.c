@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 1982, 1986, 1989 Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1982, 1986, 1989, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Scooter Morris at Genentech Inc.
@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lockf.c	7.9.1.1 (Berkeley) 12/19/91
+ *	@(#)ufs_lockf.c	8.1 (Berkeley) 06/11/93
  */
 
 #include <sys/param.h>
