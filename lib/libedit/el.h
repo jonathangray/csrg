@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)el.h	5.1 (Berkeley) 06/22/92
+ *	@(#)el.h	5.2 (Berkeley) 07/03/92
  */
 
 /*
@@ -93,13 +93,13 @@ typedef struct el_state_t {
 
 #include "tty.h"
 #include "prompt.h"
+#include "key.h"
 #include "term.h"
 #include "refresh.h"
 #include "chared.h"
 #include "common.h"
 #include "search.h"
 #include "hist.h"
-#include "key.h"
 #include "map.h"
 #include "parse.h"
 #include "sig.h"
