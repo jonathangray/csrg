@@ -3,7 +3,7 @@
  * All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
- * the University of Utah, and William Jolitz.
+ * William Jolitz.
  *
  * Copying or redistribution in any form is explicitly forbidden
  * unless prior written permission is obtained from William Jolitz or an
@@ -21,7 +21,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)segments.h	5.2 (Berkeley) 11/14/90
+ *	@(#)segments.h	5.3 (Berkeley) 01/15/91
  */
 
 /*
