@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sysctl.c	7.21 (Berkeley) 02/25/92
+ *	@(#)kern_sysctl.c	7.22 (Berkeley) 06/02/92
  */
 
 #include "param.h"
@@ -157,6 +157,11 @@ kinfo_doproc(op, where, acopysize, arg, aneeded)
 	doingzomb = 0;
 again:
 	for (; p != NULL; p = p->p_nxt) {
+		/*
+		 * Skip embryonic processes.
+		 */
+		if (p->p_stat == SIDL)
+			continue;
 		/* 
 		 * TODO - make more efficient (see notes below).
 		 * do by session. 
