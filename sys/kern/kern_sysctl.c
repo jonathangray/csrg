@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sysctl.c	7.40 (Berkeley) 05/12/93
+ *	@(#)kern_sysctl.c	7.41 (Berkeley) 05/20/93
  */
 
 /*
@@ -42,6 +42,7 @@
 
 #include <sys/param.h>
 #include <sys/systm.h>
+#include <sys/kernel.h>
 #include <sys/malloc.h>
 #include <sys/proc.h>
 #include <sys/file.h>
@@ -232,6 +233,9 @@ kern_sysctl(name, namelen, oldp, oldlenp, newp, newlen, p)
 		return (sysctl_int(oldp, oldlenp, newp, newlen, &hostid));
 	case KERN_CLOCKRATE:
 		return (sysctl_clockrate(oldp, oldlenp));
+	case KERN_BOOTTIME:
+		return (sysctl_rdstruct(oldp, oldlenp, newp, &boottime,
+		    sizeof(struct timeval)));
 	case KERN_VNODE:
 		return (sysctl_vnode(oldp, oldlenp));
 	case KERN_PROC:
