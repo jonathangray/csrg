@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ip_mroute.c	8.1 (Berkeley) 06/10/93
+ *	@(#)ip_mroute.c	8.2 (Berkeley) 11/15/93
  */
 
 /*
@@ -62,7 +62,6 @@ int	ip_mrtproto;				/* for netstat only */
 #include <sys/socketvar.h>
 #include <sys/time.h>
 
-#include <net/af.h>
 #include <net/if.h>
 #include <net/route.h>
 #include <net/raw_cb.h>
