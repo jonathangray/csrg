@@ -34,7 +34,7 @@ divert(-1)
 #
 divert(0)
 
-VERSIONID(`@(#)proto.m4	6.36 (Berkeley) 05/01/93')
+VERSIONID(`@(#)proto.m4	6.37 (Berkeley) 05/01/93')
 
 MAILER(local)dnl
 
