@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1982, 1986, 1993
+ * Copyright (c) 1982, 1986, 1993, 1994
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_var.h	8.2 (Berkeley) 01/11/94
+ *	@(#)tcp_var.h	8.3 (Berkeley) 04/10/94
  */
 
 /*
@@ -293,6 +293,9 @@ struct	tcpstat {
 	u_long	tcps_rcvackbyte;	/* bytes acked by rcvd acks */
 	u_long	tcps_rcvwinupd;		/* rcvd window update packets */
 	u_long	tcps_pawsdrop;		/* segments dropped due to PAWS */
+	u_long	tcps_predack;		/* times hdr predict ok for acks */
+	u_long	tcps_preddat;		/* times hdr predict ok for data pkts */
+	u_long	tcps_pcbcachemiss;
 };
 
 #ifdef KERNEL
