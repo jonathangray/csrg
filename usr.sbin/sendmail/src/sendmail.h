@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.124 (Berkeley) 04/22/95
+ *	@(#)sendmail.h	8.125 (Berkeley) 04/22/95
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.124		04/22/95";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.125		04/22/95";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -413,6 +413,7 @@ ENVELOPE
 	char		*e_msgboundary;	/* MIME-style message part boundary */
 	char		*e_origrcpt;	/* original recipient (one only) */
 	char		*e_envid;	/* envelope id from MAIL FROM: line */
+	char		*e_status;	/* DSN status for this message */
 	time_t		e_dtime;	/* time of last delivery attempt */
 	int		e_ntries;	/* number of delivery attempts */
 	dev_t		e_dfdev;	/* df file's device, for crash recov */
