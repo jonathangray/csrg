@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_srvcache.c	7.16 (Berkeley) 07/22/92
+ *	@(#)nfs_srvcache.c	7.17 (Berkeley) 09/16/92
  */
 
 /*
@@ -269,7 +269,7 @@ loop:
 	/* insert into hash chain */
 	if (rq = *rpp)
 		rq->rc_back = &rp->rc_forw;
-	rp->rc_next = rq;
+	rp->rc_forw = rq;
 	rp->rc_back = rpp;
 	*rpp = rp;
 	rp->rc_flag &= ~RC_LOCKED;
