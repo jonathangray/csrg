@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)swap_pager.c	7.1 (Berkeley) 12/05/90
+ *	@(#)swap_pager.c	7.2 (Berkeley) 03/04/91
  */
 
 /*
@@ -557,7 +557,8 @@ swap_pager_io(swp, m, flags)
 	bp->b_blkno = swb->swb_block + btodb(off);
 	VHOLD(swapdev_vp);
 	bp->b_vp = swapdev_vp;
-	bp->b_dev = swapdev_vp->v_rdev;
+	if (swapdev_vp->v_type == VBLK)
+		bp->b_dev = swapdev_vp->v_rdev;
 	bp->b_bcount = PAGE_SIZE;
 	if ((bp->b_flags & B_READ) == 0)
 		swapdev_vp->v_numoutput++;
