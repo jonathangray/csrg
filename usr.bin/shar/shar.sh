@@ -31,7 +31,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)shar.sh	5.2 (Berkeley) 05/23/90
+#	@(#)shar.sh	5.3 (Berkeley) 03/04/93
 #
 
 if [ $# -eq 0 ]; then
@@ -60,7 +60,7 @@ for i
 do
 	if [ -d $i ]; then
 		echo "echo c - $i"
-		echo "mkdir $i > /dev/null 2>&1"
+		echo "mkdir -p $i > /dev/null 2>&1"
 	else
 		echo "echo x - $i"
 		echo "sed 's/^X//' >$i << 'END-of-$i'"
