@@ -1,9 +1,36 @@
 /*
  * Copyright (c) 1982, 1986 Regents of the University of California.
- * All rights reserved.  The Berkeley software License Agreement
- * specifies the terms and conditions for redistribution.
+ * All rights reserved.
  *
- *	@(#)subr_log.c	7.9 (Berkeley) 07/26/90
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ *
+ *	@(#)subr_log.c	7.10 (Berkeley) 12/05/90
  */
 
 /*
@@ -36,6 +63,7 @@ int	log_open;			/* also used in log() */
 logopen(dev)
 	dev_t dev;
 {
+	register struct msgbuf *mbp = msgbufp;
 
 	if (log_open)
 		return (EBUSY);
@@ -46,13 +74,13 @@ logopen(dev)
 	 * called by autoconf, msg_magic should be initialized by the time
 	 * we get here.
 	 */
-	if (msgbuf.msg_magic != MSG_MAGIC) {
+	if (mbp->msg_magic != MSG_MAGIC) {
 		register int i;
 
-		msgbuf.msg_magic = MSG_MAGIC;
-		msgbuf.msg_bufx = msgbuf.msg_bufr = 0;
+		mbp->msg_magic = MSG_MAGIC;
+		mbp->msg_bufx = mbp->msg_bufr = 0;
 		for (i=0; i < MSG_BSIZE; i++)
-			msgbuf.msg_bufc[i] = 0;
+			mbp->msg_bufc[i] = 0;
 	}
 	return (0);
 }
@@ -72,18 +100,19 @@ logread(dev, uio, flag)
 	struct uio *uio;
 	int flag;
 {
+	register struct msgbuf *mbp = msgbufp;
 	register long l;
 	register int s;
 	int error = 0;
 
 	s = splhigh();
-	while (msgbuf.msg_bufr == msgbuf.msg_bufx) {
+	while (mbp->msg_bufr == mbp->msg_bufx) {
 		if (flag & IO_NDELAY) {
 			splx(s);
 			return (EWOULDBLOCK);
 		}
 		logsoftc.sc_state |= LOG_RDWAIT;
-		if (error = tsleep((caddr_t)&msgbuf, LOG_RDPRI | PCATCH,
+		if (error = tsleep((caddr_t)mbp, LOG_RDPRI | PCATCH,
 		    "klog", 0)) {
 			splx(s);
 			return (error);
@@ -93,19 +122,19 @@ logread(dev, uio, flag)
 	logsoftc.sc_state &= ~LOG_RDWAIT;
 
 	while (uio->uio_resid > 0) {
-		l = msgbuf.msg_bufx - msgbuf.msg_bufr;
+		l = mbp->msg_bufx - mbp->msg_bufr;
 		if (l < 0)
-			l = MSG_BSIZE - msgbuf.msg_bufr;
+			l = MSG_BSIZE - mbp->msg_bufr;
 		l = MIN(l, uio->uio_resid);
 		if (l == 0)
 			break;
-		error = uiomove((caddr_t)&msgbuf.msg_bufc[msgbuf.msg_bufr],
+		error = uiomove((caddr_t)&mbp->msg_bufc[mbp->msg_bufr],
 			(int)l, uio);
 		if (error)
 			break;
-		msgbuf.msg_bufr += l;
-		if (msgbuf.msg_bufr < 0 || msgbuf.msg_bufr >= MSG_BSIZE)
-			msgbuf.msg_bufr = 0;
+		mbp->msg_bufr += l;
+		if (mbp->msg_bufr < 0 || mbp->msg_bufr >= MSG_BSIZE)
+			mbp->msg_bufr = 0;
 	}
 	return (error);
 }
@@ -120,7 +149,7 @@ logselect(dev, rw)
 	switch (rw) {
 
 	case FREAD:
-		if (msgbuf.msg_bufr != msgbuf.msg_bufx) {
+		if (msgbufp->msg_bufr != msgbufp->msg_bufx) {
 			splx(s);
 			return (1);
 		}
@@ -148,7 +177,7 @@ logwakeup()
 			psignal(p, SIGIO);
 	}
 	if (logsoftc.sc_state & LOG_RDWAIT) {
-		wakeup((caddr_t)&msgbuf);
+		wakeup((caddr_t)msgbufp);
 		logsoftc.sc_state &= ~LOG_RDWAIT;
 	}
 }
@@ -165,7 +194,7 @@ logioctl(dev, com, data, flag)
 	/* return number of characters immediately available */
 	case FIONREAD:
 		s = splhigh();
-		l = msgbuf.msg_bufx - msgbuf.msg_bufr;
+		l = msgbufp->msg_bufx - msgbufp->msg_bufr;
 		splx(s);
 		if (l < 0)
 			l += MSG_BSIZE;
