@@ -1,5 +1,5 @@
 #ifndef lint
-static char sccsid[] = "@(#)ed.c	4.7 (Berkeley) 03/05/89";
+static char sccsid[] = "@(#)ed.c	4.8 (Berkeley) 05/08/89";
 #endif
 
 /*
@@ -68,7 +68,7 @@ int	col;
 char	*globp;
 int	tfile	= -1;
 int	tline;
-char	tfname[] = "/tmp/eXXXXX";
+char	tfname[] = _PATH_TMP;
 char	*loc1;
 char	*loc2;
 char	*locs;
