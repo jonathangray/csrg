@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fsinfo.c	5.4 (Berkeley) 02/09/92
+ *	@(#)fsinfo.c	8.1 (Berkeley) 06/06/93
  *
  * $Id: fsinfo.c,v 5.2.2.1 1992/02/09 15:09:33 jsp beta $
  *
