@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)param.h	7.22 (Berkeley) 04/28/91
+ *	@(#)param.h	7.23 (Berkeley) 05/06/91
  */
 
 #define	BSD	199103		/* March, 1991 system version (year & month) */
@@ -91,8 +91,8 @@
 #define	PINOD	8
 #define	PRIBIO	16
 #define	PVFS	20
+#define	PZERO	22		/* No longer magic, shouldn't be here.  XXX */
 #define	PSOCK	24
-#define	PZERO	25		/* No longer magic, shouldn't be here.  XXX */
 #define	PWAIT	32
 #define	PLOCK	36
 #define	PPAUSE	40
