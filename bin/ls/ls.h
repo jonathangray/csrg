@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ls.h	5.11 (Berkeley) 07/22/90
+ *	@(#)ls.h	5.12 (Berkeley) 10/28/91
  */
 
 typedef struct _lsstruct {
