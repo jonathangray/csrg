@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_seq.h	7.4 (Berkeley) 06/28/90
+ *	@(#)tcp_seq.h	7.5 (Berkeley) 06/04/93
  */
 
 /*
