@@ -1,5 +1,4 @@
 #!/bin/sh
-
 #
 # Copyright (c) 1983 Eric P. Allman
 # Copyright (c) 1988 The Regents of the University of California.
@@ -33,7 +32,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)makeinfo.sh	6.1 (Berkeley) 12/21/92
+#	@(#)makeinfo.sh	6.2 (Berkeley) 06/07/93
 #
 
 echo '#####' built by `whoami` on `date`
