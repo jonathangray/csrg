@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)rtsock.c	7.26 (Berkeley) 02/25/92
+ *	@(#)rtsock.c	7.27 (Berkeley) 03/02/92
  */
 
 #include "param.h"
@@ -142,14 +142,20 @@ route_output(m, so)
 		panic("route_output");
 	len = m->m_pkthdr.len;
 	if (len < sizeof(*rtm) ||
-	    len != mtod(m, struct rt_msghdr *)->rtm_msglen)
+	    len != mtod(m, struct rt_msghdr *)->rtm_msglen) {
+		dst = 0;
 		senderr(EINVAL);
+	}
 	R_Malloc(rtm, struct rt_msghdr *, len);
-	if (rtm == 0)
+	if (rtm == 0) {
+		dst = 0;
 		senderr(ENOBUFS);
+	}
 	m_copydata(m, 0, len, (caddr_t)rtm);
-	if (rtm->rtm_version != RTM_VERSION)
+	if (rtm->rtm_version != RTM_VERSION) {
+		dst = 0;
 		senderr(EPROTONOSUPPORT);
+	}
 	rtm->rtm_pid = curproc->p_pid;
 	info.rti_addrs = rtm->rtm_addrs;
 	rt_xaddrs((caddr_t)(rtm + 1), len + (caddr_t)rtm, &info);
@@ -359,6 +365,7 @@ rt_xaddrs(cp, cplim, rtinfo)
 		ADVANCE(cp, sa);
 	}
 }
+
 /*
  * Copy data from a buffer back into the indicated mbuf chain,
  * starting "off" bytes from the beginning, extending the mbuf
