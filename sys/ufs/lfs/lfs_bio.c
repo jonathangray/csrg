@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_bio.c	8.3 (Berkeley) 09/23/93
+ *	@(#)lfs_bio.c	8.4 (Berkeley) 12/30/93
  */
 
 #include <sys/param.h>
@@ -139,8 +139,7 @@ lfs_flush()
 	if (lfs_writing)
 		return;
 	lfs_writing = 1;
-	mp = rootfs;
-	do {
+	for (mp = mountlist.tqh_first; mp != NULL; mp = mp->mnt_list.tqe_next) {
 		/* The lock check below is to avoid races with unmount. */
 		if (mp->mnt_stat.f_type == MOUNT_LFS &&
 		    (mp->mnt_flag & (MNT_MLOCK|MNT_RDONLY|MNT_UNMOUNT)) == 0 &&
@@ -157,8 +156,7 @@ lfs_flush()
 #endif
 			lfs_segwrite(mp, 0);
 		}
-		mp = mp->mnt_next;
-	} while (mp != rootfs);
+	}
 	lfs_writing = 0;
 }
 
