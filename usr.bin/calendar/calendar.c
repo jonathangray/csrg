@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1989, 1993
+ * Copyright (c) 1989, 1993, 1994
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)calendar.c	8.1 (Berkeley) 06/06/93";
+static char sccsid[] = "@(#)calendar.c	8.2 (Berkeley) 03/25/94";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -46,22 +46,24 @@ static char sccsid[] = "@(#)calendar.c	8.1 (Berkeley) 06/06/93";
 #include <sys/stat.h>
 #include <sys/file.h>
 #include <sys/uio.h>
-#include <pwd.h>
-#include <errno.h>
-#include <tzfile.h>
-#include <stdio.h>
+
 #include <ctype.h>
-#include <unistd.h>
+#include <errno.h>
+#include <pwd.h>
+#include <stdio.h>
 #include <string.h>
+#include <tzfile.h>
+#include <unistd.h>
+
 #include "pathnames.h"
 
-extern int errno;
 struct passwd *pw;
 int doall;
 
+int
 main(argc, argv)
 	int argc;
-	char **argv;
+	char *argv[];
 {
 	extern int optind;
 	int ch;
@@ -138,8 +140,8 @@ struct iovec header[] = {
 
 /* 1-based month, 0-based days, cumulative */
 int daytab[][14] = {
-	0, 0, 30, 58, 89, 119, 150, 180, 211, 242, 272, 303, 333, 364,
-	0, 0, 30, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365,
+	0, -1, 30, 58, 89, 119, 150, 180, 211, 242, 272, 303, 333, 364,
+	0, -1, 30, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365,
 };
 struct tm *tp;
 int *cumdays, offset, yrdays;
@@ -208,7 +210,8 @@ isnow(endp)
 			day = v2 ? v2 : 1;
 		}
 	}
-	/* ASSUME THIS SHIT WORKS... %^&%&^%^& */
+	if (flags&F_ISDAY)
+		day = tp->tm_mday + (((day - 1) - tp->tm_wday + 7) % 7);
 	day = cumdays[month] + day;
 
 	/* if today or today + offset days */
@@ -247,8 +250,10 @@ getfield(p, endp, flags)
 		*flags |= F_ISMONTH;
 	else if (val = getday(start))
 		*flags |= F_ISDAY;
-	else
+	else {
+		*p = savech;
 		return(0);
+	}
 	for (*p = savech; !isdigit(*p) && !isalpha(*p) && *p != '*'; ++p);
 	*endp = p;
 	return(val);
