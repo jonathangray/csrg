@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs.h	5.7 (Berkeley) 10/09/91
+ *	@(#)lfs.h	5.8 (Berkeley) 11/01/91
  */
 
 typedef struct buf	BUF;
@@ -239,3 +239,12 @@ struct segsum {
 #define sntoda(fs, sn) 		/* segment number to disk address */ \
 	((daddr_t)((sn) * ((fs)->lfs_ssize << (fs)->lfs_fsbtodb) + \
 	    (fs)->lfs_sboffs[0]))
+
+/* Read in the block containing a specific inode from the ifile. */
+#define	LFS_IENTRY(I, F, IN, BP) { \
+	if (bread((F)->lfs_ivnode, (IN) / IFPB(F) + (F)->lfs_segtabsz, \
+	    (F)->lfs_bsize, NOCRED, &BP)) \
+		panic("lfs: ifile read"); \
+	(I) = (IFILE *)BP->b_un.b_addr + IN % IFPB(F); \
+}
+
