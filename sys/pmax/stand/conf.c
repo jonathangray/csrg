@@ -33,36 +33,30 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.c	7.4 (Berkeley) 10/24/92
+ *	@(#)conf.c	7.5 (Berkeley) 02/15/93
  */
 
 #include <stand/stand.h>
-#include <pmax/stand/samachdep.h>
+
+const	struct callback *callv;
+int	errno;
 
 extern int	nullsys(), nodev(), noioctl();
 
-#if NRZ > 0
 int	rzstrategy(), rzopen(), rzclose();
-#else
-#define	rzstrategy	nodev
-#define	rzopen		nodev
-#define	rzclose		nodev
-#endif
 #define	rzioctl		noioctl
 
-#if NTZ > 0 && !defined(BOOT)
+#ifndef BOOT
 int	tzstrategy(), tzopen(), tzclose();
-#else
-#define	tzstrategy	nodev
-#define	tzopen		nodev
-#define	tzclose		nodev
 #endif
 #define	tzioctl		noioctl
 
 
 struct devsw devsw[] = {
 	{ "rz",	rzstrategy,	rzopen,	rzclose,	rzioctl }, /*0*/
+#ifndef BOOT
 	{ "tz",	tzstrategy,	tzopen,	tzclose,	tzioctl }, /*1*/
+#endif
 };
 
 int	ndevs = (sizeof(devsw)/sizeof(devsw[0]));
