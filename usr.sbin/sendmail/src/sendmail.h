@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	5.39 (Berkeley) 09/09/92
+ *	@(#)sendmail.h	5.40 (Berkeley) 11/14/92
  */
 
 /*
@@ -41,29 +41,34 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	5.39		09/09/92";
+static char SmailSccsId[] =	"@(#)sendmail.h	5.40		11/14/92";
 # endif lint
-# else  _DEFINE
+# else /*  _DEFINE */
 # define EXTERN extern
-# endif _DEFINE
+# endif /* _DEFINE */
 
-# include <sys/types.h>
+# include <stddef.h>
+# include <stdlib.h>
 # include <stdio.h>
 # include <ctype.h>
 # include <setjmp.h>
 # include <sysexits.h>
+# include <string.h>
+# include <time.h>
+# include <errno.h>
+
 # include "conf.h"
 # include "conf.h"
 # include "useful.h"
 
 # ifdef LOG
 # include <syslog.h>
-# endif LOG
+# endif /* LOG */
 
 # ifdef DAEMON
 # include <sys/socket.h>
 # include <netinet/in.h>
-# endif DAEMON
+# endif /* DAEMON */
 
 
 # define PSBUFSIZE	(MAXNAME + MAXATOM)	/* size of prescan buffer */
