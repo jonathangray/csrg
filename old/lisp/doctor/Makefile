@@ -1,4 +1,4 @@
-#	@(#)Makefile	4.5	(Berkeley)	85/10/25
+#	@(#)Makefile	4.6	(Berkeley)	87/06/03
 #
 DESTDIR=
 
