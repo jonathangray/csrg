@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.12 (Berkeley) 06/23/90
+#	@(#)Makefile	5.13 (Berkeley) 01/15/91
 
 LIB=	F77
 SRCS=	abort_.c besj0_.c besj1_.c besjn_.c besy0_.c besy1_.c besyn_.c \
