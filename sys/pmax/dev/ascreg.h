@@ -3,7 +3,7 @@
  * All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
- * Ralph Campbell.
+ * Ralph Campbell and Rick Macklem.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ascreg.h	7.1 (Berkeley) 03/09/92
+ *	@(#)ascreg.h	7.2 (Berkeley) 11/15/92
  */
 
 /* 
@@ -147,7 +147,7 @@ typedef volatile struct {
 #define ASC_TC_PUT(ptr, val)				\
 	(ptr)->asc_tc_lsb = (val);			\
 	(ptr)->asc_tc_msb = (val) >> 8;			\
-	(ptr)->asc_cmd = ASC_CMD_NOP;
+	(ptr)->asc_cmd = ASC_CMD_NOP | ASC_CMD_DMA;
 
 /*
  * Command register (command codes)
@@ -235,7 +235,7 @@ typedef volatile struct {
  *	val = (timeout * CLK_freq) / (8192 * CCF);
  */
 
-#define	ASC_TIMEOUT_250		0x99	/* 250 msecs at 25 Mhz */
+#define	ASC_TIMEOUT_250(clk, ccf)	(((clk) * 31) / (ccf))
 
 /*
  * Sequence Step register
@@ -282,10 +282,7 @@ typedef volatile struct {
  * CCF register
  */
 
-#define ASC_CCF_10MHz		0x2
-#define ASC_CCF_15MHz		0x3
-#define ASC_CCF_20MHz		0x4
-#define ASC_CCF_25MHz		0x5
+#define	ASC_CCF(clk)		((((clk) - 1) / 5) + 1)
 
 /*
  * Test register
