@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.8 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)main.c	5.9 (Berkeley) 08/09/92";
 #endif /* not lint */
 
 /*
@@ -236,7 +236,7 @@ usage:
 		}
 		createleaves(symtbl);
 		createlinks();
-		setdirmodes();
+		setdirmodes(FORCE);
 		checkrestore();
 		if (dflag) {
 			vprintf(stdout, "Verify the directory structure\n");
@@ -253,7 +253,7 @@ usage:
 		skipdirs();
 		createleaves(symtbl);
 		createlinks();
-		setdirmodes();
+		setdirmodes(FORCE);
 		checkrestore();
 		dumpsymtable(symtbl, (long)1);
 		done(0);
@@ -290,7 +290,7 @@ usage:
 		}
 		createfiles();
 		createlinks();
-		setdirmodes();
+		setdirmodes(0);
 		if (dflag)
 			checkrestore();
 		done(0);
