@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)ps.c	5.45 (Berkeley) 04/03/92";
+static char sccsid[] = "@(#)ps.c	5.46 (Berkeley) 05/12/92";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -109,6 +109,7 @@ main(argc, argv)
 	char *nlistf, *memf, *swapf;
 	char *kludge_oldps_options();
 	char errbuf[80];
+	int wflag = 0;
 
 	if ((ioctl(STDOUT_FILENO, TIOCGWINSZ, (char *)&ws) == -1 &&
 	     ioctl(STDERR_FILENO, TIOCGWINSZ, (char *)&ws) == -1 &&
@@ -226,10 +227,11 @@ main(argc, argv)
 			swapf = optarg;
 			break;
 		case 'w':
-			if (termwidth < 131)
-				termwidth = 131;
-			else
+			if (wflag)
 				termwidth = UNLIMITED;
+			else if (termwidth < 131)
+				termwidth = 131;
+			wflag++;
 			break;
 		case 'x':
 			xflg = 1;
