@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 1991, 1993
+ * Copyright (c) 1991, 1993, 1994
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_extern.h	8.1 (Berkeley) 06/11/93
+ *	@(#)lfs_extern.h	8.2 (Berkeley) 04/16/94
  */
 
 struct fid;
@@ -73,7 +73,6 @@ int	 lfs_read __P((struct vop_read_args *));
 int	 lfs_remove __P((struct vop_remove_args *));
 int	 lfs_rmdir __P((struct vop_rmdir_args *));
 int	 lfs_rename __P((struct vop_rename_args *));
-int	 lfs_root __P((struct mount *, struct vnode **));
 void	 lfs_seglock __P((struct lfs *, unsigned long flags));
 void	 lfs_segunlock __P((struct lfs *));
 int	 lfs_segwrite __P((struct mount *, int));
