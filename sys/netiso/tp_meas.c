@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_meas.c	7.4 (Berkeley) 05/06/91
+ *	@(#)tp_meas.c	7.5 (Berkeley) 10/11/92
  */
 
 /***********************************************************
@@ -67,10 +67,11 @@ SOFTWARE.
  * in the circular buffer tp_Meas[]
  */
 
-#include "types.h"
-#include "time.h"
-#include "argo_debug.h"
-#include "tp_meas.h"
+#include <sys/types.h>
+#include <sys/time.h>
+
+#include <netiso/argo_debug.h>
+#include <netiso/tp_meas.h>
 
 extern struct timeval time;
 
