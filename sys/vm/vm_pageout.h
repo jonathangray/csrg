@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_pageout.h	8.1 (Berkeley) 06/11/93
+ *	@(#)vm_pageout.h	8.2 (Berkeley) 01/12/94
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -91,4 +91,6 @@ simple_lock_data_t	vm_pages_needed_lock;
 #ifdef KERNEL
 void		 vm_pageout __P((void));
 void		 vm_pageout_scan __P((void));
+void		 vm_pageout_page __P((vm_page_t, vm_object_t));
+void		 vm_pageout_cluster __P((vm_page_t, vm_object_t));
 #endif
