@@ -1,7 +1,12 @@
-#! /bin/sh
+#!/bin/sh -
 #
-#	@(#)roffbib.sh	4.1	(Berkeley)	83/05/08
+# This module is believed to contain source code proprietary to AT&T.
+# Use and redistribution is subject to the Berkeley Software License
+# Agreement and your Software Agreement with AT&T (Western Electric).
 #
+#	@(#)roffbib.sh	4.2 (Berkeley) 04/18/91
+#
+
 #	roffbib sh script
 #
 flags=
