@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)db.h	5.8 (Berkeley) 03/18/91
+ *	@(#)db.h	5.9 (Berkeley) 04/01/91
  */
 
 #ifndef _DB_H_
@@ -53,7 +53,7 @@
 
 /* key/data structure -- a data-base thang */
 typedef struct {
-	unsigned char *data;
+	void *data;
 	int size;
 } DBT;
 
