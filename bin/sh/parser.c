@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parser.c	5.1 (Berkeley) 03/07/91";
+static char sccsid[] = "@(#)parser.c	5.2 (Berkeley) 03/13/91";
 #endif /* not lint */
 
 #include "shell.h"
@@ -311,6 +311,7 @@ command() {
 		}
 		if (readtoken() != TFI)
 			synexpect(TFI);
+		checkkwd();
 		break;
 	case TWHILE:
 	case TUNTIL:
@@ -322,6 +323,7 @@ command() {
 		n1->nbinary.ch2 = list(0);
 		if (readtoken() != TDONE)
 			synexpect(TDONE);
+		checkkwd();
 		break;
 	case TFOR:
 		if (readtoken() != TWORD || quoteflag || ! goodname(wordtext))
@@ -365,6 +367,7 @@ command() {
 		n1->nfor.body = list(0);
 		if (readtoken() != t)
 			synexpect(t);
+		checkkwd();
 		break;
 	case TCASE:
 		n1 = (union node *)stalloc(sizeof (struct ncase));
@@ -408,6 +411,7 @@ command() {
 		*cpp = NULL;
 		if (lasttoken != TESAC)
 			synexpect(TESAC);
+		checkkwd();
 		break;
 	case TLP:
 		n1 = (union node *)stalloc(sizeof (struct nredir));
@@ -416,11 +420,13 @@ command() {
 		n1->nredir.redirect = NULL;
 		if (readtoken() != TRP)
 			synexpect(TRP);
+		checkkwd();
 		break;
 	case TBEGIN:
 		n1 = list(0);
 		if (readtoken() != TEND)
 			synexpect(TEND);
+		checkkwd();
 		break;
 	case TWORD:
 	case TREDIR:
@@ -478,8 +484,10 @@ simplecmd() {
 			/* We have a function */
 			if (readtoken() != TRP)
 				synexpect(TRP);
+#ifdef notdef
 			if (! goodname(n->narg.text))
 				synerror("Bad function name");
+#endif
 			n->type = NDEFUN;
 			n->narg.next = command();
 			return n;
@@ -591,7 +599,8 @@ checkkwd() {
 	register char *const *pp;
 	int t;
 
-	while ((t = readtoken()) == TNL);
+	while ((t = readtoken()) == TNL)
+		parseheredoc();
 	if (t == TWORD && quoteflag == 0) {
 		for (pp = parsekwd ; *pp ; pp++) {
 			if (**pp == *wordtext && equal(*pp, wordtext)) {
@@ -616,9 +625,6 @@ readtoken() {
 	} else {
 		t = xxreadtoken();
 		TRACE(("token %s %s\n", tokname[t], t == TWORD ? wordtext : ""));
-		if (vflag)
-			outfmt(out2, "%s %s\n", tokname[t], 
-				t == TWORD ? wordtext : "");
 		return t;
 	}
 }
@@ -983,11 +989,7 @@ parsesub: {
 #endif
 
 	c = pgetc();
-	if (c == ' ' || c == '\t' || c == '\n' || c == PEOF
-#ifndef STRICT_VARCHECKING	/* make this an option? */
-	    || (c != '(' && c != '{' && !is_name(c) && !is_special(c))
-#endif
-	) {
+	if (c != '(' && c != '{' && !is_name(c) && !is_special(c)) {
 		USTPUTC('$', out);
 		pungetc();
 	} else if (c == '(') {	/* $(command) */
@@ -1008,7 +1010,7 @@ parsesub: {
 			} while (is_in_name(c));
 		} else {
 			if (! is_special(c))
-badsub:			synerror("Bad substitution");
+badsub:				synerror("Bad substitution");
 			USTPUTC(c, out);
 			c = pgetc();
 		}
