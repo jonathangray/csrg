@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)shell.h	5.1 (Berkeley) 03/07/91
+ *	@(#)shell.h	5.2 (Berkeley) 03/07/91
  */
 
 /*
@@ -68,8 +68,6 @@ typedef void *pointer;
 #define NULL (void *)0
 #endif
 #else /* not __STDC__ */
-#define const
-#define volatile
 typedef char *pointer;
 #ifndef NULL
 #define NULL 0
