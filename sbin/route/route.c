@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)route.c	5.39 (Berkeley) 07/30/91";
+static char sccsid[] = "@(#)route.c	5.40 (Berkeley) 08/20/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -298,14 +298,17 @@ routename(sa)
 		else
 			domain[0] = 0;
 	}
-	switch (sa->sa_family) {
+
+	if (sa->sa_len == 0)
+		strcpy(line, "default");
+	else switch (sa->sa_family) {
 
 	case AF_INET:
 	    {	struct in_addr in;
 		in = ((struct sockaddr_in *)sa)->sin_addr;
 
 		cp = 0;
-		if (in.s_addr == INADDR_ANY)
+		if (in.s_addr == INADDR_ANY || sa->sa_len < 4)
 			cp = "default";
 		if (cp == 0 && !nflag) {
 			hp = gethostbyaddr((char *)&in, sizeof (struct in_addr),
@@ -478,7 +481,7 @@ newroute(argc, argv)
 	register char **argv;
 {
 	char *cmd, *dest = "", *gateway = "", *err;
-	int ishost = 0, ret, attempts, oerrno, flags = 0;
+	int ishost = 0, ret, attempts, oerrno, flags = RTF_STATIC;
 	int key;
 	struct hostent *hp = 0;
 
@@ -518,6 +521,8 @@ newroute(argc, argv)
 			case K_IFACE:
 			case K_INTERFACE:
 				iflag++;
+			case K_NOSTATIC:
+				flags &= ~RTF_STATIC;
 				break;
 			case K_LOCK:
 				locking = 1;
@@ -542,6 +547,9 @@ newroute(argc, argv)
 				break;
 			case K_XRESOLVE:
 				flags |= RTF_XRESOLVE;
+				break;
+			case K_STATIC:
+				flags |= RTF_STATIC;
 				break;
 			case K_IFA:
 				argc--;
@@ -984,14 +992,20 @@ rtmsg(cmd, flags)
 
 mask_addr()
 {
-	register char *cp1, *cp2;
-	int olen;
+	int olen = so_mask.sa.sa_len;
+	register char *cp1 = olen + (char *)&so_mask, *cp2;
 
+	for (so_mask.sa.sa_len = 0; cp1 > (char *)&so_mask; )
+		if (*--cp1 != 0) {
+			so_mask.sa.sa_len = 1 + cp1 - (char *)&so_mask;
+			break;
+		}
 	if ((rtm_addrs & RTA_DST) == 0)
 		return;
 	switch (so_dst.sa.sa_family) {
 	case AF_NS:
 	case AF_INET:
+	case AF_CCITT:
 	case 0:
 		return;
 	case AF_ISO:
@@ -1030,7 +1044,7 @@ char *msgtypes[] = {
 char metricnames[] =
 "\010rttvar\7rtt\6ssthresh\5sendpipe\4recvpipe\3expire\2hopcount\1mtu";
 char routeflags[] = 
-"\1UP\2GATEWAY\3HOST\4REJECT\5DYNAMIC\6MODIFIED\7DONE\010MASK_PRESENT\011CLONING\012XRESOLVE\013LLINFO\017PROTO2\020PROTO1";
+"\1UP\2GATEWAY\3HOST\4REJECT\5DYNAMIC\6MODIFIED\7DONE\010MASK_PRESENT\011CLONING\012XRESOLVE\013LLINFO\014STATIC\017PROTO2\020PROTO1";
 
 
 void
