@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_sl.c	7.27 (Berkeley) 03/15/92
+ *	@(#)if_sl.c	7.28 (Berkeley) 06/02/92
  */
 
 /*
@@ -178,6 +178,7 @@ slattach()
 
 	for (sc = sl_softc; i < NSL; sc++) {
 		sc->sc_if.if_name = "sl";
+		sc->sc_if.if_next = NULL;
 		sc->sc_if.if_unit = i++;
 		sc->sc_if.if_mtu = SLMTU;
 		sc->sc_if.if_flags = IFF_POINTOPOINT | SC_AUTOCOMP;
