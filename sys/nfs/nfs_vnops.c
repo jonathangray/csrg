@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	8.3 (Berkeley) 12/30/93
+ *	@(#)nfs_vnops.c	8.4 (Berkeley) 01/21/94
  */
 
 /*
@@ -568,7 +568,6 @@ nfs_lookup(ap)
 	register caddr_t cp;
 	register long t1, t2;
 	struct nfsmount *nmp;
-	struct nfsnode *tp;
 	caddr_t bpos, dpos, cp2;
 	time_t reqtime;
 	struct mbuf *mreq, *mrep, *md, *mb, *mb2;
@@ -1741,7 +1740,7 @@ nfs_readdirlookrpc(vp, uiop, cred)
 	u_long off, endoff, fileno;
 	time_t reqtime, ltime;
 	struct nfsmount *nmp;
-	struct nfsnode *np, *tp;
+	struct nfsnode *np;
 	struct vnode *newvp;
 	nfsv2fh_t *fhp;
 	u_quad_t frev;
@@ -1973,7 +1972,6 @@ nfs_lookitup(sp, fhp, procp)
 	register caddr_t cp;
 	register long t1, t2;
 	caddr_t bpos, dpos, cp2;
-	u_long xid;
 	int error = 0, isnq;
 	struct mbuf *mreq, *mrep, *md, *mb, *mb2;
 	long len;
