@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vfsops.c	7.50 (Berkeley) 04/08/93
+ *	@(#)nfs_vfsops.c	7.51 (Berkeley) 05/06/93
  */
 
 #include <sys/param.h>
@@ -415,11 +415,7 @@ mountnfs(argp, mp, nam, pth, hst, vpp)
 		error = EPERM;
 		goto bad;
 	}
-	if (nmp->nm_flag & (NFSMNT_RDIRALOOK | NFSMNT_LEASETERM)) {
-		if ((nmp->nm_flag & NFSMNT_NQNFS) == 0) {
-			error = EPERM;
-			goto bad;
-		}
+	if (nmp->nm_flag & NFSMNT_NQNFS)
 		/*
 		 * We have to set mnt_maxsymlink to a non-zero value so
 		 * that COMPAT_43 routines will know that we are setting
@@ -427,7 +423,6 @@ mountnfs(argp, mp, nam, pth, hst, vpp)
 		 * unsuspecting binaries).
 		 */
 		mp->mnt_maxsymlinklen = 1;
-	}
 	nmp->nm_timeo = NFS_TIMEO;
 	nmp->nm_retry = NFS_RETRANS;
 	nmp->nm_wsize = NFS_WSIZE;
