@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)recvjob.c	8.1 (Berkeley) 06/06/93";
+static char sccsid[] = "@(#)recvjob.c	8.2 (Berkeley) 04/27/95";
 #endif /* not lint */
 
 /*
@@ -342,7 +342,7 @@ frecverr(msg, va_alist)
         va_dcl
 #endif
 {
-	extern char *fromb;
+	extern char fromb[];
 	va_list ap;
 #if __STDC__
 	va_start(ap, msg);
