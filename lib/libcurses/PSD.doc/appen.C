@@ -1,5 +1,5 @@
-.\" Copyright (c) 1980 The Regents of the University of California.
-.\" All rights reserved.
+.\" Copyright (c) 1980, 1993
+.\"	The Regents of the University of California.  All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)appen.C	6.5 (Berkeley) 06/07/93
+.\"	@(#)appen.C	8.1 (Berkeley) 06/08/93
 .\"
 .ie t .oh '\*(Ln Appendix A''PS1:19-%'
 .eh 'PS1:19-%''\*(Ln Appendix A'
