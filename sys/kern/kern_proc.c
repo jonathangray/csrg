@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_proc.c	7.12 (Berkeley) 12/01/90
+ *	@(#)kern_proc.c	7.13 (Berkeley) 12/05/90
  */
 
 #include "param.h"
@@ -43,8 +43,6 @@
 #include "seg.h"
 #include "acct.h"
 #include "wait.h"
-#include "vm.h"
-#include "text.h"
 #include "file.h"
 #include "../ufs/quota.h"
 #include "uio.h"
@@ -54,7 +52,6 @@
 #include "tty.h"
 
 #include "machine/reg.h"
-#include "machine/pte.h"
 #include "machine/psl.h"
 
 /*
