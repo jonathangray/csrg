@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)endian.h	7.5 (Berkeley) 06/28/90
+ *	@(#)endian.h	7.6 (Berkeley) 04/03/91
  */
 
 /*
@@ -41,7 +41,7 @@
 #define	BIG_ENDIAN	4321	/* most-significant byte first (IBM, net) */
 #define	PDP_ENDIAN	3412	/* LSB first in word, MSW first in long (pdp) */
 
-#define	BYTE_ORDER	BIG_ENDIAN	/* byte order on tahoe */
+#define	BYTE_ORDER	BIG_ENDIAN
 
 /*
  * Macros for network/external number representation conversion.
