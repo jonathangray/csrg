@@ -1,56 +1,107 @@
-.\" Copyright (c) 1980 Regents of the University of California.
-.\" All rights reserved.  The Berkeley software License Agreement
-.\" specifies the terms and conditions for redistribution.
+.\" Copyright (c) 1980, 1991 Regents of the University of California.
+.\" All rights reserved.
 .\"
-.\"	@(#)strerror.3	6.7 (Berkeley) 04/19/91
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
 .\"
-.TH STRERROR 3  ""
-.UC 4
-.SH NAME
-perror, strerror, sys_errlist, sys_nerr \- system error messages
-.SH SYNOPSIS
-.nf
-.ft B
-extern int errno, sys_nerr;
-extern char *sys_errlist[];
-
-#include <stdio.h>
-
-void perror(const char *string);
-
-char *strerror(int errnum);
-.ft R
-.fi
-.SH DESCRIPTION
-.I Perror
-produces a short error message on the standard error file
-describing the last error encountered during a call
-to the system from a C program.  If
-.I string
-is non-NULL, it is printed, followed by a colon, followed by a space,
-followed by the message and a new-line.  Otherwise, just the
-message and the new-line are printed.  Most usefully, the argument
-string is the name of the program which incurred the error.
-The error number is taken from the external variable
-.I errno
-(see
-.IR intro (2)),
-which is set when errors occur but not cleared when
-non-erroneous calls are made.
-.PP
-To simplify variant formatting of messages, the
-.I strerror
-function returns a pointer to the error message string mapped
-to the error number
-.IR errnum .
-.PP
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"     @(#)strerror.3	6.8 (Berkeley) 04/19/91
+.\"
+.Dd 
+.Dt STRERROR 3
+.Os BSD 4
+.Sh NAME
+.Nm perror ,
+.Nm strerror ,
+.Nm sys_errlist ,
+.Nm sys_nerr
+.Nd system error messages
+.Sh SYNOPSIS
+.Vt extern int errno;
+.Vt extern char *sys_errlist[];
+.Fd #include <stdio.h>
+.Ft void
+.Fn perror "const char *string"
+.Ft char *
+.Fn strerror "int errnum"
+.Sh DESCRIPTION
+The
+.Fn strerror
+and
+.Fn perror
+functions lookup the error message string affiliated with an
+error number.
+.Pp
+The
+.Fn sterror
+function accepts an error number argument
+.Fa errnum
+and
+returns a pointer to the corresponding
+message string.
+.Pp
+The
+.Fn perror
+function finds the error message corresponding to the current
+value of the global variable
+.Va errno
+and writes it, followed by a new-line, to the
+.Em stderr .
+If the argument
+.Fa string
+is
+.Pf non- Dv NULL
+it is pre-appended to the message
+string and separated from it by
+a colon and space
+.Pq Ql \&:\ \& .
+If
+.Fa string
+is
+.Dv NULL
+only the error message string is printed.
+.Pp
 The message strings can be accessed directly using the external
 character array
-.IR sys_errlist .
-.I Sys_nerr
-is the total number of messages in the array.
+.Fa sys_errlist .
+The external value
+.Fa sys_nerr
+contains a count of the messages in
+.Fa sys_errlist .
 The use of these variables is deprecated;
-.I strerror
+.Fn strerror
 should be used instead.
-.SH "SEE ALSO"
-intro(2), psignal(3)
+.Sh SEE ALSO
+.Xr intro 2 ,
+.Xr psignal 3
+.Sh HISTORY
+The
+.Fn strerror
+and
+.Fn perror
+functions are
+.Ud .
