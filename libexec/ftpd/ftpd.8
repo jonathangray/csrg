@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)ftpd.8	8.2 (Berkeley) 04/19/94
+.\"     @(#)ftpd.8	8.3 (Berkeley) 06/01/94
 .\"
 .Dd 
 .Dt FTPD 8
@@ -228,6 +228,7 @@ subtree be constructed with care, following these rules:
 Make the home directory owned by
 .Dq root
 and unwritable by anyone.
+.ne 1i
 .It Pa ~ftp/bin
 Make this directory owned by
 .Dq root
