@@ -39,9 +39,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)printer.h	5.2 (Berkeley) 07/23/92
+ *	@(#)printer.h	5.3 (Berkeley) 02/01/93
  *
- * from: $Header: printer.h,v 1.2 92/05/15 11:24:00 torek Exp $ (LBL)
+ * from: $Header: printer.h,v 1.3 92/12/02 03:52:03 torek Exp $ (LBL)
  */
 
 /*
