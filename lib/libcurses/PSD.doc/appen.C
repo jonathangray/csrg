@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)appen.C	6.4 (Berkeley) 12/30/92
+.\"	@(#)appen.C	8.1 (Berkeley) 06/04/93
 .\"
 .ie t .oh '\*(Ln Appendix A''PS1:18-%'
 .eh 'PS1:18-%''\*(Ln Appendix A'
