@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)udp_usrreq.c	7.32 (Berkeley) 05/27/93
+ *	@(#)udp_usrreq.c	7.33 (Berkeley) 05/31/93
  */
 
 #include <sys/param.h>
@@ -251,7 +251,7 @@ udp_input(m, iphlen)
 		udpstat.udps_noport++;
 		*ip = save_ip;
 		ip->ip_len += iphlen;
-		icmp_error(m, ICMP_UNREACH, ICMP_UNREACH_PORT);
+		icmp_error(m, ICMP_UNREACH, ICMP_UNREACH_PORT, 0, 0);
 		return;
 	}
 
