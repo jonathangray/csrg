@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)udp_usrreq.c	7.16 (Berkeley) 06/29/90
+ *	@(#)udp_usrreq.c	7.17 (Berkeley) 07/01/90
  */
 
 #include "param.h"
@@ -88,10 +88,18 @@ udp_input(m, iphlen)
 	struct ip save_ip;
 
 	udpstat.udps_ipackets++;
-#ifndef notyet	/* should skip this, make available & use on returned packets */
-	if (iphlen > sizeof (struct ip))
+
+	/*
+	 * Strip IP options, if any; should skip this,
+	 * make available to user, and use on returned packets,
+	 * but we don't yet have a way to check the checksum
+	 * with options still present.
+	 */
+	if (iphlen > sizeof (struct ip)) {
 		ip_stripoptions(m, (struct mbuf *)0);
-#endif
+		iphlen = sizeof(struct ip);
+	}
+
 	/*
 	 * Get IP and UDP header together in first mbuf.
 	 */
@@ -161,6 +169,7 @@ udp_input(m, iphlen)
 			goto bad;
 		}
 		*ip = save_ip;
+		ip->ip_len += iphlen;
 		icmp_error(m, ICMP_UNREACH, ICMP_UNREACH_PORT);
 		return;
 	}
@@ -198,7 +207,6 @@ udp_input(m, iphlen)
 		}
 #endif
 	}
-iphlen = sizeof(struct ip);
 	iphlen += sizeof(struct udphdr);
 	m->m_len -= iphlen;
 	m->m_pkthdr.len -= iphlen;
