@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)genassym.c	8.2 (Berkeley) 09/23/93
+ *	@(#)genassym.c	8.3 (Berkeley) 01/04/94
  */
 
 #define KERNEL
@@ -92,8 +92,6 @@ flush()
 
 main()
 {
-	register unsigned i;
-
 	/* general constants */
 	def("UPAGES", UPAGES);
 	def("NBPG", NBPG);
