@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)collect.c	8.13 (Berkeley) 04/18/94";
+static char sccsid[] = "@(#)collect.c	8.14 (Berkeley) 04/18/94";
 #endif /* not lint */
 
 # include <errno.h>
@@ -85,7 +85,7 @@ maketemp(from)
 
 	e->e_df = queuename(e, 'd');
 	e->e_df = newstr(e->e_df);
-	if ((tf = dfopen(e->e_df, O_WRONLY|O_CREAT, FileMode)) == NULL)
+	if ((tf = dfopen(e->e_df, O_WRONLY|O_CREAT|O_TRUNC, FileMode)) == NULL)
 	{
 		syserr("Cannot create %s", e->e_df);
 		NoReturn = TRUE;
