@@ -30,15 +30,19 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)names.c	5.6 (Berkeley) 09/02/92
+ *	@(#)names.c	5.7 (Berkeley) 09/02/92
  */
 
-#if !defined(hp300) && !defined(tahoe) && !defined(vax)
+#if !defined(hp300) && !defined(tahoe) && !defined(vax) && !defined(luna68k)
 char *defdrives[] = { 0 };
 #endif
 
-#ifdef hp300
+#if defined(hp300) || defined(luna68k)
+#if defined(hp300)
 #include <hp/dev/device.h>
+#else
+#include <luna68k/dev/device.h>
+#endif
 
 char *defdrives[] = { "sd0", "sd1", "sd2", "rd0", "rd1", "rd2", 0 };
 
@@ -73,7 +77,7 @@ read_names()
 	}
 	return (1);
 }
-#endif /* hp300 */
+#endif /* hp300 || luna68k */
 
 #ifdef tahoe
 #include <tahoe/vba/vbavar.h>
