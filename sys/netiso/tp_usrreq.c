@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_usrreq.c	7.24 (Berkeley) 10/02/91
+ *	@(#)tp_usrreq.c	7.25 (Berkeley) 01/07/92
  */
 
 /***********************************************************
@@ -208,7 +208,7 @@ restart:
 	 * uipc_socket2.c (like sbappend).
 	 */
 	
-	sblock(sb);
+	sblock(sb, M_WAITOK);
 	for (nn = &sb->sb_mb; n = *nn; nn = &n->m_act)
 		if (n->m_type == MT_OOBDATA)
 			break;
@@ -313,7 +313,7 @@ tp_sendoob(tpcb, so, xdata, outflags)
 		while (sb->sb_mb) {
 			sbunlock(&so->so_snd); /* already locked by sosend */
 			sbwait(&so->so_snd);
-			sblock(&so->so_snd);  /* sosend will unlock on return */
+			sblock(&so->so_snd, M_WAITOK);  /* sosend will unlock on return */
 		}
 	}
 
