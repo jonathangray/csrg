@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sig.c	7.55 (Berkeley) 03/02/93
+ *	@(#)kern_sig.c	7.56 (Berkeley) 04/27/93
  */
 
 #define	SIGPROP		/* include signal properties table */
@@ -54,7 +54,6 @@
 #include <machine/cpu.h>
 
 #include <vm/vm.h>
-#include <sys/kinfo_proc.h>
 #include <sys/user.h>		/* for coredump */
 
 /*
