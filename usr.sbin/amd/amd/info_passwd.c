@@ -1,5 +1,5 @@
 /*
- * $Id: info_passwd.c,v 5.2 90/06/23 22:19:34 jsp Rel $
+ * $Id: info_passwd.c,v 5.2.1.2 91/03/03 20:39:38 jsp Alpha $
  *
  * Copyright (c) 1990 Jan-Simon Pendry
  * Copyright (c) 1990 Imperial College of Science, Technology & Medicine
@@ -37,7 +37,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)info_passwd.c	5.1 (Berkeley) 06/29/90
+ *	@(#)info_passwd.c	5.2 (Berkeley) 03/17/91
  */
 
 /*
@@ -57,9 +57,12 @@
 /*
  * Nothing to probe - check the map name is PASSWD_MAP.
  */
-passwd_init(map)
+int passwd_init P((char *map, time_t *tp));
+int passwd_init(map, tp)
 char *map;
+time_t *tp;
 {
+	*tp = 0;
 	return strcmp(map, PASSWD_MAP) == 0 ? 0 : ENOENT;
 }
 
@@ -68,6 +71,7 @@ char *map;
  * Grab the entry via the getpwname routine
  * Modify time is ignored by passwd - XXX
  */
+int passwd_search P((mnt_map *m, char *map, char *key, char **pval, time_t *tp));
 int passwd_search(m, map, key, pval, tp)
 mnt_map *m;
 char *map;
