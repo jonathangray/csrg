@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)grp.h	5.1 (Berkeley) 05/25/90
+ *	@(#)grp.h	5.2 (Berkeley) 05/29/90
  */
 
 #ifndef _POSIX_SOURCE
@@ -44,7 +44,7 @@ struct group {
 	char	**gr_mem;		/* group members */
 };
 
-#ifdef __STDC__
+#if __STDC__ || c_plusplus
 extern struct group *getgrgid(gid_t);
 extern struct group *getgrnam(const char *);
 #ifndef _POSIX_SOURCE
