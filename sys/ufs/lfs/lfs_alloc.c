@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_alloc.c	7.42 (Berkeley) 05/04/92
+ *	@(#)lfs_alloc.c	7.43 (Berkeley) 05/13/92
  */
 
 #include <sys/param.h>
