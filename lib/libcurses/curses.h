@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)curses.h	8.1 (Berkeley) 06/04/93
+ *	@(#)curses.h	5.39 (Berkeley) 06/07/93
  */
 
 #ifndef _CURSES_H_
@@ -154,8 +154,7 @@ extern WINDOW	*stdscr;		/* Standard screen. */
 
 extern struct termios __orig_termios;	/* Terminal state before curses */
 extern struct termios __baset;		/* Our base terminal state */
-extern int __tcaction;			/* Controls whether tcsetattr will
-					   ignore hardware settings */
+extern int __tcaction;			/* If terminal hardware set. */
 
 extern int	 COLS;			/* Columns on the screen. */
 extern int	 LINES;			/* Lines on the screen. */
