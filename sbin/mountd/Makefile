@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.5 (Berkeley) 01/15/91
+#	@(#)Makefile	5.5 (Berkeley) 04/15/92
 
 PROG=	mountd
 CFLAGS+=-DNFS
