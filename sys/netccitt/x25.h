@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)x25.h	7.7 (Berkeley) 05/01/91
+ *	@(#)x25.h	7.8 (Berkeley) 05/29/91
  */
 
 #ifdef KERNEL
@@ -58,6 +58,9 @@
 /* socket options */
 #define PK_ACCTFILE		1	/* use level = CCITTPROTO_X25 */
 #define PK_FACILITIES		2	/* use level = CCITTPROTO_X25 */
+#define PK_RTATTACH		3	/* use level = CCITTPROTO_X25 */
+#define PK_PRLISTEN		4	/* use level = CCITTPROTO_X25 */
+
 #define MAX_FACILITIES		109     /* maximum size for facilities */
 
 /*
