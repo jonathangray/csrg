@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lookup.c	7.35 (Berkeley) 11/05/91
+ *	@(#)ufs_lookup.c	7.36 (Berkeley) 12/14/91
  */
 
 #include <sys/param.h>
@@ -212,7 +212,7 @@ ufs_lookup(vdp, ndp, p)
 	 * profiling time and hence has been removed in the interest
 	 * of simplicity.
 	 */
-	bmask = VFSTOUFS(vdp->v_mount)->um_mountp->mnt_stat.f_bsize - 1;
+	bmask = VFSTOUFS(vdp->v_mount)->um_mountp->mnt_stat.f_iosize - 1;
 	if (flag != LOOKUP || dp->i_diroff == 0 || dp->i_diroff > dp->i_size) {
 		ndp->ni_ufs.ufs_offset = 0;
 		numdirpasses = 1;
@@ -646,7 +646,7 @@ ufs_direnter(ip, ndp)
 		auio.uio_procp = (struct proc *)0;
 		error = VOP_WRITE(dvp, &auio, IO_SYNC, ndp->ni_cred);
 		if (DIRBLKSIZ >
-		    VFSTOUFS(dvp->v_mount)->um_mountp->mnt_stat.f_fsize)
+		    VFSTOUFS(dvp->v_mount)->um_mountp->mnt_stat.f_bsize)
 			/* XXX should grow with balloc() */
 			panic("ufs_direnter: frag size");
 		else if (!error) {
