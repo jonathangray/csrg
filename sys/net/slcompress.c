@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)slcompress.c	7.8 (Berkeley) 10/11/92
+ *	@(#)slcompress.c	7.9 (Berkeley) 06/04/93
  */
 
 /*
@@ -65,7 +65,6 @@
 #ifndef KERNEL
 #define ovbcopy bcopy
 #endif
-
 
 void
 sl_compress_init(comp)
@@ -139,8 +138,7 @@ sl_compress_init(comp)
 	} \
 }
 
-
-u_char
+u_int
 sl_compress_tcp(m, ip, comp, compress_cid)
 	struct mbuf *m;
 	register struct ip *ip;
