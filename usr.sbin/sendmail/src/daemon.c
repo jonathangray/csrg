@@ -39,9 +39,9 @@
 
 #ifndef lint
 #ifdef DAEMON
-static char sccsid[] = "@(#)daemon.c	6.9 (Berkeley) 02/23/93 (with daemon mode)";
+static char sccsid[] = "@(#)daemon.c	6.10 (Berkeley) 02/28/93 (with daemon mode)";
 #else
-static char sccsid[] = "@(#)daemon.c	6.9 (Berkeley) 02/23/93 (without daemon mode)";
+static char sccsid[] = "@(#)daemon.c	6.10 (Berkeley) 02/28/93 (without daemon mode)";
 #endif
 #endif /* not lint */
 
@@ -190,6 +190,8 @@ getrequests()
 **	Side Effects:
 **		none.
 */
+
+struct sockaddr_in	CurHostAddr;		/* address of current host */
 
 int
 makeconnection(host, port, mci, usesecureport)
@@ -370,6 +372,9 @@ makeconnection(host, port, mci, usesecureport)
 	/* connection ok, put it into canonical form */
 	mci->mci_out = fdopen(s, "w");
 	mci->mci_in = fdopen(dup(s), "r");
+
+	/* save for logging */
+	CurHostAddr = addr;
 
 	return (EX_OK);
 }
