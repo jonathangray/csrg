@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)tty.c	8.1 (Berkeley) 06/04/93";
+static char sccsid[] = "@(#)tty.c	5.18 (Berkeley) 06/07/93";
 #endif /* not lint */
 
 #include <sys/ioctl.h>
@@ -49,12 +49,10 @@ static char sccsid[] = "@(#)tty.c	8.1 (Berkeley) 06/04/93";
  * See also the comments in getterm().
  */
 #ifdef TCSASOFT
-int __tcaction = TCSASOFT | TCSADRAIN;         /* ignore hardware settings */
+int __tcaction = 1;			/* Ignore hardware settings. */
 #else
-int __tcaction = TCSADRAIN;
+int __tcaction = 0;
 #endif
-
-/* was, pfast = rand() % HARDTABS; */
 
 struct termios __orig_termios, __baset;
 static struct termios cbreakt, rawt, *curt;
@@ -102,22 +100,24 @@ gettmode()
 	rawt.c_iflag &= ~(IGNBRK|BRKINT|PARMRK|INLCR|IGNCR|ICRNL|IXON);
 	rawt.c_oflag &= ~OPOST;
 	rawt.c_lflag &= ~(ECHO|ECHONL|ICANON|ISIG|IEXTEN);
-#if 0
+
 	/*
 	 * In general, curses should leave hardware-related settings alone.
 	 * This includes parity and word size.  Older versions set the tty
 	 * to 8 bits, no parity in raw(), but this is considered to be an
 	 * artifact of the old tty interface.  If it's desired to change
-	 * parity and word size, the TCSASOFT bit would have to be removed
-	 * from the calls that switch to/from "raw" mode.
+	 * parity and word size, the TCSASOFT bit has to be removed from the
+	 * calls that switch to/from "raw" mode.
 	 */
-	rawt.c_iflag &= ~ISTRIP;
-	rawt.c_cflag &= ~(CSIZE|PARENB);
-	rawt.c_cflag |= CS8;
-#endif
+	if (!__tcaction) {
+		rawt.c_iflag &= ~ISTRIP;
+		rawt.c_cflag &= ~(CSIZE|PARENB);
+		rawt.c_cflag |= CS8;
+	}
 
 	curt = &__baset;
-	return (tcsetattr(STDIN_FILENO, __tcaction, &__baset) ? ERR : OK);
+	return (tcsetattr(STDIN_FILENO, __tcaction ?
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt) ? ERR : OK);
 }
 
 int
@@ -125,7 +125,8 @@ raw()
 {
 	useraw = __pfast = __rawmode = 1;
 	curt = &rawt;
-	return (tcsetattr(STDIN_FILENO, __tcaction, &rawt));
+	return (tcsetattr(STDIN_FILENO, __tcaction ?
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt));
 }
 
 int
@@ -133,7 +134,8 @@ noraw()
 {
 	useraw = __pfast = __rawmode = 0;
 	curt = &__baset;
-	return (tcsetattr(STDIN_FILENO, __tcaction, &__baset));
+	return (tcsetattr(STDIN_FILENO, __tcaction ?
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt));
 }
 
 int
@@ -142,7 +144,8 @@ cbreak()
 
 	__rawmode = 1;
 	curt = useraw ? &rawt : &cbreakt;
-	return (tcsetattr(STDIN_FILENO, __tcaction, curt));
+	return (tcsetattr(STDIN_FILENO, __tcaction ?
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt));
 }
 
 int
@@ -151,7 +154,8 @@ nocbreak()
 
 	__rawmode = 0;
 	curt = useraw ? &rawt : &__baset;
-	return (tcsetattr(STDIN_FILENO, __tcaction, curt));
+	return (tcsetattr(STDIN_FILENO, __tcaction ?
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt));
 }
 	
 int
@@ -162,7 +166,8 @@ echo()
 	__baset.c_lflag |= ECHO;
 	
 	__echoit = 1;
-	return (tcsetattr(STDIN_FILENO, __tcaction, curt));
+	return (tcsetattr(STDIN_FILENO, __tcaction ?
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt));
 }
 
 int
@@ -173,7 +178,8 @@ noecho()
 	__baset.c_lflag &= ~ECHO;
 	
 	__echoit = 0;
-	return (tcsetattr(STDIN_FILENO, __tcaction, curt));
+	return (tcsetattr(STDIN_FILENO, __tcaction ?
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt));
 }
 
 int
@@ -187,7 +193,8 @@ nl()
 	__baset.c_oflag |= ONLCR;
 
 	__pfast = __rawmode;
-	return (tcsetattr(STDIN_FILENO, __tcaction, curt));
+	return (tcsetattr(STDIN_FILENO, __tcaction ?
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt));
 }
 
 int
@@ -201,7 +208,8 @@ nonl()
 	__baset.c_oflag &= ~ONLCR;
 
 	__pfast = 1;
-	return (tcsetattr(STDIN_FILENO, __tcaction, curt));
+	return (tcsetattr(STDIN_FILENO, __tcaction ?
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, curt));
 }
 
 void
@@ -230,7 +238,8 @@ endwin()
 	(void)fflush(stdout);
 	(void)setvbuf(stdout, NULL, _IOLBF, 0);
 
-	return (tcsetattr(STDIN_FILENO, __tcaction, &__orig_termios));
+	return (tcsetattr(STDIN_FILENO, __tcaction ?
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, &__orig_termios));
 }
 
 /*
@@ -248,5 +257,6 @@ savetty()
 int
 resetty()
 {
-	return (tcsetattr(STDIN_FILENO, __tcaction, &savedtty));
+	return (tcsetattr(STDIN_FILENO, __tcaction ?
+	    TCSASOFT | TCSADRAIN : TCSADRAIN, &savedtty));
 }
