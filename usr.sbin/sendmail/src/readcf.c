@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	8.78 (Berkeley) 04/02/95";
+static char sccsid[] = "@(#)readcf.c	8.79 (Berkeley) 04/03/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -458,7 +458,7 @@ readcf(cfname)
 			break;
 
 		  case 'H':		/* required header line */
-			(void) chompheader(&bp[1], TRUE, e);
+			(void) chompheader(&bp[1], TRUE, NULL, e);
 			break;
 
 		  case 'C':		/* word class */
