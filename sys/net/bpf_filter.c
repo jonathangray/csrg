@@ -1,10 +1,11 @@
 /*-
- * Copyright (c) 1991 The Regents of the University of California.
+ * Copyright (c) 1990-1991 The Regents of the University of California.
  * All rights reserved.
  *
  * This code is derived from the Stanford/CMU enet packet filter,
  * (net/enet.c) distributed as part of 4.3BSD, and code contributed
- * to Berkeley by Steven McCanne of Lawrence Berkeley Laboratory.
+ * to Berkeley by Steven McCanne and Van Jacobson both of Lawrence 
+ * Berkeley Laboratory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -34,11 +35,15 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)bpf_filter.c	7.2 (Berkeley) 05/14/91
+ *	@(#)bpf.c	7.5 (Berkeley) 7/15/91
  *
  * static char rcsid[] =
- * "@(#) $Header: bpf_filter.c,v 1.10 91/04/24 22:07:07 mccanne Locked $ (LBL)";
+ * "$Header: bpf_filter.c,v 1.16 91/10/27 21:22:35 mccanne Exp $";
  */
+#if !(defined(lint) || defined(KERNEL))
+static char rcsid[] =
+    "@(#) $Header: bpf_filter.c,v 1.16 91/10/27 21:22:35 mccanne Exp $ (LBL)";
+#endif
 
 #include <sys/param.h>
 #include <sys/types.h>
@@ -49,7 +54,7 @@
 #include <netinet/in.h>
 #endif
 
-#if defined(sparc) || defined(mips)
+#if defined(sparc) || defined(mips) || defined(ibm032)
 #define ALIGN
 #endif
 
@@ -134,7 +139,7 @@ m_xhalf(m, k, err)
 	register int k, *err;
 {
 	register int len;
-	register u_char *cp, *np;
+	register u_char *cp;
 	register struct mbuf *m0;
 
 	len = m->m_len;
@@ -541,8 +546,8 @@ bpf_validate(f, len)
 		/*
 		 * Check for constant division by 0.
 		 */
-		if (p->code == BPF_ALU|BPF_DIV|BPF_K && p->k == 0)
-			return;
+		if (p->code == (BPF_ALU|BPF_DIV|BPF_K) && p->k == 0)
+			return 0;
 	}
 	return BPF_CLASS(f[len - 1].code) == BPF_RET;
 }
