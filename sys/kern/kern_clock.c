@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_clock.c	7.30 (Berkeley) 03/04/93
+ *	@(#)kern_clock.c	7.31 (Berkeley) 04/20/93
  */
 
 #include <sys/param.h>
@@ -45,7 +45,6 @@
 
 #ifdef GPROF
 #include <sys/gmon.h>
-extern u_short *kcount;
 #endif
 
 #define ADJTIME		/* For now... */
@@ -411,8 +410,10 @@ statclock(frame)
 		g = &_gmonparam;
 		if (g->state == GMON_PROF_ON) {
 			i = CLKF_PC(frame) - g->lowpc;
-			if (i < g->textsize)
-				kcount[i / (HISTFRACTION * sizeof(*kcount))]++;
+			if (i < g->textsize) {
+				i /= HISTFRACTION * sizeof(*g->kcount);
+				g->kcount[i]++;
+			}
 		}
 #endif
 		if (--pscnt > 0)
