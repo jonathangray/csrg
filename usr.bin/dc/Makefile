@@ -1,5 +1,5 @@
 #
-#	@(#)Makefile	5.2	(Berkeley)	87/06/18
+#	@(#)Makefile	5.3	(Berkeley)	87/06/18
 #
 DESTDIR=
 SRCS=	dc.c dc.h
