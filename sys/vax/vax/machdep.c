@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)machdep.c	7.10 (Berkeley) 12/10/87
+ *	@(#)machdep.c	7.9.1.2 (Berkeley) 12/15/87
  */
 
 #include "reg.h"
