@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sun_misc.c	8.1 (Berkeley) 06/11/93
+ *	@(#)sun_misc.c	7.6 (Berkeley) 06/18/93
  *
  * from: $Header: sun_misc.c,v 1.16 93/04/07 02:46:27 torek Exp $
  */
@@ -399,7 +399,7 @@ struct sun_mmap_args {
 	int	flags;
 	int	fd;
 	long	off;		/* not off_t! */
-	quad_t	qoff;		/* created here and fed to smmap() */
+	quad_t	qoff;		/* created here and fed to mmap() */
 };
 sun_mmap(p, uap, retval)
 	register struct proc *p;
@@ -438,7 +438,7 @@ sun_mmap(p, uap, retval)
 	/* All done, fix up fields and go. */
 	uap->flags = flags;
 	uap->qoff = (quad_t)uap->off;
-	return (smmap(p, uap, retval));
+	return (mmap(p, uap, retval));
 }
 
 #define	MC_SYNC		1
