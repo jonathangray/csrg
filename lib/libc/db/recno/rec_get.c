@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)rec_get.c	5.1 (Berkeley) 09/04/91";
+static char sccsid[] = "@(#)rec_get.c	5.2 (Berkeley) 09/11/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -43,7 +43,7 @@ static char sccsid[] = "@(#)rec_get.c	5.1 (Berkeley) 09/04/91";
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../btree/btree.h"
+#include "recno.h"
 
 /*
  * __REC_GET -- Get a record from the btree.
@@ -60,7 +60,8 @@ static char sccsid[] = "@(#)rec_get.c	5.1 (Berkeley) 09/04/91";
 int
 __rec_get(dbp, key, data, flags)
 	const DB *dbp;
-	DBT *key, *data;
+	const DBT *key;
+	DBT *data;
 	u_int flags;
 {
 	BTREE *t;
@@ -83,7 +84,7 @@ __rec_get(dbp, key, data, flags)
 			return (status);
 
 	--nrec;
-	if ((e = __rec_search(t, nrec, &exact)) == NULL)
+	if ((e = __rec_search(t, nrec, SEARCH)) == NULL)
 		return (RET_ERROR);
 
 	if (!exact) {
@@ -270,8 +271,8 @@ __rec_vmap(t, top)
 {
 	static int eof;
 	DBT data;
-	recno_t nrec;
 	caddr_t sp, ep;
+	recno_t nrec;
 	int bval;
 
 	if (eof)
