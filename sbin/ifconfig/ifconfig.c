@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)ifconfig.c	5.2 (Berkeley) 10/15/91";
+static char sccsid[] = "@(#)ifconfig.c	5.1 (Berkeley) 2/28/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -117,6 +117,12 @@ struct	cmd {
 	{ "ipdst",	NEXTARG,	setifipdst },
 	{ "snpaoffset",	NEXTARG,	setsnpaoffset },
 	{ "nsellength",	NEXTARG,	setnsellength },
+	{ "llc0",	IFF_LLC0,	setifflags } ,
+	{ "-llc0",	-IFF_LLC0,	setifflags } ,
+	{ "llc1",	IFF_LLC1,	setifflags } ,
+	{ "-llc1",	-IFF_LLC1,	setifflags } ,
+	{ "llc2",	IFF_LLC2,	setifflags } ,
+	{ "-llc2",	-IFF_LLC2,	setifflags } ,
 	{ 0,		0,		setifaddr },
 	{ 0,		0,		setifdstaddr },
 };
@@ -161,12 +167,13 @@ main(argc, argv)
 	register struct afswtch *rafp;
 
 	if (argc < 2) {
-		fprintf(stderr, "usage: ifconfig interface\n%s%s%s%s%s",
+		fprintf(stderr, "usage: ifconfig interface\n%s%s%s%s%s%s",
 		    "\t[ af [ address [ dest_addr ] ] [ up ] [ down ]",
 			    "[ netmask mask ] ]\n",
 		    "\t[ metric n ]\n",
 		    "\t[ trailers | -trailers ]\n",
-		    "\t[ arp | -arp ]\n");
+		    "\t[ arp | -arp ]\n",
+		    "\t[ llc0 | -llc0 ] [ llc1 | -llc1 ] [ llc2 | -llc2 ] \n");
 		exit(1);
 	}
 	argc--, argv++;
@@ -350,8 +357,8 @@ setsnpaoffset(val)
 }
 
 #define	IFFBITS \
-"\020\1UP\2BROADCAST\3DEBUG\4LOOPBACK\5POINTOPOINT\6NOTRAILERS\7RUNNING\
-\10NOARP\11PROMISC\12ALLMULTI\13OACTIVE\14SIMPLEX"
+"\020\1UP\2BROADCAST\3DEBUG\4LOOPBACK\5POINTOPOINT\6NOTRAILERS\7RUNNING\10NOARP\
+\11PROMISC\12ALLMULTI\13OACTIVE\14SIMPLEX\15LLC0\16LLC1\16LLC2"
 
 /*
  * Print the status of the interface.  If an address family was
