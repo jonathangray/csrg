@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsrvcache.h	7.5 (Berkeley) 07/22/92
+ *	@(#)nfsrvcache.h	7.6 (Berkeley) 02/02/93
  */
 
 /*
@@ -73,6 +73,7 @@ struct nfsrvcache {
 #define	RC_DROPIT	0
 #define	RC_REPLY	1
 #define	RC_DOIT		2
+#define	RC_CHECKIT	3
 
 /* Flag bits */
 #define	RC_LOCKED	0x01
