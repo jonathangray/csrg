@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_exit.c	8.3 (Berkeley) 09/23/93
+ *	@(#)kern_exit.c	8.4 (Berkeley) 12/13/93
  */
 
 #include <sys/param.h>
@@ -386,6 +386,12 @@ loop:
 				crfree(p->p_cred->pc_ucred);
 				FREE(p->p_cred, M_SUBPROC);
 			}
+
+			/*
+			 * Release reference to text vnode
+			 */
+			if (p->p_textvp)
+				vrele(p->p_textvp);
 
 			/*
 			 * Finally finished with old proc entry.
