@@ -29,7 +29,7 @@ All rights reserved.
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 
-    @(#)README	1.1 (Berkeley) 03/07/91
+    @(#)README	5.1 (Berkeley) 03/07/91
 
 -mdoc stuff
 	doc-* files are unstripped tmac.doc-* files
