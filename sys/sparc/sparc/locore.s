@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)locore.s	8.3 (Berkeley) 09/23/93
+ *	@(#)locore.s	8.4 (Berkeley) 12/10/93
  *
  * from: $Header: locore.s,v 1.51 93/04/21 06:19:37 torek Exp $
  */
