@@ -1,4 +1,4 @@
-/* @(#)data.c	4.2 (Berkeley) 10/05/82 */
+/* @(#)data.c	4.3 (Berkeley) 06/30/83 */
 #include <stdio.h>
 #include <sys/param.h>
 char	_sibuf[MAXBSIZE];
