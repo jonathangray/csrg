@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)inode.h	8.5 (Berkeley) 07/08/94
+ *	@(#)inode.h	8.6 (Berkeley) 03/21/95
  */
 
 #include <ufs/ufs/dinode.h>
