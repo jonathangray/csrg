@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)envelope.c	8.3 (Berkeley) 07/13/93";
+static char sccsid[] = "@(#)envelope.c	8.4 (Berkeley) 07/16/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -101,6 +101,7 @@ dropenvelope(e)
 	register ENVELOPE *e;
 {
 	bool queueit = FALSE;
+	bool saveit = bitset(EF_FATALERRS, e->e_flags);
 	register ADDRESS *q;
 	char *id = e->e_id;
 	char buf[MAXLINE];
@@ -138,6 +139,15 @@ dropenvelope(e)
 	{
 		if (bitset(QQUEUEUP, q->q_flags))
 			queueit = TRUE;
+		if (!bitset(QDONTSEND, q->q_flags) &&
+		    bitset(QBADADDR, q->q_flags))
+		{
+			if (q->q_owner == NULL &&
+			    strcmp(e->e_from.q_paddr, "<>") != 0)
+				(void) sendtolist(e->e_from.q_paddr, NULL,
+						  &e->e_errorqueue, e);
+			saveit = TRUE;
+		}
 	}
 
 	/*
@@ -148,16 +158,14 @@ dropenvelope(e)
 		/* nothing to do */ ;
 	else if (curtime() > e->e_ctime + TimeOuts.to_q_return)
 	{
-		if (!bitset(EF_TIMEOUT, e->e_flags))
-		{
-			(void) sprintf(buf, "Cannot send message for %s",
-				pintvl(TimeOuts.to_q_return, FALSE));
-			if (e->e_message != NULL)
-				free(e->e_message);
-			e->e_message = newstr(buf);
-			message(buf);
-		}
-		e->e_flags |= EF_TIMEOUT|EF_CLRQUEUE;
+		(void) sprintf(buf, "Cannot send message for %s",
+			pintvl(TimeOuts.to_q_return, FALSE));
+		if (e->e_message != NULL)
+			free(e->e_message);
+		e->e_message = newstr(buf);
+		message(buf);
+		e->e_flags |= EF_CLRQUEUE;
+		saveit = TRUE;
 		fprintf(e->e_xfp, "Message could not be delivered for %s\n",
 			pintvl(TimeOuts.to_q_return, FALSE));
 		fprintf(e->e_xfp, "Message will be deleted from queue\n");
@@ -181,7 +189,8 @@ dropenvelope(e)
 				free(e->e_message);
 			e->e_message = newstr(buf);
 			message(buf);
-			e->e_flags |= EF_WARNING|EF_TIMEOUT;
+			e->e_flags |= EF_WARNING;
+			saveit = TRUE;
 		}
 		fprintf(e->e_xfp,
 			"Warning: message still undelivered after %s\n",
@@ -211,8 +220,7 @@ dropenvelope(e)
 	**  Arrange to send error messages if there are fatal errors.
 	*/
 
-	if (bitset(EF_FATALERRS|EF_TIMEOUT, e->e_flags) &&
-	    e->e_errormode != EM_QUIET)
+	if (saveit && e->e_errormode != EM_QUIET)
 		savemail(e);
 
 	/*
@@ -227,6 +235,11 @@ dropenvelope(e)
 		if (e->e_df != NULL)
 			xunlink(e->e_df);
 		xunlink(queuename(e, 'q'));
+
+#ifdef LOG
+		if (LogLevel > 10)
+			syslog(LOG_INFO, "%s: done", id);
+#endif
 	}
 	else if (queueit || !bitset(EF_INQUEUE, e->e_flags))
 	{
@@ -246,11 +259,6 @@ dropenvelope(e)
 		(void) xfclose(e->e_dfp, "dropenvelope", e->e_df);
 	e->e_dfp = NULL;
 	e->e_id = e->e_df = NULL;
-
-#ifdef LOG
-	if (LogLevel > 74)
-		syslog(LOG_INFO, "%s: done", id);
-#endif /* LOG */
 }
 /*
 **  CLEARENVELOPE -- clear an envelope without unlocking
