@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_qe.c	7.19 (Berkeley) 12/16/90
+ *	@(#)if_qe.c	7.20 (Berkeley) 03/28/91
  */
 
 /* from  @(#)if_qe.c	1.15	(ULTRIX)	4/16/86 */
@@ -673,6 +673,7 @@ qerint(unit)
 {
 	register struct qe_softc *sc = &qe_softc[unit];
 	register struct qe_ring *rp;
+	register int nrcv = 0;
 	int len, status1, status2;
 	int bufaddr;
 
@@ -689,6 +690,26 @@ qerint(unit)
 	 * doubled that to 8.
 	 *
 	 */
+	while (sc->rring[sc->rindex].qe_status1 == QE_NOTYET && nrcv < NRCV) {
+		/*
+		 * We got an interrupt but did not find an input packet
+		 * where we expected one to be, probably because the ring
+		 * was overrun.
+		 * We search forward to find a valid packet and start
+		 * processing from there.  If no valid packet is found it
+		 * means we processed all the packets during a previous
+		 * interrupt and that the QE_RCV_INT bit was set while
+		 * we were processing one of these earlier packets.  In
+		 * this case we can safely ignore the interrupt (by dropping
+		 * through the code below).
+		 */
+		sc->rindex = (sc->rindex + 1) % NRCV;
+		nrcv++;
+	}
+	if (nrcv && nrcv < NRCV)
+		log(LOG_ERR, "qe%d: ring overrun, resync'd by skipping %d\n",
+		    unit, nrcv);
+
 	for( ; sc->rring[sc->rindex].qe_status1 != QE_NOTYET ; sc->rindex = ++sc->rindex % NRCV ){
 		rp = &sc->rring[sc->rindex];
 		status1 = rp->qe_status1;
