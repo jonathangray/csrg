@@ -1,4 +1,4 @@
-.\"	@(#)Cover	1.5 (Berkeley) 01/26/94
+.\"	@(#)Cover	1.6 (Berkeley) 03/25/94
 .\" use deqn -Plz Cover | psroff -ms -Plz
 .\"
 .EQ
