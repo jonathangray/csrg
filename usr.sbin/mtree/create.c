@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)create.c	5.12 (Berkeley) 05/25/90";
+static char sccsid[] = "@(#)create.c	5.13 (Berkeley) 06/25/90";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -61,6 +61,7 @@ cwalk()
 	gid_t gid;
 	mode_t mode;
 	int tabs, dsort();
+	char *argv[2];
 	char curp[MAXPATHLEN], *inotype(), *getlogin(), *rlink();
 
 	if (!getwd(curp)) {
@@ -71,7 +72,9 @@ cwalk()
 	(void)printf("#\t  fs: %s\n#\t  by: %s\n#\tdate: %s\n",
 	    curp, getlogin(), ctime(&clock));
 
-	if (!(t = ftsopen(".", ftsoptions, dsort))) {
+	argv[0] = ".";
+	argv[1] = (char *)NULL;
+	if (!(t = ftsopen(argv, ftsoptions, dsort))) {
 		(void)fprintf(stderr,
 		    "mtree: ftsopen: %s.\n", strerror(errno));
 		exit(1);
