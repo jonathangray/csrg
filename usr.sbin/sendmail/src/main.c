@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	6.2 (Berkeley) 01/01/93";
+static char sccsid[] = "@(#)main.c	6.3 (Berkeley) 01/01/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -720,10 +720,7 @@ main(argc, argv, envp)
 			}
 			*p = '\0';
 			if (invalidaddr(p + 1))
-			{
-				printf("Invalid control characters in address\n");
 				continue;
-			}
 			do
 			{
 				extern char **prescan();
