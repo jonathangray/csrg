@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)news_compat.c	8.1 (Berkeley) 06/11/93
+ *	@(#)news_compat.c	8.2 (Berkeley) 05/14/95
  *
  * from: $Hdr: sun_misc.c,v 1.12 92/07/12 13:26:10 torek Exp $
  */
@@ -126,7 +126,7 @@ sun_getdents(p, uap, retval)
 		return (EINVAL);
 	buflen = min(MAXBSIZE, uap->nbytes);
 	buf = malloc(buflen, M_TEMP, M_WAITOK);
-	VOP_LOCK(vp);
+	vn_lock(vp, LK_EXCLUSIVE | LK_RETRY, p)
 	off = fp->f_offset;
 again:
 	aiov.iov_base = buf;
@@ -182,7 +182,7 @@ again:
 eof:
 	*retval = uap->nbytes - resid;
 out:
-	VOP_UNLOCK(vp);
+	VOP_UNLOCK(vp, 0, p);
 	free(buf, M_TEMP);
 	return (error);
 }
