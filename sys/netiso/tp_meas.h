@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_meas.h	7.5 (Berkeley) 05/06/91
+ *	@(#)tp_meas.h	7.6 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -91,4 +91,4 @@ extern struct tp_Meas tp_Meas[];
 #define TPtime_open_X		0x28 /* xtd format */
 #define TPtime_close		0x09
 
-#endif TP_PERF_MEAS
+#endif /* TP_PERF_MEAS */
