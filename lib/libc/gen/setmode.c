@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)setmode.c	5.5 (Berkeley) 02/23/91";
+static char sccsid[] = "@(#)setmode.c	5.6 (Berkeley) 05/27/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -42,6 +42,7 @@ static char sccsid[] = "@(#)setmode.c	5.5 (Berkeley) 02/23/91";
 #include <stdio.h>
 #endif
 #include <stdlib.h>
+#include <ctype.h>
 
 #define	SET_LEN	6		/* initial # of bitcmd struct to malloc */
 #define	SET_LEN_INCR 4		/* # of bitcmd structs to add as needed */
