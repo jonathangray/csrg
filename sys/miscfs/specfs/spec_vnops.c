@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)spec_vnops.c	7.40 (Berkeley) 11/05/91
+ *	@(#)spec_vnops.c	7.41 (Berkeley) 02/04/92
  */
 
 #include <sys/param.h>
@@ -104,14 +104,14 @@ struct vnodeops spec_vnodeops = {
 /*
  * Trivial lookup routine that always fails.
  */
-spec_lookup(vp, ndp, p)
-	struct vnode *vp;
-	struct nameidata *ndp;
-	struct proc *p;
+int
+spec_lookup(dvp, vpp, cnp)
+	struct vnode *dvp;
+	struct vnode **vpp;
+	struct componentname *cnp;
 {
 
-	ndp->ni_dvp = vp;
-	ndp->ni_vp = NULL;
+	*vpp = NULL;
 	return (ENOTDIR);
 }
 
