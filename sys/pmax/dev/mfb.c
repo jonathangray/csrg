@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mfb.c	8.1 (Berkeley) 06/10/93
+ *	@(#)mfb.c	8.2 (Berkeley) 06/02/95
  */
 
 /* 
@@ -224,6 +224,7 @@ mfbclose(dev, flag)
 /*ARGSUSED*/
 mfbioctl(dev, cmd, data, flag, p)
 	dev_t dev;
+	u_long cmd;
 	caddr_t data;
 	struct proc *p;
 {
