@@ -1,12 +1,15 @@
-/*
- * Copyright (c) 1980 Regents of the University of California.
- * All rights reserved.  The Berkeley software License Agreement
- * specifies the terms and conditions for redistribution.
+/*-
+ * Copyright (c) 1980, 1992 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)cmdtab.c	5.2 (Berkeley) 07/23/92";
-#endif not lint
+static char sccsid[] = "@(#)cmdtab.c	5.3 (Berkeley) 07/23/92";
+#endif /* not lint */
 
 #include "systat.h"
 #include "extern.h"
