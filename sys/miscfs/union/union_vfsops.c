@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_vfsops.c	2.2 (Berkeley) 02/10/94
+ *	@(#)union_vfsops.c	8.1 (Berkeley) 02/10/94
  */
 
 /*
