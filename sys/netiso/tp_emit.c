@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_emit.c	7.16 (Berkeley) 10/11/92
+ *	@(#)tp_emit.c	7.17 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -388,7 +388,7 @@ tp_emit(dutype,	tpcb, seq, eot, data)
 				hdr->tpdu_seqeotX = htonl(seqeotX.s_seqeot);
 #else
 				hdr->tpdu_XAKseqX = seq;
-#endif BYTE_ORDER
+#endif /* BYTE_ORDER */
 			} else {
 				hdr->tpdu_XAKseq = seq;
 			}
@@ -409,7 +409,7 @@ tp_emit(dutype,	tpcb, seq, eot, data)
 #else
 				hdr->tpdu_XPDseqX = seq;
 				hdr->tpdu_XPDeotX = 1; /* always 1 for XPD tpdu */
-#endif BYTE_ORDER
+#endif /* BYTE_ORDER */
 			} else {
 				hdr->tpdu_XPDseq = seq;
 				hdr->tpdu_XPDeot = 1; /* always 1 for XPD tpdu */
@@ -442,7 +442,7 @@ tp_emit(dutype,	tpcb, seq, eot, data)
 #else
 				hdr->tpdu_DTseqX = seq;
 				hdr->tpdu_DTeotX = eot;
-#endif BYTE_ORDER
+#endif /* BYTE_ORDER */
 			} else if (tpcb->tp_class == TP_CLASS_0) {
 				IFDEBUG(D_EMIT)
 					printf("DT tpdu: class 0 m 0x%x hdr 0x%x\n", m, hdr);
@@ -549,7 +549,7 @@ tp_emit(dutype,	tpcb, seq, eot, data)
 				hdr->tpdu_cdt = 0; 
 				hdr->tpdu_AKseqX = seq;
 				hdr->tpdu_AKcdtX = tpcb->tp_lcredit;
-#endif BYTE_ORDER
+#endif /* BYTE_ORDER */
 			} else {
 				hdr->tpdu_AKseq = seq;
 				hdr->tpdu_AKcdt = tpcb->tp_lcredit;
