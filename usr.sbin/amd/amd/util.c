@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)util.c	5.4 (Berkeley) 02/09/92
+ *	@(#)util.c	5.5 (Berkeley) 05/31/92
  *
- * $Id: util.c,v 5.2.2.1 1992/02/09 15:09:11 jsp beta $
+ * $Id: util.c,v 5.2.2.2 1992/03/07 17:52:06 jsp Exp $
  *
  */
 
@@ -122,7 +122,7 @@ int qc;
 		 * skip to split char
 		 */
 		while (*s && (ch == ' ' ? (isascii(*s) && isspace(*s)) : *s == ch))
-				s++;
+				*s++ = '\0';
 
 		/*
 		 * End of string?
