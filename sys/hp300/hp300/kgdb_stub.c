@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kgdb_stub.c	7.2 (Berkeley) 05/25/90
+ *	@(#)kgdb_stub.c	7.3 (Berkeley) 06/22/90
  */
 
 /*
@@ -388,7 +388,7 @@ computeSignal(int type)
 	case T_COPERR:
 		sigval = SIGFPE;
 		break;
-	case T_AST:
+	case T_ASTFLT:
 		sigval = SIGINT;
 		break;
 	case T_TRAP15:
