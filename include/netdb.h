@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)netdb.h	5.12 (Berkeley) 02/22/91
+ *	@(#)netdb.h	5.13 (Berkeley) 02/24/91
  */
 
 #define	_PATH_HEQUIV	"/etc/hosts.equiv"
@@ -94,8 +94,8 @@ void		endhostent __P((void));
 void		endnetent __P((void));
 void		endprotoent __P((void));
 void		endservent __P((void));
-struct hostent	*gethostbyaddr __P((const void *, int, int));
-struct hostent	*gethostbyname __P((const char *));
+struct hostent	*gethostbyaddr __P((const char *, int, int));
+struct hostent	*gethostbyname __P((char *));
 /* struct hostent *gethostent __P((void)); */
 struct netent	*getnetbyaddr __P((long, int)); /* u_long? */
 struct netent	*getnetbyname __P((const char *));
