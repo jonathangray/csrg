@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)map.c	6.12 (Berkeley) 05/01/93";
+static char sccsid[] = "@(#)map.c	6.13 (Berkeley) 05/01/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -42,7 +42,6 @@ static char sccsid[] = "@(#)map.c	6.12 (Berkeley) 05/01/93";
 #include <ndbm.h>
 #endif
 #if defined(HASH_MAP) || defined(BTREE_MAP)
-#undef __P
 #include <db.h>
 #endif
 #ifdef NIS_MAP
