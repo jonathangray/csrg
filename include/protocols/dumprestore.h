@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dumprestore.h	5.7 (Berkeley) 07/23/91
+ *	@(#)dumprestore.h	5.8 (Berkeley) 06/20/92
  */
 
 #ifndef _DUMPRESTORE_H_
@@ -97,7 +97,8 @@ union u_spcl {
 /*
  * flag values
  */
-#define DR_NEWHEADER	1	/* new format tape header */
+#define DR_NEWHEADER	0x0001	/* new format tape header */
+#define DR_NEWINODEFMT	0x0002	/* new format inodes on tape */
 
 #define	DUMPOUTFMT	"%-16s %c %s"		/* for printf */
 						/* name, level, ctime(date) */
