@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_cons.c	7.8 (Berkeley) 05/09/91
+ *	@(#)tp_cons.c	7.9 (Berkeley) 07/18/91
  */
 
 /***********************************************************
@@ -157,7 +157,7 @@ tpcons_ctlinput(cmd, siso, isop)
 	case PRC_CONS_SEND_DONE:
 		if( isop->isop_socket ) { /* tp 0 only */
 			register struct tp_pcb *tpcb = 
-				(struct tp_pcb *)isop->isop_socket->so_tpcb;
+				(struct tp_pcb *)isop->isop_socket->so_pcb;
 			struct 	tp_event 		E;
 			int 					error = 0;
 
