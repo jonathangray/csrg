@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)canfield.c	5.10 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)canfield.c	5.11 (Berkeley) 02/28/91";
 #endif /* not lint */
 
 /*
@@ -1626,24 +1626,9 @@ finish()
 }
 
 /*
- * Field an interrupt.
- */
-askquit()
-{
-	move(msgrow, msgcol);
-	printw("Really wish to quit?    ");
-	do {
-		getcmd(moverow, movecol, "y or n?");
-	} while (srcpile != 'y' && srcpile != 'n');
-	clearmsg();
-	if (srcpile == 'y')
-		cleanup();
-	signal(SIGINT, askquit);
-}
-
-/*
  * procedure to clean up and exit
  */
+void
 cleanup()
 {
 
@@ -1661,6 +1646,23 @@ cleanup()
 	endwin();
 	exit(0);
 	/* NOTREACHED */
+}
+
+/*
+ * Field an interrupt.
+ */
+void
+askquit()
+{
+	move(msgrow, msgcol);
+	printw("Really wish to quit?    ");
+	do {
+		getcmd(moverow, movecol, "y or n?");
+	} while (srcpile != 'y' && srcpile != 'n');
+	clearmsg();
+	if (srcpile == 'y')
+		cleanup();
+	signal(SIGINT, askquit);
 }
 
 /*
