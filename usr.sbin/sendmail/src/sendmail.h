@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.30 (Berkeley) 12/10/93
+ *	@(#)sendmail.h	8.31 (Berkeley) 12/10/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.30		12/10/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.31		12/10/93";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -743,9 +743,9 @@ struct prival
 **  Flags passed to safefile.
 */
 
-#define SF_ANYFILE		0	/* no special restrictions */
-#define SF_MUSTOWN		0x0001	/* user must own this file */
-#define SF_NOSLINK		0x0002	/* file cannot be a symbolic link */
+#define SFF_ANYFILE		0	/* no special restrictions */
+#define SFF_MUSTOWN		0x0001	/* user must own this file */
+#define SFF_NOSLINK		0x0002	/* file cannot be a symbolic link */
 
 
 /*
