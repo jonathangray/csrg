@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)xutil.c	5.5 (Berkeley) 05/31/92
+ *	@(#)xutil.c	5.6 (Berkeley) 05/22/93
  *
  * $Id: xutil.c,v 5.2.2.3 1992/03/07 10:36:09 jsp Exp $
  *
@@ -45,6 +45,9 @@
 #ifdef HAS_SYSLOG
 #include <syslog.h>
 #endif /* HAS_SYSLOG */
+#ifdef HAS_STRERROR
+#include <string.h>
+#endif
 
 FILE *logfp = stderr;		/* Log errors to stderr initially */
 #ifdef HAS_SYSLOG
@@ -177,18 +180,24 @@ static void expand_error(f, e)
 char *f;
 char *e;
 {
+#ifndef HAS_STRERROR
 	extern int sys_nerr;
 	extern char *sys_errlist[];
+#endif
 	char *p;
 	int error = errno;
 
 	for (p = f; *e = *p; e++, p++) {
 		if (p[0] == '%' && p[1] == 'm') {
 			char *errstr;
+#ifdef HAS_STRERROR
+			errstr = strerror(error);
+#else
 			if (error < 0 || error >= sys_nerr)
 				errstr = 0;
 			else
 				errstr = sys_errlist[error];
+#endif
 			if (errstr)
 				strcpy(e, errstr);
 			else
