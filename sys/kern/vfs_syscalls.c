@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	7.104 (Berkeley) 03/08/93
+ *	@(#)vfs_syscalls.c	7.105 (Berkeley) 03/28/93
  */
 
 #include <sys/param.h>
@@ -1468,7 +1468,7 @@ utimes(p, uap, retval)
 	register struct vnode *vp;
 	struct timeval tv[2];
 	struct vattr vattr;
-	int s, error;
+	int error;
 	struct nameidata nd;
 
 	VATTR_NULL(&vattr);
