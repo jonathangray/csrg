@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.4 (Berkeley) 05/11/90
+#	@(#)Makefile	5.5 (Berkeley) 01/14/91
 
 PROG=	w
 SRCS=	w.c attime.c proc_compare.c
