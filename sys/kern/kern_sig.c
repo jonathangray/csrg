@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sig.c	8.11 (Berkeley) 12/05/94
+ *	@(#)kern_sig.c	8.12 (Berkeley) 01/09/95
  */
 
 #define	SIGPROP		/* include signal properties table */
@@ -624,7 +624,7 @@ void
 trapsignal(p, signum, code)
 	struct proc *p;
 	register int signum;
-	u_int code;
+	u_long code;
 {
 	register struct sigacts *ps = p->p_sigacts;
 	int mask;
@@ -1194,14 +1194,12 @@ out:
  * Nonexistent system call-- signal process (may want to handle it).
  * Flag error in case process won't see signal immediately (blocked or ignored).
  */
-struct nosys_args {
-	int	dummy;
-};
 /* ARGSUSED */
+int
 nosys(p, args, retval)
 	struct proc *p;
-	struct nosys_args *args;
-	int *retval;
+	void *args;
+	register_t *retval;
 {
 
 	psignal(p, SIGSYS);
