@@ -30,9 +30,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	5.1 (Berkeley) 02/25/91
+ *	@(#)pathnames.h	5.2 (Berkeley) 07/16/92
  */
 
 #define	SERVER_KEYDIR	"/etc/kerberosIV/register_keys"
-#define	CLIENT_KEYFILE	"/.update.key"
+#define	CLIENT_KEYFILE	"/etc/kerberosIV/.update.key"
 #define	_PATH_KPASSWD	"/usr/bin/passwd"
