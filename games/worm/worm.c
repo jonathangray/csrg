@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)worm.c	5.7 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)worm.c	5.8 (Berkeley) 02/28/91";
 #endif /* not lint */
 
 /*
@@ -78,10 +78,12 @@ int start_len = LENGTH;
 char lastch;
 char outbuf[BUFSIZ];
 
+void leave(), wake(), suspend();
+
 main(argc, argv)
-char **argv;
+	int argc;
+	char **argv;
 {
-	int leave(), wake(), suspend();
 	char ch;
 
 	if (argc == 2)
@@ -157,12 +159,14 @@ char chr;
 	waddch(tv, chr);
 }
 
+void
 leave()
 {
 	endwin();
 	exit(0);
 }
 
+void
 wake()
 {
 	signal(SIGALRM, wake);
@@ -269,6 +273,7 @@ crash()
 	leave();
 }
 
+void
 suspend()
 {
 	char *sh;
