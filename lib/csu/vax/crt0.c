@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)crt0.c	5.9 (Berkeley) 05/27/91";
+static char sccsid[] = "@(#)crt0.c	5.10 (Berkeley) 07/03/91";
 #endif /* not lint */
 
 /*
@@ -76,6 +76,7 @@ start()
 	register char **targv;
 	register char **argv;
 	extern int errno;
+	extern void _mcleanup();
 
 #ifdef lint
 	kfp = 0;
@@ -106,22 +107,12 @@ asm("eprol:");
 #endif paranoid
 
 #ifdef MCRT0
+	atexit(_mcleanup);
 	monstartup(&eprol, &etext);
 #endif MCRT0
 	errno = 0;
 	exit(main(kfp->kargc, argv, environ));
 }
-
-#ifdef MCRT0
-/*ARGSUSED*/
-exit(code)
-	register int code;
-{
-	_mcleanup();
-	_cleanup();
-	_exit(code);
-}
-#endif MCRT0
 
 #ifdef CRT0
 /*
