@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_syscalls.c	7.31 (Berkeley) 05/06/92
+ *	@(#)nfs_syscalls.c	7.32 (Berkeley) 07/10/92
  */
 
 #include "param.h"
@@ -97,12 +97,13 @@ static int nfs_asyncdaemon[NFS_MAXASYNCDAEMON];
 /*
  * Get file handle system call
  */
+struct getfh_args {
+	char	*fname;
+	fhandle_t *fhp;
+};
 getfh(p, uap, retval)
 	struct proc *p;
-	register struct args {
-		char	*fname;
-		fhandle_t *fhp;
-	} *uap;
+	register struct getfh_args *uap;
 	int *retval;
 {
 	register struct vnode *vp;
@@ -141,12 +142,13 @@ static struct nfssvc_sock nfssvc_sockhead;
  * - remains in the kernel as an nfsd
  * - remains in the kernel as an nfsiod
  */
+struct nfssvc_args {
+	int flag;
+	caddr_t argp;
+};
 nfssvc(p, uap, retval)
 	struct proc *p;
-	register struct args {
-		int flag;
-		caddr_t argp;
-	} *uap;
+	register struct nfssvc_args *uap;
 	int *retval;
 {
 	struct nameidata nd;
