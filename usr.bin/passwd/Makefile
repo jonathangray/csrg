@@ -1,4 +1,4 @@
-#	@(#)Makefile	8.1 (Berkeley) 06/06/93
+#	@(#)Makefile	5.12 (Berkeley) 07/19/93
 
 PROG=	passwd
 SRCS=	passwd.c
@@ -9,5 +9,6 @@ CFLAGS+=-I${.CURDIR}
 #LDADD=	-lkrb -ldes
 BINOWN=	root
 BINMODE=4555
+INSTALLFLAGS=-fschg
 
 .include <bsd.prog.mk>
