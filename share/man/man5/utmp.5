@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)utmp.5	8.2 (Berkeley) 03/17/94
+.\"     @(#)utmp.5	8.3 (Berkeley) 06/01/94
 .\"
 .Dd 
 .Dt UTMP 5
@@ -151,6 +151,7 @@ In the event of a date change, a shutdown or reboot, the
 following items are logged in the
 .Nm wtmp
 file.
+.ne 1i
 .Pp
 .Bl -tag -width shutdownxx -compact
 .It Li reboot
