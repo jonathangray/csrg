@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)socketvar.h	7.18 (Berkeley) 11/19/91
+ *	@(#)socketvar.h	7.19 (Berkeley) 02/05/92
  */
 
 /*
@@ -92,7 +92,7 @@ struct socket {
 #define	SB_NOINTR	0x40		/* operations not interruptible */
 
 	caddr_t	so_tpcb;		/* Wisc. protocol control block XXX */
-	void	(*so_upcall)(		/* so, so->so_upcallarg, waitf */);
+	void	(*so_upcall) __P((struct socket *so, caddr_t arg, int waitf));
 	caddr_t	so_upcallarg;		/* Arg for above */
 };
 
