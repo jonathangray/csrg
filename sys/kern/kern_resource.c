@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_resource.c	7.24 (Berkeley) 04/20/93
+ *	@(#)kern_resource.c	7.24 (Berkeley) 05/01/93
  */
 
 #include <sys/param.h>
@@ -319,6 +319,13 @@ dosetrlimit(p, which, limp)
 			limp->rlim_cur = maxfiles;
 		if (limp->rlim_max > maxfiles)
 			limp->rlim_max = maxfiles;
+		break;
+
+	case RLIMIT_NPROC:
+		if (limp->rlim_cur > maxproc)
+			limp->rlim_cur = maxproc;
+		if (limp->rlim_max > maxproc)
+			limp->rlim_max = maxproc;
 		break;
 	}
 	*alimp = *limp;
