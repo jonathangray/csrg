@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef QUEUE
-static char sccsid[] = "@(#)queue.c	8.69 (Berkeley) 03/21/95 (with queueing)";
+static char sccsid[] = "@(#)queue.c	8.70 (Berkeley) 03/21/95 (with queueing)";
 #else
-static char sccsid[] = "@(#)queue.c	8.69 (Berkeley) 03/21/95 (without queueing)";
+static char sccsid[] = "@(#)queue.c	8.70 (Berkeley) 03/21/95 (without queueing)";
 #endif
 #endif /* not lint */
 
