@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recvjob.c	5.11 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)recvjob.c	5.12 (Berkeley) 03/02/91";
 #endif /* not lint */
 
 /*
@@ -54,12 +54,13 @@ char	*ddev;			/* disk device (for checking free space) */
 int	dfd;			/* file system device descriptor */
 
 char	*find_dev();
+void	rcleanup();
 
 recvjob()
 {
 	struct stat stb;
 	char *bp = pbuf;
-	int status, rcleanup();
+	int status;
 
 	/*
 	 * Perform lookup for printer name or abbreviation
@@ -311,6 +312,7 @@ read_number(fn)
 /*
  * Remove all the files associated with the current job being transfered.
  */
+void
 rcleanup()
 {
 
