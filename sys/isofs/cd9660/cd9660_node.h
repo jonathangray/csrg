@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cd9660_node.h	8.5 (Berkeley) 02/22/95
+ *	@(#)cd9660_node.h	8.6 (Berkeley) 05/14/95
  */
 
 /*
@@ -84,7 +84,7 @@ struct iso_node {
 	doff_t	i_diroff;	/* offset in dir, where we found last entry */
 	doff_t	i_offset;	/* offset of free space in directory */
 	ino_t	i_ino;		/* inode number of found directory */
-	pid_t	i_lockholder, i_lockwaiter;
+	struct	lock i_lock;	/* node lock */
 
 	long iso_extent;	/* extent of file */
 	long i_size;
@@ -97,8 +97,6 @@ struct iso_node {
 #define	i_back		i_chain[1]
 
 /* flags */
-#define	IN_LOCKED	0x0001		/* inode is locked */
-#define	IN_WANTED	0x0002		/* some process waiting on lock */
 #define	IN_ACCESS	0x0020		/* inode access time to be updated */
 
 #define VTOI(vp) ((struct iso_node *)(vp)->v_data)
