@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	6.40 (Berkeley) 04/09/93 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.41 (Berkeley) 04/13/93 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	6.40 (Berkeley) 04/09/93 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.41 (Berkeley) 04/13/93 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -150,7 +150,11 @@ smtp(e)
 	{
 		/* arrange for backout */
 		if (setjmp(TopFrame) > 0 && InChild)
+		{
+			QuickAbort = FALSE;
+			SuprErrs = TRUE;
 			finis();
+		}
 		QuickAbort = FALSE;
 		HoldErrs = FALSE;
 		LogUsrErrs = FALSE;
@@ -291,7 +295,11 @@ smtp(e)
 			{
 				/* this failed -- undo work */
 				if (InChild)
+				{
+					QuickAbort = FALSE;
+					SuprErrs = TRUE;
 					finis();
+				}
 				break;
 			}
 			QuickAbort = TRUE;
