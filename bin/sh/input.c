@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)input.c	5.7 (Berkeley) 07/15/92";
+static char sccsid[] = "@(#)input.c	5.8 (Berkeley) 07/15/92";
 #endif /* not lint */
 
 /*
@@ -196,7 +196,7 @@ preadbuffer() {
 retry:
 	p = parsenextc = parsefile->buf;
 	if (parsefile->fd == 0 && el) {
-		char *rl_cp;
+		const char *rl_cp;
 		int len;
 
 		rl_cp = el_gets(el, &len);
