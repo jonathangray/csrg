@@ -1,6 +1,6 @@
 #!/bin/sh -
 #
-# Copyright (c) 1992, 1993
+# Copyright (c) 1992, 1993, 1994
 #	The Regents of the University of California.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -31,9 +31,9 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# from: $NetBSD: vnode_if.sh,v 1.4.2.1 1994/07/15 22:32:01 cgd Exp $
+# from: $NetBSD: vnode_if.sh,v 1.7 1994/08/25 03:04:28 cgd Exp $
 #
-SCRIPT_ID='@(#)vnode_if.sh	8.4 (Berkeley) 08/11/94'
+SCRIPT_ID='@(#)vnode_if.sh	8.5 (Berkeley) 10/09/94'
 
 # Script to produce VFS front-end sugar.
 #
@@ -111,11 +111,9 @@ awk_parser='
 		i++;
 	} else
 		willrele[argc] = 0;
-	argtype[argc] = "";
+	argtype[argc] = $i; i++;
 	while (i < NF) {
-		argtype[argc] = argtype[argc]$i;
-		if (substr($i, length($i), 1) != "*")
-			argtype[argc] = argtype[argc]" ";
+		argtype[argc] = argtype[argc]" "$i;
 		i++;
 	}
 	argname[argc] = $i;
@@ -135,6 +133,8 @@ warning="
  */
 "
 
+# Get rid of ugly spaces
+space_elim='s:\([^/]\*\) :\1:g'
 
 #
 # Redirect stdout to the H file.
@@ -155,9 +155,9 @@ sed -e "$sed_prep" $src | $awk "$toupper"'
 function doit() {
 	# Declare arg struct, descriptor.
 	printf("\nstruct %s_args {\n", name);
-	printf("\tstruct vnodeop_desc *a_desc;\n");
+	printf("\tstruct vnodeop_desc * a_desc;\n");
 	for (i=0; i<argc; i++) {
-		printf("\t%sa_%s;\n", argtype[i], argname[i]);
+		printf("\t%s a_%s;\n", argtype[i], argname[i]);
 	}
 	printf("};\n");
 	printf("extern struct vnodeop_desc %s_desc;\n", name);
@@ -169,9 +169,9 @@ function doit() {
 	}
 	printf(")\n");
 	for (i=0; i<argc; i++) {
-		printf("\t%s%s;\n", argtype[i], argname[i]);
+		printf("\t%s %s;\n", argtype[i], argname[i]);
 	}
-	printf("{\n\tstruct %s_args a;\n\n", name);
+	printf("{\n\tstruct %s_args a;\n", name);
 	printf("\ta.a_desc = VDESC(%s);\n", name);
 	for (i=0; i<argc; i++) {
 		printf("\ta.a_%s = %s;\n", argname[i], argname[i]);
@@ -193,7 +193,7 @@ END	{
 	name="vop_bwrite";
 	doit();
 }
-'"$awk_parser"
+'"$awk_parser" | sed -e "$space_elim"
 
 # End stuff
 echo '
@@ -297,7 +297,7 @@ END	{
 	name="vop_bwrite";
 	doit();
 }
-'"$awk_parser"
+'"$awk_parser" | sed -e "$space_elim"
 
 # End stuff
 echo '
