@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)collect.c	8.38 (Berkeley) 04/24/95";
+static char sccsid[] = "@(#)collect.c	8.39 (Berkeley) 04/25/95";
 #endif /* not lint */
 
 # include <errno.h>
@@ -157,10 +157,6 @@ maketemp(from)
 	istate = IS_BOL;
 	mstate = SaveFrom ? MS_HEADER : MS_UFROM;
 	CollectProgress = FALSE;
-
-	/* if transmitting binary, don't map NL to EOL */
-	if (e->e_bodytype != NULL && strcasecmp(e->e_bodytype, "8BITMIME") == 0)
-		e->e_flags |= EF_NL_NOT_EOL;
 
 	if (dbto != 0)
 	{
