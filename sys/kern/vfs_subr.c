@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	8.16 (Berkeley) 02/23/95
+ *	@(#)vfs_subr.c	8.17 (Berkeley) 03/24/95
  */
 
 /*
@@ -983,9 +983,10 @@ vgone(vp)
 		vp->v_mount = NULL;
 	}
 	/*
-	 * If special device, remove it from special device alias list.
+	 * If special device, remove it from special device alias list
+	 * if it is on one.
 	 */
-	if (vp->v_type == VBLK || vp->v_type == VCHR) {
+	if ((vp->v_type == VBLK || vp->v_type == VCHR) && vp->v_specinfo != 0) {
 		if (*vp->v_hashchain == vp) {
 			*vp->v_hashchain = vp->v_specnext;
 		} else {
