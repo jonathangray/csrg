@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ns_input.c	7.7 (Berkeley) 06/28/90
+ *	@(#)ns_input.c	7.8 (Berkeley) 06/27/91
  */
 
 #include "param.h"
@@ -242,7 +242,7 @@ u_char nsctlerrmap[PRC_NCMDS] = {
 	0,		0,		0,		0
 };
 
-idp_donosocks = 1;
+int idp_donosocks = 1;
 
 idp_ctlinput(cmd, arg)
 	int cmd;
@@ -449,8 +449,6 @@ register struct route *ro;
 {
 	if (ro->ro_rt) {RTFREE(ro->ro_rt);}
 }
-static union ns_net
-ns_zeronet;
 
 ns_watch_output(m, ifp)
 struct mbuf *m;
