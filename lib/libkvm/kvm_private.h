@@ -2,6 +2,10 @@
  * Copyright (c) 1992 The Regents of the University of California.
  * All rights reserved.
  *
+ * This code is derived from software developed by the Computer Systems
+ * Engineering group at Lawrence Berkeley Laboratory under DARPA contract
+ * BG 91-66 and contributed to Berkeley.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -30,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kvm_private.h	5.2 (Berkeley) 05/18/92
+ *	@(#)kvm_private.h	5.3 (Berkeley) 05/26/92
  */
 
 struct __kvm {
