@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)misc.c	5.13 (Berkeley) 06/27/91";
+static char sccsid[] = "@(#)misc.c	5.14 (Berkeley) 07/19/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -100,14 +100,15 @@ blkend(up)
 
 
 void
-blkpr(av)
+blkpr(fp, av)
+    FILE *fp;
     register Char **av;
 {
 
     for (; *av; av++) {
-	xprintf("%s", short2str(*av));
+	(void) fprintf(fp, "%s", short2str(*av));
 	if (av[1])
-	    xprintf(" ");
+	    (void) fprintf(fp, " ");
     }
 }
 
@@ -246,7 +247,7 @@ closem()
     register int f;
 
     for (f = 0; f < NOFILE; f++)
-	if (f != SHIN && f != SHOUT && f != SHDIAG && f != OLDSTD &&
+	if (f != SHIN && f != SHOUT && f != SHERR && f != OLDSTD &&
 	    f != FSHTTY)
 	    (void) close(f);
 }
@@ -254,10 +255,10 @@ closem()
 void
 donefds()
 {
-
     (void) close(0);
     (void) close(1);
     (void) close(2);
+
     didfds = 0;
 }
 
