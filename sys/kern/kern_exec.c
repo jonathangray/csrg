@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_exec.c	7.62 (Berkeley) 06/23/92
+ *	@(#)kern_exec.c	7.63 (Berkeley) 07/03/92
  */
 
 #include "param.h"
@@ -62,8 +62,6 @@ execve(p, uap, retval)
 	} *uap;
 	int *retval;
 {
-	USES_VOP_ACCESS;
-	USES_VOP_GETATTR;
 	register struct ucred *cred = p->p_ucred;
 	register struct filedesc *fdp = p->p_fd;
 	int na, ne, ucp, ap, cc, ssize;
