@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ucred.h	7.5 (Berkeley) 02/05/91
+ *	@(#)ucred.h	7.6 (Berkeley) 04/28/93
  */
 
 #ifndef _UCRED_H_
@@ -46,7 +46,8 @@ struct ucred {
 	gid_t	cr_groups[NGROUPS];	/* groups */
 };
 #define cr_gid cr_groups[0]
-#define NOCRED ((struct ucred *)-1)
+#define NOCRED ((struct ucred *)-1)	/* no credential available */
+#define FSCRED ((struct ucred *)-2)	/* filesystem credential */
 
 #ifdef KERNEL
 #define	crhold(cr)	(cr)->cr_ref++
