@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)scroll.c	5.8 (Berkeley) 10/26/92";
+static char sccsid[] = "@(#)scroll.c	5.9 (Berkeley) 12/30/92";
 #endif /* not lint */
 
 #include <curses.h>
@@ -53,7 +53,7 @@ scroll(win)
 #endif
 
 	if (!(win->flags & __SCROLLOK))
-		return (ERR);
+		return (CURSES_ERR);
 
 	getyx(win, oy, ox);
 	wmove(win, 0, 0);
@@ -68,5 +68,5 @@ scroll(win)
 		__TRACE("scroll: win == curscr\n");
 #endif
 	}
-	return (OK);
+	return (CURSES_OK);
 }
