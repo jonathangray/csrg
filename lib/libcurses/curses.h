@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)curses.h	5.33 (Berkeley) 05/11/93
+ *	@(#)curses.h	5.34 (Berkeley) 05/16/93
  */
 
 #ifndef _CURSES_H_
@@ -294,7 +294,7 @@ void	 __cputchar __P((int));		/* Public: backward compatibility */
 
 #ifdef _CURSES_PRIVATE
 /* Private function prototypes. */
-void	 __TRACE __P((const char *, ...));
+void	 __CTRACE __P((const char *, ...));
 u_int	 __hash __P((char *, int));
 void	 __id_subwins __P((WINDOW *));
 int	 __mvcur __P((int, int, int, int, int));
