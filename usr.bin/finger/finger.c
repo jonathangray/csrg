@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)finger.c	5.20 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)finger.c	5.21 (Berkeley) 06/24/90";
 #endif /* not lint */
 
 /*
@@ -58,7 +58,6 @@ static char sccsid[] = "@(#)finger.c	5.20 (Berkeley) 06/01/90";
 #include <sys/file.h>
 #include <stdio.h>
 #include "finger.h"
-#include "pathnames.h"
 
 time_t now;
 int lflag, sflag, mflag, pplan;
