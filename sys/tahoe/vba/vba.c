@@ -30,31 +30,31 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vba.c	7.5 (Berkeley) 06/28/90
+ *	@(#)vba.c	7.6 (Berkeley) 12/16/90
  */
 
 /*
  * Tahoe VERSAbus adapator support routines.
  */
 
-#include "param.h"
-#include "buf.h"
-#include "cmap.h"
-#include "conf.h"
+#include "sys/param.h"
+#include "sys/buf.h"
+#include "sys/cmap.h"
+#include "sys/conf.h"
 #include "dk.h"
-#include "map.h"
-#include "systm.h"
-#include "user.h"
-#include "vmparam.h"
-#include "vmmac.h"
-#include "proc.h"
-#include "syslog.h"
-#include "malloc.h"
+#include "sys/map.h"
+#include "sys/systm.h"
+#include "sys/user.h"
+#include "sys/vmparam.h"
+#include "sys/vmmac.h"
+#include "sys/proc.h"
+#include "sys/syslog.h"
+#include "sys/malloc.h"
 
-#include "../tahoe/mtpr.h"
-#include "../tahoe/pte.h"
+#include "../include/mtpr.h"
+#include "../include/pte.h"
 
-#include "../tahoevba/vbavar.h"
+#include "../vba/vbavar.h"
 
 /*
  * Allocate private page map and intermediate buffer
