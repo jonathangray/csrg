@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)unistd.h	5.13 (Berkeley) 06/17/91
+ *	@(#)unistd.h	5.14 (Berkeley) 12/06/91
  */
 
 #ifndef _UNISTD_H_
@@ -53,8 +53,6 @@
 #ifndef NULL
 #define	NULL		0	/* null pointer constant */
 #endif
-
-typedef	int ssize_t;		/* count of bytes or error indication */
 
 __BEGIN_DECLS
 void	 _exit __P((int));
