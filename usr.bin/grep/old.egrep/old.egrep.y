@@ -13,7 +13,25 @@
 %left STAR PLUS QUEST
 
 %{
-static char *sccsid = "@(#)old.egrep.y	4.6 (Berkeley) 10/07/87";
+/*-
+ * Copyright (c) 1991 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ */
+
+#ifndef lint
+char copyright[] =
+"@(#) Copyright (c) 1991 The Regents of the University of California.\n\
+ All rights reserved.\n";
+#endif /* not lint */
+
+#ifndef lint
+static char sccsid[] = "@(#)old.egrep.y	4.7 (Berkeley) 04/17/91";
+#endif /* not lint */
+
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
