@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.155 (Berkeley) 05/05/95
+ *	@(#)conf.h	8.156 (Berkeley) 05/13/95
  */
 
 /*
@@ -278,6 +278,9 @@ extern int	syslog(int, char *, ...);
 #  endif
 #  ifndef _PATH_SENDMAILPID
 #   define _PATH_SENDMAILPID	"/etc/mail/sendmail.pid"
+#  endif
+#  ifndef _PATH_HOSTS
+#   define _PATH_HOSTS		"/etc/inet/hosts"
 #  endif
 #  ifndef SYSLOG_BUFSIZE
 #   define SYSLOG_BUFSIZE	1024	/* allow full size syslog buffer */
