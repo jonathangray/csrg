@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lookup.c	7.25 (Berkeley) 02/21/91
+ *	@(#)ufs_lookup.c	7.26 (Berkeley) 02/28/91
  */
 
 #include "param.h"
@@ -152,9 +152,12 @@ ufs_lookup(vdp, ndp)
 		} else if (ndp->ni_isdotdot) {
 			IUNLOCK(pdp);
 			error = vget(vdp);
+			if (!error && lockparent && *ndp->ni_next == '\0')
+				ILOCK(pdp);
 		} else {
 			error = vget(vdp);
-			IUNLOCK(pdp);
+			if (!lockparent || error || *ndp->ni_next != '\0')
+				IUNLOCK(pdp);
 		}
 		/*
 		 * Check that the capability number did not change
@@ -163,8 +166,9 @@ ufs_lookup(vdp, ndp)
 		if (!error) {
 			if (vpid == vdp->v_id)
 				return (0);
-			else
-				iput(dp);
+			iput(dp);
+			if (lockparent && pdp != dp && *ndp->ni_next == '\0')
+				IUNLOCK(pdp);
 		}
 		ILOCK(pdp);
 		dp = pdp;
@@ -372,7 +376,7 @@ searchloop:
 	/*
 	 * Insert name into cache (as non-existent) if appropriate.
 	 */
-	if (ndp->ni_makeentry)
+	if (ndp->ni_makeentry && flag != CREATE)
 		cache_enter(ndp);
 	return (ENOENT);
 
