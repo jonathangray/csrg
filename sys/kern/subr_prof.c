@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_prof.c	8.1 (Berkeley) 06/10/93
+ *	@(#)subr_prof.c	8.2 (Berkeley) 09/21/93
  */
 
 #include <sys/param.h>
@@ -140,8 +140,8 @@ sysctl_doprof(name, namelen, oldp, oldlenp, newp, newlen, p)
  * 1.0 is represented as 0x10000.  A scale factor of 0 turns off profiling.
  */
 struct profil_args {
-	caddr_t	buf;
-	u_int	bufsize;
+	caddr_t	samples;
+	u_int	size;
 	u_int	offset;
 	u_int	scale;
 };
@@ -161,13 +161,16 @@ profil(p, uap, retval)
 		return (0);
 	}
 	upp = &p->p_stats->p_prof;
-	s = splstatclock(); /* block profile interrupts while changing state */
-	upp->pr_base = uap->buf;
-	upp->pr_size = uap->bufsize;
+
+	/* Block profile interrupts while changing state. */
+	s = splstatclock();
 	upp->pr_off = uap->offset;
 	upp->pr_scale = uap->scale;
+	upp->pr_base = uap->samples;
+	upp->pr_size = uap->size;
 	startprofclock(p);
 	splx(s);
+
 	return (0);
 }
 
