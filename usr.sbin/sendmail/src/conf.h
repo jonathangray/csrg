@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.52 (Berkeley) 11/20/93
+ *	@(#)conf.h	8.53 (Berkeley) 11/25/93
  */
 
 /*
@@ -529,6 +529,24 @@ extern struct group	*getgrent(), *getgrnam(), *getgrgid();
 #endif
 
 
+/*
+**  Stardent Titan 3000 running TitanOS 4.2.
+**
+**	Must be compiled in "cc -43" mode.
+**
+**	From Kate HedStrom <kate@ahab.rutgers.edu>.
+**
+**	Note the tweaking below after the BSD defines are set.
+*/
+
+#ifdef titan
+# define setpgid	setpgrp
+typedef int		pid_t;
+# undef WIFEXITED
+# undef WEXITSTATUS
+#endif
+
+
 
 /**********************************************************************
 **  End of Per-Operating System defines
@@ -579,6 +597,15 @@ extern struct group	*getgrent(), *getgrnam(), *getgrgid();
 
 #ifndef GIDSET_T
 # define GIDSET_T	int
+#endif
+
+/*
+**  Tweaking for systems that (for example) claim to be BSD but
+**  don't have all the standard BSD routines (boo hiss).
+*/
+
+#ifdef titan
+# undef HASINITGROUPS		/* doesn't have initgroups(3) call */
 #endif
 
 
