@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_subr.c	7.17 (Berkeley) 12/15/91
+ *	@(#)ffs_subr.c	7.18 (Berkeley) 05/13/92
  */
 
 #include <sys/param.h>
