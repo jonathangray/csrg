@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pk_output.c	7.7 (Berkeley) 01/09/91
+ *	@(#)pk_output.c	7.8 (Berkeley) 03/12/91
  */
 
 #include "param.h"
@@ -114,7 +114,7 @@ register struct pklcd *lcp;
 			PR(xp) = lcp -> lcd_input_window;
 			lcp -> lcd_last_transmitted_pr = lcp -> lcd_input_window;
 			lcp -> lcd_ssn = (lcp -> lcd_ssn + 1) % MODULUS;
-			if (lcp -> lcd_ssn == ((lcp -> lcd_output_window + pkp->pk_xcp->xc_pwsize) % MODULUS))
+			if (lcp -> lcd_ssn == ((lcp -> lcd_output_window + lcp -> lcd_windowsize) % MODULUS))
 				lcp -> lcd_window_condition = TRUE;
 			break;
 
