@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)signal.h	7.8 (Berkeley) 05/26/90
+ *	@(#)signal.h	7.9 (Berkeley) 05/29/90
  */
 
 #ifndef	NSIG
@@ -99,7 +99,7 @@ void	(*signal())();
 
 typedef unsigned int sigset_t;
 
-#ifdef __STDC__
+#if __STDC__ || c_plusplus
 int sigemptyset(sigset_t *);
 int sigfillset(sigset_t *);
 int sigaddset(sigset_t *, int);
@@ -213,7 +213,7 @@ struct	sigcontext {
 
 #endif /* KERNEL */
 
-#ifdef __STDC__
+#if __STDC__ || c_plusplus
 int kill(pid_t, int);
 int sigaction(int, const struct sigaction *, struct sigaction *);
 int sigprocmask(int, const sigset_t *, sigset_t *);
