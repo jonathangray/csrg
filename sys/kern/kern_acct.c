@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_acct.c	7.23 (Berkeley) 07/02/92
+ *	@(#)kern_acct.c	7.24 (Berkeley) 07/08/92
  */
 
 #include "param.h"
@@ -29,7 +29,7 @@
  */
 int	acctsuspend = 2;	/* stop accounting when < 2% free space left */
 int	acctresume = 4;		/* resume when free space risen to > 4% */
-struct	timeval chk = { 15, 0 };/* frequency to check space for accounting */
+int	chk = 15;		/* frequency (in seconds) to check space */
 
 /*
  * SHOULD REPLACE THIS WITH A DRIVER THAT CAN BE READ TO SIMPLIFY.
@@ -57,7 +57,7 @@ sysacct(p, uap, retval)
 	int *retval;
 {
 	register struct vnode *vp;
-	extern int acctwatch();
+	extern void acctwatch __P((void *));
 	struct vnode *oacctp;
 	int error;
 	struct nameidata nd;
@@ -72,7 +72,7 @@ sysacct(p, uap, retval)
 		if (vp = acctp) {
 			acctp = NULL;
 			error = vn_close(vp, FWRITE, p->p_ucred, p);
-			untimeout(acctwatch, (caddr_t)&chk);
+			untimeout(acctwatch, NULL);
 		}
 		return (error);
 	}
@@ -89,7 +89,7 @@ sysacct(p, uap, retval)
 	acctp = vp;
 	if (oacctp)
 		error = vn_close(oacctp, FWRITE, p->p_ucred, p);
-	acctwatch(&chk);
+	acctwatch(NULL);
 	return (error);
 }
 
@@ -97,8 +97,10 @@ sysacct(p, uap, retval)
  * Periodically check the file system to see if accounting
  * should be turned on or off.
  */
-acctwatch(resettime)
-	struct timeval *resettime;
+/* ARGSUSED */
+void
+acctwatch(a)
+	void *a;
 {
 	struct statfs sb;
 
@@ -119,7 +121,7 @@ acctwatch(resettime)
 		acctp = NULL;
 		log(LOG_NOTICE, "Accounting suspended\n");
 	}
-	timeout(acctwatch, (caddr_t)resettime, hzto(resettime));
+	timeout(acctwatch, NULL, chk * hz);
 }
 
 /*
@@ -140,9 +142,8 @@ acct(p)
 		return (0);
 	bcopy(p->p_comm, ap->ac_comm, sizeof(ap->ac_comm));
 	ru = &p->p_stats->p_ru;
+	calcru(p, &ut, &st, NULL);
 	s = splclock();
-	ut = p->p_utime;
-	st = p->p_stime;
 	t = time;
 	splx(s);
 	ap->ac_utime = compress(ut.tv_sec, ut.tv_usec);
