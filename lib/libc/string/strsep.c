@@ -31,12 +31,12 @@
  * SUCH DAMAGE.
  */
 
-#include <sys/stdc.h>
+#include <sys/cdefs.h>
 #include <string.h>
 #include <stdio.h>
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char sccsid[] = "@(#)strsep.c	5.3 (Berkeley) 05/18/90";
+static const char sccsid[] = "@(#)strsep.c	5.4 (Berkeley) 01/26/91";
 #endif /* LIBC_SCCS and not lint */
 
 /*
