@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recipient.c	8.27 (Berkeley) 12/10/93";
+static char sccsid[] = "@(#)recipient.c	8.28 (Berkeley) 12/10/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -673,16 +673,15 @@ writable(filename, flags)
 		/* file does not exist -- see if directory is safe */
 		p = strrchr(filename, '/');
 		if (p == NULL)
-			return FALSE;
-		*p = '\0';
-		if (safefile(filename, RealUid, RealGid, RealUserName,
-			     SFF_MUSTOWN, S_IWRITE|S_IEXEC) != 0)
 		{
-			*p = '/';
+			errno = ENOTDIR;
 			return FALSE;
 		}
+		*p = '\0';
+		errno = safefile(filename, RealUid, RealGid, RealUserName,
+				 SFF_MUSTOWN, S_IWRITE|S_IEXEC);
 		*p = '/';
-		return TRUE;
+		return errno == 0;
 	}
 
 	/*
@@ -693,6 +692,7 @@ writable(filename, flags)
 	{
 		if (tTd(29, 5))
 			printf("failed (mode %o: x bits)\n", stb.st_mode);
+		errno = EPERM;
 		return (FALSE);
 	}
 
@@ -721,7 +721,8 @@ writable(filename, flags)
 		printf("\teu/gid=%d/%d, st_u/gid=%d/%d\n",
 			euid, egid, stb.st_uid, stb.st_gid);
 
-	return safefile(filename, euid, egid, uname, flags, S_IWRITE) == 0;
+	errno = safefile(filename, euid, egid, uname, flags, S_IWRITE);
+	return errno == 0;
 }
 /*
 **  INCLUDE -- handle :include: specification.
