@@ -1,6 +1,15 @@
+/*-
+ * Copyright (c) 1991 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ */
+
 #ifndef lint
-static char sccsid[] = "@(#)run.c	4.8 03/29/88";
-#endif
+static char sccsid[] = "@(#)run.c	4.9 (Berkeley) 04/17/91";
+#endif /* not lint */
 
 #include "sys/param.h"
 #include "awk.def"
