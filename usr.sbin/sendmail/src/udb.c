@@ -34,9 +34,9 @@
 
 #ifndef lint
 #ifdef USERDB
-static char sccsid [] = "@(#)udb.c	6.9 (Berkeley) 02/20/93 (with USERDB)";
+static char sccsid [] = "@(#)udb.c	6.10 (Berkeley) 02/20/93 (with USERDB)";
 #else
-static char sccsid [] = "@(#)udb.c	6.9 (Berkeley) 02/20/93 (without USERDB)";
+static char sccsid [] = "@(#)udb.c	6.10 (Berkeley) 02/20/93 (without USERDB)";
 #endif
 #endif
 
@@ -210,6 +210,9 @@ udbexpand(a, sendq, e)
 			while (i == 0 && key.size == keylen &&
 					bcmp(key.data, keybuf, keylen) == 0)
 			{
+				if (bitset(EF_VRFYONLY, e->e_flags))
+					return EX_OK;
+
 				breakout = TRUE;
 				if (info.size < sizeof buf)
 					user = buf;
@@ -256,6 +259,8 @@ udbexpand(a, sendq, e)
 			continue;
 
 		  case UDB_FORWARD:
+			if (bitset(EF_VRFYONLY, e->e_flags))
+				return EX_OK;
 			i = strlen(up->udb_fwdhost) + strlen(a->q_user) + 1;
 			if (i < sizeof buf)
 				user = buf;
