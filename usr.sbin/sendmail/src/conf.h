@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	6.3 (Berkeley) 01/20/93
+ *	@(#)conf.h	6.4 (Berkeley) 01/21/93
  */
 
 /*
@@ -57,6 +57,7 @@
 # define SMTPLINELIM	990		/* maximum SMTP line length */
 # define MAXKEY		128		/* maximum size of a database key */
 # define MEMCHUNKSIZE	1024		/* chunk size for memory allocation */
+# define MAXUSERENVIRON	100		/* max envariables saved */
 
 # ifndef QUEUESIZE
 # define QUEUESIZE	1000		/* max # of jobs per queue run */
@@ -124,8 +125,6 @@
 
 # include <stdarg.h>
 
-# define VA_ARG_FORMAL
-# define VA_ARG_DECL
 # define VA_LOCAL_DECL	va_list ap;
 # define VA_START(f)	va_start(ap, f)
 # define VA_END		va_end(ap)
@@ -134,8 +133,6 @@
 
 # include <varargs.h>
 
-# define VA_ARG_FORMAL	,va_alist
-# define VA_ARG_DECL	va_dcl
 # define VA_LOCAL_DECL	va_list ap;
 # define VA_START(f)	va_start(ap)
 # define VA_END		va_end(ap)
@@ -154,3 +151,7 @@ struct utsname
 	char nodename[NODE_LENGTH+1];
 };
 #endif /* UNAME */
+
+#ifdef sun
+# include <vfork.h>
+#endif
