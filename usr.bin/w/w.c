@@ -2,9 +2,33 @@
  * Copyright (c) 1980, 1991 The Regents of the University of California.
  * All rights reserved.
  *
- * This module is believed to contain source code proprietary to AT&T.
- * Use and redistribution is subject to the Berkeley Software License
- * Agreement and your Software Agreement with AT&T (Western Electric).
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
  */
 
 #ifndef lint
@@ -14,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)w.c	5.28 (Berkeley) 04/18/91";
+static char sccsid[] = "@(#)w.c	5.29 (Berkeley) 04/23/91";
 #endif /* not lint */
 
 /*
@@ -87,6 +111,7 @@ struct nlist nl[] = {
 #define usage()	fprintf(stderr, "usage: %s: %s\n", program, USAGE)
 
 main(argc, argv)
+	int argc;
 	char **argv;
 {
 	register int i;
@@ -129,14 +154,9 @@ main(argc, argv)
 		}
 	argc -= optind;
 	argv += optind;
-	if (argc == 1) {
-		sel_user = argv[0];
-		argv++, argc--;
-	}
-	if (argc) {
-		usage();
-		exit(1);
-	}
+
+	if (*argv)
+		sel_user = *argv;
 
 	if (header && kvm_nlist(nl) != 0) {
 		error("can't get namelist");
@@ -172,10 +192,10 @@ main(argc, argv)
 			if (nl[X_CNTTY].n_value) {
 				struct tty cn_tty, *cn_ttyp;
 				
-				if (kvm_read(nl[X_CNTTY].n_value,
-					     &cn_ttyp, sizeof (cn_ttyp)) > 0) {
+				if (kvm_read((void *)nl[X_CNTTY].n_value,
+				    &cn_ttyp, sizeof(cn_ttyp)) > 0) {
 					(void)kvm_read(cn_ttyp, &cn_tty,
-						       sizeof (cn_tty));
+					    sizeof (cn_tty));
 					cn_dev = cn_tty.t_dev;
 				}
 				nl[X_CNTTY].n_value = 0;
@@ -201,8 +221,8 @@ main(argc, argv)
 		 * Print how long system has been up.
 		 * (Found by looking for "boottime" in kernel)
 		 */
-		(void)kvm_read((off_t)nl[X_BOOTTIME].n_value, &boottime, 
-			sizeof (boottime));
+		(void)kvm_read((void *)nl[X_BOOTTIME].n_value, &boottime, 
+		    sizeof (boottime));
 		uptime = now - boottime.tv_sec;
 		uptime += 30;
 		days = uptime / (60*60*24);
@@ -342,20 +362,6 @@ prttime(tim, tail)
 
 #include <varargs.h>
 
-warning(va_alist)
-	va_dcl
-{
-	char *fmt;
-	va_list ap;
-
-	fprintf(stderr, "%s: warning: ", program);
-	va_start(ap);
-	fmt = va_arg(ap, char *);
-	(void) vfprintf(stderr, fmt, ap);
-	va_end(ap);
-	fprintf(stderr, "\n");
-}
-
 error(va_alist)
 	va_dcl
 {
@@ -368,19 +374,4 @@ error(va_alist)
 	(void) vfprintf(stderr, fmt, ap);
 	va_end(ap);
 	fprintf(stderr, "\n");
-}
-
-syserror(va_alist)
-	va_dcl
-{
-	char *fmt;
-	va_list ap;
-	extern errno;
-
-	fprintf(stderr, "%s: ", program);
-	va_start(ap);
-	fmt = va_arg(ap, char *);
-	(void) vfprintf(stderr, fmt, ap);
-	va_end(ap);
-	fprintf(stderr, ": %s\n", strerror(errno));
 }
