@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)param.h	5.5 (Berkeley) 04/28/91
+ *	@(#)param.h	5.6 (Berkeley) 06/08/91
  */
 
 /*
@@ -142,6 +142,6 @@ int	cpuspeed;
 #endif
 #define	DELAY(n)	{ register int N = cpuspeed * (n); while (--N > 0); }
 
-#else KERNEL
+#else
 #define	DELAY(n)	{ register int N = (n); while (--N > 0); }
-#endif KERNEL
+#endif
