@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)proc.h	7.1 (Berkeley) 01/07/92
+ *	@(#)proc.h	7.2 (Berkeley) 02/29/92
  */
 
 /*
@@ -42,6 +42,8 @@
 struct mdproc {
 	int	md_flags;		/* machine-dependent flags */
 	int	md_upte[UPAGES];	/* ptes for mapping u page */
+	int	md_ss_addr;		/* single step address for ptrace */
+	int	md_ss_instr;		/* single step instruction for ptrace */
 };
 
 /* md_flags */
