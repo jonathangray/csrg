@@ -21,7 +21,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)locore.s	5.5 (Berkeley) 11/18/90
+ *	@(#)locore.s	5.6 (Berkeley) 11/25/90
  */
 
 /*
@@ -1269,3 +1269,16 @@ IDTVEC(syscall)
 	popfl
 	lret			# back we go, we hope!
 
+ENTRY(htonl)
+ENTRY(ntohl)
+	movl	4(%esp),%eax
+	xchgb	%al,%ah
+	roll	$16,%eax
+	xchgb	%al,%ah
+	ret
+
+ENTRY(htons)
+ENTRY(ntohs)
+	movzwl	4(%esp),%eax
+	xchgb	%al,%ah
+	ret
