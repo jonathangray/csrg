@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)jobs.h	5.1 (Berkeley) 03/07/91
+ *	@(#)jobs.h	5.2 (Berkeley) 07/15/92
  */
 
 /* Mode argument to forkshell.  Don't change FORK_FG or FORK_BG. */
@@ -75,6 +75,7 @@ struct job {
 };
 
 extern short backgndpid;	/* pid of last background process */
+extern int job_warning;		/* user was warned about stopped jobs */
 
 
 #ifdef __STDC__
