@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	8.21 (Berkeley) 08/14/94
+ *	@(#)vfs_syscalls.c	8.22 (Berkeley) 08/30/94
  */
 
 #include <sys/param.h>
@@ -770,12 +770,17 @@ mknod(p, uap, retval)
 			break;
 		}
 	}
-	if (whiteout) {
-		error = VOP_WHITEOUT(nd.ni_dvp, &nd.ni_cnd, CREATE);
-		vput(nd.ni_dvp);
-	} else if (!error) {
+	if (!error) {
 		VOP_LEASE(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
-		error = VOP_MKNOD(nd.ni_dvp, &nd.ni_vp, &nd.ni_cnd, &vattr);
+		if (whiteout) {
+			error = VOP_WHITEOUT(nd.ni_dvp, &nd.ni_cnd, CREATE);
+			if (error)
+				VOP_ABORTOP(nd.ni_dvp, &nd.ni_cnd);
+			vput(nd.ni_dvp);
+		} else {
+			error = VOP_MKNOD(nd.ni_dvp, &nd.ni_vp,
+						&nd.ni_cnd, &vattr);
+		}
 	} else {
 		VOP_ABORTOP(nd.ni_dvp, &nd.ni_cnd);
 		if (nd.ni_dvp == vp)
@@ -957,8 +962,7 @@ unwhiteout(p, uap, retval)
 	}
 
 	VOP_LEASE(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
-	error = VOP_WHITEOUT(nd.ni_dvp, &nd.ni_cnd, DELETE);
-	if (error != 0)
+	if (error = VOP_WHITEOUT(nd.ni_dvp, &nd.ni_cnd, DELETE))
 		VOP_ABORTOP(nd.ni_dvp, &nd.ni_cnd);
 	vput(nd.ni_dvp);
 	return (error);
