@@ -1,4 +1,4 @@
-/*	file.h	3.1	%H%	*/
+/*	file.h	3.2	06/07/80	*/
 
 /*
  * One file structure is allocated
