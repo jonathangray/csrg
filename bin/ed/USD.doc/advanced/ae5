@@ -2,7 +2,7 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)ae5	8.1 (Berkeley) 06/08/93
+.\"	@(#)ae5	6.3 (Berkeley) 08/10/93
 .\"
 .NH
 CUT AND PASTE WITH UNIX COMMANDS
@@ -83,7 +83,7 @@ command.
 .UL cp \& (
 stands for `copy';
 the
-.UC UNIX
+UNIX
 system
 is big on short command names,
 which are appreciated by heavy users,
@@ -165,7 +165,7 @@ is a program called
 (Not 
 .ul
 all
-.UC UNIX 
+UNIX 
 programs have two-letter names.)
 .UL cat
 is short for
@@ -232,7 +232,7 @@ This ability to
 `capture' the output of a program
 is one of the most useful aspects of
 the 
-.UC UNIX
+UNIX
 system.
 Fortunately it's not limited to the
 .UL cat 
