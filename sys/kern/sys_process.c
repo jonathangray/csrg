@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)sys_process.c	7.38 (Berkeley) 06/04/93
+ *	@(#)sys_process.c	7.39 (Berkeley) 06/06/93
  */
 
 #define IPCREG
