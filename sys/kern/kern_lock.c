@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_lock.c	8.8 (Berkeley) 04/27/95
+ *	@(#)kern_lock.c	8.9 (Berkeley) 05/11/95
  */
 
 #include <sys/param.h>
@@ -76,13 +76,6 @@ int lock_wait_time = 100;
  */
 #define PAUSE(lkp, wanted)
 
-/*
- * Panic messages for inline expanded simple locks.
- * Put text here to avoid hundreds of copies.
- */
-const char *simple_lock_held = "simple_lock: lock held";
-const char *simple_lock_not_held = "simple_lock: lock not held";
-
 #endif /* NCPUS == 1 */
 
 /*
@@ -109,13 +102,14 @@ const char *simple_lock_not_held = "simple_lock: lock not held";
  * Initialize a lock; required before use.
  */
 void
-lock_init(lkp, prio, wmesg, timo, flags)
+lockinit(lkp, prio, wmesg, timo, flags)
 	struct lock *lkp;
 	int prio;
 	char *wmesg;
 	int timo;
 	int flags;
 {
+
 	bzero(lkp, sizeof(struct lock));
 	simple_lock_init(&lkp->lk_interlock);
 	lkp->lk_flags = flags & LK_EXTFLG_MASK;
@@ -376,6 +370,10 @@ lockmgr(lkp, flags, interlkp, pid)
 	return (error);
 }
 
+/*
+ * Print out information about state of a lock. Used by VOP_PRINT
+ * routines to display ststus about contained locks.
+ */
 lockmgr_printinfo(lkp)
 	struct lock *lkp;
 {
@@ -388,3 +386,48 @@ lockmgr_printinfo(lkp)
 	if (lkp->lk_waitcount > 0)
 		printf(" with %d pending", lkp->lk_waitcount);
 }
+
+#if defined(DEBUG) && NCPUS == 1
+/*
+ * Simple lock functions so that the debugger can see from whence
+ * they are being called.
+ */
+void
+simple_lock_init(alp)
+	struct simple_lock *alp;
+{
+
+	alp->lock_data = 0;
+}
+
+void
+simple_lock(alp)
+	__volatile struct simple_lock *alp;
+{
+
+	if (alp->lock_data == 1)
+		panic("simple_lock: lock held");
+	alp->lock_data = 1;
+}
+
+int
+simple_lock_try(alp)
+	__volatile struct simple_lock *alp;
+{
+
+	if (alp->lock_data == 1)
+		panic("simple_lock: lock held");
+	alp->lock_data = 1;
+	return (1);
+}
+
+void
+simple_unlock(alp)
+	__volatile struct simple_lock *alp;
+{
+
+	if (alp->lock_data == 0)
+		panic("simple_lock: lock not held");
+	alp->lock_data = 0;
+}
+#endif /* DEBUG && NCPUS == 1 */
