@@ -30,12 +30,15 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fcntl.h	5.9 (Berkeley) 02/03/91
+ *	@(#)fcntl.h	5.10 (Berkeley) 02/05/91
  */
 
-#include "types.h"
+#ifndef _FCNTL_H_
+#define	_FCNTL_H_
 
-#ifndef F_DUPFD
+#ifndef KERNEL
+#include <sys/types.h>
+#endif
 
 /* command values for fcntl(2) */
 #define	F_DUPFD		0		/* duplicate file descriptor */
@@ -121,16 +124,13 @@ struct flock {
 };
 
 #ifndef KERNEL
-#if __STDC__ || c_plusplus
-#include <sys/types.h>
-extern int fcntl(int, int, ...);
-extern int creat(const char *, mode_t);
-extern int open(const char *, int, ...);
-#else
-extern int fcntl();
-extern int creat();
-extern int open();
-#endif
+#include <sys/cdefs.h>
+
+__BEGIN_DECLS
+int	creat __P((const char *, mode_t));
+int	fcntl __P((int, int, ...));
+int	open __P((const char *, int, ...));
+__END_DECLS
 #endif
 
-#endif /* !F_DUPFD */
+#endif /* !_FCNTL_H_ */
