@@ -1,4 +1,4 @@
-/*
+/*-
  * Copyright (c) 1988, 1990 Regents of the University of California.
  * All rights reserved.
  *
@@ -29,11 +29,9 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
+ *
+ * @(#)xi_src.c	7.4 (Berkeley) 05/07/91
  */
-#ifndef lint
-static char sccsid[] = "@(#)xi_src.c	7.3 (Berkeley) 04/29/91";
-#endif /* not lint */
-
 /*
  * This is a test program to be a source for X.25 connections.
  */
