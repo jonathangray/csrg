@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sysctl.h	7.7 (Berkeley) 02/22/91
+ *	@(#)sysctl.h	7.8 (Berkeley) 02/24/91
  */
 
 /*
@@ -81,6 +81,6 @@ extern struct kinfo_lock kinfo_lock;
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-int	getkerninfo __P((int, char *, int *, int));
+int	getkerninfo __P((int, void *, int *, int));
 __END_DECLS
 #endif
