@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)refresh.c	5.36 (Berkeley) 03/02/93";
+static char sccsid[] = "@(#)refresh.c	5.37 (Berkeley) 04/13/93";
 #endif /* not lint */
 
 #include <curses.h>
@@ -376,7 +376,6 @@ domvcur(oy, ox, ny, nx)
  * repainting the screen line by line.
  */
 
-
 static void
 quickch(win)
 	WINDOW *win;
@@ -413,6 +412,16 @@ quickch(win)
 			break;
 		else
 			win->lines[bot]->flags &= ~__ISDIRTY;
+
+
+	/*
+	 * If we have a bottom unchanged region return.  Scrolling the
+	 * bottom region up and then back down causes a screen jitter.
+	 * This will increase the number of characters sent to the screen
+	 * but it looks better.
+	 */
+	if (bot < win->maxy - 1)
+		return;
 
 	/*
 	 * Search for the largest block of text not changed.
