@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)init_main.c	7.41 (Berkeley) 05/15/91
+ *	@(#)init_main.c	7.42 (Berkeley) 11/01/91
  */
 
 #include "param.h"
