@@ -39,17 +39,15 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.93 (Berkeley) 03/27/95";
+static char sccsid[] = "@(#)main.c	8.94 (Berkeley) 03/31/95";
 #endif /* not lint */
 
 #define	_DEFINE
 
 #include "sendmail.h"
-#include <netdb.h>
 #if NAMED_BIND
 #include <resolv.h>
 #endif
-#include <pwd.h>
 
 # ifdef lint
 char	edata, end;
@@ -236,7 +234,7 @@ main(argc, argv, envp)
 	RealUid = getuid();
 	RealGid = getgid();
 
-	pw = getpwuid(RealUid);
+	pw = sm_getpwuid(RealUid);
 	if (pw != NULL)
 		(void) strcpy(RealUserName, pw->pw_name);
 	else
