@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)signal.h	8.2 (Berkeley) 01/03/94
+ *	@(#)signal.h	8.3 (Berkeley) 03/30/94
  */
 
 #ifndef _USER_SIGNAL_H
@@ -75,7 +75,7 @@ __END_DECLS
 /* List definitions after function declarations, or Reiser cpp gets upset. */
 #define	sigaddset(set, signo)	(*(set) |= 1 << ((signo) - 1), 0)
 #define	sigdelset(set, signo)	(*(set) &= ~(1 << ((signo) - 1)), 0)
-#define	sigemptyset(set)	(*(set) = 0)
+#define	sigemptyset(set)	(*(set) = 0, 0)
 #define	sigfillset(set)		(*(set) = ~(sigset_t)0, 0)
 #define	sigismember(set, signo)	((*(set) & (1 << ((signo) - 1))) != 0)
 
