@@ -21,7 +21,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)icu.h	5.1 (Berkeley) 04/24/90
+ *	@(#)icu.h	5.2 (Berkeley) 06/23/90
  */
 
 /*
@@ -29,9 +29,15 @@
  * W. Jolitz 8/89
  */
 
+#ifndef	__ICU__
+#define	__ICU__
+
 #ifndef	LOCORE
 extern	unsigned short	imen;	/* interrupt mask enable */
 extern	unsigned short	cpl;	/* current priority level */
+
+extern	unsigned short ttymask; /* things that get masked with spltty() */
+extern	unsigned short biomask; /* things that get masked with splbio() */
 
 #define	INTREN(s)	imen &= ~(s)
 #define	INTRDIS(s)	imen |= (s)
@@ -55,4 +61,4 @@ extern	unsigned short	cpl;	/* current priority level */
 #define	IRQ6	0x0040
 #define	IRQ7	0x0080		/* lowest - parallel printer */
 
-
+#endif	__ICU__
