@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)rmjob.c	5.8 (Berkeley) 07/21/92";
+static char sccsid[] = "@(#)rmjob.c	5.10 (Berkeley) 8/31/92";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -62,10 +62,10 @@ extern int	requ[];			/* job number of spool entries */
 extern int	requests;		/* # of spool requests */
 extern char	*person;		/* name of person doing lprm */
 
-char	root[] = "root";
-int	all = 0;		/* eliminate all files (root only) */
-int	cur_daemon;		/* daemon's pid */
-char	current[40];		/* active control file name */
+static char	root[] = "root";
+static int	all = 0;		/* eliminate all files (root only) */
+static int	cur_daemon;		/* daemon's pid */
+static char	current[40];		/* active control file name */
 
 void
 rmjob()
@@ -75,19 +75,21 @@ rmjob()
 	struct dirent **files;
 	char *cp;
 
-	if ((i = pgetent(line, printer)) < 0)
-		fatal("cannot open printer description file");
-	else if (i == 0)
+	if ((i = cgetent(&bp, printcapdb, printer)) == -2)
+		fatal("can't open printer description file");
+	else if (i == -1)
 		fatal("unknown printer");
-	if ((SD = pgetstr("sd", &bp)) == NULL)
-		SD = _PATH_DEFSPOOL;
-	if ((LO = pgetstr("lo", &bp)) == NULL)
-		LO = DEFLOCK;
-	if ((LP = pgetstr("lp", &bp)) == NULL)
+	else if (i == -3)
+		fatal("potential reference loop detected in printcap file");
+	if (cgetstr(bp, "lp", &LP) < 0)
 		LP = _PATH_DEFDEVLP;
-	if ((RP = pgetstr("rp", &bp)) == NULL)
+	if (cgetstr(bp, "rp", &RP) < 0)
 		RP = DEFLP;
-	RM = pgetstr("rm", &bp);
+	if (cgetstr(bp, "sd", &SD) < 0)
+		SD = _PATH_DEFSPOOL;
+	if (cgetstr(bp,"lo", &LO) < 0)
+		LO = DEFLOCK;
+	cgetstr(bp, "rm", &RM);
 	if (cp = checkremote())
 		printf("Warning: %s\n", cp);
 
