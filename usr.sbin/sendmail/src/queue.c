@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef QUEUE
-static char sccsid[] = "@(#)queue.c	8.85 (Berkeley) 05/28/95 (with queueing)";
+static char sccsid[] = "@(#)queue.c	8.86 (Berkeley) 06/10/95 (with queueing)";
 #else
-static char sccsid[] = "@(#)queue.c	8.85 (Berkeley) 05/28/95 (without queueing)";
+static char sccsid[] = "@(#)queue.c	8.86 (Berkeley) 06/10/95 (without queueing)";
 #endif
 #endif /* not lint */
 
@@ -1572,7 +1572,7 @@ printqueue()
 			if (gidset[n] == st.st_gid)
 				break;
 		}
-		if (n < 0)
+		if (n < 0 && RealGid != st.st_gid)
 # else
 		if (RealGid != st.st_gid)
 # endif
