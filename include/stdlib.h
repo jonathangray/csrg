@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stdlib.h	5.28 (Berkeley) 05/28/93
+ *	@(#)stdlib.h	5.29 (Berkeley) 06/02/93
  */
 
 #ifndef _STDLIB_H_
@@ -120,6 +120,7 @@ int	 setenv __P((const char *, const char *, int));
 #if !defined(_ANSI_SOURCE) && !defined(_POSIX_SOURCE)
 void	*alloca __P((size_t));		/* built-in for gcc */
 					/* getcap(3) functions */
+char	*getbsize __P((int *, long *));
 char	*cgetcap __P((char *, char *, int));
 int	 cgetclose __P((void));
 int	 cgetent __P((char **, char **, char *));
@@ -132,6 +133,7 @@ int	 cgetstr __P((char *, char *, char **));
 int	 cgetustr __P((char *, char *, char **));
 
 int	 daemon __P((int, int));
+char	*devname __P((int, int));
 int	 getloadavg __P((double [], int));
 
 extern char *optarg;			/* getopt(3) external variables */
