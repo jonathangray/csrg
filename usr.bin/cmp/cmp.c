@@ -1,4 +1,4 @@
-static char *sccsid = "@(#)cmp.c	4.3 (Berkeley) 12/11/86";
+static char *sccsid = "@(#)cmp.c	4.4 (Berkeley) 03/12/87";
 
 #include <sys/param.h>
 #include <sys/file.h>
@@ -211,6 +211,6 @@ register char	*C;		/* argument string */
 static
 usage()
 {
-	fputs("usage: cmp [-ls] file1 file2 [skip1] [skip2]",stderr);
+	fputs("usage: cmp [-ls] file1 file2 [skip1] [skip2]\n",stderr);
 	exit(ERR);
 }
