@@ -14,7 +14,7 @@
  * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *	@(#)ip_icmp.c	7.12 (Berkeley) 04/22/89
+ *	@(#)ip_icmp.c	7.8.1.3 (Berkeley) 08/04/89
  */
 
 #include "param.h"
@@ -384,6 +384,7 @@ icmp_reflect(m)
 
 	if (optlen > 0) {
 		register u_char *cp;
+		struct mbuf *m = dtom(ip);
 		int opt, cnt, off;
 		u_int len;
 
