@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)disklabel.h	7.14 (Berkeley) 06/28/90
+ *	@(#)disklabel.h	7.15 (Berkeley) 02/05/91
  */
 
 /*
@@ -291,9 +291,11 @@ struct partinfo {
 #endif LOCORE
 
 #if !defined(KERNEL) && !defined(LOCORE)
-#if __STDC__ || c_plusplus
-extern struct disklabel *getdiskbyname(const char *);
-#else
-extern struct disklabel *getdiskbyname();
-#endif
+
+#include <sys/cdefs.h>
+
+__BEGIN_DECLS
+struct disklabel *getdiskbyname __P((const char *));
+__END_DECLS
+
 #endif
