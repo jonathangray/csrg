@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_subr2.c	7.18 (Berkeley) 12/17/91
+ *	@(#)tp_subr2.c	7.19 (Berkeley) 05/27/92
  */
 
 /***********************************************************
@@ -114,6 +114,8 @@ SOFTWARE.
 #include "../netccitt/x25.h"
 #include "../netccitt/pk.h"
 #include "../netccitt/pk_var.h"
+
+void tp_rsyset();
 
 /*
  * NAME: 	tp_local_credit()
@@ -300,7 +302,7 @@ struct tp_pcb *tpcb;
 	tpcb->tp_seqhalf = tpcb->tp_seqbit >> 1;
 	tpcb->tp_dt_ticks =
 		MAX(tpcb->tp_dt_ticks, (tpcb->tp_peer_acktime + 2));
-	(void) tp_rsyset(tpcb);
+	tp_rsyset(tpcb);
 	
 }
 
@@ -580,6 +582,7 @@ punt_route:
 	tpcb->tp_cong_win =
 		(rt == 0 || (rt->rt_flags & RTF_GATEWAY)) ? mss : bufsize;
 	tpcb->tp_l_tpdusize = mss;
+	tp_rsyset(tpcb);
 	tpcb->tp_ssthresh = max(2 * mss, ssthresh);
 	/* Calculate log2 of mss */
 	for (i = TP_MIN_TPDUSIZE + 1; i <= TP_MAX_TPDUSIZE; i++)
