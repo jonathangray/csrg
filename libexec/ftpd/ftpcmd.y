@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 1985, 1988 Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1985, 1988, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ftpcmd.y	5.28 (Berkeley) 05/17/93
+ *	@(#)ftpcmd.y	8.1 (Berkeley) 06/04/93
  */
 
 /*
@@ -41,7 +41,7 @@
 %{
 
 #ifndef lint
-static char sccsid[] = "@(#)ftpcmd.y	5.28 (Berkeley) 05/17/93";
+static char sccsid[] = "@(#)ftpcmd.y	8.1 (Berkeley) 06/04/93";
 #endif /* not lint */
 
 #include <sys/param.h>
