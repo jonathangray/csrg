@@ -30,16 +30,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)talk.h	5.6 (Berkeley) 06/01/90
+ *	@(#)talk.h	5.7 (Berkeley) 03/01/91
  */
 
-#include <sys/types.h>
 #include <curses.h>
-#include <utmp.h>
-
-#define forever		for(;;)
-
-int	quit();
 
 extern	int sockt;
 extern	int curses_initialized;
