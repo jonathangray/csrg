@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)reg.h	7.2 (Berkeley) 07/21/92
+ *	@(#)reg.h	7.3 (Berkeley) 10/11/92
  *
  * from: $Header: reg.h,v 1.7 92/06/17 06:10:26 torek Exp $
  */
@@ -76,7 +76,7 @@ struct rwindow {
 	int	rw_in[8];		/* %i0..%i7 */
 };
 
-#include "machine/fsr.h"
+#include <machine/fsr.h>
 
 /*
  * FP coprocessor registers.
