@@ -1,6 +1,15 @@
+/*-
+ * Copyright (c) 1991 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ */
+
 #ifndef lint
-static char sccsid[] = "@(#)opset.c	4.8 (Berkeley) 01/16/89";
-#endif
+static char sccsid[] = "@(#)opset.c	4.9 (Berkeley) 04/04/91";
+#endif /* not lint */
 
 /*
  * adb - instruction printing routines: VAX version
