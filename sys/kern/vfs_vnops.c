@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_vnops.c	7.29 (Berkeley) 04/16/91
+ *	@(#)vfs_vnops.c	7.30 (Berkeley) 05/15/91
  */
 
 #include "param.h"
@@ -79,6 +79,7 @@ vn_open(ndp, p, fmode, cmode)
 			fmode &= ~FTRUNC;
 			vp = ndp->ni_vp;
 		} else {
+			VOP_ABORTOP(ndp);
 			if (ndp->ni_dvp == ndp->ni_vp)
 				vrele(ndp->ni_dvp);
 			else
