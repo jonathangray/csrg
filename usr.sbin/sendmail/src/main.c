@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.108 (Berkeley) 05/15/95";
+static char sccsid[] = "@(#)main.c	8.109 (Berkeley) 05/15/95";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -748,7 +748,7 @@ main(argc, argv, envp)
 	if (TimeZoneSpec == NULL)
 		unsetenv("TZ");
 	else if (TimeZoneSpec[0] != '\0')
-		setenv("TZ", TimeZoneSpec, TRUE);
+		setuserenv("TZ", TimeZoneSpec);
 	tzset();
 
 	if (ConfigLevel > MAXCONFIGLEVEL)
