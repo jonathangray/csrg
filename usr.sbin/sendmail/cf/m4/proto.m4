@@ -34,7 +34,7 @@ divert(-1)
 #
 divert(0)
 
-VERSIONID(`@(#)proto.m4	2.32 (Berkeley) 11/14/92')
+VERSIONID(`@(#)proto.m4	2.33 (Berkeley) 12/07/92')
 
 MAILER(local)dnl
 
@@ -123,6 +123,7 @@ S3
 R$* < > $*		$@ @				turn into magic token
 
 # basic textual canonicalization -- note RFC733 heuristic here
+R$*<$*>$*<$*>$*		<$2>$3$4$5			strip multiple <> <>
 R$*<$*<$*<$+>$*>$*>$*	$4				3-level <> nesting
 R$*<$*<$+>$*>$*		$3				2-level <> nesting
 R$*<$+>$*		$2				basic RFC821/822 parsing
