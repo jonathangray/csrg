@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)hash_page.c	5.22 (Berkeley) 07/17/92";
+static char sccsid[] = "@(#)hash_page.c	5.23 (Berkeley) 01/17/93";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -54,11 +54,12 @@ static char sccsid[] = "@(#)hash_page.c	5.22 (Berkeley) 07/17/92";
  *	open_temp
  */
 
-#include <sys/param.h>
+#include <sys/types.h>
+
+#include <db.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <signal.h>
-#include <errno.h>
-#include <db.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -66,17 +67,19 @@ static char sccsid[] = "@(#)hash_page.c	5.22 (Berkeley) 07/17/92";
 #ifdef DEBUG
 #include <assert.h>
 #endif
+
 #include "hash.h"
 #include "page.h"
 #include "extern.h"
 
-static u_long	*fetch_bitmap __P((int));
+static u_long	*fetch_bitmap __P((HTAB *, int));
 static u_long	 first_free __P((u_long));
-static int	 open_temp __P((void));
-static u_short	 overflow_page __P((void));
+static int	 open_temp __P((HTAB *));
+static u_short	 overflow_page __P((HTAB *));
 static void	 putpair __P((char *, const DBT *, const DBT *));
 static void	 squeeze_key __P((u_short *, const DBT *, const DBT *));
-static int	 ugly_split __P((u_int, BUFHEAD *, BUFHEAD *, int, int));
+static int	 ugly_split
+		    __P((HTAB *, u_int, BUFHEAD *, BUFHEAD *, int, int));
 
 #define	PAGE_INIT(P) { \
 	((u_short *)(P))[0] = 0; \
@@ -122,7 +125,8 @@ putpair(p, key, val)
  *	-1 error
  */
 extern int
-__delpair(bufp, ndx)
+__delpair(hashp, bufp, ndx)
+	HTAB *hashp;
 	BUFHEAD *bufp;
 	register int ndx;
 {
@@ -134,7 +138,7 @@ __delpair(bufp, ndx)
 	n = bp[0];
 
 	if (bp[ndx + 1] < REAL_KEY)
-		return (__big_delete(bufp));
+		return (__big_delete(hashp, bufp));
 	if (ndx != 1)
 		newoff = bp[ndx - 1];
 	else
@@ -174,7 +178,8 @@ __delpair(bufp, ndx)
  *	-1 ==> Error
  */
 extern int
-__split_page(obucket, nbucket)
+__split_page(hashp, obucket, nbucket)
+	HTAB *hashp;
 	u_int obucket, nbucket;
 {
 	register BUFHEAD *new_bufp, *old_bufp;
@@ -187,10 +192,10 @@ __split_page(obucket, nbucket)
 
 	copyto = (u_short)hashp->BSIZE;
 	off = (u_short)hashp->BSIZE;
-	old_bufp = __get_buf(obucket, NULL, 0);
+	old_bufp = __get_buf(hashp, obucket, NULL, 0);
 	if (old_bufp == NULL)
 		return (-1);
-	new_bufp = __get_buf(nbucket, NULL, 0);
+	new_bufp = __get_buf(hashp, nbucket, NULL, 0);
 	if (new_bufp == NULL)
 		return (-1);
 
@@ -204,7 +209,7 @@ __split_page(obucket, nbucket)
 
 	for (n = 1, ndx = 1; n < ino[0]; n += 2) {
 		if (ino[n + 1] < REAL_KEY) {
-			retval = ugly_split(obucket, old_bufp, new_bufp,
+			retval = ugly_split(hashp, obucket, old_bufp, new_bufp,
 			    (int)copyto, (int)moved);
 			old_bufp->flags &= ~BUF_PIN;
 			new_bufp->flags &= ~BUF_PIN;
@@ -214,7 +219,7 @@ __split_page(obucket, nbucket)
 		key.data = (u_char *)op + ino[n];
 		key.size = off - ino[n];
 
-		if (__call_hash(key.data, key.size) == obucket) {
+		if (__call_hash(hashp, key.data, key.size) == obucket) {
 			/* Don't switch page */
 			diff = copyto - off;
 			if (diff) {
@@ -269,7 +274,8 @@ __split_page(obucket, nbucket)
  *	-1 ==> failure
  */
 static int
-ugly_split(obucket, old_bufp, new_bufp, copyto, moved)
+ugly_split(hashp, obucket, old_bufp, new_bufp, copyto, moved)
+	HTAB *hashp;
 	u_int obucket;	/* Same as __split_page. */
 	BUFHEAD *old_bufp, *new_bufp;
 	int copyto;	/* First byte on page which contains key/data values. */
@@ -300,7 +306,7 @@ ugly_split(obucket, old_bufp, new_bufp, copyto, moved)
 			 * Ov_addr gets set before reaching this point; there's
 			 * always an overflow page before a big key/data page.
 			 */
-			if (__big_split(old_bufp,
+			if (__big_split(hashp, old_bufp,
 			    new_bufp, bufp, ov_addr, obucket, &ret))
 				return (-1);
 			old_bufp = ret.oldp;
@@ -328,7 +334,7 @@ ugly_split(obucket, old_bufp, new_bufp, copyto, moved)
 			    scopyto - sizeof(u_short) * (ino[0] + 3);
 			OFFSET(ino) = scopyto;
 
-			bufp = __get_buf(ov_addr, bufp, 0);
+			bufp = __get_buf(hashp, ov_addr, bufp, 0);
 			if (!bufp)
 				return (-1);
 
@@ -338,7 +344,7 @@ ugly_split(obucket, old_bufp, new_bufp, copyto, moved)
 			moved = 0;
 
 			if (last_bfp)
-				__free_ovflpage(last_bfp);
+				__free_ovflpage(hashp, last_bfp);
 			last_bfp = bufp;
 		}
 		/* Move regular sized pairs of there are any */
@@ -351,12 +357,13 @@ ugly_split(obucket, old_bufp, new_bufp, copyto, moved)
 			val.size = ino[n] - ino[n + 1];
 			off = ino[n + 1];
 
-			if (__call_hash(key.data, key.size) == obucket) {
+			if (__call_hash(hashp, key.data, key.size) == obucket) {
 				/* Keep on old page */
 				if (PAIRFITS(op, (&key), (&val)))
 					putpair((char *)op, &key, &val);
 				else {
-					old_bufp = __add_ovflpage(old_bufp);
+					old_bufp =
+					    __add_ovflpage(hashp, old_bufp);
 					if (!old_bufp)
 						return (-1);
 					op = (u_short *)old_bufp->page;
@@ -368,7 +375,8 @@ ugly_split(obucket, old_bufp, new_bufp, copyto, moved)
 				if (PAIRFITS(np, (&key), (&val)))
 					putpair((char *)np, &key, &val);
 				else {
-					new_bufp = __add_ovflpage(new_bufp);
+					new_bufp =
+					    __add_ovflpage(hashp, new_bufp);
 					if (!new_bufp)
 						return (-1);
 					np = (u_short *)new_bufp->page;
@@ -379,7 +387,7 @@ ugly_split(obucket, old_bufp, new_bufp, copyto, moved)
 		}
 	}
 	if (last_bfp)
-		__free_ovflpage(last_bfp);
+		__free_ovflpage(hashp, last_bfp);
 	return (0);
 }
 
@@ -391,7 +399,8 @@ ugly_split(obucket, old_bufp, new_bufp, copyto, moved)
  *	1 ==> failure
  */
 extern int
-__addel(bufp, key, val)
+__addel(hashp, bufp, key, val)
+	HTAB *hashp;
 	BUFHEAD *bufp;
 	const DBT *key, *val;
 {
@@ -404,7 +413,7 @@ __addel(bufp, key, val)
 		/* Exception case */
 		if (bp[2] < REAL_KEY && bp[bp[0]] != OVFLPAGE) {
 			/* This is a big-keydata pair */
-			bufp = __add_ovflpage(bufp);
+			bufp = __add_ovflpage(hashp, bufp);
 			if (!bufp)
 				return (-1);
 			bp = (u_short *)bufp->page;
@@ -414,7 +423,7 @@ __addel(bufp, key, val)
 				squeeze_key(bp, key, val);
 				return (0);
 			} else {
-				bufp = __get_buf(bp[bp[0] - 1], bufp, 0);
+				bufp = __get_buf(hashp, bp[bp[0] - 1], bufp, 0);
 				if (!bufp)
 					return (-1);
 				bp = (u_short *)bufp->page;
@@ -424,7 +433,7 @@ __addel(bufp, key, val)
 		putpair(bufp->page, key, val);
 	else {
 		do_expand = 1;
-		bufp = __add_ovflpage(bufp);
+		bufp = __add_ovflpage(hashp, bufp);
 		if (!bufp)
 			return (-1);
 		sop = (u_short *)bufp->page;
@@ -432,7 +441,7 @@ __addel(bufp, key, val)
 		if (PAIRFITS(sop, key, val))
 			putpair((char *)sop, key, val);
 		else
-			if (__big_insert(bufp, key, val))
+			if (__big_insert(hashp, bufp, key, val))
 				return (-1);
 	}
 	bufp->flags |= BUF_MOD;
@@ -443,7 +452,7 @@ __addel(bufp, key, val)
 	hashp->NKEYS++;
 	if (do_expand ||
 	    (hashp->NKEYS / (hashp->MAX_BUCKET + 1) > hashp->FFACTOR))
-		return (__expand_table());
+		return (__expand_table(hashp));
 	return (0);
 }
 
@@ -454,7 +463,8 @@ __addel(bufp, key, val)
  *	NULL on error
  */
 extern BUFHEAD *
-__add_ovflpage(bufp)
+__add_ovflpage(hashp, bufp)
+	HTAB *hashp;
 	BUFHEAD *bufp;
 {
 	register u_short *sp;
@@ -464,12 +474,12 @@ __add_ovflpage(bufp)
 #endif
 	sp = (u_short *)bufp->page;
 	bufp->flags |= BUF_MOD;
-	ovfl_num = overflow_page();
+	ovfl_num = overflow_page(hashp);
 #ifdef DEBUG1
 	tmp1 = bufp->addr;
 	tmp2 = bufp->ovfl ? bufp->ovfl->addr : 0;
 #endif
-	if (!ovfl_num || !(bufp->ovfl = __get_buf(ovfl_num, bufp, 1)))
+	if (!ovfl_num || !(bufp->ovfl = __get_buf(hashp, ovfl_num, bufp, 1)))
 		return (NULL);
 	bufp->ovfl->flags |= BUF_MOD;
 #ifdef DEBUG1
@@ -499,7 +509,8 @@ __add_ovflpage(bufp)
  *	-1 indicates FAILURE
  */
 extern int
-__get_page(p, bucket, is_bucket, is_disk, is_bitmap)
+__get_page(hashp, p, bucket, is_bucket, is_disk, is_bitmap)
+	HTAB *hashp;
 	char *p;
 	u_int bucket;
 	int is_bucket, is_disk, is_bitmap;
@@ -558,7 +569,8 @@ __get_page(p, bucket, is_bucket, is_disk, is_bitmap)
  *	-1 ==>failure
  */
 extern int
-__put_page(p, bucket, is_bucket, is_bitmap)
+__put_page(hashp, p, bucket, is_bucket, is_bitmap)
+	HTAB *hashp;
 	char *p;
 	u_int bucket;
 	int is_bucket, is_bitmap;
@@ -567,7 +579,7 @@ __put_page(p, bucket, is_bucket, is_bitmap)
 	int wsize;
 
 	size = hashp->BSIZE;
-	if ((hashp->fp == -1) && open_temp())
+	if ((hashp->fp == -1) && open_temp(hashp))
 		return (-1);
 	fd = hashp->fp;
 
@@ -606,7 +618,8 @@ __put_page(p, bucket, is_bucket, is_bitmap)
  * once they are read in.
  */
 extern int
-__init_bitmap(pnum, nbits, ndx)
+__init_bitmap(hashp, pnum, nbits, ndx)
+	HTAB *hashp;
 	int pnum, nbits, ndx;
 {
 	u_long *ip;
@@ -642,8 +655,9 @@ first_free(map)
 	return (i);
 }
 
-static  u_short
-overflow_page()
+static u_short
+overflow_page(hashp)
+	HTAB *hashp;
 {
 	register u_long *freep;
 	register int max_free, offset, splitnum;
@@ -662,7 +676,7 @@ overflow_page()
 	first_page = hashp->LAST_FREED >>(hashp->BSHIFT + BYTE_SHIFT);
 	for ( i = first_page; i <= free_page; i++ ) {
 		if (!(freep = (u_long *)hashp->mapp[i]) &&
-		    !(freep = fetch_bitmap(i)))
+		    !(freep = fetch_bitmap(hashp, i)))
 			return (NULL);
 		if (i == free_page)
 			in_use_bits = free_bit;
@@ -719,7 +733,7 @@ overflow_page()
 		 * don't have to if we tell init_bitmap not to leave it clear
 		 * in the first place.
 		 */
-		if (__init_bitmap((int)OADDR_OF(splitnum, offset),
+		if (__init_bitmap(hashp, (int)OADDR_OF(splitnum, offset),
 		    1, free_page))
 			return (NULL);
 		hashp->SPARES[splitnum]++;
@@ -790,7 +804,8 @@ found:
  * Mark this overflow page as free.
  */
 extern void
-__free_ovflpage(obufp)
+__free_ovflpage(hashp, obufp)
+	HTAB *hashp;
 	BUFHEAD *obufp;
 {
 	register u_short addr;
@@ -811,7 +826,7 @@ __free_ovflpage(obufp)
 	free_bit = bit_address & ((hashp->BSIZE << BYTE_SHIFT) - 1);
 
 	if (!(freep = hashp->mapp[free_page]))
-		freep = fetch_bitmap(free_page);
+		freep = fetch_bitmap(hashp, free_page);
 #ifdef DEBUG
 	/*
 	 * This had better never happen.  It means we tried to read a bitmap
@@ -826,7 +841,7 @@ __free_ovflpage(obufp)
 	(void)fprintf(stderr, "FREE_OVFLPAGE: ADDR: %d BIT: %d PAGE %d\n",
 	    obufp->addr, free_bit, free_page);
 #endif
-	__reclaim_buf(obufp);
+	__reclaim_buf(hashp, obufp);
 }
 
 /*
@@ -835,7 +850,8 @@ __free_ovflpage(obufp)
  *	-1 failure
  */
 static int
-open_temp()
+open_temp(hashp)
+	HTAB *hashp;
 {
 	sigset_t set, oset;
 	static char namestr[] = "_hashXXXXXX";
@@ -883,12 +899,13 @@ squeeze_key(sp, key, val)
 }
 
 static u_long *
-fetch_bitmap(ndx)
+fetch_bitmap(hashp, ndx)
+	HTAB *hashp;
 	int ndx;
 {
 	if (ndx >= hashp->nmaps ||
 	    !(hashp->mapp[ndx] = malloc(hashp->BSIZE)) ||
-	    __get_page((char *)hashp->mapp[ndx],
+	    __get_page(hashp, (char *)hashp->mapp[ndx],
 	    hashp->BITMAPS[ndx], 0, 1, 1))
 		return (NULL);
 	return (hashp->mapp[ndx]);
@@ -903,13 +920,13 @@ print_chain(addr)
 	short *bp, oaddr;
 
 	(void)fprintf(stderr, "%d ", addr);
-	bufp = __get_buf(addr, NULL, 0);
+	bufp = __get_buf(hashp, addr, NULL, 0);
 	bp = (short *)bufp->page;
 	while (bp[0] && ((bp[bp[0]] == OVFLPAGE) ||
 		((bp[0] > 2) && bp[2] < REAL_KEY))) {
 		oaddr = bp[bp[0] - 1];
 		(void)fprintf(stderr, "%d ", (int)oaddr);
-		bufp = __get_buf((int)oaddr, bufp, 0);
+		bufp = __get_buf(hashp, (int)oaddr, bufp, 0);
 		bp = (short *)bufp->page;
 	}
 	(void)fprintf(stderr, "\n");
