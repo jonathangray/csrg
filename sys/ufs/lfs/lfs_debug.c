@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_debug.c	5.2 (Berkeley) 10/02/91
+ *	@(#)lfs_debug.c	5.3 (Berkeley) 10/09/91
  */
 
 #ifdef LOGFS
@@ -103,6 +103,7 @@ dump_super(lfsp)
 	(void)printf("tstamp   %lx\n", lfsp->lfs_tstamp);
 }
 
+void
 dump_dinode(dip)
 	DINODE *dip;
 {
@@ -126,6 +127,7 @@ dump_dinode(dip)
 	(void)printf("\n");
 }
 
+void
 lfs_print_inumber(vp)
 	VNODE *vp;
 {
