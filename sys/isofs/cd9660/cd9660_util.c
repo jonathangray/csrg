@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cd9660_util.c	8.1 (Berkeley) 01/21/94
+ *	@(#)cd9660_util.c	8.2 (Berkeley) 08/20/94
  */
 
 #include <sys/param.h>
@@ -219,6 +219,7 @@ isofntrans(unsigned char *infn,int infnlen,
 	if (assoc) {
 		*outfn++ = ASSOCCHAR;
 		fnidx++;
+		infnlen++;
 	}
 	for (; fnidx < infnlen; fnidx++) {
 		char c = *infn++;
