@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fts.h	5.15 (Berkeley) 11/28/91
+ *	@(#)fts.h	5.16 (Berkeley) 12/23/91
  */
 
 #ifndef	_FTS_H_
@@ -43,7 +43,6 @@ typedef struct {
 	struct _ftsent **fts_array;	/* sort array */
 	dev_t rdev;			/* starting device # */
 	char *fts_path;			/* path for this descent */
-	int fts_dfd;			/* fd for directories */
 	int fts_rfd;			/* fd for root */
 	int fts_pathlen;		/* sizeof(path) */
 	int fts_nitems;			/* elements in the sort array */
