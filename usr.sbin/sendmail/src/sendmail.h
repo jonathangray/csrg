@@ -7,7 +7,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	4.11		12/05/84";
+static char SmailSccsId[] =	"@(#)sendmail.h	4.12		12/06/84";
 # endif lint
 # else  _DEFINE
 # define EXTERN extern
