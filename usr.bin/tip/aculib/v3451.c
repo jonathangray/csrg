@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)v3451.c	5.4 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)v3451.c	5.5 (Berkeley) 03/02/91";
 #endif /* not lint */
 
 /*
@@ -53,6 +53,8 @@ v3451_dialer(num, acu)
 #ifdef ACULOG
 	char line[80];
 #endif
+	static int expect();
+	static void vawrite();
 
 	/*
 	 * Get in synch
@@ -130,7 +132,7 @@ v3451_abort()
 	close(FD);
 }
 
-static
+static void
 vawrite(cp, delay)
 	register char *cp;
 	int delay;
@@ -146,7 +148,9 @@ expect(cp)
 {
 	char buf[300];
 	register char *rp = buf;
-	int alarmtr(), timeout = 30, online = 0;
+	int timeout = 30, online = 0;
+	static int notin();
+	static void alarmtr();
 
 	if (strcmp(cp, "\"\"") == 0)
 		return (1);
@@ -179,17 +183,17 @@ expect(cp)
 	return (1);
 }
 
-static
+static void
 alarmtr()
 {
-
 	longjmp(Sjbuf, 1);
 }
 
-static
+static int
 notin(sh, lg)
 	char *sh, *lg;
 {
+	static int prefix();
 
 	for (; *lg; lg++)
 		if (prefix(sh, lg))
