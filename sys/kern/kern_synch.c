@@ -1,6 +1,6 @@
 /*-
- * Copyright (c) 1982, 1986, 1990 The Regents of the University of California.
- * Copyright (c) 1991 The Regents of the University of California.
+ * Copyright (c) 1982, 1986, 1990, 1991, 1993
+ *	The Regents of the University of California.  All rights reserved.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_synch.c	7.26 (Berkeley) 11/18/92
+ *	@(#)kern_synch.c	8.1 (Berkeley) 06/10/93
  */
 
 #include <sys/param.h>
