@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cd9660_vnops.c	8.11 (Berkeley) 08/17/94
+ *	@(#)cd9660_vnops.c	8.12 (Berkeley) 08/19/94
  */
 
 #include <sys/param.h>
@@ -705,6 +705,7 @@ cd9660_readlink(ap)
 	ISODIR	*dirp;                   
 	ISOMNT	*imp;
 	struct	buf *bp;
+	struct	uio *uio;
 	u_short	symlen;
 	int	error;
 	char	*symname;
@@ -712,6 +713,7 @@ cd9660_readlink(ap)
 	
 	ip  = VTOI(ap->a_vp);
 	imp = ip->i_mnt;
+	uio = ap->a_uio;
 	
 	if (imp->iso_ftype != ISO_FTYPE_RRIP)
 		return (EINVAL);
@@ -748,13 +750,17 @@ cd9660_readlink(ap)
 	 * Now get a buffer
 	 * Abuse a namei buffer for now.
 	 */
-	MALLOC(symname,char *,MAXPATHLEN,M_NAMEI,M_WAITOK);
+	if (uio->uio_segflg == UIO_SYSSPACE)
+		symname = uio->uio_iov->iov_base;
+	else
+		MALLOC(symname, char *, MAXPATHLEN, M_NAMEI, M_WAITOK);
 	
 	/*
 	 * Ok, we just gathering a symbolic name in SL record.
 	 */
-	if (cd9660_rrip_getsymname(dirp,symname,&symlen,imp) == 0) {
-		FREE(symname,M_NAMEI);
+	if (cd9660_rrip_getsymname(dirp, symname, &symlen, imp) == 0) {
+		if (uio->uio_segflg != UIO_SYSSPACE)
+			FREE(symname, M_NAMEI);
 		brelse(bp);
 		return (EINVAL);
 	}
@@ -766,11 +772,15 @@ cd9660_readlink(ap)
 	/*
 	 * return with the symbolic name to caller's.
 	 */
-	error = uiomove(symname,symlen,ap->a_uio);
-	
-	FREE(symname,M_NAMEI);
-	
-	return (error);
+	if (uio->uio_segflg != UIO_SYSSPACE) {
+		error = uiomove(symname, symlen, uio);
+		FREE(symname, M_NAMEI);
+		return (error);
+	}
+	uio->uio_resid -= symlen;
+	uio->uio_iov->iov_base += symlen;
+	uio->uio_iov->iov_len -= symlen;
+	return (0);
 }
 
 /*
