@@ -23,12 +23,13 @@ static char sccsid[] = "@(#)crt0.c	5.4 (Berkeley) 04/28/91";
 char **environ = (char **)0;
 static int fd;
 
-asm("#define _start start");
-asm("#define _eprol eprol");
-asm("	.text");
-asm("	.long 0xc000c000");
+asm(".text");
+asm(".long 0xc000c000");
+
 extern	unsigned char	etext;
-extern	unsigned char	eprol;
+extern	unsigned char	eprol asm ("eprol");
+extern			start() asm("start");
+
 start()
 {
 	struct kframe {
@@ -49,7 +50,7 @@ start()
 	kfp = 0;
 	initcode = initcode = 0;
 #else not lint
-	asm("	lea	4(%ebp),%ebx");	/* catch it quick */
+	asm("lea 4(%ebp),%ebx");	/* catch it quick */
 #endif not lint
 	for (argv = targv = &kfp->kargv[0]; *targv++; /* void */)
 		/* void */ ;
@@ -79,19 +80,17 @@ asm("eprol:");
 	errno = 0;
 	exit(main(kfp->kargc, argv, environ));
 }
-asm("#undef _start");
-asm("#undef _eprol");
 
 #ifdef MCRT0
 /*ARGSUSED*/
 exit(code)
-	register int code;	/* r11 */
+	register int code;
 {
 	monitor(0);
 	_cleanup();
-	asm("	pushl	8(bp)") ;
-	asm("	movl $1,%eax");
-	asm("	.byte 0x9a; .long 0; .word 0");
+	asm("pushl 8(%ebp)") ;
+	asm("movl $1,%eax");
+	asm(".byte 0x9a; .long 0; .word 0");
 }
 #endif MCRT0
 
@@ -105,6 +104,6 @@ moncontrol(val)
 {
 
 }
-asm("	.globl	mcount");
-asm("mcount:	ret");
+asm(".globl mcount");
+asm("mcount: ret");
 #endif CRT0
