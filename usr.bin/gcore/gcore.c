@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)gcore.c	5.14 (Berkeley) 06/30/92";
+static char sccsid[] = "@(#)gcore.c	5.15 (Berkeley) 03/31/93";
 #endif /* not lint */
 
 /*
@@ -58,7 +58,7 @@ static char sccsid[] = "@(#)gcore.c	5.14 (Berkeley) 06/30/92";
 #include <sys/stat.h>
 #include <sys/proc.h>
 #include <sys/user.h>
-#include <sys/kinfo.h>
+#include <sys/sysctl.h>
 #include <sys/kinfo_proc.h>
 #include <machine/vmparam.h>
 
@@ -123,7 +123,7 @@ main(argc, argv)
 	uid = getuid();
 	pid = atoi(argv[1]);
 			
-	ki = kvm_getprocs(kd, KINFO_PROC_PID, pid, &cnt);
+	ki = kvm_getprocs(kd, KERN_PROC_PID, pid, &cnt);
 	if (ki == NULL || cnt != 1)
 		err(1, "%d: not found", pid);
 
