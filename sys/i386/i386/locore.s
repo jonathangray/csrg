@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)locore.s	7.2 (Berkeley) 05/09/91
+ *	@(#)locore.s	7.3 (Berkeley) 05/13/91
  */
 
 
@@ -104,7 +104,7 @@
  * Initialization
  */
 	.data
-	.globl	_cpu,_cold,_boothowto,_bootdev,_cyloffset,_Maxmem,_atdevbase,_atdevphys
+	.globl	_cpu,_cold,_boothowto,_bootdev,_cyloffset,_atdevbase,_atdevphys
 _cpu:	.long	0		# are we 386, 386sx, or 486
 _cold:	.long	1		# cold till we are not
 _atdevbase:	.long	0	# location of start of iomem in virtual
@@ -123,13 +123,28 @@ start:	movw	$0x1234,%ax
 	jmp	1f
 	.space	0x500		# skip over warm boot shit
 
+	/* enable a20! yecchh!! - move this to bootstrap? */
+1:	inb	$0x64,%al
+	andb	$2,%al
+	jnz	1b
+	movb	$0xd1,%al
+	NOP
+	outb	%al,$0x64
+	NOP
+1:	inb	$0x64,%al
+	andb	$2,%al
+	jnz	1b
+	movb	$0xdf,%al
+	NOP
+	outb	%al,$0x60
+
 	/*
 	 * pass parameters on stack (howto, bootdev, unit, cyloffset)
 	 * note: 0(%esp) is return address of boot
 	 * ( if we want to hold onto /boot, it's physical %esp up to _end)
 	 */
 
-	movl	4(%esp),%eax
+ 1:	movl	4(%esp),%eax
 	movl	%eax,_boothowto-SYSTEM
 	movl	8(%esp),%eax
 	movl	%eax,_bootdev-SYSTEM
@@ -656,7 +671,7 @@ _lcr3:
 	movl	4(%esp),%eax
  	orl	$ I386_CR3PAT,%eax
 	movl	%eax,%cr3
-	movl	%cr3,%eax
+	inb	$0x84,%al	# check wristwatch
 	ret
 
 	# tlbflush()
@@ -922,7 +937,9 @@ ENTRY(swtch)
 
 	/* switch to new process. first, save context as needed */
 
-	movl	_curpcb,%ecx
+	movl	_curproc,%ecx
+	movl	P_ADDR(%ecx),%ecx
+
 
 	movl	(%esp),%eax		# Hardware registers
 	movl	%eax, PCB_EIP(%ecx)
