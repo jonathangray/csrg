@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)mkfs.c	6.29 (Berkeley) 02/15/93";
+static char sccsid[] = "@(#)mkfs.c	6.30 (Berkeley) 05/05/93";
 #endif /* not lint */
 
 #include <unistd.h>
@@ -85,6 +85,7 @@ static char sccsid[] = "@(#)mkfs.c	6.29 (Berkeley) 02/15/93";
  */
 extern int	mfs;		/* run as the memory based filesystem */
 extern int	Nflag;		/* run mkfs without writing file system */
+extern int	Oflag;		/* format as an 4.3BSD file system */
 extern int	fssize;		/* file system size */
 extern int	ntracks;	/* # tracks/cylinder */
 extern int	nsectors;	/* # sectors/track */
@@ -170,8 +171,13 @@ mkfs(pp, fsys, fi, fo)
 	}
 	fsi = fi;
 	fso = fo;
-	sblock.fs_inodefmt = FS_44INODEFMT;
-	sblock.fs_maxsymlinklen = MAXSYMLINKLEN;
+	if (Oflag) {
+		sblock.fs_inodefmt = FS_42INODEFMT;
+		sblock.fs_maxsymlinklen = 0;
+	} else {
+		sblock.fs_inodefmt = FS_44INODEFMT;
+		sblock.fs_maxsymlinklen = MAXSYMLINKLEN;
+	}
 	/*
 	 * Validate the given file system size.
 	 * Verify that its last block can actually be accessed.
@@ -769,11 +775,28 @@ struct direct root_dir[] = {
 	{ LOSTFOUNDINO, sizeof(struct direct), DT_DIR, 10, "lost+found" },
 #endif
 };
+struct odirect {
+	u_long	d_ino;
+	u_short	d_reclen;
+	u_short	d_namlen;
+	u_char	d_name[MAXNAMLEN + 1];
+} oroot_dir[] = {
+	{ ROOTINO, sizeof(struct direct), 1, "." },
+	{ ROOTINO, sizeof(struct direct), 2, ".." },
+#ifdef LOSTDIR
+	{ LOSTFOUNDINO, sizeof(struct direct), 10, "lost+found" },
+#endif
+};
 #ifdef LOSTDIR
 struct direct lost_found_dir[] = {
 	{ LOSTFOUNDINO, sizeof(struct direct), DT_DIR, 1, "." },
 	{ ROOTINO, sizeof(struct direct), DT_DIR, 2, ".." },
 	{ 0, DIRBLKSIZ, 0, 0, 0 },
+};
+struct odirect olost_found_dir[] = {
+	{ LOSTFOUNDINO, sizeof(struct direct), 1, "." },
+	{ ROOTINO, sizeof(struct direct), 2, ".." },
+	{ 0, DIRBLKSIZ, 0, 0 },
 };
 #endif
 char buf[MAXBSIZE];
@@ -793,10 +816,17 @@ fsinit(utime)
 	/*
 	 * create the lost+found directory
 	 */
-	(void)makedir(lost_found_dir, 2);
-	for (i = DIRBLKSIZ; i < sblock.fs_bsize; i += DIRBLKSIZ)
-		bcopy(&lost_found_dir[2], &buf[i],
-		    DIRSIZ(0, &lost_found_dir[2]));
+	if (Oflag) {
+		(void)makedir((struct direct *)olost_found_dir, 2);
+		for (i = DIRBLKSIZ; i < sblock.fs_bsize; i += DIRBLKSIZ)
+			bcopy(&olost_found_dir[2], &buf[i],
+			    DIRSIZ(0, &olost_found_dir[2]));
+	} else {
+		(void)makedir(lost_found_dir, 2);
+		for (i = DIRBLKSIZ; i < sblock.fs_bsize; i += DIRBLKSIZ)
+			bcopy(&lost_found_dir[2], &buf[i],
+			    DIRSIZ(0, &lost_found_dir[2]));
+	}
 	node.di_mode = IFDIR | UMASK;
 	node.di_nlink = 2;
 	node.di_size = sblock.fs_bsize;
@@ -813,7 +843,10 @@ fsinit(utime)
 	else
 		node.di_mode = IFDIR | UMASK;
 	node.di_nlink = PREDEFDIR;
-	node.di_size = makedir(root_dir, PREDEFDIR);
+	if (Oflag)
+		node.di_size = makedir((struct direct *)oroot_dir, PREDEFDIR);
+	else
+		node.di_size = makedir(root_dir, PREDEFDIR);
 	node.di_db[0] = alloc(sblock.fs_fsize, node.di_mode);
 	node.di_blocks = btodb(fragroundup(&sblock, node.di_size));
 	wtfs(fsbtodb(&sblock, node.di_db[0]), sblock.fs_fsize, buf);
