@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.78 (Berkeley) 02/06/95";
+static char sccsid[] = "@(#)main.c	8.79 (Berkeley) 02/10/95";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -483,7 +483,11 @@ main(argc, argv, envp)
 			break;
 
 		  case 'B':	/* body type */
-			CurEnv->e_bodytype = newstr(optarg);
+			if (strcasecmp(optarg, "7bit") == 0 ||
+			    strcasecmp(optarg, "8bitmime") == 0)
+				CurEnv->e_bodytype = newstr(optarg);
+			else
+				usrerr("Illegal body type %s", optarg);
 			break;
 
 		  case 'C':	/* select configuration file (already done) */
@@ -506,7 +510,7 @@ main(argc, argv, envp)
 				ExitStat = EX_USAGE;
 				break;
 			}
-			from = newstr(optarg);
+			from = newstr(denlstring(optarg));
 			if (strcmp(RealUserName, from) != 0)
 				warn_f_flag = j;
 			break;
@@ -540,11 +544,21 @@ main(argc, argv, envp)
 		  case 'p':	/* set protocol */
 			p = strchr(optarg, ':');
 			if (p != NULL)
+			{
 				*p++ = '\0';
+				if (*p != '\0')
+				{
+					ep = xalloc(strlen(p) + 1);
+					cleanstrcpy(ep, p, MAXNAME);
+					define('s', ep, CurEnv);
+				}
+			}
 			if (*optarg != '\0')
-				define('r', newstr(optarg), CurEnv);
-			if (p != NULL && *p != '\0')
-				define('s', newstr(p), CurEnv);
+			{
+				ep = xalloc(strlen(optarg) + 1);
+				cleanstrcpy(ep, optarg, MAXNAME);
+				define('r', ep, CurEnv);
+			}
 			break;
 
 		  case 'q':	/* run queue files at intervals */
