@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)displayq.c	8.2 (Berkeley) 04/27/95";
+static char sccsid[] = "@(#)displayq.c	8.3 (Berkeley) 04/28/95";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -124,7 +124,7 @@ displayq(format)
 		fatal("cannot examine spooling area\n");
 	if (stat(LO, &statb) >= 0) {
 		if (statb.st_mode & 0100) {
-			if (sendtorem)
+			if (remote)
 				printf("%s: ", host);
 			printf("Warning: %s is down: ", printer);
 			fd = open(ST, O_RDONLY);
@@ -137,7 +137,7 @@ displayq(format)
 				putchar('\n');
 		}
 		if (statb.st_mode & 010) {
-			if (sendtorem)
+			if (remote)
 				printf("%s: ", host);
 			printf("Warning: %s queue is turned off\n", printer);
 		}
@@ -165,7 +165,7 @@ displayq(format)
 				/*
 				 * Print the status file.
 				 */
-				if (sendtorem)
+				if (remote)
 					printf("%s: ", host);
 				fd = open(ST, O_RDONLY);
 				if (fd >= 0) {
@@ -191,7 +191,7 @@ displayq(format)
 		}
 		free(queue);
 	}
-	if (!sendtorem) {
+	if (!remote) {
 		if (nitems == 0)
 			puts("no entries");
 		return;
@@ -215,7 +215,7 @@ displayq(format)
 		(void) strcpy(cp, user[i]);
 	}
 	strcat(line, "\n");
-	fd = getport(RM);
+	fd = getport(RM, 0);
 	if (fd < 0) {
 		if (from != host)
 			printf("%s: ", host);
@@ -237,7 +237,7 @@ displayq(format)
 void
 warn()
 {
-	if (sendtorem)
+	if (remote)
 		printf("\n%s: ", host);
 	puts("Warning: no daemon present");
 	current[0] = '\0';
@@ -271,7 +271,7 @@ inform(cf)
 
 	if (rank < 0)
 		rank = 0;
-	if (sendtorem || garbage || strcmp(cf, current))
+	if (remote || garbage || strcmp(cf, current))
 		rank++;
 	j = 0;
 	while (getline(cfp)) {
