@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	6.31 (Berkeley) 03/01/93";
+static char sccsid[] = "@(#)main.c	6.32 (Berkeley) 03/01/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -766,7 +766,7 @@ main(argc, argv, envp)
 		{
 			register char **pvp;
 			char *q;
-			extern char *DelimChar;
+			auto char *delimptr;
 			extern bool invalidaddr();
 
 			if (Verbose)
@@ -796,7 +796,7 @@ main(argc, argv, envp)
 				extern char **prescan();
 				char pvpbuf[PSBUFSIZE];
 
-				pvp = prescan(++p, ',', pvpbuf);
+				pvp = prescan(++p, ',', pvpbuf, &delimptr);
 				if (pvp == NULL)
 					continue;
 				p = q;
@@ -806,7 +806,7 @@ main(argc, argv, envp)
 					while (*p != '\0' && *p++ != ',')
 						continue;
 				}
-			} while (*(p = DelimChar) != '\0');
+			} while (*(p = delimptr) != '\0');
 		}
 	}
 
@@ -914,7 +914,7 @@ main(argc, argv, envp)
 	(void) setpgrp(0, getpid());
 
 	initsys(CurEnv);
-	setsender(from, CurEnv);
+	setsender(from, CurEnv, NULL);
 
 	if (*av == NULL && !GrabTo)
 	{
