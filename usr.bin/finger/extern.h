@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.2 (Berkeley) 07/27/91
+ *	@(#)extern.h	5.3 (Berkeley) 11/13/91
  */
 
 extern char tbuf[1024];			/* Temp buffer for anybody. */
@@ -48,4 +48,3 @@ void	 netfinger __P((char *));
 PERSON	*palloc __P((void));
 char	*prphone __P((char *));
 void	 sflag_print __P((void));
-WHERE	*walloc __P((PERSON *));
