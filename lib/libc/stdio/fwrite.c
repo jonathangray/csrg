@@ -1,49 +1,72 @@
-/*
- * Copyright (c) 1980 Regents of the University of California.
- * All rights reserved.  The Berkeley software License Agreement
- * specifies the terms and conditions for redistribution.
+/*-
+ * Copyright (c) 1990 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This code is derived from software contributed to Berkeley by
+ * Chris Torek.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)fwrite.c	5.2 (Berkeley) 03/09/86";
-#endif LIBC_SCCS and not lint
+static char sccsid[] = "@(#)fwrite.c	5.3 (Berkeley) 01/20/91";
+#endif /* LIBC_SCCS and not lint */
 
-#include	<stdio.h>
+#include <stdio.h>
+#include <string.h>
+#include "local.h"
+#include "fvwrite.h"
 
-fwrite(ptr, size, count, iop)
-	register char *ptr;
-	unsigned size, count;
-	register FILE *iop;
+/*
+ * Write `count' objects (each size `size') from memory to the given file.
+ * Return the number of whole objects written.
+ */
+fwrite(buf, size, count, fp)
+	void *buf;
+	size_t size, count;
+	FILE *fp;
 {
-	register int s;
+	size_t n;
+	struct __suio uio;
+	struct __siov iov;
 
-	s = size * count;
-	if (iop->_flag & _IOLBF)
-		while (s > 0) {
-			if (--iop->_cnt > -iop->_bufsiz && *ptr != '\n')
-				*iop->_ptr++ = *ptr++;
-			else if (_flsbuf(*(unsigned char *)ptr++, iop) == EOF)
-				break;
-			s--;
-		}
-	else while (s > 0) {
-		if (iop->_cnt < s) {
-			if (iop->_cnt > 0) {
-				bcopy(ptr, iop->_ptr, iop->_cnt);
-				ptr += iop->_cnt;
-				iop->_ptr += iop->_cnt;
-				s -= iop->_cnt;
-			}
-			if (_flsbuf(*(unsigned char *)ptr++, iop) == EOF)
-				break;
-			s--;
-		}
-		if (iop->_cnt >= s) {
-			bcopy(ptr, iop->_ptr, s);
-			iop->_ptr += s;
-			iop->_cnt -= s;
-			return (count);
-		}
-	}
-	return (size != 0 ? count - ((s + size - 1) / size) : 0);
+	iov.iov_base = buf;
+	uio.uio_resid = iov.iov_len = n = count * size;
+	uio.uio_iov = &iov;
+	uio.uio_iovcnt = 1;
+
+	/*
+	 * The usual case is success (__sfvwrite returns 0);
+	 * skip the divide if this happens, since divides are
+	 * generally slow and since this occurs whenever size==0.
+	 */
+	if (__sfvwrite(fp, &uio) == 0)
+		return (count);
+	return ((n - uio.uio_resid) / size);
 }
