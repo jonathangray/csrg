@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)string.h	5.5 (Berkeley) 01/17/91
+ *	@(#)string.h	5.6 (Berkeley) 01/20/91
  */
 
 #ifndef _STRING_H_
@@ -113,7 +113,7 @@ int	 strcasecmp(const char *, const char *);
 char	*strdup(const char *);
 void	 strmode(int, char *);
 int	 strncasecmp(const char *, const char *, size_t);
-char	*strsep(char *, const char *);
+char	*strsep(char **, const char *);
 void	 swab(const char *, char *, size_t);
 
 #else
