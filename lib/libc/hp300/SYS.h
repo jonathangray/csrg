@@ -34,15 +34,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)SYS.h	5.3 (Berkeley) 05/30/90
+ *	@(#)SYS.h	5.4 (Berkeley) 04/28/91
  */
 
 #include <sys/syscall.h>
-
-/* vax/tahoe compat */
-#define	ret	rts
-#define	r0	d0
-#define	r1	d1
 
 #ifdef PROF
 #ifdef __GNUC__
@@ -57,8 +52,8 @@
 #define	ENTRY(x)	.globl _/**/x; .even; _/**/x:
 #endif PROF
 #define	SYSCALL(x)	.even; err: jmp cerror; ENTRY(x); movl #SYS_/**/x,d0; \
-			trap #0; jcs err
-#define	PSEUDO(x,y)	ENTRY(x); movl #SYS_/**/y,d0; trap #0;
+			trap #0; jcs err; rts
+#define	PSEUDO(x,y)	ENTRY(x); movl #SYS_/**/y,d0; trap #0; rts
 
 #define	ASMSTR		.asciz
 
