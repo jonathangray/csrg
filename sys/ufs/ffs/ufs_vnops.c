@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	7.89 (Berkeley) 05/14/92
+ *	@(#)ufs_vnops.c	7.90 (Berkeley) 05/15/92
  */
 
 #include <sys/param.h>
@@ -1580,7 +1580,7 @@ ufs_strategy (ap)
 	}
 	vp = ip->i_devvp;
 	bp->b_dev = vp->v_rdev;
-	(vp->v_op->vop_strategy)(bp);
+	VOCALL (vp->v_op, VOFFSET(vop_strategy), ap);
 	return (0);
 }
 #undef bp
@@ -1623,17 +1623,13 @@ ufsspec_read (ap)
 #define ioflag (ap->a_ioflag)
 #define cred (ap->a_cred)
 {
+	extern int (**spec_vnodeop_p)();
 
 	/*
 	 * Set access flag.
 	 */
 	VTOI(vp)->i_flag |= IACC;
-/*
- * NEEDSWORK: direct function call (ufsspec != spec).
- * <	return (spec_read(vp, uio, ioflag, cred));>
- * as <	return (VOP_READ(vp, uio, ioflag, cred));>
- */
-	return (spec_read(vp, uio, ioflag, cred));
+	return (VOCALL (spec_vnodeop_p, VOFFSET(vop_read), ap));
 }
 #undef vp
 #undef uio
@@ -1651,17 +1647,13 @@ ufsspec_write (ap)
 #define ioflag (ap->a_ioflag)
 #define cred (ap->a_cred)
 {
+	extern int (**spec_vnodeop_p)();
 
 	/*
 	 * Set update and change flags.
 	 */
 	VTOI(vp)->i_flag |= IUPD|ICHG;
-/*
- * NEEDSWORK: direct function call (ufsspec != spec).
- * <	return (spec_write(vp, uio, ioflag, cred));>
- * as <	return (VOP_WRITE(vp, uio, ioflag, cred));>
- */
-	return (spec_write(vp, uio, ioflag, cred));
+	return (VOCALL (spec_vnodeop_p, VOFFSET(vop_write), ap));
 }
 #undef vp
 #undef uio
@@ -1681,16 +1673,12 @@ ufsspec_close (ap)
 #define cred (ap->a_cred)
 #define p (ap->a_p)
 {
+	extern int (**spec_vnodeop_p)();
 	register struct inode *ip = VTOI(vp);
 
 	if (vp->v_usecount > 1 && !(ip->i_flag & ILOCKED))
 		ITIMES(ip, &time, &time);
-/*
- * NEEDSWORK: direct function call (ufsspec != spec).
- * <	return (spec_close(vp, fflag, cred, p));>
- * as <	return (VOP_CLOSE(vp, fflag, cred, p));>
- */
-	return (spec_close(vp, fflag, cred, p));
+	return (VOCALL (spec_vnodeop_p, VOFFSET(vop_close), ap));
 }
 #undef vp
 #undef fflag
@@ -1709,17 +1697,13 @@ ufsfifo_read (ap)
 #define ioflag (ap->a_ioflag)
 #define cred (ap->a_cred)
 {
+	extern int (**fifo_vnodeop_p)();
 
 	/*
 	 * Set access flag.
 	 */
 	VTOI(vp)->i_flag |= IACC;
-/*
- * NEEDSWORK: direct function call (ufsfifo != fifo).
- * <	return (fifo_read(vp, uio, ioflag, cred));>
- * as <	return (VOP_READ(vp, uio, ioflag, cred));>
- */
-	return (fifo_read(vp, uio, ioflag, cred));
+	return (VOCALL (fifo_vnodeop_p, VOFFSET(vop_read), ap));
 }
 #undef vp
 #undef uio
@@ -1737,17 +1721,13 @@ ufsfifo_write (ap)
 #define ioflag (ap->a_ioflag)
 #define cred (ap->a_cred)
 {
+	extern int (**fifo_vnodeop_p)();
 
 	/*
 	 * Set update and change flags.
 	 */
 	VTOI(vp)->i_flag |= IUPD|ICHG;
-/*
- * NEEDSWORK: direct function call (ufsfifo != fifo).
- * <	return (fifo_write(vp, uio, ioflag, cred));>
- * as <	return (VOP_WRITE(vp, uio, ioflag, cred));>
- */
-	return (fifo_write(vp, uio, ioflag, cred));
+	return (VOCALL (fifo_vnodeop_p, VOFFSET(vop_write), ap));
 }
 #undef vp
 #undef uio
@@ -1766,16 +1746,12 @@ ufsfifo_close (ap)
 #define cred (ap->a_cred)
 #define p (ap->a_p)
 {
+	extern int (**fifo_vnodeop_p)();
 	register struct inode *ip = VTOI(vp);
 
 	if (vp->v_usecount > 1 && !(ip->i_flag & ILOCKED))
 		ITIMES(ip, &time, &time);
-/*
- * NEEDSWORK: direct function call (ufsfifo != fifo).
- * <	return (fifo_close(vp, fflag, cred, p));>
- * as <	return (VOP_CLOSE(vp, fflag, cred, p));>
- */
-	return (fifo_close(vp, fflag, cred, p));
+	return (VOCALL (fifo_vnodeop_p, VOFFSET(vop_close), ap));
 }
 #undef vp
 #undef fflag
