@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)raw_ip.c	8.5 (Berkeley) 02/09/95
+ *	@(#)raw_ip.c	8.6 (Berkeley) 05/01/95
  */
 
 #include <sys/param.h>
@@ -181,30 +181,30 @@ rip_ctloutput(op, so, level, optname, m)
 	register int error;
 
 	if (level != IPPROTO_IP) {
-		if (m != 0 && *m != 0)
-			(void)m_free(*m);
+		if (op == PRCO_SETOPT && *m)
+			(void) m_free(*m);
 		return (EINVAL);
 	}
 
 	switch (optname) {
 
 	case IP_HDRINCL:
-		if (op == PRCO_SETOPT || op == PRCO_GETOPT) {
-			if (m == 0 || *m == 0 || (*m)->m_len < sizeof (int))
-				return (EINVAL);
-			if (op == PRCO_SETOPT) {
-				if (*mtod(*m, int *))
-					inp->inp_flags |= INP_HDRINCL;
-				else
-					inp->inp_flags &= ~INP_HDRINCL;
+		error = 0;
+		if (op == PRCO_SETOPT) {
+			if (*m == 0 || (*m)->m_len < sizeof (int))
+				error = EINVAL;
+			else if (*mtod(*m, int *))
+				inp->inp_flags |= INP_HDRINCL;
+			else
+				inp->inp_flags &= ~INP_HDRINCL;
+			if (*m)
 				(void)m_free(*m);
-			} else {
-				(*m)->m_len = sizeof (int);
-				*mtod(*m, int *) = inp->inp_flags & INP_HDRINCL;
-			}
-			return (0);
+		} else {
+			*m = m_get(M_WAIT, MT_SOOPTS);
+			(*m)->m_len = sizeof (int);
+			*mtod(*m, int *) = inp->inp_flags & INP_HDRINCL;
 		}
-		break;
+		return (error);
 
 	case DVMRP_INIT:
 	case DVMRP_DONE:
@@ -227,6 +227,18 @@ rip_ctloutput(op, so, level, optname, m)
 			(void)m_free(*m);
 		return (EOPNOTSUPP);
 #endif
+
+	default:
+		if (optname >= DVMRP_INIT) {
+			if (op == PRCO_SETOPT) {
+				error = ip_mrouter_cmd(optname, so, *m);
+				if (*m)
+					(void)m_free(*m);
+			} else
+				error = EINVAL;
+			return (error);
+		}
+
 	}
 	return (ip_ctloutput(op, so, level, optname, m));
 }
