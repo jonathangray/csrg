@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)savemail.c	6.2 (Berkeley) 01/09/93";
+static char sccsid[] = "@(#)savemail.c	6.3 (Berkeley) 01/21/93";
 #endif /* not lint */
 
 # include <sys/types.h>
@@ -420,6 +420,12 @@ returntosender(msg, returnq, sendbody, e)
 			addheader("to", q->q_paddr, ee);
 	}
 
+# ifdef LOG
+	if (LogLevel >= 3)
+		syslog(LOG_INFO, "%s: %s: return to sender: %s",
+			e->e_id, ee->e_id, msg);
+# endif
+
 	(void) sprintf(buf, "Returned mail: %s", msg);
 	addheader("subject", buf, ee);
 
@@ -439,7 +445,7 @@ returntosender(msg, returnq, sendbody, e)
 	CurEnv = ee;
 	define('f', "\001n", ee);
 	define('x', "Mail Delivery Subsystem", ee);
-	eatheader(ee);
+	eatheader(ee, FALSE);
 
 	/* actually deliver the error message */
 	sendall(ee, SM_DEFAULT);
