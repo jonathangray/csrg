@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)getfsstat.2	6.7 (Berkeley) 11/19/91
+.\"	@(#)getfsstat.2	6.8 (Berkeley) 12/14/91
 .\"
 .Dd 
 .Dt GETFSSTAT 2
@@ -58,8 +58,8 @@ typedef quad fsid_t;
 struct statfs {
     short   f_type;	/* type of filesystem (see below) */
     short   f_flags;	/* copy of mount flags */
-    long    f_fsize;	/* fundamental filesystem block size */
-    long    f_bsize;	/* optimal transfer block size */
+    long    f_bsize;	/* fundamental filesystem block size */
+    long    f_iosize;	/* optimal transfer block size */
     long    f_blocks;	/* total data blocks in filesystem */
     long    f_bfree;	/* free blocks in fs */
     long    f_bavail;	/* free blocks avail to non-superuser */
