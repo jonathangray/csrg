@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_var.h	7.11 (Berkeley) 01/08/93
+ *	@(#)tcp_var.h	7.12 (Berkeley) 02/12/93
  */
 
 /*
@@ -173,6 +173,9 @@ struct tcpcb {
 	u_long	ts_recent;		/* timestamp echo data */
 	u_long	ts_recent_age;		/* when last updated */
 	tcp_seq	last_ack_sent;
+
+/* TUBA stuff */
+	caddr_t	t_tuba_pcb;		/* next level down pcb for TCP over z */
 };
 
 #define	intotcpcb(ip)	((struct tcpcb *)(ip)->inp_ppcb)
