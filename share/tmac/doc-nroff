@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)doc-nroff	5.3 (Berkeley) 04/20/91
+.\"     @(#)doc-nroff	5.4 (Berkeley) 05/01/91
 .\"
 .\" tmac.mdoc-nroff
 .\"     %beginstrip%
@@ -37,6 +37,7 @@
 .ds aD \fI
 .ds aR \fI
 .ds cM \fB
+.ds dF \fR
 .ds eM \fI
 .ds eR \fR
 .ds eV \fR
@@ -44,6 +45,8 @@
 .ds fD \fB
 .ds fL \fB
 .ds fN \fB
+.ds fP \fP
+.ds fS
 .ds fT \fI
 .ds Hs \fR
 .ds iC \fB
@@ -64,7 +67,8 @@
 .ds sH \fB
 .ds sY \fB
 .ds sX \fI
-.ds tN \fR
+.ds tF \fR
+.ds tN
 .ds vA \fI
 .ds Vs \fR
 .ds vT \fB
@@ -112,6 +116,7 @@
 .ds Pm +-
 .ds If infinity
 .ds Na \fINaN\fP
+.ds Ba \fR\&|\fP
 
 .\"
 .de hK
