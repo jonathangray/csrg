@@ -39,11 +39,12 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	6.6 (Berkeley) 01/13/93";
+static char sccsid[] = "@(#)main.c	6.7 (Berkeley) 01/18/93";
 #endif /* not lint */
 
 #define	_DEFINE
 
+#include <unistd.h>
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <signal.h>
@@ -200,8 +201,11 @@ main(argc, argv, envp)
 		i = dup(i);
 
 	i = DtableSize;
-	while (--i > 2)
-		(void) close(i);
+	while (--i > 0)
+	{
+		if (i != STDIN_FILENO && i != STDOUT_FILENO && i != STDERR_FILENO)
+			(void) close(i);
+	}
 	errno = 0;
 
 #ifdef LOG_MAIL
