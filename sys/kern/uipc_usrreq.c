@@ -28,7 +28,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_usrreq.c	7.40 (Berkeley) 04/30/93
+ *	@(#)uipc_usrreq.c	8.1 (Berkeley) 06/10/93
  */
 
 #include <sys/param.h>
