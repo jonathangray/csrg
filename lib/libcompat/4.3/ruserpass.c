@@ -1,6 +1,6 @@
 /* Copyright (c) 1982 Regents of the University of California */
 
-static char sccsid[] = "@(#)ruserpass.c 4.1 02/21/82";
+static char sccsid[] = "@(#)ruserpass.c 4.2 10/10/82";
 
 #include <stdio.h>
 #include <utmp.h>
