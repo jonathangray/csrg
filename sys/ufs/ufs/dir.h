@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dir.h	7.11 (Berkeley) 07/02/92
+ *	@(#)dir.h	7.12 (Berkeley) 07/06/92
  */
 
 #ifndef _DIR_H_
@@ -105,6 +105,8 @@ struct	direct {
 #define DIRSIZ(oldfmt, dp) \
     ((sizeof (struct direct) - (MAXNAMLEN+1)) + (((dp)->d_namlen+1 + 3) &~ 3))
 #endif
+#define OLDDIRFMT	1
+#define NEWDIRFMT	0
 
 /*
  * Template for manipulating directories.
