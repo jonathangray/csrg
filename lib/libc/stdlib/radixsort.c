@@ -2,6 +2,9 @@
  * Copyright (c) 1990 The Regents of the University of California.
  * All rights reserved.
  *
+ * This code is derived from software contributed to Berkeley by
+ * Dan Bernstein at New York University.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -32,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)radixsort.c	5.8 (Berkeley) 07/23/91";
+static char sccsid[] = "@(#)radixsort.c	5.9 (Berkeley) 08/17/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
