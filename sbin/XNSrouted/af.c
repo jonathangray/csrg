@@ -8,7 +8,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)af.c	5.4 (Berkeley) 09/17/85";
+static char sccsid[] = "@(#)af.c	5.5 (Berkeley) 02/14/86";
 #endif not lint
 
 
