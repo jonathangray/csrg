@@ -1,12 +1,12 @@
 /*-
- * Copyright (c) 1982, 1986 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1982, 1986, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This module is believed to contain source code proprietary to AT&T.
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)subr_rmap.c	7.11 (Berkeley) 10/11/92
+ *	@(#)subr_rmap.c	8.1 (Berkeley) 06/10/93
  */
 
 #include <sys/param.h>
