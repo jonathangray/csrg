@@ -1,4 +1,4 @@
-#	@(#)Makefile	6.11 (Berkeley) 03/07/91
+#	@(#)Makefile	6.12 (Berkeley) 03/07/91
 
 FILES=	tmac.an.old tmac.r tmac.doc tmac.andoc tmac.doc.old tmac.doc-ditroff \
 	tmac.doc-nroff tmac.doc-common tmac.doc-syms
