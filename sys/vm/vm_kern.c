@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_kern.c	7.3 (Berkeley) 04/21/91
+ *	@(#)vm_kern.c	7.4 (Berkeley) 05/07/91
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -368,8 +368,11 @@ kmem_malloc(map, size, canwait)
 	addr = vm_map_min(map);
 
 	if (vm_map_find(map, NULL, (vm_offset_t)0,
-			&addr, size, TRUE) != KERN_SUCCESS)
+			&addr, size, TRUE) != KERN_SUCCESS) {
+		if (canwait)
+			panic("kmem_malloc: kmem_map too small");
 		return(0);
+	}
 
 	/*
 	 * Since we didn't know where the new region would start,
