@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mount.h	7.25 (Berkeley) 11/01/91
+ *	@(#)mount.h	7.26 (Berkeley) 12/14/91
  */
 
 typedef quad fsid_t;			/* file system id type */
@@ -56,8 +56,8 @@ struct fid {
 struct statfs {
 	short	f_type;			/* type of filesystem (see below) */
 	short	f_flags;		/* copy of mount flags */
-	long	f_fsize;		/* fundamental file system block size */
-	long	f_bsize;		/* optimal transfer block size */
+	long	f_bsize;		/* fundamental file system block size */
+	long	f_iosize;		/* optimal transfer block size */
 	long	f_blocks;		/* total data blocks in file system */
 	long	f_bfree;		/* free blocks in fs */
 	long	f_bavail;		/* free blocks avail to non-superuser */
