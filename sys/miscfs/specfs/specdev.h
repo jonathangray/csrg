@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)specdev.h	8.3 (Berkeley) 08/10/94
+ *	@(#)specdev.h	8.4 (Berkeley) 02/22/95
  */
 
 /*
@@ -96,6 +96,7 @@ int	spec_write __P((struct vop_write_args *));
 #define	spec_lease_check ((int (*) __P((struct  vop_lease_args *)))nullop)
 int	spec_ioctl __P((struct vop_ioctl_args *));
 int	spec_select __P((struct vop_select_args *));
+#define	spec_revoke vop_revoke
 #define spec_mmap ((int (*) __P((struct  vop_mmap_args *)))spec_badop)
 int	spec_fsync __P((struct  vop_fsync_args *));
 #define spec_seek ((int (*) __P((struct  vop_seek_args *)))spec_badop)
