@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	6.16 (Berkeley) 02/23/93 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.17 (Berkeley) 02/24/93 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	6.16 (Berkeley) 02/23/93 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.17 (Berkeley) 02/24/93 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -399,7 +399,7 @@ smtp(e)
 			/* clean up a bit */
 			gotmail = FALSE;
 			dropenvelope(e);
-			CurEnv = e = newenvelope(e);
+			CurEnv = e = newenvelope(e, CurEnv);
 			e->e_flags = BlankEnvelope.e_flags;
 			break;
 
@@ -411,7 +411,7 @@ smtp(e)
 			/* clean up a bit */
 			gotmail = FALSE;
 			dropenvelope(e);
-			CurEnv = e = newenvelope(e);
+			CurEnv = e = newenvelope(e, CurEnv);
 			break;
 
 		  case CMDVRFY:		/* vrfy -- verify address */
