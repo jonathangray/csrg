@@ -6,7 +6,7 @@
  */
 
 #include "defs.h"
-static	char sccsid[] = "@(#)expr.c 4.5 06/27/82";
+static	char sccsid[] = "@(#)expr.c 4.6 05/03/83";
 
 MSG		BADSYM;
 MSG		BADVAR;
