@@ -29,11 +29,11 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)startslip.1	5.2 (Berkeley) 04/22/91
+.\"     @(#)startslip.1	5.3 (Berkeley) 05/09/91
 .\"
 .Dd 
 .Dt STARTSLIP 1
-.Os BSD 4.4
+.Os
 .Sh NAME
 .Nm startslip
 .Nd dial up and login to a slip server
@@ -73,8 +73,10 @@ is written to
 For a dialup modem,
 the string is used to specify a dial sequence.
 .El
-.Pp
 .Sh SEE ALSO
 .Xr sliplogin 8
 .Sh HISTORY
+The
+.Nm startslip
+command is
 .Ud .
