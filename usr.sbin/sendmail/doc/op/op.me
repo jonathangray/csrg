@@ -30,7 +30,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)op.me	6.31 (Berkeley) 03/25/93
+.\"	@(#)op.me	6.32 (Berkeley) 03/26/93
 .\"
 .\" eqn op.me | pic | troff -me
 .eh 'SMM:07-%''Sendmail Installation and Operation Guide'
@@ -66,9 +66,9 @@ University of California, Berkeley
 Mammoth Project
 eric@CS.Berkeley.EDU
 .sp
-Version 6.31
+Version 6.32
 .sp
-For Sendmail Version 6.45
+For Sendmail Version 6.46
 .)l
 .sp 2
 .pp
@@ -2097,7 +2097,7 @@ The metasymbols are:
 \fB$+\fP	Match one or more tokens
 \fB$\-\fP	Match exactly one token
 \fB$=\fP\fIx\fP	Match any phrase in class \fIx\fP
-\fB$~\fP\fIx\fP	Match any phrase not in class \fIx\fP
+\fB$~\fP\fIx\fP	Match any word not in class \fIx\fP
 .)b
 If any of these match,
 they are assigned to the symbol
@@ -2773,6 +2773,12 @@ reads the elements of the class
 .i c
 from the named
 .i file .
+.pp
+The
+.b $~
+(match entries not in class)
+only matches a single word;
+multi-word entries in the class are ignored in this context.
 .pp
 The class
 .b $=w
@@ -5910,7 +5916,7 @@ A transcript of the current session.
 .\"Eric Allman
 .\"Britton-Lee, Inc.
 .\".sp
-.\"Version 6.31
+.\"Version 6.32
 .\".ce 0
 .pn 2
 .bp
