@@ -30,12 +30,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_cache.c	7.6 (Berkeley) 06/28/90
+ *	@(#)vfs_cache.c	7.7 (Berkeley) 08/24/90
  */
 
 #include "param.h"
 #include "systm.h"
 #include "time.h"
+#include "mount.h"
 #include "vnode.h"
 #include "namei.h"
 #include "errno.h"
@@ -197,7 +198,7 @@ cache_enter(ndp)
 	 */
 	if (numcache < desiredvnodes) {
 		ncp = (struct namecache *)
-			malloc(sizeof *ncp, M_CACHE, M_WAITOK);
+			malloc((u_long)sizeof *ncp, M_CACHE, M_WAITOK);
 		bzero((char *)ncp, sizeof *ncp);
 		numcache++;
 	} else if (ncp = nchhead) {
@@ -244,7 +245,8 @@ nchinit()
 	nchtail = &nchhead;
 	nchashsize = roundup((desiredvnodes + 1) * sizeof *nchp / 2,
 		NBPG * CLSIZE);
-	nchashtbl = (union nchash *)malloc(nchashsize, M_CACHE, M_WAITOK);
+	nchashtbl = (union nchash *)malloc((u_long)nchashsize,
+	    M_CACHE, M_WAITOK);
 	for (nchash = 1; nchash <= nchashsize / sizeof *nchp; nchash <<= 1)
 		/* void */;
 	nchash = (nchash >> 1) - 1;
@@ -286,7 +288,7 @@ cache_purge(vp)
  * inode.  This makes the algorithm O(n^2), but do you think I care?
  */
 cache_purgevfs(mp)
-	register struct mount *mp;
+	struct mount *mp;
 {
 	register struct namecache *ncp, *nxtcp;
 
