@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_vv.c	7.10 (Berkeley) 12/16/90
+ *	@(#)if_vv.c	7.11 (Berkeley) 03/25/92
  */
 
 #include "vv.h"
@@ -996,10 +996,8 @@ gottype:
 	 * allocate another.
 	 */
 	M_PREPEND(m, sizeof (struct vv_header), M_DONTWAIT);
-	if (m == 0) {
-		error = ENOBUFS;
-		goto bad;
-	}
+	if (m == 0)
+		return (ENOBUFS);
 	vv = mtod(m, struct vv_header *);
 	vv->vh_shost = vs->vs_host;
 	vv->vh_dhost = dest;
