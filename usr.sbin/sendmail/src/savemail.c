@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)savemail.c	6.22 (Berkeley) 03/16/93";
+static char sccsid[] = "@(#)savemail.c	6.23 (Berkeley) 03/18/93";
 #endif /* not lint */
 
 # include <pwd.h>
@@ -471,6 +471,7 @@ returntosender(msg, returnq, sendbody, e)
 		returndepth--;
 		return (-1);
 	}
+	ee->e_sender = ee->e_from.q_paddr;
 
 	/* push state into submessage */
 	CurEnv = ee;
