@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)db.h	5.18 (Berkeley) 04/25/92
+ *	@(#)db.h	5.19 (Berkeley) 11/11/92
  */
 
 #ifndef _DB_H_
@@ -57,8 +57,8 @@ typedef struct {
 } DBT;
 
 /* Routine flags. */
-#define	R_APPEND	1		/* put (RECNO) */
-#define	R_CURSOR	2		/* del, put, seq */
+#define	R_CURSOR	1		/* del, put, seq */
+#define	R_CURSORLOG	2		/* put (RECNO) */
 #define	R_FIRST		3		/* seq */
 #define	R_IAFTER	4		/* put (RECNO) */
 #define	R_IBEFORE	5		/* put (RECNO) */
@@ -66,6 +66,7 @@ typedef struct {
 #define	R_NEXT		7		/* seq */
 #define	R_NOOVERWRITE	8		/* put */
 #define	R_PREV		9		/* seq (BTREE, RECNO) */
+#define	R_SETCURSOR	10		/* put (RECNO) */
 
 typedef enum { DB_BTREE, DB_HASH, DB_RECNO } DBTYPE;
 
@@ -75,8 +76,7 @@ typedef struct __db {
 	int (*close)	__P((struct __db *));
 	int (*del)	__P((const struct __db *, const DBT *, u_int));
 	int (*get)	__P((const struct __db *, const DBT *, DBT *, u_int));
-	int (*put)	__P((const struct __db *, const DBT *, const DBT *,
-			    u_int));
+	int (*put)	__P((const struct __db *, DBT *, const DBT *, u_int));
 	int (*seq)	__P((const struct __db *, DBT *, DBT *, u_int));
 	int (*sync)	__P((const struct __db *));
 	void *internal;			/* access method private */
