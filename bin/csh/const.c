@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)const.c	5.2 (Berkeley) 06/07/91";
+static char sccsid[] = "@(#)const.c	5.3 (Berkeley) 07/19/91";
 #endif /* not lint */
 
 /*
@@ -59,7 +59,6 @@ Char STRspRparen[]	= { ' ', ')', '\0' };
 Char STRTERM[]		= { 'T', 'E', 'R', 'M', '\0' };
 Char STRUSER[]		= { 'U', 'S', 'E', 'R', '\0' };
 Char STRalias[]         = { 'a', 'l', 'i', 'a', 's', '\0' };
-Char STRampm[]		= { 'a', 'm', 'p', 'm', '\0' };
 Char STRand[]		= { '&', '\0' };
 Char STRand2[]		= { '&', '&', '\0' };
 Char STRaout[]          = { 'a', '.', 'o', 'u', 't', '\0' };
