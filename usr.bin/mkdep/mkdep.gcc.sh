@@ -31,7 +31,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)mkdep.gcc.sh	5.3 (Berkeley) 05/06/91
+#	@(#)mkdep.gcc.sh	5.4 (Berkeley) 09/23/91
 #
 
 PATH=/bin:/usr/bin:/usr/ucb
@@ -39,6 +39,7 @@ export PATH
 
 D=.depend			# default dependency file is .depend
 append=0
+SED=
 
 while :
 	do case "$1" in
@@ -55,7 +56,7 @@ while :
 		# the -p flag produces "program: program.c" style dependencies
 		# so .o's don't get produced
 		-p)
-			SED='s;\.o;;'
+			SED=p
 			shift ;;
 		*)
 			break ;;
@@ -71,7 +72,11 @@ TMP=/tmp/mkdep$$
 
 trap 'rm -f $TMP ; exit 1' 1 2 3 13 15
 
-cpp -M $* > $TMP
+if [ "$SED"x = x ]; then
+	cpp -M $* > $TMP
+else
+	cpp -M $* | sed 's;\.o :; :;' > $TMP
+fi
 
 if [ $? != 0 ]; then
 	echo 'mkdep: compile failed.'
