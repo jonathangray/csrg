@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ps.h	5.1 (Berkeley) 02/08/91
+ *	@(#)ps.h	5.2 (Berkeley) 03/27/91
  */
 
 #define	UNLIMITED	0	/* unlimited terminal width */
@@ -75,7 +75,12 @@ typedef struct _var {
 	/*
 	 * glue to link selected fields together
 	 */
-	struct _var *next;
 } VAR;
 
-extern VAR var[], *vhead, *vtail;
+struct varent {
+	VAR *var;
+	struct varent *next;
+};
+
+extern VAR var[];
+extern struct varent *vhead, *vtail;
