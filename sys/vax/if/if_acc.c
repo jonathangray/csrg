@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_acc.c	7.7 (Berkeley) 06/28/90
+ *	@(#)if_acc.c	7.8 (Berkeley) 12/16/90
  */
 
 #include "acc.h"
@@ -41,23 +41,23 @@
  */
 #include "machine/pte.h"
 
-#include "param.h"
-#include "systm.h"
-#include "mbuf.h"
-#include "buf.h"
-#include "protosw.h"
-#include "socket.h"
-#include "vmmac.h"
+#include "sys/param.h"
+#include "sys/systm.h"
+#include "sys/mbuf.h"
+#include "sys/buf.h"
+#include "sys/protosw.h"
+#include "sys/socket.h"
+#include "sys/vmmac.h"
 
-#include "../net/if.h"
-#include "../netimp/if_imp.h"
+#include "net/if.h"
+#include "netimp/if_imp.h"
 
-#include "../vax/cpu.h"
-#include "../vax/mtpr.h"
+#include "../include/cpu.h"
+#include "../include/mtpr.h"
 #include "if_accreg.h"
 #include "if_uba.h"
-#include "../vaxuba/ubareg.h"
-#include "../vaxuba/ubavar.h"
+#include "../uba/ubareg.h"
+#include "../uba/ubavar.h"
 
 int     accprobe(), accattach(), accrint(), accxint();
 struct  uba_device *accinfo[NACC];
