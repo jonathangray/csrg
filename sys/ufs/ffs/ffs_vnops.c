@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	7.73 (Berkeley) 04/21/92
+ *	@(#)ffs_vnops.c	7.74 (Berkeley) 04/21/92
  */
 
 #include <sys/param.h>
@@ -320,7 +320,7 @@ ffs_write(vp, uio, ioflag, cred)
 			flags |= B_CLRBUF;
 		else
 			flags &= ~B_CLRBUF;
-		if (error = ffs_balloc(ip, lbn, (int)(on + n), &bp, flags))
+		if (error = ffs_balloc(ip, lbn, on + n, cred, &bp, flags))
 			break;
 		bn = bp->b_blkno;
 		if (uio->uio_offset + n > ip->i_size) {
@@ -343,7 +343,7 @@ ffs_write(vp, uio, ioflag, cred)
 			ip->i_mode &= ~(ISUID|ISGID);
 	} while (error == 0 && uio->uio_resid > 0 && n != 0);
 	if (error && (ioflag & IO_UNIT)) {
-		(void)ffs_truncate(vp, osize, ioflag & IO_SYNC);
+		(void)ffs_truncate(vp, osize, ioflag & IO_SYNC, cred);
 		uio->uio_offset -= resid - uio->uio_resid;
 		uio->uio_resid = resid;
 	}
@@ -403,7 +403,7 @@ ffs_inactive(vp, p)
 		if (!getinoquota(ip))
 			(void)chkiq(ip, -1, NOCRED, 0);
 #endif
-		error = ffs_truncate(vp, (off_t)0, 0);
+		error = ffs_truncate(vp, (off_t)0, 0, NOCRED);
 		mode = ip->i_mode;
 		ip->i_mode = 0;
 		ip->i_rdev = 0;
