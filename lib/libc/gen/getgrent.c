@@ -32,17 +32,20 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)getgrent.c	5.7 (Berkeley) 06/24/90";
+static char sccsid[] = "@(#)getgrent.c	5.8 (Berkeley) 02/23/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <grp.h>
 
 static FILE *_gr_fp;
 static struct group _gr_group;
 static int _gr_stayopen;
-static char *_gr_file = _PATH_GROUP;
+static const char *_gr_file = _PATH_GROUP;
+static start_gr();
+static grscan();
 
 #define	MAXGRP		200
 static char *members[MAXGRP];
@@ -59,7 +62,7 @@ getgrent()
 
 struct group *
 getgrnam(name)
-	char *name;
+	const char *name;
 {
 	int rval;
 
@@ -72,8 +75,12 @@ getgrnam(name)
 }
 
 struct group *
+#ifdef __STDC__
+getgrgid(gid_t gid)
+#else
 getgrgid(gid)
-	int gid;
+	gid_t gid;
+#endif
 {
 	int rval;
 
@@ -95,11 +102,13 @@ start_gr()
 	return((_gr_fp = fopen(_gr_file, "r")) ? 1 : 0);
 }
 
+int
 setgrent()
 {
 	return(setgroupent(0));
 }
 
+int
 setgroupent(stayopen)
 	int stayopen;
 {
@@ -120,7 +129,7 @@ endgrent()
 
 void
 setgrfile(file)
-	char *file;
+	const char *file;
 {
 	_gr_file = file;
 }
