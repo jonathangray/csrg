@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * from: Utah $Hdr: machparam.h 1.12 91/01/18$
+ * from: Utah $Hdr: machparam.h 1.16 92/12/20$
  *
- *	@(#)param.h	7.12 (Berkeley) 07/08/92
+ *	@(#)param.h	7.13 (Berkeley) 12/27/92
  */
 
 /*
@@ -77,7 +77,7 @@
 #define	SSIZE		1		/* initial stack size/NBPG */
 #define	SINCR		1		/* increment of stack/NBPG */
 
-#define	UPAGES		3		/* pages of u-area */
+#define	UPAGES		2		/* pages of u-area */
 
 /*
  * Constants related to network buffer management.
@@ -87,8 +87,8 @@
  * of the hardware page size.
  */
 #define	MSIZE		128		/* size of an mbuf */
-#define	MCLBYTES	1024
-#define	MCLSHIFT	10
+#define	MCLBYTES	2048		/* large enough for ether MTU */
+#define	MCLSHIFT	11
 #define	MCLOFSET	(MCLBYTES - 1)
 #ifndef NMBCLUSTERS
 #ifdef GATEWAY
@@ -115,6 +115,9 @@
 
 /* bytes to pages */
 #define	btoc(x)	(((unsigned)(x)+(NBPG-1))>>PGSHIFT)
+
+#define LABELSECTOR	(1024/DEV_BSIZE)
+#define LABELOFFSET	0
 
 #define	btodb(bytes)	 		/* calculates (bytes / DEV_BSIZE) */ \
 	((unsigned)(bytes) >> DEV_BSHIFT)
@@ -187,12 +190,11 @@ int	cpuspeed;
 /*
  * Constants/macros for HPUX multiple mapping of user address space.
  * Pages in the first 256Mb are mapped in at every 256Mb segment.
- *
- * XXX broken in new VM XXX
  */
 #define HPMMMASK	0xF0000000
 #define ISHPMMADDR(v) \
-	((curproc->p_addr->u_pcb.pcb_flags & PCB_HPUXMMAP) && \
+	((curproc->p_md.md_flags & MDP_HPUXMMAP) && \
+	 ((unsigned)(v) & HPMMMASK) && \
 	 ((unsigned)(v) & HPMMMASK) != HPMMMASK)
 #define HPMMBASEADDR(v) \
 	((unsigned)(v) & ~HPMMMASK)
