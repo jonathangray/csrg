@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pk_timer.c	7.4 (Berkeley) 01/09/91
+ *	@(#)pk_timer.c	7.5 (Berkeley) 05/29/91
  */
 
 #include "param.h"
@@ -89,8 +89,9 @@ pk_timer ()
 				switch (lcp -> lcd_state) {
 				case SENT_CALL: 
 					if (--lcp -> lcd_timer == 0) {
+					    if (lcp -> lcd_so)
 						lcp -> lcd_so -> so_error = ETIMEDOUT;
-						pk_clear (lcp, 49, 1);
+					    pk_clear (lcp, 49, 1);
 					}
 					break;
 
