@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)spec.c	5.10 (Berkeley) 05/25/90";
+static char sccsid[] = "@(#)spec.c	5.11 (Berkeley) 05/25/90";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -125,7 +125,6 @@ spec()
 	}
 }
 
-static
 set(ip)
 	register NODE *ip;
 {
@@ -212,7 +211,6 @@ set(ip)
 	}
 }
 
-static
 unset(ip)
 	register NODE *ip;
 {
@@ -222,7 +220,6 @@ unset(ip)
 		ip->flags &= ~key(p);
 }
 
-static
 key(p)
 	char *p;
 {
@@ -270,7 +267,7 @@ key(p)
 }
 
 
-static uid_t
+uid_t
 getowner(p)
 	register char *p;
 {
@@ -289,7 +286,7 @@ getowner(p)
 	/* NOTREACHED */
 }
 
-static gid_t
+gid_t
 getgroup(p)
 	register char *p;
 {
@@ -308,14 +305,12 @@ getgroup(p)
 	/* NOTREACHED */
 }
 
-static
 noparent()
 {
 	(void)fprintf(stderr, "mtree: no parent node.\n");
 	specerr();
 }
 
-static
 specerr()
 {
 	(void)fprintf(stderr,
@@ -323,7 +318,7 @@ specerr()
 	exit(1);
 }
 
-static NODE *
+NODE *
 emalloc(size)
 	int size;
 {
@@ -336,7 +331,6 @@ emalloc(size)
 	return((NODE *)p);
 }
 
-static
 nomem()
 {
 	(void)fprintf(stderr, "mtree: %s.\n", strerror(ENOMEM));
