@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)scsi.c	7.1 (Berkeley) 05/08/90
+ *	@(#)scsi.c	7.2 (Berkeley) 11/04/90
  */
 
 /*
@@ -43,7 +43,7 @@
 #if NSCSI > 0
 
 #ifndef lint
-static char rcsid[] = "$Header: scsi.c,v 1.3 90/01/06 04:56:50 van Exp $";
+static char rcsid[] = "$Header: scsi.c,v 1.3 90/10/10 14:55:08 mike Exp $";
 #endif
 
 #include "param.h"
@@ -76,6 +76,7 @@ struct	isr scsi_isr[NSCSI];
 int scsi_cmd_wait = 512;	/* microsec wait per step of 'immediate' cmds */
 int scsi_data_wait = 512;	/* wait per data in/out step */
 int scsi_nosync = 1;		/* inhibit sync xfers if 1 */
+int scsi_pridma = 0;		/* use "priority" dma */
 
 #ifdef DEBUG
 int	scsi_debug = 0;
@@ -83,7 +84,7 @@ int	scsi_debug = 0;
 #endif
 
 #ifdef WAITHIST
-#define MAXWAIT	2048
+#define MAXWAIT	1022
 u_int	ixstart_wait[MAXWAIT+2];
 u_int	ixin_wait[MAXWAIT+2];
 u_int	ixout_wait[MAXWAIT+2];
@@ -819,7 +820,6 @@ scsi_tt_write(ctlr, slave, unit, buf, len, blk, bshift)
 	return (stat);
 }
 
-
 int
 scsireq(dq)
 	register struct devqueue *dq;
@@ -941,8 +941,10 @@ out:
 	 * get the dio part of the card set for a dma xfer.
 	 */
 	hd->scsi_hconf = 0;
-	cmd = CSR_IE | (CSR_DE0 << hs->sc_dq.dq_ctlr);
+	cmd = CSR_IE;
 	dmaflags = DMAGO_NOINT;
+	if (scsi_pridma)
+		dmaflags |= DMAGO_PRI;
 	if (bp->b_flags & B_READ)
 		dmaflags |= DMAGO_READ;
 	if ((hs->sc_flags & SCSI_DMA32) &&
@@ -958,7 +960,11 @@ out:
 		phase = DATA_IN_PHASE;
 	} else
 		phase = DATA_OUT_PHASE;
+	/*
+	 * DMA enable bits must be set after size and direction bits.
+	 */
 	hd->scsi_csr = cmd;
+	hd->scsi_csr |= (CSR_DE0 << hs->sc_dq.dq_ctlr);
 	/*
 	 * Setup the SPC for the transfer.  We don't want to take
 	 * first a command complete then a service required interrupt
@@ -1010,6 +1016,10 @@ scsidone(unit)
 	volatile register struct scsidevice *hd =
 			(struct scsidevice *)scsi_softc[unit].sc_hc->hp_addr;
 
+#ifdef DEBUG
+	if (scsi_debug)
+		printf("scsi%d: done called!\n");
+#endif
 	/* dma operation is done -- turn off card dma */
 	hd->scsi_csr &=~ (CSR_DE1|CSR_DE0);
 }
@@ -1039,8 +1049,6 @@ scsiintr(unit)
 			  hd->scsi_tcl;
 		if (!(hs->sc_flags & SCSI_PAD))
 			len -= 4;
-		if (len)
-			printf("scsi%d: transfer length error %d\n", unit, len);
 		hs->sc_flags &=~ SCSI_PAD;
 #endif
 		dq = hs->sc_sq.dq_forw;
