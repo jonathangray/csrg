@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.47 (Berkeley) 11/17/93";
+static char sccsid[] = "@(#)conf.c	8.48 (Berkeley) 11/20/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1746,13 +1746,24 @@ getcfname()
 **	Returns:
 **		TRUE -- if ok.
 **		FALSE -- if vendor code could not be processed.
+**
+**	Side Effects:
+**		It is reasonable to set mode flags here to tweak
+**		processing in other parts of the code if necessary.
+**		For example, if you are a vendor that uses $%y to
+**		indicate YP lookups, you could enable that here.
 */
 
 bool
 setvendor(vendor)
 	char *vendor;
 {
-	return (strcasecmp(vendor, "Berkeley") == 0);
+	if (strcasecmp(vendor, "Berkeley") == 0)
+		return TRUE;
+
+	/* add vendor extensions here */
+
+	return FALSE;
 }
 /*
 **  STRTOL -- convert string to long integer
