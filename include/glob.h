@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)glob.h	5.6 (Berkeley) 04/03/91
+ *	@(#)glob.h	5.7 (Berkeley) 07/15/91
  */
 
 #ifndef _GLOB_H_
