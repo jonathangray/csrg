@@ -1,4 +1,4 @@
-/*
+/*-
  * Copyright (c) 1983, 1993
  *	The Regents of the University of California.  All rights reserved.
  *
@@ -32,7 +32,13 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)uuencode.c	8.1 (Berkeley) 06/06/93";
+char copyright[] =
+"@(#) Copyright (c) 1983, 1993\n\
+	The Regents of the University of California.  All rights reserved.\n";
+#endif /* not lint */
+
+#ifndef lint
+static char sccsid[] = "@(#)uuencode.c	8.2 (Berkeley) 04/02/94";
 #endif /* not lint */
 
 /*
@@ -42,11 +48,13 @@ static char sccsid[] = "@(#)uuencode.c	8.1 (Berkeley) 06/06/93";
  */
 #include <sys/types.h>
 #include <sys/stat.h>
+
 #include <stdio.h>
 
+int
 main(argc, argv)
 	int argc;
-	char **argv;
+	char *argv[];
 {
 	extern int optind;
 	extern int errno;
