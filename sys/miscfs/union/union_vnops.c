@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_vnops.c	8.25 (Berkeley) 03/24/95
+ *	@(#)union_vnops.c	8.26 (Berkeley) 05/11/95
  */
 
 #include <sys/param.h>
@@ -823,6 +823,22 @@ union_select(ap)
 }
 
 int
+union_revoke(ap)
+	struct vop_revoke_args /* {
+		struct vnode *a_vp;
+		int a_flags;
+	} */ *ap;
+{
+	struct vnode *vp = ap->a_vp;
+
+	if (UPPERVP(vp))
+		VOP_REVOKE(UPPERVP(vp), ap->a_flags);
+	if (LOWERVP(vp))
+		VOP_REVOKE(UPPERVP(vp), ap->a_flags);
+	vgone(vp);
+}
+
+int
 union_mmap(ap)
 	struct vop_mmap_args /* {
 		struct vnode *a_vp;
@@ -1309,7 +1325,7 @@ union_inactive(ap)
 	}
 
 	if ((un->un_flags & UN_CACHED) == 0)
-		VOP_REVOKE(ap->a_vp, 0);
+		vgone(ap->a_vp);
 
 	return (0);
 }
@@ -1348,9 +1364,10 @@ start:
 			un->un_flags |= UN_ULOCK;
 		}
 #ifdef DIAGNOSTIC
-		if (un->un_flags & UN_KLOCK)
+		if (un->un_flags & UN_KLOCK) {
 			vprint("union: dangling klock", vp);
 			panic("union: dangling upper lock (%lx)", vp);
+		}
 #endif
 	}
 
@@ -1564,6 +1581,7 @@ struct vnodeopv_entry_desc union_vnodeop_entries[] = {
 	{ &vop_lease_desc, union_lease },		/* lease */
 	{ &vop_ioctl_desc, union_ioctl },		/* ioctl */
 	{ &vop_select_desc, union_select },		/* select */
+	{ &vop_revoke_desc, union_revoke },		/* revoke */
 	{ &vop_mmap_desc, union_mmap },			/* mmap */
 	{ &vop_fsync_desc, union_fsync },		/* fsync */
 	{ &vop_seek_desc, union_seek },			/* seek */
