@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recipient.c	8.90 (Berkeley) 05/27/95";
+static char sccsid[] = "@(#)recipient.c	8.91 (Berkeley) 05/28/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -779,8 +779,6 @@ writable(filename, ctladdr, flags)
 {
 	uid_t euid;
 	gid_t egid;
-	int bits;
-	register char *p;
 	char *uname;
 
 	if (tTd(29, 5))
@@ -813,10 +811,12 @@ writable(filename, ctladdr, flags)
 	{
 		euid = FileMailer->m_uid;
 		egid = FileMailer->m_gid;
+		uname = NULL;
 	}
 	else
 	{
 		euid = egid = 0;
+		uname = NULL;
 	}
 	if (euid == 0)
 	{
@@ -1193,6 +1193,7 @@ includetimeout()
 **			send queue.
 */
 
+void
 sendtoargv(argv, e)
 	register char **argv;
 	register ENVELOPE *e;
