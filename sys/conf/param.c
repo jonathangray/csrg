@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)param.c	7.18 (Berkeley) 05/06/91
+ *	@(#)param.c	7.19 (Berkeley) 06/03/91
  */
 
 #include "sys/param.h"
@@ -71,7 +71,7 @@ int	maxproc = NPROC;
 #define NTEXT 100			/* actually the object cache */
 #define NVNODE (NPROC + NTEXT + 300)
 long	desiredvnodes = NVNODE;
-int	nfile = 16 * (NPROC + 16 + MAXUSERS) / 10 + 32;
+int	maxfiles = 3 * (NPROC + 16 + MAXUSERS) + 32;
 int	ncallout = 16 + NPROC;
 int	nclist = 60 + 12 * MAXUSERS;
 int     nmbclusters = NMBCLUSTERS;
