@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)lpd.c	8.1 (Berkeley) 06/06/93";
+static char sccsid[] = "@(#)lpd.c	8.2 (Berkeley) 01/02/94";
 #endif /* not lint */
 
 /*
@@ -425,7 +425,6 @@ startup()
 	 * Restart the daemons.
 	 */
 	while (cgetnext(&buf, printcapdb) > 0) {
-		printer = buf;
 		for (cp = buf; *cp; cp++)
 			if (*cp == '|' || *cp == ':') {
 				*cp = '\0';
@@ -436,6 +435,7 @@ startup()
 			mcleanup(0);
 		}
 		if (!pid) {
+			printer = buf;
 			cgetclose();
 			printjob();
 		}
