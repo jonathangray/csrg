@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fdesc_vnops.c	7.2 (Berkeley) 07/13/92
+ *	@(#)fdesc_vnops.c	7.3 (Berkeley) 03/11/93
  *
  * $Id: fdesc_vnops.c,v 1.7 1992/05/30 10:05:34 jsp Exp jsp $
  */
@@ -300,7 +300,7 @@ fdesc_setattr(ap)
 		break;
 
 	case DTYPE_SOCKET:
-		error = EOPNOTSUPP;
+		error = 0;
 		break;
 
 	default:
