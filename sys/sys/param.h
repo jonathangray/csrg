@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)param.h	6.11 (Berkeley) 06/17/85
+ *	@(#)param.h	6.12 (Berkeley) 06/25/85
  */
 
 /*
