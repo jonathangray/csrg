@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: uipc_shm.c 1.9 89/08/14$
  *
- *	@(#)sysv_shm.c	7.16 (Berkeley) 05/04/92
+ *	@(#)sysv_shm.c	7.17 (Berkeley) 06/04/92
  */
 
 /*
@@ -61,7 +61,7 @@
 #include "vm/vm_pager.h"
 
 #ifdef HPUXCOMPAT
-#include "hp300/hpux/hpux.h"
+#include "hp/hpux/hpux.h"
 #endif
 
 int	shmat(), shmctl(), shmdt(), shmget();
