@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	8.13 (Berkeley) 04/18/94
+ *	@(#)vfs_subr.c	8.14 (Berkeley) 01/09/95
  */
 
 /*
@@ -1070,6 +1070,7 @@ loop:
 static char *typename[] =
    { "VNON", "VREG", "VDIR", "VBLK", "VCHR", "VLNK", "VSOCK", "VFIFO", "VBAD" };
 
+void
 vprint(label, vp)
 	char *label;
 	register struct vnode *vp;
