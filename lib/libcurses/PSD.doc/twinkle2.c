@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)twinkle2.c	6.4 (Berkeley) 06/08/93
+.\"	@(#)twinkle2.c	8.1 (Berkeley) 06/08/93
 .\"
 extern int	_putchar();
 
