@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)vfs_xxx.c	7.1 (Berkeley) 06/05/86
+ *	@(#)vfs_xxx.c	7.2 (Berkeley) 08/27/88
  */
 
 #include "param.h"
