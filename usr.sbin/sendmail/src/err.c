@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)err.c	8.14 (Berkeley) 10/29/93";
+static char sccsid[] = "@(#)err.c	8.15 (Berkeley) 11/08/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -159,8 +159,6 @@ usrerr(fmt, va_alist)
 #endif
 {
 	VA_LOCAL_DECL
-	extern char SuprErrs;
-	extern int errno;
 
 	if (SuprErrs)
 		return;
