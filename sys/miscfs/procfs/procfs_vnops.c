@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)procfs_vnops.c	8.9 (Berkeley) 08/20/94
+ *	@(#)procfs_vnops.c	8.10 (Berkeley) 01/09/95
  *
  * From:
  *	$Id: procfs_vnops.c,v 3.2 1993/12/15 09:40:17 jsp Exp $
@@ -351,6 +351,7 @@ procfs_getattr(ap)
 	struct pfsnode *pfs = VTOPFS(ap->a_vp);
 	struct vattr *vap = ap->a_vap;
 	struct proc *procp;
+	struct timeval tv;
 	int error;
 
 	/* first check the process still exists */
@@ -386,11 +387,9 @@ procfs_getattr(ap)
 	 * no "file creation" time stamp anyway, and the
 	 * p_stat structure is not addressible if u. gets
 	 * swapped out for that process.
-	 *
-	 * XXX
-	 * Note that microtime() returns a timeval, not a timespec.
 	 */
-	microtime(&vap->va_ctime);
+	microtime(&tv);
+	TIMEVAL_TO_TIMESPEC(&tv, &vap->va_ctime);
 	vap->va_atime = vap->va_mtime = vap->va_ctime;
 
 	/*
