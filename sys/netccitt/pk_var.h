@@ -1,5 +1,57 @@
-/* Copyright (c) University of British Columbia, 1984 */
+/*
+ * Copyright (c) University of British Columbia, 1984
+ * Copyright (c) 1990 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This code is derived from software contributed to Berkeley by
+ * the Laboratory for Computation Vision and the Computer Science Department
+ * of the University of British Columbia.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ *
+ *	@(#)pk_var.h	7.2 (Berkeley) 05/15/90
+ */
 
+/*
+ * Protocol-Protocol Packet Buffer.
+ * (Eventually will be replace by system-wide structure).
+ */
+
+struct	pq	{
+	int	(*pq_put)();	/* How to process data */
+	struct	mbuf *pq_data;	/* Queued data */
+	int	pq_space;	/* For accounting */
+	int	pq_flags;
+	int	(*pq_unblock)();/* called & cleared when unblocking */
+	caddr_t pq_proto;	/* for other service entries */
+	caddr_t pq_next;	/* next q, or route, or pcb */
+};
 
 /*
  *
@@ -8,6 +60,7 @@
  */
 
 struct pklcd {
+	struct	pq lcd_downq, lcd_upq;	/* protocol glue for datagram service */
 	short   lcd_lcn;		/* Logical channel number */
 	short   lcd_state;		/* Logical Channel state */
         bool	lcd_intrconf_pending;	/* Interrupt confirmation pending */
@@ -35,25 +88,43 @@ struct pklcd {
 	long    lcd_rxcnt;		/* Data packet receive count */
 	short   lcd_intrcnt;		/* Interrupt packet transmit count */
 	struct	pklcd *lcd_listen;	/* Next lcd on listen queue */
-	struct	pkcb *lcd_pkp;		/* network this lcd is attached to */
+	struct	ifaddr *lcd_ifa;	/* network this lcd is attached to */
+};
+
+
+/*
+ *	Interface address, x25 version. Exactly one of these structures is 
+ *	allocated for each interface with an x25 address.
+ *
+ *	The ifaddr structure conatins the protocol-independent part
+ *	of the structure, and is assumed to be first.
+ */
+struct x25_ifaddr {
+	struct	ifaddr ia_ifa;		/* protocol-independent info */
+#define ia_ifp		ia_ifa.ifa_ifp
+#define	ia_flags	ia_ifa.ifa_flags
+	struct	x25_ifaddr *ia_next;	/* next in list of x25 addresses */
+	struct	sockaddr_x25 ia_addr;	/* reserve space for interface name */
+	struct	sockaddr_x25 ia_sockmask; /* reserve space for netmask */
+	struct	x25config *ia_xcp;	/* network specific configuration */
+	struct	x25config *ia_xc;	/* network specific configuration */
+	short	ia_state;		/* packet level status */
+#define ia_maxlcn ia->ia_xc.xc_maxlcn	/* local copy of xc_maxlcn */
+	struct	pklcd **ia_chan;	/* dispatch vector for ciruits */
 };
 
 /*
- * Per network information, allocated dynamically
- * when a new network is configured.
+ * ``Link-Level'' extension to Routing Entry for upper level
+ * packet switching via X.25 virtual circuits.
  */
-
-struct	pkcb {
-	struct	pkcb *pk_next;
-	short	pk_state;		/* packet level status */
-	short	pk_maxlcn;		/* local copy of xc_maxlcn */
-	int	(*pk_output) ();	/* link level output procedure */
-	struct	x25config *pk_xcp;	/* network specific configuration */
-	struct	pklcd *pk_chan[1];	/* actual size == xc_maxlcn+1 */
+struct rtext_x25 {
+	struct	pklcd *rtx_lcd;
+	int	rtx_state;
+	struct	rtentry *rtx_rt;
 };
 
 #ifdef KERNEL
-struct	pkcb *pkcbhead;		/* head of linked list of networks */
+struct	x25_ifaddr *x25_ifaddr;		/* head of linked list of networks */
 struct	pklcd *pk_listenhead;
 
 char	*pk_name[], *pk_state[];
