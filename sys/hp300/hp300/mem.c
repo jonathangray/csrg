@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: mem.c 1.14 90/10/12$
  *
- *	@(#)mem.c	8.2 (Berkeley) 11/14/93
+ *	@(#)mem.c	8.3 (Berkeley) 01/12/94
  */
 
 /*
@@ -161,6 +161,7 @@ mmrw(dev, uio, flags)
 
 mmmap(dev, off, prot)
 	dev_t dev;
+	int off, prot;
 {
 	/*
 	 * /dev/mem is the only one that makes sense through this
