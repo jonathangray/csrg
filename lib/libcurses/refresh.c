@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)refresh.c	5.37 (Berkeley) 04/13/93";
+static char sccsid[] = "@(#)refresh.c	5.38 (Berkeley) 04/27/93";
 #endif /* not lint */
 
 #include <curses.h>
@@ -192,7 +192,7 @@ makech(win, wy)
 	int wy;
 {
 	register int nlsp;		/* Last space in lines. */
-	register short wx, lch, y;
+	register int wx, lch, y;
 	register __LDATA *nsp, *csp, *cp;
 	u_int force;
 	char *ce;
@@ -207,15 +207,16 @@ makech(win, wy)
 	}
 	if (!(win->lines[wy]->flags & __ISDIRTY))
 		return (OK);
+
 	wx = *win->lines[wy]->firstchp - win->ch_off;
-	if (wx >= win->maxx)
-		return (OK);
-	else if (wx < 0)
+	if (wx < 0)
 		wx = 0;
+	else if (wx >= win->maxx)
+		return (OK);
 	lch = *win->lines[wy]->lastchp - win->ch_off;
 	if (lch < 0)
 		return (OK);
-	else if (lch >= win->maxx)
+	else if (lch >= (int) win->maxx)
 		lch = win->maxx - 1;
 	y = wy + win->begy;
 
@@ -413,7 +414,7 @@ quickch(win)
 		else
 			win->lines[bot]->flags &= ~__ISDIRTY;
 
-
+#ifdef NO_JERKINESS
 	/*
 	 * If we have a bottom unchanged region return.  Scrolling the
 	 * bottom region up and then back down causes a screen jitter.
@@ -422,6 +423,7 @@ quickch(win)
 	 */
 	if (bot < win->maxy - 1)
 		return;
+#endif /* NO_JERKINESS */
 
 	/*
 	 * Search for the largest block of text not changed.
