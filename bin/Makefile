@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.36 (Berkeley) 07/15/92
+#	@(#)Makefile	5.37 (Berkeley) 09/02/92
 
 # Missing: adb dd ed expr tar test
 
