@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)operators.c	8.1 (Berkeley) 05/31/93";
+static char sccsid[] = "@(#)operators.c	8.2 (Berkeley) 04/01/94";
 #endif /* not lint */
 
 /*
@@ -43,7 +43,7 @@ static char sccsid[] = "@(#)operators.c	8.1 (Berkeley) 05/31/93";
 
 #include "operators.h"
 
-char *const unary_op[] = {
+const char *const unary_op[] = {
       "!",
       "-b",
       "-c",
@@ -65,7 +65,7 @@ char *const unary_op[] = {
       NULL
 };
 
-char *const binary_op[] = {
+const char *const binary_op[] = {
       "-o",
       "|",
       "-a",
