@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fifo.h	7.4 (Berkeley) 04/21/92
+ *	@(#)fifo.h	7.5 (Berkeley) 04/21/92
  */
 
 #ifdef FIFO
@@ -207,7 +207,8 @@ int	fifo_advlock __P((
 #define fifo_truncate ((int (*) __P(( \
 		struct vnode *vp, \
 		off_t length, \
-		int flags))) nullop)
+		int flags, \
+		struct ucred *cred))) nullop)
 #define fifo_update ((int (*) __P(( \
 		struct vnode *vp, \
 		struct timeval *ta, \
