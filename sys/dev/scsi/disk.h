@@ -41,7 +41,7 @@
  *
  *	@(#)disk.h	5.4 (Berkeley) 04/29/93
  *
- * from: $Header: disk.h,v 1.3 92/12/02 03:43:24 torek Exp $ (LBL)
+ * from: $Header: disk.h,v 1.4 93/04/30 00:04:10 torek Exp $ (LBL)
  */
 
 /*
@@ -193,15 +193,14 @@ struct scsi_dlf_ps {
 #define	SCSI_MS_PC_NOTCH	0x0c	/* notch page */
 /*				0x0d..0x1f reserved */
 /*				0x20..0x3e vendor specific */
+#define	SCSI_MS_PC_CDCCACHECTL	0x38	/* CDC (Wren) cache control page */
 
 /*
  * Structure of a Read/Write Error Recovery mode page.
  * N.B.: CDC Wren V, at least, does not include write retry & time limit.
  */
 struct scsi_page_rwerrrec {
-	u_char	rw_psc,		/* saveable flag + code (0x01) */
-		rw_len,		/* length (0x0a) */
-		rw_flags,	/* flags, see below */
+	u_char	rw_flags,	/* flags, see below */
 		rw_read_retry,	/* read retry count */
 		rw_corr_span,	/* correction span */
 		rw_hd_off,	/* head offset count */
@@ -226,9 +225,7 @@ struct scsi_page_rwerrrec {
  * Structure of a Format Device mode page.
  */
 struct scsi_page_fmt {
-	u_char	fmt_psc,	/* saveable flag + code (0x03) */
-		fmt_len,	/* length (0x16) */
-		fmt_tpzh,	/* tracks per zone (MSB) */
+	u_char	fmt_tpzh,	/* tracks per zone (MSB) */
 		fmt_tpzl,	/* tracks per zone (LSB) */
 		fmt_aspzh,	/* alternate sectors per zone (MSB) */
 		fmt_aspzl,	/* alternate sectors per zone (LSB) */
@@ -261,9 +258,7 @@ struct scsi_page_fmt {
  * N.B.: CDC Wren V, at least, does not include rpm.
  */
 struct scsi_page_rdgeom {
-	u_char	rd_psc,		/* saveable flag + code (0x04) */
-		rd_len,		/* length (0x16) */
-		rd_ncylh,	/* number of cylinders (MSB) */
+	u_char	rd_ncylh,	/* number of cylinders (MSB) */
 		rd_ncylm,	/* number of cylinders */
 		rd_ncyll,	/* number of cylinders (LSB) */
 		rd_nheads,	/* number of heads */
@@ -296,9 +291,7 @@ struct scsi_page_rdgeom {
  * Structure of a Verify Error Recovery mode page.
  */
 struct scsi_page_verrrec {
-	u_char	v_psc,		/* saveable flag + code (0x07) */
-		v_len,		/* length (0x0a) */
-		v_flags,	/* flags, see below */
+	u_char	v_flags,	/* flags, see below */
 		v_verify_retry,	/* verify retry count */
 		v_corr_span,	/* verify correction span */
 		v_xxx[5],	/* reserved */
@@ -314,9 +307,7 @@ struct scsi_page_verrrec {
  * Structure of a Caching mode page.
  */
 struct scsi_page_cache {
-	u_char	cache_psc,	/* saveable flag + code (0x08) */
-		cache_len,	/* length (0x0a) */
-		cache_flags,	/* flags, see below */
+	u_char	cache_flags,	/* flags, see below */
 		cache_reten,	/* cache retention priorities (rd + wr) */
 		cache_dptlh,	/* disable prefetch transfer length (MSB) */
 		cache_dptll,	/* disable prefetch transfer length (LSB) */
@@ -341,9 +332,7 @@ struct scsi_page_cache {
  * Structure of a Control Mode mode page.
  */
 struct scsi_page_ctlmode {
-	u_char	cm_psc,		/* saveable flag + code (0x0a) */
-		cm_len,		/* length (0x06) */
-		cm_rlec,	/* report log-activity exception condition */
+	u_char	cm_rlec,	/* report log-activity exception condition */
 		cm_qctl,	/* queue control (below) */
 		cm_ecaaen,	/* ECA and AEN flags (below) */
 		cm_xxx,		/* reserved */
@@ -358,6 +347,22 @@ struct scsi_page_ctlmode {
 #define	SCSI_CM_RAENP	0x04	/* target may do Async Err Notif after init */
 #define	SCSI_CM_UAAENP	0x02	/* target may do AEN for Unit Attention */
 #define	SCSI_CM_EAENP	0x01	/* target may do AEN for deferred errors */
+
+/*
+ * Structure of a CDC-specific Cache Control mode page.
+ */
+struct scsi_page_CDCcachectlmode {
+	u_char	ccm_flags,	/* flags (below) */
+		ccm_pfthresh,	/* prefetch threshold */
+		ccm_maxthresh,	/* maximum threshold (?) */
+		ccm_maxpfmult,	/* maximum prefetch multiplier */
+		ccm_minthresh,	/* minimum thresold (?) */
+		ccm_minpfmult,	/* minimum prefetch multiplier */
+		ccm_xxx[8];	/* reserved */
+};
+#define	SCSI_CDC_CCM_WIE 0x40	/* write index enable */
+#define	SCSI_CDC_CCM_CE	 0x10	/* cache enable */
+#define	SCSI_CDC_CCM_TBLSZ(x) ((x) & 0xf) /* table size */
 
 /*
  * Bits in cdb_lenl for a READ CAPACITY command,
