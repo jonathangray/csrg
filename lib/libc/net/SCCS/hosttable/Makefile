@@ -4,7 +4,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	5.3 (Berkeley) 09/04/85
+#	@(#)Makefile	5.4 (Berkeley) 09/05/85
 #
 
 OBJS=	gethostnamadr.o gethostent.o
