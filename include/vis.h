@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vis.h	5.6 (Berkeley) 02/22/91
+ *	@(#)vis.h	5.7 (Berkeley) 02/23/91
  */
 
 /*
@@ -71,7 +71,7 @@
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-char	*vis __P((char *, char, char, int));
+char	*vis __P((char *, char, int, char));
 int	strvis __P((char *, const char *, int));
 int	strvisx __P((char *, const char *, size_t, int));
 int	strunvis __P((char *, const char *));
