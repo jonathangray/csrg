@@ -1,4 +1,4 @@
-.\"	"@(#)bibdoc.ms	4.2	07/28/83";
+.\"	"@(#)bibdoc.ms	4.3	08/03/83";
 .if n .ND
 .TL
 BIB \- A Program for Formatting Bibliographies
