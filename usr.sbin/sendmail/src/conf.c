@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.187 (Berkeley) 06/05/95";
+static char sccsid[] = "@(#)conf.c	8.188 (Berkeley) 06/10/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -623,7 +623,11 @@ inithostmaps()
 # include <nsswitch.h>
 #endif
 
-#if defined(ultrix) || defined(__osf__)
+#if defined(ultrix) || (defined(__osf__) && defined(__alpha))
+# define _USE_DEC_SVC_CONF_
+#endif
+
+#ifdef _USE_DEC_SVC_CONF_
 # include <sys/svcinfo.h>
 #endif
 
@@ -667,7 +671,7 @@ switch_map_find(service, maptype, mapreturn)
 	return svcno;
 #endif
 
-#if defined(ultrix) || defined(__osf__)
+#ifdef _USE_DEC_SVC_CONF_
 	struct svcinfo *svcinfo;
 	int svc;
 
@@ -714,7 +718,7 @@ switch_map_find(service, maptype, mapreturn)
 	return svcno;
 #endif
 
-#if !defined(SOLARIS) && !defined(ultrix) && !defined(__osf__)
+#if !defined(SOLARIS) && !defined(_USE_DEC_SVC_CONF_)
 	/*
 	**  Fall-back mechanism.
 	*/
