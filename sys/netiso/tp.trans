@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp.trans	7.13 (Berkeley) 09/06/91
+ *	@(#)tp.trans	7.14 (Berkeley) 09/26/91
  */
 
 /***********************************************************
@@ -85,7 +85,7 @@ SOFTWARE.
 
 *INCLUDE
 {
-/* @(#)tp.trans	7.13 (Berkeley) 09/06/91 */
+/* @(#)tp.trans	7.14 (Berkeley) 09/26/91 */
 #include "param.h"
 #include "socket.h"
 #include "socketvar.h"
@@ -117,7 +117,7 @@ void	tp_indicate(),				tp_getoptions(),
 		tp_soisdisconnecting(), 	tp_soisdisconnected(),
 		tp_recycle_tsuffix(),		
 		tp_etimeout(),				tp_euntimeout(),
-		tp_euntimeout_lss(),		tp_ctimeout(),
+		tp_ctimeout(),
 		tp_cuntimeout(),			tp_ctimeout_MIN(),
 		tp_freeref(),				tp_detach(),
 		tp0_stash(), 				tp0_send(),
@@ -158,14 +158,12 @@ TP_CONFIRMING	/* Local to this implementation */
 				 */
 
  TM_sendack		
-				/* TM_sendack does dual duty - keepalive AND sendack.
+				/* TM_sendack does dual duty - keepalive AND closed-window
+				 * Probes.
 				 * It's set w/ keepalive-ticks every time an ack is sent.
 				 * (this is done in (void) tp_emit() ).
-				 * It's cancelled and reset whenever a DT
-				 * arrives and it doesn't require immediate acking.
-				 * Note that in this case it's set w/ the minimum of
-				 * its prev value and the sendack-ticks value so the 
-				 * purpose of the keepalive is preserved.
+				 * Whenever a DT arrives which doesn't require immediate acking,
+				 * a separate fast-timeout flag is set ensuring 200ms response.
 				 */
  TM_notused	
 
@@ -330,7 +328,7 @@ TP_CLOSED  		<== 		[ TP_LISTENING, TP_CLOSED ] 			T_DETACH
 TP_CONFIRMING	<==		 TP_LISTENING  								CR_TPDU 
 	( $P.tp_class == TP_CLASS_0)
 	{
-		$P.tp_refp->tpr_state = REF_OPEN; /* has timers ??? */
+		$P.tp_refstate = REF_OPEN; /* has timers ??? */
 	}
 ;
 
@@ -343,7 +341,7 @@ TP_CONFIRMING		<==		 TP_LISTENING  							CR_TPDU
 		IFDEBUG(D_CONN)
 			printf("CR datalen 0x%x data 0x%x", $$.e_datalen, $$.e_data);
 		ENDDEBUG
-		$P.tp_refp->tpr_state = REF_OPEN; /* has timers */
+		$P.tp_refstate = REF_OPEN; /* has timers */
 		$P.tp_fcredit = $$.e_cdt;
 
 		if ($$.e_datalen > 0) {
@@ -384,9 +382,9 @@ TP_AKWAIT		<==		 TP_CONFIRMING  							T_ACPT_req
 		tp_getoptions($P);
 		soisconnecting($P.tp_sock);
 		if (($P.tp_rx_strat & TPRX_FASTSTART) && ($P.tp_fcredit > 0))
-			$P.tp_cong_win = $P.tp_fcredit;
+			$P.tp_cong_win = $P.tp_fcredit * $P.tp_l_tpdusize;
 		$P.tp_retrans = $P.tp_Nretrans;
-		tp_ctimeout($P.tp_refp, TM_retrans, (int)$P.tp_cc_ticks);
+		tp_ctimeout($P, TM_retrans, (int)$P.tp_cc_ticks);
 	}
 ;
 
@@ -429,10 +427,10 @@ TP_CRSENT		<==		TP_CLOSED								T_CONN_req
 		if (error = tp_emit(CR_TPDU_type, $P, 0, 0, data) )
 			return error; /* driver WON'T change state; will return error */
 		
-		$P.tp_refp->tpr_state = REF_OPEN; /* has timers */
+		$P.tp_refstate = REF_OPEN; /* has timers */
 		if($P.tp_class != TP_CLASS_0) {
 			$P.tp_retrans = $P.tp_Nretrans;
-			tp_ctimeout($P.tp_refp, TM_retrans, (int)$P.tp_cr_ticks);
+			tp_ctimeout($P, TM_retrans, (int)$P.tp_cr_ticks);
 		}
 	}
 ;
@@ -450,12 +448,12 @@ TP_REFWAIT 		<==		[ TP_CRSENT, TP_AKWAIT, TP_OPEN ] 			DR_TPDU
 		tp_soisdisconnected($P);
 		if ($P.tp_class != TP_CLASS_0) {
 			if ($P.tp_state == TP_OPEN ) {
-				tp_euntimeout($P.tp_refp, TM_data_retrans); /* all */
-				tp_cuntimeout($P.tp_refp, TM_retrans);
-				tp_cuntimeout($P.tp_refp, TM_inact);
-				tp_cuntimeout($P.tp_refp, TM_sendack);
+				tp_euntimeout($P, TM_data_retrans); /* all */
+				tp_cuntimeout($P, TM_retrans);
+				tp_cuntimeout($P, TM_inact);
+				tp_cuntimeout($P, TM_sendack);
 			}
-			tp_cuntimeout($P.tp_refp, TM_retrans);
+			tp_cuntimeout($P, TM_retrans);
 			if( $$.e_sref !=  0 ) 
 				(void) tp_emit(DC_TPDU_type, $P, 0, 0, MNULL);
 		}
@@ -468,8 +466,8 @@ SAME 			<==		TP_CLOSED 									DR_TPDU
 		if( $$.e_sref != 0 )
 			(void) tp_emit(DC_TPDU_type, $P, 0, 0, MNULL); 
 		/* reference timer already set - reset it to be safe (???) */
-		tp_euntimeout($P.tp_refp, TM_reference); /* all */
-		tp_etimeout($P.tp_refp, TM_reference, 0, 0, 0, (int)$P.tp_refer_ticks);
+		tp_euntimeout($P, TM_reference); /* all */
+		tp_etimeout($P, TM_reference, (int)$P.tp_refer_ticks);
 	}
 ;
 
@@ -477,7 +475,7 @@ SAME 			<==		TP_CLOSED 									DR_TPDU
 TP_REFWAIT 		<==  	TP_CRSENT  									ER_TPDU
 	DEFAULT
 	{	
-		tp_cuntimeout($P.tp_refp, TM_retrans);
+		tp_cuntimeout($P, TM_retrans);
 		tp_indicate(ER_TPDU, $P, $$.e_reason);
 		tp_soisdisconnected($P);
 	}
@@ -487,7 +485,7 @@ TP_REFWAIT 		<==  	TP_CRSENT  									ER_TPDU
 TP_REFWAIT		<==		TP_CLOSING									DR_TPDU
 	DEFAULT
 	{	 
-		tp_cuntimeout($P.tp_refp, TM_retrans);
+		tp_cuntimeout($P, TM_retrans);
 		tp_soisdisconnected($P);
 	}
 ;
@@ -499,7 +497,7 @@ TP_REFWAIT		<==		TP_CLOSING									ER_TPDU
 	DEFAULT
 	{	 
 		tp_indicate(ER_TPDU, $P, $$.e_reason);
-		tp_cuntimeout($P.tp_refp, TM_retrans);
+		tp_cuntimeout($P, TM_retrans);
 		tp_soisdisconnected($P);
 	}
 ;
@@ -507,7 +505,7 @@ TP_REFWAIT		<==		TP_CLOSING									ER_TPDU
 TP_REFWAIT		<==		TP_CLOSING									DC_TPDU 
 	DEFAULT
 	{	 
-		tp_cuntimeout($P.tp_refp, TM_retrans);
+		tp_cuntimeout($P, TM_retrans);
 		tp_soisdisconnected($P);
 	}
 ;
@@ -536,14 +534,14 @@ TP_CLOSING 		<== 	[ TP_AKWAIT, TP_OPEN ]  					ER_TPDU
 	DEFAULT
 	{
 		if ($P.tp_state == TP_OPEN) {
-			tp_euntimeout($P.tp_refp, TM_data_retrans); /* all */
-			tp_cuntimeout($P.tp_refp, TM_inact);
-			tp_cuntimeout($P.tp_refp, TM_sendack);
+			tp_euntimeout($P, TM_data_retrans); /* all */
+			tp_cuntimeout($P, TM_inact);
+			tp_cuntimeout($P, TM_sendack);
 		}
 		tp_soisdisconnecting($P.tp_sock);
 		tp_indicate(ER_TPDU, $P, $$.e_reason);
 		$P.tp_retrans = $P.tp_Nretrans;
-		tp_ctimeout($P.tp_refp, TM_retrans, (int)$P.tp_dr_ticks);
+		tp_ctimeout($P, TM_retrans, (int)$P.tp_dr_ticks);
 		(void) tp_emit(DR_TPDU_type, $P, 0, E_TP_PROTO_ERR, MNULL);
 	}
 ;
@@ -551,7 +549,7 @@ TP_CLOSING 		<== 	[ TP_AKWAIT, TP_OPEN ]  					ER_TPDU
 TP_OPEN			<==		TP_CRSENT									CC_TPDU 
 	($P.tp_class == TP_CLASS_0) 
 	{	
-		tp_cuntimeout($P.tp_refp, TM_retrans);
+		tp_cuntimeout($P, TM_retrans);
 		IncStat(ts_tp0_conn);
 		$P.tp_fcredit = 1;
 		soisconnected($P.tp_sock);
@@ -568,11 +566,10 @@ TP_OPEN			<==		TP_CRSENT									CC_TPDU
 		IncStat(ts_tp4_conn);
 		$P.tp_fref = $$.e_sref;
 		$P.tp_fcredit = $$.e_cdt;
-		$P.tp_ackrcvd = 0;
 		if (($P.tp_rx_strat & TPRX_FASTSTART) && ($$.e_cdt > 0))
-			$P.tp_cong_win = $$.e_cdt;
+			$P.tp_cong_win = $$.e_cdt * $P.tp_l_tpdusize;
 		tp_getoptions($P);
-		tp_cuntimeout($P.tp_refp, TM_retrans);
+		tp_cuntimeout($P, TM_retrans);
 		if ($P.tp_ucddata) {
 			IFDEBUG(D_CONN)
 				printf("dropping user connect data cc 0x%x\n",
@@ -589,7 +586,7 @@ TP_OPEN			<==		TP_CRSENT									CC_TPDU
 		}
 
 		(void) tp_emit(AK_TPDU_type, $P, $P.tp_rcvnxt, 0, MNULL);
-		tp_ctimeout($P.tp_refp, TM_inact, (int)$P.tp_inact_ticks);
+		tp_ctimeout($P, TM_inact, (int)$P.tp_inact_ticks);
 	}
 ;
 
@@ -601,8 +598,7 @@ SAME			<==		TP_CRSENT									TM_retrans
 		int error;
 
 		IncStat(ts_retrans_cr);
-		$P.tp_cong_win = 1;
-		$P.tp_ackrcvd = 0;
+		$P.tp_cong_win = 1 * $P.tp_l_tpdusize;
 		data = MCPY($P.tp_ucddata, M_NOWAIT);
 		if($P.tp_ucddata) {
 			IFDEBUG(D_CONN)
@@ -617,7 +613,7 @@ SAME			<==		TP_CRSENT									TM_retrans
 		if( error = tp_emit(CR_TPDU_type, $P, 0, 0, data) ) {
 			$P.tp_sock->so_error = error;
 		}
-		tp_ctimeout($P.tp_refp, TM_retrans, (int)$P.tp_cr_ticks);
+		tp_ctimeout($P, TM_retrans, (int)$P.tp_cr_ticks);
 	}
 ;
 
@@ -647,7 +643,7 @@ SAME 			<==	 TP_AKWAIT											CR_TPDU
 			$P.tp_sock->so_error = error;
 		}
 		$P.tp_retrans = $P.tp_Nretrans;
-		tp_ctimeout($P.tp_refp, TM_retrans, (int)$P.tp_cc_ticks);
+		tp_ctimeout($P, TM_retrans, (int)$P.tp_cc_ticks);
 	}
 ;
 
@@ -666,10 +662,10 @@ TP_OPEN			<==		TP_AKWAIT 										DT_TPDU
 			m_freem($P.tp_ucddata);
 			$P.tp_ucddata = 0;
 		}
-		tp_ctimeout($P.tp_refp, TM_inact, (int)$P.tp_inact_ticks);
-		tp_cuntimeout($P.tp_refp, TM_retrans);
+		tp_ctimeout($P, TM_inact, (int)$P.tp_inact_ticks);
+		tp_cuntimeout($P, TM_retrans);
 		soisconnected($P.tp_sock);
-		tp_ctimeout($P.tp_refp, TM_inact, (int)$P.tp_inact_ticks);
+		tp_ctimeout($P, TM_inact, (int)$P.tp_inact_ticks);
 
 		/* see also next 2 transitions, if you make any changes */
 
@@ -678,11 +674,11 @@ TP_OPEN			<==		TP_AKWAIT 										DT_TPDU
 			printf("tp_stash returns %d\n",doack);
 		ENDDEBUG
 
-		if(doack) {
+		if (doack) {
 			(void) tp_emit(AK_TPDU_type, $P, $P.tp_rcvnxt, 0, MNULL ); 
-			tp_ctimeout($P.tp_refp, TM_sendack, (int)$P.tp_keepalive_ticks);
+			tp_ctimeout($P, TM_sendack, (int)$P.tp_keepalive_ticks);
 		} else
-			tp_ctimeout( $P.tp_refp, TM_sendack, (int)$P.tp_sendack_ticks);
+			tp_ctimeout( $P, TM_sendack, (int)$P.tp_sendack_ticks);
 		
 		IFDEBUG(D_DATA)
 			printf("after stash calling sbwakeup\n");
@@ -709,7 +705,7 @@ SAME			<==		TP_OPEN 									DT_TPDU
 	{
 		int doack; /* tells if we must ack immediately */
 
-		tp_ctimeout($P.tp_refp, TM_inact, (int)$P.tp_inact_ticks);
+		tp_ctimeout($P, TM_inact, (int)$P.tp_inact_ticks);
 		sbwakeup( &$P.tp_sock->so_rcv );
 
 		doack = tp_stash($P, $E);
@@ -720,7 +716,7 @@ SAME			<==		TP_OPEN 									DT_TPDU
 		if(doack)
 			(void) tp_emit(AK_TPDU_type, $P, $P.tp_rcvnxt, 0, MNULL ); 
 		else
-			tp_ctimeout_MIN( $P.tp_refp, TM_sendack, (int)$P.tp_sendack_ticks);
+			tp_ctimeout_MIN( $P, TM_sendack, (int)$P.tp_sendack_ticks);
 		
 		IFDEBUG(D_DATA)
 			printf("after stash calling sbwakeup\n");
@@ -747,7 +743,7 @@ SAME 			<== 	[ TP_OPEN, TP_AKWAIT ]							DT_TPDU
 		ENDTRACE
 		IncStat(ts_dt_niw);
 		m_freem($$.e_data);
-		tp_ctimeout($P.tp_refp, TM_inact, (int)$P.tp_inact_ticks);
+		tp_ctimeout($P, TM_inact, (int)$P.tp_inact_ticks);
 		(void) tp_emit(AK_TPDU_type, $P, $P.tp_rcvnxt, 0, MNULL ); 
 	}
 ;
@@ -761,7 +757,7 @@ TP_OPEN			<==		TP_AKWAIT										AK_TPDU
 			$P.tp_ucddata = 0;
 		}
 		(void) tp_goodack($P, $$.e_cdt, $$.e_seq, $$.e_subseq);
-		tp_cuntimeout($P.tp_refp, TM_retrans);
+		tp_cuntimeout($P, TM_retrans);
 
 		soisconnected($P.tp_sock);
 		IFTRACE(D_CONN)
@@ -774,8 +770,8 @@ TP_OPEN			<==		TP_AKWAIT										AK_TPDU
 				so->so_qlen, so->so_error, so->so_rcv.sb_cc, so->so_head);
 		ENDTRACE
 
-		tp_ctimeout($P.tp_refp, TM_sendack, (int)$P.tp_keepalive_ticks);
-		tp_ctimeout($P.tp_refp, TM_inact, (int)$P.tp_inact_ticks);
+		tp_ctimeout($P, TM_sendack, (int)$P.tp_keepalive_ticks);
+		tp_ctimeout($P, TM_inact, (int)$P.tp_inact_ticks);
 	}
 ;
 
@@ -788,10 +784,10 @@ TP_OPEN 		<== 	[ TP_OPEN, TP_AKWAIT ]						XPD_TPDU
 				m_freem($P.tp_ucddata);
 				$P.tp_ucddata = 0;
 			}
-			tp_cuntimeout($P.tp_refp, TM_retrans);
+			tp_cuntimeout($P, TM_retrans);
 			soisconnected($P.tp_sock);
-			tp_ctimeout($P.tp_refp, TM_sendack, (int)$P.tp_keepalive_ticks);
-			tp_ctimeout($P.tp_refp, TM_inact, (int)$P.tp_inact_ticks);
+			tp_ctimeout($P, TM_sendack, (int)$P.tp_keepalive_ticks);
+			tp_ctimeout($P, TM_inact, (int)$P.tp_inact_ticks);
 		} 
 		IFTRACE(D_XPD)
 		tptrace(TPPTmisc, "XPD tpdu accepted Xrcvnxt, e_seq datalen m_len\n",
@@ -859,7 +855,7 @@ SAME	 		<== 	[ TP_AKWAIT, TP_OPEN ] 							XPD_TPDU
 			IncStat(ts_xpd_dup);
 		}
 		m_freem($$.e_data);
-		tp_ctimeout($P.tp_refp, TM_inact, (int)$P.tp_inact_ticks);
+		tp_ctimeout($P, TM_inact, (int)$P.tp_inact_ticks);
 		/* don't send an xack because the xak gives "last one received", not
 		 * "next one i expect" (dumb)
 		 */
@@ -905,7 +901,7 @@ TP_CLOSING		<== [ TP_CLOSING, TP_AKWAIT, TP_CRSENT, TP_CONFIRMING ]	T_DETACH
 			data = MCPY($P.tp_ucddata, M_NOWAIT);
 			(void) tp_emit(DR_TPDU_type, $P, 0, E_TP_NORMAL_DISC, data);
 			$P.tp_retrans = $P.tp_Nretrans;
-			tp_ctimeout($P.tp_refp, TM_retrans, (int)$P.tp_dr_ticks);
+			tp_ctimeout($P, TM_retrans, (int)$P.tp_dr_ticks);
 		}
 	}
 ;
@@ -926,9 +922,9 @@ TP_CLOSING		<==	[ TP_AKWAIT, TP_OPEN, TP_CRSENT, TP_CONFIRMING ]  T_DISC_req
 		struct mbuf *data = MCPY($P.tp_ucddata, M_WAIT);
 
 		if($P.tp_state == TP_OPEN) {
-			tp_euntimeout($P.tp_refp, TM_data_retrans); /* all */
-			tp_cuntimeout($P.tp_refp, TM_inact);
-			tp_cuntimeout($P.tp_refp, TM_sendack);
+			tp_euntimeout($P, TM_data_retrans); /* all */
+			tp_cuntimeout($P, TM_inact);
+			tp_cuntimeout($P, TM_sendack);
 		}
 		if (data) {
 			IFDEBUG(D_CONN)
@@ -939,7 +935,7 @@ TP_CLOSING		<==	[ TP_AKWAIT, TP_OPEN, TP_CRSENT, TP_CONFIRMING ]  T_DISC_req
 		}
 		tp_soisdisconnecting($P.tp_sock);
 		$P.tp_retrans = $P.tp_Nretrans;
-		tp_ctimeout($P.tp_refp, TM_retrans, (int)$P.tp_dr_ticks);
+		tp_ctimeout($P, TM_retrans, (int)$P.tp_dr_ticks);
 
 		if( trick_hc )
 			return tp_emit(DR_TPDU_type, $P, 0, $$.e_reason, data);
@@ -955,12 +951,11 @@ SAME			<==		TP_AKWAIT									TM_retrans
 
 		IncStat(ts_retrans_cc);
 		$P.tp_retrans --;
-		$P.tp_cong_win = 1;
-		$P.tp_ackrcvd = 0;
+		$P.tp_cong_win = 1 * $P.tp_l_tpdusize;
 
 		if( error = tp_emit(CC_TPDU_type, $P, 0, 0, data) ) 
 			$P.tp_sock->so_error = error;
-		tp_ctimeout($P.tp_refp, TM_retrans, (int)$P.tp_cc_ticks);
+		tp_ctimeout($P, TM_retrans, (int)$P.tp_cc_ticks);
 	}
 ;
 
@@ -974,7 +969,7 @@ TP_CLOSING		<==		TP_AKWAIT									TM_retrans
 		tp_indicate(T_DISCONNECT, $P, ETIMEDOUT);
 		(void) tp_emit(DR_TPDU_type, $P, 0, E_TP_CONGEST, MNULL);
 		$P.tp_retrans = $P.tp_Nretrans;
-		tp_ctimeout($P.tp_refp, TM_retrans, (int)$P.tp_dr_ticks);
+		tp_ctimeout($P, TM_retrans, (int)$P.tp_dr_ticks);
 	}
 ;
 
@@ -987,9 +982,9 @@ TP_CLOSING		<==		TP_AKWAIT									TM_retrans
 TP_CLOSING 		<==		TP_OPEN		   [ TM_inact, TM_retrans, TM_data_retrans ]
 	DEFAULT
 	{
-		tp_euntimeout($P.tp_refp, TM_data_retrans); /* all */
-		tp_cuntimeout($P.tp_refp, TM_inact); 
-		tp_cuntimeout($P.tp_refp, TM_sendack);
+		tp_euntimeout($P, TM_data_retrans); /* all */
+		tp_cuntimeout($P, TM_inact); 
+		tp_cuntimeout($P, TM_sendack);
 
 		IncStat(ts_conn_gaveup);
 		tp_soisdisconnecting($P.tp_sock);
@@ -997,7 +992,7 @@ TP_CLOSING 		<==		TP_OPEN		   [ TM_inact, TM_retrans, TM_data_retrans ]
 		tp_indicate(T_DISCONNECT, $P, ETIMEDOUT);
 		(void) tp_emit(DR_TPDU_type, $P, 0, E_TP_CONGEST_2, MNULL);
 		$P.tp_retrans = $P.tp_Nretrans;
-		tp_ctimeout($P.tp_refp, TM_retrans, (int)$P.tp_dr_ticks);
+		tp_ctimeout($P, TM_retrans, (int)$P.tp_dr_ticks);
 	}
 ;
 
@@ -1005,18 +1000,15 @@ TP_CLOSING 		<==		TP_OPEN		   [ TM_inact, TM_retrans, TM_data_retrans ]
 SAME			<==		TP_OPEN										TM_retrans
 	( $P.tp_retrans > 0 )
 	{
-		$P.tp_cong_win = 1;
-		$P.tp_ackrcvd = 0;
+		$P.tp_cong_win = 1 * $P.tp_l_tpdusize;
 		/* resume XPD */
 		if	( $P.tp_Xsnd.sb_mb )  {
 			struct mbuf *m = m_copy($P.tp_Xsnd.sb_mb, 0, (int)$P.tp_Xsnd.sb_cc);
-			/* m_copy doesn't preserve the m_xlink field, but at this pt.
-			 * that doesn't matter
-			 */
+			int shift;
 
 			IFTRACE(D_XPD)
-				tptrace(TPPTmisc, "XPD retrans: Xuna Xsndnxt sndhiwat snduna",
-					$P.tp_Xuna, $P.tp_Xsndnxt, $P.tp_sndhiwat, 
+				tptrace(TPPTmisc, "XPD retrans: Xuna Xsndnxt sndnxt snduna",
+					$P.tp_Xuna, $P.tp_Xsndnxt, $P.tp_sndnxt, 
 					$P.tp_snduna); 
 			ENDTRACE
 			IFDEBUG(D_XPD)
@@ -1024,62 +1016,19 @@ SAME			<==		TP_OPEN										TM_retrans
 			ENDDEBUG
 			IncStat(ts_retrans_xpd);
 			$P.tp_retrans --;
+			shift = max($P.tp_Nretrans - $P.tp_retrans, 6);
 			(void) tp_emit(XPD_TPDU_type, $P, $P.tp_Xuna, 1, m);
-			tp_ctimeout($P.tp_refp, TM_retrans, (int)$P.tp_xpd_ticks);
+			tp_ctimeout($P, TM_retrans, ((int)$P.tp_dt_ticks) << shift);
 		}
 	}
 ;
 
 /* TP4 only */
 SAME 			<==		TP_OPEN									TM_data_retrans
-	( $$.e_retrans > 0 )
+	($P.tp_rxtshift < TP_NRETRANS)
 	{	
-		register 	SeqNum			low, lowsave = 0;
-		register	struct mbuf 	*m, *n = $P.tp_sock->so_snd.sb_mb;
-		register	SeqNum			high = $$.e_high;
-
-		low = $P.tp_snduna;
-		lowsave = high = low;
-
-		tp_euntimeout_lss($P.tp_refp, TM_data_retrans,
-			SEQ_ADD($P, $P.tp_sndhiwat, 1));
-		$P.tp_retrans_hiwat = $P.tp_sndhiwat;
-
-		if (($P.tp_rx_strat & TPRX_EACH) == 0)
-			high = (high>low)?low:high;
-
-		if( $P.tp_rx_strat & TPRX_USE_CW ) {
-			register int i;
-
-			$P.tp_cong_win = 1;
-			$P.tp_ackrcvd = 0;
-			i = SEQ_ADD($P, low, $P.tp_cong_win);
-
-			high = SEQ_MIN($P, high, $P.tp_sndhiwat);
-
-		}
-
-		while (SEQ_LEQ($P, low, high)) {
-			if (n) {
-				if ((m = m_copy(n, 0, M_COPYALL))== MNULL)
-					break;
-				(void) tp_emit(DT_TPDU_type, $P,
-					low, (m->m_flags & M_EOR) != 0, m);
-				IncStat(ts_retrans_dt);
-				SEQ_INC($P, low );
-			}
-			n = n->m_nextpkt;
-		}
-/* CE_BIT
-		if ( SEQ_LEQ($P, lowsave, high) ){
-*/
-			$$.e_retrans --;
-			tp_etimeout($P.tp_refp, TM_data_retrans, (caddr_t)lowsave,
-					(caddr_t)high, $$.e_retrans,
-					($P.tp_Nretrans - $$.e_retrans) * (int)$P.tp_dt_ticks);
-/* CE_BIT
-		}
-*/
+		$P.tp_rxtshift++;
+		(void) tp_data_retrans($P);
 	}
 ;
 
@@ -1090,7 +1039,7 @@ SAME	 		<==		TP_CLOSING									TM_retrans
 		$P.tp_retrans --;
 		(void) tp_emit(DR_TPDU_type, $P, 0, E_TP_DR_NO_REAS, MNULL);
 		IncStat(ts_retrans_dr);
-		tp_ctimeout($P.tp_refp, TM_retrans, (int)$P.tp_dr_ticks);
+		tp_ctimeout($P, TM_retrans, (int)$P.tp_dr_ticks);
 	}
 ;
 
@@ -1099,9 +1048,9 @@ TP_REFWAIT 		<==		TP_CLOSING									TM_retrans
 	DEFAULT	/* no more retrans - gave up */
 	{	
 		$P.tp_sock->so_error = ETIMEDOUT;
-		$P.tp_refp->tpr_state = REF_FROZEN;
+		$P.tp_refstate = REF_FROZEN;
 		tp_recycle_tsuffix( $P );
-		tp_etimeout($P.tp_refp, TM_reference, 0,0,0, (int)$P.tp_refer_ticks);
+		tp_etimeout($P, TM_reference, (int)$P.tp_refer_ticks);
 	}
 ;
 
@@ -1124,7 +1073,7 @@ SAME 			<== 	TP_OPEN 							[ CR_TPDU, CC_TPDU ]
 	DEFAULT
 	{	
 		if( $P.tp_class != TP_CLASS_0) {
-			tp_ctimeout($P.tp_refp, TM_inact, (int)$P.tp_inact_ticks);
+			tp_ctimeout($P, TM_inact, (int)$P.tp_inact_ticks);
 			if ( $E.ev_number == CC_TPDU )
 				(void) tp_emit(AK_TPDU_type, $P, $P.tp_rcvnxt, 0, MNULL); 
 		}
@@ -1137,8 +1086,8 @@ SAME			<== 	TP_OPEN									T_DATA_req
 	DEFAULT
 	{
 		IFTRACE(D_DATA)
-			tptrace(TPPTmisc, "T_DATA_req sndhiwat snduna fcredit, tpcb",
-				$P.tp_sndhiwat, $P.tp_snduna, $P.tp_fcredit, $P);
+			tptrace(TPPTmisc, "T_DATA_req sndnxt snduna fcredit, tpcb",
+				$P.tp_sndnxt, $P.tp_snduna, $P.tp_fcredit, $P);
 		ENDTRACE
 
 		tp_send($P);
@@ -1163,8 +1112,8 @@ SAME			<==		TP_OPEN										T_XPD_req
 			 */
 
 			IFTRACE(D_XPD)
-				tptrace(TPPTmisc, "XPD req: Xuna Xsndnxt sndhiwat snduna",
-					$P.tp_Xuna, $P.tp_Xsndnxt, $P.tp_sndhiwat, 
+				tptrace(TPPTmisc, "XPD req: Xuna Xsndnxt sndnxt snduna",
+					$P.tp_Xuna, $P.tp_Xsndnxt, $P.tp_sndnxt, 
 					$P.tp_snduna); 
 			ENDTRACE
 			IFDEBUG(D_XPD)
@@ -1174,7 +1123,8 @@ SAME			<==		TP_OPEN										T_XPD_req
 			error = 
 				tp_emit(XPD_TPDU_type, $P, $P.tp_Xuna, 1, m);
 			$P.tp_retrans = $P.tp_Nretrans;
-			tp_ctimeout($P.tp_refp, TM_retrans, (int)$P.tp_xpd_ticks);
+
+			tp_ctimeout($P, TM_retrans, (int)$P.tp_rxtcur);
 			SEQ_INC($P, $P.tp_Xsndnxt);
 		} 
 		if(trick_hc)
@@ -1197,48 +1147,11 @@ SAME 			<==		TP_OPEN 									AK_TPDU
 			printf("GOOD ACK seq 0x%x cdt 0x%x\n", $$.e_seq, $$.e_cdt);
 		ENDDEBUG
 		if( $P.tp_class != TP_CLASS_0) {
-			tp_ctimeout($P.tp_refp, TM_inact, (int)$P.tp_inact_ticks);
-			tp_euntimeout_lss($P.tp_refp, TM_data_retrans, $$.e_seq);
+			tp_ctimeout($P, TM_inact, (int)$P.tp_inact_ticks);
 		}
 		sbwakeup(sb);
-		if ($P.tp_sndhiwat <= $P.tp_retrans_hiwat &&
-			$P.tp_snduna <= $P.tp_retrans_hiwat) {
-
-			register struct mbuf     *m, *n = sb->sb_mb;
-			SeqNum		high, retrans, lowsave;
-
-			high = SEQ_MIN($P, SEQ_ADD($P, $P.tp_snduna,
-					MIN($P.tp_cong_win, $P.tp_fcredit)) - 1,
-					$P.tp_sndhiwat);
-			retrans = SEQ_MAX($P, SEQ_ADD($P, $P.tp_last_retrans, 1),
-					$P.tp_snduna);
-			for (lowsave = $P.tp_snduna;
-					SEQ_LT($P, lowsave, retrans); SEQ_INC($P, lowsave))
-				n = n->m_nextpkt;
-			for (; SEQ_LEQ($P, retrans, high); SEQ_INC($P, retrans)) {
-				if (n == 0) {
-					IFDEBUG(D_RTC)
-						printf("tp: retrans list is GONE!\n");
-					ENDDEBUG
-					break;
-				} else if (m = m_copy(n, 0, M_COPYALL)) {
-					(void) tp_emit(DT_TPDU_type, $P, retrans,
-						(m->m_flags & M_EOR) != 0, m);
-					$P.tp_last_retrans = retrans;
-					IncStat(ts_retrans_dt);
-				}
-				n = n->m_nextpkt;
-			}
-			tp_etimeout($P.tp_refp, TM_data_retrans, (caddr_t)lowsave,
-					(caddr_t)high, $P.tp_retrans, (int)$P.tp_dt_ticks);
-			if (SEQ_DEC($P, retrans) == $P.tp_retrans_hiwat)
-				tp_send($P);
-		}
-		else {
-			tp_send($P);
-		}
 		IFDEBUG(D_ACKRECV)
-			printf("GOOD ACK new sndhiwat 0x%x\n", $P.tp_sndhiwat);
+			printf("GOOD ACK new sndnxt 0x%x\n", $P.tp_sndnxt);
 		ENDDEBUG
 	}
 ;
@@ -1258,7 +1171,7 @@ SAME			<==		TP_OPEN 			 						 AK_TPDU
 				IncStat( ts_ackreason[_ACK_FCC_] );
 				(void) tp_emit(AK_TPDU_type, $P, $P.tp_rcvnxt, 1, MNULL);
 			}
-			tp_ctimeout($P.tp_refp, TM_inact, (int)$P.tp_inact_ticks);
+			tp_ctimeout($P, TM_inact, (int)$P.tp_inact_ticks);
 		} 
 	}
 ;
@@ -1272,7 +1185,7 @@ SAME			<==		TP_OPEN 			 						 AK_TPDU
 
 			(void) tp_emit(XPD_TPDU_type, $P, $P.tp_Xuna, 1, m);
 			$P.tp_retrans = $P.tp_Nretrans;
-			tp_ctimeout($P.tp_refp, TM_retrans, (int)$P.tp_xpd_ticks);
+			tp_ctimeout($P, TM_retrans, (int)$P.tp_xpd_ticks);
 			SEQ_INC($P, $P.tp_Xsndnxt);
 		}
 		 */
@@ -1286,8 +1199,8 @@ SAME			<== 	TP_OPEN										XAK_TPDU
 	 * also updates tp_Xuna
 	 */
 	{	
-		tp_ctimeout($P.tp_refp, TM_inact, (int)$P.tp_inact_ticks);
-		tp_cuntimeout($P.tp_refp, TM_retrans);
+		tp_ctimeout($P, TM_inact, (int)$P.tp_inact_ticks);
+		tp_cuntimeout($P, TM_retrans);
 
 		sbwakeup( &$P.tp_sock->so_snd );
 
@@ -1304,7 +1217,7 @@ SAME			<==		TP_OPEN 			 						XAK_TPDU
 			tptrace(TPPTmisc, "BOGUS XACK eventtype ", $E.ev_number, 0, 0,0);
 		ENDTRACE
 		if( $P.tp_class != TP_CLASS_0 ) {
-			tp_ctimeout($P.tp_refp, TM_inact, (int)$P.tp_inact_ticks);
+			tp_ctimeout($P, TM_inact, (int)$P.tp_inact_ticks);
 		} 
 	}
 ;
@@ -1313,6 +1226,7 @@ SAME			<==		TP_OPEN 			 						XAK_TPDU
 SAME			<==		TP_OPEN 								TM_sendack 
 	DEFAULT
 	{	
+		int timo;
 		IFTRACE(D_TIMER)
 			tptrace(TPPTsendack, -1, $P.tp_lcredit, $P.tp_sent_uwe, 
 			$P.tp_sent_lcdt, 0);
