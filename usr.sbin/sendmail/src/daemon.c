@@ -39,9 +39,9 @@
 
 #ifndef lint
 #ifdef DAEMON
-static char sccsid[] = "@(#)daemon.c	6.40 (Berkeley) 04/18/93 (with daemon mode)";
+static char sccsid[] = "@(#)daemon.c	6.41 (Berkeley) 04/21/93 (with daemon mode)";
 #else
-static char sccsid[] = "@(#)daemon.c	6.40 (Berkeley) 04/18/93 (without daemon mode)";
+static char sccsid[] = "@(#)daemon.c	6.41 (Berkeley) 04/21/93 (without daemon mode)";
 #endif
 #endif /* not lint */
 
@@ -445,6 +445,9 @@ gothostent:
 
 		/* failure, decide if temporary or not */
 	failure:
+#ifdef XLA
+		xla_host_end(host);
+#endif
 		if (transienterror(sav_errno))
 			return EX_TEMPFAIL;
 		else
@@ -452,9 +455,6 @@ gothostent:
 			extern char *errstring();
 
 			message("%s", errstring(sav_errno));
-#ifdef XLA
-			xla_host_end(host);
-#endif
 			return (EX_UNAVAILABLE);
 		}
 	}
