@@ -30,25 +30,25 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_vba.c	1.3 (Berkeley) 06/28/90
+ *	@(#)if_vba.c	1.4 (Berkeley) 12/16/90
  */
 
-#include "param.h"
-#include "systm.h"
-#include "mbuf.h"
-#include "buf.h"
-#include "cmap.h"
-#include "vmmac.h"
-#include "socket.h"
+#include "sys/param.h"
+#include "sys/systm.h"
+#include "sys/mbuf.h"
+#include "sys/buf.h"
+#include "sys/cmap.h"
+#include "sys/vmmac.h"
+#include "sys/socket.h"
 
-#include "../tahoe/mtpr.h"
-#include "../tahoe/pte.h"
+#include "../include/mtpr.h"
+#include "../include/pte.h"
 
-#include "../tahoevba/vbavar.h"
+#include "../vba/vbavar.h"
 
-#include "../net/if.h"
-#include "../netinet/in.h"
-#include "../netinet/if_ether.h"
+#include "net/if.h"
+#include "netinet/in.h"
+#include "netinet/if_ether.h"
 
 #include "if_vba.h"
 
