@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)radix.h	8.1.2.1 (Berkeley) 10/09/94
+ *	@(#)radix.h	8.2 (Berkeley) 10/31/94
  */
 
 #ifndef _RADIX_H_
@@ -93,6 +93,8 @@ struct radix_node_head {
 		__P((void *v, struct radix_node_head *head));
 	struct	radix_node *(*rnh_lookup)	/* locate based on sockaddr */
 		__P((void *v, void *mask, struct radix_node_head *head));
+	struct	radix_node *(*rnh_lookup)	/* locate based on sockaddr */
+		__P((void *v, void *mask, struct radix_node_head *head));
 	struct	radix_node *(*rnh_matchpkt)	/* locate based on packet hdr */
 		__P((void *v, struct radix_node_head *head));
 	int	(*rnh_walktree)			/* traverse tree */
@@ -117,6 +119,7 @@ struct radix_node_head {
 #ifndef KERNEL
 #define Bcmp(a, b, n) bcmp(((char *)(a)), ((char *)(b)), (n))
 #define Bcopy(a, b, n) bcopy(((char *)(a)), ((char *)(b)), (unsigned)(n))
+#define Bcopy(a, b, n) bcopy(((char *)(a)), ((char *)(b)), (unsigned)(n))
 #define Bzero(p, n) bzero((char *)(p), (int)(n));
 #define R_Malloc(p, t, n) (p = (t) malloc((unsigned int)(n)))
 #define Free(p) free((char *)p);
@@ -126,6 +129,7 @@ struct radix_node_head {
 #define Bzero(p, n) bzero((caddr_t)(p), (unsigned)(n));
 #define R_Malloc(p, t, n) (p = (t) malloc((unsigned long)(n), M_RTABLE, M_DONTWAIT))
 #define Free(p) free((caddr_t)p, M_RTABLE);
+#endif /*KERNEL*/
 #endif /*KERNEL*/
 #endif /*KERNEL*/
 
