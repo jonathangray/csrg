@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_syscalls.c	8.9 (Berkeley) 05/08/95
+ *	@(#)lfs_syscalls.c	8.10 (Berkeley) 05/14/95
  */
 
 #include <sys/param.h>
@@ -478,7 +478,7 @@ lfs_fastvget(mp, ino, daddr, vpp, dinp)
 		if ((*vpp)->v_flag & VXLOCK)
 			clean_vnlocked++;
 		ip = VTOI(*vpp);
-		if (ip->i_flag & IN_LOCKED)
+		if (lockstatus(&ip->i_lock))
 			clean_inlocked++;
 		if (!(ip->i_flag & IN_MODIFIED))
 			++ump->um_lfs->lfs_uinodes;
@@ -533,9 +533,6 @@ lfs_fastvget(mp, ino, daddr, vpp, dinp)
 		    *lfs_ifind(ump->um_lfs, ino, (struct dinode *)bp->b_data);
 		brelse(bp);
 	}
-
-	/* Inode was just read from user space or disk, make sure it's locked */
-	ip->i_flag |= IN_LOCKED;
 
 	/*
 	 * Initialize the vnode from the inode, check for aliases.  In all
