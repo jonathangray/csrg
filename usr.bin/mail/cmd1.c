@@ -8,7 +8,7 @@
  * User commands.
  */
 
-static char *SccsId = "@(#)cmd1.c	2.9 10/21/82";
+static char *SccsId = "@(#)cmd1.c	2.10 01/29/83";
 
 /*
  * Print the current active headings.
