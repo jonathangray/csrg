@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.52 (Berkeley) 08/07/94
+ *	@(#)sendmail.h	8.53 (Berkeley) 08/07/94
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.52		08/07/94";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.53		08/07/94";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -387,6 +387,9 @@ ENVELOPE
 	char		*e_statmsg;	/* stat msg (changes per delivery) */
 	char		*e_msgboundary;	/* MIME-style message part boundary */
 	char		*e_origrcpt;	/* original recipient (one only) */
+	time_t		e_dtime;	/* time of last delivery attempt */
+	int		e_ntries;	/* number of delivery attempts */
+	ino_t		e_dfino;	/* df file's ino, for crash recovery */
 	char		*e_macro[128];	/* macro definitions */
 };
 
