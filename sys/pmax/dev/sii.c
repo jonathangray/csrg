@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sii.c	8.3 (Berkeley) 05/21/94
+ *	@(#)sii.c	8.4 (Berkeley) 11/30/94
  *
  * from: $Header: /sprite/src/kernel/dev/ds3100.md/RCS/devSII.c,
  *	v 9.2 89/09/14 13:37:41 jhh Exp $ SPRITE (DECWRL)";
@@ -740,7 +740,9 @@ again:
 				sc->sc_target = regs->destat;
 				state->prevComm = 0;
 			} else {
+#ifdef DEBUG
 				sii_DumpLog();
+#endif
 				panic("sc_target 2");
 			}
 		}
@@ -1528,7 +1530,9 @@ sii_GetByte(regs, phase, ack)
 	}
 	if (dstat & SII_DNE) { /* XXX */
 		printf("sii_GetByte: DNE set 5\n");
+#ifdef DEBUG
 		sii_DumpLog();
+#endif
 		regs->dstat = SII_DNE;
 	}
 	data = regs->data;
@@ -1651,7 +1655,9 @@ sii_DoSync(regs, state)
 	if ((dstat & (SII_DNE | SII_TCZ)) != (SII_DNE | SII_TCZ)) {
 		printf("sii_DoSync: ds %x cm %x i %d lotc %d\n",
 			dstat, regs->comm, i, regs->dmlotc); /* XXX */
+#ifdef DEBUG
 		sii_DumpLog(); /* XXX */
+#endif
 		return;
 	}
 	/* clear the DNE, other errors handled later */
@@ -1684,7 +1690,9 @@ sii_StartDMA(regs, phase, dmaAddr, size)
 	if (regs->dstat & SII_DNE) { /* XXX */
 		regs->dstat = SII_DNE;
 		printf("sii_StartDMA: DNE set\n");
+#ifdef DEBUG
 		sii_DumpLog();
+#endif
 	}
 	regs->dmaddrl = ((u_long)dmaAddr >> 1);
 	regs->dmaddrh = ((u_long)dmaAddr >> 17) & 03;
