@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)iso.c	7.22 (Berkeley) 03/09/93
+ *	@(#)iso.c	7.23 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -209,7 +209,7 @@ struct sockaddr_iso *sisoa, *sisob;
 
 	return ((lena == lenb) && (!bcmp(bufa, bufb, lena)));
 }
-#endif notdef
+#endif /* notdef */
 
 /*
  * FUNCTION:		iso_hashchar
@@ -406,7 +406,7 @@ caddr_t			buf;		/* RESULT: network portion of address here */
 	ENDDEBUG
 	return len;
 }
-#endif notdef
+#endif /* notdef */
 /*
  * Generic iso control operations (ioctl's).
  * Ifp is 0 if not an interface-specific ioctl.
@@ -708,7 +708,7 @@ iso_ifwithidi(addr)
 	return ((struct ifaddr *)0);
 }
 
-#endif notdef
+#endif /* notdef */
 /*
  * FUNCTION:		iso_ck_addr
  *
@@ -757,7 +757,7 @@ struct iso_addr	*isoab;		/* other addr to check */
 	}
 	return(0);
 }
-#endif notdef
+#endif /* notdef */
 /*
  * FUNCTION:		iso_localifa()
  *
@@ -813,7 +813,7 @@ iso_localifa(siso)
 
 #ifdef	TPCONS
 #include <netiso/cons.h>
-#endif	TPCONS
+#endif	/* TPCONS */
 /*
  * FUNCTION:		iso_nlctloutput
  *
@@ -874,7 +874,7 @@ struct mbuf	*m;			/* data for set, buffer for get */
 			bcopy(data, (caddr_t)isop->isop_x25crud, (unsigned)data_len);
 			isop->isop_x25crud_len = data_len;
 			break;
-#endif	TPCONS
+#endif	/* TPCONS */
 
 		default:
 			error = EOPNOTSUPP;
@@ -883,7 +883,7 @@ struct mbuf	*m;			/* data for set, buffer for get */
 		m_freem(m);
 	return error;
 }
-#endif ISO
+#endif /* ISO */
 
 #ifdef ARGO_DEBUG
 
@@ -917,4 +917,4 @@ dump_isoaddr(s)
 	}
 }
 
-#endif ARGO_DEBUG
+#endif /* ARGO_DEBUG */
