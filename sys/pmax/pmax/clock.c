@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: clock.c 1.18 91/01/21$
  *
- *	@(#)clock.c	8.1 (Berkeley) 06/10/93
+ *	@(#)clock.c	8.2 (Berkeley) 10/09/94
  */
 
 #include <sys/param.h>
@@ -90,6 +90,12 @@ setstatclockrate(newhz)
 }
 
 /*
+ * This is the amount to add to the value stored in the clock chip
+ * to get the current year.
+ */
+#define YR_OFFSET	22
+
+/*
  * This code is defunct after 2099.
  * Will Unix still be here then??
  */
@@ -130,7 +136,7 @@ inittodr(base)
 	hour = c->hour;
 	day = c->day;
 	mon = c->mon;
-	year = c->year + 20; /* must be multiple of 4 because chip knows leap */
+	year = c->year + YR_OFFSET;
 	splx(s);
 
 	/* simple sanity checks */
@@ -142,7 +148,7 @@ inittodr(base)
 		 */
 		time.tv_sec = base;
 		if (!badbase) {
-			printf("WARNING: preposterous clock chip time\n");
+			printf("WARNING: preposterous clock chip time");
 			resettodr();
 		}
 		goto bad;
@@ -223,7 +229,7 @@ resettodr()
 	c->hour = hour;
 	c->day = day;
 	c->mon = mon;
-	c->year = year - 20; /* must be multiple of 4 because chip knows leap */
+	c->year = year - YR_OFFSET;
 	c->regb = t;
 	MachEmptyWriteBuffer();
 	splx(s);
