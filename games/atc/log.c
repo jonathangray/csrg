@@ -44,7 +44,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)log.c	5.6 (Berkeley) 04/30/90";
+static char sccsid[] = "@(#)log.c	5.7 (Berkeley) 10/30/90";
 #endif not lint
 
 #include "include.h"
@@ -162,7 +162,7 @@ log_score(list_em)
 		cp++;
 		strcpy(thisscore.game, cp);
 
-		thisscore.time = clock;
+		thisscore.time = clck;
 		thisscore.planes = safe_planes;
 		thisscore.real_time = time(0) - start_time;
 
