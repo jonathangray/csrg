@@ -1,4 +1,10 @@
-/*	def.h	4.2	83/08/11	*/
+/*-
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ *
+ *	@(#)def.h	4.3 (Berkeley) 04/16/91
+ */
 
 #define ASSERT(P,R)	{if (!(P)) {fprintf(stderr,"failed assertion in routine R: P\n"); abort();}}
 
