@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.12 (Berkeley) 04/26/93
+#	@(#)Makefile	8.1 (Berkeley) 05/31/93
 
 PROG=	cribbage
 DPADD=	${LIBCURSES} ${LIBTERM} ${LIBCOMPAT}
