@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stdlib.h	5.15 (Berkeley) 07/23/91
+ *	@(#)stdlib.h	5.16 (Berkeley) 11/08/91
  */
 
 #ifndef _STDLIB_H_
