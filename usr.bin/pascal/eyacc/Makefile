@@ -3,7 +3,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	5.1 (Berkeley) 06/05/86
+#	@(#)Makefile	5.2 (Berkeley) 10/16/87
 #
 INSTALLDIR = ${DESTDIR}/usr/ucb
 
