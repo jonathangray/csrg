@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cpu.h	7.3 (Berkeley) 06/28/90
+ *	@(#)cpu.h	7.4 (Berkeley) 02/20/92
  */
 
 /*
@@ -83,3 +83,7 @@ int	clk_enable;		/* clock enable startup flag */
  * Enable realtime clock.
  */
 #define	enablertclock()	(clk_enable = 1)
+
+#ifndef _MTPR_H_
+#include "mtpr.h"
+#endif /* !_MTPR_H_ */
