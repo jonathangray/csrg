@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)types.h	7.11 (Berkeley) 06/25/90
+ *	@(#)types.h	7.12 (Berkeley) 10/23/90
  */
 
 #ifndef _TYPES_
