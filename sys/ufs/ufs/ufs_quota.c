@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_quota.c	7.4 (Berkeley) 06/28/90
+ *	@(#)ufs_quota.c	7.5 (Berkeley) 08/29/90
  */
 #include "param.h"
 #include "time.h"
@@ -406,8 +406,10 @@ again:
 			continue;
 		if (vget(vp))
 			goto again;
-		if (error = getinoquota(VTOI(vp)))
+		if (error = getinoquota(VTOI(vp))) {
+			vput(vp);
 			break;
+		}
 		vput(vp);
 		if (vp->v_mountf != nextvp || vp->v_mount != mp)
 			goto again;
