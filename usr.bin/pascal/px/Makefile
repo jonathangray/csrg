@@ -1,4 +1,4 @@
-SCCSID = "@(#)Makefile 1.10 02/03/82"
+SCCSID = "@(#)Makefile 1.11 02/03/82"
 
 CFLAGS = -O
 DESTDIR =
