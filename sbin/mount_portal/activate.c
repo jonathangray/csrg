@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)activate.c	1.1 (Berkeley) 07/09/92
+ *	@(#)activate.c	1.2 (Berkeley) 07/12/92
  *
  * $Id: activate.c,v 1.2 1992/05/27 07:09:27 jsp Exp jsp $
  */
@@ -185,7 +185,9 @@ int so;
 		goto drop;
 	}
 
+#ifdef DEBUG
 	fprintf(stderr, "lookup key %s\n", key);
+#endif
 
 	/*
 	 * Find a match in the configuration file
