@@ -1,7 +1,42 @@
+/*-
+ * Copyright (c) 1992 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ *
+ *	@(#)clean.h	5.1 (Berkeley) 08/06/92
+ */
+
 /*
  * The LFS user-level library will be used when writing cleaners and
- * checkers for LFS file systems.  It will have facilities
- * for finding and parsing LFS segments.
+ * checkers for LFS file systems.  It will have facilities for finding
+ * and parsing LFS segments.
  */
 
 #define DUMP_SUM_HEADER		0x0001
@@ -10,11 +45,6 @@
 #define	DUMP_ALL		0xFFFF
 
 #define IFILE_NAME "ifile"
-
-#ifndef TRUE
-#define TRUE	(1)
-#define FALSE	(0)
-#endif
 
 /*
  * Cleaner parameters
@@ -32,13 +62,14 @@
 
 #define	BUSY_LIM	0.50
 #define	IDLE_LIM	0.90
-#define	MIN_SEGS(lfsp)	(3)
+
+#define	MIN_SEGS(lfsp)		(3)
 #define	NUM_TO_CLEAN(fsp)	(5)
 
 #define MAXLOADS	3
-#define	ONE_MIN	0
-#define	FIVE_MIN 1
-#define	FIFTEEN_MIN 2
+#define	ONE_MIN		0
+#define	FIVE_MIN	1
+#define	FIFTEEN_MIN	2
 
 typedef struct fs_info {
 	struct	statfs	*fi_statfsp;	/* fsstat info from getfsstat */
@@ -135,5 +166,4 @@ void	 print_CLEANERINFO __P((CLEANERINFO *));
 #define	dump_cleaner_info(cip)
 #define	dump_super(lfsp)
 #endif
-
 __END_DECLS
