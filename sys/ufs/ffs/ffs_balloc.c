@@ -30,19 +30,21 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_balloc.c	7.13 (Berkeley) 05/08/91
+ *	@(#)ffs_balloc.c	7.14 (Berkeley) 11/01/91
  */
 
-#include "param.h"
-#include "systm.h"
-#include "buf.h"
-#include "proc.h"
-#include "file.h"
-#include "vnode.h"
+#include <sys/param.h>
+#include <sys/systm.h>
+#include <sys/buf.h>
+#include <sys/proc.h>
+#include <sys/file.h>
+#include <sys/vnode.h>
 
-#include "quota.h"
-#include "inode.h"
-#include "fs.h"
+#include <ufs/ufs/quota.h>
+#include <ufs/ufs/inode.h>
+
+#include <ufs/ffs/fs.h>
+#include <ufs/ffs/ffs_extern.h>
 
 /*
  * Bmap converts a the logical block number of a file
@@ -50,7 +52,7 @@
  * is done by using the logical block number to index into
  * the array of block pointers described by the dinode.
  */
-bmap(ip, bn, bnp)
+ffs_bmap(ip, bn, bnp)
 	register struct inode *ip;
 	register daddr_t bn;
 	daddr_t	*bnp;
@@ -125,7 +127,7 @@ bmap(ip, bn, bnp)
  * by allocating the physical blocks on a device given
  * the inode and the logical block number in a file.
  */
-balloc(ip, bn, size, bpp, flags)
+ffs_balloc(ip, bn, size, bpp, flags)
 	register struct inode *ip;
 	register daddr_t bn;
 	int size;
@@ -137,7 +139,7 @@ balloc(ip, bn, size, bpp, flags)
 	struct buf *bp, *nbp;
 	struct vnode *vp = ITOV(ip);
 	int osize, nsize, i, j, sh, error;
-	daddr_t newb, lbn, *bap, pref, blkpref();
+	daddr_t newb, lbn, *bap, pref;
 
 	*bpp = (struct buf *)0;
 	if (bn < 0)
@@ -153,8 +155,8 @@ balloc(ip, bn, size, bpp, flags)
 	if (nb < NDADDR && nb < bn) {
 		osize = blksize(fs, ip, nb);
 		if (osize < fs->fs_bsize && osize > 0) {
-			error = realloccg(ip, nb,
-				blkpref(ip, nb, (int)nb, &ip->i_db[0]),
+			error = ffs_realloccg(ip, nb,
+				ffs_blkpref(ip, nb, (int)nb, &ip->i_db[0]),
 				osize, (int)fs->fs_bsize, &bp);
 			if (error)
 				return (error);
@@ -195,9 +197,9 @@ balloc(ip, bn, size, bpp, flags)
 					return (error);
 				}
 			} else {
-				error = realloccg(ip, bn,
-					blkpref(ip, bn, (int)bn, &ip->i_db[0]),
-					osize, nsize, &bp);
+				error = ffs_realloccg(ip, bn,
+				    ffs_blkpref(ip, bn, (int)bn, &ip->i_db[0]),
+				    osize, nsize, &bp);
 				if (error)
 					return (error);
 			}
@@ -206,9 +208,9 @@ balloc(ip, bn, size, bpp, flags)
 				nsize = fragroundup(fs, size);
 			else
 				nsize = fs->fs_bsize;
-			error = alloc(ip, bn,
-				blkpref(ip, bn, (int)bn, &ip->i_db[0]),
-				nsize, &newb);
+			error = ffs_alloc(ip, bn,
+			    ffs_blkpref(ip, bn, (int)bn, &ip->i_db[0]),
+			    nsize, &newb);
 			if (error)
 				return (error);
 			bp = getblk(vp, bn, nsize);
@@ -241,8 +243,8 @@ balloc(ip, bn, size, bpp, flags)
 	 */
 	nb = ip->i_ib[NIADDR - j];
 	if (nb == 0) {
-		pref = blkpref(ip, lbn, 0, (daddr_t *)0);
-	        if (error = alloc(ip, lbn, pref, (int)fs->fs_bsize, &newb))
+		pref = ffs_blkpref(ip, lbn, 0, (daddr_t *)0);
+	        if (error = ffs_alloc(ip, lbn, pref, (int)fs->fs_bsize, &newb))
 			return (error);
 		nb = newb;
 		bp = getblk(ip->i_devvp, fsbtodb(fs, nb), fs->fs_bsize);
@@ -252,7 +254,7 @@ balloc(ip, bn, size, bpp, flags)
 		 * never point at garbage.
 		 */
 		if (error = bwrite(bp)) {
-			blkfree(ip, nb, fs->fs_bsize);
+			ffs_blkfree(ip, nb, fs->fs_bsize);
 			return (error);
 		}
 		ip->i_ib[NIADDR - j] = nb;
@@ -279,8 +281,9 @@ balloc(ip, bn, size, bpp, flags)
 			continue;
 		}
 		if (pref == 0)
-			pref = blkpref(ip, lbn, 0, (daddr_t *)0);
-		if (error = alloc(ip, lbn, pref, (int)fs->fs_bsize, &newb)) {
+			pref = ffs_blkpref(ip, lbn, 0, (daddr_t *)0);
+		if (error =
+		    ffs_alloc(ip, lbn, pref, (int)fs->fs_bsize, &newb)) {
 			brelse(bp);
 			return (error);
 		}
@@ -292,7 +295,7 @@ balloc(ip, bn, size, bpp, flags)
 		 * never point at garbage.
 		 */
 		if (error = bwrite(nbp)) {
-			blkfree(ip, nb, fs->fs_bsize);
+			ffs_blkfree(ip, nb, fs->fs_bsize);
 			brelse(bp);
 			return (error);
 		}
@@ -316,8 +319,9 @@ balloc(ip, bn, size, bpp, flags)
 	 * Get the data block, allocating if necessary.
 	 */
 	if (nb == 0) {
-		pref = blkpref(ip, lbn, i, &bap[0]);
-		if (error = alloc(ip, lbn, pref, (int)fs->fs_bsize, &newb)) {
+		pref = ffs_blkpref(ip, lbn, i, &bap[0]);
+		if (error =
+		    ffs_alloc(ip, lbn, pref, (int)fs->fs_bsize, &newb)) {
 			brelse(bp);
 			return (error);
 		}
