@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)radixsort.c	5.5 (Berkeley) 12/14/90";
+static char sccsid[] = "@(#)radixsort.c	5.6 (Berkeley) 01/13/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -41,38 +41,13 @@ static char sccsid[] = "@(#)radixsort.c	5.5 (Berkeley) 12/14/90";
 #include <stddef.h>
 
 /*
- * Shellsort (diminishing increment sort) from Data Structures and
- * Algorithms, Aho, Hopcraft and Ullman, 1983 Edition, page 290;
- * see also Knuth Vol. 3, page 84.  The increments are selected from
- * formula (8), page 95.  Roughly O(N^3/2).
- *
  * __rspartition is the cutoff point for a further partitioning instead
  * of a shellsort.  If it changes check __rsshell_increments.  Both of
- * these are exported, as the best values are data dependent.  Unrolling
- * this loop has not proven worthwhile.
+ * these are exported, as the best values are data dependent.
  */
 #define	NPARTITION	40
 int __rspartition = NPARTITION;
 int __rsshell_increments[] = { 4, 1, 0, 0, 0, 0, 0, 0 };
-#define SHELLSORT { \
-	register u_char ch, *s1, *s2; \
-	register int incr, *incrp; \
-	for (incrp = __rsshell_increments; incr = *incrp++;) \
-		for (t1 = incr; t1 < nmemb; ++t1) \
-			for (t2 = t1 - incr; t2 >= 0;) { \
-				s1 = p[t2] + indx; \
-				s2 = p[t2 + incr] + indx; \
-				while ((ch = tr[*s1++]) == tr[*s2] && ch) \
-					++s2; \
-				if (ch > tr[*s2]) { \
-					s1 = p[t2]; \
-					p[t2] = p[t2 + incr]; \
-					p[t2 + incr] = s1; \
-					t2 -= incr; \
-				} else \
-					break; \
-			} \
-}
 
 /*
  * Stackp points to context structures, where each structure schedules a
@@ -145,6 +120,7 @@ radixsort(l1, nmemb, tab, endbyte)
 	CONTEXT *stack, *stackp;
 	int c[NBUCKETS + 1], max;
 	u_char ltab[NBUCKETS];
+	static void shellsort();
 
 	if (nmemb <= 1)
 		return(0);
@@ -204,7 +180,7 @@ radixsort(l1, nmemb, tab, endbyte)
 		 * Compute number of items that sort to the same bucket
 		 * for this index.
 		 */
-		for (p = bot, i = nmemb; i--;)
+		for (p = bot, i = nmemb; --i >= 0;)
 			++c[tr[(*p++)[indx]]];
 
 		/*
@@ -230,7 +206,7 @@ radixsort(l1, nmemb, tab, endbyte)
 		 * the bucket, and ends up pointing to the first element of
 		 * the bucket.
 		 */
-		for (i = nmemb; i--;) {
+		for (i = nmemb; --i >= 0;) {
 			--p;
 			l2[--c[tr[(*p)[indx]]]] = *p;
 		}
@@ -250,7 +226,7 @@ radixsort(l1, nmemb, tab, endbyte)
 			if (nmemb > __rspartition)
 				STACKPUSH
 			else
-				SHELLSORT
+				shellsort(p, indx, nmemb, tr);
 		}
 		for (i = max + 1; i < NBUCKETS; ++i) {
 			if ((nmemb = c[i + 1] - (t1 = c[i])) < 2)
@@ -259,7 +235,7 @@ radixsort(l1, nmemb, tab, endbyte)
 			if (nmemb > __rspartition)
 				STACKPUSH
 			else
-				SHELLSORT
+				shellsort(p, indx, nmemb, tr);
 		}
 		/* Break out when stack is empty */
 		STACKPOP
@@ -268,4 +244,35 @@ radixsort(l1, nmemb, tab, endbyte)
 	free((char *)l2);
 	free((char *)stack);
 	return(0);
+}
+
+/*
+ * Shellsort (diminishing increment sort) from Data Structures and
+ * Algorithms, Aho, Hopcraft and Ullman, 1983 Edition, page 290;
+ * see also Knuth Vol. 3, page 84.  The increments are selected from
+ * formula (8), page 95.  Roughly O(N^3/2).
+ */
+static void
+shellsort(p, indx, nmemb, tr)
+	register u_char **p, *tr;
+	register int indx, nmemb;
+{
+	register u_char ch, *s1, *s2;
+	register int incr, *incrp, t1, t2;
+
+	for (incrp = __rsshell_increments; incr = *incrp++;)
+		for (t1 = incr; t1 < nmemb; ++t1)
+			for (t2 = t1 - incr; t2 >= 0;) {
+				s1 = p[t2] + indx;
+				s2 = p[t2 + incr] + indx;
+				while ((ch = tr[*s1++]) == tr[*s2] && ch)
+					++s2;
+				if (ch > tr[*s2]) {
+					s1 = p[t2];
+					p[t2] = p[t2 + incr];
+					p[t2 + incr] = s1;
+					t2 -= incr;
+				} else
+					break;
+			}
 }
