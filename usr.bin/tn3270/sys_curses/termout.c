@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)termout.c	4.4 (Berkeley) 05/11/93";
+static char sccsid[] = "@(#)termout.c	4.5 (Berkeley) 05/11/93";
 #endif /* not lint */
 
 #if defined(unix)
@@ -639,7 +639,7 @@ InitTerminal()
 #if	defined(unix)
 	char KSEbuffer[2050];
 	char *lotsofspace = KSEbuffer;
-	extern int abort();
+	extern void abort();
 	extern char *tgetstr();
 #endif	/* defined(unix) */
 
@@ -879,7 +879,7 @@ int		control;	/* To see if we are done */
 #if	defined(unix)
     extern char *transcom;
     int inpipefd[2], outpipefd[2];
-    void aborttc();
+    static void aborttc();
 #endif	/* defined(unix) */
 
     while (DoTerminalOutput() == 0) {
@@ -920,7 +920,7 @@ int		control;	/* To see if we are done */
 	     setcommandmode();
 	     tin = inpipefd[0];
 	     tout = outpipefd[1];
-	     (void) signal(SIGCHLD, (int (*)())aborttc);
+	     (void) signal(SIGCHLD, aborttc);
 	     setconnmode();
 	     tcflag = 1;
 	     break;
@@ -943,7 +943,8 @@ int		control;	/* To see if we are done */
 
 #if	defined(unix)
 static void
-aborttc()
+aborttc(signo)
+	int signo;
 {
 	setcommandmode();
 	(void) close(tin);
