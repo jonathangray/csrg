@@ -55,6 +55,10 @@ more.IEEE: FRC
 	cd COMMON; make "CFLAGS=${CFLAGS}"
 	cd IEEE; make "CFLAGS=${CFLAGS}"
 
+more.NATIONAL: FRC
+	cd COMMON; make "CFLAGS=${CFLAGS}"
+	cd NATIONAL; make "CFLAGS=${CFLAGS}"
+
 more.TAHOE: FRC
 	cd COMMON; make "CFLAGS=${CFLAGS}"
 	cd TAHOE; make "CFLAGS=${CFLAGS}"
@@ -63,7 +67,7 @@ more.VAX: FRC
 	cd VAX; make "CFLAGS=${CFLAGS}"
 
 clean: FRC
-	rm -f ${OBJS} core libm.a libm_p.a COMMON/*.o IEEE/*.o TAHOE/*.o VAX/*.o profiled/*.o
+	rm -f ${OBJS} core libm.a libm_p.a COMMON/*.o IEEE/*.o NATIONAL/*.o TAHOE/*.o VAX/*.o profiled/*.o
 
 depend: FRC
 	mkdep ${CFLAGS} ${SRCS}
