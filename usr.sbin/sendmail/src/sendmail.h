@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.113 (Berkeley) 03/31/95
+ *	@(#)sendmail.h	8.114 (Berkeley) 03/31/95
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.113		03/31/95";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.114		03/31/95";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -248,6 +248,7 @@ typedef struct mailer	MAILER;
 # define M_SPECIFIC_UID	'S'	/* run as specific uid/gid */
 # define M_USR_UPPER	'u'	/* preserve user case distinction */
 # define M_UGLYUUCP	'U'	/* this wants an ugly UUCP from line */
+# define M_CONTENT_LEN	'v'	/* add Content-Length: header (SVr4) */
 		/*	'V'	/* UIUC: !-relativize all addresses */
 # define M_HASPWENT	'w'	/* check for /etc/passwd entry */
 		/*	'x'	/* CF: include Full-Name: */
