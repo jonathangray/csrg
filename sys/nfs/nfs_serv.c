@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_serv.c	7.29 (Berkeley) 10/01/90
+ *	@(#)nfs_serv.c	7.30 (Berkeley) 12/05/90
  */
 
 /*
@@ -702,7 +702,7 @@ nfsrv_remove(mrep, md, dpos, cred, xid, mrq, repstat)
 		goto out;
 	}
 	if (vp->v_flag & VTEXT)
-		xrele(vp);	/* try once to free text */
+		(void) vnode_pager_uncache(vp);
 out:
 	if (!error) {
 		error = VOP_REMOVE(ndp);
@@ -1433,9 +1433,7 @@ nfsrv_access(vp, flags, cred)
 		 * the inode, try to free it up once.  If
 		 * we fail, we can't allow writing.
 		 */
-		if (vp->v_flag & VTEXT)
-			xrele(vp);
-		if (vp->v_flag & VTEXT)
+		if ((vp->v_flag & VTEXT) && !vnode_pager_uncache(vp))
 			return (ETXTBSY);
 	}
 	if (error = VOP_GETATTR(vp, &vattr, cred))
