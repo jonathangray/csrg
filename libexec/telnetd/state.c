@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)state.c	5.9 (Berkeley) 03/01/91";
+static char sccsid[] = "@(#)state.c	5.10 (Berkeley) 03/22/91";
 #endif /* not lint */
 
 #include "telnetd.h"
@@ -1297,6 +1297,9 @@ suboption()
 	case TELQUAL_IS:
 		auth_is(subpointer, SB_LEN());
 		break;
+	case TELQUAL_NAME:
+		auth_name(subpointer, SB_LEN());
+		break;
 	}
 	break;
 #endif
@@ -1315,13 +1318,13 @@ suboption()
 		encrypt_reply(subpointer, SB_LEN());
 		break;
 	case ENCRYPT_START:
-		encrypt_start();
+		encrypt_start(subpointer, SB_LEN());
 		break;
 	case ENCRYPT_END:
 		encrypt_end();
 		break;
 	case ENCRYPT_REQSTART:
-		encrypt_request_start();
+		encrypt_request_start(subpointer, SB_LEN());
 		break;
 	case ENCRYPT_REQEND:
 		/*
@@ -1331,6 +1334,12 @@ suboption()
 		 * anyhow.
 		 */
 		encrypt_request_end();
+		break;
+	case ENCRYPT_ENC_KEYID:
+		encrypt_enc_keyid(subpointer, SB_LEN());
+		break;
+	case ENCRYPT_DEC_KEYID:
+		encrypt_dec_keyid(subpointer, SB_LEN());
 		break;
 	default:
 		break;
