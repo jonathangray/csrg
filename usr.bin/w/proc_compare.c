@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)proc_compare.c	5.4 (Berkeley) 02/07/91";
+static char sccsid[] = "@(#)proc_compare.c	5.5 (Berkeley) 04/27/93";
 #endif /* not lint */
 
 /*
@@ -61,6 +61,8 @@ static char sccsid[] = "@(#)proc_compare.c	5.4 (Berkeley) 02/07/91";
 #include <sys/time.h>
 #include <sys/proc.h>
 
+#include "extern.h"
+
 #define isrun(p)	(((p)->p_stat == SRUN) || ((p)->p_stat == SIDL))
 
 #define	TESTAB(a, b)	((a)<<1 | (b))
@@ -68,6 +70,7 @@ static char sccsid[] = "@(#)proc_compare.c	5.4 (Berkeley) 02/07/91";
 #define	ONLYB	1
 #define	BOTH	3
 
+int
 proc_compare(p1, p2)
 	register struct proc *p1, *p2;
 {
