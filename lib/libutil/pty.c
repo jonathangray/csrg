@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)pty.c	5.3 (Berkeley) 03/03/91";
+static char sccsid[] = "@(#)pty.c	5.4 (Berkeley) 03/06/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/cdefs.h>
@@ -85,7 +85,7 @@ openpty(amaster, aslave, name, termp, winp)
 							TCSAFLUSH, termp);
 					if (winp)
 						(void) ioctl(slave, TIOCSWINSZ, 
-							(char *)&winp);
+							(char *)winp);
 					return (0);
 				}
 				(void) close(master);
