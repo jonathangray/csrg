@@ -1,7 +1,7 @@
 #!/bin/sh -
 #
-# Copyright (c) 1992 The Regents of the University of California.
-# All rights reserved.
+# Copyright (c) 1992, 1993
+#	The Regents of the University of California.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -31,7 +31,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)vnode_if.sh	7.4 (Berkeley) 07/17/92
+#	@(#)vnode_if.sh	8.1 (Berkeley) 06/10/93
 #
 
 # Script to produce VFS front-end sugar.
@@ -66,7 +66,7 @@ cat << END_OF_LEADING_COMMENT > $HEADER
  * This file is produced automatically.
  * Do not modify anything in here by hand.
  *
- * Created from @(#)vnode_if.sh	7.4 (Berkeley) 07/17/92
+ * Created from @(#)vnode_if.sh	8.1 (Berkeley) 06/10/93
  */
 
 extern struct vnodeop_desc vop_default_desc;
@@ -159,7 +159,7 @@ cat << END_OF_LEADING_COMMENT > $CFILE
  * This file is produced automatically.
  * Do not modify anything in here by hand.
  *
- * Created from @(#)vnode_if.sh	7.4 (Berkeley) 07/17/92
+ * Created from @(#)vnode_if.sh	8.1 (Berkeley) 06/10/93
  */
 
 #include <sys/param.h>
