@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)rcp.c	5.28 (Berkeley) 06/27/90";
+static char sccsid[] = "@(#)rcp.c	5.29 (Berkeley) 06/29/90";
 #endif /* not lint */
 
 /*
@@ -288,7 +288,7 @@ toremote(targ, argc, argv)
 				tos = IPTOS_THROUGHPUT;
 				if (setsockopt(rem, IPPROTO_IP, IP_TOS,
 				    (char *)&tos, sizeof(int)) < 0)
-					perror("Notice: set type-of-service failed: %m");
+					perror("rcp: setsockopt TOS (ignored)");
 				if (response() < 0)
 					exit(1);
 				(void)free(bp);
@@ -350,7 +350,7 @@ tolocal(argc, argv)
 		tos = IPTOS_THROUGHPUT;
 		if (setsockopt(rem, IPPROTO_IP, IP_TOS,
 		    (char *)&tos, sizeof(int)) < 0)
-			perror("Notice: set type-of-service failed: %m");
+			perror("rcp: setsockopt TOS (ignored)");
 		sink(1, argv + argc - 1);
 		(void)seteuid(0);
 		(void)close(rem);
