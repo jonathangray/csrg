@@ -3,7 +3,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	5.4 (Berkeley) 03/13/86
+#	@(#)Makefile	5.5 (Berkeley) 10/13/86
 #
 DESTDIR=
 OBJS=	talkd.o announce.o process.o table.o print.o
