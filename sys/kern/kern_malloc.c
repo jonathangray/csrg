@@ -14,7 +14,7 @@
  * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *	@(#)kern_malloc.c	7.14 (Berkeley) 12/19/89
+ *	@(#)kern_malloc.c	7.15 (Berkeley) 04/05/90
  */
 
 #include "param.h"
