@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cd9660_bmap.c	8.1 (Berkeley) 01/21/94
+ *	@(#)cd9660_bmap.c	8.2 (Berkeley) 01/22/94
  */
 
 #include <sys/param.h>
@@ -96,12 +96,6 @@ isofs_bmap(ap)
 			*ap->a_runp = MAXBSIZE/bsize - 1;
 		else
 			*ap->a_runp = nblk;
-{
-extern int doclusterread;
-if (doclusterread)
-printf("ip=%x, size=%x, lblkno=%x, runp=%x\n",
-ip, ip->i_size, lblkno, *ap->a_runp);
-}
 	}
 
 	return 0;
