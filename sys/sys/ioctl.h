@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ioctl.h	7.19 (Berkeley) 06/26/91
+ *	@(#)ioctl.h	7.20 (Berkeley) 02/05/92
  */
 
 #ifndef	_IOCTL_H_
@@ -218,9 +218,9 @@ __END_DECLS
  * Compatability with old terminal driver
  *
  * Source level -> #define USE_OLD_TTY
- * Kernel level -> options COMPAT_43
+ * Kernel level -> options COMPAT_43 or COMPAT_SUNOS
  */
-#if defined(USE_OLD_TTY) || defined(COMPAT_43)
+#if defined(USE_OLD_TTY) || defined(COMPAT_43) || defined(COMPAT_SUNOS)
 #ifdef KERNEL
 #include "ioctl_compat.h"
 #else
