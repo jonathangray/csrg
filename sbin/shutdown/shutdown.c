@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)shutdown.c	5.15 (Berkeley) 06/22/90";
+static char sccsid[] = "@(#)shutdown.c	5.16 (Berkeley) 02/03/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -88,7 +88,7 @@ main(argc, argv)
 	extern int optind;
 	register char *p, *endp;
 	int arglen, ch, len, readstdin;
-	struct passwd *pw, *getpwuid();
+	struct passwd *pw;
 	char *strcat(), *getlogin();
 	uid_t geteuid();
 
