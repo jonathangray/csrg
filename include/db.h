@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)db.h	5.20 (Berkeley) 11/18/92
+ *	@(#)db.h	5.21 (Berkeley) 02/14/93
  */
 
 #ifndef _DB_H_
@@ -46,7 +46,7 @@
 #define	MAX_PAGE_NUMBER	ULONG_MAX	/* >= # of pages in a file */
 typedef u_long	pgno_t;
 #define	MAX_PAGE_OFFSET	USHRT_MAX	/* >= # of bytes in a page */
-typedef u_short	index_t;
+typedef u_short	indx_t;
 #define	MAX_REC_NUMBER	ULONG_MAX	/* >= # of records in a tree */
 typedef u_long	recno_t;
 
