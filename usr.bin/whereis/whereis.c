@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)whereis.c	8.1 (Berkeley) 06/06/93";
+static char sccsid[] = "@(#)whereis.c	8.2 (Berkeley) 04/27/95";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -71,6 +71,9 @@ main(argc, argv)
 		}
 	argc -= optind;
 	argv += optind;
+
+	if (argc == 0)
+		usage();
 
 	/* Retrieve the standard path. */
 	mib[0] = CTL_USER;
@@ -110,6 +113,7 @@ main(argc, argv)
 void
 usage()
 {
-	(void)fprintf(stderr, "whereis: program ...\n");
+
+	(void)fprintf(stderr, "usage: whereis program [...]\n");
 	exit (1);
 }
