@@ -1,4 +1,4 @@
-/*	conf.c	4.62	82/10/31	*/
+/*	conf.c	4.63	83/03/16	*/
 
 #include "../h/param.h"
 #include "../h/systm.h"
