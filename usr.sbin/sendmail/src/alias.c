@@ -37,7 +37,7 @@
 # include <pwd.h>
 
 #ifndef lint
-static char sccsid[] = "@(#)alias.c	6.49 (Berkeley) 05/27/93";
+static char sccsid[] = "@(#)alias.c	6.50 (Berkeley) 05/27/93";
 #endif /* not lint */
 
 
@@ -217,7 +217,7 @@ setalias(spec)
 	{
 		while (isspace(*p))
 			p++;
-		if (*p == NULL)
+		if (*p == '\0')
 			break;
 		spec = p;
 
