@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	7.91 (Berkeley) 07/14/92
+ *	@(#)ffs_vnops.c	7.92 (Berkeley) 07/17/92
  */
 
 #include <sys/param.h>
@@ -234,7 +234,7 @@ ffs_read(ap)
 	type = ip->i_mode & IFMT;
 	if (type != IFDIR && type != IFREG && type != IFLNK)
 		panic("ffs_read type");
-	if (type == IFLNK && ip->i_size < vp->v_mount->mnt_maxsymlinklen)
+	if (type == IFLNK && (int)ip->i_size < vp->v_mount->mnt_maxsymlinklen)
 		panic("read short symlink");
 #endif
 	if (uio->uio_resid == 0)
