@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_inode.c	7.58 (Berkeley) 03/04/92
+ *	@(#)lfs_inode.c	7.59 (Berkeley) 04/08/92
  */
 
 #include <sys/param.h>
@@ -363,16 +363,17 @@ lfs_truncate(vp, length, flags)
 					daddr = *daddrp++;
 					SEGDEC;
 				}
-				a_end[depth].in_off=NINDIR(fs)-1;
-				if (ap->in_off > 0 && lbn == lastblock) {
+				a_end[depth].in_off = NINDIR(fs) - 1;
+				if (ap->in_off == 0)
+					brelse (bp);
+				else {
 					bzero(bp->b_un.b_daddr + ap->in_off,
 					    fs->lfs_bsize - 
 					    ap->in_off * sizeof(daddr_t));
 					LFS_UBWRITE(bp);
-				} else 
-					brelse (bp);
+				}
 			}
-			if (a[1].in_off == 0) {
+			if (depth == 0 && a[1].in_off == 0) {
 				off = a[0].in_off;
 				daddr = ip->i_ib[off];
 				SEGDEC;
