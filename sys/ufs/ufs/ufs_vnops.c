@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	7.103 (Berkeley) 07/12/92
+ *	@(#)ufs_vnops.c	7.104 (Berkeley) 07/17/92
  */
 
 #include <sys/param.h>
@@ -1516,9 +1516,11 @@ ufs_readlink(ap)
 {
 	register struct vnode *vp = ap->a_vp;
 	register struct inode *ip = VTOI(vp);
+	int isize;
 
-	if (ip->i_size < vp->v_mount->mnt_maxsymlinklen) {
-		uiomove((char *)ip->i_shortlink, (int)ip->i_size, ap->a_uio);
+	isize = ip->i_size;
+	if (isize < vp->v_mount->mnt_maxsymlinklen) {
+		uiomove((char *)ip->i_shortlink, isize, ap->a_uio);
 		return (0);
 	}
 	return (VOP_READ(vp, ap->a_uio, 0, ap->a_cred));
