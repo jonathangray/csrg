@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mount.h	8.10 (Berkeley) 01/28/94
+ *	@(#)mount.h	8.11 (Berkeley) 02/11/94
  */
 
 #ifndef KERNEL
@@ -111,7 +111,7 @@ struct statfs {
 	"procfs",	/* 12 MOUNT_PROCFS */ \
 	"afs",		/* 13 MOUNT_AFS */ \
 	"iso9660fs",	/* 14 MOUNT_CD9660 */ \
-	"union",	/* 15 MOUNT_CD9660 */ \
+	"union",	/* 15 MOUNT_UNION */ \
 	0,		/* 16 MOUNT_SPARE */ \
 }
 
