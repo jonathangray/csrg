@@ -5,7 +5,7 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)ptrace.2	6.5 (Berkeley) 04/29/91
+.\"	@(#)ptrace.2	6.6 (Berkeley) 07/28/92
 .\"
 .TH PTRACE 2 ""
 .UC 4
@@ -14,8 +14,8 @@ ptrace \- process trace
 .SH SYNOPSIS
 .nf
 .ft B
-#include <sys/signal.h>
 #include <sys/ptrace.h>
+#include <signal.h>
 .PP
 .ft B
 ptrace(request, pid, addr, data)
