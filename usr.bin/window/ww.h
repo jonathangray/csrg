@@ -33,10 +33,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ww.h	3.60 (Berkeley) 06/06/90
+ *	@(#)ww.h	3.61 (Berkeley) 08/12/90
  */
 
-#ifndef POSIX_TTY
+#ifdef OLD_TTY
 #include <sgtty.h>
 #else
 #include <termios.h>
@@ -117,7 +117,7 @@ struct ww {
 
 	/* state of a tty */
 struct ww_tty {
-#ifndef POSIX_TTY
+#ifdef OLD_TTY
 	struct sgttyb ww_sgttyb;
 	struct tchars ww_tchars;
 	struct ltchars ww_ltchars;
@@ -226,8 +226,8 @@ union ww_char **wwos;		/* the old (current) screen */
 union ww_char **wwns;		/* the new (desired) screen */
 char *wwtouched;		/* wwns changed flags */
 struct ww_update *wwupd;	/* for display update */
-extern int wwbaudmap[];		/* maps stty() baud rate code into number */
-int wwbaud;			/* wwbaudmap[wwoldtty.ww_sgttyb.sg_ospeed] */
+int wwospeed;			/* output baud rate, copied from wwoldtty */
+int wwbaud;			/* wwospeed converted into actual number */
 int wwcursorrow, wwcursorcol;	/* where we want the cursor to be */
 int wwerrno;			/* error number */
 
