@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vfsops.c	8.14 (Berkeley) 11/21/94
+ *	@(#)ffs_vfsops.c	8.14 (Berkeley) 11/28/94
  */
 
 #include <sys/param.h>
@@ -376,18 +376,21 @@ ffs_mountfs(devvp, mp, p)
 	register struct ufsmount *ump;
 	struct buf *bp;
 	register struct fs *fs;
-	dev_t dev = devvp->v_rdev;
+	dev_t dev;
 	struct partinfo dpart;
 	int havepart = 0, blks;
 	caddr_t base, space;
 	int havepart = 0, blks;
 	int error, i, size, ronly;
 	int32_t *lp;
+	struct ucred *cred;
 	extern struct vnode *rootvp;
 
+	dev = devvp->v_rdev;
+	cred = p ? p->p_ucred : NOCRED;
 	if (error = VOP_OPEN(devvp, ronly ? FREAD : FREAD|FWRITE, FSCRED, p))
 		return (error);
-	if (VOP_IOCTL(devvp, DIOCGPART, (caddr_t)&dpart, FREAD, NOCRED, p) != 0)
+	if (VOP_IOCTL(devvp, DIOCGPART, (caddr_t)&dpart, FREAD, cred, p) != 0)
 		size = DEV_BSIZE;
 	else {
 		havepart = 1;
@@ -396,7 +399,7 @@ ffs_mountfs(devvp, mp, p)
 
 	bp = NULL;
 	ump = NULL;
-	if (error = bread(devvp, SBLOCK, SBSIZE, NOCRED, &bp))
+	if (error = bread(devvp, SBLOCK, SBSIZE, cred, &bp))
 		goto out;
 	fs = (struct fs *)bp->b_data;
 		error = EINVAL;		/* XXX needs translation */
@@ -453,9 +456,8 @@ ffs_mountfs(devvp, mp, p)
 		tp = bread(dev, fsbtodb(fs, fs->fs_csaddr + i), size,
 		    fs->fs_dbsize);
 #else SECSIZE
-		error = bread(devvp, fsbtodb(fs, fs->fs_csaddr + i), size,
-			NOCRED, &bp);
-		if (error) {
+		if (error = bread(devvp, fsbtodb(fs, fs->fs_csaddr + i), size,
+		    cred, &bp)) {
 			free(base, M_UFSMNT);
 			goto out;
 		}
@@ -492,7 +494,7 @@ ffs_mountfs(devvp, mp, p)
 out:
 	if (bp)
 		brelse(bp);
-	(void)VOP_CLOSE(devvp, ronly ? FREAD : FREAD|FWRITE, NOCRED, p);
+	(void)VOP_CLOSE(devvp, ronly ? FREAD : FREAD|FWRITE, cred, p);
 	if (ump) {
 		free(ump->um_fs, M_UFSMNT);
 		free(ump, M_UFSMNT);
