@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	8.34 (Berkeley) 05/09/95
+ *	@(#)vfs_syscalls.c	8.35 (Berkeley) 05/10/95
  */
 
 #include <sys/param.h>
@@ -348,6 +348,14 @@ unmount(p, uap, retval)
 	    (error = suser(p->p_ucred, &p->p_acflag))) {
 		vput(vp);
 		return (error);
+	}
+
+	/*
+	 * Don't allow unmounting the root file system.
+	 */
+	if (mp->mnt_flag & MNT_ROOTFS) {
+		vput(vp);
+		return (EINVAL);
 	}
 
 	/*
