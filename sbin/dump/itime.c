@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)itime.c	5.11 (Berkeley) 03/05/92";
+static char sccsid[] = "@(#)itime.c	5.12 (Berkeley) 03/05/92";
 #endif /* not lint */
 
 #ifdef sunos
@@ -202,7 +202,7 @@ putdumptime()
 	 *	Enough room has been allocated.
 	 */
 	dtwalk = ddatev[nddates] =
-		(struct dumpdates *)calloc(1, sizeof(struct dumpdates));
+		(struct dumpdates *)calloc(1, sizeof (struct dumpdates));
 	nddates += 1;
   found:
 	(void) strncpy(dtwalk->dd_name, fname, sizeof (dtwalk->dd_name));
@@ -243,7 +243,7 @@ getrecord(df, ddatep)
 	char tbuf[BUFSIZ];
 
 	recno = 0;
-	if ( (fgets(tbuf, BUFSIZ, df)) != tbuf)
+	if ( (fgets(tbuf, sizeof (tbuf), df)) != tbuf)
 		return(-1);
 	recno++;
 	if (makedumpdate(ddatep, tbuf) < 0)
