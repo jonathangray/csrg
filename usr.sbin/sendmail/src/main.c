@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.53 (Berkeley) 04/12/94";
+static char sccsid[] = "@(#)main.c	8.54 (Berkeley) 04/12/94";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -208,10 +208,12 @@ main(argc, argv, envp)
 	}
 	errno = 0;
 
-#ifdef LOG_MAIL
+#ifdef LOG
+# ifdef LOG_MAIL
 	openlog("sendmail", LOG_PID, LOG_MAIL);
-#else 
+# else 
 	openlog("sendmail", LOG_PID);
+# endif
 #endif 
 
 	/* set up the blank envelope */
@@ -988,7 +990,9 @@ main(argc, argv, envp)
 		if (tTd(0, 1))
 			strcat(dtype, "+debugging");
 
+#ifdef LOG
 		syslog(LOG_INFO, "starting daemon (%s): %s", Version, dtype + 1);
+#endif
 #ifdef XLA
 		xla_create_file();
 #endif
