@@ -1,6 +1,12 @@
-#!/bin/sh
-#	@(#)plot.sh	4.6	(Berkeley)	07/24/89
+#!/bin/sh -
 #
+# This module is believed to contain source code proprietary to AT&T.
+# Use and redistribution is subject to the Berkeley Software License
+# Agreement and your Software Agreement with AT&T (Western Electric).
+#
+#	@(#)plot.sh	4.7 (Berkeley) 04/18/91
+#
+
 PATH=/bin:/usr/bin:/usr/libexec/plot
 case $1 in
 -T*)	t=$1
