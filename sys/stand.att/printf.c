@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)printf.c	5.2 (Berkeley) 05/03/91
+ *	@(#)printf.c	5.3 (Berkeley) 05/03/91
  */
 
 /*
@@ -78,7 +78,7 @@ printf(fmt, va_alist)
 {
 	register char *p;
 	register int ch, n;
-	unsigned long _ulong;
+	unsigned long ul;
 	int lflag, set;
 
 	va_list ap;
@@ -99,15 +99,15 @@ reswitch:	switch (ch = *fmt++) {
 			lflag = 1;
 			goto reswitch;
 		case 'b':
-			_ulong = va_arg(ap, int);
+			ul = va_arg(ap, int);
 			p = va_arg(ap, char *);
-			number(_ulong, *p++);
+			number(ul, *p++);
 
-			if (!_ulong)
+			if (!ul)
 				break;
 
 			for (set = 0; n = *p++;) {
-				if (_ulong & (1 << (n - 1))) {
+				if (ul & (1 << (n - 1))) {
 					putchar(set ? ',' : '<');
 					for (; (n = *p) > ' '; ++p)
 						putchar(n);
@@ -128,28 +128,28 @@ reswitch:	switch (ch = *fmt++) {
 				putchar(ch);
 			break;
 		case 'd':
-			_ulong = lflag ?
+			ul = lflag ?
 			    va_arg(ap, long) : va_arg(ap, int);
-			if ((long)_ulong < 0) {
+			if ((long)ul < 0) {
 				putchar('-');
-				_ulong = -_ulong;
+				ul = -(long)ul;
 			}
-			number(_ulong, 10);
+			number(ul, 10);
 			break;
 		case 'o':
-			_ulong = lflag ?
+			ul = lflag ?
 			    va_arg(ap, long) : va_arg(ap, unsigned int);
-			number(_ulong, 8);
+			number(ul, 8);
 			break;
 		case 'u':
-			_ulong = lflag ?
+			ul = lflag ?
 			    va_arg(ap, long) : va_arg(ap, unsigned int);
-			number(_ulong, 10);
+			number(ul, 10);
 			break;
 		case 'x':
-			_ulong = lflag ?
+			ul = lflag ?
 			    va_arg(ap, long) : va_arg(ap, unsigned int);
-			number(_ulong, 16);
+			number(ul, 16);
 			break;
 		default:
 			putchar('%');
@@ -162,16 +162,16 @@ reswitch:	switch (ch = *fmt++) {
 }
 
 static void
-number(_ulong, base)
-	unsigned long _ulong;
+number(ul, base)
+	unsigned long ul;
 	int base;
 {
 	char *p, buf[11];			/* hold 2^32 in base 8 */
 
 	p = buf;
 	do {
-		*p++ = "0123456789abcdef"[_ulong % base];
-	} while (_ulong /= base);
+		*p++ = "0123456789abcdef"[ul % base];
+	} while (ul /= base);
 	do {
 		putchar(*--p);
 	} while (p > buf);
