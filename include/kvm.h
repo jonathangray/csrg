@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kvm.h	5.8 (Berkeley) 05/26/92
+ *	@(#)kvm.h	5.9 (Berkeley) 05/26/92
  */
 
 #ifndef _KVM_H_
@@ -47,6 +47,7 @@ __BEGIN_DECLS
 
 typedef struct __kvm kvm_t;
 
+struct kinfo_proc;
 int	  kvm_close __P((kvm_t *));
 char	**kvm_getargv __P((kvm_t *, const struct kinfo_proc *, int));
 char	**kvm_getenvv __P((kvm_t *, const struct kinfo_proc *, int));
