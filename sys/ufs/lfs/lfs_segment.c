@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_segment.c	5.6 (Berkeley) 11/01/91
+ *	@(#)lfs_segment.c	7.1 (Berkeley) 11/01/91
  */
 
 #include <sys/param.h>
@@ -49,13 +49,13 @@
 #include <sys/malloc.h>
 #include <sys/mount.h>
 
-#include <ufs/quota.h>
-#include <ufs/inode.h>
-#include <ufs/dir.h>
-#include <ufs/ufsmount.h>
+#include <ufs/ufs/quota.h>
+#include <ufs/ufs/inode.h>
+#include <ufs/ufs/dir.h>
+#include <ufs/ufs/ufsmount.h>
 
-#include <lfs/lfs.h>
-#include <lfs/lfs_extern.h>
+#include <ufs/lfs/lfs.h>
+#include <ufs/lfs/lfs_extern.h>
 
 /*
  * Add a check so that if the segment is empty, you don't write it.
@@ -68,25 +68,25 @@
  */
 
 static int	 lfs_biocallback __P((BUF *));
-static void	 lfs_endsum __P((LFS *, SEGMENT *, int));
-static SEGMENT	*lfs_gather
-		    __P((LFS *, SEGMENT *, VNODE *, int (*) __P((BUF *))));
-static BUF	*lfs_newbuf __P((LFS *, daddr_t, size_t));
-static SEGMENT	*lfs_newseg __P((LFS *));
-static SEGMENT	*lfs_newsum __P((LFS *, SEGMENT *));
-static daddr_t	 lfs_nextseg __P((LFS *));
-static void	 lfs_updatemeta __P((LFS *, SEGMENT *, INODE *, daddr_t *,
-		     BUF **, int));
-static SEGMENT	*lfs_writeckp __P((LFS *, SEGMENT *));
-static SEGMENT	*lfs_writefile __P((LFS *, SEGMENT *, VNODE *, int));
-static SEGMENT	*lfs_writeinode __P((LFS *, SEGMENT *, INODE *));
-static void	 lfs_writeseg __P((LFS *, SEGMENT *));
-static void	 lfs_writesum __P((LFS *));
-static void	 lfs_writesuper __P((LFS *));
+static void	 lfs_endsum __P((struct lfs *, SEGMENT *, int));
+static SEGMENT	*lfs_gather __P((struct lfs *,
+		     SEGMENT *, VNODE *, int (*) __P((BUF *))));
+static BUF	*lfs_newbuf __P((struct lfs *, daddr_t, size_t));
+static SEGMENT	*lfs_newseg __P((struct lfs *));
+static SEGMENT	*lfs_newsum __P((struct lfs *, SEGMENT *));
+static daddr_t	 lfs_nextseg __P((struct lfs *));
+static void	 lfs_updatemeta __P((struct lfs *,
+		     SEGMENT *, INODE *, daddr_t *, BUF **, int));
+static SEGMENT	*lfs_writeckp __P((struct lfs *, SEGMENT *));
+static SEGMENT	*lfs_writefile __P((struct lfs *, SEGMENT *, VNODE *, int));
+static SEGMENT	*lfs_writeinode __P((struct lfs *, SEGMENT *, INODE *));
+static void	 lfs_writeseg __P((struct lfs *, SEGMENT *));
+static void	 lfs_writesum __P((struct lfs *));
+static void	 lfs_writesuper __P((struct lfs *));
 static int	 match_data __P((BUF *));
 static int	 match_dindir __P((BUF *));
 static int	 match_indir __P((BUF *));
-static daddr_t	 next __P((LFS *, SEGMENT *, int *));
+static daddr_t	 next __P((struct lfs *, SEGMENT *, int *));
 static void	 shellsort __P((BUF **, daddr_t *, register int));
 
 /*
@@ -99,7 +99,7 @@ lfs_segwrite(mp, do_ckp)
 	int do_ckp;			/* do a checkpoint too */
 {
 	INODE *ip;
-	LFS *fs;
+	struct lfs *fs;
 	VNODE *vp;
 	SEGMENT *sp;
 	int s;
@@ -166,7 +166,7 @@ static int					/* XXX should be void */
 lfs_biocallback(bp)
 	BUF *bp;
 {
-	LFS *fs;
+	struct lfs *fs;
 
 	/*
 	 * XXX
@@ -194,7 +194,7 @@ printf("callback: buffer: %x iocount %d\n", bp, fs->lfs_iocount);
 /* Finish up a summary block. */
 static void
 lfs_endsum(fs, sp, calc_next)
-	LFS *fs;
+	struct lfs *fs;
 	SEGMENT *sp;
 	int calc_next;
 {
@@ -229,7 +229,7 @@ lfs_endsum(fs, sp, calc_next)
 
 static SEGMENT *
 lfs_gather(fs, sp, vp, match)
-	LFS *fs;
+	struct lfs *fs;
 	SEGMENT *sp;
 	VNODE *vp;
 	int (*match) __P((BUF *));
@@ -315,7 +315,7 @@ lfs_gather(fs, sp, vp, match)
  */
 static BUF *
 lfs_newbuf(fs, daddr, size)
-	LFS *fs;
+	struct lfs *fs;
 	daddr_t daddr;
 	size_t size;
 {
@@ -340,7 +340,7 @@ lfs_newbuf(fs, daddr, size)
  */
 static SEGMENT *
 lfs_newseg(fs)
-	LFS *fs;
+	struct lfs *fs;
 {
 	FINFO *fip;
 	SEGMENT *sp;
@@ -394,7 +394,7 @@ lfs_newseg(fs)
 
 static SEGMENT *
 lfs_newsum(fs, sp)
-	LFS *fs;
+	struct lfs *fs;
 	SEGMENT *sp;
 {
 	SEGSUM *ssp;
@@ -470,7 +470,7 @@ lfs_newsum(fs, sp)
  */
 static daddr_t
 lfs_nextseg(fs)
-	LFS *fs;
+	struct lfs *fs;
 {
 	int segnum, sn;
 
@@ -489,7 +489,7 @@ lfs_nextseg(fs)
  */
 static void
 lfs_updatemeta(fs, sp, ip, lbp, bpp, nblocks)
-	LFS *fs;
+	struct lfs *fs;
 	SEGMENT *sp;
 	INODE *ip;
 	daddr_t *lbp;
@@ -579,7 +579,7 @@ lfs_updatemeta(fs, sp, ip, lbp, bpp, nblocks)
 
 static SEGMENT *
 lfs_writeckp(fs, sp)
-	LFS *fs;
+	struct lfs *fs;
 	SEGMENT *sp;
 {
 	BUF *bp;
@@ -652,7 +652,7 @@ lfs_writeckp(fs, sp)
  */
 static SEGMENT *
 lfs_writefile(fs, sp, vp, do_ckp)
-	LFS *fs;
+	struct lfs *fs;
 	SEGMENT *sp;
 	VNODE *vp;
 	int do_ckp;
@@ -711,7 +711,7 @@ lfs_writefile(fs, sp, vp, do_ckp)
 
 static SEGMENT *
 lfs_writeinode(fs, sp, ip)
-	LFS *fs;
+	struct lfs *fs;
 	SEGMENT *sp;
 	INODE *ip;
 {
@@ -768,7 +768,7 @@ lfs_writeinode(fs, sp, ip)
 
 static void
 lfs_writeseg(fs, sp)
-	LFS *fs;
+	struct lfs *fs;
 	SEGMENT *sp;
 {
 	BUF **bpp;
@@ -821,7 +821,7 @@ lfs_writeseg(fs, sp)
 
 static void
 lfs_writesum(fs)
-	LFS *fs;
+	struct lfs *fs;
 {
 	BUF *bp;
 	SEGMENT *next_sp, *sp;
@@ -846,7 +846,7 @@ lfs_writesum(fs)
 
 static void
 lfs_writesuper(fs)
-	LFS *fs;
+	struct lfs *fs;
 {
 	BUF *bp;
 	int (*strategy) __P((BUF *));
@@ -855,9 +855,9 @@ lfs_writesuper(fs)
 	    VFSTOUFS(fs->lfs_ivnode->v_mount)->um_devvp->v_op->vop_strategy;
 
 	/* Checksum the superblock and copy it into a buffer. */
-	fs->lfs_cksum = cksum(fs, sizeof(LFS) - sizeof(fs->lfs_cksum));
+	fs->lfs_cksum = cksum(fs, sizeof(struct lfs) - sizeof(fs->lfs_cksum));
 	bp = lfs_newbuf(fs, fs->lfs_sboffs[0], LFS_SBPAD);
-	bcopy(fs, bp->b_un.b_lfs, sizeof(LFS));
+	bcopy(fs, bp->b_un.b_lfs, sizeof(struct lfs));
 
 	/* Write the first superblock (wait). */
 	(strategy)(bp);
@@ -911,7 +911,7 @@ match_indir(bp)
 /* Get the next inode/summary block. */
 static daddr_t
 next(fs, sp, nbp)
-	LFS *fs;
+	struct lfs *fs;
 	SEGMENT *sp;
 	int *nbp;
 {
