@@ -29,12 +29,12 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)2.5.t	8.2 (Berkeley) 05/16/94
+.\"	@(#)2.5.t	8.3 (Berkeley) 05/20/94
 .\"
 .Sh 2 "Process debugging
 .Sh 3 "Traditional debugging
 .LP
-Debugger traditionally use the
+Debuggers traditionally use the
 .Fn ptrace
 interface:
 .DS
