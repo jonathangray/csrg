@@ -31,9 +31,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * from: hp300/hp300/swapgeneric.c	7.1 (Berkeley) 6/4/92
+ * from: hp300/hp300/swapgeneric.c	7.8 (Berkeley) 10/11/92
  *
- *	@(#)swapgeneric.c	7.2 (Berkeley) 10/11/92
+ *	@(#)swapgeneric.c	7.3 (Berkeley) 01/03/93
  */
 
 #include <sys/param.h>
