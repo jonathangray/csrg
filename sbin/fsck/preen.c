@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)preen.c	5.6 (Berkeley) 08/07/90";
+static char sccsid[] = "@(#)preen.c	5.7 (Berkeley) 03/19/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -330,9 +330,9 @@ unrawname(name)
 		return (name);
 	if ((stb.st_mode & S_IFMT) != S_IFCHR)
 		return (name);
-	if (*(dp + 1) != 'r')
+	if (dp[1] != 'r')
 		return (name);
-	(void)strcpy(dp + 1, dp + 2);
+	(void)strcpy(&dp[1], &dp[2]);
 	return (name);
 }
 
@@ -349,6 +349,6 @@ rawname(name)
 	(void)strcpy(rawbuf, name);
 	*dp = '/';
 	(void)strcat(rawbuf, "/r");
-	(void)strcat(rawbuf, dp + 1);
+	(void)strcat(rawbuf, &dp[1]);
 	return (rawbuf);
 }
