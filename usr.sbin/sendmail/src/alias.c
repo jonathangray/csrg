@@ -5,9 +5,9 @@
 # include "sendmail.h"
 
 # ifdef DBM
-SCCSID(@(#)alias.c	4.3		03/11/84	(with DBM));
+SCCSID(@(#)alias.c	4.4		03/17/84	(with DBM));
 # else DBM
-SCCSID(@(#)alias.c	4.3		03/11/84	(without DBM));
+SCCSID(@(#)alias.c	4.4		03/17/84	(without DBM));
 # endif DBM
 
 /*
@@ -355,6 +355,7 @@ readaliases(aliasfile, init)
 			syserr("illegal alias name");
 			continue;
 		}
+		loweraddr(&al);
 
 		/*
 		**  Process the RHS.
