@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.69 (Berkeley) 12/26/93
+ *	@(#)conf.h	8.70 (Berkeley) 12/26/93
  */
 
 /*
@@ -453,6 +453,7 @@ extern int		errno;
 # define SYSTEM5	1	/* include all the System V defines */
 # define SYS5SIGNALS	1	/* SysV signal semantics -- reset on each sig */
 # define HASSTATFS	1	/* has the statfs(2) syscall */
+# define HASGETUSERSHELL 0	/* does not have getusershell(3) call */
 # define FORK		fork
 # define MAXPATHLEN	PATHSIZE
 # define LA_TYPE	LA_SHORT
