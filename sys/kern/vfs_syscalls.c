@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	8.16 (Berkeley) 06/16/94
+ *	@(#)vfs_syscalls.c	8.17 (Berkeley) 07/12/94
  */
 
 #include <sys/param.h>
@@ -868,6 +868,40 @@ symlink(p, uap, retval)
 out:
 	FREE(path, M_NAMEI);
 	CHECKREFS("symlink");
+	return (error);
+}
+
+/*
+ * Delete a whiteout from the filesystem.
+ */
+struct unwhiteout_args {
+	char	*path;
+};
+/* ARGSUSED */
+unwhiteout(p, uap, retval)
+	struct proc *p;
+	struct unwhiteout_args *uap;
+	int *retval;
+{
+	int error;
+	struct nameidata nd;
+
+	NDINIT(&nd, CREATE, LOCKPARENT, UIO_USERSPACE, uap->path, p);
+	if (error = namei(&nd))
+		return (error);
+	if (nd.ni_vp || !(nd.ni_cnd.cn_flags & WHITEOUT)) {
+		VOP_ABORTOP(nd.ni_dvp, &nd.ni_cnd);
+		if (nd.ni_dvp == nd.ni_vp)
+			vrele(nd.ni_dvp);
+		else
+			vput(nd.ni_dvp);
+		if (nd.ni_vp)
+			vrele(nd.ni_vp);
+		return (EEXIST);
+	}
+	LEASE_CHECK(nd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
+	error = VOP_WHITEOUT(nd.ni_dvp, &nd.ni_cnd, DELETE);
+	vput(nd.ni_dvp);
 	return (error);
 }
 
