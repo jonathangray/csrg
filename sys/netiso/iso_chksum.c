@@ -85,6 +85,7 @@ SOFTWARE.
 #ifdef ISO
 #include "argo_debug.h"
 #include "param.h"
+#include "systm.h"
 #include "mbuf.h"
 #endif ISO
 
@@ -121,7 +122,7 @@ iso_check_csum(m, len)
 	int l;
 
 	l = len;
-	len = MIN(m->m_len, len);
+	len = min(m->m_len, len);
 	i = 0;
 
 	IFDEBUG(D_CHKSUM)
@@ -145,7 +146,7 @@ iso_check_csum(m, len)
 						l,i,m->m_data);
 			ENDDEBUG
 			ASSERT( m != MNULL);
-			len = MIN( m->m_len, l-i);
+			len = min( m->m_len, l-i);
 			p = mtod(m, u_char *);
 		}
 	}
@@ -197,9 +198,9 @@ iso_gen_csum(m,n,l)
 	ENDDEBUG
 
 	while(i < l) {
-		len = MIN(m->m_len, CLBYTES);
+		len = min(m->m_len, CLBYTES);
 		/* RAH: don't cksum more than l bytes */
-		len = MIN(len, l - i);
+		len = min(len, l - i);
 
 		cum +=len;
 		p = mtod(m, u_char *);
@@ -322,7 +323,7 @@ m_compress(in, out)
 			int len;
 
 			len = M_TRAILINGSPACE(*out);
-			len = MIN(len, in->m_len);
+			len = min(len, in->m_len);
 			datalen += len;
 
 			IFDEBUG(D_REQUEST)
