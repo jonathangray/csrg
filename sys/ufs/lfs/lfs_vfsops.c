@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vfsops.c	8.10 (Berkeley) 11/21/94
+ *	@(#)lfs_vfsops.c	8.11 (Berkeley) 03/21/95
  */
 
 #include <sys/param.h>
@@ -442,7 +442,7 @@ lfs_vget(mp, ino, vpp)
 	struct ifile *ifp;
 	struct vnode *vp;
 	struct ufsmount *ump;
-	daddr_t daddr;
+	ufs_daddr_t daddr;
 	dev_t dev;
 	int error;
 
