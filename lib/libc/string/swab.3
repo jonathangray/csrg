@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)swab.3	6.5 (Berkeley) 04/19/91
+.\"     @(#)swab.3	6.6 (Berkeley) 05/01/91
 .\"
 .Dd 
 .Dt SWAB 3
@@ -40,7 +40,7 @@
 .Sh SYNOPSIS
 .Fd #include <string.h>
 .Ft void
-.Fn swab "const char *src" "char *dst" "size_t len"
+.Fn swab "const void *src" "void *dst" "size_t len"
 .Sh DESCRIPTION
 The function
 .Fn swab
