@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.52 (Berkeley) 03/11/94";
+static char sccsid[] = "@(#)main.c	8.53 (Berkeley) 04/12/94";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -190,7 +190,7 @@ main(argc, argv, envp)
 	**	But also be sure that 0, 1, & 2 are open.
 	*/
 
-	i = open("/dev/null", O_RDWR);
+	i = open("/dev/null", O_RDWR, 0);
 	if (fstat(STDIN_FILENO, &stb) < 0 && errno != EOPNOTSUPP)
 		(void) dup2(i, STDIN_FILENO);
 	if (fstat(STDOUT_FILENO, &stb) < 0 && errno != EOPNOTSUPP)
