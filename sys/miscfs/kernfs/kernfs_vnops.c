@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kernfs_vnops.c	7.4 (Berkeley) 07/19/92
+ *	@(#)kernfs_vnops.c	7.5 (Berkeley) 07/19/92
  */
 
 /*
@@ -82,6 +82,7 @@ struct kern_target {
 	/* name		data		tag		ro/rw */
 	{ ".",		0,		KTT_NULL,	VREAD,		VDIR },
 	{ "..",		0,		KTT_NULL,	VREAD,		VDIR },
+	{ "boottime",	&boottime.tv_sec, KTT_INT,	VREAD,		VREG },
 	{ "copyright",	copyright,	KTT_STRING,	VREAD,		VREG },
 	{ "hostname",	0,		KTT_HOSTNAME,	VREAD|VWRITE,	VREG },
 	{ "hz",		&hz,		KTT_INT,	VREAD,		VREG },
