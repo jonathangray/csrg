@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)umap_subr.c	8.1 (Berkeley) 06/10/93
+ *	@(#)umap_subr.c	8.2 (Berkeley) 12/14/93
  *
  * $Id: lofs_subr.c,v 1.11 1992/05/30 10:05:43 jsp Exp jsp $
  */
@@ -130,7 +130,7 @@ umap_node_find(mp, targetvp)
 			 * stuff, but we don't want to lock
 			 * the lower node.
 			 */
-			if (vget_nolock(vp)) {
+			if (vget(vp, 0)) {
 				printf ("null_node_find: vget failed.\n");
 				goto loop;
 			}
