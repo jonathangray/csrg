@@ -39,9 +39,9 @@
 
 #ifndef lint
 #ifdef DAEMON
-static char sccsid[] = "@(#)daemon.c	6.39 (Berkeley) 04/16/93 (with daemon mode)";
+static char sccsid[] = "@(#)daemon.c	6.40 (Berkeley) 04/18/93 (with daemon mode)";
 #else
-static char sccsid[] = "@(#)daemon.c	6.39 (Berkeley) 04/16/93 (without daemon mode)";
+static char sccsid[] = "@(#)daemon.c	6.40 (Berkeley) 04/18/93 (without daemon mode)";
 #endif
 #endif /* not lint */
 
@@ -366,6 +366,12 @@ gothostent:
 	**  Try to actually open the connection.
 	*/
 
+#ifdef XLA
+	/* if too many connections, don't bother trying */
+	if (!xla_noqueue_ok(host))
+		return EX_TEMPFAIL;
+#endif
+
 	for (;;)
 	{
 		if (tTd(16, 1))
@@ -446,6 +452,9 @@ gothostent:
 			extern char *errstring();
 
 			message("%s", errstring(sav_errno));
+#ifdef XLA
+			xla_host_end(host);
+#endif
 			return (EX_UNAVAILABLE);
 		}
 	}
