@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tuba_table.c	7.11 (Berkeley) 03/25/93
+ *	@(#)tuba_table.c	7.12 (Berkeley) 04/25/93
  */
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -78,7 +78,7 @@ tuba_timer()
 
 tuba_table_init()
 {
-	rn_inithead((void **)&tuba_tree, 8);
+	rn_inithead((void **)&tuba_tree, 40);
 	timeout(tuba_timer, (caddr_t)0, arpt_prune * hz);
 }
 
