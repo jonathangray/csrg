@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)restore.h	5.8 (Berkeley) 06/01/90
+ *	@(#)restore.h	5.9 (Berkeley) 07/29/91
  */
 
 #include <stdio.h>
