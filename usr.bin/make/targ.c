@@ -37,7 +37,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)targ.c	5.7 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)targ.c	5.8 (Berkeley) 12/28/90";
 #endif /* not lint */
 
 /*-
@@ -105,7 +105,7 @@ void
 Targ_Init ()
 {
     allTargets = Lst_Init (FALSE);
-    Hash_InitTable (&targets, HTSIZE, HASH_STRING_KEYS);
+    Hash_InitTable (&targets, HTSIZE);
 }
 
 /*-
