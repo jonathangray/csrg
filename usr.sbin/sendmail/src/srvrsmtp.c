@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	6.23 (Berkeley) 03/03/93 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.24 (Berkeley) 03/06/93 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	6.23 (Berkeley) 03/03/93 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.24 (Berkeley) 03/06/93 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -238,15 +238,16 @@ smtp(e)
 					MyHostName);
 				break;
 			}
+			(void) strcpy(hostbuf, p);
+			(void) strcat(hostbuf, " (");
+			(void) strcat(hostbuf, inet_ntoa(RealHostAddr.sin_addr));
 			if (strcasecmp(p, RealHostName) != 0)
 			{
-				char hostbuf[MAXNAME];
-
-				(void) sprintf(hostbuf, "%s (%s)", p, RealHostName);
-				sendinghost = newstr(hostbuf);
+				(void) strcat(hostbuf, "; ");
+				(void) strcat(hostbuf, RealHostName);
 			}
-			else
-				sendinghost = newstr(p);
+			(void) strcat(hostbuf, ")");
+			sendinghost = newstr(hostbuf);
 			message("250", "%s Hello %s, pleased to meet you", HostName, p);
 			break;
 
