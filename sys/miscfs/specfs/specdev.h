@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)specdev.h	7.8 (Berkeley) 04/21/92
+ *	@(#)specdev.h	7.9 (Berkeley) 05/13/92
  */
 
 /*
