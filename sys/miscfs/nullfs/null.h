@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 1992, 1993
  *	The Regents of the University of California.  All rights reserved.
- * All rights reserved.
  *
  * This code is derived from software donated to Berkeley by
  * Jan-Simon Pendry.
@@ -34,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)null.h	8.1 (Berkeley) 06/10/93
+ *	@(#)null.h	8.2 (Berkeley) 01/21/94
  *
  * $Id: lofs.h,v 1.8 1992/05/30 10:05:43 jsp Exp jsp $
  */
