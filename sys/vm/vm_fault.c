@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_fault.c	8.3 (Berkeley) 12/30/93
+ *	@(#)vm_fault.c	8.4 (Berkeley) 01/12/94
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -114,7 +114,7 @@ vm_fault(map, vaddr, fault_type, change_wiring)
 	vm_page_t		old_m;
 	vm_object_t		next_object;
 
-	cnt.v_vm_faults++;		/* needs lock XXX */
+	cnt.v_faults++;		/* needs lock XXX */
 /*
  *	Recovery actions
  */
@@ -255,6 +255,7 @@ vm_fault(map, vaddr, fault_type, change_wiring)
 #else
 				PAGE_ASSERT_WAIT(m, !change_wiring);
 				UNLOCK_THINGS;
+				cnt.v_intrans++;
 				thread_block();
 				vm_object_deallocate(first_object);
 				goto RetryFault;
@@ -320,6 +321,7 @@ vm_fault(map, vaddr, fault_type, change_wiring)
 			 *	after releasing the lock on the map.
 			 */
 			UNLOCK_MAP;
+			cnt.v_pageins++;
 			rv = vm_pager_get(object->pager, m, TRUE);
 
 			/*
@@ -340,7 +342,7 @@ vm_fault(map, vaddr, fault_type, change_wiring)
 				 */
 				m = vm_page_lookup(object, offset);
 
-				cnt.v_pageins++;
+				cnt.v_pgpgin++;
 				m->flags &= ~PG_FAKE;
 				m->flags |= PG_CLEAN;
 				pmap_clear_modify(VM_PAGE_TO_PHYS(m));
@@ -519,7 +521,7 @@ vm_fault(map, vaddr, fault_type, change_wiring)
 			object->paging_in_progress++;
 		}
 		else {
-		    	prot &= (~VM_PROT_WRITE);
+		    	prot &= ~VM_PROT_WRITE;
 			m->flags |= PG_COPYONWRITE;
 		}
 	}
