@@ -32,15 +32,15 @@
  * SUCH DAMAGE.
  */
 
+#include "sendmail.h"
+
 #ifndef lint
 #ifdef USERDB
-static char sccsid [] = "@(#)udb.c	6.21 (Berkeley) 05/27/93 (with USERDB)";
+static char sccsid [] = "@(#)udb.c	6.22 (Berkeley) 05/28/93 (with USERDB)";
 #else
-static char sccsid [] = "@(#)udb.c	6.21 (Berkeley) 05/27/93 (without USERDB)";
+static char sccsid [] = "@(#)udb.c	6.22 (Berkeley) 05/28/93 (without USERDB)";
 #endif
 #endif
-
-#include "sendmail.h"
 
 #ifdef USERDB
 
