@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	8.71 (Berkeley) 05/30/95";
+static char sccsid[] = "@(#)parseaddr.c	8.72 (Berkeley) 06/10/95";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -2434,6 +2434,7 @@ dequote_init(map, args)
 {
 	register char *p = args;
 
+	map->map_mflags |= MF_KEEPQUOTES;
 	for (;;)
 	{
 		while (isascii(*p) && isspace(*p))
