@@ -1,4 +1,8 @@
-.\"	@(#)security.ms	5.2 (Berkeley) 05/14/86
+.\" This module is believed to contain source code proprietary to AT&T.
+.\" Use and redistribution is subject to the Berkeley Software License
+.\" Agreement and your Software Agreement with AT&T (Western Electric).
+.\"
+.\"	@(#)security.ms	5.3 (Berkeley) 04/17/91
 .\"
 .EH 'SMM:17-%''On the Security of \s-2UNIX\s+2'
 .OH 'On the Security of \s-2UNIX\s+2''SMM:17-%'
