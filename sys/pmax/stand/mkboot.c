@@ -41,13 +41,12 @@ char copyright[] =
 #endif not lint
 
 #ifndef lint
-static char sccsid[] = "@(#)mkboot.c	7.1 (Berkeley) 01/07/92";
+static char sccsid[] = "@(#)mkboot.c	7.2 (Berkeley) 03/07/92";
 #endif not lint
 
 #include <stdio.h>
-#include "types.h"
-#include "exec.h"
-#include "../include/param.h"
+#include "sys/param.h"
+#include "sys/exec.h"
 #include "../dev/devDiskLabel.h"
 
 /* this is the size of the standard ULTRIX boot */
@@ -161,7 +160,7 @@ usage()
  *
  * DecHeader -
  *
- *	Check if the header is a dec (coff) file.
+ *	Check if the header is a DEC (COFF) file.
  *
  * Results:
  *	Return true if all went ok.
@@ -195,7 +194,7 @@ DecHeader(bootFID, loadAddr, execAddr, length)
 		perror(bootfname);
 		return 0;
 	}
-	printf("Input file is coff format\n");
+	printf("Input file is COFF format\n");
 	printf("load %x, start %x, len %d\n", *loadAddr, *execAddr, *length);
 	return 1;
 }
