@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_ip.h	7.4 (Berkeley) 10/11/92
+ *	@(#)tp_ip.h	7.5 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -88,4 +88,4 @@ SOFTWARE.
 struct inpcb tp_inpcb;	
 	/* queue of active inpcbs for tp ; for tp with dod ip */
 
-#endif __TP_IP__
+#endif /* __TP_IP__ */
