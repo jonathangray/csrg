@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)malloc.h	7.33 (Berkeley) 10/22/92
+ *	@(#)malloc.h	7.34 (Berkeley) 10/22/92
  */
 
 #ifndef _MALLOC_H_
@@ -169,7 +169,6 @@
 	NULL, NULL, NULL, NULL, NULL, \
 	NULL, NULL, NULL, NULL, NULL, \
 	NULL, NULL, NULL, NULL, NULL, \
-	NULL, NULL, NULL, NULL, \
 	"temp",		/* 74 M_TEMP */ \
 }
 
