@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_glue.c	7.25 (Berkeley) 06/02/93
+ *	@(#)vm_glue.c	8.1 (Berkeley) 06/11/93
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
