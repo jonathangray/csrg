@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_bio.c	7.24 (Berkeley) 05/13/92
+ *	@(#)nfs_bio.c	7.24 (Berkeley) 05/14/92
  */
 
 #include <sys/param.h>
