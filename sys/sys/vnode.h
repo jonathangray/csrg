@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode.h	7.48 (Berkeley) 04/21/92
+ *	@(#)vnode.h	7.49 (Berkeley) 04/21/92
  */
 
 #ifndef KERNEL
