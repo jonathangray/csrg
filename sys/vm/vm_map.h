@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_map.h	8.2 (Berkeley) 01/12/94
+ *	@(#)vm_map.h	8.3 (Berkeley) 03/15/94
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -176,7 +176,7 @@ typedef struct {
 
 /* XXX: number of kernel maps and entries to statically allocate */
 #define MAX_KMAP	10
-#define	MAX_KMAPENT	250
+#define	MAX_KMAPENT	500
 
 #ifdef KERNEL
 boolean_t	 vm_map_check_protection __P((vm_map_t,
