@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)expand.c	5.7 (Berkeley) 07/15/92";
+static char sccsid[] = "@(#)expand.c	5.8 (Berkeley) 07/30/92";
 #endif /* not lint */
 
 /*
@@ -94,6 +94,7 @@ STATIC void recordregion(int, int, int);
 STATIC void ifsbreakup(char *, struct arglist *);
 STATIC void expandmeta(struct strlist *, int);
 STATIC void expmeta(char *, char *);
+STATIC void expari(int);
 STATIC void addfname(char *);
 STATIC struct strlist *expsort(struct strlist *);
 STATIC struct strlist *msort(struct strlist *, int);
@@ -109,6 +110,7 @@ STATIC void recordregion();
 STATIC void ifsbreakup();
 STATIC void expandmeta();
 STATIC void expmeta();
+STATIC void expari();
 STATIC void addfname();
 STATIC struct strlist *expsort();
 STATIC struct strlist *msort();
@@ -133,7 +135,7 @@ expandhere(arg, fd)
 
 /*
  * Perform variable substitution and command substitution on an argument,
- * placing the resulting list of arguments in arglist.  If full is true,
+ * placing the resulting list of arguments in arglist.  If EXP_FULL is true,
  * perform splitting and file name expansion.  When arglist is NULL, perform
  * here document expansion.
  */
@@ -191,8 +193,8 @@ expandarg(arg, arglist, flag)
 
 
 /*
- * Perform variable and command substitution.  If full is set, output CTLESC
- * characters to allow for further processing.  If full is not set, treat
+ * Perform variable and command substitution.  If EXP_FULL is set, output CTLESC
+ * characters to allow for further processing.  Otherwise treat
  * $@ like $* since no splitting will be performed.
  */
 
@@ -200,20 +202,18 @@ STATIC void
 argstr(p, flag)
 	register char *p;
 	{
-	char c;
-	int sawari = 0;
-	int full = flag & EXP_FULL;  /* is there a later stage? */
-	int vartilde = flag & EXP_VARTILDE;
+	register char c;
+	int quotes = flag & (EXP_FULL | EXP_CASE);	/* do CTLESC */
 
 	if (*p == '~' && (flag & (EXP_TILDE | EXP_VARTILDE)))
-		p = exptilde(p, vartilde);
+		p = exptilde(p, flag);
 	for (;;) {
 		switch (c = *p++) {
 		case '\0':
 		case CTLENDVAR: /* ??? */
 			goto breakloop;
 		case CTLESC:
-			if (full)
+			if (quotes)
 				STPUTC(c, expdest);
 			c = *p++;
 			STPUTC(c, expdest);
@@ -223,16 +223,16 @@ argstr(p, flag)
 			break;
 		case CTLBACKQ:
 		case CTLBACKQ|CTLQUOTE:
-			expbackq(argbackq->n, c & CTLQUOTE, full);
+			expbackq(argbackq->n, c & CTLQUOTE, flag);
 			argbackq = argbackq->next;
 			break;
 		case CTLENDARI:
-			expari();
+			expari(flag);
 			break;
 		case ':':
 			STPUTC(c, expdest);
-			if (vartilde && *p == '~')
-				p = exptilde(p, vartilde);
+			if (flag & EXP_VARTILDE && *p == '~')
+				p = exptilde(p, flag);
 			break;
 		default:
 			STPUTC(c, expdest);
@@ -242,19 +242,20 @@ breakloop:;
 }
 
 STATIC char *
-exptilde(p, vartilde)
+exptilde(p, flag)
 	char *p;
 	{
 	char c, *startp = p;
 	struct passwd *pw;
 	char *home;
+	int quotes = flag & (EXP_FULL | EXP_CASE);
 
 	while (c = *p) {
 		switch(c) {
 		case CTLESC:
 			return (startp);
 		case ':':
-			if (vartilde)
+			if (flag & EXP_VARTILDE)
 				goto done;
 			break;
 		case '/':
@@ -276,7 +277,7 @@ done:
 		goto lose;
 	*p = c;
 	while (c = *home++) {
-		if (SQSYNTAX[c] == CCTL)
+		if (quotes && SQSYNTAX[c] == CCTL)
 			STPUTC(CTLESC, expdest);
 		STPUTC(c, expdest);
 	}
@@ -291,10 +292,12 @@ lose:
  * Expand arithmetic expression.  Backup to start of expression,
  * evaluate, place result in (backed up) result, adjust string position.
  */
-expari()
+void
+expari(flag)
 	{
 	char *p, *start;
 	int result;
+	int quotes = flag & (EXP_FULL | EXP_CASE);
 
 	/*
 	 * This routine is slightly over-compilcated for
@@ -318,7 +321,8 @@ expari()
 		for (p = start; *p != CTLARI; p++)
 			if (*p == CTLESC)
 				p++;
-	rmescapes(p+1);
+	if (quotes)
+		rmescapes(p+1);
 	result = arith(p+1);
 	fmtstr(p, 10, "%d", result);
 	while (*p++)
@@ -333,7 +337,7 @@ expari()
  */
 
 STATIC void
-expbackq(cmd, quoted, full)
+expbackq(cmd, quoted, flag)
 	union node *cmd;
 	{
 	struct backcmd in;
@@ -347,6 +351,7 @@ expbackq(cmd, quoted, full)
 	int startloc = dest - stackblock();
 	char const *syntax = quoted? DQSYNTAX : BASESYNTAX;
 	int saveherefd;
+	int quotes = flag & (EXP_FULL | EXP_CASE);
 
 	INTOFF;
 	saveifs = ifsfirst;
@@ -377,7 +382,7 @@ expbackq(cmd, quoted, full)
 		}
 		lastc = *p++;
 		if (lastc != '\0') {
-			if (full && syntax[lastc] == CCTL)
+			if (quotes && syntax[lastc] == CCTL)
 				STPUTC(CTLESC, dest);
 			STPUTC(lastc, dest);
 		}
@@ -420,6 +425,7 @@ evalvar(p, flag)
 	int set;
 	int special;
 	int startloc;
+	int quotes = flag & (EXP_FULL | EXP_CASE);
 
 	varflags = *p++;
 	subtype = varflags & VSTYPE;
@@ -449,7 +455,7 @@ again: /* jump here after setting a variable with ${var=text} */
 			char const *syntax = (varflags & VSQUOTE)? DQSYNTAX : BASESYNTAX;
 
 			while (*val) {
-				if ((flag & EXP_FULL) && syntax[*val] == CCTL)
+				if (quotes && syntax[*val] == CCTL)
 					STPUTC(CTLESC, expdest);
 				STPUTC(*val++, expdest);
 			}
@@ -985,9 +991,11 @@ patmatch(pattern, string)
 	char *pattern;
 	char *string;
 	{
+#ifdef notdef
 	if (pattern[0] == '!' && pattern[1] == '!')
 		return 1 - pmatch(pattern + 2, string);
 	else
+#endif
 		return pmatch(pattern, string);
 }
 
@@ -1071,7 +1079,7 @@ pmatch(pattern, string)
 				return 0;
 			break;
 		}
-dft:	    default:
+dft:	        default:
 			if (*q++ != c)
 				return 0;
 			break;
@@ -1128,7 +1136,7 @@ casematch(pattern, val)
 	argbackq = pattern->narg.backquote;
 	STARTSTACKSTR(expdest);
 	ifslastp = NULL;
-	argstr(pattern->narg.text, 0);
+	argstr(pattern->narg.text, EXP_TILDE | EXP_CASE);
 	STPUTC('\0', expdest);
 	p = grabstackstr(expdest);
 	result = patmatch(p, val);
