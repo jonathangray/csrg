@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)headers.c	6.6 (Berkeley) 02/16/93";
+static char sccsid[] = "@(#)headers.c	6.7 (Berkeley) 02/18/93";
 #endif /* not lint */
 
 # include <errno.h>
@@ -104,7 +104,7 @@ chompheader(line, def, e)
 		return (0);
 	}
 	fvalue = &p[1];
-	while (isspace(*--p))
+	while (isascii(*--p) && isspace(*p))
 		continue;
 	*++p = '\0';
 	makelower(fname);
@@ -290,7 +290,7 @@ isheader(s)
 		s++;
 
 	/* following technically violates RFC822 */
-	while (isspace(*s))
+	while (isascii(*s) && isspace(*s))
 		s++;
 
 	return (*s == ':');
@@ -510,7 +510,7 @@ crackaddr(addr)
 		printf("crackaddr(%s)\n", addr);
 
 	/* strip leading spaces */
-	while (*addr != '\0' && isspace(*addr))
+	while (*addr != '\0' && isascii(*addr) && isspace(*addr))
 		addr++;
 
 	/*
@@ -632,7 +632,7 @@ crackaddr(addr)
 
 				/* back up over the '<' and any spaces */
 				--p;
-				while (isspace(*--p))
+				while (isascii(*--p) && isspace(*p))
 					continue;
 				p++;
 			}
@@ -688,7 +688,7 @@ crackaddr(addr)
 	putg:
 		if (copylev <= 0 && !putgmac)
 		{
-			*bp++ = '\001';
+			*bp++ = MACROEXPAND;
 			*bp++ = 'g';
 			putgmac = TRUE;
 		}
@@ -859,7 +859,7 @@ commaize(h, p, fp, oldstyle, m, e)
 		*/
 
 		/* find end of name */
-		while (isspace(*p) || *p == ',')
+		while ((isascii(*p) && isspace(*p)) || *p == ',')
 			p++;
 		name = p;
 		for (;;)
@@ -874,7 +874,7 @@ commaize(h, p, fp, oldstyle, m, e)
 
 			/* look to see if we have an at sign */
 			oldp = p;
-			while (*p != '\0' && isspace(*p))
+			while (*p != '\0' && isascii(*p) && isspace(*p))
 				p++;
 
 			if (*p != '@' && !isatword(p))
@@ -883,13 +883,14 @@ commaize(h, p, fp, oldstyle, m, e)
 				break;
 			}
 			p += *p == '@' ? 1 : 2;
-			while (*p != '\0' && isspace(*p))
+			while (*p != '\0' && isascii(*p) && isspace(*p))
 				p++;
 		}
 		/* at the end of one complete name */
 
 		/* strip off trailing white space */
-		while (p >= name && (isspace(*p) || *p == ',' || *p == '\0'))
+		while (p >= name &&
+		       ((isascii(*p) && isspace(*p)) || *p == ',' || *p == '\0'))
 			p--;
 		if (++p == name)
 			continue;
@@ -959,7 +960,7 @@ isatword(p)
 	extern char lower();
 
 	if (lower(p[0]) == 'a' && lower(p[1]) == 't' &&
-	    p[2] != '\0' && isspace(p[2]))
+	    p[2] != '\0' && isascii(p[2]) && isspace(p[2]))
 		return (TRUE);
 	return (FALSE);
 }
