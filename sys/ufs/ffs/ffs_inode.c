@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_inode.c	8.12 (Berkeley) 03/30/95
+ *	@(#)ffs_inode.c	8.13 (Berkeley) 04/21/95
  */
 
 #include <sys/param.h>
@@ -178,7 +178,6 @@ ffs_truncate(ap)
 	if (error = getinoquota(oip))
 		return (error);
 #endif
-	vnode_pager_setsize(ovp, (u_long)length);
 	fs = oip->i_fs;
 	osize = oip->i_size;
 	/*
@@ -198,6 +197,7 @@ ffs_truncate(ap)
 		    aflags))
 			return (error);
 		oip->i_size = length;
+		vnode_pager_setsize(ovp, (u_long)length);
 		(void) vnode_pager_uncache(ovp);
 		if (aflags & B_SYNC)
 			bwrite(bp);
@@ -234,6 +234,7 @@ ffs_truncate(ap)
 		else
 			bawrite(bp);
 	}
+	vnode_pager_setsize(ovp, (u_long)length);
 	/*
 	 * Calculate index into inode's block list of
 	 * last direct and indirect blocks (if any)
