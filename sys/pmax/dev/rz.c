@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)rz.c	7.9 (Berkeley) 05/09/93
+ *	@(#)rz.c	8.1 (Berkeley) 06/10/93
  */
 
 /*
