@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.134 (Berkeley) 02/20/95
+ *	@(#)conf.h	8.135 (Berkeley) 02/24/95
  */
 
 /*
@@ -203,6 +203,7 @@ extern int	syslog(int, char *, ...);
 # define setpgid	BSDsetpgrp
 # define GIDSET_T	gid_t
 # define SFS_TYPE	SFS_4ARGS	/* four argument statfs() call */
+# define SFS_BAVAIL	f_bfree		/* alternate field name */
 # define LA_TYPE	LA_INT
 # ifdef IRIX64
 #  define NAMELISTMASK	0x7fffffffffffffff	/* mask for nlist() values */
@@ -576,6 +577,7 @@ extern int		errno;
 # define MAXPATHLEN	PATHSIZE
 # define LA_TYPE	LA_SHORT
 # define SFS_TYPE	SFS_4ARGS	/* use <sys/statfs.h> 4-arg impl */
+# define SFS_BAVAIL	f_bfree		/* alternate field name */
 # define TZ_TYPE	TZ_TM_NAME	/* use tm->tm_name */
 # undef NETUNIX			/* no unix domain socket support */
 #endif
@@ -597,6 +599,7 @@ extern int		errno;
 # define MAXPATHLEN	PATHSIZE
 # define LA_TYPE	LA_SHORT
 # define SFS_TYPE	SFS_STATFS	/* use <sys/statfs.h> statfs() impl */
+# define SFS_BAVAIL	f_bfree		/* alternate field name */
 # define TZ_TYPE	TZ_TM_NAME	/* use tm->tm_name */
 # undef NETUNIX			/* no unix domain socket support */
 # undef WIFEXITED
@@ -877,6 +880,7 @@ typedef int		pid_t;
 # define MAXPATHLEN	PATHSIZE
 # define LA_TYPE	LA_ZERO
 # define SFS_TYPE	SFS_4ARGS	/* four argument statfs() call */
+# define SFS_BAVAIL	f_bfree		/* alternate field name */
 #endif
 
 
@@ -895,6 +899,7 @@ typedef int		pid_t;
 # define SPT_TYPE	SPT_NONE	/* don't use setproctitle */
 # define LA_TYPE	LA_SUBR		/* use getloadavg.c */
 # define SFS_TYPE	SFS_4ARGS	/* four argument statfs() call */
+# define SFS_BAVAIL	f_bfree		/* alternate field name */
 # ifndef _PATH_SENDMAILCF
 #  define _PATH_SENDMAILCF	"/usr/lib/sendmail.cf"
 # endif
@@ -1045,6 +1050,7 @@ extern int	syslog(int, char *, ...);
 # define GIDSET_T	gid_t	/* type of 2nd arg to getgroups(2) isn't int */
 # define LA_TYPE	LA_ZERO		/* doesn't have load average */
 # define SFS_TYPE	SFS_4ARGS	/* use 4-arg statfs() */
+# define SFS_BAVAIL	f_bfree		/* alternate field name */
 # define _PATH_UNIX	"/unix"
 # ifndef _PATH_SENDMAILCF
 #  define _PATH_SENDMAILCF	"/usr/lib/sendmail.cf"
@@ -1064,6 +1070,7 @@ extern int	syslog(int, char *, ...);
 # define MAXPATHLEN	PATHSIZE
 # define LA_TYPE	LA_ZERO
 # define SFS_TYPE	SFS_4ARGS	/* four argument statfs() call */
+# define SFS_BAVAIL	f_bfree		/* alternate field name */
 # define _POSIX_CHOWN_RESTRICTED	-1
 extern struct group	*getgrent(), *getgrnam(), *getgrgid();
 #endif
