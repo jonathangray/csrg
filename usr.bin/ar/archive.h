@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)archive.h	8.1 (Berkeley) 06/06/93
+ *	@(#)archive.h	8.2 (Berkeley) 04/01/94
  */
 
 /* Ar(1) options. */
@@ -95,13 +95,11 @@ typedef struct {
 
 #include <sys/cdefs.h>
 
-__BEGIN_DECLS
+struct stat;
+
 void	close_archive __P((int));
-void	skip_arobj __P((int));
-int	copy_ar __P((CF *, off_t));
+void	copy_ar __P((CF *, off_t));
 int	get_arobj __P((int));
 int	open_archive __P((int));
-struct stat;
-int	put_arobj __P((CF *, struct stat *));
-__END_DECLS
-
+void	put_arobj __P((CF *, struct stat *));
+void	skip_arobj __P((int));
