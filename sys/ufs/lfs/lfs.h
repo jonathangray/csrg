@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs.h	7.19 (Berkeley) 07/24/92
+ *	@(#)lfs.h	7.20 (Berkeley) 07/30/92
  */
 
 #define	LFS_LABELPAD	8192		/* LFS label size */
@@ -65,9 +65,9 @@ struct segusage {
 	u_long	su_flags;
 };
 
-#define	SEGUPB(fs)	(1 << (fs)->lfs_sushift);
+#define	SEGUPB(fs)	(1 << (fs)->lfs_sushift)
 #define	SEGTABSIZE_SU(fs) \
-	((fs)->lfs_nseg >> ((fs)->lfs_bshift - (fs)->lfs_sushift))
+	(((fs)->lfs_nseg + SEGUPB(fs) - 1) >> (fs)->lfs_sushift)
 
 /* On-disk file information.  One per file with data blocks in the segment. */
 typedef struct finfo FINFO;
