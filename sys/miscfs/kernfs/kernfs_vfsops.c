@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kernfs_vfsops.c	8.1 (Berkeley) 06/10/93
+ *	@(#)kernfs_vfsops.c	8.2 (Berkeley) 01/04/94
  */
 
 /*
@@ -135,7 +135,7 @@ kernfs_mount(mp, path, data, ndp, p)
 	if (mp->mnt_flag & MNT_UPDATE)
 		return (EOPNOTSUPP);
 
-	error = getnewvnode(VT_UFS, mp, kernfs_vnodeop_p, &rvp);	/* XXX */
+	error = getnewvnode(VT_KERNFS, mp, kernfs_vnodeop_p, &rvp);	/* XXX */
 	if (error)
 		return (error);
 
