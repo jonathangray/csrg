@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)collect.c	8.36 (Berkeley) 04/21/95";
+static char sccsid[] = "@(#)collect.c	8.37 (Berkeley) 04/22/95";
 #endif /* not lint */
 
 # include <errno.h>
@@ -530,6 +530,7 @@ readerr:
 	/* check for message too large */
 	if (MaxMessageSize > 0 && e->e_msgsize > MaxMessageSize)
 	{
+		e->e_status = "5.2.3";
 		usrerr("552 Message exceeds maximum fixed size (%ld)",
 			MaxMessageSize);
 	}
@@ -539,7 +540,10 @@ readerr:
 	{
 		e->e_flags |= EF_HAS8BIT;
 		if (!bitset(MM_PASS8BIT|MM_MIME8BIT, MimeMode))
+		{
+			e->e_status = "5.6.1";
 			usrerr("554 Eight bit data not allowed");
+		}
 	}
 
 	if ((e->e_dfp = fopen(dfname, "r")) == NULL)
@@ -613,6 +617,7 @@ tferror(tf, e)
 			fprintf(tf, "*** Currently, %ld kilobytes are available for mail temp files.\n",
 				avail);
 		}
+		e->e_status = "4.3.1";
 		usrerr("452 Out of disk space for temp file");
 	}
 	else
