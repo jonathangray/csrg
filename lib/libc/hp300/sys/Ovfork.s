@@ -36,7 +36,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-	.asciz "@(#)Ovfork.s	5.2 (Berkeley) 06/07/93"
+	.asciz "@(#)Ovfork.s	8.1 (Berkeley) 06/07/93"
 #endif /* LIBC_SCCS and not lint */
 
 /*
