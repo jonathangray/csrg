@@ -37,7 +37,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)make.c	8.2 (Berkeley) 04/28/95";
+static char sccsid[] = "@(#)make.c	8.3 (Berkeley) 06/13/95";
 #endif /* not lint */
 
 /*-
@@ -153,7 +153,7 @@ Make_OODate (gn)
      * Certain types of targets needn't even be sought as their datedness
      * doesn't depend on their modification time...
      */
-    if ((gn->type & (OP_JOIN|OP_USE|OP_EXEC)) == 0) {
+    if ((gn->type & (OP_JOIN|OP_USE|OP_EXEC|OP_PHONY)) == 0) {
 	(void) Dir_MTime (gn);
 	if (DEBUG(MAKE)) {
 	    if (gn->mtime != 0) {
@@ -178,7 +178,14 @@ Make_OODate (gn)
      * These weird rules are brought to you by Backward-Compatability and
      * the strange people who wrote 'Make'.
      */
-    if (gn->type & OP_USE) {
+    if (gn->type & OP_PHONY) {
+	/*
+	 * A PHONY node is always out of date
+	 */
+	if (DEBUG(MAKE))
+	    printf("phony...");
+	return TRUE;
+    } else if (gn->type & OP_USE) {
 	/*
 	 * If the node is a USE node it is *never* out of date
 	 * no matter *what*.
