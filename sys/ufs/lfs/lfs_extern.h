@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_extern.h	7.18 (Berkeley) 07/05/92
+ *	@(#)lfs_extern.h	7.19 (Berkeley) 07/06/92
  */
 
 struct fid;
@@ -41,6 +41,7 @@ struct statfs;
 struct timeval;
 struct inode;
 struct uio;
+struct mbuf;
 
 __BEGIN_DECLS
 u_long	 cksum __P((void *, size_t));				/* XXX */
@@ -51,7 +52,8 @@ int	 lfs_bmaparray
 	    __P((struct vnode *, daddr_t, daddr_t *, INDIR *, int *));
 int	 lfs_bwrite __P((struct vop_bwrite_args *));
 int	 lfs_create __P((struct vop_create_args *));
-int	 lfs_fhtovp __P((struct mount *, struct fid *, struct vnode **));
+int	 lfs_fhtovp __P((struct mount *, struct fid *, struct mbuf *,
+	    struct vnode **, int *, struct ucred **));
 int	 lfs_fsync __P((struct vop_fsync_args *));
 struct dinode *
 	 lfs_ifind __P((struct lfs *, ino_t, struct dinode *));
