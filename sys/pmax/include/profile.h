@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)profile.h	7.3 (Berkeley) 02/26/93
+ *	@(#)profile.h	7.4 (Berkeley) 04/13/93
  */
 
 #define	_MCOUNT_DECL static void __mcount
@@ -71,7 +71,7 @@
  * functions on the PMAX, and we do not want to invoke mcount
  * recursively.
  */
-#define	MCOUNT_ENTER
+#define	MCOUNT_ENTER	s = splhigh()
 
-#define	MCOUNT_EXIT
+#define	MCOUNT_EXIT	splx(s)
 #endif /* KERNEL */
