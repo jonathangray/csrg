@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_apx.c	7.8 (Berkeley) 03/05/92
+ *	@(#)if_apx.c	7.9 (Berkeley) 03/31/92
  */
 
 /*
@@ -153,8 +153,8 @@ apxprobe(id)
 		apx->apx_csr4	= 0x0210;	/* no byte swapping for PC-AT */
 		apx->apx_modes	= apx_default_modes;
 		apx->apx_if.if_unit = unit++;
-		apxtest(apx++);
 		moffset = apx->apx_msize;
+		apxtest(apx++);
 	}
 	return 1;
 }
