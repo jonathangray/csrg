@@ -30,11 +30,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)limits.h	7.8 (Berkeley) 05/21/93
+ *	@(#)limits.h	7.9 (Berkeley) 05/26/93
  */
 
 #define	CHAR_BIT	8		/* number of bits in a char */
-#define	MB_LEN_MAX	1		/* no multibyte characters */
+#define	MB_LEN_MAX	6		/* Allow 31 bit UTF2 */
+
 
 #define	CLK_TCK		60		/* ticks per second */
 
