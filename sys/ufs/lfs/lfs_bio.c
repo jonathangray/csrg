@@ -57,8 +57,9 @@
 int	locked_queue_count;		/* XXX Count of locked-down buffers. */
 
 int
-lfs_bwrite(bp)
-	register struct buf *bp;
+lfs_bwrite (ap)
+	struct vop_bwrite_args *ap;
+#define bp (ap->a_bp)
 {
 	int s;
 #ifdef VERBOSE
@@ -90,6 +91,7 @@ printf("lfs_bwrite\n");
 	brelse(bp);
 	return (0);
 }
+#undef bp
 
 /*
  * XXX
