@@ -32,12 +32,17 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)mbuf.c	5.10 (Berkeley) 01/30/91";
+static char sccsid[] = "@(#)mbuf.c	5.11 (Berkeley) 05/27/92";
 #endif /* not lint */
 
-#include <stdio.h>
 #include <sys/param.h>
+#include <sys/protosw.h>
+#include <sys/socket.h>
 #include <sys/mbuf.h>
+
+#include <stdio.h>
+#include "netstat.h"
+
 #define	YES	1
 typedef int bool;
 
@@ -60,7 +65,7 @@ static struct mbtypes {
 	{ MT_SONAME,	"socket names and addresses" },
 	{ MT_SOOPTS,	"socket options" },
 	{ MT_RIGHTS,	"access rights" },
-	{ MT_IFADDR,	"interface addresses" }, 		/* XXX */
+	{ MT_IFADDR,	"interface addresses" },		/* XXX */
 	{ 0, 0 }
 };
 
@@ -70,6 +75,7 @@ bool seen[256];			/* "have we seen this type yet?" */
 /*
  * Print mbuf statistics.
  */
+void
 mbpr(mbaddr)
 	off_t mbaddr;
 {
@@ -78,18 +84,16 @@ mbpr(mbaddr)
 	register struct mbtypes *mp;
 
 	if (nmbtypes != 256) {
-		fprintf(stderr, "unexpected change to mbstat; check source\n");
+		fprintf(stderr,
+		    "%s: unexpected change to mbstat; check source\n", prog);
 		return;
 	}
 	if (mbaddr == 0) {
-		printf("mbstat: symbol not in namelist\n");
+		fprintf(stderr, "%s: mbstat: symbol not in namelist\n", prog);
 		return;
 	}
-	if (kvm_read(mbaddr, (char *)&mbstat, sizeof (mbstat))
-						!= sizeof (mbstat)) {
-		printf("mbstat: bad read\n");
+	if (kread(mbaddr, (char *)&mbstat, sizeof (mbstat)))
 		return;
-	}
 	totmbufs = 0;
 	for (mp = mbtypes; mp->mt_name; mp++)
 		totmbufs += mbstat.m_mtypes[mp->mt_type];
