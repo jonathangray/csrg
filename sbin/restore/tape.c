@@ -37,7 +37,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)tape.c	8.3 (Berkeley) 04/01/94";
+static char sccsid[] = "@(#)tape.c	8.4 (Berkeley) 08/23/94";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -500,7 +500,8 @@ int
 extractfile(name)
 	char *name;
 {
-	int mode;
+	int flags;
+	mode_t mode;
 	struct timeval timep[2];
 	struct entry *ep;
 
@@ -511,6 +512,7 @@ extractfile(name)
 	timep[1].tv_sec = curfile.dip->di_mtime.ts_sec;
 	timep[1].tv_usec = curfile.dip->di_mtime.ts_nsec / 1000;
 	mode = curfile.dip->di_mode;
+	flags = curfile.dip->di_flags;
 	switch (mode & IFMT) {
 
 	default:
@@ -560,6 +562,26 @@ extractfile(name)
 		}
 		(void) chown(name, curfile.dip->di_uid, curfile.dip->di_gid);
 		(void) chmod(name, mode);
+		(void) chflags(name, flags);
+		skipfile();
+		utimes(name, timep);
+		return (GOOD);
+
+	case IFIFO:
+		vprintf(stdout, "extract fifo %s\n", name);
+		if (Nflag) {
+			skipfile();
+			return (GOOD);
+		}
+		if (mkfifo(name, mode) < 0) {
+			fprintf(stderr, "%s: cannot create fifo: %s\n",
+			    name, strerror(errno));
+			skipfile();
+			return (FAIL);
+		}
+		(void) chown(name, curfile.dip->di_uid, curfile.dip->di_gid);
+		(void) chmod(name, mode);
+		(void) chflags(name, flags);
 		skipfile();
 		utimes(name, timep);
 		return (GOOD);
@@ -578,6 +600,7 @@ extractfile(name)
 		}
 		(void) fchown(ofile, curfile.dip->di_uid, curfile.dip->di_gid);
 		(void) fchmod(ofile, mode);
+		(void) fchflags(ofile, flags);
 		getfile(xtrfile, xtrskip);
 		(void) close(ofile);
 		utimes(name, timep);
