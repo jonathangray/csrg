@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)redist.c	5.11 (Berkeley) 02/25/91";
+static char sccsid[] = "@(#)redist.c	5.12 (Berkeley) 04/01/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -55,13 +55,15 @@ redist()
 	register char	*C1, *C2;
 	FILE	*pf, *popen();
 	int	group;
-	char	*index();
+	char	*p, *index();
 
 	(void)sprintf(bfr, "%s/%s", dir, DIST_FILE);
 	if (!freopen(bfr, "r", stdin))
 		return;
-	for (pf = NULL, group = 0; gets(bfr);) {
-		if (*bfr == COMMENT || isspace(*bfr) || !(C1 = index(bfr, ':')))
+	for (pf = NULL, group = 0; fgets(bfr, sizeof(bfr), stdin);) {
+		if (C1 = index(bfr, '\n'))
+			*C1 = '\0';
+nextline:	if (*bfr == COMMENT || isspace(*bfr) || !(C1 = index(bfr, ':')))
 			continue;
 		*C1 = EOS;
 		if (!strcmp(bfr, folder) || !strcmp(bfr, "all")) {
@@ -72,9 +74,11 @@ redist()
 				if (!(pf = popen(MAIL_CMD, "w")))
 					error("sendmail pipe failed.", CHN);
 				if (mailhead[SUBJ_TAG].found)
-					fprintf(pf, "%s", mailhead[SUBJ_TAG].line);
+					fprintf(pf,
+					    "%s", mailhead[SUBJ_TAG].line);
 				else
-					fputs("Subject: Untitled Bug Report\n", pf);
+					fprintf(pf,
+					    "Subject: Untitled Bug Report\n");
 				if (!mailhead[TO_TAG].line) {
 					if (mailhead[APPAR_TO_TAG].line)
 					    fprintf(pf, "To%s",
@@ -96,9 +100,14 @@ redist()
 				if (C2 = index(C1, '\\'))
 					*C2 = EOS;
 				fputs(C1, pf);
-				if (!gets(bfr) || *bfr != ' ' && *bfr != '\t')
+				if (!fgets(bfr, sizeof(bfr), stdin))
 					break;
-				for (C1 = bfr; *C1 && (*C1 == ' ' || *C1 == '\t'); ++C1);
+				if (C1 = index(bfr, '\n'))
+					*C1 = '\0';
+				if (*bfr != ' ' && *bfr != '\t')
+					goto nextline;
+				for (C1 = bfr;
+				    *C1 && (*C1 == ' ' || *C1 == '\t'); ++C1);
 			}
 		}
 	}
