@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	7.98 (Berkeley) 10/12/92
+ *	@(#)nfs_vnops.c	7.99 (Berkeley) 11/01/92
  */
 
 /*
@@ -341,16 +341,14 @@ nfs_open(ap)
 		    if (error)
 			return (error);
 		    if (np->n_lrev != np->n_brev) {
-			np->n_flag &= ~NMODIFIED;
-			vinvalbuf(vp, TRUE, ap->a_cred, ap->a_p);
+			NFS_VINVBUF(np, vp, TRUE, ap->a_cred, ap->a_p);
 			(void) vnode_pager_uncache(vp);
 			np->n_brev = np->n_lrev;
 		    }
 		}
 	    } else {
 		if (np->n_flag & NMODIFIED) {
-			np->n_flag &= ~NMODIFIED;
-			vinvalbuf(vp, TRUE, ap->a_cred, ap->a_p);
+			NFS_VINVBUF(np, vp, TRUE, ap->a_cred, ap->a_p);
 			(void) vnode_pager_uncache(vp);
 			np->n_attrstamp = 0;
 			np->n_direofoffset = 0;
@@ -362,7 +360,7 @@ nfs_open(ap)
 				return (error);
 			if (np->n_mtime != vattr.va_mtime.ts_sec) {
 				np->n_direofoffset = 0;
-				vinvalbuf(vp, TRUE, ap->a_cred, ap->a_p);
+				NFS_VINVBUF(np, vp, TRUE, ap->a_cred, ap->a_p);
 				(void) vnode_pager_uncache(vp);
 				np->n_mtime = vattr.va_mtime.ts_sec;
 			}
@@ -395,8 +393,7 @@ nfs_close(ap)
 	if (vp->v_type == VREG) {
 	    if ((VFSTONFS(vp->v_mount)->nm_flag & NFSMNT_NQNFS) == 0 &&
 		(np->n_flag & NMODIFIED)) {
-		error = vinvalbuf(vp, TRUE, ap->a_cred, ap->a_p);
-		np->n_flag &= ~NMODIFIED;
+		NFS_VINVBUFE(np, vp, TRUE, ap->a_cred, ap->a_p, error);
 		np->n_attrstamp = 0;
 	    }
 	    if (np->n_flag & NWRITEERR) {
@@ -502,13 +499,8 @@ nfs_setattr(ap)
 	if (vap->va_size != VNOVAL || vap->va_mtime.ts_sec != VNOVAL ||
 	    vap->va_atime.ts_sec != VNOVAL) {
 		if (np->n_flag & NMODIFIED) {
-			if (vap->va_size == 0)
-				error =
-				    vinvalbuf(vp, FALSE, ap->a_cred, ap->a_p);
-			else
-				error =
-				    vinvalbuf(vp, TRUE, ap->a_cred, ap->a_p);
-			np->n_flag &= ~NMODIFIED;
+			NFS_VINVBUFE(np, vp, vap->va_size? TRUE: FALSE,
+			             ap->a_cred, ap->a_p, error);
 		}
 		if (vap->va_size != VNOVAL)
 			np->n_size = np->n_vattr.va_size = vap->va_size;
@@ -597,9 +589,9 @@ nfs_lookup(ap)
 					    (np->n_flag & NMODIFIED)) {
 						np->n_direofoffset = 0;
 						cache_purge(dvp);
-						error = vinvalbuf(dvp, FALSE,
-						    cnp->cn_cred, cnp->cn_proc);
-						np->n_flag &= ~NMODIFIED;
+						NFS_VINVBUFE(np, dvp, FALSE,
+						    cnp->cn_cred, cnp->cn_proc,
+						    error);
 						np->n_brev = np->n_lrev;
 					} else {
 						nfsstats.lookupcache_hits++;
@@ -1083,7 +1075,7 @@ nfs_remove(ap)
 		 * Throw away biocache buffers. Mainly to avoid
 		 * unnecessary delayed writes.
 		 */
-		error = vinvalbuf(vp, FALSE, cnp->cn_cred, cnp->cn_proc);
+		NFS_VINVBUFE(np, vp, FALSE, cnp->cn_cred, cnp->cn_proc, error);
 		/* Do the rpc */
 		nfsstats.rpccnt[NFSPROC_REMOVE]++;
 		nfsm_reqhead(dvp, NFSPROC_REMOVE,
