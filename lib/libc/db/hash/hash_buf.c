@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)hash_buf.c	5.5 (Berkeley) 02/22/91";
+static char sccsid[] = "@(#)hash_buf.c	5.6 (Berkeley) 02/24/91";
 #endif /* LIBC_SCCS and not lint */
 
 /******************************************************************************
@@ -55,7 +55,7 @@ ROUTINES:
 	newbuf
 
 ******************************************************************************/
-#include <sys/types.h>
+#include <sys/param.h>
 #include <assert.h>
 #include <errno.h>
 #include <stdio.h>
