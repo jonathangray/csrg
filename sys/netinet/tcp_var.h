@@ -9,7 +9,7 @@
  * software without specific prior written permission. This software
  * is provided ``as is'' without express or implied warranty.
  *
- *	@(#)tcp_var.h	7.6.1.2 (Berkeley) 02/22/88
+ *	@(#)tcp_var.h	7.6.1.3 (Berkeley) 02/27/88
  */
 
 /*
