@@ -36,9 +36,9 @@
 
 #ifndef lint
 #if NAMED_BIND
-static char sccsid[] = "@(#)domain.c	8.22 (Berkeley) 06/18/94 (with name server)";
+static char sccsid[] = "@(#)domain.c	8.23 (Berkeley) 07/11/94 (with name server)";
 #else
-static char sccsid[] = "@(#)domain.c	8.22 (Berkeley) 06/18/94 (without name server)";
+static char sccsid[] = "@(#)domain.c	8.23 (Berkeley) 07/11/94 (without name server)";
 #endif
 #endif /* not lint */
 
@@ -73,6 +73,12 @@ static char	MXHostBuf[MAXMXHOSTS*PACKETSZ];
 #endif
 
 #define MAXCNAMEDEPTH	10	/* maximum depth of CNAME recursion */
+
+#if defined(__RES) && (__RES >= 19940415)
+# define RES_UNC_T	char *
+#else
+# define RES_UNC_T	u_char *
+#endif
 /*
 **  GETMXRR -- get MX resource records for a domain
 **
@@ -120,8 +126,9 @@ getmxrr(host, mxhosts, droplocalhost, rcode)
 
 	if (fallbackMX != NULL)
 	{
-		if (firsttime && res_query(FallBackMX, C_IN, T_A,
-					   (char *) &answer, sizeof answer) < 0)
+		if (firsttime &&
+		    res_query(FallBackMX, C_IN, T_A,
+			      (u_char *) &answer, sizeof answer) < 0)
 		{
 			/* this entry is bogus */
 			fallbackMX = FallBackMX = NULL;
@@ -141,7 +148,7 @@ getmxrr(host, mxhosts, droplocalhost, rcode)
 		goto punt;
 
 	errno = 0;
-	n = res_search(host, C_IN, T_MX, (char *)&answer, sizeof(answer));
+	n = res_search(host, C_IN, T_MX, (u_char *) &answer, sizeof(answer));
 	if (n < 0)
 	{
 		if (tTd(8, 1))
@@ -205,7 +212,7 @@ getmxrr(host, mxhosts, droplocalhost, rcode)
 	while (--ancount >= 0 && cp < eom && nmx < MAXMXHOSTS - 1)
 	{
 		if ((n = dn_expand((u_char *)&answer,
-		    eom, cp, (u_char *)bp, buflen)) < 0)
+		    eom, cp, (RES_UNC_T) bp, buflen)) < 0)
 			break;
 		cp += n;
 		GETSHORT(type, cp);
@@ -221,7 +228,7 @@ getmxrr(host, mxhosts, droplocalhost, rcode)
 		}
 		GETSHORT(pref, cp);
 		if ((n = dn_expand((u_char *)&answer, eom, cp,
-				   (u_char *)bp, buflen)) < 0)
+				   (RES_UNC_T) bp, buflen)) < 0)
 			break;
 		cp += n;
 		if (droplocalhost &&
@@ -601,7 +608,7 @@ cnameloop:
 		for (ancount = ntohs(hp->ancount); --ancount >= 0 && ap < eom; ap += n)
 		{
 			n = dn_expand((u_char *) &answer, eom, ap,
-				      (u_char *) nbuf, sizeof nbuf);
+				      (RES_UNC_T) nbuf, sizeof nbuf);
 			if (n < 0)
 				break;
 			ap += n;
@@ -650,7 +657,7 @@ cnameloop:
 
 				/* value points at name */
 				if ((ret = dn_expand((u_char *)&answer,
-				    eom, ap, (u_char *)nbuf, sizeof(nbuf))) < 0)
+				    eom, ap, (RES_UNC_T) nbuf, sizeof(nbuf))) < 0)
 					break;
 				(void)strncpy(host, nbuf, hbsize); /* XXX */
 				host[hbsize - 1] = '\0';
