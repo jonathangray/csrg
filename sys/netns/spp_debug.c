@@ -14,7 +14,7 @@
  * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *	@(#)spp_debug.c	7.5 (Berkeley) 06/29/88
+ *	@(#)spp_debug.c	7.6 (Berkeley) 06/13/90
  */
 
 #include "param.h"
