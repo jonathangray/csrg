@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 1990, 1993
+ * Copyright (c) 1990, 1993, 1994
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)pr_time.c	8.1 (Berkeley) 06/06/93";
+static char sccsid[] = "@(#)pr_time.c	8.2 (Berkeley) 04/04/94";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -49,7 +49,7 @@ static char sccsid[] = "@(#)pr_time.c	8.1 (Berkeley) 06/06/93";
  *	Print the time since the user logged in. 
  *
  *	Note: SCCS forces the bizarre string manipulation, things like
- *	8.1 get replaced in the source code.
+ *	8.2 get replaced in the source code.
  */
 void
 pr_attime(started, now)
@@ -69,14 +69,12 @@ pr_attime(started, now)
 
 	/* If not today, use day-hour-am/pm. */
 	else if (*now / SECSPERDAY != *started / SECSPERDAY) {
-		(void)strcpy(fmt, "%a%%%p");
-		fmt[3] = 'I';
+		(void)strcpy(fmt, __CONCAT("%a%", "I%p"));
 	}
 
 	/* Default is hh:mm{am,pm}. */
 	else {
-		(void)strcpy(fmt, "%l:%%%p");
-		fmt[4] = 'M';
+		(void)strcpy(fmt, __CONCAT("%l:%", "M%p"));
 	}
 
 	(void)strftime(buf, sizeof(buf), fmt, tp);
