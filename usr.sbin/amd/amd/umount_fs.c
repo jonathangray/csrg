@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)umount_fs.c	5.4 (Berkeley) 02/09/92
+ *	@(#)umount_fs.c	5.5 (Berkeley) 01/22/93
  *
  * $Id: umount_fs.c,v 5.2.2.1 1992/02/09 15:09:10 jsp beta $
  *
@@ -45,8 +45,6 @@
 
 #ifdef NEED_UMOUNT_BSD
 
-#include <sys/mount.h>		/* For MNT_NOFORCE */
-
 int umount_fs P((char *fs_name));
 int umount_fs(fs_name)
 char *fs_name;
@@ -54,7 +52,7 @@ char *fs_name;
 	int error;
 
 eintr:
-	error = unmount(fs_name, MNT_NOFORCE);
+	error = unmount(fs_name, 0);
 	if (error < 0)
 		error = errno;
 
