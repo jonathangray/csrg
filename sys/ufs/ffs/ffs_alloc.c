@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_alloc.c	7.20 (Berkeley) 06/28/90
+ *	@(#)ffs_alloc.c	7.21 (Berkeley) 08/24/90
  */
 
 #include "param.h"
@@ -169,7 +169,7 @@ realloccg(ip, lbprev, bpref, osize, nsize, bpp)
 		brelse(bp);
 		return (error);
 	}
-	brealloc(bp, nsize);
+	allocbuf(bp, nsize);
 	bp->b_flags |= B_DONE;
 	bzero(bp->b_un.b_addr + osize, (unsigned)nsize - osize);
 	/*
