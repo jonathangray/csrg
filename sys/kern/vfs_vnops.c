@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_vnops.c	7.31 (Berkeley) 05/30/91
+ *	@(#)vfs_vnops.c	7.32 (Berkeley) 06/21/91
  */
 
 #include "param.h"
@@ -123,8 +123,11 @@ vn_open(ndp, p, fmode, cmode)
 		if (error = VOP_SETATTR(vp, vap, cred, p))
 			goto bad;
 	}
-	if ((error = VOP_OPEN(vp, fmode, cred, p)) == 0)
-		return (0);
+	if (error = VOP_OPEN(vp, fmode, cred, p))
+		goto bad;
+	if (fmode & FWRITE)
+		vp->v_writecount++;
+	return (0);
 bad:
 	vput(vp);
 	return (error);
@@ -371,20 +374,17 @@ vn_select(fp, which, p)
 /*
  * Vnode close call
  */
-vn_close(fp, p)
-	register struct file *fp;
+vn_close(vp, flags, cred, p)
+	register struct vnode *vp;
+	int flags;
+	struct ucred *cred;
 	struct proc *p;
 {
-	struct vnode *vp = ((struct vnode *)fp->f_data);
 	int error;
 
-	/*
-	 * Must delete vnode reference from this file entry
-	 * before VOP_CLOSE, so that only other references
-	 * will prevent close.
-	 */
-	fp->f_data = (caddr_t) 0;
-	error = VOP_CLOSE(vp, fp->f_flag, fp->f_cred, p);
+	if (flags & FWRITE)
+		vp->v_writecount--;
+	error = VOP_CLOSE(vp, flags, cred, p);
 	vrele(vp);
 	return (error);
 }
