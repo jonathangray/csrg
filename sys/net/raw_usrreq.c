@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)raw_usrreq.c	7.12 (Berkeley) 10/11/92
+ *	@(#)raw_usrreq.c	7.13 (Berkeley) 06/04/93
  */
 
 #include <sys/param.h>
@@ -49,6 +49,7 @@
 /*
  * Initialize raw connection block q.
  */
+void
 raw_init()
 {
 
@@ -64,6 +65,7 @@ raw_init()
 /*
  * Raw protocol interface.
  */
+void
 raw_input(m0, proto, src, dst)
 	struct mbuf *m0;
 	register struct sockproto *proto;
@@ -120,10 +122,10 @@ raw_input(m0, proto, src, dst)
 		}
 	} else
 		m_freem(m);
-	return (sockets);
 }
 
 /*ARGSUSED*/
+void
 raw_ctlinput(cmd, arg)
 	int cmd;
 	struct sockaddr *arg;
@@ -135,6 +137,7 @@ raw_ctlinput(cmd, arg)
 }
 
 /*ARGSUSED*/
+int
 raw_usrreq(so, req, m, nam, control)
 	struct socket *so;
 	int req;
