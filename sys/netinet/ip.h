@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ip.h	7.11 (Berkeley) 02/21/93
+ *	@(#)ip.h	7.12 (Berkeley) 04/18/93
  */
 #ifndef BYTE_ORDER
 /*
@@ -176,6 +176,7 @@ struct	ip_timestamp {
  * Internet implementation parameters.
  */
 #define	MAXTTL		255		/* maximum time to live (seconds) */
+#define	IPDEFTTL	64		/* default ttl, from RFC 1340 */
 #define	IPFRAGTTL	60		/* time to live for frags, slowhz */
 #define	IPTTLDEC	1		/* subtracted when forwarding */
 
