@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	6.24 (Berkeley) 02/21/93";
+static char sccsid[] = "@(#)conf.c	6.25 (Berkeley) 02/23/93";
 #endif /* not lint */
 
 # include <sys/ioctl.h>
@@ -111,16 +111,6 @@ struct hdrinfo	HdrInfo[] =
 
 	NULL,			0,
 };
-
-
-/*
-**  ARPANET error message numbers.
-*/
-
-char	Arpa_Info[] =		"050";	/* arbitrary info */
-char	Arpa_TSyserr[] =	"451";	/* some (transient) system error */
-char	Arpa_PSyserr[] =	"554";	/* some (permanent) system error */
-char	Arpa_Usrerr[] =		"501";	/* some (fatal) user error */
 
 
 
@@ -422,7 +412,7 @@ username()
 		}
 		if (myname == NULL || myname[0] == '\0')
 		{
-			syserr("Who are you?");
+			syserr("554 Who are you?");
 			myname = "postmaster";
 		}
 	}
@@ -526,7 +516,7 @@ checkcompat(to, e)
 	if (s != NULL && e->e_from.q_mailer != LocalMailer &&
 	    to->q_mailer == s->s_mailer)
 	{
-		usrerr("No ARPA mail through this machine: see your system administration");
+		usrerr("553 No ARPA mail through this machine: see your system administration");
 		/* NoReturn = TRUE; to supress return copy */
 		return (EX_UNAVAILABLE);
 	}
