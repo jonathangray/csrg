@@ -1,6 +1,6 @@
 /* 
- * Copyright (c) 1991 Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1991, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * The Mach Operating System project at Carnegie-Mellon University.
@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_glue.c	7.26 (Berkeley) 07/15/93
+ *	@(#)vm_glue.c	8.1 (Berkeley) 07/15/93
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
