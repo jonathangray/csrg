@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_bio.c	8.6 (Berkeley) 06/08/94
+ *	@(#)nfs_bio.c	8.7 (Berkeley) 08/11/94
  */
 
 #include <sys/param.h>
@@ -725,6 +725,7 @@ nfs_doio(bp, cr, p)
 		}
 		if (p && (vp->v_flag & VTEXT) &&
 			(((nmp->nm_flag & NFSMNT_NQNFS) &&
+			  NQNFS_CKINVALID(vp, np, NQL_READ) &&
 			  np->n_lrev != np->n_brev) ||
 			 (!(nmp->nm_flag & NFSMNT_NQNFS) &&
 			  np->n_mtime != np->n_vattr.va_mtime.ts_sec))) {
