@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef QUEUE
-static char sccsid[] = "@(#)queue.c	5.43 (Berkeley) 07/12/92 (with queueing)";
+static char sccsid[] = "@(#)queue.c	5.44 (Berkeley) 07/12/92 (with queueing)";
 #else
-static char sccsid[] = "@(#)queue.c	5.43 (Berkeley) 07/12/92 (without queueing)";
+static char sccsid[] = "@(#)queue.c	5.44 (Berkeley) 07/12/92 (without queueing)";
 #endif
 #endif /* not lint */
 
@@ -815,7 +815,6 @@ readqf(e)
 {
 	char *qf;
 	register FILE *qfp;
-	int fd;
 	ADDRESS *ctladdr;
 	char buf[MAXFIELD];
 	extern char *fgetfolded();
