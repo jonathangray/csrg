@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lofs_vfsops.c	1.1 (Berkeley) 06/03/92
+ *	@(#)lofs_vfsops.c	1.2 (Berkeley) 06/18/92
  *
  * $Id: lofs_vfsops.c,v 1.9 1992/05/30 10:26:24 jsp Exp jsp $
  */
@@ -320,7 +320,7 @@ lofs_sync(mp, waitfor)
 struct mount *mp;
 int waitfor;
 {
-	return VFS_SYNC(VFSTOLOFS(mp)->looped_vfs, waitfor);
+	return (0);
 }
 
 lofs_fhtovp(mp, fhp, setgen, vpp)
