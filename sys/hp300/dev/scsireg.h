@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)scsireg.h	7.3 (Berkeley) 02/05/91
+ *	@(#)scsireg.h	7.4 (Berkeley) 06/05/92
  */
 
 /*
@@ -176,6 +176,7 @@ struct scsidevice {
 #define CMD_SEND_DIAGNOSTIC	0x1D
 
 #define CMD_REWIND		0x01
+#define CMD_REZERO		0x01
 #define CMD_FORMAT_UNIT		0x04
 #define CMD_READ_BLOCK_LIMITS	0x05
 #define CMD_REASSIGN_BLOCKS	0x07
