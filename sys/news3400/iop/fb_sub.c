@@ -35,7 +35,7 @@
  *
  * from: $Hdr: fb_sub.c,v 4.300 91/06/27 20:43:09 root Rel41 $ SONY
  *
- *	@(#)fb_sub.c	7.2 (Berkeley) 12/17/92
+ *	@(#)fb_sub.c	7.3 (Berkeley) 03/09/93
  */
 
 #include "fb.h"
@@ -43,8 +43,6 @@
 /*
  * Frame buffer driver
  */
-
-#include <machine/fix_machine_type.h>
 
 #include <sys/types.h>
 #include <machine/pte.h>
