@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)externs.h	5.4 (Berkeley) 12/18/92
+ *	@(#)externs.h	5.5 (Berkeley) 04/05/93
  */
 
 #ifndef	BSD
@@ -252,6 +252,12 @@ extern void
     upcase P((char *)),
     willoption P((int)),
     wontoption P((int));
+
+extern void
+    send_do P((int, int)),
+    send_dont P((int, int)),
+    send_will P((int, int)),
+    send_wont P((int, int));
 
 extern void
     lm_will P((unsigned char *, int)),
