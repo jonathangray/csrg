@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)socketvar.h	7.21 (Berkeley) 02/17/92
+ *	@(#)socketvar.h	7.22 (Berkeley) 02/25/93
  */
 
 #include <sys/select.h>			/* for struct selinfo */
@@ -83,7 +83,7 @@ struct socket {
 		short	sb_flags;	/* flags, see below */
 		short	sb_timeo;	/* timeout for read/write */
 	} so_rcv, so_snd;
-#define	SB_MAX		(64*1024)	/* default for max chars in sockbuf */
+#define	SB_MAX		(256*1024)	/* default for max chars in sockbuf */
 #define	SB_LOCK		0x01		/* lock on data queue */
 #define	SB_WANT		0x02		/* someone is waiting to lock */
 #define	SB_WAIT		0x04		/* someone is waiting for data/space */
