@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	7.63 (Berkeley) 11/05/91
+ *	@(#)nfs_vnops.c	7.64 (Berkeley) 12/16/91
  */
 
 /*
@@ -1409,8 +1409,12 @@ nfs_sillyrename(ndp, p)
 
 	np = VTONFS(ndp->ni_dvp);
 	cache_purge(ndp->ni_dvp);
+#ifdef SILLYSEPARATE
 	MALLOC(sp, struct sillyrename *, sizeof (struct sillyrename),
 		M_NFSREQ, M_WAITOK);
+#else
+	sp = &np->n_silly;
+#endif
 	bcopy((caddr_t)&np->n_fh, (caddr_t)&sp->s_fh, NFSX_FH);
 	np = VTONFS(ndp->ni_vp);
 	sp->s_cred = crdup(ndp->ni_cred);
@@ -1442,7 +1446,9 @@ nfs_sillyrename(ndp, p)
 bad:
 	vrele(sp->s_dvp);
 	crfree(sp->s_cred);
+#ifdef SILLYSEPARATE
 	free((caddr_t)sp, M_NFSREQ);
+#endif
 	return (error);
 }
 
