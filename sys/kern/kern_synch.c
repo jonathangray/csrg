@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_synch.c	8.8 (Berkeley) 02/14/95
+ *	@(#)kern_synch.c	8.9 (Berkeley) 05/19/95
  */
 
 #include <sys/param.h>
@@ -551,6 +551,10 @@ mi_switch()
 	register long s, u;
 	struct timeval tv;
 
+#ifdef DEBUG
+	if (p->p_simple_locks)
+		panic("sleep: holding simple lock");
+#endif
 	/*
 	 * Compute the amount of time during which the current
 	 * process was running, and add that to its total so far.
