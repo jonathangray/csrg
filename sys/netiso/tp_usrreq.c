@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_usrreq.c	7.22 (Berkeley) 08/28/91
+ *	@(#)tp_usrreq.c	7.23 (Berkeley) 08/30/91
  */
 
 /***********************************************************
@@ -424,22 +424,14 @@ tp_usrreq(so, req, m, nam, controlp)
 
 	case PRU_DETACH: 	/* called from close() */
 		/* called only after disconnect was called */
-		if (tpcb->tp_state == TP_LISTENING) {
-			register struct tp_pcb **tt;
-			for (tt = &tp_listeners; *tt; tt = &((*tt)->tp_nextlisten))
-				if (*tt == tpcb)
-					break;
-			if (*tt)
-				*tt = tpcb->tp_nextlisten;
-			else
-				printf("tp_usrreq - detach: should panic\n");
-		}
-		if (tpcb->tp_next) {
-			remque(tpcb);
-			tpcb->tp_next = tpcb->tp_prev = 0;
-		}
 		error = DoEvent(T_DETACH);
 		if (tpcb->tp_state == TP_CLOSED) {
+			if (tpcb->tp_notdetached) {
+				IFDEBUG(D_CONN)
+					printf("PRU_DETACH: not detached\n");
+				ENDDEBUG
+				tp_detach(tpcb);
+			}
 			free((caddr_t)tpcb, M_PCB);
 			tpcb = 0;
 		}
