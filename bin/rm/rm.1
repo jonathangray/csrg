@@ -32,7 +32,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)rm.1	8.2 (Berkeley) 04/18/94
+.\"	@(#)rm.1	8.3 (Berkeley) 07/29/94
 .\"
 .Dd 
 .Dt RM 1
@@ -43,7 +43,7 @@
 .Sh SYNOPSIS
 .Nm rm
 .Op Fl f | Fl i
-.Op Fl dPRr
+.Op Fl dPRrW
 .Ar file ...
 .Sh DESCRIPTION
 The
@@ -99,6 +99,8 @@ that directory is skipped.
 .It Fl r
 Equivalent to
 .Fl R .
+.It Fl W
+Removes a whiteout.
 .El
 .Pp
 The
@@ -120,6 +122,7 @@ exits with a value >0.
 .Sh SEE ALSO
 .Xr rmdir 1 ,
 .Xr unlink 2 ,
+.Xr unwhiteout 2 ,
 .Xr fts 3 ,
 .Xr symlink 7
 .Sh BUGS
