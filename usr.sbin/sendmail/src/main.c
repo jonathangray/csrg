@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.27 (Berkeley) 09/22/93";
+static char sccsid[] = "@(#)main.c	8.28 (Berkeley) 09/25/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -186,7 +186,8 @@ main(argc, argv, envp)
 		(void) dup2(i, STDOUT_FILENO);
 	if (fstat(STDERR_FILENO, &stb) < 0 && errno != EOPNOTSUPP)
 		(void) dup2(i, STDERR_FILENO);
-	(void) close(i);
+	if (i != STDIN_FILENO && i != STDOUT_FILENO && i != STDERR_FILENO)
+		(void) close(i);
 
 	i = DtableSize;
 	while (--i > 0)
