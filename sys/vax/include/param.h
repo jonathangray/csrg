@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)param.h	7.21 (Berkeley) 02/19/92
+ *	@(#)param.h	7.22 (Berkeley) 05/26/92
  */
 
 /*
@@ -19,7 +19,8 @@
  * data types (int, long, ...).   The result is u_int and must be cast to
  * any desired pointer type.
  */
-#define	ALIGN(p)	(((u_int)(p) + 3) &~ 3)
+#define	ALIGNBYTES	3
+#define	ALIGN(p)	(((u_int)(p) + ALIGNBYTES) &~ ALIGNBYTES)
 
 #define	KERNBASE	0x80000000	/* start of kernel virtual */
 #define	BTOPKERNBASE	((u_long)KERNBASE >> PGSHIFT)
