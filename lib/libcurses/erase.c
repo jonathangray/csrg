@@ -32,25 +32,26 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)erase.c	5.5 (Berkeley) 05/15/92";
-#endif /* not lint */
+static char sccsid[] = "@(#)erase.c	5.5 (Berkeley) 08/23/92";
+#endif	/* not lint */
 
-# include	"curses.ext"
+#include <curses.h>
 
 /*
- *	This routine erases everything on the window.
- *
+ * werase --
+ *	Erases everything on the window.
  */
+int
 werase(win)
-reg WINDOW	*win; {
+	register WINDOW *win;
+{
 
-	reg int		y;
-	reg char	*sp, *end, *start, *maxx;
-	reg int		minx;
+	register int minx, y;
+	register char *sp, *end, *start, *maxx;
 
-# ifdef DEBUG
-	fprintf(outf, "WERASE(%0.2o)\n", win);
-# endif
+#ifdef DEBUG
+	__TRACE("werase: (%0.2o)\n", win);
+#endif
 	for (y = 0; y < win->_maxy; y++) {
 		minx = _NOCHANGE;
 		start = win->_y[y];
@@ -66,4 +67,5 @@ reg WINDOW	*win; {
 			touchline(win, y, minx, maxx - win->_y[y]);
 	}
 	win->_curx = win->_cury = 0;
+	return (OK);
 }
