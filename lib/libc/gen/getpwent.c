@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)getpwent.c	5.21 (Berkeley) 03/14/91";
+static char sccsid[] = "@(#)getpwent.c	5.22 (Berkeley) 09/14/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -158,7 +158,7 @@ __initdb()
 	char *p;
 
 	p = (geteuid()) ? _PATH_MP_DB : _PATH_SMP_DB;
-	_pw_db = hash_open(p, O_RDONLY, 0, NULL);
+	_pw_db = dbopen(p, O_RDONLY, 0, DB_HASH, NULL);
 	if (_pw_db)
 		return(1);
 	if (!warned)
