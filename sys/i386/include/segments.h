@@ -1,7 +1,7 @@
 /*-
  * Copyright (c) 1989, 1990 William F. Jolitz
- * Copyright (c) 1990 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1990, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * William Jolitz.
@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)segments.h	7.1 (Berkeley) 05/09/91
+ *	@(#)segments.h	8.1 (Berkeley) 06/11/93
  */
 
 /*
