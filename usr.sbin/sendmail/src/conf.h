@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.151 (Berkeley) 04/21/95
+ *	@(#)conf.h	8.152 (Berkeley) 04/22/95
  */
 
 /*
@@ -88,7 +88,7 @@
 # define MATCHGECOS	1	/* match user names from gecos field */
 # define XDEBUG		1	/* enable extended debugging */
 # if (defined(NEWDB) || defined(HESIOD)) && !defined(USERDB)
-# define USERDB		1	/* look in user database */
+#  define USERDB	1	/* look in user database */
 # endif
 
 /**********************************************************************
@@ -99,6 +99,10 @@
 
 # ifndef NAMED_BIND
 #  define NAMED_BIND	1	/* use Berkeley Internet Domain Server */
+# endif
+
+# ifndef DSN
+#  define DSN		1	/* include delivery status notification code */
 # endif
 
 /*
