@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)lpq.c	8.2 (Berkeley) 04/28/95";
+static char sccsid[] = "@(#)lpq.c	8.3 (Berkeley) 05/10/95";
 #endif /* not lint */
 
 /*
@@ -69,6 +69,7 @@ int	 requests;		/* # of spool requests */
 char	*user[MAXUSERS];	/* users to process */
 int	 users;			/* # of users in user array */
 
+static int ckqueue __P((char *));
 void usage __P((void));
 
 int
@@ -122,7 +123,7 @@ main(argc, argv)
 
 	if (aflag) {
 		while (cgetnext(&buf, printcapdb) > 0) {
-			if (ckqueue() <= 0) {
+			if (ckqueue(buf) <= 0) {
 				free(buf);
 				continue;	/* no jobs */
 			}
@@ -142,13 +143,15 @@ main(argc, argv)
 	exit(0);
 }
 
-ckqueue()
+static int
+ckqueue(cap)
+	char *cap;
 {
 	register struct dirent *d;
 	DIR *dirp;
 	char *spooldir;
 
-	if (cgetstr(bp, "sd", &spooldir) == -1)
+	if (cgetstr(cap, "sd", &spooldir) == -1)
 		spooldir = _PATH_DEFSPOOL;
 	if ((dirp = opendir(spooldir)) == NULL)
 		return (-1);
