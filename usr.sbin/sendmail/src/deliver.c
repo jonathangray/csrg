@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	5.65 (Berkeley) 11/04/92";
+static char sccsid[] = "@(#)deliver.c	5.66 (Berkeley) 11/14/92";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -193,7 +193,7 @@ deliver(e, firstto)
 
 	for (mvp = m->m_argv; (p = *++mvp) != NULL; )
 	{
-		while ((p = index(p, '\001')) != NULL)
+		while ((p = strchr(p, '\001')) != NULL)
 			if (*++p == 'u')
 				break;
 		if (p != NULL)
@@ -221,11 +221,11 @@ deliver(e, firstto)
 # ifdef SMTP
 		clever = TRUE;
 		*pvp = NULL;
-# else SMTP
+# else /* SMTP */
 		/* oops!  we don't implement SMTP */
 		syserr("SMTP style mailer");
 		return (EX_SOFTWARE);
-# endif SMTP
+# endif /* SMTP */
 	}
 
 	/*
@@ -867,7 +867,7 @@ openmailer(m, pvp, ctladdr, clever, e)
 		(void) fflush(stdout);
 # ifdef SIGCHLD
 		(void) signal(SIGCHLD, SIG_DFL);
-# endif SIGCHLD
+# endif /* SIGCHLD */
 		DOFORK(FORK);
 		/* pid is set by DOFORK */
 		if (pid < 0)
@@ -1074,9 +1074,9 @@ giveresponse(stat, m, e)
 				extern char SmtpError[];
 
 				statmsg = SmtpError;
-#else SMTP
+#else /* SMTP */
 				statmsg = NULL;
-#endif SMTP
+#endif /* SMTP */
 			}
 		}
 		if (statmsg != NULL && statmsg[0] != '\0')
@@ -1148,7 +1148,7 @@ logdelivery(stat, e)
 # ifdef LOG
 	syslog(LOG_INFO, "%s: to=%s, delay=%s, stat=%s", e->e_id,
 	       e->e_to, pintvl(curtime() - e->e_ctime, TRUE), stat);
-# endif LOG
+# endif /* LOG */
 }
 /*
 **  PUTFROMLINE -- output a UNIX-style from line (or whatever)
@@ -1192,7 +1192,7 @@ putfromline(fp, m, e)
 		char xbuf[MAXLINE];
 
 		expand("\001<", buf, &buf[sizeof buf - 1], e);
-		bang = index(buf, '!');
+		bang = strchr(buf, '!');
 		if (bang == NULL)
 			syserr("No ! in UUCP! (%s)", buf);
 		else
@@ -1202,7 +1202,7 @@ putfromline(fp, m, e)
 			template = xbuf;
 		}
 	}
-# endif UGLYUUCP
+# endif /* UGLYUUCP */
 	expand(template, buf, &buf[sizeof buf - 1], e);
 	putline(buf, fp, m);
 }
@@ -1492,7 +1492,7 @@ sendall(e, mode)
 	     (mode != SM_VERIFY && SuperSafe)) &&
 	    !bitset(EF_INQUEUE, e->e_flags))
 		queueup(e, TRUE, mode == SM_QUEUE);
-#endif QUEUE
+#endif /* QUEUE */
 
 	oldverbose = Verbose;
 	switch (mode)
