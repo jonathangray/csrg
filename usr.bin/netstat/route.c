@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)route.c	8.3 (Berkeley) 03/09/94";
+static char sccsid[] = "@(#)route.c	8.4 (Berkeley) 10/31/94";
 #endif /* not lint */
 
 #include <sys/param.h>
