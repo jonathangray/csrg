@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)putchar.c	5.5 (Berkeley) 08/23/92";
+static char sccsid[] = "@(#)putchar.c	5.6 (Berkeley) 05/16/93";
 #endif	/* not lint */
 
 #include <curses.h>
@@ -43,7 +43,7 @@ __cputchar(ch)
 {
 
 #ifdef DEBUG
-	__TRACE("__cputchar: %s\n", unctrl(ch));
+	__CTRACE("__cputchar: %s\n", unctrl(ch));
 #endif
 	(void)putchar(ch);
 }
