@@ -38,9 +38,9 @@
 
 #ifndef lint
 #ifdef DAEMON
-static char sccsid[] = "@(#)daemon.c	5.42.1.1 (Berkeley) 02/26/92 (with daemon mode)";
+static char sccsid[] = "@(#)daemon.c	5.43 (Berkeley) 03/20/92 (with daemon mode)";
 #else
-static char sccsid[] = "@(#)daemon.c	5.42.1.1 (Berkeley) 02/26/92 (without daemon mode)";
+static char sccsid[] = "@(#)daemon.c	5.43 (Berkeley) 03/20/92 (without daemon mode)";
 #endif
 #endif /* not lint */
 
@@ -109,6 +109,7 @@ getrequests()
 	int t;
 	register struct servent *sp;
 	int on = 1;
+	bool refusingconnections = TRUE;
 	struct sockaddr_in srvraddr;
 	extern void reapchild();
 
@@ -156,12 +157,6 @@ getrequests()
 	if (bind(DaemonSocket, (struct sockaddr *)&srvraddr, sizeof srvraddr) < 0)
 	{
 		syserr("getrequests: cannot bind");
-		(void) close(DaemonSocket);
-		goto severe;
-	}
-	if (listen(DaemonSocket, 10) < 0)
-	{
-		syserr("getrequests: cannot listen");
 		(void) close(DaemonSocket);
 		goto severe;
 	}
