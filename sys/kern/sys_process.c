@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)sys_process.c	7.37 (Berkeley) 05/11/93
+ *	@(#)sys_process.c	7.38 (Berkeley) 06/04/93
  */
 
 #define IPCREG
@@ -39,7 +39,7 @@
 struct {
 	int	ip_lock;
 	int	ip_req;
-	int	*ip_addr;
+	caddr_t	ip_addr;
 	int	ip_data;
 } ipc;
 
@@ -48,8 +48,8 @@ struct {
  */
 struct ptrace_args {
 	int	req;
-	int	pid;
-	int	*addr;
+	pid_t	pid;
+	caddr_t	addr;
 	int	data;
 };
 ptrace(curp, uap, retval)
