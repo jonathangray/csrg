@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)mount.c	8.23 (Berkeley) 04/26/95";
+static char sccsid[] = "@(#)mount.c	8.24 (Berkeley) 04/27/95";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -99,7 +99,7 @@ main(argc, argv)
 	int argc;
 	char * const argv[];
 {
-	const char **vfslist, *vfstype;
+	const char *mntfromname, **vfslist, *vfstype;
 	struct fstab *fs;
 	struct statfs *mntbuf;
 	FILE *mountdfp;
@@ -191,9 +191,12 @@ main(argc, argv)
 				errx(1,
 				    "unknown special file or file system %s.",
 				    *argv);
-			rval = mountfs(mntbuf->f_fstypename,
-			    mntbuf->f_mntfromname, mntbuf->f_mntonname,
-			    init_flags, options, 0);
+			if ((fs = getfsfile(mntbuf->f_mntonname)) != NULL)
+				mntfromname = fs->fs_spec;
+			else
+				mntfromname = mntbuf->f_mntfromname;
+			rval = mountfs(mntbuf->f_fstypename, mntfromname,
+			    mntbuf->f_mntonname, init_flags, options, 0);
 			break;
 		}
 		if ((fs = getfsfile(*argv)) == NULL &&
