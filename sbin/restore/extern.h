@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.1 (Berkeley) 10/24/92
+ *	@(#)extern.h	5.2 (Berkeley) 12/02/92
  */
 
 struct entry	*addentry __P((char *, ino_t, int));
@@ -77,7 +77,7 @@ void	 	 onintr __P((int));
 RST_DIR		*opendirfile __P((char *));
 void		 panic __P((const char *, ...));
 void		 pathcheck __P((char *));
-ino_t	 	 pathsearch __P((char *));
+struct direct	*pathsearch __P((char *));
 void		 printdumpinfo __P((void));
 void		 removeleaf __P((struct entry *));
 void		 removenode __P((struct entry *));
@@ -87,6 +87,7 @@ void		 renameit __P((char *, char *));
 int		 reply __P((char *));
 RST_DIR		*rst_opendir __P((char *));
 struct direct	*rst_readdir __P((RST_DIR *));
+void		 rst_closedir __P((RST_DIR *dirp));
 void	 	 runcmdshell __P((void));
 char		*savename __P((char *));
 void	 	 setdirmodes __P((int));
