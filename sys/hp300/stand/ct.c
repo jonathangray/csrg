@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ct.c	8.1 (Berkeley) 06/10/93
+ *	@(#)ct.c	7.8 (Berkeley) 07/15/93
  */
 
 /*
@@ -159,6 +159,7 @@ ctopen(io)
 	unit = io->i_ctlr;
 	if (unit >= NCT)
 		return(ECTLR);
+	rs = &ct_softc[ctlr][unit];
 	if (rs->sc_alive == 0)
 		if (ctinit(ctlr, unit) == 0)
 			return(ENXIO);
