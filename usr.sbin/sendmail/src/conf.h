@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.165 (Berkeley) 05/24/95
+ *	@(#)conf.h	8.166 (Berkeley) 05/24/95
  */
 
 /*
@@ -282,6 +282,7 @@ extern int	syslog(int, char *, ...);
 #  ifndef __svr4__
 #   define __svr4__		/* use all System V Releae 4 defines below */
 #  endif
+#  define BSD_COMP	1	/* get BSD ioctl calls */
 #  include <sys/time.h>
 #  define GIDSET_T	gid_t
 #  ifndef _PATH_UNIX
