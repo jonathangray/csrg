@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mtio.h	7.6 (Berkeley) 02/05/91
+ *	@(#)mtio.h	7.7 (Berkeley) 09/03/91
  */
 
 /*
@@ -91,6 +91,7 @@ struct mtget {
 #define MT_ISVIPER1	0x0e		/* Archive Viper-150 */
 #define MT_ISPYTHON	0x0f		/* Archive Python (DAT) */
 #define MT_ISHPDAT	0x10		/* HP 35450A DAT drive */
+#define MT_ISMFOUR	0x11		/* M4 Data 1/2 9track drive */
 
 /* mag tape io control commands */
 #define	MTIOCTOP	_IOW('m', 1, struct mtop)	/* do a mag tape op */
