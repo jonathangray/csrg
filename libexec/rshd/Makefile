@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.6.1.1 (Berkeley) 10/21/90
+#	@(#)Makefile	5.7 (Berkeley) 04/27/93
 
 PROG=	rshd
 SRCS=	rshd.c
