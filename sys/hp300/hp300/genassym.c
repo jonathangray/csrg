@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)genassym.c	7.2 (Berkeley) 06/22/90
+ *	@(#)genassym.c	7.3 (Berkeley) 11/01/90
  */
 
 #define KERNEL
@@ -190,6 +190,7 @@ main()
 	printf("#define\tB_READ %d\n", B_READ);
 	printf("#define\tENOENT %d\n", ENOENT);
 	printf("#define\tEFAULT %d\n", EFAULT);
+	printf("#define\tENAMETOOLONG %d\n", ENAMETOOLONG);
 	printf("#define\tCLKCR1 %d\n", CLKCR1);
 	printf("#define\tCLKCR2 %d\n", CLKCR2);
 	printf("#define\tCLKCR3 %d\n", CLKCR3);
