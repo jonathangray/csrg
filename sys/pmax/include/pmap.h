@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.h	7.4 (Berkeley) 05/28/92
+ *	@(#)pmap.h	7.5 (Berkeley) 10/24/92
  */
 
 #ifndef	_PMAP_MACHINE_
@@ -55,7 +55,7 @@
  *	UPAGES			(for curproc)
  *	PMAP_HASH_UPAGES	(for curproc)
  *	PMAP_HASH_KPAGES	(for kernel)
- * The kernel doesn't actual use a pmap_hash_t, the pm_hash field is NULL and
+ * The kernel doesn't actually use a pmap_hash_t, the pm_hash field is NULL and
  * all the PTE entries are stored in a single array at PMAP_HASH_KADDR.
  * If we need more KPAGES that the TLB has wired entries, then we can switch
  * to a global pointer for the kernel TLB table.
@@ -64,7 +64,7 @@
  * Note: PMAP_HASH_UPAGES should be a multiple of MACH pages (see pmap_enter()).
  */
 #define PMAP_HASH_UPAGES	1
-#define PMAP_HASH_KPAGES	3
+#define PMAP_HASH_KPAGES	4
 #define PMAP_HASH_UADDR		(UADDR - PMAP_HASH_UPAGES * NBPG)
 #define PMAP_HASH_KADDR		(UADDR - (PMAP_HASH_UPAGES + PMAP_HASH_KPAGES) * NBPG)
 #define PMAP_HASH_NUM_ENTRIES	256
