@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)sigsetmask.2	6.5 (Berkeley) 06/23/90
+.\"	@(#)sigsetmask.2	6.6 (Berkeley) 07/01/90
 .\"
 .TH SIGSETMASK 2 ""
 .UC 5
@@ -44,6 +44,8 @@ sigsetmask \- set current signal mask
 
 .B mask = sigmask(signum)
 .SH DESCRIPTION
+.B "This interface is made obsolete by sigprocmask(2).
+.LP
 .I Sigsetmask
 sets the current signal mask (those signals
 that are blocked from delivery).
@@ -56,9 +58,9 @@ is provided to construct the mask for a given
 .IR signum .
 .PP
 The system
-quietly disallows SIGKILL, SIGSTOP, or SIGCONT to
-be blocked.
+quietly disallows SIGKILL or SIGSTOP to be blocked.
 .SH "RETURN VALUE
 The previous set of masked signals is returned.
 .SH "SEE ALSO"
-kill(2), sigvec(2), sigblock(2), sigpause(2)
+sigprocmask(2), kill(2), sigaction(2), sigsuspend(2),
+sigvec(2), sigblock(2), sigsetops(3)
