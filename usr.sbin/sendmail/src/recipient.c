@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recipient.c	6.26 (Berkeley) 03/14/93";
+static char sccsid[] = "@(#)recipient.c	6.27 (Berkeley) 03/16/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -278,7 +278,7 @@ recipient(a, sendq, e)
 	/* check for direct mailing to restricted mailers */
 	if (a->q_alias == NULL && m == ProgMailer)
 	{
-		a->q_flags |= QDONTSEND|QBADADDR;
+		a->q_flags |= QBADADDR;
 		usrerr("550 Cannot mail directly to programs", m->m_name);
 	}
 
@@ -324,7 +324,7 @@ recipient(a, sendq, e)
 	if (tTd(29, 7))
 		printf("at trylocaluser %s\n", a->q_user);
 
-	if (bitset(QDONTSEND|QVERIFIED, a->q_flags))
+	if (bitset(QDONTSEND|QBADADDR|QVERIFIED, a->q_flags))
 		return (a);
 
 	if (m == InclMailer)
@@ -332,7 +332,7 @@ recipient(a, sendq, e)
 		a->q_flags |= QDONTSEND;
 		if (a->q_alias == NULL)
 		{
-			a->q_flags |= QDONTSEND|QBADADDR;
+			a->q_flags |= QBADADDR;
 			usrerr("550 Cannot mail directly to :include:s");
 		}
 		else
@@ -354,13 +354,13 @@ recipient(a, sendq, e)
 		/* check if writable or creatable */
 		if (a->q_alias == NULL && !QueueRun)
 		{
-			a->q_flags |= QDONTSEND|QBADADDR;
+			a->q_flags |= QBADADDR;
 			usrerr("550 Cannot mail directly to files");
 		}
 		else if ((stat(buf, &stb) >= 0) ? (!writable(&stb)) :
 		    (*p = '\0', safefile(buf, getruid(), S_IWRITE|S_IEXEC) != 0))
 		{
-			a->q_flags |= QDONTSEND|QBADADDR;
+			a->q_flags |= QBADADDR;
 			giveresponse(EX_CANTCREAT, m, NULL, e);
 		}
 	}
@@ -436,7 +436,7 @@ recipient(a, sendq, e)
 		pw = finduser(buf, &fuzzy);
 		if (pw == NULL)
 		{
-			a->q_flags |= QDONTSEND|QBADADDR;
+			a->q_flags |= QBADADDR;
 			giveresponse(EX_NOUSER, m, NULL, e);
 		}
 		else
@@ -449,7 +449,7 @@ recipient(a, sendq, e)
 				a->q_user = newstr(pw->pw_name);
 				if (findusercount++ > 3)
 				{
-					a->q_flags |= QDONTSEND|QBADADDR;
+					a->q_flags |= QBADADDR;
 					usrerr("554 aliasing/forwarding loop for %s broken",
 						pw->pw_name);
 					return (a);
@@ -717,7 +717,7 @@ include(fname, forwarding, ctladdr, sendq, e)
 	if (bitset(EF_VRFYONLY, e->e_flags))
 	{
 		/* don't do any more now */
-		fclose(fp);
+		xfclose(fp, "include", fname);
 		return 0;
 	}
 
@@ -758,7 +758,7 @@ include(fname, forwarding, ctladdr, sendq, e)
 		ctladdr->q_flags |= QDONTSEND;
 	}
 
-	(void) fclose(fp);
+	(void) xfclose(fp, "include", fname);
 	FileName = oldfilename;
 	LineNumber = oldlinenumber;
 	return 0;
