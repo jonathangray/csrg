@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_descrip.c	7.35 (Berkeley) 06/23/92
+ *	@(#)kern_descrip.c	7.36 (Berkeley) 07/03/92
  */
 
 #include "param.h"
@@ -161,7 +161,6 @@ fcntl(p, uap, retval)
 	} *uap;
 	int *retval;
 {
-	USES_VOP_ADVLOCK;
 	register struct filedesc *fdp = p->p_fd;
 	register struct file *fp;
 	register char *pop;
@@ -658,7 +657,6 @@ closef(fp, p)
 	register struct file *fp;
 	register struct proc *p;
 {
-	USES_VOP_ADVLOCK;
 	struct vnode *vp;
 	struct flock lf;
 	int error;
@@ -714,7 +712,6 @@ flock(p, uap, retval)
 	} *uap;
 	int *retval;
 {
-	USES_VOP_ADVLOCK;
 	register struct filedesc *fdp = p->p_fd;
 	register struct file *fp;
 	struct vnode *vp;
