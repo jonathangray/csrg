@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stdio.h	5.27 (Berkeley) 06/06/93
+ *	@(#)stdio.h	8.1 (Berkeley) 06/06/93
  */
 
 #ifndef	_STDIO_H_
