@@ -1,5 +1,5 @@
 #ifndef lint
-static	char sccsid[] = "@(#)file.c	4.9 (Berkeley) 02/05/85";
+static	char sccsid[] = "@(#)file.c	4.9 (Berkeley) 02/14/85";
 #endif
 /*
  * file - determine type of file
