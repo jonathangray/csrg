@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_object.c	7.5 (Berkeley) 07/25/91
+ *	@(#)vm_object.c	7.6 (Berkeley) 08/16/91
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -308,7 +308,7 @@ void vm_object_terminate(object)
 	 */
 
 	while (object->paging_in_progress != 0) {
-		vm_object_sleep(object, object, FALSE);
+		vm_object_sleep((int)object, object, FALSE);
 		vm_object_lock(object);
 	}
 
