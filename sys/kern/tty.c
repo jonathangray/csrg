@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty.c	8.12 (Berkeley) 08/22/94
+ *	@(#)tty.c	8.13 (Berkeley) 01/09/95
  */
 
 #include <sys/param.h>
@@ -487,8 +487,9 @@ ttyoutput(c, tp)
 int
 ttioctl(tp, cmd, data, flag)
 	register struct tty *tp;
-	int cmd, flag;
+	u_long cmd;
 	void *data;
+	int flag;
 {
 	extern struct tty *constty;	/* Temporary virtual console. */
 	extern int nlinesw;
