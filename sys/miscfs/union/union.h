@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union.h	2.2 (Berkeley) 02/10/94
+ *	@(#)union.h	8.1 (Berkeley) 02/10/94
  */
 
 struct union_args {
