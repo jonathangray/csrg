@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_loop.c	7.19 (Berkeley) 02/25/93
+ *	@(#)if_loop.c	7.20 (Berkeley) 04/08/93
  */
 
 /*
@@ -128,9 +128,10 @@ looutput(ifp, m, dst, rt)
 #endif
 	m->m_pkthdr.rcvif = ifp;
 
-	if (rt && rt->rt_flags & RTF_REJECT) {
+	if (rt && rt->rt_flags & (RTF_REJECT|RTF_BLACKHOLE)) {
 		m_freem(m);
-		return (rt->rt_flags & RTF_HOST ? EHOSTUNREACH : ENETUNREACH);
+		return (rt->rt_flags & RTF_BLACKHOLE ? 0 :
+		        rt->rt_flags & RTF_HOST ? EHOSTUNREACH : ENETUNREACH);
 	}
 	ifp->if_opackets++;
 	ifp->if_obytes += m->m_pkthdr.len;
