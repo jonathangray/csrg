@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	8.11 (Berkeley) 09/04/93";
+static char sccsid[] = "@(#)parseaddr.c	8.12 (Berkeley) 09/27/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1623,7 +1623,21 @@ badaddr:
 			syslog (LOG_DEBUG, "%s: Trace: $#ERROR $: %s",
 				CurEnv->e_id, buf);
 #endif /* LOG */
-		usrerr("%s", buf);
+		if (isascii(buf[0]) && isdigit(buf[0]) &&
+		    isascii(buf[1]) && isdigit(buf[1]) &&
+		    isascii(buf[2]) && isdigit(buf[2]) &&
+		    buf[3] == ' ')
+		{
+			char fmt[10];
+
+			strncpy(fmt, buf, 3);
+			strcpy(&fmt[3], " %s");
+			usrerr(fmt, buf + 4);
+		}
+		else
+		{
+			usrerr("%s", buf);
+		}
 		goto badaddr;
 	}
 
