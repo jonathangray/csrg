@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sys_machdep.c	7.8 (Berkeley) 06/05/92
+ *	@(#)sys_machdep.c	7.9 (Berkeley) 07/10/92
  */
 
 #include "sys/param.h"
@@ -49,12 +49,13 @@
 #ifdef TRACE
 int	nvualarm;
 
+struct vtrace_args {
+	int	request;
+	int	value;
+};
 vtrace(p, uap, retval)
 	struct proc *p;
-	register struct args {
-		int	request;
-		int	value;
-	} *uap;
+	register struct vtrace_args *uap;
 	int *retval;
 {
 	int vdoualarm();
