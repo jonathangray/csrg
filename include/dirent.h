@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dirent.h	5.10 (Berkeley) 05/29/90
+ *	@(#)dirent.h	5.11 (Berkeley) 06/23/90
  */
 
 #ifndef _DIRENT_
@@ -91,7 +91,7 @@ extern int closedir(DIR *);
 #ifndef _POSIX_SOURCE
 extern long telldir(const DIR *);
 extern void seekdir(DIR *, long);
-extern int scandir(const char *, struct direct *(*[]),
+extern int scandir(const char *, struct direct ***,
     int (* )(struct direct *), int (* )(char *, char *));
 extern int alphasort(const struct direct **, const struct direct **);
 #endif
