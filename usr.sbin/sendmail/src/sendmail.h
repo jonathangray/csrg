@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.28 (Berkeley) 11/25/93
+ *	@(#)sendmail.h	8.29 (Berkeley) 12/02/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.28		11/25/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.29		12/02/93";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -956,6 +956,7 @@ extern char		*hostsignature __P((MAILER *, char *, ENVELOPE *));
 extern void		openxscript __P((ENVELOPE *));
 extern void		closexscript __P((ENVELOPE *));
 extern sigfunc_t	setsignal __P((int, sigfunc_t));
+extern char		*shortenstring __P((char *, int));
 
 /* ellipsis is a different case though */
 #ifdef __STDC__
