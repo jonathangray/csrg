@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)machdep.c	7.10 (Berkeley) 03/13/92
+ *	@(#)machdep.c	7.11 (Berkeley) 04/14/92
  */
 
 #include "param.h"
@@ -254,6 +254,7 @@ again:
 	callfree = callout;
 	for (i = 1; i < ncallout; i++)
 		callout[i-1].c_next = &callout[i];
+	callout[i-1].c_next = NULL;
 
 	/*printf("avail mem = %d\n", ptoa(vm_page_free_count));*/
 	printf("using %d buffers containing %d bytes of memory\n",
