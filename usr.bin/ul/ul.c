@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)ul.c	5.6 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)ul.c	5.7 (Berkeley) 02/02/91";
 #endif /* not lint */
 
 #include <stdio.h>
@@ -74,6 +74,9 @@ int	mode;
 int	halfpos;
 int	upln;
 int	iflag;
+
+int	outchar();
+#define	PRINT(s)	if (s == NULL) /* void */; else tputs(s, 1, outchar)
 
 main(argc, argv)
 	int argc;
@@ -141,11 +144,11 @@ main(argc, argv)
 }
 
 filter(f)
-FILE *f;
+	FILE *f;
 {
 	register c;
 
-	while((c = getc(f)) != EOF) switch(c) {
+	while ((c = getc(f)) != EOF) switch(c) {
 
 	case '\b':
 		if (col > 0)
@@ -267,9 +270,9 @@ flushln()
 			lastmode = obuf[i].c_mode;
 		}
 		if (obuf[i].c_char == '\0') {
-			if (upln) {
-				puts(CURS_RIGHT);
-			} else
+			if (upln)
+				PRINT(CURS_RIGHT);
+			else
 				outc(' ');
 		} else
 			outc(obuf[i].c_char);
@@ -376,8 +379,8 @@ reverse()
 {
 	upln++;
 	fwd();
-	puts(CURS_UP);
-	puts(CURS_UP);
+	PRINT(CURS_UP);
+	PRINT(CURS_UP);
 	upln++;
 }
 
@@ -435,34 +438,27 @@ initcap()
 }
 
 outchar(c)
-char c;
+	int c;
 {
-	putchar(c&0177);
+	putchar(c & 0177);
 }
 
-puts(str)
-char *str;
-{
-	if (str)
-		tputs(str, 1, outchar);
-}
+static int curmode = 0;
 
-static curmode = 0;
 outc(c)
-char c;
+	int c;
 {
 	putchar(c);
-	if (must_use_uc &&  (curmode&UNDERL)) {
-		puts(CURS_LEFT);
-		puts(UNDER_CHAR);
+	if (must_use_uc && (curmode&UNDERL)) {
+		PRINT(CURS_LEFT);
+		PRINT(UNDER_CHAR);
 	}
 }
 
 setmode(newmode)
-int newmode;
+	int newmode;
 {
-	if (!iflag)
-	{
+	if (!iflag) {
 		if (curmode != NORMAL && newmode != NORMAL)
 			setmode(NORMAL);
 		switch (newmode) {
@@ -471,40 +467,40 @@ int newmode;
 			case NORMAL:
 				break;
 			case UNDERL:
-				puts(EXIT_UNDERLINE);
+				PRINT(EXIT_UNDERLINE);
 				break;
 			default:
 				/* This includes standout */
-				puts(EXIT_ATTRIBUTES);
+				PRINT(EXIT_ATTRIBUTES);
 				break;
 			}
 			break;
 		case ALTSET:
-			puts(ENTER_REVERSE);
+			PRINT(ENTER_REVERSE);
 			break;
 		case SUPERSC:
 			/*
 			 * This only works on a few terminals.
 			 * It should be fixed.
 			 */
-			puts(ENTER_UNDERLINE);
-			puts(ENTER_DIM);
+			PRINT(ENTER_UNDERLINE);
+			PRINT(ENTER_DIM);
 			break;
 		case SUBSC:
-			puts(ENTER_DIM);
+			PRINT(ENTER_DIM);
 			break;
 		case UNDERL:
-			puts(ENTER_UNDERLINE);
+			PRINT(ENTER_UNDERLINE);
 			break;
 		case BOLD:
-			puts(ENTER_BOLD);
+			PRINT(ENTER_BOLD);
 			break;
 		default:
 			/*
 			 * We should have some provision here for multiple modes
 			 * on at once.  This will have to come later.
 			 */
-			puts(ENTER_STANDOUT);
+			PRINT(ENTER_STANDOUT);
 			break;
 		}
 	}
