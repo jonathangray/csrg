@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_syscalls.c	7.19 (Berkeley) 10/01/90
+ *	@(#)nfs_syscalls.c	7.20 (Berkeley) 10/02/90
  */
 
 #include "param.h"
@@ -268,8 +268,8 @@ nfssvc(p, uap, retval)
 			mreq->m_pkthdr.len = siz;
 			mreq->m_pkthdr.rcvif = (struct ifnet *)0;
 			if (wascomp && compressreply[procid]) {
-				m = nfs_compress(m);
-				siz = m->m_pkthdr.len;
+				mreq = nfs_compress(mreq);
+				siz = mreq->m_pkthdr.len;
 			}
 			/*
 			 * For non-atomic protocols, prepend a Sun RPC
