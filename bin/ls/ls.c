@@ -41,7 +41,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)ls.c	5.69 (Berkeley) 10/17/92";
+static char sccsid[] = "@(#)ls.c	5.70 (Berkeley) 01/15/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -278,7 +278,7 @@ traverse(argc, argv, options)
 	char *argv[];
 {
 	register FTS *ftsp;
-	register FTSENT *p;
+	register FTSENT *p, *chp;
 	int ch_options;
 
 	if ((ftsp =
@@ -322,9 +322,10 @@ traverse(argc, argv, options)
 				output = 1;
 			}
 
-			display(p, fts_children(ftsp, ch_options));
+			chp = fts_children(ftsp, ch_options);
+			display(p, chp);
 
-			if (!f_recursive)
+			if (!f_recursive && chp != NULL)
 				(void)fts_set(ftsp, p, FTS_SKIP);
 			break;
 		}
