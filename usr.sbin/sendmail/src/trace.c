@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)trace.c	8.3 (Berkeley) 04/21/95";
+static char sccsid[] = "@(#)trace.c	8.4 (Berkeley) 05/28/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -57,6 +57,7 @@ u_char		*tTvect;
 int		tTsize;
 static char	*DefFlags;
 
+void
 tTsetup(vect, size, defflags)
 	u_char *vect;
 	int size;
@@ -79,6 +80,7 @@ tTsetup(vect, size, defflags)
 **		sets/clears trace flags.
 */
 
+void
 tTflag(s)
 	register char *s;
 {
