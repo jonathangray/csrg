@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)socketvar.h	7.10 (Berkeley) 06/28/90
+ *	@(#)socketvar.h	7.11 (Berkeley) 06/30/90
  */
 
 /*
@@ -79,9 +79,9 @@ struct socket {
 		struct	mbuf *sb_mb;	/* the mbuf chain */
 		struct	proc *sb_sel;	/* process selecting read/write */
 		short	sb_flags;	/* flags, see below */
-		short	sb_timeo;	/* timeout (not used yet) */
+		short	sb_timeo;	/* timeout for read/write */
 	} so_rcv, so_snd;
-#define	SB_MAX		(64*1024)	/* max chars in sockbuf (default) */
+#define	SB_MAX		(64*1024)	/* default for max chars in sockbuf */
 #define	SB_LOCK		0x01		/* lock on data queue */
 #define	SB_WANT		0x02		/* someone is waiting to lock */
 #define	SB_WAIT		0x04		/* someone is waiting for data/space */
