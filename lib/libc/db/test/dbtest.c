@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)dbtest.c	5.2 (Berkeley) 08/27/92";
+static char sccsid[] = "@(#)dbtest.c	5.3 (Berkeley) 10/09/92";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -484,6 +484,7 @@ rfile(name, lenp)
 		err("%s", strerror(errno));
 	(void)read(fd, p, (int)sb.st_size);
 	*lenp = sb.st_size;
+	(void)close(fd);
 	return (p);
 }
 
