@@ -2,7 +2,7 @@
 # include <sgtty.h>
 # include <signal.h>
 
-static char	SccsId[] =	"@(#)cpr.c	1.1.1.1		07/25/82";
+static char	SccsId[] =	"@(#)cpr.c	1.2		07/25/82";
 
 /*
 **  CPR -- print on concept 108
