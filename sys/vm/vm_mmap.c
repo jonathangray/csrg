@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * from: Utah $Hdr: vm_mmap.c 1.3 90/01/21$
+ * from: Utah $Hdr: vm_mmap.c 1.6 91/10/21$
  *
- *	@(#)vm_mmap.c	7.8 (Berkeley) 08/28/91
+ *	@(#)vm_mmap.c	7.9 (Berkeley) 10/21/91
  */
 
 /*
@@ -271,7 +271,7 @@ msync(p, uap, retval)
 		       objoff, objoff+osize);
 #endif
 	if (prot & VM_PROT_WRITE)
-		vm_object_page_clean(object, objoff, objoff+osize);
+		vm_object_page_clean(object, objoff, objoff+osize, FALSE);
 	/*
 	 * (XXX)
 	 * Bummer, gotta flush all cached pages to ensure
