@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)raw_ip.c	7.12 (Berkeley) 02/12/93
+ *	@(#)raw_ip.c	7.13 (Berkeley) 04/09/93
  */
 
 #include <sys/param.h>
@@ -153,6 +153,9 @@ rip_output(m, so, dst)
 		ip->ip_ttl = MAXTTL;
 		opts = inp->inp_options;
 	} else {
+		ip = mtod(m, struct ip *);
+		if (ip->ip_id == 0)
+			ip->ip_id = htons(ip_id++);
 		opts = NULL;
 		/* XXX prevent ip_output from overwriting header fields */
 		flags |= IP_RAWOUTPUT;
