@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	7.48 (Berkeley) 12/14/90
+ *	@(#)ffs_vnops.c	7.49 (Berkeley) 02/01/91
  */
 
 #include "param.h"
@@ -488,9 +488,9 @@ chmod1(vp, mode, cred)
 	    (error = suser(cred, &u.u_acflag)))
 		return (error);
 	if (cred->cr_uid) {
-		if (vp->v_type != VDIR && mode & ISVTX)
+		if (vp->v_type != VDIR && (mode & ISVTX))
 			return (EFTYPE);
-		if (!groupmember(ip->i_gid, cred) && mode & ISGID)
+		if (!groupmember(ip->i_gid, cred) && (mode & ISGID))
 			return (EPERM);
 	}
 	ip->i_mode &= ~07777;
