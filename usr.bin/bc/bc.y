@@ -1,5 +1,23 @@
 %{
-static	char *sccsid = "@(#)bc.y	4.7 (Berkeley) 89/09/15";
+/*-
+ * Copyright (c) 1991 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ */
+
+#ifndef lint
+char copyright[] =
+"@(#) Copyright (c) 1991 The Regents of the University of California.\n\
+ All rights reserved.\n";
+#endif /* not lint */
+
+#ifndef lint
+static char sccsid[] = "@(#)bc.y	5.1 (Berkeley) 04/17/91";
+#endif /* not lint */
+
 	int *getout();
 %}
 %right '='
