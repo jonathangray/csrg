@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_balloc.c	7.41 (Berkeley) 12/10/92
+ *	@(#)lfs_balloc.c	7.42 (Berkeley) 02/02/93
  */
 #include <sys/param.h>
 #include <sys/buf.h>
@@ -80,14 +80,15 @@ lfs_balloc(vp, iosize, lbn, bpp)
 	if (error = ufs_bmaparray(vp, lbn, &daddr, &indirs[0], &num, NULL ))
 		return (error);
 
-	*bpp = bp = getblk(vp, lbn, fs->lfs_bsize);
+	*bpp = bp = getblk(vp, lbn, fs->lfs_bsize, 0, 0);
 	bb = VFSTOUFS(vp->v_mount)->um_seqinc;
 	if (daddr == UNASSIGNED)
 		/* May need to allocate indirect blocks */
 		for (i = 1; i < num; ++i)
 			if (!indirs[i].in_exists) {
 				ibp =
-				    getblk(vp, indirs[i].in_lbn, fs->lfs_bsize);
+				    getblk(vp, indirs[i].in_lbn, fs->lfs_bsize,
+					0, 0);
 				if (!(ibp->b_flags & (B_DONE | B_DELWRI))) {
 					if (!ISSPACE(fs, bb, curproc->p_ucred)){
 						ibp->b_flags |= B_INVAL;
