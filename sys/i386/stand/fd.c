@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fd.c	7.1 (Berkeley) 04/28/91
+ *	@(#)fd.c	7.2 (Berkeley) 05/04/91
  */
 
 /****************************************************************************/
@@ -146,7 +146,7 @@ printf("fdio ");
 	cyl = blknum / (2 * sectrac);
 	numretry = NUMRETRY;
 
-	if (func == WRITE) bcopy(address,bounce,FDBLK);
+	if (func == F_WRITE) bcopy(address,bounce,FDBLK);
 
 retry:
 	out_fdc(15);	/* Seek function */
@@ -169,7 +169,7 @@ retry:
 	}
 
 	/* set up transfer */
-	fd_dma(func == READ,bounce,FDBLK);
+	fd_dma(func == F_READ, bounce, FDBLK);
 	sec = blknum %  (sectrac * 2);
 	head = sec / sectrac;
 	sec = sec % sectrac + 1;
@@ -177,7 +177,7 @@ retry:
 	printf("sec %d hd %d cyl %d ", sec, head, cyl);
 #endif
 
-	if (func == READ)  out_fdc(0xE6);/* READ */
+	if (func == F_READ)  out_fdc(0xE6);/* READ */
 	else out_fdc(0xC5);		/* WRITE */
 	out_fdc(head << 2 | fd_drive);	/* head & unit */
 	out_fdc(cyl);			/* track */
@@ -203,7 +203,7 @@ retry:
 #endif
 		return -1;
 	}
-	if (func == READ) bcopy(bounce,address,FDBLK);
+	if (func == F_READ) bcopy(bounce,address,FDBLK);
 	return 0;
 }
 
