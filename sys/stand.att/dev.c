@@ -30,12 +30,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dev.c	7.12 (Berkeley) 05/04/91
+ *	@(#)dev.c	7.13 (Berkeley) 05/05/91
  */
 
-#include "sys/param.h"
-#include "stand/saio.h"			/* used from machine/stand dir */
+#include <sys/param.h>
 #include <setjmp.h>
+#include "saio.h"
 
 /*
  * NB: the value "io->i_dev", used to offset the devsw[] array in the
@@ -137,6 +137,7 @@ nodev(io)
 	struct iob *io;
 {
 	errno = EBADF;
+	return(-1);
 }
 
 /* ARGSUSED */
