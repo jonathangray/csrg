@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ns_cksum.c	7.2 (Berkeley) 12/16/90
+ *	@(#)ns_cksum.c	7.3 (Berkeley) 06/27/91
  */
 
-#include "sys/types.h"
-#include "sys/mbuf.h"
+#include "param.h"
+#include "mbuf.h"
 
 
 /*
