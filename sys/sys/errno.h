@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)errno.h	7.12 (Berkeley) 11/28/90
+ *	@(#)errno.h	7.13 (Berkeley) 02/19/91
  */
 
 #ifndef KERNEL
@@ -77,7 +77,7 @@ extern int errno;			/* global error number */
 
 /* math software */
 #define	EDOM		33		/* Numerical argument out of domain */
-#define	ERANGE		34		/* Numerical result out of range */
+#define	ERANGE		34		/* Result too large */
 
 /* non-blocking and interrupt i/o */
 #define	EAGAIN		35		/* Resource temporarily unavailable */
