@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.103 (Berkeley) 03/14/95
+ *	@(#)sendmail.h	8.104 (Berkeley) 03/21/95
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.103		03/14/95";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.104		03/21/95";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -170,8 +170,6 @@ typedef struct address ADDRESS;
 # define QPINGONSUCCESS	0x00001000	/* give return on successful delivery */
 # define QPINGONFAILURE	0x00002000	/* give return on failure */
 # define QPINGONDELAY	0x00004000	/* give return on message delay */
-# define QHAS_RET_PARAM	0x00008000	/* RCPT command had RET argument */
-# define QRET_HDRS	0x00010000	/* don't return message body */
 # define QRELAYED	0x00020000	/* relayed to non-DSN aware mailer */
 
 # define NULLADDR	((ADDRESS *) NULL)
@@ -350,6 +348,7 @@ MCI
 #define MCIF_INHEADER	0x0200		/* currently outputing header */
 #define MCIF_CVT8TO7	0x0400		/* convert from 8 to 7 bits */
 #define MCIF_DSN	0x0800		/* DSN extension supported */
+#define MCIF_8BITOK	0x1000		/* OK to send 8 bit characters */
 
 /* states */
 #define MCIS_CLOSED	0		/* no traffic on this connection */
@@ -420,7 +419,7 @@ ENVELOPE
 /* values for e_flags */
 #define EF_OLDSTYLE	0x0000001	/* use spaces (not commas) in hdrs */
 #define EF_INQUEUE	0x0000002	/* this message is fully queued */
-#define EF_NORETURN	0x0000004	/* don't return the message on error */
+#define EF_NO_BODY_RETN	0x0000004	/* omit message body on error */
 #define EF_CLRQUEUE	0x0000008	/* disk copy is no longer needed */
 #define EF_SENDRECEIPT	0x0000010	/* send a return receipt */
 #define EF_FATALERRS	0x0000020	/* fatal errors occured */
@@ -438,6 +437,7 @@ ENVELOPE
 #define EF_HAS8BIT	0x0020000	/* at least one 8-bit char in body */
 #define EF_NL_NOT_EOL	0x0040000	/* don't accept raw NL as EOLine */
 #define EF_CRLF_NOT_EOL	0x0080000	/* don't accept CR-LF as EOLine */
+#define EF_RET_PARAM	0x0100000	/* RCPT command had RET argument */
 
 EXTERN ENVELOPE	*CurEnv;	/* envelope currently being processed */
 /*
