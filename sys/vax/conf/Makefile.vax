@@ -3,7 +3,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile.vax	6.17 (Berkeley) 10/11/85
+#	@(#)Makefile.vax	6.18 (Berkeley) 02/18/86
 #
 # Makefile for 4.3 BSD
 #
