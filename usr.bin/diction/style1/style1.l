@@ -1,9 +1,15 @@
 %{
-/* break out words, output cap + word(inverted) */
+/*-
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ */
 
 #ifndef lint
-static char sccsid[] = "@(#)style1.l	4.2	(Berkeley)	82/11/06";
-#endif not lint
+static char sccsid[] = "@(#)style1.l	4.3 (Berkeley) 04/17/91";
+#endif /* not lint */
+
+/* break out words, output cap + word(inverted) */
 
 #include <stdio.h>
 #include <ctype.h>
