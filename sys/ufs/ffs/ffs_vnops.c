@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	7.87 (Berkeley) 07/07/92
+ *	@(#)ffs_vnops.c	7.88 (Berkeley) 07/12/92
  */
 
 #include <sys/param.h>
@@ -239,6 +239,8 @@ ffs_read(ap)
 	if (uio->uio_resid == 0)
 		return (0);
 	fs = ip->i_fs;
+	if ((u_quad_t)uio->uio_offset > fs->fs_maxfilesize)
+		return (EFBIG);
 	ip->i_flag |= IACC;
 	do {
 		lbn = lblkno(fs, uio->uio_offset);
