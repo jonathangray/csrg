@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_bio.c	7.10 (Berkeley) 05/15/92
+ *	@(#)lfs_bio.c	7.11 (Berkeley) 06/04/92
  */
 
 #include <sys/param.h>
@@ -60,6 +60,7 @@ int
 lfs_bwrite (ap)
 	struct vop_bwrite_args *ap;
 {
+	register struct buf *bp = ap->a_bp;
 	int s;
 #ifdef VERBOSE
 printf("lfs_bwrite\n");
@@ -73,21 +74,21 @@ printf("lfs_bwrite\n");
 	 * getnewbuf() would try to reclaim the buffers using bawrite, which
 	 * isn't going to work.
 	 */
-	if (!(ap->a_bp->b_flags & B_LOCKED)) {
+	if (!(bp->b_flags & B_LOCKED)) {
 		++locked_queue_count;
-		ap->a_bp->b_flags |= B_DELWRI | B_LOCKED;
-		ap->a_bp->b_flags &= ~(B_READ | B_DONE | B_ERROR);
+		bp->b_flags |= B_DELWRI | B_LOCKED;
+		bp->b_flags &= ~(B_READ | B_DONE | B_ERROR);
 		s = splbio();
 #define	PMAP_BUG_FIX_HACK
 #ifdef PMAP_BUG_FIX_HACK
 		if (((struct ufsmount *)
-		    (ap->a_bp->b_vp->v_mount->mnt_data))->um_lfs->lfs_ivnode !=
-		    ap->a_bp->b_vp)
+		    (bp->b_vp->v_mount->mnt_data))->um_lfs->lfs_ivnode !=
+		    bp->b_vp)
 #endif
-		reassignbuf(ap->a_bp, ap->a_bp->b_vp);
+		reassignbuf(bp, bp->b_vp);
 		splx(s);
 	}
-	brelse(ap->a_bp);
+	brelse(bp);
 	return (0);
 }
 
