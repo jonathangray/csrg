@@ -29,10 +29,10 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)0.t	5.2 (Berkeley) 05/14/93
+.\"	@(#)0.t	5.3 (Berkeley) 06/05/93
 .\"
-.EH 'PS1:8-%''Advanced 4.4BSD IPC Tutorial'
-.OH 'Advanced 4.4BSD IPC Tutorial''PS1:8-%'
+.EH 'PSD:21-%''Advanced 4.4BSD IPC Tutorial'
+.OH 'Advanced 4.4BSD IPC Tutorial''PSD:21-%'
 .ds lq ``
 .ds rq ''
 .de DT
