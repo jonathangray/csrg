@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vfsops.c	7.60 (Berkeley) 07/02/92
+ *	@(#)ufs_vfsops.c	7.61 (Berkeley) 07/13/92
  */
 
 #include <sys/param.h>
@@ -38,11 +38,12 @@
 #include <sys/proc.h>
 #include <sys/buf.h>
 #include <sys/vnode.h>
-#include <sys/specdev.h>
 #include <sys/socket.h>
 #include <sys/malloc.h>
 #include <sys/mbuf.h>
 #include <netinet/in.h>
+
+#include <miscfs/specfs/specdev.h>
 #include "ioctl.h"
 #include "disklabel.h"
 #include "stat.h"
