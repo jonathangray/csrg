@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)2.4.t	8.2 (Berkeley) 05/16/94
+.\"	@(#)2.4.t	8.3 (Berkeley) 05/20/94
 .\"
 .Sh 2 "Terminals and Devices
 .Sh 3 "Terminals
@@ -44,6 +44,25 @@ as well as a collection of terminal specific
 operations,
 to control input character interpretation and editing,
 and output format and delays.
+.PP
+A terminal may be used as a controlling terminal (login terminal)
+for a login session.
+A controlling terminal is associated with a session (see section
+.Xr 1.1.4 ).
+A controlling terminal has a foreground process group, which must be
+a member of the session with which the terminal is associated.
+Members of the foreground process group are allowed to read from and write to
+the terminal and change the terminal settings; other process groups from
+the session may be stopped upon attempts to do these operations.
+.PP
+A session leader allocates a terminal
+as the controlling terminal for its session using the ioctl
+.DS
+ioctl(fd, TIOCSCTTY, NULL);
+int fd;
+.DE
+.Fn
+Only a session leader may acquire a controlling terminal.
 .Sh 4 "Terminal input
 .PP
 Terminals are handled according to the underlying communication
@@ -140,7 +159,7 @@ tapes, but may represent any random-access device.
 The system performs read-modify-write type buffering actions on block
 devices to allow them to be read and written in a totally random
 access fashion like ordinary files.
-Filesystems are normally created on block devices.
+Filesystems are normally mounted on block devices.
 .Sh 3 "Unstructured devices
 .PP
 Unstructured devices are those devices which
