@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)sem.c	5.22 (Berkeley) 11/06/91";
+static char sccsid[] = "@(#)sem.c	5.23 (Berkeley) 05/22/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -73,6 +73,10 @@ execute(t, wanttty, pipein, pipeout)
     static sigset_t ocsigmask;
     static int onosigchld = 0;
     static int nosigchld = 0;
+
+    UNREGISTER(forked);
+    UNREGISTER(bifunc);
+    UNREGISTER(wanttty);
 
     if (t == 0)
 	return;
@@ -188,9 +192,9 @@ execute(t, wanttty, pipein, pipeout)
 		       bifunc->bfunct == dopushd ||
 		       bifunc->bfunct == dopopd))
 	    t->t_dflg &= ~(F_NICE);
-	if (((t->t_dflg & F_TIME) || (t->t_dflg & F_NOFORK) == 0 &&
+	if (((t->t_dflg & F_TIME) || ((t->t_dflg & F_NOFORK) == 0 &&
 	     (!bifunc || t->t_dflg &
-	      (F_PIPEOUT | F_AMPERSAND | F_NICE | F_NOHUP))) ||
+	      (F_PIPEOUT | F_AMPERSAND | F_NICE | F_NOHUP)))) ||
 	/*
 	 * We have to fork for eval too.
 	 */
@@ -295,7 +299,7 @@ execute(t, wanttty, pipein, pipeout)
 			ignint =
 			    (tpgrp == -1 &&
 			     (t->t_dflg & F_NOINTERRUPT))
-			    || gointr && eq(gointr, STRminus);
+			    || (gointr && eq(gointr, STRminus));
 		    pgrp = pcurrjob ? pcurrjob->p_jobid : getpid();
 		    child++;
 		    if (setintr) {
@@ -447,11 +451,11 @@ int i;
 {
     register Char **v;
 
-    if (v = gargv) {
+    if ((v = gargv) != NULL) {
 	gargv = 0;
 	xfree((ptr_t) v);
     }
-    if (v = pargv) {
+    if ((v = pargv) != NULL) {
 	pargv = 0;
 	xfree((ptr_t) v);
     }
