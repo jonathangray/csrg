@@ -38,9 +38,9 @@
 
 #ifndef lint
 #ifdef DAEMON
-static char sccsid[] = "@(#)daemon.c	5.51 (Berkeley) 11/14/92 (with daemon mode)";
+static char sccsid[] = "@(#)daemon.c	5.52 (Berkeley) 11/15/92 (with daemon mode)";
 #else
-static char sccsid[] = "@(#)daemon.c	5.51 (Berkeley) 11/14/92 (without daemon mode)";
+static char sccsid[] = "@(#)daemon.c	5.52 (Berkeley) 11/15/92 (without daemon mode)";
 #endif
 #endif /* not lint */
 
@@ -78,9 +78,8 @@ static char sccsid[] = "@(#)daemon.c	5.51 (Berkeley) 11/14/92 (without daemon mo
 **		appropriate for communication.  Returns zero on
 **		success, else an exit status describing the
 **		error.
-**	maphostname(hbuf, hbufsize, avp)
-**		Convert the entry in hbuf into a canonical form.  It
-**		may not be larger than hbufsize.
+**	maphostname(map, hbuf, hbufsiz, avp)
+**		Convert the entry in hbuf into a canonical form.
 */
 
 static FILE	*MailPort;	/* port that mail comes in on */
@@ -423,6 +422,7 @@ myhostname(hostbuf, size)
 **  MAPHOSTNAME -- turn a hostname into canonical form
 **
 **	Parameters:
+**		map -- a pointer to this map (unused).
 **		hbuf -- a buffer containing a hostname.
 **		hbsize -- the size of hbuf.
 **		avp -- unused -- for compatibility with other mapping
@@ -439,17 +439,19 @@ myhostname(hostbuf, size)
 */
 
 char *
-maphostname(hbuf, hbsize, avp)
+maphostname(map, hbuf, hbsize, avp)
+	MAP *map;
 	char *hbuf;
 	int hbsize;
 	char **avp;
 {
 	register struct hostent *hp;
 	u_long in_addr;
-	char ptr[256], *cp;
+	char *cp;
 	struct hostent *gethostbyaddr();
 
-	/* allow room for trailing dot on correct match */
+	/* allow room for null & trailing dot on correct match */
+	hbsize--;
 	if (ConfigLevel >= 2)
 		hbsize--;
 
@@ -479,17 +481,17 @@ maphostname(hbuf, hbsize, avp)
 		else
 			return NULL;
 	}
-	if ((cp = strchr(strcpy(ptr, hbuf), ']')) == NULL)
+	if ((cp = strchr(hbuf, ']')) == NULL)
 		return (NULL);
 	*cp = '\0';
-	in_addr = inet_addr(&ptr[1]);
+	in_addr = inet_addr(&hbuf[1]);
 	hp = gethostbyaddr((char *)&in_addr, sizeof(struct in_addr), AF_INET);
 	if (hp == NULL)
 		return (NULL);
 
 	/* found a match -- copy and dot terminate */
-	if (strlen(hp->h_name) >= hbsize)
-		hp->h_name[hbsize - 1] = '\0';
+	if (strlen(hp->h_name) > hbsize)
+		hp->h_name[hbsize] = '\0';
 	(void) strcpy(hbuf, hp->h_name);
 	if (ConfigLevel >= 2)
 		(void) strcat(hbuf, ".");
@@ -528,8 +530,8 @@ myhostname(hostbuf, size)
 **  MAPHOSTNAME -- turn a hostname into canonical form
 **
 **	Parameters:
+**		map -- a pointer to the database map.
 **		hbuf -- a buffer containing a hostname.
-**		hbsize -- the size of hbuf.
 **		avp -- a pointer to a (cf file defined) argument vector.
 **
 **	Returns:
@@ -545,7 +547,8 @@ myhostname(hostbuf, size)
 
 /*ARGSUSED*/
 char *
-maphostname(hbuf, hbsize, avp)
+maphostname(map, hbuf, hbsize, avp)
+	MAP *map;
 	char *hbuf;
 	int hbsize;
 	char **avp;
