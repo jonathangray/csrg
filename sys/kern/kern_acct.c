@@ -11,7 +11,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_acct.c	8.7 (Berkeley) 02/14/95
+ *	@(#)kern_acct.c	8.8 (Berkeley) 05/14/95
  */
 
 #include <sys/param.h>
@@ -85,7 +85,7 @@ acct(p, uap, retval)
 	if (error = vn_open(&nd, FWRITE, 0644))
 		return (error);
 	vp = nd.ni_vp;
-	VOP_UNLOCK(vp);
+	VOP_UNLOCK(vp, 0, p);
 	if (vp->v_type != VREG) {
 		(void) vn_close(vp, FWRITE, p->p_ucred, p);
 		return (EACCES);
