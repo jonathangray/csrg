@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.79 (Berkeley) 01/22/94
+ *	@(#)conf.h	8.80 (Berkeley) 01/26/94
  */
 
 /*
@@ -539,9 +539,6 @@ extern void		*malloc();
 
 #ifdef __linux__
 # define BSD		1	/* pretend to be BSD based today */
-# ifndef HASFLOCK
-#  define HASFLOCK	0	/* don't have a functioning flock(2) */
-# endif
 # undef  NEEDVPRINTF	1	/* need a replacement for vprintf(3) */
 # define NEEDGETOPT	1	/* need a replacement for getopt(3) */
 # define HASUNSETENV	1	/* has unsetenv(3) call */
