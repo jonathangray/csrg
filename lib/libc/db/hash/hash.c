@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)hash.c	5.2 (Berkeley) 02/14/91";
+static char sccsid[] = "@(#)hash.c	5.3 (Berkeley) 02/19/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -141,6 +141,7 @@ HASHINFO	*info;		/* Special directives for create */
 	/* calloc should set errno */
 	return(0);
     }
+    hashp->fp = -1;
     /* 
 	Select flags relevant to us.
 	Even if user wants write only, we need to be able to read 
@@ -232,7 +233,7 @@ HASHINFO	*info;		/* Special directives for create */
     }
 
     hashp->new_file = new_table;
-    hashp->save_file = (file != NULL);
+    hashp->save_file = file && !(hashp->flags&O_RDONLY);
     hashp->cbucket = -1;
     if ( !(dbp = (DB *)malloc ( sizeof (DB) )) ) {
 	save_errno = errno;
@@ -272,7 +273,6 @@ HASHINFO	*info;		/* Special directives for create */
 error2:
     (void)hdestroy();
     errno = save_errno;
-    hashp->errno = errno;
     return ( (DB *)NULL );
 
 error1:
@@ -281,7 +281,6 @@ error1:
 error0:
     free ( hashp );
     errno = save_errno;
-    hashp->errno = errno;
     return ( (DB *) NULL );
 }
 
@@ -289,11 +288,15 @@ static int
 hash_close (dbp)
 DB	*dbp;
 {
+	int	retval;
+
 	if ( !dbp ) {
 	    return(ERROR);
 	}
 	hashp = (HTAB *)dbp->internal;
-	return (hdestroy());
+	retval = hdestroy();
+	(void)free ( dbp );
+	return ( retval );
 }
 
 
@@ -448,7 +451,9 @@ hdestroy()
 		if (flush_meta() && !save_errno) {
 		    save_errno = errno;
 		}
-		if ( hashp->save_file ) (void)close (hashp->fp);
+		if ( hashp->fp != -1 ) {
+			(void)close (hashp->fp);
+		}
 		(void)free(hashp);
 		hashp = NULL;
 	}
@@ -606,6 +611,7 @@ DBT *key, *val;
 	register	int		size;
 	register	char	*kp;
 	BUFHEAD	*bufp;
+	BUFHEAD	*save_bufp;
 	u_short	pageno;
 
 #ifdef HASH_STATISTICS
@@ -614,9 +620,12 @@ DBT *key, *val;
 
 	size = key->size;
 	kp = key->data;
-	rbufp = __get_buf ( __call_hash(key->data, size), NULL, 0 );
+	rbufp = __get_buf ( __call_hash(kp, size), NULL, 0 );
 	if ( !rbufp ) return(ERROR);
+	save_bufp = rbufp;
 
+	/* Pin the bucket chain */
+	rbufp->flags |= BUF_PIN;
 	for ( bp = (u_short *)rbufp->page, n = *bp++, ndx = 1; ndx < n;  ) {
 	    if ( bp[1] >= REAL_KEY ) {
 		/* Real key/data pair */
@@ -632,7 +641,10 @@ DBT *key, *val;
 	        ndx += 2;
 	    } else if ( bp[1] == OVFLPAGE ) {
 		rbufp = __get_buf ( *bp, rbufp, 0 );
-		if ( !rbufp ) return (ERROR);
+		if ( !rbufp ) {
+		    save_bufp->flags &= ~BUF_PIN;
+		    return (ERROR);
+		}
 		/* FOR LOOP INIT */
 		bp = (u_short *)rbufp->page;
 		n = *bp++;
@@ -649,13 +661,17 @@ DBT *key, *val;
 			break;	/* FOR */
 		    }
 		    rbufp = __get_buf ( pageno, bufp, 0 );
-		    if ( !rbufp ) return (ERROR);
+		    if ( !rbufp ) {
+			save_bufp->flags &= ~BUF_PIN;
+			return (ERROR);
+		    }
 		    /* FOR LOOP INIT */
 		    bp = (u_short *)rbufp->page;
 		    n = *bp++;
 		    ndx = 1;
 		    off = hashp->BSIZE;
 		} else  {
+		    save_bufp->flags &= ~BUF_PIN;
 		    return(ERROR);
 		}
 	    } 
@@ -666,21 +682,23 @@ DBT *key, *val;
 	    case HASH_PUT:
 	    case HASH_PUTNEW:
 		if (__addel(rbufp, key, val)) {
+		    save_bufp->flags &= ~BUF_PIN;
 		    return(ERROR);
 		} else {
+		    save_bufp->flags &= ~BUF_PIN;
 		    return(SUCCESS);
 		}
 	    case HASH_GET:
-		return ( ABNORMAL );
 	    case HASH_DELETE:
-		return ( ABNORMAL );
 	    default:
+		save_bufp->flags &= ~BUF_PIN;
 		return(ABNORMAL);
 	}
 
 found:
 	switch (action) {
 	    case HASH_PUTNEW:
+		save_bufp->flags &= ~BUF_PIN;
 		return(ABNORMAL);
 	    case HASH_GET:
 		bp = (u_short *)rbufp->page;
@@ -691,13 +709,16 @@ found:
 		}
 		break;
 	    case HASH_PUT:
-		if (__delpair (rbufp, ndx))return(ERROR);
-		if (__addel (rbufp, key, val)) return(ERROR);
+		if ((__delpair (rbufp, ndx)) || (__addel (rbufp, key, val)) ) {
+		    save_bufp->flags &= ~BUF_PIN;
+		    return(ERROR);
+		}
 		break;
 	    case HASH_DELETE:
 		if (__delpair (rbufp, ndx))return(ERROR);
 		break;
 	}
+	save_bufp->flags &= ~BUF_PIN;
 	return (SUCCESS);
 }
 
@@ -709,6 +730,7 @@ int flag;
 {
 	register	int bucket;
 	register	BUFHEAD	*bufp;
+	BUFHEAD	*save_bufp;
 	u_short	*bp;
 	u_short	ndx;
 	u_short	pageno;
