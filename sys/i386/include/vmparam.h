@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vmparam.h	5.6 (Berkeley) 04/15/91
+ *	@(#)vmparam.h	5.7 (Berkeley) 04/15/91
  */
 
 
@@ -53,10 +53,10 @@
  * Immediately after the user structure is the kernal address space.
  */
 #define	USRTEXT		0
-#define	USRSTACK	0xFDFFE000	/* Sysbase - UPAGES*NBPG */
-#define	BTOPUSRSTACK	(0xFE000-(UPAGES))	/* btop(USRSTACK) */
+#define	USRSTACK	0xFDBFE000
+#define	BTOPUSRSTACK	(0xFDC00-(UPAGES))	/* btop(USRSTACK) */
 
-#define P1PAGES		0xFE000
+#define P1PAGES		0xFDC00
 #define	LOWPAGES	0
 #define HIGHPAGES	UPAGES
 
@@ -202,9 +202,14 @@
 
 /* user/kernel map constants */
 #define VM_MIN_ADDRESS		((vm_offset_t)0)
-#define VM_MAX_ADDRESS		((vm_offset_t)0xFFFFF000)
-#define VM_MIN_KERNEL_ADDRESS	((vm_offset_t)0xFE000000)
-#define VM_MAX_KERNEL_ADDRESS	((vm_offset_t)0xFFFFF000)
+#define UPT_MIN_ADDRESS		((vm_offset_t)0xFDC00000)
+#define UPT_MAX_ADDRESS		((vm_offset_t)0xFDFF7000)
+#define VM_MAX_ADDRESS		UPT_MAX_ADDRESS
+#define VM_MIN_KERNEL_ADDRESS	((vm_offset_t)0xFDFF7000)
+#define UPDT			VM_MIN_KERNEL_ADDRESS
+#define KPT_MIN_ADDRESS		((vm_offset_t)0xFDFF8000)
+#define KPT_MAX_ADDRESS		((vm_offset_t)0xFDFFF000)
+#define VM_MAX_KERNEL_ADDRESS	((vm_offset_t)0xFF7FF000)
 
 /* virtual sizes (bytes) for various kernel submaps */
 #define VM_MBUF_SIZE		(NMBCLUSTERS*MCLBYTES)
@@ -225,6 +230,7 @@
 #define	I386_CR3PAT	0x0
 #endif
 
+#ifdef notyet
 #define _cr3() ({u_long rtn; \
 	asm (" movl %%cr3,%%eax; movl %%eax,%0 " \
 		: "=g" (rtn) \
@@ -248,3 +254,4 @@
 		: "g" (val) \
 		: "ax"); \
 })
+#endif
