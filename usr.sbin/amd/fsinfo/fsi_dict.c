@@ -1,6 +1,4 @@
 /*
- * $Id: fsi_dict.c,v 5.2 90/10/21 22:34:21 jsp Exp $
- *
  * Copyright (c) 1989 Jan-Simon Pendry
  * Copyright (c) 1989 Imperial College of Science, Technology & Medicine
  * Copyright (c) 1989 The Regents of the University of California.
@@ -37,7 +35,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fsi_dict.c	5.2 (Berkeley) 03/17/91
+ *	@(#)fsi_dict.c	5.3 (Berkeley) 05/12/91
+ *
+ * $Id: fsi_dict.c,v 5.2.1.1 91/05/07 22:19:08 jsp Alpha $
+ *
  */
 
 /*
