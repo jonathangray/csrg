@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)dirs.c	5.13 (Berkeley) 02/22/91";
+static char sccsid[] = "@(#)dirs.c	5.14 (Berkeley) 02/22/91";
 #endif /* not lint */
 
 #include "restore.h"
@@ -90,6 +90,7 @@ static FILE	*df, *mf;
 static DIR	*dirp;
 static char	dirfile[32] = "#";	/* No file */
 static char	modefile[32] = "#";	/* No file */
+static char	dot[2] = ".";		/* So it can be modified */
 extern ino_t	search();
 struct direct 	*rst_readdir();
 extern void 	rst_seekdir();
@@ -154,7 +155,7 @@ extractdirs(genmode)
 				perror("opendirfile");
 			if (mf != NULL)
 				(void) fclose(mf);
-			i = dirlookup(".");
+			i = dirlookup(dot);
 			if (i == 0)
 				panic("Root directory is not on tape\n");
 			return;
