@@ -30,11 +30,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kernel.h	8.1 (Berkeley) 06/02/93
+ *	@(#)kernel.h	8.2 (Berkeley) 11/30/93
  */
 
 /* Global variables for the kernel. */
-long rmalloc();
 
 /* 1.1 */
 extern long hostid;
