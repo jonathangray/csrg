@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: cons.c 1.5 89/08/22$
  *
- *	@(#)cons.c	7.1 (Berkeley) 05/08/90
+ *	@(#)cons.c	7.2 (Berkeley) 05/25/90
  */
 
 #include "param.h"
@@ -51,6 +51,9 @@ int	iteprobe(), iteinit(), itegetchar(), iteputchar();
 #ifdef DCACONSOLE
 int	dcaprobe(), dcainit(), dcagetchar(), dcaputchar();
 #endif
+#ifdef DCMCONSOLE
+int	dcmprobe(), dcminit(), dcmgetchar(), dcmputchar();
+#endif
 
 struct consdev constab[] = {
 #ifdef ITECONSOLE
@@ -58,6 +61,9 @@ struct consdev constab[] = {
 #endif
 #ifdef DCACONSOLE
 	{ dcaprobe,	dcainit,	dcagetchar,	dcaputchar },
+#endif
+#ifdef DCMCONSOLE
+	{ dcmprobe,	dcminit,	dcmgetchar,	dcmputchar },
 #endif
 	{ 0 },
 };
