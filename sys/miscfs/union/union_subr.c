@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_subr.c	1.3 (Berkeley) 02/01/94
+ *	@(#)union_subr.c	1.4 (Berkeley) 02/03/94
  */
 
 #include <sys/param.h>
@@ -45,6 +45,10 @@
 #include <sys/namei.h>
 #include <sys/malloc.h>
 #include "union.h" /*<miscfs/union/union.h>*/
+
+#ifdef DIAGNOSTIC
+#include <sys/proc.h>
+#endif
 
 static struct union_node *unhead;
 static int unvplock;
@@ -86,9 +90,10 @@ union_init()
  * the vnode free list.
  */
 int
-union_allocvp(vpp, mp, dvp, cnp, uppervp, lowervp)
+union_allocvp(vpp, mp, undvp, dvp, cnp, uppervp, lowervp)
 	struct vnode **vpp;
 	struct mount *mp;
+	struct vnode *undvp;
 	struct vnode *dvp;		/* may be null */
 	struct componentname *cnp;	/* may be null */
 	struct vnode *uppervp;		/* may be null */
@@ -114,13 +119,21 @@ loop:
 		    (un->un_uppervp == uppervp ||
 		     un->un_uppervp == 0) &&
 		    (UNIONTOV(un)->v_mount == mp)) {
-			if (vget(un->un_vnode, 1))
+			if (vget(UNIONTOV(un), 0))
 				goto loop;
-			un->un_uppervp = uppervp;
-			if ((lowervp == 0) && un->un_lowervp)
-				vrele(un->un_lowervp);
-			un->un_lowervp = lowervp;
-			*vpp = un->un_vnode;
+			if (UNIONTOV(un) != undvp)
+				VOP_LOCK(UNIONTOV(un));
+			if (uppervp != un->un_uppervp) {
+				if (un->un_uppervp)
+					vrele(un->un_uppervp);
+				un->un_uppervp = uppervp;
+			}
+			if (lowervp != un->un_lowervp) {
+				if (un->un_lowervp)
+					vrele(un->un_lowervp);
+				un->un_lowervp = lowervp;
+			}
+			*vpp = UNIONTOV(un);
 			return (0);
 		}
 	}
@@ -148,10 +161,10 @@ loop:
 	else
 		(*vpp)->v_type = lowervp->v_type;
 	un = VTOUNION(*vpp);
+	un->un_vnode = *vpp;
 	un->un_next = 0;
 	un->un_uppervp = uppervp;
 	un->un_lowervp = lowervp;
-	un->un_vnode = *vpp;
 	un->un_flags = 0;
 	if (uppervp == 0 && cnp) {
 		un->un_path = malloc(cnp->cn_namelen+1, M_TEMP, M_WAITOK);
@@ -164,17 +177,16 @@ loop:
 		un->un_dirvp = 0;
 	}
 
-#ifdef DIAGNOSTIC
-	un->un_pid = 0;
-#endif
-
 	/* add to union vnode list */
 	for (pp = &unhead; *pp; pp = &(*pp)->un_next)
 		continue;
 	*pp = un;
 
-	if (un)
-		un->un_flags |= UN_LOCKED;
+	un->un_flags |= UN_LOCKED;
+
+#ifdef DIAGNOSTIC
+	un->un_pid = curproc->p_pid;
+#endif
 
 	if (xlowervp)
 		vrele(xlowervp);
