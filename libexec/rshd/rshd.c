@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)rshd.c	5.31 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)rshd.c	5.32 (Berkeley) 06/18/90";
 #endif /* not lint */
 
 /* From:
@@ -655,9 +655,5 @@ topdomain(h)
 
 usage()
 {
-#ifdef	KERBEROS
-	syslog(LOG_ERR, "usage: rshd [-aln]");
-#else
-	syslog(LOG_ERR, "usage: rshd [-alknvx]");
-#endif
+	syslog(LOG_ERR, "usage: rshd [-%s]", OPTIONS);
 }
