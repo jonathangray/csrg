@@ -1,6 +1,6 @@
 /* Copyright (c) 1981 Regents of the University of California */
 
-char version[] = "@(#)main.c 1.3 10/31/81";
+char version[] = "@(#)main.c 1.4 11/01/81";
 
 /*	Modified to include h option (recursively extract all files within
  *	a subtree) and m option (recreate the heirarchical structure of
