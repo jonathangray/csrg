@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)lpd.c	8.5 (Berkeley) 04/27/95";
+static char sccsid[] = "@(#)lpd.c	8.6 (Berkeley) 04/28/95";
 #endif /* not lint */
 
 /*
@@ -77,6 +77,7 @@ static char sccsid[] = "@(#)lpd.c	8.5 (Berkeley) 04/27/95";
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <sys/stat.h>
+#include <sys/file.h>
 #include <netinet/in.h>
 
 #include <netdb.h>
@@ -429,7 +430,7 @@ startup()
 	 * Restart the daemons.
 	 */
 	while (cgetnext(&buf, printcapdb) > 0) {
-		if (ckqueue() <= 0 ) {
+		if (ckqueue() <= 0) {
 			free(buf);
 			continue;	/* no work to do for this printer */
 		}
