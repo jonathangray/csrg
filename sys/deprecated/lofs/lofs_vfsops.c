@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lofs_vfsops.c	1.2 (Berkeley) 06/18/92
+ *	@(#)lofs_vfsops.c	1.3 (Berkeley) 07/12/92
  *
  * $Id: lofs_vfsops.c,v 1.9 1992/05/30 10:26:24 jsp Exp jsp $
  */
@@ -63,7 +63,6 @@ lofs_mount(mp, path, data, ndp, p)
 	struct nameidata *ndp;
 	struct proc *p;
 {
-	USES_VOP_UNLOCK;
 	int error = 0;
 	struct lofs_args args;
 	struct vnode *vp;
@@ -209,9 +208,9 @@ lofs_unmount(mp, mntflags, p)
 	 * ever get anything cached at this level at the
 	 * moment, but who knows...
 	 */
-	mntflushbuf(mp, 0); 
-	if (mntinvalbuf(mp, 1))
-		return (EBUSY);
+	/* mntflushbuf(mp, 0);  */
+	/* if (mntinvalbuf(mp, 1))
+		return (EBUSY); */
 	if (rootvp->v_usecount > 1)
 		return (EBUSY);
 	if (error = vflush(mp, rootvp, flags))
@@ -247,7 +246,6 @@ lofs_root(mp, vpp)
 	struct mount *mp;
 	struct vnode **vpp;
 {
-	USES_VOP_LOCK;
 	struct vnode *vp;
 
 #ifdef LOFS_DIAGNOSTIC
@@ -323,13 +321,28 @@ int waitfor;
 	return (0);
 }
 
-lofs_fhtovp(mp, fhp, setgen, vpp)
+/*
+ * LOFS flat namespace lookup.
+ * Currently unsupported.
+ */
+lofs_vget(mp, ino, vpp)
 	struct mount *mp;
-	struct fid *fhp;
-	int setgen;
+	ino_t ino;
 	struct vnode **vpp;
 {
-	return VFS_FHTOVP(VFSTOLOFS(mp)->looped_vfs, fhp, setgen, vpp);
+
+	return (EOPNOTSUPP);
+}
+
+lofs_fhtovp(mp, fhp, nam, vpp, exflagsp, credanonp)
+	register struct mount *mp;
+	struct fid *fhp;
+	struct mbuf *nam;
+	struct vnode **vpp;
+	int *exflagsp;
+	struct ucred **credanonp;
+{
+	return VFS_FHTOVP(VFSTOLOFS(mp)->looped_vfs, fhp, nam, vpp, exflagsp, credanonp);
 }
 
 lofs_vptofh(vp, fhp)
@@ -349,6 +362,7 @@ struct vfsops lofs_vfsops = {
 	lofs_quotactl,
 	lofs_statfs,
 	lofs_sync,
+	lofs_vget,
 	lofs_fhtovp,
 	lofs_vptofh,
 	lofs_init,
