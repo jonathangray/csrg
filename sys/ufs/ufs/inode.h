@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)inode.h	7.31 (Berkeley) 10/22/92
+ *	@(#)inode.h	7.32 (Berkeley) 11/14/92
  */
 
 #include <ufs/ufs/dinode.h>
@@ -132,28 +132,6 @@ struct indir {
 /* Convert between inode pointers and vnode pointers. */
 #define VTOI(vp)	((struct inode *)(vp)->v_data)
 #define ITOV(ip)	((ip)->i_vnode)
-
-/* Lock and unlock inodes. */
-#ifdef notdef
-#define	ILOCK(ip) { \
-	while ((ip)->i_flag & ILOCKED) { \
-		(ip)->i_flag |= IWANT; \
-		(void) sleep((caddr_t)(ip), PINOD); \
-	} \
-	(ip)->i_flag |= ILOCKED; \
-}
-
-#define	IUNLOCK(ip) { \
-	(ip)->i_flag &= ~ILOCKED; \
-	if ((ip)->i_flag&IWANT) { \
-		(ip)->i_flag &= ~IWANT; \
-		wakeup((caddr_t)(ip)); \
-	} \
-}
-#else
-#define ILOCK(ip)	ufs_ilock(ip)
-#define IUNLOCK(ip)	ufs_iunlock(ip)
-#endif
 
 #define	ITIMES(ip, t1, t2) { \
 	if ((ip)->i_flag&(IUPD|IACC|ICHG)) { \
