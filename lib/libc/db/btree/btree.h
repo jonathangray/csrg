@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)btree.h	5.5 (Berkeley) 11/20/91
+ *	@(#)btree.h	5.6 (Berkeley) 12/16/91
  */
 
 #include <mpool.h>
@@ -80,7 +80,8 @@ typedef struct PAGE {
 } PAGE;
 
 /* First and next index. */
-#define	BTDATAOFF	(sizeof(PAGE) - sizeof(index_t))
+#define	BTDATAOFF	(sizeof(pgno_t) + sizeof(pgno_t) + sizeof(pgno_t) + \
+			    sizeof(u_long) + sizeof(index_t) + sizeof(index_t))
 #define	NEXTINDEX(p)	(((p)->lower - BTDATAOFF) / sizeof(index_t))
 
 /*
