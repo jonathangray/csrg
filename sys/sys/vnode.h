@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode.h	8.16 (Berkeley) 05/14/95
+ *	@(#)vnode.h	8.17 (Berkeley) 05/20/95
  */
 
 #include <sys/lock.h>
@@ -101,7 +101,8 @@ struct vnode {
 	int	v_ralen;			/* Read-ahead length */
 	daddr_t	v_maxra;			/* last readahead block */
 	struct	simplelock v_interlock;		/* lock on usecount and flag */
-	long	v_spare[6];			/* round to 128 bytes */
+	struct	lock *v_vnlock;			/* used for non-locking fs's */
+	long	v_spare[5];			/* round to 128 bytes */
 	enum	vtagtype v_tag;			/* type of underlying data */
 	void 	*v_data;			/* private data for fs */
 };
