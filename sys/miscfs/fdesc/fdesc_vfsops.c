@@ -34,9 +34,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fdesc_vfsops.c	7.2 (Berkeley) 12/01/92
+ *	@(#)fdesc_vfsops.c	7.3 (Berkeley) 04/22/93
  *
- * $Id: fdesc_vfsops.c,v 1.6 1992/05/30 10:25:59 jsp Exp jsp $
+ * $Id: fdesc_vfsops.c,v 1.9 1993/04/06 15:28:33 jsp Exp $
  */
 
 /*
@@ -56,13 +56,14 @@
 #include <sys/malloc.h>
 #include <miscfs/fdesc/fdesc.h>
 
-static u_short fdesc_mntid;
+dev_t devctty;
 
 fdesc_init()
 {
 #ifdef FDESC_DIAGNOSTIC
 	printf("fdesc_init\n");		/* printed during system boot */
 #endif
+	devctty = makedev(nchrdev, 0);
 }
 
 /*
@@ -90,7 +91,7 @@ fdesc_mount(mp, path, data, ndp, p)
 	if (mp->mnt_flag & MNT_UPDATE)
 		return (EOPNOTSUPP);
 
-	error = getnewvnode(VT_UFS, mp, fdesc_vnodeop_p, &rvp);	/* XXX */
+	error = fdesc_allocvp(Froot, FD_ROOT, mp, &rvp);
 	if (error)
 		return (error);
 
