@@ -34,7 +34,7 @@ divert(-1)
 #
 divert(0)
 
-VERSIONID(`@(#)proto.m4	8.70 (Berkeley) 04/22/95')
+VERSIONID(`@(#)proto.m4	8.71 (Berkeley) 05/04/95')
 
 MAILER(local)dnl
 
@@ -449,6 +449,7 @@ R$@			$@ <@>
 R$*			$: $1 <@>			mark addresses
 R$* < $* > $* <@>	$: $1 < $2 > $3			unmark <addr>
 R$* :: $* <@>		$: $1 :: $2			unmark host::addr
+R:include: $* <@>	$: :include: $1			unmark :include:...
 R$* : $* <@>		$: $2				strip colon if marked
 R$* <@>			$: $1				unmark
 R$* ;			$: $1				strip trailing semi
@@ -553,7 +554,7 @@ R$* < @ $j > $*			$: $1 < @ $j . > $2
 ##################################################
 S4
 
-R$*<@>			$@ $1				handle <> and list:;
+R$* <@>			$@				handle <> and list:;
 
 # strip trailing dot off possibly canonical name
 R$* < @ $+ . > $*	$1 < @ $2 > $3
