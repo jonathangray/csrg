@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	7.48 (Berkeley) 12/05/90
+ *	@(#)nfs_vnops.c	7.49 (Berkeley) 01/10/91
  */
 
 /*
@@ -471,8 +471,10 @@ nfs_lookup(vp, ndp)
 		struct vattr vattr;
 		int vpid;
 
+#ifdef PARANOID
 		if (vp == ndp->ni_rdir && ndp->ni_isdotdot)
 			panic("nfs_lookup: .. through root");
+#endif
 		vdp = ndp->ni_vp;
 		vpid = vdp->v_id;
 		/*
