@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	6.46 (Berkeley) 04/14/93
+ *	@(#)sendmail.h	6.47 (Berkeley) 04/18/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	6.46		04/14/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	6.47		04/18/93";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -57,7 +57,6 @@ static char SmailSccsId[] =	"@(#)sendmail.h	6.46		04/14/93";
 # include <string.h>
 # include <time.h>
 # include <errno.h>
-# include <sys/types.h>
 
 # include "conf.h"
 # include "conf.h"
@@ -279,7 +278,9 @@ extern struct hdrinfo	HdrInfo[];
 **	will have their own envelope.
 */
 
-struct envelope
+# define ENVELOPE	struct envelope
+
+ENVELOPE
 {
 	HDR		*e_header;	/* head of header list */
 	long		e_msgpriority;	/* adjusted priority of this message */
@@ -300,8 +301,10 @@ struct envelope
 	short		e_nsent;	/* number of sends since checkpoint */
 	short		e_sendmode;	/* message send mode */
 	short		e_errormode;	/* error return mode */
-	int		(*e_puthdr)();	/* function to put header of message */
-	int		(*e_putbody)();	/* function to put body of message */
+	int		(*e_puthdr)__P((FILE *, MAILER *, ENVELOPE *));
+					/* function to put header of message */
+	int		(*e_putbody)__P((FILE *, MAILER *, ENVELOPE *));
+					/* function to put body of message */
 	struct envelope	*e_parent;	/* the message this one encloses */
 	struct envelope *e_sibling;	/* the next envelope of interest */
 	char		*e_bodytype;	/* type of message body */
@@ -315,8 +318,6 @@ struct envelope
 	char		*e_statmsg;	/* stat msg (changes per delivery) */
 	char		*e_macro[128];	/* macro definitions */
 };
-
-typedef struct envelope	ENVELOPE;
 
 /* values for e_flags */
 #define EF_OLDSTYLE	000001		/* use spaces (not commas) in hdrs */
@@ -471,25 +472,13 @@ MCI
 **	(albeit not the implementation) comes from IDA sendmail.
 */
 
-
-/*
-**  The class of a map -- essentially the functions to call
-*/
-
 # define MAPCLASS	struct _mapclass
-
-MAPCLASS
-{
-	bool	(*map_init)();		/* initialization function */
-	char	*(*map_lookup)();	/* lookup function */
-};
+# define MAP		struct _map
 
 
 /*
 **  An actual map.
 */
-
-# define MAP		struct _map
 
 MAP
 {
@@ -500,6 +489,7 @@ MAP
 	char		*map_app;	/* to append to successful matches */
 	char		*map_domain;	/* the (nominal) NIS domain */
 	char		*map_rebuild;	/* program to run to do auto-rebuild */
+	char		**map_deplist;	/* dependency list */
 };
 
 /* bit values for map_flags */
@@ -508,6 +498,19 @@ MAP
 # define MF_OPTIONAL	00004		/* don't complain if map not found */
 # define MF_NOFOLDCASE	00010		/* don't fold case in keys */
 # define MF_MATCHONLY	00020		/* don't use the map value */
+
+
+/*
+**  The class of a map -- essentially the functions to call
+*/
+
+MAPCLASS
+{
+	bool	(*map_init)__P((MAP *, char *, char *));
+					/* initialization function */
+	char	*(*map_lookup)__P((MAP *, char *, int, char **, int *));
+					/* lookup function */
+};
 /*
 **  Symbol table definitions
 */
@@ -566,7 +569,8 @@ extern STAB	*stab();
 struct event
 {
 	time_t		ev_time;	/* time of the function call */
-	int		(*ev_func)();	/* function to call */
+	int		(*ev_func)__P((int));
+					/* function to call */
 	int		ev_arg;		/* argument to ev_func */
 	int		ev_pid;		/* pid that set this event */
 	struct event	*ev_link;	/* link to next item */
@@ -808,22 +812,16 @@ EXTERN u_char	tTdvect[100];
 **  Declarations of useful functions
 */
 
-#if defined(__STDC__) && defined(_FORGIVING_CC_)
-#define P(protos)	protos
-#else
-#define P(protos)	()
-#endif
-
-extern ADDRESS	*parseaddr P((char *, ADDRESS *, int, char, char **, ENVELOPE *));
-extern char	*xalloc P((int));
-extern bool	sameaddr P((ADDRESS *, ADDRESS *));
-extern FILE	*dfopen P((char *, char *));
-extern EVENT	*setevent P((time_t, int(*)(), int));
-extern char	*sfgets P((char *, int, FILE *, time_t));
-extern char	*queuename P((ENVELOPE *, char));
-extern time_t	curtime P(());
-extern bool	transienterror P((int));
-extern char	*errstring P((int));
+extern ADDRESS	*parseaddr __P((char *, ADDRESS *, int, char, char **, ENVELOPE *));
+extern char	*xalloc __P((int));
+extern bool	sameaddr __P((ADDRESS *, ADDRESS *));
+extern FILE	*dfopen __P((char *, char *));
+extern EVENT	*setevent __P((time_t, int(*)(), int));
+extern char	*sfgets __P((char *, int, FILE *, time_t));
+extern char	*queuename __P((ENVELOPE *, char));
+extern time_t	curtime __P(());
+extern bool	transienterror __P((int));
+extern char	*errstring __P((int));
 
 /* ellipsis is a different case though */
 #ifdef __STDC__
