@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)queue.h	7.5 (Berkeley) 10/07/92
+ *	@(#)queue.h	7.6 (Berkeley) 10/07/92
  */
 
 #ifndef	_QUEUE_H_
