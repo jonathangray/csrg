@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)eval.h	5.1 (Berkeley) 03/07/91
+ *	@(#)eval.h	5.2 (Berkeley) 04/12/91
  */
 
 extern char *commandname;	/* currently executing command */
@@ -51,7 +51,7 @@ struct backcmd {		/* result of evalbackcmd */
 
 #ifdef __STDC__
 void evalstring(char *);
-union node;
+union node;	/* BLETCH for ansi C */
 void evaltree(union node *, int);
 void evalbackcmd(union node *, struct backcmd *);
 #else
