@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)g.c	5.3 (Berkeley) 02/28/93";
+static char sccsid[] = "@(#)g.c	5.4 (Berkeley) 02/28/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -339,9 +339,9 @@ point:
 		fclose(l_fp);
 		unlink(l_template_g);
 	}
-	else {
-		ungetc("\n", inputt);
-	}
+	else
+		ungetc('\n', inputt);
+
 	GV_flag = 0;
 clean:
 	/* clean up */
