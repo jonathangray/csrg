@@ -1,7 +1,7 @@
 #ifndef lint
 	.data
 _sccsid:
-	.asciz	"@(#)doprnt.c	5.2 (Berkeley) 06/21/85"
+	.asciz	"@(#)doprnt.c	5.3 (Berkeley) 08/23/85"
 	.text
 #endif not lint
 
