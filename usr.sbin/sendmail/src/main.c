@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.138 (Berkeley) 06/21/95";
+static char sccsid[] = "@(#)main.c	8.139 (Berkeley) 06/22/95";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -1725,7 +1725,9 @@ testmodeline(line, e)
 			break;
 
 		  case 'C':
-			setclass(line[2], &line[3]);
+			mid = macid(&line[2], &delimptr);
+			if (mid != '\0')
+				setclass(mid, &line[3]);
 			break;
 
 		  case 'S':		/* dump rule set */
