@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)devname.c	5.11 (Berkeley) 02/08/91";
+static char sccsid[] = "@(#)devname.c	5.12 (Berkeley) 03/03/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -45,11 +45,12 @@ char *
 devname(dev)
 	dev_t dev;
 {
-	static DBM *db;
+	static DB *db;
 	static int failure;
-	datum dp, key;
+	DBT data, key;
 
-	if (!db && !failure && !(db = dbm_open(_PATH_DEVDB, O_RDONLY, 0))) {
+	if (!db && !failure &&
+	    !(db = hash_open(_PATH_DEVDB, O_RDONLY, 0, NULL))) {
 		(void)fprintf(stderr,
 		    "ps: no device database %s\n", _PATH_DEVDB);
 		failure = 1;
@@ -57,8 +58,7 @@ devname(dev)
 	if (failure)
 		return("??");
 
-	key.dptr = (char *)&dev;
-	key.dsize = sizeof(dev);
-	dp = dbm_fetch(db, key);
-	return(dp.dptr ? dp.dptr : "??");
+	key.data = (u_char *)&dev;
+	key.size = sizeof(dev);
+	return((db->get)(db, &key, &data, 0L) ? "??" : (char *)data.data);
 }
