@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lookup.c	7.30 (Berkeley) 04/16/91
+ *	@(#)ufs_lookup.c	7.31 (Berkeley) 04/16/91
  */
 
 #include "param.h"
@@ -44,7 +44,11 @@
 #include "fs.h"
 
 struct	nchstats nchstats;
+#ifdef DIAGNOSTIC
 int	dirchk = 1;
+#else
+int	dirchk = 0;
+#endif
 
 /*
  * Convert a component of a pathname into a pointer to a locked inode.
