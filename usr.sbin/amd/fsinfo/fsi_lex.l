@@ -1,7 +1,5 @@
 %{
 /*
- * $Id: fsi_lex.l,v 5.2.1.2 90/12/21 16:41:55 jsp Alpha $
- *
  * Copyright (c) 1989 Jan-Simon Pendry
  * Copyright (c) 1989 Imperial College of Science, Technology & Medicine
  * Copyright (c) 1989 The Regents of the University of California.
@@ -38,7 +36,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fsi_lex.l	5.2 (Berkeley) 03/17/91
+ *	@(#)fsi_lex.l	5.3 (Berkeley) 05/12/91
+ *
+ * $Id: fsi_lex.l,v 5.2.1.3 91/05/07 22:19:03 jsp Alpha $
+ *
  */
 
 /*
