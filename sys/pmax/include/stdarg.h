@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stdarg.h	7.1 (Berkeley) 11/04/92
+ *	@(#)stdarg.h	7.2 (Berkeley) 12/05/92
  */
 
 typedef char *va_list;
@@ -48,7 +48,7 @@ typedef char *va_list;
 #define	va_arg(ap, type) \
 	((type *)(ap += sizeof(type) == sizeof(int) ? sizeof(type) : \
 		sizeof(type) > sizeof(int) ? \
-		(-(int)(ap) & ~(sizeof(type) - 1)) + sizeof(type) : \
+		(-(int)(ap) & (sizeof(type) - 1)) + sizeof(type) : \
 		(abort(), 0)))[-1]
 #endif
 
