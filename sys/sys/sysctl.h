@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sysctl.h	7.14 (Berkeley) 02/28/93
+ *	@(#)sysctl.h	7.15 (Berkeley) 03/02/93
  */
 
 /*
@@ -159,7 +159,8 @@
  * to be interpreted.  The namelen parameter is the number of integers
  * in the name.
  */
-typedef int (sysctlfn) __P((int *, u_int, void *, u_int *, void *, u_int));
+typedef int (sysctlfn) __P((int *, u_int, void *, u_int *, void *, u_int,
+	struct proc *));
 int sysctl_int __P((void *, u_int *, void *, u_int, int *));
 int sysctl_rdint __P((void *, u_int *, void *, int));
 int sysctl_string __P((void *, u_int *, void *, u_int, char *, int));
