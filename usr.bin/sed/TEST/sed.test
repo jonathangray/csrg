@@ -32,7 +32,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)sed.test	5.6 (Berkeley) 08/28/92
+#	@(#)sed.test	5.7 (Berkeley) 04/18/93
 #
 
 # sed Regression Tests
@@ -378,6 +378,13 @@ s/^/ERROR/p
 5i\
 hello
 5q' lines1
+# Branch across block boundary
+	mark '5.8' ; $SED -e '
+{
+:b
+}
+s/l/m/
+tb' lines1
 }
 
 test_pattern()
