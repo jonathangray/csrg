@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	6.67 (Berkeley) 05/27/93
+ *	@(#)sendmail.h	6.68 (Berkeley) 05/27/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	6.67		05/27/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	6.68		05/27/93";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -608,7 +608,7 @@ typedef struct symtab	STAB;
 # define s_mci		s_value.sv_mci
 
 extern STAB		*stab __P((char *, int, int));
-extern void		stabapply __P((void (*)(STAB *)));
+extern void		stabapply __P((void (*)(STAB *, int)));
 
 /* opcodes to stab */
 # define ST_FIND	0	/* find entry */
