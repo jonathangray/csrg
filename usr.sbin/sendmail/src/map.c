@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)map.c	8.65 (Berkeley) 05/24/95";
+static char sccsid[] = "@(#)map.c	8.66 (Berkeley) 05/24/95";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1270,7 +1270,9 @@ nis_getcanonname(name, hbsize, statp)
 	}
 	strncpy(host_record, vp, vsize);
 	host_record[vsize] = '\0';
-	cname = get_column(host_record, 1, '\t', buf);
+	if (tTd(38, 44))
+		printf("got record `%s'\n", host_record);
+	cname = get_column(host_record, 1, '\0', buf);
 	if (cname == NULL)
 	{
 		/* this should not happen, but.... */
@@ -1976,7 +1978,6 @@ text_getcanonname(name, hbsize, statp)
 	int *statp;
 {
 	int buflen;
-	char delim;
 	int key_idx;
 	char *cname;
 	bool found;
@@ -2006,7 +2007,6 @@ text_getcanonname(name, hbsize, statp)
 #endif
 		return FALSE;
 	}
-	delim = '\t';
 	while (!found && fgets(linebuf, MAXLINE, f) != NULL)
 	{
 		char *p;
@@ -2015,7 +2015,7 @@ text_getcanonname(name, hbsize, statp)
 			continue;
 		if ((p = strchr(linebuf, '\n')) != NULL)
 			*p = '\0';
-		cname = get_column(linebuf, 1, delim, cbuf);
+		cname = get_column(linebuf, 1, '\0', cbuf);
 		if (cname != NULL && strcasecmp(name,  cname) == 0)
 		{
 			found = TRUE;
@@ -2023,7 +2023,7 @@ text_getcanonname(name, hbsize, statp)
 		}
 
 		key_idx = 2;
-		while ((p = get_column(linebuf, key_idx, delim, buf)) != NULL)
+		while ((p = get_column(linebuf, key_idx, '\0', buf)) != NULL)
 		{
 			if (strcasecmp(name, p) == 0)
 			{
