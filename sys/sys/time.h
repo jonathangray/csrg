@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)time.h	8.3 (Berkeley) 01/09/95
+ *	@(#)time.h	8.4 (Berkeley) 03/20/95
  */
 
 #ifndef _SYS_TIME_H_
@@ -51,8 +51,8 @@ struct timeval {
  * Structure defined by POSIX.4 to be like a timeval.
  */
 struct timespec {
-	int32_t	ts_sec;		/* seconds */
-	int32_t	ts_nsec;	/* and nanoseconds */
+	time_t	ts_sec;		/* seconds */
+	long	ts_nsec;	/* and nanoseconds */
 };
 
 #define	TIMEVAL_TO_TIMESPEC(tv, ts) {					\
