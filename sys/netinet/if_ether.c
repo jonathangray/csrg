@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_ether.c	7.22 (Berkeley) 05/05/92
+ *	@(#)if_ether.c	7.23 (Berkeley) 06/17/92
  */
 
 /*
@@ -467,9 +467,10 @@ reply:
 		la = arplookup(itaddr.s_addr, 0, SIN_PROXY);
 		if (la == NULL)
 			goto out;
+		rt = la->la_rt;
 		bcopy((caddr_t)ea->arp_sha, (caddr_t)ea->arp_tha,
 		    sizeof(ea->arp_sha));
-		sdl = SDL(la->la_rt->rt_gateway);
+		sdl = SDL(rt->rt_gateway);
 		bcopy(LLADDR(sdl), (caddr_t)ea->arp_sha, sizeof(ea->arp_sha));
 		sendtrailers = rt->rt_flags & RTF_USETRAILERS;
 	}
