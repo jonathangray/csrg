@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)csh.h	5.25 (Berkeley) 05/22/93
+ *	@(#)csh.h	5.26 (Berkeley) 05/23/93
  */
 
 /*
@@ -165,8 +165,7 @@ int     opgrp;			/* Initial pgrp and tty pgrp */
  * descriptors it uses away from 0,1,2.
  * Ideally these should be in units which are closed across exec's
  * (this saves work) but for version 6, this is not usually possible.
- * The desired initial values for these descriptors are defined in
- * local.h.
+ * The desired initial values for these descriptors are F{SHIN,...}.
  */
 int   SHIN;			/* Current shell input (script) */
 int   SHOUT;			/* Shell output */
