@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)scsi.c	7.1 (Berkeley) 01/07/92
+ *	@(#)scsi.c	7.2 (Berkeley) 03/29/92
  */
 
 /*
@@ -141,6 +141,12 @@ scsiPrintSense(sp, len)
 			printf("sense class 7 error 0x%x", sp->key);
 		else
 			printf("%s", Class7Errors[sp->key]);
+		if (sp->fileMark)
+			printf(", file mark seen");
+		if (sp->endOfMedia)
+			printf(", end of media seen");
+		if (sp->badBlockLen)
+			printf(", block length mis-match");
 		if (sp->valid)
 			printf(", blk %d", (sp->info1 << 24) |
 				(sp->info2 << 16) | (sp->info3 << 8) |
