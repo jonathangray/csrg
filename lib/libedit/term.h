@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)term.h	5.3 (Berkeley) 07/03/92
+ *	@(#)term.h	5.4 (Berkeley) 07/16/92
  */
 
 /*
