@@ -41,7 +41,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)ls.c	8.1 (Berkeley) 05/31/93";
+static char sccsid[] = "@(#)ls.c	5.77 (Berkeley) 06/02/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -59,8 +59,6 @@ static char sccsid[] = "@(#)ls.c	8.1 (Berkeley) 05/31/93";
 
 #include "ls.h"
 #include "extern.h"
-
-char	*getbsize __P((int *, long *));
 
 static void	 display __P((FTSENT *, FTSENT *));
 static int	 mastercmp __P((const FTSENT **, const FTSENT **));
