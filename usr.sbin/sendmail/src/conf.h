@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.190 (Berkeley) 06/15/95
+ *	@(#)conf.h	8.191 (Berkeley) 06/19/95
  */
 
 /*
@@ -183,10 +183,8 @@ extern void	hard_syslog(int, char *, ...);
 
 # ifdef V4FS
 		/* HP-UX 10.x */
-#  define _PATH_UNIX	"/stand/vmunix"
-#  ifndef _PATH_SENDMAILCF
-#   define _PATH_SENDMAILCF	"/etc/mail/sendmail.cf"
-#  endif
+#  define _PATH_UNIX		"/stand/vmunix"
+#  define _PATH_VENDOR_CF	"/etc/mail/sendmail.cf"
 #  ifndef _PATH_SENDMAILPID
 #   define _PATH_SENDMAILPID	"/etc/mail/sendmail.pid"
 #  endif
@@ -196,10 +194,8 @@ extern void	hard_syslog(int, char *, ...);
 
 # else
 		/* HP-UX 9.x */
-#  define _PATH_UNIX	"/hp-ux"
-#  ifndef _PATH_SENDMAILCF
-#   define _PATH_SENDMAILCF	"/usr/lib/sendmail.cf"
-#  endif
+#  define _PATH_UNIX		"/hp-ux"
+#  define _PATH_VENDOR_CF	"/usr/lib/sendmail.cf"
 #  ifndef IDENTPROTO
 #   define IDENTPROTO	0	/* TCP/IP implementation is broken */
 #  endif
@@ -297,11 +293,9 @@ extern void	hard_syslog(int, char *, ...);
 #  include <sys/time.h>
 #  define GIDSET_T	gid_t
 #  ifndef _PATH_UNIX
-#   define _PATH_UNIX	"/dev/ksyms"
+#   define _PATH_UNIX		"/dev/ksyms"
 #  endif
-#  ifndef _PATH_SENDMAILCF
-#   define _PATH_SENDMAILCF	"/etc/mail/sendmail.cf"
-#  endif
+#  define _PATH_VENDOR_CF	"/etc/mail/sendmail.cf"
 #  ifndef _PATH_SENDMAILPID
 #   define _PATH_SENDMAILPID	"/etc/mail/sendmail.pid"
 #  endif
@@ -422,9 +416,7 @@ extern long	dgux_inet_addr();
 
 #ifdef __PARAGON__
 # define __osf__	1	/* get OSF/1 defines below */
-# ifndef _PATH_SENDMAILCF
-#  define _PATH_SENDMAILCF	"/var/adm/sendmail/sendmail.cf"
-# endif
+# define _PATH_VENDOR_CF	"/var/adm/sendmail/sendmail.cf"
 #endif
 
 
@@ -472,9 +464,7 @@ typedef int		pid_t;
 #  undef WEXITSTATUS
 #  undef WIFEXITED
 # endif
-# ifndef _PATH_SENDMAILCF
-#  define _PATH_SENDMAILCF	"/etc/sendmail/sendmail.cf"
-# endif
+# define _PATH_VENDOR_CF	"/etc/sendmail/sendmail.cf"
 # ifndef _PATH_SENDMAILPID
 #  define _PATH_SENDMAILPID	"/etc/sendmail/sendmail.pid"
 # endif
@@ -584,9 +574,7 @@ typedef int		pid_t;
 # undef HASSETVBUF		/* don't actually have setvbuf(3) */
 # undef WEXITSTATUS
 # undef WIFEXITED
-# ifndef _PATH_SENDMAILCF
-#  define _PATH_SENDMAILCF	"/usr/lib/sendmail.cf"
-# endif
+# define _PATH_VENDOR_CF	"/usr/lib/sendmail.cf"
 # ifndef _PATH_SENDMAILPID
 #  define _PATH_SENDMAILPID	"/etc/sendmail.pid"
 # endif
@@ -610,9 +598,7 @@ typedef int		pid_t;
 # ifndef LA_TYPE
 #  define LA_TYPE	LA_FLOAT
 # endif
-# ifndef _PATH_SENDMAILCF
-#  define _PATH_SENDMAILCF	"/usr/lib/sendmail.cf"
-# endif
+# define _PATH_VENDOR_CF	"/usr/lib/sendmail.cf"
 # ifndef IDENTPROTO
 #  define IDENTPROTO	0	/* TCP/IP implementation is broken */
 # endif
@@ -635,10 +621,8 @@ extern int		errno;
 # define _SCO_unix_
 # define HASSETREUID	1	/* has setreuid(2) call */
 # define NEEDFSYNC	1	/* needs the fsync(2) call stub */
-# define _PATH_UNIX	"/unix"
-# ifndef _PATH_SENDMAILCF
-#  define _PATH_SENDMAILCF	"/usr/lib/sendmail.cf"
-# endif
+# define _PATH_UNIX		"/unix"
+# define _PATH_VENDOR_CF	"/usr/lib/sendmail.cf"
 # ifndef _PATH_SENDMAILPID
 #  define _PATH_SENDMAILPID	"/etc/sendmail.pid"
 # endif
@@ -679,10 +663,8 @@ extern int		errno;
 # define LA_TYPE	LA_SHORT
 # define SFS_TYPE	SFS_STATFS	/* use <sys/statfs.h> statfs() impl */
 # define SFS_BAVAIL	f_bfree		/* alternate field name */
-# define _PATH_UNIX	"/unix"
-# ifndef _PATH_SENDMAILCF
-#  define _PATH_SENDMAILCF	"/usr/lib/sendmail.cf"
-# endif
+# define _PATH_UNIX		"/unix"
+# define _PATH_VENDOR_CF	"/usr/lib/sendmail.cf"
 # ifndef _PATH_SENDMAILPID
 #  define _PATH_SENDMAILPID	"/etc/sendmail.pid"
 # endif
@@ -736,9 +718,7 @@ typedef short		pid_t;
 # define IP_SRCROUTE	0	/* Something is broken with getsockopt() */
 # define LA_TYPE	LA_FLOAT
 # define SFS_TYPE	SFS_VFS	/* use <sys/vfs.h> statfs() implementation */
-# ifndef _PATH_SENDMAILCF
-#  define _PATH_SENDMAILCF	"/usr/lib/sendmail.cf"
-# endif
+# define _PATH_VENDOR_CF	"/usr/lib/sendmail.cf"
 # ifndef S_IREAD
 #  define S_IREAD	_S_IREAD
 #  define S_IWRITE	_S_IWRITE
@@ -858,9 +838,6 @@ extern void		*malloc();
 #  define IDENTPROTO	0	/* TCP/IP implementation is broken */
 # endif
 # define FORK		fork
-# ifndef _PATH_SENDMAILCF
-#  define _PATH_SENDMAILCF	"/usr/lib/sendmail.cf"
-# endif
 # ifndef LA_TYPE
 #  define LA_TYPE	LA_INT
 #  define FSHIFT	16
@@ -869,8 +846,9 @@ extern void		*malloc();
 # define SFS_TYPE	SFS_VFS	/* use <sys/vfs.h> statfs() implementation */
 # define TZ_TYPE	TZ_TZNAME
 # ifndef _PATH_UNIX
-#  define _PATH_UNIX	"/unix"		/* should be in <paths.h> */
+#  define _PATH_UNIX		"/unix"		/* should be in <paths.h> */
 # endif
+# define _PATH_VENDOR_CF	"/usr/lib/sendmail.cf"
 # undef WIFEXITED
 # undef WEXITSTATUS
 #endif
@@ -950,11 +928,9 @@ typedef int		pid_t;
 # endif
 
 # ifndef _PATH_UNIX
-#  define _PATH_UNIX	"/dynix"
+#  define _PATH_UNIX		"/dynix"
 # endif
-# ifndef _PATH_SENDMAILCF
-#  define _PATH_SENDMAILCF	"/usr/lib/sendmail.cf"
-# endif
+# define _PATH_VENDOR_CF	"/usr/lib/sendmail.cf"
 
 #endif
 
@@ -980,9 +956,7 @@ typedef int		pid_t;
 # ifndef IDENTPROTO
 #  define IDENTPROTO	0	/* TCP/IP implementation is broken */
 # endif
-# ifndef _PATH_SENDMAILCF
-#  define _PATH_SENDMAILCF	"/usr/lib/sendmail.cf"
-# endif
+# define _PATH_VENDOR_CF	"/usr/lib/sendmail.cf"
 # ifndef _PATH_SENDMAILPID
 #  define _PATH_SENDMAILPID	"/etc/sendmail.pid"
 # endif
@@ -1021,9 +995,7 @@ typedef int		pid_t;
 # define LA_TYPE	LA_SUBR		/* use getloadavg.c */
 # define SFS_TYPE	SFS_4ARGS	/* four argument statfs() call */
 # define SFS_BAVAIL	f_bfree		/* alternate field name */
-# ifndef _PATH_SENDMAILCF
-#  define _PATH_SENDMAILCF	"/usr/lib/sendmail.cf"
-# endif
+# define _PATH_VENDOR_CF	"/usr/lib/sendmail.cf"
 # ifndef _PATH_SENDMAILPID
 #  define _PATH_SENDMAILPID	"/etc/sendmail.pid"
 # endif
@@ -1057,9 +1029,7 @@ typedef int		pid_t;
 # undef WIFEXITED
 # undef WEXITSTATUS
 # define _PATH_UNIX		"/unix"
-# ifndef _PATH_SENDMAILCF
-#  define _PATH_SENDMAILCF	"/usr/ucblib/sendmail.cf"
-# endif
+# define _PATH_VENDOR_CF	"/usr/ucblib/sendmail.cf"
 # ifndef _PATH_SENDMAILPID
 #  define _PATH_SENDMAILPID	"/usr/ucblib/sendmail.pid"
 # endif
@@ -1130,11 +1100,9 @@ typedef int		pid_t;
 #  define GIDSET_T	gid_t
 # endif
 # ifndef _PATH_UNIX
-#  define _PATH_UNIX	"/HI-UX"
+#  define _PATH_UNIX		"/HI-UX"
 # endif
-# ifndef _PATH_SENDMAILCF
-#  define _PATH_SENDMAILCF	"/usr/lib/sendmail.cf"
-# endif
+# define _PATH_VENDOR_CF	"/usr/lib/sendmail.cf"
 # ifndef IDENTPROTO
 #  define IDENTPROTO	0	/* TCP/IP implementation is broken */
 # endif
@@ -1175,10 +1143,8 @@ extern int	syslog(int, char *, ...);
 # define LA_TYPE	LA_ZERO		/* doesn't have load average */
 # define SFS_TYPE	SFS_4ARGS	/* use 4-arg statfs() */
 # define SFS_BAVAIL	f_bfree		/* alternate field name */
-# define _PATH_UNIX	"/unix"
-# ifndef _PATH_SENDMAILCF
-#  define _PATH_SENDMAILCF	"/usr/lib/sendmail.cf"
-# endif
+# define _PATH_UNIX		"/unix"
+# define _PATH_VENDOR_CF	"/usr/lib/sendmail.cf"
 #endif
 
 /*
@@ -1244,10 +1210,8 @@ typedef int		(*sigfunc_t)();
 #  ifndef SYSLOG_BUFSIZE
 #   define SYSLOG_BUFSIZE	1024
 #  endif
-#  define _PATH_UNIX  "/stand/unix"
-#  ifndef _PATH_SENDMAILCF
-#   define _PATH_SENDMAILCF	"/etc/mail/sendmail.cf"
-#  endif
+#  define _PATH_UNIX		"/stand/unix"
+#  define _PATH_VENDOR_CF	"/etc/mail/sendmail.cf"
 #  ifndef _PATH_SENDMAILPID
 #   define _PATH_SENDMAILPID	"/etc/mail/sendmail.pid"
 #  endif
@@ -1293,9 +1257,7 @@ typedef int		(*sigfunc_t)();
 # define SIGFUNC_DEFINED
 extern char	*getenv();
 extern int	errno;
-# ifndef _PATH_SENDMAILCF
-#  define _PATH_SENDMAILCF	"/usr/lib/sendmail.cf"
-# endif
+# define _PATH_VENDOR_CF	"/usr/lib/sendmail.cf"
 #endif
 
   
@@ -1363,9 +1325,7 @@ extern int	errno;
 # ifndef _PATH_UNIX
 #  define _PATH_UNIX		"/unix"
 # endif
-# ifndef _PATH_SENDMAILCF
-#  define _PATH_SENDMAILCF	"/usr/ucblib/sendmail.cf"
-# endif
+# define _PATH_VENDOR_CF	"/usr/ucblib/sendmail.cf"
 # ifndef _PATH_SENDMAILPID
 #  define _PATH_SENDMAILPID	"/usr/ucblib/sendmail.pid"
 # endif
@@ -1732,9 +1692,9 @@ typedef void		(*sigfunc_t) __P((int));
 # endif
 
 /*
-**  If we are going to link scanf anyway, use it in readcf
+**  Default to using scanf in readcf.
 */
 
-#if !defined(HASUNAME) && !defined(SCANF)
+#ifndef SCANF
 # define SCANF		1
 #endif
