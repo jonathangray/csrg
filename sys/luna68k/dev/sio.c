@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sio.c	7.4 (Berkeley) 12/10/92
+ *	@(#)sio.c	7.5 (Berkeley) 12/14/92
  */
 
 /*
@@ -89,7 +89,7 @@ int	siounitbase = 0;				/* This counter is used unit number assignment */
 
 int	siosoftCAR;
 int	sio_active;
-int	sioconsole;
+int	sioconsole = -1;
 int	siodefaultrate = TTYDEF_SPEED;
 int	siomajor = 0;
 
@@ -103,6 +103,7 @@ struct speedtab siospeedtab[] = {
 
 #define	siounit(x)		minor(x)
 
+extern	struct tty *constty;
 
 /*
  *  probe routines
@@ -261,7 +262,12 @@ siowrite(dev, uio, flag)
 	dev_t dev;
 	struct uio *uio;
 {
-	register struct tty *tp = &sio_tty[siounit(dev)];
+	register int unit = siounit(dev);
+	register struct tty *tp = &sio_tty[unit];
+
+	if ((unit == sioconsole) && constty &&
+	    (constty->t_state&(TS_CARR_ON|TS_ISOPEN))==(TS_CARR_ON|TS_ISOPEN))
+		tp = constty;
 
 	return ((*linesw[tp->t_line].l_write)(tp, uio, flag));
 }
