@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_bio.c	8.7 (Berkeley) 08/11/94
+ *	@(#)nfs_bio.c	8.8 (Berkeley) 01/09/95
  */
 
 #include <sys/param.h>
@@ -206,7 +206,8 @@ nfs_bioread(vp, uio, ioflag, cred)
 				    rabp->b_flags |= B_INVAL;
 				    brelse(rabp);
 				}
-			    }
+			    } else
+				brelse(rabp);
 			}
 		    }
 		}
@@ -311,7 +312,8 @@ again:
 				    rabp->b_flags |= B_INVAL;
 				    brelse(rabp);
 				}
-			    }
+			    } else
+				brelse(rabp);
 			}
 		}
 		on = 0;
