@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode.h	7.58 (Berkeley) 07/23/92
+ *	@(#)vnode.h	7.59 (Berkeley) 07/23/92
  */
 
 #ifndef KERNEL
@@ -340,6 +340,7 @@ struct file;
 struct mount;
 struct nameidata;
 struct proc;
+struct stat;
 struct ucred;
 struct uio;
 struct vattr;
