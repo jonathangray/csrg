@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)macro.c	6.6 (Berkeley) 02/28/93";
+static char sccsid[] = "@(#)macro.c	6.7 (Berkeley) 04/04/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -217,7 +217,7 @@ expand(s, buf, buflim, e)
 **		$x   signature (full name) of from person
 **		$y   the tty id of our terminal
 **		$z   home directory of to person
-**		$<   the return path (sender in envelope) relative to recipient
+**		$_   RFC1413 authenticated sender address
 **
 **		Macros marked with + must be defined in the
 **		configuration file and are used internally, but
