@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)bt_split.c	5.12 (Berkeley) 02/14/93";
+static char sccsid[] = "@(#)bt_split.c	5.13 (Berkeley) 02/16/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -223,7 +223,7 @@ __bt_split(t, sp, key, data, flags, ilen, skip)
 				goto err1;
 		} else {
 			if (skip < (nxtindex = NEXTINDEX(h)))
-				bcopy(h->linp + skip, h->linp + skip + 1,
+				memmove(h->linp + skip + 1, h->linp + skip,
 				    (nxtindex - skip) * sizeof(indx_t));
 			h->lower += sizeof(indx_t);
 			nosplit = 1;
@@ -234,7 +234,7 @@ __bt_split(t, sp, key, data, flags, ilen, skip)
 		case P_BINTERNAL:
 			h->linp[skip] = h->upper -= nbytes;
 			dest = (char *)h + h->linp[skip];
-			bcopy(bi, dest, nbytes);
+			memmove(dest, bi, nbytes);
 			((BINTERNAL *)dest)->pgno = rchild->pgno;
 			break;
 		case P_BLEAF:
@@ -242,7 +242,7 @@ __bt_split(t, sp, key, data, flags, ilen, skip)
 			dest = (char *)h + h->linp[skip];
 			WR_BINTERNAL(dest, nksize ? nksize : bl->ksize,
 			    rchild->pgno, bl->flags & P_BIGKEY);
-			bcopy(bl->bytes, dest, nksize ? nksize : bl->ksize);
+			memmove(dest, bl->bytes, nksize ? nksize : bl->ksize);
 			if (bl->flags & P_BIGKEY &&
 			    bt_preserve(t, *(pgno_t *)bl->bytes) == RET_ERROR)
 				goto err1;
@@ -400,7 +400,7 @@ bt_page(t, h, lp, rp, skip, ilen)
 	tp = bt_psplit(t, h, l, r, skip, ilen);
 
 	/* Move the new left page onto the old left page. */
-	bcopy(l, h, t->bt_psize);
+	memmove(h, l, t->bt_psize);
 	if (tp == l)
 		tp = h;
 	free(l);
@@ -541,7 +541,7 @@ bt_broot(t, h, l, r)
 		h->linp[1] = h->upper -= nbytes;
 		dest = (char *)h + h->upper;
 		WR_BINTERNAL(dest, bl->ksize, r->pgno, 0);
-		bcopy(bl->bytes, dest, bl->ksize);
+		memmove(dest, bl->bytes, bl->ksize);
 
 		/*
 		 * If the key is on an overflow page, mark the overflow chain
@@ -556,7 +556,7 @@ bt_broot(t, h, l, r)
 		nbytes = NBINTERNAL(bi->ksize);
 		h->linp[1] = h->upper -= nbytes;
 		dest = (char *)h + h->upper;
-		bcopy(bi, dest, nbytes);
+		memmove(dest, bi, nbytes);
 		((BINTERNAL *)dest)->pgno = r->pgno;
 		break;
 	default:
@@ -662,7 +662,7 @@ bt_psplit(t, h, l, r, pskip, ilen)
 			++nxt;
 
 			l->linp[off] = l->upper -= nbytes;
-			bcopy(src, (char *)l + l->upper, nbytes);
+			memmove((char *)l + l->upper, src, nbytes);
 		}
 
 		used += nbytes;
@@ -742,7 +742,7 @@ bt_psplit(t, h, l, r, pskip, ilen)
 		}
 		++nxt;
 		r->linp[off] = r->upper -= nbytes;
-		bcopy(src, (char *)r + r->upper, nbytes);
+		memmove((char *)r + r->upper, src, nbytes);
 	}
 	r->lower += off * sizeof(indx_t);
 
