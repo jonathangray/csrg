@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)signal.h	8.1 (Berkeley) 06/06/93
+ *	@(#)signal.h	8.2 (Berkeley) 01/03/94
  */
 
 #ifndef _USER_SIGNAL_H
@@ -41,8 +41,8 @@
 #include <sys/signal.h>
 
 #if !defined(_ANSI_SOURCE) && !defined(_POSIX_SOURCE)
-extern const char *const sys_signame[NSIG];
-extern const char *const sys_siglist[NSIG];
+extern __const char *__const sys_signame[NSIG];
+extern __const char *__const sys_siglist[NSIG];
 #endif
 
 __BEGIN_DECLS
