@@ -32,7 +32,7 @@ divert(-1)
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-VERSIONID(@(#)riscos4.5.m4	2.2 (Berkeley) 12/12/91)
+VERSIONID(`@(#)riscos4.5.m4	2.3 (Berkeley) 11/13/92')
 #
 
 divert(0)
