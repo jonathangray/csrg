@@ -35,7 +35,7 @@
  */
 
 #if !defined(lint) && !defined(SCCSID)
-static char sccsid[] = "@(#)el.c	5.2 (Berkeley) 07/03/92";
+static char sccsid[] = "@(#)el.c	5.3 (Berkeley) 03/04/93";
 #endif /* not lint && not SCCSID */
 
 /*
@@ -284,9 +284,9 @@ el_source(el, fname)
     EditLine *el;
     const char *fname;
 {
-    char path[MAXPATHLEN];
     FILE *fp;
-    char *ptr;
+    size_t len;
+    char *ptr, path[MAXPATHLEN];
 
     if (fname == NULL) {
 	fname = &elpath[1];
@@ -302,7 +302,8 @@ el_source(el, fname)
     if ((fp = fopen(fname, "r")) == NULL) 
 	return -1;
 
-    while ((ptr = fgetline(fp, NULL)) != NULL)
+    while ((ptr = fgetline(fp, &len)) != NULL)
+	ptr[len - 1] = '\0';
 	if (parse_line(el, ptr) == -1) {
 	    (void) fclose(fp);
 	    return -1;
