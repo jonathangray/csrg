@@ -1,4 +1,4 @@
-: calendar.sh 4.3 82/02/13
+: calendar.sh 4.4 82/11/07
 PATH=/bin:/usr/bin:
 tmp=/tmp/cal$$
 trap "rm -f $tmp /tmp/cal2$$"
