@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)rwhod.c	5.19 (Berkeley) 06/29/90";
+static char sccsid[] = "@(#)rwhod.c	5.20 (Berkeley) 03/02/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -99,10 +99,9 @@ int	s, utmpf, kmemf = -1;
 #define	WHDRSIZE	(sizeof (mywd) - sizeof (mywd.wd_we))
 
 extern int errno;
-int	onalrm();
 char	*strcpy(), *malloc();
 long	lseek();
-int	getkmem();
+void	getkmem(), onalrm();
 struct	in_addr inet_makeaddr();
 
 main()
@@ -158,7 +157,7 @@ main()
 	}
 	sin.sin_family = AF_INET;
 	sin.sin_port = sp->s_port;
-	if (bind(s, &sin, sizeof (sin)) < 0) {
+	if (bind(s, (struct sockaddr *)&sin, sizeof (sin)) < 0) {
 		syslog(LOG_ERR, "bind: %m");
 		exit(1);
 	}
@@ -171,7 +170,7 @@ main()
 		int cc, whod, len = sizeof (from);
 
 		cc = recvfrom(s, (char *)&wd, sizeof (struct whod), 0,
-			&from, &len);
+			(struct sockaddr *)&from, &len);
 		if (cc <= 0) {
 			if (cc < 0 && errno != EINTR)
 				syslog(LOG_WARNING, "recv: %m");
@@ -220,7 +219,7 @@ main()
 			}
 		}
 #endif
-		(void) time(&wd.wd_recvtime);
+		(void) time((time_t *)&wd.wd_recvtime);
 		(void) write(whod, (char *)&wd, cc);
 		if (fstat(whod, &st) < 0 || st.st_size > cc)
 			ftruncate(whod, cc);
@@ -252,6 +251,7 @@ int	utmpsize = 0;
 struct	utmp *utmp;
 int	alarmcount;
 
+void
 onalrm()
 {
 	register struct neighbor *np;
@@ -328,7 +328,7 @@ onalrm()
 	mywd.wd_type = WHODTYPE_STATUS;
 	for (np = neighbors; np != NULL; np = np->n_next)
 		(void) sendto(s, (char *)&mywd, cc, 0,
-			np->n_addr, np->n_addrlen);
+			(struct sockaddr *)np->n_addr, np->n_addrlen);
 	if (utmpent && chdir(_PATH_RWHODIR)) {
 		syslog(LOG_ERR, "chdir(%s): %m", _PATH_RWHODIR);
 		exit(1);
@@ -337,6 +337,7 @@ done:
 	(void) alarm(AL_INTERVAL);
 }
 
+void
 getkmem()
 {
 	static ino_t vmunixino;
