@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)def.h	8.1 (Berkeley) 06/06/93
+ *	@(#)def.h	8.2 (Berkeley) 03/21/94
  */
 
 /*
@@ -270,4 +270,7 @@ struct ignoretab {
  * useful just before closing an old file that was opened
  * for read/write.
  */
-#define trunc(stream)	ftruncate(fileno(stream), (long) ftell(stream))
+#define trunc(stream) {							\
+	(void)fflush(stream); 						\
+	(void)ftruncate(fileno(stream), (long)ftell(stream));		\
+}
