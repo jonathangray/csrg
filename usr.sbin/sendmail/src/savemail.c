@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)savemail.c	8.19 (Berkeley) 11/25/93";
+static char sccsid[] = "@(#)savemail.c	8.20 (Berkeley) 11/26/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -404,8 +404,7 @@ savemail(e)
 
 		  case ESM_PANIC:
 			/* leave the locked queue & transcript files around */
-			syserr("554 savemail: cannot save rejected email anywhere");
-			exit(EX_SOFTWARE);
+			syserr("!554 savemail: cannot save rejected email anywhere");
 		}
 	}
 }
