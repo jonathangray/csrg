@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_inode.c	7.60 (Berkeley) 04/21/92
+ *	@(#)lfs_inode.c	7.61 (Berkeley) 04/21/92
  */
 
 #include <sys/param.h>
@@ -241,10 +241,11 @@ lfs_update(vp, ta, tm, waitfor)
  */
 /* ARGSUSED */
 int
-lfs_truncate(vp, length, flags)
+lfs_truncate(vp, length, flags, cred)
 	struct vnode *vp;
 	off_t length;
 	int flags;
+	struct ucred *cred;
 {
 	register INDIR *ap;
 	register int i;
