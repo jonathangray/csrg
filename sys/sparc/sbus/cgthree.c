@@ -9,7 +9,7 @@
  * All advertising materials mentioning features or use of this software
  * must display the following acknowledgement:
  *	This product includes software developed by the University of
- *	California, Lawrence Berkeley Laboratories.
+ *	California, Lawrence Berkeley Laboratory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -39,9 +39,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cgthree.c	7.3 (Berkeley) 10/11/92
+ *	@(#)cgthree.c	7.4 (Berkeley) 04/20/93
  *
- * from: $Header: cgthree.c,v 1.5 92/06/17 06:59:31 torek Exp $
+ * from: $Header: cgthree.c,v 1.6 92/11/26 02:28:06 torek Exp $
  */
 
 /*
@@ -49,8 +49,6 @@
  *
  * Does not handle interrupts, even though they can occur.
  */
-
-#include "cgthree.h"
 
 #include <sys/param.h>
 #include <sys/buf.h>
