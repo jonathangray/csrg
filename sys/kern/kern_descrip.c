@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_descrip.c	7.32 (Berkeley) 05/14/92
+ *	@(#)kern_descrip.c	7.33 (Berkeley) 05/31/92
  */
 
 #include "param.h"
@@ -333,7 +333,7 @@ close(p, uap, retval)
  * Return status information about a file descriptor.
  */
 /* ARGSUSED */
-fstat(p, uap, retval)
+ofstat(p, uap, retval)
 	struct proc *p;
 	register struct args {
 		int	fd;
@@ -375,7 +375,7 @@ fstat(p, uap, retval)
  * Return status information about a file descriptor.
  */
 /* ARGSUSED */
-fqstat(p, uap, retval)
+fstat(p, uap, retval)
 	struct proc *p;
 	register struct args {
 		int	fd;
