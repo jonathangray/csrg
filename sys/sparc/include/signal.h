@@ -39,12 +39,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)signal.h	7.3 (Berkeley) 04/20/93
+ *	@(#)signal.h	7.4 (Berkeley) 05/16/93
  *
  * from: $Header: signal.h,v 1.5 92/11/26 02:04:46 torek Exp $
  */
 
 #ifndef LOCORE
+typedef int sig_atomic_t;
+
 /*
  * Information pushed on stack when a signal is delivered.
  * This is used by the kernel to restore state following
