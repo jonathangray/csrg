@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	6.60 (Berkeley) 06/05/93 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.61 (Berkeley) 06/06/93 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	6.60 (Berkeley) 06/05/93 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.61 (Berkeley) 06/06/93 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -706,13 +706,16 @@ skipword(p, w)
 	if (*p != ':')
 	{
 	  syntax:
-		message("501 Syntax error");
+		message("501 Syntax error in parameters");
 		Errors++;
 		return (NULL);
 	}
 	*p++ = '\0';
 	while (isascii(*p) && isspace(*p))
 		p++;
+
+	if (*p == '\0')
+		goto syntax;
 
 	/* see if the input word matches desired word */
 	if (strcasecmp(q, w))
