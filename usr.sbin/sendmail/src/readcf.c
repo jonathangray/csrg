@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	5.44 (Berkeley) 07/19/92";
+static char sccsid[] = "@(#)readcf.c	5.45 (Berkeley) 07/20/92";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -600,7 +600,7 @@ makemailer(line)
 	{
 		if (m->m_linelimit == 0)
 			m->m_linelimit = SMTPLINELIM;
-		if (!bitnset(M_8BITS, m->m_flags))
+		if (ConfigLevel < 2)
 			setbitn(M_7BITS, m->m_flags);
 	}
 
