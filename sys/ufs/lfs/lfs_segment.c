@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_segment.c	7.35 (Berkeley) 09/03/92
+ *	@(#)lfs_segment.c	7.36 (Berkeley) 10/08/92
  */
 
 #include <sys/param.h>
@@ -54,6 +54,7 @@
 #include <ufs/ufs/inode.h>
 #include <ufs/ufs/dir.h>
 #include <ufs/ufs/ufsmount.h>
+#include <ufs/ufs/ufs_extern.h>
 
 #include <ufs/lfs/lfs.h>
 #include <ufs/lfs/lfs_extern.h>
@@ -137,7 +138,7 @@ lfs_vflush(vp)
 	do {
 		lfs_initseg(fs, sp);
 		do {
-			if (vp->v_dirtyblkhd != NULL)
+			if (vp->v_dirtyblkhd.le_next != NULL)
 				lfs_writefile(fs, sp, vp);
 		} while (lfs_writeinode(fs, sp, ip));
 
@@ -202,9 +203,9 @@ loop:	for (vp = mp->mnt_mounth; vp; vp = vp->v_mountf) {
 		 */
 		ip = VTOI(vp);
 		if ((ip->i_flag & (IMOD | IACC | IUPD | ICHG) ||
-		    vp->v_dirtyblkhd != NULL) &&
+		    vp->v_dirtyblkhd.le_next != NULL) &&
 		    ip->i_number != LFS_IFILE_INUM) {
-			if (vp->v_dirtyblkhd != NULL)
+			if (vp->v_dirtyblkhd.le_next != NULL)
 				lfs_writefile(fs, sp, vp);
 			(void) lfs_writeinode(fs, sp, ip);
 		}
@@ -307,7 +308,7 @@ redo:
 		vp = fs->lfs_ivnode;
 		while (vget(vp));
 		ip = VTOI(vp);
-		if (vp->v_dirtyblkhd != NULL)
+		if (vp->v_dirtyblkhd.le_next != NULL)
 			lfs_writefile(fs, sp, vp);
 		(void)lfs_writeinode(fs, sp, ip);
 		vput(vp);
@@ -368,6 +369,7 @@ lfs_writefile(fs, sp, vp)
 		lfs_initseg(fs, sp);
 	}
 	sp->sum_bytes_left -= sizeof(struct finfo) - sizeof(daddr_t);
+	++((SEGSUM *)(sp->segsum))->ss_nfinfo;
 
 	fip = sp->fip;
 	fip->fi_nblocks = 0;
@@ -393,13 +395,14 @@ lfs_writefile(fs, sp, vp)
 	printf("lfs_writefile: adding %d blocks\n", fip->fi_nblocks);
 #endif
 	if (fip->fi_nblocks != 0) {
-		++((SEGSUM *)(sp->segsum))->ss_nfinfo;
 		sp->fip =
 		    (struct finfo *)((caddr_t)fip + sizeof(struct finfo) +
 		    sizeof(daddr_t) * (fip->fi_nblocks - 1));
 		sp->start_lbp = &sp->fip->fi_blocks[0];
-	} else
+	} else {
 		sp->sum_bytes_left += sizeof(struct finfo) - sizeof(daddr_t);
+		--((SEGSUM *)(sp->segsum))->ss_nfinfo;
+	}
 }
 
 int
@@ -520,16 +523,14 @@ lfs_gatherblock(sp, bp, sptr)
 			splx(*sptr);
 		lfs_updatemeta(sp);
 
-		/* Add the current file to the segment summary. */
-		++((SEGSUM *)(sp->segsum))->ss_nfinfo;
-
 		version = sp->fip->fi_version;
 		(void) lfs_writeseg(fs, sp);
 		lfs_initseg(fs, sp);
 
 		sp->fip->fi_version = version;
 		sp->fip->fi_ino = VTOI(sp->vp)->i_number;
-
+		/* Add the current file to the segment summary. */
+		++((SEGSUM *)(sp->segsum))->ss_nfinfo;
 		sp->sum_bytes_left -= 
 		    sizeof(struct finfo) - sizeof(daddr_t);
 
@@ -560,7 +561,7 @@ lfs_gather(fs, sp, vp, match)
 
 	sp->vp = vp;
 	s = splbio();
-loop:	for (bp = vp->v_dirtyblkhd; bp; bp = bp->b_blockf) {
+loop:	for (bp = vp->v_dirtyblkhd.le_next; bp; bp = bp->b_vnbufs.qe_next) {
 		if (bp->b_flags & B_BUSY || !match(fs, bp) ||
 		    bp->b_flags & B_GATHERED)
 			continue;
@@ -591,7 +592,7 @@ lfs_updatemeta(sp)
 	struct buf *bp;
 	struct lfs *fs;
 	struct vnode *vp;
-	INDIR a[NIADDR], *ap;
+	struct indir a[NIADDR + 2], *ap;
 	struct inode *ip;
 	daddr_t daddr, lbn, off;
 	int db_per_fsb, error, i, nblocks, num;
@@ -616,8 +617,8 @@ lfs_updatemeta(sp)
 		(*sp->start_bpp)->b_blkno = off = fs->lfs_offset;
 		fs->lfs_offset += db_per_fsb;
 
-		if (error = lfs_bmaparray(vp, lbn, &daddr, a, &num))
-			panic("lfs_updatemeta: lfs_bmaparray %d", error);
+		if (error = ufs_bmaparray(vp, lbn, &daddr, a, &num, NULL))
+			panic("lfs_updatemeta: ufs_bmaparray %d", error);
 		ip = VTOI(vp);
 		switch (num) {
 		case 0:
@@ -893,6 +894,7 @@ lfs_writeseg(fs, sp)
 				free(bp, M_SEGMENT);
 			} else {
 				bremfree(bp);
+				bp->b_flags |= B_DONE;
 				reassignbuf(bp, bp->b_vp);
 				brelse(bp);
 			}
