@@ -30,8 +30,8 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	5.2 (Berkeley) 06/01/90
+ *	@(#)pathnames.h	5.3 (Berkeley) 06/23/90
  */
 
-#define	_PATH_LIBB	"/usr/share/misc/lib.b"
+#define	_PATH_LIBB	"/usr/share/misc/bc.library"
 #define	_PATH_DC	"/usr/bin/dc"
