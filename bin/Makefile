@@ -1,6 +1,9 @@
-#	@(#)Makefile	5.35 (Berkeley) 07/12/92
+#	@(#)Makefile	5.36 (Berkeley) 07/15/92
 
 # Missing: adb dd ed expr tar test
+
+# Adb is VAX and Tahoe only.
+# Cp uses mmap, and is new-VM only.
 
 SUBDIR=	cat chmod cp csh date df echo hostname kill ln ls \
 	mkdir mv ps pwd rcp rm rmail rmdir sh sleep stty sync 
