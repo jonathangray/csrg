@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)encrypt.h	5.3 (Berkeley) 12/18/92
+ *	@(#)encrypt.h	5.4 (Berkeley) 05/20/93
  */
 
 /*
@@ -53,8 +53,9 @@
  * or implied warranty.
  */
 
-#ifndef	__ENCRYPTION__
-#define	__ENCRYPTION__
+#ifdef	ENCRYPTION
+# ifndef __ENCRYPTION__
+# define __ENCRYPTION__
 
 #define	DIR_DECRYPT		1
 #define	DIR_ENCRYPT		2
@@ -74,13 +75,13 @@ typedef	struct {
 	unsigned char	*data;
 } Session_Key;
 
-#if	!defined(P)
-#ifdef	__STDC__
-#define P(x)	x
-#else
-#define P(x)	()
-#endif
-#endif
+# if !defined(P)
+#  ifdef __STDC__
+#   define P(x)	x
+#  else
+#   define P(x)	()
+#  endif
+# endif
 
 typedef struct {
 	char	*name;
@@ -103,4 +104,5 @@ typedef struct {
 extern int encrypt_debug_mode;
 extern int (*decrypt_input) P((int));
 extern void (*encrypt_output) P((unsigned char *, int));
-#endif
+# endif /* __ENCRYPTION__ */
+#endif /* ENCRYPTION */
