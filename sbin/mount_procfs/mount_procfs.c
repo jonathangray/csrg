@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mount_procfs.c	8.1 (Berkeley) 01/11/94
+ *	@(#)mount_procfs.c	8.2 (Berkeley) 02/18/94
  */
 
 #include <sys/param.h>
@@ -72,7 +72,7 @@ main(argc, argv)
 		usage();
 
 	if (mount(MOUNT_PROCFS, argv[1], mntflags, NULL)) {
-		(void)fprintf(stderr, "mount_fdesc: %s\n", strerror(errno));
+		(void)fprintf(stderr, "mount_procfs: %s\n", strerror(errno));
 		exit(1);
 	}
 	exit(0);
