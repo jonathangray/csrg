@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.93 (Berkeley) 02/03/93
+ *	@(#)vfs_subr.c	7.94 (Berkeley) 02/04/93
  */
 
 /*
@@ -1080,14 +1080,13 @@ int kinfo_vdebug = 1;
 int kinfo_vgetfailed;
 #define KINFO_VNODESLOP	10
 /*
- * Dump vnode list (via kinfo).
+ * Dump vnode list (via sysctl).
  * Copyout address of vnode followed by vnode.
  */
 /* ARGSUSED */
-kinfo_vnode(op, where, acopysize, arg, aneeded)
-	int op;
+sysctl_vnode(where, sizep)
 	char *where;
-	int *acopysize, arg, *aneeded;
+	int *sizep;
 {
 	register struct mount *mp = rootfs;
 	struct mount *omp;
@@ -1099,10 +1098,10 @@ kinfo_vnode(op, where, acopysize, arg, aneeded)
 #define VPTRSZ	sizeof (struct vnode *)
 #define VNODESZ	sizeof (struct vnode)
 	if (where == NULL) {
-		*aneeded = (numvnodes + KINFO_VNODESLOP) * (VPTRSZ + VNODESZ);
+		*sizep = (numvnodes + KINFO_VNODESLOP) * (VPTRSZ + VNODESZ);
 		return (0);
 	}
-	ewhere = where + *acopysize;
+	ewhere = where + *sizep;
 		
 	do {
 		if (vfs_busy(mp)) {
@@ -1123,10 +1122,12 @@ again:
 				bp = savebp;
 				goto again;
 			}
-			if ((bp + VPTRSZ + VNODESZ <= ewhere) && 
-			    ((error = copyout((caddr_t)&vp, bp, VPTRSZ)) ||
-			     (error = copyout((caddr_t)vp, bp + VPTRSZ, 
-			      VNODESZ))))
+			if (bp + VPTRSZ + VNODESZ > ewhere) {
+				*sizep = bp - where;
+				return (ENOMEM);
+			}
+			if ((error = copyout((caddr_t)&vp, bp, VPTRSZ)) ||
+			   (error = copyout((caddr_t)vp, bp + VPTRSZ, VNODESZ)))
 				return (error);
 			bp += VPTRSZ + VNODESZ;
 		}
@@ -1135,10 +1136,6 @@ again:
 		vfs_unbusy(omp);
 	} while (mp != rootfs);
 
-	*aneeded = bp - where;
-	if (bp > ewhere)
-		*acopysize = ewhere - where;
-	else
-		*acopysize = bp - where;
+	*sizep = bp - where;
 	return (0);
 }
