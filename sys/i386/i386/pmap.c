@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.c	7.9 (Berkeley) 02/05/92
+ *	@(#)pmap.c	7.10 (Berkeley) 02/19/92
  */
 
 /*
@@ -168,7 +168,6 @@ int pmapvacflush = 0;
 int	protection_codes[8];
 
 struct pmap	kernel_pmap_store;
-pmap_t		kernel_pmap;
 
 vm_offset_t    	avail_start;	/* PA of first available physical page */
 vm_offset_t	avail_end;	/* PA of last available physical page */
@@ -243,13 +242,6 @@ printf("ps %x pe %x ", firstaddr, maxmem <<PG_SHIFT);
 	 * Initialize protection array.
 	 */
 	i386_protection_init();
-
-	/*
-	 * The kernel's pmap is statically allocated so we don't
-	 * have to use pmap_create, which is unlikely to work
-	 * correctly at this part of the boot sequence.
-	 */
-	kernel_pmap = &kernel_pmap_store;
 
 #ifdef notdef
 	/*
@@ -1281,17 +1273,6 @@ for(x=0x3f6; x < 0x3fA; x++)
 	printf("%x ", pmap->pm_pdir[x]);*/
 /*pads(pmap);*/
 /*pg(" pcb_cr3 %x", pcbp->pcb_cr3);*/
-}
-
-/*
- *	Routine:	pmap_kernel
- *	Function:
- *		Returns the physical map handle for the kernel.
- */
-pmap_t
-pmap_kernel()
-{
-    	return (kernel_pmap);
 }
 
 /*
