@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)in.c	7.19 (Berkeley) 12/19/91
+ *	@(#)in.c	7.20 (Berkeley) 01/30/92
  */
 
 #include "param.h"
@@ -486,6 +486,7 @@ in_ifinit(ifp, ia, sin, scrub)
 	register struct ifnet *ifp;
 	register struct in_ifaddr *ia;
 	struct sockaddr_in *sin;
+	int scrub;
 {
 	register u_long i = ntohl(sin->sin_addr.s_addr);
 	struct sockaddr_in oldaddr;
@@ -499,7 +500,8 @@ in_ifinit(ifp, ia, sin, scrub)
 	 * if this is its first address,
 	 * and to validate the address if necessary.
 	 */
-	if (ifp->if_ioctl && (error = (*ifp->if_ioctl)(ifp, SIOCSIFADDR, ia))) {
+	if (ifp->if_ioctl &&
+	    (error = (*ifp->if_ioctl)(ifp, SIOCSIFADDR, (caddr_t)ia))) {
 		splx(s);
 		ia->ia_addr = oldaddr;
 		return (error);
