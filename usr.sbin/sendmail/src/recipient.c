@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recipient.c	6.10 (Berkeley) 02/18/93";
+static char sccsid[] = "@(#)recipient.c	6.11 (Berkeley) 02/19/93";
 #endif /* not lint */
 
 # include <sys/types.h>
@@ -84,7 +84,6 @@ sendto(list, copyf, ctladdr, qflags)
 	register char *p;
 	register ADDRESS *al;	/* list of addresses to send to */
 	bool firstone;		/* set on first address sent */
-	bool selfref;		/* set if this list includes ctladdr */
 	char delimiter;		/* the address delimiter */
 	ADDRESS *sibl;		/* sibling pointer in tree */
 	ADDRESS *prev;		/* previous sibling */
@@ -105,7 +104,6 @@ sendto(list, copyf, ctladdr, qflags)
 		delimiter = ',';
 
 	firstone = TRUE;
-	selfref = FALSE;
 	al = NULL;
 
 	for (p = list; *p != '\0'; )
@@ -132,13 +130,13 @@ sendto(list, copyf, ctladdr, qflags)
 			a->q_flags |= QPRIMARY;
 
 		if (ctladdr != NULL && sameaddr(ctladdr, a))
-			selfref = TRUE;
+			ctladdr->q_flags |= QSELFREF;
 		al = a;
 		firstone = FALSE;
 	}
 
 	/* if this alias doesn't include itself, delete ctladdr */
-	if (!selfref && ctladdr != NULL)
+	if (ctladdr != NULL && !bitset(QSELFREF, ctladdr->q_flags))
 	{
 		if (tTd(25, 5))
 		{
@@ -728,6 +726,7 @@ include(fname, forwarding, ctladdr, sendq, e)
 	{
 		int ret = errno;
 
+		clrevent(ev);
 		usrerr("Cannot open %s", fname);
 		return ret;
 	}
@@ -737,7 +736,13 @@ include(fname, forwarding, ctladdr, sendq, e)
 		struct stat st;
 
 		if (fstat(fileno(fp), &st) < 0)
+		{
+			int ret = errno;
+
+			clrevent(ev);
 			syserr("Cannot fstat %s!", fname);
+			return ret;
+		}
 		ctladdr->q_uid = st.st_uid;
 		ctladdr->q_gid = st.st_gid;
 		ctladdr->q_flags |= QGOODUID;
