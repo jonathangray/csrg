@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_pageout.h	7.4 (Berkeley) 07/25/91
+ *	@(#)vm_pageout.h	7.5 (Berkeley) 08/28/91
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -85,6 +85,6 @@ simple_lock_data_t	vm_pages_needed_lock;
 #define	VM_WAIT		{ \
 			simple_lock(&vm_pages_needed_lock); \
 			thread_wakeup((int)&vm_pages_needed); \
-			thread_sleep((int)&vm_stat.free_count, \
+			thread_sleep((int)&cnt.v_free_count, \
 				&vm_pages_needed_lock, FALSE); \
 			}
