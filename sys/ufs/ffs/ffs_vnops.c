@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	7.45 (Berkeley) 06/28/90
+ *	@(#)ffs_vnops.c	7.46 (Berkeley) 10/19/90
  */
 
 #include "param.h"
@@ -1062,6 +1062,16 @@ ufs_rename(fndp, tndp)
 		}
 		if (error = dirrewrite(dp, ip, tndp))
 			goto bad;
+		/*
+		 * If the target directory is in the same
+		 * directory as the source directory,
+		 * decrement the link count on the parent
+		 * of the target directory.
+		 */
+		 if (doingdirectory && !newparent) {
+			dp->i_nlink--;
+			dp->i_flag |= ICHG;
+		}
 		vput(ITOV(dp));
 		/*
 		 * Adjust the link count of the target to
