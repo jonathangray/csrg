@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)2.3.t	8.5 (Berkeley) 05/29/94
+.\"	@(#)2.3.t	8.6 (Berkeley) 06/01/94
 .\"
 .Sh 2 "Interprocess communications
 .Sh 3 "Interprocess communication primitives
@@ -356,6 +356,7 @@ in one of these
 \fIcmsghdr\fP structures, with level SOL_SOCKET and type SCM_RIGHTS.
 In the PF_LOCAL domain these are an array of integer descriptors,
 copied from the sending process and duplicated in the receiver.
+.ne 1i
 .LP
 This structure is used in the operations
 .Fn sendmsg
