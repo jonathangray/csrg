@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)rsh.c	5.22 (Berkeley) 09/27/90";
+static char sccsid[] = "@(#)rsh.c	5.23 (Berkeley) 10/21/90";
 #endif /* not lint */
 
 /*
@@ -149,11 +149,13 @@ main(argc, argv)
 		case 'n':
 			nflag = 1;
 			break;
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef KERBEROS
+#ifdef CRYPT
 		case 'x':
 			encrypt = 1;
 			des_set_key(cred.session, schedule);
 			break;
+#endif
 #endif
 		case '?':
 		default:
@@ -184,10 +186,12 @@ main(argc, argv)
 	if (!user)
 		user = pw->pw_name;
 
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef KERBEROS
+#ifdef CRYPT
 	/* -x turns off -n */
 	if (encrypt)
 		nflag = 0;
+#endif
 #endif
 
 	args = copyargs(argv);
@@ -288,8 +292,10 @@ try_connect:
 		}
 	}
 
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef KERBEROS
+#ifdef CRYPT
 	if (!encrypt)
+#endif
 #endif
 	{
 		(void)ioctl(rfd2, FIONBIO, &one);
@@ -332,10 +338,12 @@ rewrite:	rembits = 1 << rem;
 		}
 		if ((rembits & (1 << rem)) == 0)
 			goto rewrite;
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef KERBEROS
+#ifdef CRYPT
 		if (encrypt)
 			wc = des_write(rem, bp, cc);
 		else
+#endif
 #endif
 			wc = write(rem, bp, cc);
 		if (wc < 0) {
@@ -367,10 +375,12 @@ done:
 		}
 		if (ready & (1 << rfd2)) {
 			errno = 0;
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef KERBEROS
+#ifdef CRYPT
 			if (encrypt)
 				cc = des_read(rfd2, buf, sizeof buf);
 			else
+#endif
 #endif
 				cc = read(rfd2, buf, sizeof buf);
 			if (cc <= 0) {
@@ -381,10 +391,12 @@ done:
 		}
 		if (ready & (1 << rem)) {
 			errno = 0;
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef KERBEROS
+#ifdef CRYPT
 			if (encrypt)
 				cc = des_read(rem, buf, sizeof buf);
 			else
+#endif
 #endif
 				cc = read(rem, buf, sizeof buf);
 			if (cc <= 0) {
@@ -400,10 +412,12 @@ void
 sendsig(signo)
 	char signo;
 {
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef KERBEROS
+#ifdef CRYPT
 	if (encrypt)
 		(void)des_write(rfd2, &signo, 1);
 	else
+#endif
 #endif
 		(void)write(rfd2, &signo, 1);
 }
