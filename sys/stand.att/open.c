@@ -6,14 +6,14 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)open.c	7.5 (Berkeley) 10/11/92
+ *	@(#)open.c	7.6 (Berkeley) 05/24/93
  */
 
 #include <sys/param.h>
 #include <sys/reboot.h>
 
 #include <ufs/ufs/dir.h>
-#include <stand/saio.h>
+#include <stand.att/saio.h>
 
 int	firstopen;
 u_int	opendev;			/* last device opened */
