@@ -32,10 +32,11 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deleteln.c	5.6 (Berkeley) 08/23/92";
+static char sccsid[] = "@(#)deleteln.c	5.7 (Berkeley) 08/23/92";
 #endif	/* not lint */
 
 #include <curses.h>
+#include <string.h>
 
 /*
  * wdeleteln --
@@ -45,7 +46,7 @@ int
 wdeleteln(win)
 	register WINDOW *win;
 {
-	register int x, y;
+	register int y;
 	register char *temp;
 
 #ifdef DEBUG
