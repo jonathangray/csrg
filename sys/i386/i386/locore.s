@@ -33,14 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)locore.s	7.3 (Berkeley) 5/13/91
- */
-
-
-/*
- * locore.s:	4BSD machine support for the Intel 386
- *		Preliminary version
- *		Written by William F. Jolitz, 386BSD Project
+ *	@(#)locore.s	7.5 (Berkeley) 02/05/92
  */
 
 #include "assym.s"
