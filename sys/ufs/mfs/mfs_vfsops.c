@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mfs_vfsops.c	7.24 (Berkeley) 04/19/92
+ *	@(#)mfs_vfsops.c	7.25 (Berkeley) 05/13/92
  */
 
 #include <sys/param.h>
