@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)igmp.c	7.3 (Berkeley) 01/08/93
+ *	@(#)igmp.c	7.4 (Berkeley) 02/07/93
  */
 
 /* Internet Group Management Protocol (IGMP) routines. */
