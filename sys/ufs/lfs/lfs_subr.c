@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1986, 1989, 1991 Regents of the University of California.
+ * Copyright (c) 1991 Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_subr.c	7.1 (Berkeley) 11/01/91
+ *	@(#)lfs_subr.c	7.2 (Berkeley) 11/01/91
  */
 
 #include <sys/param.h>
