@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)namei.h	7.10 (Berkeley) 06/28/90
+ *	@(#)namei.h	7.11 (Berkeley) 01/10/91
  */
 
 #ifndef _NAMEI_
@@ -54,8 +54,6 @@ struct nameidata {
 	caddr_t	ni_dirp;		/* pathname pointer */
 	enum	uio_seg ni_segflg;	/* location of pathname */
 	short	ni_nameiop;		/* see below */
-	struct	vnode *ni_cdir;		/* current directory */
-	struct	vnode *ni_rdir;		/* root directory, if not normal root */
 	struct	ucred *ni_cred;		/* credentials */
 
 		/* shared between namei, lookup routines and commit routines: */
