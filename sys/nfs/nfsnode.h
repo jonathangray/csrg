@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsnode.h	7.18 (Berkeley) 04/21/92
+ *	@(#)nfsnode.h	7.19 (Berkeley) 04/21/92
  */
 
 /*
@@ -280,7 +280,8 @@ void	nfs_vfree __P((
 int	nfs_truncate __P((
 		struct vnode *vp,
 		off_t length,
-		int flags));
+		int flags,
+		struct ucred *cred));
 int	nfs_update __P((
 		struct vnode *vp,
 		struct timeval *ta,
