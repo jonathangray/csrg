@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_socket.c	7.27 (Berkeley) 03/13/92
+ *	@(#)nfs_socket.c	7.28 (Berkeley) 03/16/92
  */
 
 /*
@@ -2144,6 +2144,7 @@ nfsrv_wakenfsd(slp)
 			nd->nd_flag &= ~NFSD_WAITING;
 			if (nd->nd_slp)
 				panic("nfsd wakeup");
+			slp->ns_sref++;
 			nd->nd_slp = slp;
 			wakeup((caddr_t)nd);
 			return;
