@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)memory.h	5.5 (Berkeley) 06/01/90
+ *	@(#)memory.h	5.6 (Berkeley) 04/03/91
  */
 
 #include <string.h>
