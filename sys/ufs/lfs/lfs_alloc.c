@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_alloc.c	7.31 (Berkeley) 10/03/91
+ *	@(#)lfs_alloc.c	7.32 (Berkeley) 10/09/91
  */
 
 #ifdef LOGFS
@@ -188,6 +188,7 @@ printf("lfs_ifind: inode %d\n", ino);
 }
 
 /* Create a new vnode/inode pair and initialize what fields we can. */
+int
 lfs_vcreate(mp, ino, vpp)
 	MOUNT *mp;
 	ino_t ino;
