@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.83 (Berkeley) 02/05/95
+ *	@(#)sendmail.h	8.84 (Berkeley) 02/06/95
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.83		02/05/95";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.84		02/06/95";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -675,6 +675,7 @@ typedef struct symtab	STAB;
 # define ST_HOSTSIG	7	/* host signature */
 # define ST_NAMECANON	8	/* cached canonical name */
 # define ST_MACRO	9	/* macro name to id mapping */
+# define ST_TRUSTED	10	/* trusted user */
 # define ST_MCI		16	/* mailer connection info (offset) */
 
 # define s_class	s_value.sv_class
