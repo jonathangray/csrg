@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_glue.c	7.17 (Berkeley) 07/08/92
+ *	@(#)vm_glue.c	7.18 (Berkeley) 10/11/92
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -263,7 +263,7 @@ vm_init_limits(p)
 		ptoa(cnt.v_free_count);
 }
 
-#include "../vm/vm_pageout.h"
+#include <vm/vm_pageout.h>
 
 #ifdef DEBUG
 int	enableswap = 1;
