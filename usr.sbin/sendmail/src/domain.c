@@ -36,9 +36,9 @@
 
 #ifndef lint
 #if NAMED_BIND
-static char sccsid[] = "@(#)domain.c	8.31 (Berkeley) 02/20/95 (with name server)";
+static char sccsid[] = "@(#)domain.c	8.31 (Berkeley) 02/23/95 (with name server)";
 #else
-static char sccsid[] = "@(#)domain.c	8.31 (Berkeley) 02/20/95 (without name server)";
+static char sccsid[] = "@(#)domain.c	8.31 (Berkeley) 02/23/95 (without name server)";
 #endif
 #endif /* not lint */
 
@@ -112,7 +112,8 @@ getmxrr(host, mxhosts, droplocalhost, rcode)
 	querybuf answer;
 	int ancount, qdcount, buflen;
 	bool seenlocal = FALSE;
-	u_short pref, localpref, type;
+	u_short pref, type;
+	u_short localpref = 256;
 	char *fallbackMX = FallBackMX;
 	static bool firsttime = TRUE;
 	bool trycanon = FALSE;
@@ -457,7 +458,7 @@ getcanonname(host, hbsize, trymx)
 	char **dp;
 	char *mxmatch;
 	bool amatch;
-	bool gotmx;
+	bool gotmx = FALSE;
 	int qtype;
 	int loopcnt;
 	char *xp;
@@ -715,7 +716,7 @@ gethostalias(host)
 {
 	char *fname;
 	FILE *fp;
-	register char *p;
+	register char *p = NULL;
 	char buf[MAXLINE];
 	static char hbuf[MAXDNAME];
 
