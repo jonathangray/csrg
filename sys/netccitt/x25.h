@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)x25.h	7.4 (Berkeley) 06/21/90
+ *	@(#)x25.h	7.4 (Berkeley) 08/30/90
  */
 
 #ifdef KERNEL
@@ -54,6 +54,9 @@
 #define HDLCPROTO_LAPB		2
 #define HDLCPROTO_UNSET		3
 #define HDLCPROTO_LAPD		4
+
+/* socket options */
+#define PK_ACCTFILE		1	/* use level = CCITTPROTO_X25 */
 
 /*
  *  X.25 Socket address structure.  It contains the  X.121 or variation of
@@ -126,7 +129,7 @@ struct	x25config {
 		xc_ptrace:1,	/* packet level tracing flag */
 		xc_rsvd2:5;
 	u_short	xc_maxlcn;	/* max logical channels */
-	u_short	xc_dg_idletimo;	/* timeout for idle datagram circuits.
+	u_short	xc_dg_idletimo;	/* timeout for idle datagram circuits. */
 };
 
 #ifdef IFNAMSIZ
