@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ww.h	3.63 (Berkeley) 03/02/91
+ *	@(#)ww.h	3.64 (Berkeley) 06/24/92
  */
 
 #ifdef OLD_TTY
@@ -237,7 +237,7 @@ int wwnwwr, wwnwwra, wwnwwrc;
 int wwntokdef, wwntokuse, wwntokbad, wwntoksave, wwntokc;
 int wwnupdate, wwnupdline, wwnupdmiss;
 int wwnupdscan, wwnupdclreol, wwnupdclreos, wwnupdclreosmiss, wwnupdclreosline;
-int wwnread, wwnreade, wwnreadz, wwnreadc;
+int wwnread, wwnreade, wwnreadz, wwnreadc, wwnreadec;
 int wwnwread, wwnwreade, wwnwreadz, wwnwreadd, wwnwreadc, wwnwreadp;
 int wwnselect, wwnselecte, wwnselectz;
 
