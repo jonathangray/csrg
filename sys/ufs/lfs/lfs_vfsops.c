@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vfsops.c	8.16 (Berkeley) 05/10/95
+ *	@(#)lfs_vfsops.c	8.17 (Berkeley) 05/10/95
  */
 
 #include <sys/param.h>
@@ -93,9 +93,11 @@ lfs_mountroot()
 	/*
 	 * Get vnodes for swapdev and rootdev.
 	 */
-	if (bdevvp(swapdev, &swapdev_vp) || bdevvp(rootdev, &rootvp))
-		panic("ffs_mountroot: can't setup bdevvp's");
-
+	if ((error = bdevvp(swapdev, &swapdev_vp)) ||
+	    (error = bdevvp(rootdev, &rootvp))) {
+		printf("lfs_mountroot: can't setup bdevvp's");
+		return (error);
+	}
 	if (error = vfs_rootmountalloc("lfs", "root_device", &mp))
 		return (error);
 	if (error = lfs_mountfs(rootvp, mp, p)) {
