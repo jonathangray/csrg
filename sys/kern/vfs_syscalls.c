@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	7.70 (Berkeley) 05/15/91
+ *	@(#)vfs_syscalls.c	7.70.1.1 (Berkeley) 05/19/91
  */
 
 #include "param.h"
@@ -1539,9 +1539,11 @@ out:
 		vrele(fromnd.ni_dvp);
 		vrele(fvp);
 	}
+	p->p_spare[1]--;
 	vrele(tond.ni_startdir);
 	FREE(tond.ni_pnbuf, M_NAMEI);
 out1:
+	p->p_spare[1]--;
 	vrele(fromnd.ni_startdir);
 	FREE(fromnd.ni_pnbuf, M_NAMEI);
 	if (error == -1)
