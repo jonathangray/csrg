@@ -7,7 +7,7 @@
 # Use and redistribution is subject to the Berkeley Software License
 # Agreement and your Software Agreement with AT&T (Western Electric).
 #
-#	@(#)spell.sh	1.6 (Berkeley) 04/18/91
+#	@(#)spell.sh	1.7 (Berkeley) 04/25/91
 #
 
 : V data for -v, B flags, D dictionary, S stop, H history, F files, T temp
@@ -40,10 +40,10 @@ do
 done
 IFS=@
 case $H in
-/dev/null)	$R $F | sort -u | /usr/libexec/spell $S $T |
+/dev/null)	eval $R $F | sort -u | /usr/libexec/spell $S $T |
 		/usr/libexec/spell ${D-/usr/share/dict/hlista} $V $B |
 		sort -u +0f +0 - $T ;;
-*)		$R $F | sort -u | /usr/libexec/spell $S $T |
+*)		eval $R $F | sort -u | /usr/libexec/spell $S $T |
 		/usr/libexec/spell ${D-/usr/share/dict/hlista} $V $B |
 		sort -u +0f +0 - $T | tee -a $H
 		who am i >> $H 2> /dev/null ;;
