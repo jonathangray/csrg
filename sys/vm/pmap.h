@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.h	7.4 (Berkeley) 05/07/91
+ *	@(#)pmap.h	7.5 (Berkeley) 08/27/91
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
