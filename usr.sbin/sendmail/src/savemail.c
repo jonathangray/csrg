@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)savemail.c	8.18 (Berkeley) 11/25/93";
+static char sccsid[] = "@(#)savemail.c	8.19 (Berkeley) 11/25/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -82,6 +82,7 @@ savemail(e)
 	register char *p;
 	extern char *ttypath();
 	typedef int (*fnptr)();
+	extern bool writable();
 
 	if (tTd(6, 1))
 	{
@@ -373,8 +374,13 @@ savemail(e)
 				break;
 			}
 
-			fp = dfopen("/usr/tmp/dead.letter",
-				    O_WRONLY|O_CREAT|O_APPEND, FileMode);
+			strcpy(buf, "/usr/tmp/dead.letter");
+			if (!writable(buf))
+			{
+				state = ESM_PANIC;
+				break;
+			}
+			fp = dfopen(buf, O_WRONLY|O_CREAT|O_APPEND, FileMode);
 			if (fp == NULL)
 			{
 				state = ESM_PANIC;
