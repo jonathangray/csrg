@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	6.17 (Berkeley) 02/18/93";
+static char sccsid[] = "@(#)main.c	6.18 (Berkeley) 02/18/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -753,10 +753,10 @@ main(argc, argv, envp)
 				printf("> %s", buf);
 			if (buf[0] == '#')
 				continue;
-			for (p = buf; isspace(*p); p++)
+			for (p = buf; isascii(*p) && isspace(*p); p++)
 				continue;
 			q = p;
-			while (*p != '\0' && !isspace(*p))
+			while (*p != '\0' && !(isascii(*p) && isspace(*p)))
 				p++;
 			if (*p == '\0')
 			{
