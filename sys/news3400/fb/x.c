@@ -35,7 +35,7 @@
  *
  * from: $Hdr: fb_mfbs.c,v 4.300 91/06/27 20:42:43 root Rel41 $ SONY
  *
- *	@(#)x.c	5.1 (Berkeley) 06/10/93
+ *	@(#)x.c	8.1 (Berkeley) 06/11/93
  */
 
 #include <sys/param.h>
