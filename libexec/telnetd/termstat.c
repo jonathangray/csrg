@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)termstat.c	5.13 (Berkeley) 04/05/93";
+static char sccsid[] = "@(#)termstat.c	5.14 (Berkeley) 05/20/93";
 #endif /* not lint */
 
 #include "telnetd.h"
@@ -181,7 +181,7 @@ localstat()
 		tty_setlinemode(uselinemode);
 	}
 
-#if	defined(ENCRYPTION)
+#ifdef	ENCRYPTION
 	/*
 	 * If the terminal is not echoing, but editing is enabled,
 	 * something like password input is going to happen, so
@@ -199,7 +199,7 @@ localstat()
 			enc_passwd = 0;
 		}
 	}
-#endif
+#endif	/* ENCRYPTION */
 
 	/*
 	 * Do echo mode handling as soon as we know what the
