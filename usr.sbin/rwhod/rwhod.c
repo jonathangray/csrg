@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)rwhod.c	5.24 (Berkeley) 04/01/93";
+static char sccsid[] = "@(#)rwhod.c	5.25 (Berkeley) 05/18/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -73,14 +73,12 @@ static char sccsid[] = "@(#)rwhod.c	5.24 (Berkeley) 04/01/93";
  */
 #define AL_INTERVAL (3 * 60)
 
-struct	sockaddr_in sin;
-
 char	myname[MAXHOSTNAMELEN];
 
 struct	nlist nl[] = {
 #define	NL_BOOTTIME	0
 	{ "_boottime" },
-	0
+	{ 0 }
 };
 
 /*
@@ -101,7 +99,7 @@ struct	whod mywd;
 struct	servent *sp;
 int	s, utmpf, kmemf = -1;
 
-#define	WHDRSIZE	(sizeof (mywd) - sizeof (mywd.wd_we))
+#define	WHDRSIZE	(sizeof(mywd) - sizeof(mywd.wd_we))
 
 int	 configure __P((int));
 void	 getkmem __P((int));
@@ -111,7 +109,8 @@ void	 rt_xaddrs __P((caddr_t, caddr_t, struct rt_addrinfo *));
 int	 verify __P((char *));
 #ifdef DEBUG
 char	*interval __P((int, char *));
-void	 sendto __P((int, char *, int, int, char *, int));
+void	 Sendto __P((int, char *, int, int, char *, int));
+#define	 sendto Sendto
 #endif
 
 int
@@ -124,6 +123,7 @@ main(argc, argv)
 	char path[64];
 	int on = 1;
 	char *cp;
+	struct sockaddr_in sin;
 
 	if (getuid()) {
 		fprintf(stderr, "rwhod: not super user\n");
@@ -147,13 +147,13 @@ main(argc, argv)
 	/*
 	 * Establish host name as returned by system.
 	 */
-	if (gethostname(myname, sizeof (myname) - 1) < 0) {
+	if (gethostname(myname, sizeof(myname) - 1) < 0) {
 		syslog(LOG_ERR, "gethostname: %m");
 		exit(1);
 	}
 	if ((cp = index(myname, '.')) != NULL)
 		*cp = '\0';
-	strncpy(mywd.wd_hostname, myname, sizeof (myname) - 1);
+	strncpy(mywd.wd_hostname, myname, sizeof(myname) - 1);
 	utmpf = open(_PATH_UTMP, O_RDONLY|O_CREAT, 0644);
 	if (utmpf < 0) {
 		syslog(LOG_ERR, "%s: %m", _PATH_UTMP);
@@ -164,13 +164,14 @@ main(argc, argv)
 		syslog(LOG_ERR, "socket: %m");
 		exit(1);
 	}
-	if (setsockopt(s, SOL_SOCKET, SO_BROADCAST, &on, sizeof (on)) < 0) {
+	if (setsockopt(s, SOL_SOCKET, SO_BROADCAST, &on, sizeof(on)) < 0) {
 		syslog(LOG_ERR, "setsockopt SO_BROADCAST: %m");
 		exit(1);
 	}
+	memset(&sin, 0, sizeof(sin));
 	sin.sin_family = AF_INET;
 	sin.sin_port = sp->s_port;
-	if (bind(s, (struct sockaddr *)&sin, sizeof (sin)) < 0) {
+	if (bind(s, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
 		syslog(LOG_ERR, "bind: %m");
 		exit(1);
 	}
@@ -180,9 +181,9 @@ main(argc, argv)
 	onalrm(0);
 	for (;;) {
 		struct whod wd;
-		int cc, whod, len = sizeof (from);
+		int cc, whod, len = sizeof(from);
 
-		cc = recvfrom(s, (char *)&wd, sizeof (struct whod), 0,
+		cc = recvfrom(s, (char *)&wd, sizeof(struct whod), 0,
 			(struct sockaddr *)&from, &len);
 		if (cc <= 0) {
 			if (cc < 0 && errno != EINTR)
@@ -303,14 +304,14 @@ onalrm(signo)
 			    _PATH_UTMP, strerror(errno));
 			goto done;
 		}
-		wlast = &mywd.wd_we[1024 / sizeof (struct whoent) - 1];
-		utmpent = cc / sizeof (struct utmp);
+		wlast = &mywd.wd_we[1024 / sizeof(struct whoent) - 1];
+		utmpent = cc / sizeof(struct utmp);
 		for (i = 0; i < utmpent; i++)
 			if (utmp[i].ut_name[0]) {
-				bcopy(utmp[i].ut_line, we->we_utmp.out_line,
-				   sizeof (utmp[i].ut_line));
-				bcopy(utmp[i].ut_name, we->we_utmp.out_name,
-				   sizeof (utmp[i].ut_name));
+				memcpy(we->we_utmp.out_line, utmp[i].ut_line,
+				   sizeof(utmp[i].ut_line));
+				memcpy(we->we_utmp.out_name, utmp[i].ut_name,
+				   sizeof(utmp[i].ut_name));
 				we->we_utmp.out_time = htonl(utmp[i].ut_time);
 				if (we >= wlast)
 					break;
@@ -334,7 +335,7 @@ onalrm(signo)
 			we->we_idle = htonl(now - stb.st_atime);
 		we++;
 	}
-	(void) getloadavg(avenrun, sizeof(avenrun)/sizeof(avenrun[0]));
+	(void)getloadavg(avenrun, sizeof(avenrun)/sizeof(avenrun[0]));
 	for (i = 0; i < 3; i++)
 		mywd.wd_loadav[i] = htonl((u_long)(avenrun[i] * 100));
 	cc = (char *)we - (char *)&mywd;
@@ -342,7 +343,7 @@ onalrm(signo)
 	mywd.wd_vers = WHODVERSION;
 	mywd.wd_type = WHODTYPE_STATUS;
 	for (np = neighbors; np != NULL; np = np->n_next)
-		(void) sendto(s, (char *)&mywd, cc, 0,
+		(void)sendto(s, (char *)&mywd, cc, 0,
 				np->n_addr, np->n_addrlen);
 	if (utmpent && chdir(_PATH_RWHODIR)) {
 		syslog(LOG_ERR, "chdir(%s): %m", _PATH_RWHODIR);
@@ -367,10 +368,10 @@ getkmem(signo)
 		if (sb.st_ctime == vmunixctime && sb.st_ino == vmunixino)
 			return;
 		vmunixctime = sb.st_ctime;
-		vmunixino= sb.st_ino;
+		vmunixino = sb.st_ino;
 	}
 	if (kmemf >= 0)
-		(void) close(kmemf);
+		(void)close(kmemf);
 loop:
 	if (nlist(_PATH_UNIX, nl)) {
 		syslog(LOG_WARNING, "%s: namelist botch", _PATH_UNIX);
@@ -384,7 +385,7 @@ loop:
 	}
 	(void) lseek(kmemf, (off_t)nl[NL_BOOTTIME].n_value, L_SET);
 	(void) read(kmemf, (char *)&mywd.wd_boottime,
-	    sizeof (mywd.wd_boottime));
+	    sizeof(mywd.wd_boottime));
 	mywd.wd_boottime = htonl(mywd.wd_boottime);
 }
 
@@ -408,7 +409,7 @@ rt_xaddrs(cp, cplim, rtinfo)
 	register struct sockaddr *sa;
 	register int i;
 
-	bzero(rtinfo->rti_info, sizeof(rtinfo->rti_info));
+	memset(rtinfo->rti_info, 0, sizeof(rtinfo->rti_info));
 	for (i = 0; (i < RTAX_MAX) && (cp < cplim); i++) {
 		if ((rtinfo->rti_addrs & (1 << i)) == 0)
 			continue;
@@ -448,6 +449,7 @@ configure(s)
 		quit("actual retrieval of interface table");
 	lim = buf + needed;
 
+	sdl = NULL;		/* XXX just to keep gcc -Wall happy */
 	for (next = buf; next < lim; next += ifm->ifm_msglen) {
 		ifm = (struct if_msghdr *)next;
 		if (ifm->ifm_type == RTM_IFINFO) {
@@ -472,8 +474,9 @@ configure(s)
 			continue;
 		PORT_SA(dstaddr) = sp->s_port;
 		for (np = neighbors; np != NULL; np = np->n_next)
-			if (bcmp(sdl->sdl_data, np->n_name, sdl->sdl_nlen) == 0
-			    && IPADDR_SA(np->n_addr) == IPADDR_SA(dstaddr))
+			if (memcmp(sdl->sdl_data, np->n_name,
+				   sdl->sdl_nlen) == 0 &&
+			    IPADDR_SA(np->n_addr) == IPADDR_SA(dstaddr))
 				break;
 		if (np != NULL)
 			continue;
@@ -481,15 +484,15 @@ configure(s)
 		np = (struct neighbor *)malloc(len);
 		if (np == NULL)
 			quit("malloc of neighbor structure");
-		bzero((char *)np, len);
+		memset(np, 0, len);
 		np->n_flags = flags;
 		np->n_addr = (struct sockaddr *)(np + 1);
 		np->n_addrlen = dstaddr->sa_len;
 		np->n_name = np->n_addrlen + (char *)np->n_addr;
 		np->n_next = neighbors;
 		neighbors = np;
-		bcopy((char *)dstaddr, (char *)np->n_addr, np->n_addrlen);
-		bcopy(sdl->sdl_data, np->n_name, sdl->sdl_nlen);
+		memcpy((char *)np->n_addr, (char *)dstaddr, np->n_addrlen);
+		memcpy(np->n_name, sdl->sdl_data, sdl->sdl_nlen);
 	}
 	free(buf);
 	return (1);
@@ -497,7 +500,7 @@ configure(s)
 
 #ifdef DEBUG
 void
-sendto(s, buf, cc, flags, to, tolen)
+Sendto(s, buf, cc, flags, to, tolen)
 	int s;
 	char *buf;
 	int cc, flags;
@@ -515,7 +518,7 @@ sendto(s, buf, cc, flags, to, tolen)
 	    ntohl(w->wd_loadav[0]) / 100.0, ntohl(w->wd_loadav[1]) / 100.0,
 	    ntohl(w->wd_loadav[2]) / 100.0);
 	cc -= WHDRSIZE;
-	for (we = w->wd_we, cc /= sizeof (struct whoent); cc > 0; cc--, we++) {
+	for (we = w->wd_we, cc /= sizeof(struct whoent); cc > 0; cc--, we++) {
 		time_t t = ntohl(we->we_utmp.out_time);
 		printf("%-8.8s %s:%s %.12s",
 			we->we_utmp.out_name,
