@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_subs.c	7.54 (Berkeley) 06/19/92
+ *	@(#)nfs_subs.c	7.55 (Berkeley) 06/25/92
  */
 
 /*
@@ -53,6 +53,7 @@
 #include <sys/mbuf.h>
 #include <sys/map.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 
 #include <vm/vm.h>
 
@@ -760,10 +761,6 @@ nfs_loadattrcache(vpp, mdp, dposp, vaper)
 	vap->va_ctime.ts_sec = fxdr_unsigned(long, fp->fa_ctime.tv_sec);
 	vap->va_ctime.ts_nsec = 0;
 	vap->va_gen = fxdr_unsigned(u_long, fp->fa_ctime.tv_usec);
-#ifdef _NOQUAD
-	vap->va_size_rsv = 0;
-	vap->va_bytes_rsv = 0;
-#endif
 	np->n_attrstamp = time.tv_sec;
 	*dposp = dpos;
 	*mdp = md;
@@ -1093,7 +1090,7 @@ nfsrv_fhtovp(fhp, lockflag, vpp, cred, slp, nam, rdonlyp)
 			return (NQNFS_AUTHERR);
 	} else if (cred->cr_uid == 0 || (np->neth_exflags & MNT_EXPORTANON))
 		*cred = np->neth_anon;
-	if (error = VFS_FHTOVP(mp, &fhp->fh_fid, 0, vpp))
+	if (error = VFS_FHTOVP(mp, &fhp->fh_fid, vpp))
 		return (ESTALE);
 	if (np->neth_exflags & MNT_EXRDONLY)
 		*rdonlyp = 1;
