@@ -1,4 +1,4 @@
-/*		lpf.c	4.11	83/05/19
+/*		lpf.c	4.12	83/07/16
  * 	filter which reads the output of nroff and converts lines
  *	with ^H's to overwritten lines.  Thus this works like 'ul'
  *	but is much better: it can handle more than 2 overwrites
