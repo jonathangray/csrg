@@ -239,7 +239,7 @@ onalrm()
 		cc = read(utmpf, (char *)utmp, sizeof (utmp));
 		if (cc < 0) {
 			perror("/etc/utmp");
-			return;
+			goto done;
 		}
 		wlast = &mywd.wd_we[1024 / sizeof (struct whoent) - 1];
 		utmpent = cc / sizeof (struct utmp);
@@ -273,6 +273,7 @@ onalrm()
 	for (np = neighbors; np != NULL; np = np->n_next)
 		(void) sendto(s, (char *)&mywd, cc, 0,
 			np->n_addr, np->n_addrlen);
+done:
 	(void) alarm(60);
 }
 
