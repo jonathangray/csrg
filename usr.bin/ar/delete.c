@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)delete.c	5.3 (Berkeley) 03/10/91";
+static char sccsid[] = "@(#)delete.c	5.4 (Berkeley) 03/11/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -62,6 +62,7 @@ delete(argv)
 	CF cf;
 	off_t size;
 	int afd, eval, tfd;
+	char *file;
 
 	afd = open_archive(O_RDWR);
 	tfd = tmp();
@@ -69,9 +70,9 @@ delete(argv)
 	/* Read and write to an archive; pad on both. */
 	SETCF(afd, archive, tfd, tname, RPAD|WPAD);
 	while (get_header(afd)) {
-		if (*argv && files(argv)) {
+		if ((file = *argv) && files(argv)) {
 			if (options & AR_V)
-				(void)printf("d - %s\n", chdr.name);
+				(void)printf("d - %s\n", file);
 			skipobj(afd);
 			continue;
 		}
