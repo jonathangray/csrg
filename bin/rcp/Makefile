@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.5 (Berkeley) 06/20/92
+#	@(#)Makefile	8.1 (Berkeley) 05/31/93
 
 PROG=	rcp
 SRCS=	rcp.c
