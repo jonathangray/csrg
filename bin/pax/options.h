@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)options.h	1.1 (Berkeley) 12/13/92
+ *	@(#)options.h	1.2 (Berkeley) 01/14/93
  */
 
 /*
@@ -66,20 +66,22 @@
 #define	WF	0x00010000
 #define	XF	0x00020000
 #define	CBF	0x00040000	/* nonstandard extension */
-#define	CEF	0x00080000	/* nonstandard extension */
-#define	CGF	0x00100000	/* nonstandard extension */
-#define	CHF	0x00200000	/* nonstandard extension */
-#define	CLF	0x00400000
-#define	CTF	0x00800000	/* nonstandard extension */
-#define	CUF	0x01000000	/* nonstandard extension */
-#define	CXF	0x02000000
-#define	CZF	0x04000000	/* nonstandard extension */
+#define	CDF	0x00080000	/* nonstandard extension */
+#define	CEF	0x00100000	/* nonstandard extension */
+#define	CGF	0x00200000	/* nonstandard extension */
+#define	CHF	0x00400000	/* nonstandard extension */
+#define	CLF	0x00800000
+#define	CTF	0x01000000	/* nonstandard extension */
+#define	CUF	0x02000000	/* nonstandard extension */
+#define	CXF	0x04000000
+#define	CYF	0x08000000	/* nonstandard extension */
+#define	CZF	0x10000000	/* nonstandard extension */
 
 /*
  * ascii string indexed by bit position above (alter the above and you must
  * alter this string) used to tell the user what flags caused us to complain
  */
-#define FLGCH	"abcdfiklnoprstuvwxBEGHLTUXZ"
+#define FLGCH	"abcdfiklnoprstuvwxBDEGHLTUXYZ"
 
 /*
  * legal pax operation bit patterns
@@ -96,7 +98,7 @@
  * Illegal option flag subsets based on pax operation
  */
 
-#define	BDLIST	(AF|BF|IF|KF|LF|OF|PF|RF|TF|UF|WF|XF|CBF|CHF|CLF|CXF|CZF)
 #define	BDEXTR	(AF|BF|LF|TF|WF|XF|CBF|CHF|CLF|CXF)
-#define	BDARCH	(CF|KF|LF|NF|PF|RF|CEF|CZF)
+#define	BDARCH	(CF|KF|LF|NF|PF|RF|CDF|CEF|CYF|CZF)
 #define	BDCOPY	(AF|BF|FF|OF|XF|CBF|CEF)
+#define	BDLIST (AF|BF|IF|KF|LF|OF|PF|RF|TF|UF|WF|XF|CBF|CDF|CHF|CLF|CXF|CYF|CZF)
