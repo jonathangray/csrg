@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: trap.c 1.28 89/09/25$
  *
- *	@(#)trap.c	7.10 (Berkeley) 04/20/91
+ *	@(#)trap.c	7.11 (Berkeley) 05/04/91
  */
 
 #include "param.h"
@@ -54,9 +54,9 @@
 #include "ktrace.h"
 #endif
 
+#include "../include/psl.h"
 #include "../include/trap.h"
 #include "../include/cpu.h"
-#include "../include/psl.h"
 #include "../include/reg.h"
 #include "../include/mtpr.h"
 
@@ -129,7 +129,7 @@ dopanic:
 		panic("trap");
 
 	case T_BUSERR:		/* kernel bus error */
-		if (!u.u_pcb.pcb_onfault)
+		if (!p->p_addr->u_pcb.pcb_onfault)
 			goto dopanic;
 		/*
 		 * If we have arranged to catch this fault in any of the
@@ -138,7 +138,7 @@ dopanic:
 		 * that it may need to clean up stack frame.
 		 */
 copyfault:
-		frame.f_pc = (int) u.u_pcb.pcb_onfault;
+		frame.f_pc = (int) p->p_addr->u_pcb.pcb_onfault;
 		frame.f_stackadj = -1;
 		return;
 
@@ -272,7 +272,7 @@ copyfault:
 		goto dopanic;
 
 	case T_ASTFLT+USER:	/* user async trap */
-		astoff();
+		astpending = 0;
 		/*
 		 * We check for software interrupts first.  This is because
 		 * they are at a higher level than ASTs, and on a VAX would
@@ -334,7 +334,7 @@ copyfault:
 		 * argument space is lazy-allocated.
 		 */
 		if (type == T_MMUFLT &&
-		    (!u.u_pcb.pcb_onfault ||
+		    (!p->p_addr->u_pcb.pcb_onfault ||
 		     (code & (SSW_DF|FC_SUPERD)) == (SSW_DF|FC_SUPERD)))
 			map = kernel_map;
 		else
@@ -374,7 +374,7 @@ copyfault:
 		}
 nogo:
 		if (type == T_MMUFLT) {
-			if (u.u_pcb.pcb_onfault)
+			if (p->p_addr->u_pcb.pcb_onfault)
 				goto copyfault;
 			printf("vm_fault(%x, %x, %x, 0) -> %x\n",
 			       map, va, ftype, rv);
