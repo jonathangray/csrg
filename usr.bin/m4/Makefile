@@ -1,5 +1,5 @@
 Virgin BTL M4 as sent out in 4.1
-# @(#)Makefile	5.1 (Berkeley) 12/15/82
+# @(#)Makefile	5.2 (Berkeley) 05/31/87
 
 CFLAGS=-O
 m4:	m4.o m4y.o
@@ -10,3 +10,5 @@ install:
 
 clean:
 	rm -f *.o
+
+depend:
