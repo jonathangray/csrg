@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.4 (Berkeley) 11/13/92
+ *	@(#)extern.h	5.5 (Berkeley) 12/04/92
  */
 
 int	 __bt_close __P((DB *));
@@ -61,6 +61,7 @@ int	 __ovfl_get __P((BTREE *, void *, size_t *, char **, size_t *));
 int	 __ovfl_put __P((BTREE *, const DBT *, pgno_t *));
 
 #ifdef DEBUG
+void	 __bt_dnpage __P((DB *, pgno_t));
 void	 __bt_dpage __P((PAGE *));
 void	 __bt_dump __P((DB *));
 #endif
