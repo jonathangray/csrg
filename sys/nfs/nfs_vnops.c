@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	7.88 (Berkeley) 07/12/92
+ *	@(#)nfs_vnops.c	7.89 (Berkeley) 07/13/92
  */
 
 /*
@@ -489,6 +489,7 @@ nfs_lookup(ap)
 	register struct componentname *cnp = ap->a_cnp;
 	register struct vnode *dvp = ap->a_dvp;
 	register struct vnode **vpp = ap->a_vpp;
+	register int flags = cnp->cn_flags;
 	register struct vnode *vdp;
 	register u_long *tl;
 	register caddr_t cp;
@@ -509,8 +510,8 @@ nfs_lookup(ap)
 	*vpp = NULL;
 	if (dvp->v_type != VDIR)
 		return (ENOTDIR);
-	lockparent = cnp->cn_flags & LOCKPARENT;
-	wantparent = cnp->cn_flags & (LOCKPARENT|WANTPARENT);
+	lockparent = flags & LOCKPARENT;
+	wantparent = flags & (LOCKPARENT|WANTPARENT);
 	nmp = VFSTONFS(dvp->v_mount);
 	np = VTONFS(dvp);
 	if ((error = cache_lookup(dvp, vpp, cnp)) && error != ENOENT) {
@@ -543,7 +544,7 @@ nfs_lookup(ap)
 					} else {
 						nfsstats.lookupcache_hits++;
 						if (cnp->cn_nameiop != LOOKUP &&
-						    (cnp->cn_flags&ISLASTCN))
+						    (flags & ISLASTCN))
 						    cnp->cn_flags |= SAVENAME;
 						return (0);
 					}
@@ -552,7 +553,7 @@ nfs_lookup(ap)
 			       vattr.va_ctime.ts_sec == VTONFS(vdp)->n_ctime) {
 				nfsstats.lookupcache_hits++;
 				if (cnp->cn_nameiop != LOOKUP &&
-				    (cnp->cn_flags&ISLASTCN))
+				    (flags & ISLASTCN))
 					cnp->cn_flags |= SAVENAME;
 				return (0);
 			   }
@@ -574,8 +575,8 @@ nfs_lookup(ap)
 	 */
 	if (nmp->nm_flag & NFSMNT_NQNFS) {
 		if ((nmp->nm_flag & NFSMNT_NQLOOKLEASE) &&
-		    ((cnp->cn_flags&MAKEENTRY) &&
-		    (cnp->cn_nameiop != DELETE || !(cnp->cn_flags&ISLASTCN)))) {
+		    ((cnp->cn_flags & MAKEENTRY) &&
+		    (cnp->cn_nameiop != DELETE || !(flags & ISLASTCN)))) {
 			nfsm_build(tl, u_long *, 2*NFSX_UNSIGNED);
 			*tl++ = txdr_unsigned(NQL_READ);
 			*tl = txdr_unsigned(nmp->nm_leaseterm);
@@ -591,9 +592,9 @@ nfs_lookup(ap)
 nfsmout:
 	if (error) {
 		if ((cnp->cn_nameiop == CREATE || cnp->cn_nameiop == RENAME) &&
-		    (cnp->cn_flags & ISLASTCN) && error == ENOENT)
+		    (flags & ISLASTCN) && error == ENOENT)
 			error = EJUSTRETURN;
-		if (cnp->cn_nameiop != LOOKUP && (cnp->cn_flags&ISLASTCN))
+		if (cnp->cn_nameiop != LOOKUP && (flags & ISLASTCN))
 			cnp->cn_flags |= SAVENAME;
 		return (error);
 	}
@@ -613,7 +614,7 @@ nfsmout:
 	/*
 	 * Handle RENAME case...
 	 */
-	if (cnp->cn_nameiop == RENAME && wantparent && (cnp->cn_flags&ISLASTCN)) {
+	if (cnp->cn_nameiop == RENAME && wantparent && (flags & ISLASTCN)) {
 		if (!bcmp(np->n_fh.fh_bytes, (caddr_t)fhp, NFSX_FH)) {
 			m_freem(mrep);
 			return (EISDIR);
@@ -652,10 +653,10 @@ nfsmout:
 	}
 	m_freem(mrep);
 	*vpp = newvp;
-	if (cnp->cn_nameiop != LOOKUP && (cnp->cn_flags&ISLASTCN))
+	if (cnp->cn_nameiop != LOOKUP && (flags & ISLASTCN))
 		cnp->cn_flags |= SAVENAME;
-	if ((cnp->cn_flags&MAKEENTRY) &&
-	    (cnp->cn_nameiop != DELETE || !(cnp->cn_flags&ISLASTCN))) {
+	if ((cnp->cn_flags & MAKEENTRY) &&
+	    (cnp->cn_nameiop != DELETE || !(flags & ISLASTCN))) {
 		if ((nmp->nm_flag & NFSMNT_NQNFS) == 0)
 			np->n_ctime = np->n_vattr.va_ctime.ts_sec;
 		else if (nqlflag && reqtime > time.tv_sec) {
