@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lofs.h	8.2 (Berkeley) 01/04/94
+ *	@(#)lofs.h	8.3 (Berkeley) 01/04/94
  *
  * $Id: lofs.h,v 1.8 1992/05/30 10:05:43 jsp Exp jsp $
  */
@@ -49,11 +49,6 @@ struct lofsmount {
 };
 
 #ifdef KERNEL
-
-#ifndef VT_LOFS
-#define VT_LOFS VT_UFS
-#endif
-
 /*
  * A cache of vnode references
  */
