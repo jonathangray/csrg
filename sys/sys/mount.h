@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mount.h	8.2 (Berkeley) 12/13/93
+ *	@(#)mount.h	8.2 (Berkeley) 12/14/93
  */
 
 #ifndef KERNEL
