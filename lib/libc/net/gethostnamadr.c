@@ -5,7 +5,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)gethostnamadr.c	6.5 (Berkeley) 03/09/86";
+static char sccsid[] = "@(#)gethostnamadr.c	6.6 (Berkeley) 03/13/86";
 #endif LIBC_SCCS and not lint
 
 #include <sys/param.h>
