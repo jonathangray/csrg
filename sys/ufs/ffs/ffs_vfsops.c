@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vfsops.c	8.9 (Berkeley) 06/15/94
+ *	@(#)ffs_vfsops.c	8.10 (Berkeley) 06/29/94
  */
 
 #include <sys/param.h>
@@ -279,6 +279,7 @@ ffs_reload(mountp, cred, p)
 	if (fs->fs_sbsize < SBSIZE)
 		bp->b_flags |= B_INVAL;
 	brelse(bp);
+	mountp->mnt_maxsymlinklen = fs->fs_maxsymlinklen;
 	ffs_oldfscompat(fs);
 	/*
 	 * Step 3: re-read summary information from disk.
