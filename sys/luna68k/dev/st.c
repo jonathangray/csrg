@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)st.c	8.1 (Berkeley) 06/10/93
+ *	@(#)st.c	8.2 (Berkeley) 12/06/93
  */
 
 /*
@@ -57,11 +57,11 @@
 #include <sys/tprintf.h>
 
 #include <luna68k/dev/device.h>
-#include <luna68k/dev/scsireg.h>
-#include <luna68k/dev/scsivar.h>
+#include <luna68k/dev/screg.h>
+#include <luna68k/dev/scvar.h>
 
-extern int scsi_test_unit_rdy();
-extern int scsi_request_sense();
+extern int sc_test_unit_rdy();
+extern int sc_request_sense();
 extern int scsi_immed_command();
 extern char *scsi_status();
 
@@ -229,8 +229,8 @@ stopen(dev, flag, type, p)
 	sc->sc_ctty = tprintf_open(p);
 
 	/* drive ready ? */
-	while ((stat = scsi_test_unit_rdy(ctlr, slave, 0)) != 0) {
-		scsi_request_sense(ctlr, slave, 0, sp, 8);
+	while ((stat = sc_test_unit_rdy(ctlr, slave, 0)) != 0) {
+		sc_request_sense(ctlr, slave, 0, sp, 8);
 
 		if (stat != STS_CHECKCOND) {
 			tprintf(sc->sc_ctty,
@@ -457,7 +457,7 @@ stintr(unit, stat)
 
 	/* more status */
 	case STS_CHECKCOND:
-		scsi_request_sense(ctlr, slave, 0, xp, 8);
+		sc_request_sense(ctlr, slave, 0, xp, 8);
 #ifdef DEBUG
 		printf("stintr: xsense_buff[0] = 0x%s\n", hexstr(xsense_buff[0], 2));
 		printf("stintr: xsense_buff[2] = 0x%s\n", hexstr(xsense_buff[2], 2));
@@ -593,7 +593,7 @@ st_rewind(dev)
 		return(1);
 	} else {
 		tprintf(sc->sc_ctty, "st%d:[st_rewind]   rewind error\n", unit);
-		scsi_request_sense(ctlr, slave, 0, sp, 8);
+		sc_request_sense(ctlr, slave, 0, sp, 8);
 		tprintf(sc->sc_ctty,
 			"st%d:[st_rewind]   status = 0x%x, sens key = 0x%x\n",
 			unit, stat, sp->key);
