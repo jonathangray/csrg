@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)spec_vnops.c	7.47 (Berkeley) 07/03/92
+ *	@(#)spec_vnops.c	7.48 (Berkeley) 07/12/92
  */
 
 #include <sys/param.h>
@@ -42,12 +42,12 @@
 #include <sys/mount.h>
 #include <sys/namei.h>
 #include <sys/vnode.h>
-#include <sys/specdev.h>
 #include <sys/stat.h>
 #include <sys/errno.h>
 #include <sys/ioctl.h>
 #include <sys/file.h>
 #include <sys/disklabel.h>
+#include <miscfs/specfs/specdev.h>
 
 /* symbolic sleep message strings for devices */
 char	devopn[] = "devopn";
