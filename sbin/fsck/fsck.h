@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fsck.h	5.19 (Berkeley) 06/26/92
+ *	@(#)fsck.h	5.20 (Berkeley) 06/04/93
  */
 
 #define	MAXDUP		10	/* limit on dup blks (per inode) */
@@ -161,7 +161,7 @@ struct inoinfo {
 } **inphead, **inpsort;
 long numdirs, listmax, inplast;
 
-char	*devname;		/* name of device being checked */
+char	*cdevname;		/* name of device being checked */
 long	dev_bsize;		/* computed value of DEV_BSIZE */
 long	secsize;		/* actual disk sector size */
 char	nflag;			/* assume a no response */
