@@ -38,9 +38,9 @@
 
 #ifndef lint
 #ifdef DAEMON
-static char sccsid[] = "@(#)daemon.c	8.14 (Berkeley) 09/19/93 (with daemon mode)";
+static char sccsid[] = "@(#)daemon.c	8.15 (Berkeley) 09/22/93 (with daemon mode)";
 #else
-static char sccsid[] = "@(#)daemon.c	8.14 (Berkeley) 09/19/93 (without daemon mode)";
+static char sccsid[] = "@(#)daemon.c	8.15 (Berkeley) 09/22/93 (without daemon mode)";
 #endif
 #endif /* not lint */
 
@@ -169,7 +169,7 @@ getrequests()
 	if (TcpRcvBufferSize > 0)
 	{
 		if (setsockopt(DaemonSocket, SOL_SOCKET, SO_RCVBUF,
-			       &TcpRcvBufferSize,
+			       (char *) &TcpRcvBufferSize,
 			       sizeof(TcpRcvBufferSize)) < 0)
 			syserr("getrequests: setsockopt(SO_RCVBUF)");
 	}
@@ -427,7 +427,7 @@ gothostent:
 		if (TcpSndBufferSize > 0)
 		{
 			if (setsockopt(s, SOL_SOCKET, SO_SNDBUF,
-				       &TcpSndBufferSize,
+				       (char *) &TcpSndBufferSize,
 				       sizeof(TcpSndBufferSize)) < 0)
 				syserr("makeconnection: setsockopt(SO_SNDBUF)");
 		}
