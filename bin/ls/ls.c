@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)ls.c	5.42 (Berkeley) 05/17/90";
+static char sccsid[] = "@(#)ls.c	5.43 (Berkeley) 07/22/90";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -76,6 +76,7 @@ int f_nonprint;			/* show unprintables as ? */
 int f_nosort;			/* don't sort output */
 int f_recursive;		/* ls subdirectories also */
 int f_reversesort;		/* reverse whatever sort is used */
+int f_sectime;			/* print the real time for all files */
 int f_singlecol;		/* use single column output */
 int f_size;			/* list size in short listing */
 int f_statustime;		/* use time of last mode change */
@@ -113,7 +114,7 @@ main(argc, argv)
 	if (!getuid())
 		f_listdot = 1;
 
-	while ((ch = getopt(argc, argv, "1ACFLRacdfgiklqrstu")) != EOF) {
+	while ((ch = getopt(argc, argv, "1ACFLRTacdfgiklqrstu")) != EOF) {
 		switch (ch) {
 		/*
 		 * -1, -C and -l all override each other
@@ -180,6 +181,9 @@ main(argc, argv)
 			break;
 		case 's':
 			f_size = 1;
+			break;
+		case 'T':
+			f_sectime = 1;
 			break;
 		case 't':
 			f_timesort = 1;
