@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.139 (Berkeley) 03/11/95
+ *	@(#)conf.h	8.140 (Berkeley) 03/11/95
  */
 
 /*
@@ -66,7 +66,8 @@
 # define MAXALIASDB	12		/* max # of alias databases */
 # define MAXMAPSTACK	12		/* max # of stacked or sequenced maps */
 # define MAXTOCLASS	8		/* max # of message timeout classes */
-# define MAXMIMENESTING	20		/* max depth of MIME nesting */
+# define MAXMIMEARGS	20		/* max args in Content-Type: */
+# define MAXMIMENESTING	20		/* max MIME multipart nesting */
 
 # ifndef QUEUESIZE
 # define QUEUESIZE	1000		/* max # of jobs per queue run */
