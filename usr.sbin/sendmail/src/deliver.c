@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	8.106 (Berkeley) 11/11/94";
+static char sccsid[] = "@(#)deliver.c	8.107 (Berkeley) 11/13/94";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -73,6 +73,8 @@ sendall(e, mode)
 	char *owner;
 	int otherowners;
 	bool announcequeueup;
+	bool oldverbose = Verbose;
+	int pid;
 	int pid;
 #ifdef LOCKF
 	struct flock lfd;
@@ -434,17 +436,53 @@ sendall(e, mode)
 		e->e_flags |= EF_NORECEIPT;
 	}
 
-	CurEnv = e;
-	sendenvelope(e, mode, announcequeueup);
+	bool oldverbose = Verbose;
+
+	if (splitenv != NULL)
+	{
+		if (tTd(13, 1))
+		{
+			printf("\nsendall: Split queue; remaining queue:\n");
+			printaddr(e->e_sendqueue, TRUE);
+		}
+
+		for (ee = splitenv; ee != NULL; ee = ee->e_sibling)
+		{
+			CurEnv = ee;
+			if (mode != SM_VERIFY)
+				openxscript(ee);
+			sendenvelope(ee, mode);
+			dropenvelope(ee);
+		}
+
+		CurEnv = e;
+	}
+	sendenvelope(e, mode);
+	Verbose = oldverbose;
 }
 
-sendenvelope(e, mode, announcequeueup)
+sendenvelope(e, mode)
 	register ENVELOPE *e;
 	char mode;
-	bool announcequeueup;
 {
 	register ADDRESS *q;
-	bool oldverbose = Verbose;
+	char *qf;
+	char *id;
+	bool didany;
+
+	/*
+	**  If we have had global, fatal errors, don't bother sending
+	**  the message at all if we are in SMTP mode.  Local errors
+	**  (e.g., a single address failing) will still cause the other
+	**  addresses to be sent.
+	*/
+
+	if (bitset(EF_FATALERRS, e->e_flags) &&
+	    (OpMode == MD_SMTP || OpMode == MD_DAEMON))
+	{
+		e->e_flags |= EF_CLRQUEUE;
+		return;
+	}
 
 	/*
 	**  Run through the list and send everything.
@@ -499,7 +537,6 @@ sendenvelope(e, mode, announcequeueup)
 			didany = TRUE;
 		}
 	}
-	Verbose = oldverbose;
 	if (didany)
 	{
 		e->e_dtime = curtime();
