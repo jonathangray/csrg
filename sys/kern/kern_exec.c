@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_exec.c	7.56 (Berkeley) 05/14/92
+ *	@(#)kern_exec.c	7.57 (Berkeley) 05/29/92
  */
 
 #include "param.h"
@@ -728,7 +728,7 @@ badmap:
 	p->p_cred->p_svgid = cred->cr_gid;
 	vm->vm_tsize = btoc(xts);
 	vm->vm_dsize = ds;
-	vm->vm_ssize = ssize;
+	vm->vm_ssize = btoc(ssize);
 	p->p_stats->p_prof.pr_scale = 0;
 #if defined(tahoe)
 	/* move this when tahoe cpu_exec is created */
