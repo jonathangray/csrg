@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)clnp_input.c	7.15 (Berkeley) 10/11/92
+ *	@(#)clnp_input.c	7.16 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -100,7 +100,7 @@ int	esis_input();
 
 #ifdef	ISO_X25ESIS
 int	x25esis_input();
-#endif	ISO_X25ESIS
+#endif	/* ISO_X25ESIS */
 
 /*
  * FUNCTION:		clnp_init
@@ -436,7 +436,7 @@ struct snpa_hdr	*shp;	/* subnetwork header */
 			if (need_afrin)
 				INCSTAT(cns_congest_rcvd);
 		}
-#endif	DECBIT
+#endif	/* DECBIT */
 
 		if (errcode != 0) {
 			clnp_discard(m, (char)errcode);
@@ -548,4 +548,4 @@ struct snpa_hdr	*shp;	/* subnetwork header */
  		break;
 	}
 }
-#endif ISO
+#endif /* ISO */
