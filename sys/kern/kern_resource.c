@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_resource.c	7.14 (Berkeley) 02/14/92
+ *	@(#)kern_resource.c	7.15 (Berkeley) 03/15/92
  */
 
 #include "param.h"
@@ -202,6 +202,8 @@ setrlimit(p, uap, retval)
 	if (alim.rlim_cur > alimp->rlim_max || alim.rlim_max > alimp->rlim_max)
 		if (error = suser(p->p_ucred, &p->p_acflag))
 			return (error);
+	if (alim.rlim_cur > alim.rlim_max)
+		alim.rlim_cur = alim.rlim_max;
 	if (p->p_limit->p_refcnt > 1 &&
 	    (p->p_limit->p_lflags & PL_SHAREMOD) == 0) {
 		p->p_limit->p_refcnt--;
