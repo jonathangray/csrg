@@ -32,7 +32,7 @@ divert(0)dnl
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)cf.m4	2.1 (Berkeley) 10/02/91
+#	@(#)cf.m4	2.2 (Berkeley) 10/02/91
 #
 
 
@@ -64,7 +64,8 @@ define(`VERSIONID', ``#####'  $1  #####')
 m4wrap(`include(../m4/proto.m4)')
 define(`LOCAL_RULE_3', `divert(2)')
 define(`LOCAL_RULE_0', `divert(3)')
-define(`UUCPSMTP', ``R$* < @' $1 `.UUCP > $*	$1 < @' $2 `< $3'')
+define(`UUCPSMTP', `R DOL(*) < @' $1 `.UUCP > DOL(*)	DOL(1) < @ $2 > DOL(3)')
 define(`CONCAT', `$1$2$3$4$5$6$7')
+define(`DOL', ``$'$1')
 
 divert(0)dnl
