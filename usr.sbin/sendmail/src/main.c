@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.130 (Berkeley) 06/13/95";
+static char sccsid[] = "@(#)main.c	8.131 (Berkeley) 06/17/95";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -1687,6 +1687,7 @@ testmodeline(line, e)
 	auto char *delimptr;
 	int mid;
 	ADDRESS a;
+	static int tryflags = RF_COPYNONE;
 	extern bool invalidaddr();
 	extern char *crackaddr();
 
@@ -1819,8 +1820,10 @@ testmodeline(line, e)
 			q = crackaddr(p);
 			printf("Cracked address = ");
 			xputs(q);
-			printf("\n");
-			if (parseaddr(p, &a, RF_COPYNONE, '\0', NULL, e) == NULL)
+			printf("\nParsing %s %s address\n",
+				bitset(RF_HEADERADDR, tryflags) ? "header" : "envelope",
+				bitset(RF_SENDERADDR, tryflags) ? "sender" : "recipient");
+			if (parseaddr(p, &a, tryflags, '\0', NULL, e) == NULL)
 				printf("Cannot parse\n");
 			else if (a.q_host != NULL && a.q_host[0] != '\0')
 				printf("mailer %s, host %s, user %s\n",
@@ -1828,6 +1831,34 @@ testmodeline(line, e)
 			else
 				printf("mailer %s, user %s\n",
 					a.q_mailer->m_name, a.q_user);
+		}
+		else if (strcasecmp(&line[1], "tryflags") == 0)
+		{
+			while (*p != '\n')
+			{
+				switch (*p)
+				{
+				  case 'H':
+				  case 'h':
+					tryflags |= RF_HEADERADDR;
+					break;
+
+				  case 'E':
+				  case 'e':
+					tryflags &= ~RF_HEADERADDR;
+					break;
+
+				  case 'S':
+				  case 's':
+					tryflags |= RF_SENDERADDR;
+					break;
+
+				  case 'R':
+				  case 'r':
+					tryflags &= ~RF_SENDERADDR;
+					break;
+				}
+			}
 		}
 		else
 		{
