@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	6.21 (Berkeley) 03/23/93";
+static char sccsid[] = "@(#)readcf.c	6.22 (Berkeley) 03/26/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -265,7 +265,6 @@ readcf(cfname)
 					  case MATCHONE:
 					  case MATCHCLASS:
 					  case MATCHNCLASS:
-					  case CANONHOST:
 						nfuzzy++;
 						break;
 
