@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)radix.h	7.5 (Berkeley) 07/30/91
+ *	@(#)radix.h	7.6 (Berkeley) 07/09/92
  */
 
 /*
@@ -115,4 +115,6 @@ struct radix_node_head {
 #define Bzero(p, n) bzero((caddr_t)(p), (unsigned)(n));
 #define R_Malloc(p, t, n) (p = (t) malloc((unsigned long)(n), M_RTABLE, M_DONTWAIT))
 #define Free(p) free((caddr_t)p, M_RTABLE);
+
+int	rn_inithead __P((void **, int));
 #endif /*KERNEL*/
