@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_ether.c	7.14 (Berkeley) 06/25/91
+ *	@(#)if_ether.c	7.15 (Berkeley) 10/02/91
  */
 
 /*
@@ -365,7 +365,7 @@ in_arpinput(m)
 	register struct ether_arp *ea;
 	register struct arpcom *ac = (struct arpcom *)m->m_pkthdr.rcvif;
 	struct ether_header *eh;
-	register struct llinfo_arp *la;
+	register struct llinfo_arp *la = 0;
 	register struct rtentry *rt;
 	struct in_ifaddr *ia, *maybe_ia = 0;
 	struct mbuf *mcopy = 0;
