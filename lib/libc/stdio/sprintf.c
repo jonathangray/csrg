@@ -1,5 +1,5 @@
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)sprintf.c	5.2 (Berkeley) 03/09/86";
+static char sccsid[] = "@(#)sprintf.c	5.3 (Berkeley) 10/22/87";
 #endif LIBC_SCCS and not lint
 
 #include	<stdio.h>
