@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: ac.c 1.5 92/01/21$
  *
- *	@(#)ac.c	7.2 (Berkeley) 10/11/92
+ *	@(#)ac.c	7.3 (Berkeley) 11/06/92
  */
 
 /*
@@ -59,6 +59,11 @@
 #include <sys/ioctl.h>
 #include <sys/kernel.h>
 #include <sys/malloc.h>
+#include <sys/time.h>
+#include <sys/ucred.h>
+#include <sys/proc.h>
+
+#include <vm/vm.h>
 
 #include <hp/dev/device.h>
 
