@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)usersmtp.c	8.21 (Berkeley) 07/23/94 (with SMTP)";
+static char sccsid[] = "@(#)usersmtp.c	8.22 (Berkeley) 10/26/94 (with SMTP)";
 #else
-static char sccsid[] = "@(#)usersmtp.c	8.21 (Berkeley) 07/23/94 (without SMTP)";
+static char sccsid[] = "@(#)usersmtp.c	8.22 (Berkeley) 10/26/94 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -418,8 +418,8 @@ smtpmailfrom(m, mci, e)
 #ifdef LOG
 	if (LogLevel > 1)
 	{
-		syslog(LOG_CRIT, "%s: SMTP MAIL protocol error: %s",
-			e->e_id, SmtpReplyBuffer);
+		syslog(LOG_CRIT, "%s: %s: SMTP MAIL protocol error: %s",
+			e->e_id, mci->mci_host, SmtpReplyBuffer);
 	}
 #endif
 
@@ -469,8 +469,8 @@ smtprcpt(to, m, mci, e)
 #ifdef LOG
 	if (LogLevel > 1)
 	{
-		syslog(LOG_CRIT, "%s: SMTP RCPT protocol error: %s",
-			e->e_id, SmtpReplyBuffer);
+		syslog(LOG_CRIT, "%s: %s: SMTP RCPT protocol error: %s",
+			e->e_id, mci->mci_host, SmtpReplyBuffer);
 	}
 #endif
 
@@ -530,8 +530,8 @@ smtpdata(m, mci, e)
 #ifdef LOG
 		if (LogLevel > 1)
 		{
-			syslog(LOG_CRIT, "%s: SMTP DATA-1 protocol error: %s",
-				e->e_id, SmtpReplyBuffer);
+			syslog(LOG_CRIT, "%s: %s: SMTP DATA-1 protocol error: %s",
+				e->e_id, mci->mci_host, SmtpReplyBuffer);
 		}
 #endif
 		smtprset(m, mci, e);
@@ -618,8 +618,8 @@ smtpdata(m, mci, e)
 #ifdef LOG
 	if (LogLevel > 1)
 	{
-		syslog(LOG_CRIT, "%s: SMTP DATA-2 protocol error: %s",
-			e->e_id, SmtpReplyBuffer);
+		syslog(LOG_CRIT, "%s: %s: SMTP DATA-2 protocol error: %s",
+			e->e_id, mci->mci_host, SmtpReplyBuffer);
 	}
 #endif
 	return (EX_PROTOCOL);
