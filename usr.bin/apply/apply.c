@@ -1,145 +1,223 @@
 /*-
- * Copyright (c) 1983, 1993
+ * Copyright (c) 1994
  *	The Regents of the University of California.  All rights reserved.
  *
- * This module is believed to contain source code proprietary to AT&T.
- * Use and redistribution is subject to the Berkeley Software License
- * Agreement and your Software Agreement with AT&T (Western Electric).
+ * This code is derived from software contributed to Berkeley by
+ * Jan-Simon Pendry.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
  */
-
-#ifndef lint
-static char copyright[] =
-"@(#) Copyright (c) 1983, 1993\n\
-	The Regents of the University of California.  All rights reserved.\n";
-#endif /* not lint */
 
 #ifndef lint
 static char sccsid[] = "@(#)apply.c	8.2 (Berkeley) 04/04/94";
 #endif /* not lint */
 
-/*
- * apply - apply a command to a set of arguments
- *
- *	apply echo * == ls
- *	apply -2 cmp A1 B1 A2 B2   compares A's with B's
- *	apply "ln %1 /usr/fred/dir" *  duplicates a directory
- */
-#include <paths.h>
+#include <err.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
-char	*cmdp;
-#define	NCHARS 512
-char	cmd[512];
-char	defargs=1;
-#define	DEFARGCHAR	'%'
-char	argchar=DEFARGCHAR;
-int	nchars;
-extern	char *getenv();
+void	usage __P((void));
 
+int
 main(argc, argv)
+	int argc;
 	char *argv[];
 {
-	register n;
-	while(argc>2 && argv[1][0]=='-'){
-		if(argv[1][1]=='a'){
-			argchar=argv[1][2];
-			if(argchar=='\0')
-				argchar=DEFARGCHAR;
-		} else {
-			defargs = atoi(&argv[1][1]);
-			if(defargs < 0)
-				defargs = 1;
-		}
-		--argc; ++argv;
-	}
-	if(argc<2){
-		fprintf(stderr, "usage: apply [-#] [-ac] cmd arglist\n");
-		exit(1);
-	}
-	argc -= 2;
-	cmdp = argv[1];
-	argv += 2;
-	while(n=docmd(argc, argv)){
-		argc -= n;
-		argv += n;
-	}
-}
-char
-addc(c)
-	char c;
-{
-	if(nchars++>=NCHARS){
-		fprintf(stderr, "apply: command too long\n");
-		exit(1);
-	}
-	return(c);
-}
-char *
-addarg(s, t)
-	register char *s, *t;
-{
-	while(*t = addc(*s++))
-		*t++;
-	return(t);
-}
-docmd(argc, argv)
-	char *argv[];
-{
-	register char *p, *q;
-	register max, i;
-	char gotit;
-	if(argc<=0)
-		return(0);
-	nchars = 0;
-	max = 0;
-	gotit = 0;
-	p = cmdp;
-	q = cmd;
-	while(*q = addc(*p++)){
-		if(*q++!=argchar || *p<'1' || '9'<*p)
-			continue;
-		if((i= *p++-'1') > max)
-			max = i;
-		if(i>=argc){
-	Toofew:
-			fprintf(stderr, "apply: expecting argument(s) after `%s'\n", argv[argc-1]);
-			exit(1);
-		}
-		q = addarg(argv[i], q-1);
-		gotit++;
-	}
-	if(defargs!=0 && gotit==0){
-		if(defargs>argc)
-			goto Toofew;
-		for(i=0; i<defargs; i++){
-			*q++ = addc(' ');
-			q = addarg(argv[i], q);
-		}
-	}
-	i = system(cmd);
-	if(i == 127){
-		fprintf(stderr, "apply: no shell!\n");
-		exit(1);
-	}
-	return(max==0? (defargs==0? 1 : defargs) : max+1);
-}
-system(s)
-char *s;
-{
-	int status, pid, w;
-	char *shell = getenv("SHELL");
+	int ch, clen, debug, error, n, nargs;
+	char *c, *cmd, magic, *p;
 
-	if ((pid = fork()) == 0) {
-		execl(shell ? shell : _PATH_BSHELL, "sh", "-c", s, 0);
-		_exit(127);
+	debug = 0;
+	magic = '%';		/* default magic char is `%' */
+	nargs = 1;		/* default to a single arg */
+
+	while ((ch = getopt(argc, argv, "a:d0123456789")) != EOF) {
+		switch (ch) {
+			case 'a':
+				magic = *optarg;
+				break;
+
+			case 'd':
+				debug = 1;
+				break;
+
+			case '0': case '1': case '2':
+			case '3': case '4': case '5':
+			case '6': case '7': case '8':
+			case '9':
+				nargs = optopt - '0';
+				break;
+
+			default:
+				usage();
+				break;
+		}
 	}
-	if(pid == -1){
-		fprintf(stderr, "apply: can't fork\n");
-		exit(1);
+
+	argc -= optind;
+	argv += optind;
+
+	if (argc < 2)
+		usage();
+
+	/*
+	 * The command to run is argv[0], and the args are argv[1..]
+	 */
+	cmd = argv[0];
+
+	/*
+	 * Look for %digit references, remembering the
+	 * largest value found.
+	 */
+	n = 0;
+	for (p = cmd; (p = strchr(p, magic)) != NULL; p++) {
+		p++;
+		switch (*p) {
+		case '1': case '2': case '3':
+		case '4': case '5': case '6':
+		case '7': case '8': case '9':
+			if ((*p - '0') > n)
+				n = *p - '0';
+			break;
+		}
 	}
-	while ((w = wait(&status)) != pid && w != -1)
-		;
-	if (w == -1)
-		status = -1;
-	return(status);
+
+	/*
+	 * If there were any %digit references, then
+	 * simply use those, otherwise build a new command
+	 * string with sufficient %digit references at
+	 * the end to consume (nargs) arguments each time
+	 * round the loop.
+	 */
+	c = malloc(sizeof("exec") + strlen(cmd) + 3 * nargs + 1);
+	if (c == NULL)
+		err(1, NULL);
+		
+	if (n > 0) {
+		(void)sprintf(c, "exec %s", cmd);
+		nargs = n;
+	} else {
+		int i;
+
+		p = c;
+		p += sprintf(c, "exec %s", cmd);
+		for (i = 1; i <= nargs; i++)
+			p += sprintf(p, " %c%d", magic, i);
+	}
+	cmd = c;
+
+	/*
+	 * (argc) and (argv) are still offset by one to make it
+	 * simpler to expand %digit references.
+	 * At the end of the loop check for (argc) equals 1 means
+	 * that all the (argv) has been consumed.
+	 */
+	c = 0;
+	clen = 0;
+	error = 0;
+
+	while (argc > nargs) {
+		int i, l;
+		char *c, *q;
+
+		/* find tentative value for command length */
+		l = strlen(cmd);
+		for (i = 0; i < nargs; i++)
+			l += strlen(argv[i]);
+
+		/* ensure enough space to build the command */
+		if (l > clen) {
+			clen = l;
+			c = realloc(c, clen);
+			if (c == NULL)
+				err(1, NULL);
+		}
+
+		/* expand all command references */
+		for (p = cmd, q = c; *p; p++) {
+			if (*p != magic) {
+				*q++ = *p;
+				continue;
+			}
+			p++;
+
+			switch (*p) {
+			case '1': case '2': case '3':
+			case '4': case '5': case '6':
+			case '7': case '8': case '9':
+				strcpy(q, argv[*p - '0']);
+				q += strlen(q);
+				break;
+
+			default:
+				*q++ = magic;
+				*q++ = *p;
+				break;
+			}
+		}
+
+		/* terminate the command string */
+		*q = '\0';
+
+		/* run the command */
+		if (debug) {
+			puts(c);
+		} else {
+			if (system(c))
+				error = 1;
+		}
+
+		/*
+		 * bump the arg vector.  if -0 was on the command
+		 * line, then still need to skip one argument.
+		 */
+		if (nargs) {
+			argc -= nargs;
+			argv += nargs;
+		} else {
+			--argc;
+			argv++;
+		}
+	}
+
+	if (argc != 1)
+		errx(1, "expecting argument%s after \"%s\"",
+			(nargs-argc) ? "s" : "", argv[argc-1]);
+	
+	exit(1);
+}
+
+void
+usage()
+{
+
+	(void)fprintf(stderr, "usage: apply [-an] [-0..9] cmd args ...\n");
+	exit(1);
 }
