@@ -39,7 +39,7 @@
  * from: Utah $Hdr: machdep.c 1.63 91/04/24$
  * from: hp300/hp300/machdep.c   7.36 (Berkeley) 2/10/93
  *
- *	@(#)machdep.c	7.8 (Berkeley) 03/10/93
+ *	@(#)machdep.c	7.9 (Berkeley) 05/02/93
  */
 
 #include <sys/param.h>
@@ -1070,11 +1070,14 @@ badkstack(oflow, fr)
 	int oflow;
 	struct frame fr;
 {
+#ifdef	notdef
 	extern char kstackatbase[];
 
 	printf("%s: sp should be %x\n", 
 	       oflow ? oflowmsg : uflowmsg,
 	       kstackatbase - (exframesize[fr.f_format] + 8));
+#endif
+	printf("%s: sp should be ????????\n", oflow ? oflowmsg : uflowmsg);
 	regdump(&fr, 0);
 	panic(oflow ? oflowmsg : uflowmsg);
 }
