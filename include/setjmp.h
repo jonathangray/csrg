@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)setjmp.h	5.1 (Berkeley) 05/27/90
+ *	@(#)setjmp.h	5.2 (Berkeley) 05/29/90
  */
 
 #ifndef _SETJMP_
@@ -62,7 +62,7 @@ typedef int sigjmp_buf[_JBLEN + 1];
 typedef int jmp_buf[_JBLEN];
 #endif
 
-#ifdef __STDC__
+#if __STDC__ || c_plusplus
 int sigsetjmp(sigjmp_buf, int);
 void siglongjmp(sigjmp_buf, int);
 #ifndef _POSIX_SOURCE
