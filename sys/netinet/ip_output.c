@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ip_output.c	7.32 (Berkeley) 04/07/93
+ *	@(#)ip_output.c	7.33 (Berkeley) 05/19/93
  */
 
 #include <sys/param.h>
