@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	7.93 (Berkeley) 07/10/92
+ *	@(#)vfs_syscalls.c	7.94 (Berkeley) 07/11/92
  */
 
 #include "param.h"
