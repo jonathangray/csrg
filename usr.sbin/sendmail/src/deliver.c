@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	8.158 (Berkeley) 06/13/95";
+static char sccsid[] = "@(#)deliver.c	8.159 (Berkeley) 06/18/95";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1074,7 +1074,8 @@ deliver(e, firstto)
 	/* check for 8-bit available */
 	if (bitset(EF_HAS8BIT, e->e_flags) &&
 	    bitnset(M_7BITS, m->m_flags) &&
-	    !bitset(MM_MIME8BIT, MimeMode))
+	    (!bitset(MM_MIME8BIT, MimeMode) ||
+	     bitset(EF_DONT_MIME, e->e_flags)))
 	{
 		usrerr("554 Cannot send 8-bit data to 7-bit destination");
 		rcode = EX_DATAERR;
