@@ -28,7 +28,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_syscalls.c	8.3 (Berkeley) 01/04/94
+ *	@(#)uipc_syscalls.c	8.4 (Berkeley) 02/21/94
  */
 
 #include <sys/param.h>
@@ -347,7 +347,7 @@ free1:
 struct sendto_args {
 	int	s;
 	caddr_t	buf;
-	int	len;
+	size_t	len;
 	int	flags;
 	caddr_t	to;
 	int	tolen;
@@ -580,7 +580,7 @@ bad:
 struct recvfrom_args {
 	int	s;
 	caddr_t	buf;
-	int	len;
+	size_t	len;
 	int	flags;
 	caddr_t	from;
 	int	*fromlenaddr;
