@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hpib.c	7.5 (Berkeley) 07/07/92
+ *	@(#)hpib.c	7.6 (Berkeley) 08/21/92
  */
 
 /*
@@ -59,7 +59,7 @@ struct	isr hpib_isr[NHPIB];
 int	nhpibppoll(), fhpibppoll();
 
 int	hpibtimeout = 100000;	/* # of status tests before we give up */
-int	hpibidtimeout = 20000;	/* # of status tests for hpibid() calls */
+int	hpibidtimeout = 100000;	/* # of status tests for hpibid() calls */
 int	hpibdmathresh = 3;	/* byte count beyond which to attempt dma */
 
 hpibinit(hc)
