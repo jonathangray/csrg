@@ -30,13 +30,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)time.h	5.11 (Berkeley) 02/22/91
+ *	@(#)time.h	5.12 (Berkeley) 03/09/91
  */
 
 #ifndef _TIME_H_
 #define	_TIME_H_
 
-#include <machine/types.h>
+#include <machine/ansi.h>
 
 #ifndef	NULL
 #define	NULL	0
