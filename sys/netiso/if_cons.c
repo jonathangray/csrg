@@ -27,7 +27,7 @@ SOFTWARE.
 /*
  * $Header: if_cons.c,v 4.7 88/08/11 15:52:55 nhall Exp $
  * $Source: /usr/argo/sys/netiso/RCS/if_cons.c,v $
- *	@(#)if_cons.c	7.6 (Berkeley) 05/03/91
+ *	@(#)if_cons.c	7.7 (Berkeley) 05/06/91
  *
  * cons.c - Connection Oriented Network Service:
  * including support for a) user transport-level service, 
