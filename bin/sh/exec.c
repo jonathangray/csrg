@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)exec.c	5.1 (Berkeley) 03/07/91";
+static char sccsid[] = "@(#)exec.c	5.2 (Berkeley) 03/13/91";
 #endif /* not lint */
 
 /*
@@ -85,7 +85,7 @@ struct tblentry {
 
 
 STATIC struct tblentry *cmdtable[CMDTABLESIZE];
-STATIC int builtinloc;		/* index in path of %builtin, or -1 */
+STATIC int builtinloc = -1;		/* index in path of %builtin, or -1 */
 
 
 #ifdef __STDC__
@@ -322,7 +322,7 @@ hashcmd(argc, argv)  char **argv; {
 		return 0;
 	}
 	verbose = 0;
-	while ((c = nextopt("rv")) >= 0) {
+	while ((c = nextopt("rv")) != '\0') {
 		if (c == 'r') {
 			clearcmdentry(0);
 		} else if (c == 'v') {
