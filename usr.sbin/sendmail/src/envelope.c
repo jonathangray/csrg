@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)envelope.c	8.53 (Berkeley) 03/21/95";
+static char sccsid[] = "@(#)envelope.c	8.54 (Berkeley) 03/21/95";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -145,8 +145,7 @@ dropenvelope(e)
 			queueit = TRUE;
 
 		/* see if a notification is needed */
-		if (e->e_df != NULL &&
-		    bitset(QBADADDR, q->q_flags) &&
+		if (bitset(QBADADDR, q->q_flags) &&
 		    bitset(QPINGONFAILURE, q->q_flags))
 		{
 			failure_return = TRUE;
@@ -308,8 +307,7 @@ dropenvelope(e)
 		if (tTd(50, 1))
 			printf("\n===== Dropping [dq]f%s (queueit=%d, e_flags=%x) =====\n\n",
 				e->e_id, queueit, e->e_flags);
-		if (e->e_df != NULL)
-			xunlink(e->e_df);
+		xunlink(queuename(e, 'd'));
 		xunlink(queuename(e, 'q'));
 
 #ifdef LOG
@@ -332,9 +330,10 @@ dropenvelope(e)
 
 	/* make sure that this envelope is marked unused */
 	if (e->e_dfp != NULL)
-		(void) xfclose(e->e_dfp, "dropenvelope", e->e_df);
+		(void) xfclose(e->e_dfp, "dropenvelope df", e->e_id);
 	e->e_dfp = NULL;
-	e->e_id = e->e_df = NULL;
+	e->e_id = NULL;
+	e->e_flags &= ~EF_HAS_DF;
 }
 /*
 **  CLEARENVELOPE -- clear an envelope without unlocking
@@ -371,7 +370,7 @@ clearenvelope(e, fullclear)
 		if (e->e_xfp != NULL)
 			(void) xfclose(e->e_xfp, "clearenvelope xfp", e->e_id);
 		if (e->e_dfp != NULL)
-			(void) xfclose(e->e_dfp, "clearenvelope dfp", e->e_df);
+			(void) xfclose(e->e_dfp, "clearenvelope dfp", e->e_id);
 		e->e_xfp = e->e_dfp = NULL;
 	}
 
