@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.1 (Berkeley) 06/06/93";
+static char sccsid[] = "@(#)main.c	5.33 (Berkeley) 06/12/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -232,7 +232,7 @@ main(argc, argv)
 		prog = argv[0];
 	af = AF_UNSPEC;
 
-	while ((ch = getopt(argc, argv, "AaBdf:hI:iM:mN:np:rstuw:")) != EOF)
+	while ((ch = getopt(argc, argv, "AaBdf:I:iM:mN:np:rstuw:")) != EOF)
 		switch(ch) {
 		case 'A':
 			Aflag = 1;
@@ -261,9 +261,6 @@ main(argc, argv)
 				    prog, optarg);
 				exit(1);
 			}
-			break;
-		case 'h':
-			hflag = 1;
 			break;
 		case 'I': {
 			char *cp;
@@ -367,10 +364,6 @@ main(argc, argv)
 				tp->pr_name);
 		else
 			printf("%s: no stats routine\n", tp->pr_name);
-		exit(0);
-	}
-	if (hflag) {
-		hostpr(nl[N_IMP].n_value, nl[N_NIMP].n_value);
 		exit(0);
 	}
 	/*
