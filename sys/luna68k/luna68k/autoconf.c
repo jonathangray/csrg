@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)autoconf.c	7.2 (Berkeley) 10/11/92
+ *	@(#)autoconf.c	7.3 (Berkeley) 11/17/92
  */
 
 /*
@@ -51,14 +51,14 @@
  * and the drivers are initialized.
  */
 
-#include <sys/param.h>
-#include <sys/systm.h>
-#include <sys/dkstat.h>
-#include <sys/conf.h>
-#include <sys/reboot.h>
+#include "sys/param.h"
+#include "sys/systm.h"
+#include "sys/dkstat.h"
+#include "sys/conf.h"
+#include "sys/reboot.h"
 
-#include <machine/cpu.h>
-#include <luna68k/dev/device.h>
+#include "../include/cpu.h"
+#include "../dev/device.h"
 
 /*
  * The following several variables are related to
@@ -485,9 +485,6 @@ find_devs()
 	
 	setup_hw(hw, (char *) 0x51000000, 0x5, D_SIO,      0x5);
 	hw->hw_secid = 0; hw++;
-	
-	setup_hw(hw, (char *) 0x51000004, 0x5, D_KEYBOARD, 0x5);
-	hw->hw_secid = 1; hw++;
 	
 	setup_hw(hw, (char *) 0xe1000000, 0xe, C_SCSI,     0xe);
 	hw++;
