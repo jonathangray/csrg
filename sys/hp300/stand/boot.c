@@ -1,4 +1,4 @@
-/*
+/*-
  * Copyright (c) 1982, 1986, 1990 The Regents of the University of California.
  * All rights reserved.
  *
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)boot.c	7.2 (Berkeley) 12/16/90
+ *	@(#)boot.c	7.3 (Berkeley) 05/04/91
  */
 
 #include <a.out.h>
