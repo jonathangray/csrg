@@ -196,6 +196,9 @@ register int	promptno; {
 			refresh();
 			Saved = save();
 			continue;
+		  case CTRL('L'):
+			wrefresh(curscr);
+			break;
 		  default:
 			addstr(unctrl(c));
 			refresh();
@@ -211,8 +214,6 @@ register int	promptno; {
  * it.  Exit appropriately.
  */
 check_more() {
-
-	flush_input();
 
 	On_exit = TRUE;
 	if (Player[PLAYER].total >= 5000 || Player[COMP].total >= 5000)
@@ -235,7 +236,7 @@ check_more() {
 	if (!Saved && getyn(SAVEGAMEPROMPT))
 		if (!save())
 			return;
-	die();
+	die(0);
 }
 
 readch()
@@ -247,15 +248,4 @@ readch()
 		if (cnt > 100)
 			exit(1);
 	return c;
-}
-
-flush_input()
-{
-# ifdef	TIOCFLUSH
-	static int	ioctl_args = O_RDONLY;
-
-	(void) ioctl(fileno(stdin), TIOCFLUSH, &ioctl_args);
-# else
-	fflush(stdin);
-# endif
 }
