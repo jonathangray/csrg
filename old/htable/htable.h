@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)htable.h	5.4 (Berkeley) 06/01/90
+ *	@(#)htable.h	5.5 (Berkeley) 02/06/91
  */
 
 #include <sys/types.h>
@@ -68,6 +68,5 @@ struct gateway {
 #define	KW_HOST		3
 
 struct name *newname();
-char *malloc();
 
 char *infile;			/* Input file name */
