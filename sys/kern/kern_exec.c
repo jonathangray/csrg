@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_exec.c	7.43 (Berkeley) 05/09/91
+ *	@(#)kern_exec.c	7.44 (Berkeley) 05/12/91
  */
 
 #include "param.h"
@@ -541,7 +541,11 @@ getxfile(p, vp, ep, paged, nargc, uid, gid)
 		goto badmap;
 	}
 	size = round_page(MAXSSIZ);		/* XXX */
+#ifdef	i386
+	addr = trunc_page(USRSTACK - size) - NBPG;	/* XXX */
+#else
 	addr = trunc_page(USRSTACK - size);
+#endif
 	if (vm_allocate(&vm->vm_map, &addr, size, FALSE)) {
 		uprintf("Cannot allocate stack space\n");
 		error = ENOMEM;			/* XXX */
