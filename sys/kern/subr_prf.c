@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_prf.c	7.32 (Berkeley) 11/01/91
+ *	@(#)subr_prf.c	7.30.1.1 (Berkeley) 11/20/91
  */
 
 #include <sys/param.h>
@@ -158,7 +158,7 @@ void
 #ifdef __STDC__
 uprintf(const char *fmt, ...)
 #else
-uprintf(fmt /*, va_alist */)
+uprintf(fmt, va_alist)
 	char *fmt;
 #endif
 {
@@ -201,7 +201,7 @@ void
 #ifdef __STDC__
 tprintf(tpr_t tpr, const char *fmt, ...)
 #else
-tprintf(tpr, fmt /*, va_alist */)
+tprintf(tpr, fmt, va_alist)
 	tpr_t tpr;
 	char *fmt;
 #endif
@@ -231,7 +231,7 @@ void
 #ifdef __STDC__
 ttyprintf(struct tty *tp, const char *fmt, ...)
 #else
-ttyprintf(tp, fmt /*, va_alist */)
+ttyprintf(tp, fmt, va_alist)
 	struct tty *tp;
 	char *fmt;
 #endif
@@ -254,7 +254,7 @@ void
 #ifdef __STDC__
 log(int level, const char *fmt, ...)
 #else
-log(level, fmt /*, va_alist */)
+log(level, fmt, va_alist)
 	int level;
 	char *fmt;
 #endif
@@ -293,7 +293,7 @@ void
 #ifdef __STDC__
 addlog(const char *fmt, ...)
 #else
-addlog(fmt /*, va_alist */)
+addlog(fmt, va_alist)
 	char *fmt;
 #endif
 {
@@ -317,7 +317,7 @@ void
 #ifdef __STDC__
 printf(const char *fmt, ...)
 #else
-printf(fmt /*, va_alist */)
+printf(fmt, va_alist)
 	char *fmt;
 #endif
 {
