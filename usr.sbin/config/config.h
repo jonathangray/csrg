@@ -30,13 +30,15 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)config.h	5.11 (Berkeley) 01/15/91
+ *	@(#)config.h	5.12 (Berkeley) 02/06/91
  */
 
 /*
  * Config.
  */
 #include <sys/types.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define	NODEV	((dev_t)-1)
 
@@ -164,12 +166,6 @@ char	*path();
 char	*raise();
 
 int	do_trace;
-
-char	*index();
-char	*rindex();
-char	*malloc();
-char	*strcpy();
-char	*strcat();
 
 #if MACHINE_VAX
 int	seen_mba, seen_uba;
