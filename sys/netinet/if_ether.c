@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_ether.c	7.21 (Berkeley) 03/15/92
+ *	@(#)if_ether.c	7.22 (Berkeley) 05/05/92
  */
 
 /*
@@ -377,8 +377,6 @@ in_arpinput(m)
 	struct in_addr isaddr, itaddr, myaddr;
 	int proto, op, completed = 0, sendtrailers;
 
-	if (ac->ac_if.if_flags & IFF_NOARP)
-		goto out;
 	ea = mtod(m, struct ether_arp *);
 	proto = ntohs(ea->arp_pro);
 	op = ntohs(ea->arp_op);
