@@ -1,4 +1,13 @@
-/*	@(#)uucp.h	5.18	03/05/91	*/
+/*-
+ * Copyright (c) 1985 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ *
+ *	@(#)uucp.h	5.19 (Berkeley) 04/24/91
+ */
 
 #include <stdio.h>
 
