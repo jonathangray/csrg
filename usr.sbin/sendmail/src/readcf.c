@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	6.7 (Berkeley) 02/16/93";
+static char sccsid[] = "@(#)readcf.c	6.8 (Berkeley) 02/18/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -165,7 +165,7 @@ readcf(cfname)
 			continue;
 		}
 
-		/* map $ into \001 (ASCII SOH) for macro expansion */
+		/* map $ into \201 for macro expansion */
 		for (p = bp; *p != '\0'; p++)
 		{
 			if (*p == '#' && p > bp && ConfigLevel >= 3)
@@ -173,9 +173,9 @@ readcf(cfname)
 				/* this is an on-line comment */
 				register char *e;
 
-				switch (*--p)
+				switch (*--p & 0377)
 				{
-				  case '\001':
+				  case MACROEXPAND:
 					/* it's from $# -- let it go through */
 					p++;
 					break;
@@ -187,7 +187,7 @@ readcf(cfname)
 
 				  default:
 					/* delete preceeding white space */
-					while (isspace(*p) && p > bp)
+					while (isascii(*p) && isspace(*p) && p > bp)
 						p--;
 					if ((e = strchr(++p, '\n')) != NULL)
 						(void) strcpy(p, e);
@@ -209,7 +209,7 @@ readcf(cfname)
 			}
 
 			/* convert to macro expansion character */
-			*p = '\001';
+			*p = MACROEXPAND;
 		}
 
 		/* interpret this line */
@@ -256,7 +256,7 @@ readcf(cfname)
 				/* count the number of fuzzy matches in LHS */
 				for (ap = rwp->r_lhs; *ap != NULL; ap++)
 				{
-					switch (**ap)
+					switch (**ap & 0377)
 					{
 					  case MATCHZANY:
 					  case MATCHANY:
@@ -289,7 +289,7 @@ readcf(cfname)
 				nfuzzy += '0';
 				for (ap = rwp->r_rhs; *ap != NULL; ap++)
 				{
-					if (**ap != MATCHREPL)
+					if ((**ap & 0377) != MATCHREPL)
 						continue;
 					if ((*ap)[1] <= '0' || (*ap)[1] > nfuzzy)
 					{
@@ -326,14 +326,16 @@ readcf(cfname)
 			if (bp[0] == 'F')
 			{
 				/* read from file */
-				for (p = &bp[2]; *p != '\0' && !isspace(*p); p++)
+				for (p = &bp[2];
+				     *p != '\0' && !(isascii(*p) && isspace(*p));
+				     p++)
 					continue;
 				if (*p == '\0')
 					p = "%s";
 				else
 				{
 					*p = '\0';
-					while (isspace(*++p))
+					while (isascii(*++p) && isspace(*p))
 						continue;
 				}
 				fileclass(bp[1], &bp[2], p, safe);
@@ -346,10 +348,10 @@ readcf(cfname)
 				register char *wd;
 				char delim;
 
-				while (*p != '\0' && isspace(*p))
+				while (*p != '\0' && isascii(*p) && isspace(*p))
 					p++;
 				wd = p;
-				while (*p != '\0' && !isspace(*p))
+				while (*p != '\0' && !(isascii(*p) && isspace(*p)))
 					p++;
 				delim = *p;
 				*p = '\0';
@@ -387,10 +389,10 @@ readcf(cfname)
 			p = &bp[1];
 			while (*p != '\0')
 			{
-				while (isspace(*p))
+				while (isascii(*p) && isspace(*p))
 					p++;
 				q = p;
-				while (*p != '\0' && !isspace(*p))
+				while (*p != '\0' && !(isascii(*p) && isspace(*p)))
 					p++;
 				if (*p != '\0')
 					*p++ = '\0';
@@ -531,14 +533,14 @@ fileclass(class, filename, fmt, safe)
 			register char *q;
 
 			/* strip leading spaces */
-			while (isspace(*p))
+			while (isascii(*p) && isspace(*p))
 				p++;
 			if (*p == '\0')
 				break;
 
 			/* find the end of the word */
 			q = p;
-			while (*p != '\0' && !isspace(*p))
+			while (*p != '\0' && !(isascii(*p) && isspace(*p)))
 				p++;
 			if (*p != '\0')
 				*p++ = '\0';
@@ -593,7 +595,7 @@ makemailer(line)
 	m->m_eol = "\n";
 
 	/* collect the mailer name */
-	for (p = line; *p != '\0' && *p != ',' && !isspace(*p); p++)
+	for (p = line; *p != '\0' && *p != ',' && !(isascii(*p) && isspace(*p)); p++)
 		continue;
 	if (*p != '\0')
 		*p++ = '\0';
@@ -602,7 +604,7 @@ makemailer(line)
 	/* now scan through and assign info from the fields */
 	while (*p != '\0')
 	{
-		while (*p != '\0' && (*p == ',' || isspace(*p)))
+		while (*p != '\0' && (*p == ',' || (isascii(*p) && isspace(*p))))
 			p++;
 
 		/* p now points to field code */
@@ -614,7 +616,7 @@ makemailer(line)
 			syserr("mailer %s: `=' expected", m->m_name);
 			return;
 		}
-		while (isspace(*p))
+		while (isascii(*p) && isspace(*p))
 			p++;
 
 		/* p now points to the field body */
@@ -629,7 +631,7 @@ makemailer(line)
 
 		  case 'F':		/* flags */
 			for (; *p != '\0'; p++)
-				if (!isspace(*p))
+				if (!(isascii(*p) && isspace(*p)))
 					setbitn(*p, m->m_flags);
 			break;
 
@@ -805,9 +807,9 @@ makeargv(p)
 	while (*p != '\0' && i < MAXPV)
 	{
 		q = p;
-		while (*p != '\0' && !isspace(*p))
+		while (*p != '\0' && !(isascii(*p) && isspace(*p)))
 			p++;
-		while (isspace(*p))
+		while (isascii(*p) && isspace(*p))
 			*p++ = '\0';
 		argv[i++] = newstr(q);
 	}
@@ -1054,7 +1056,7 @@ setoption(opt, val, sticky)
 				p--;
 			p++;
 			q = p;
-			while (*p != '\0' && !isspace(*p))
+			while (*p != '\0' && !(isascii(*p) && isspace(*p)))
 				p++;
 			if (*p != '\0')
 				*p++ = '\0';
@@ -1248,32 +1250,32 @@ makemapentry(line)
 	register STAB *map;
 	STAB *class;
 
-	for (p = line; isspace(*p); p++)
+	for (p = line; isascii(*p) && isspace(*p); p++)
 		continue;
-	if (!isalnum(*p))
+	if (!(isascii(*p) && isalnum(*p)))
 	{
 		syserr("readcf: config K line: no map name");
 		return;
 	}
 
 	mapname = p;
-	while (isalnum(*++p))
+	while (isascii(*++p) && isalnum(*p))
 		continue;
 	if (*p != '\0')
 		*p++ = '\0';
-	while (isspace(*p))
+	while (isascii(*p) && isspace(*p))
 		p++;
-	if (!isalnum(*p))
+	if (!(isascii(*p) && isalnum(*p)))
 	{
 		syserr("readcf: config K line, map %s: no map class", mapname);
 		return;
 	}
 	classname = p;
-	while (isalnum(*++p))
+	while (isascii(*++p) && isalnum(*p))
 		continue;
 	if (*p != '\0')
 		*p++ = '\0';
-	while (isspace(*p))
+	while (isascii(*p) && isspace(*p))
 		p++;
 
 	/* look up the class */
