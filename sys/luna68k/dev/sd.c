@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sd.c	8.2 (Berkeley) 12/06/93
+ *	@(#)sd.c	8.3 (Berkeley) 12/07/93
  */
 
 /*
@@ -283,6 +283,7 @@ sdclose(dev, flag, mode, p)
 	int flag, mode;
 	struct proc *p;
 {
+	return(0);
 }
 
 /*
