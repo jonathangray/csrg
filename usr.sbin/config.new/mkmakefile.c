@@ -39,9 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mkmakefile.c	5.1 (Berkeley) 01/12/93
- *
- * from: $Header: mkmakefile.c,v 1.6 93/01/12 03:58:45 torek Exp $
+ *	@(#)mkmakefile.c	5.2 (Berkeley) 04/18/93
  */
 
 #include <sys/param.h>
