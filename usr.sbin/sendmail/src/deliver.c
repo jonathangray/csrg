@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	6.10 (Berkeley) 01/21/93";
+static char sccsid[] = "@(#)deliver.c	6.11 (Berkeley) 01/25/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -420,6 +420,8 @@ deliver(e, firstto)
 		if (rcode == EX_OK)
 		{
 			/* shouldn't happen */
+			syserr("deliver: rcode=%d, mci_state=%d, sig=%s",
+				rcode, mci->mci_state, firstsig);
 			rcode = EX_SOFTWARE;
 		}
 	}
