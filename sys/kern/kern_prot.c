@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_prot.c	8.1 (Berkeley) 06/10/93
+ *	@(#)kern_prot.c	8.2 (Berkeley) 09/23/93
  */
 
 /*
@@ -215,7 +215,7 @@ setpgid(curp, uap, retval)
 			return (ESRCH);
 		if (targp->p_session != curp->p_session)
 			return (EPERM);
-		if (targp->p_flag&SEXEC)
+		if (targp->p_flag & P_EXEC)
 			return (EACCES);
 	} else
 		targp = curp;
@@ -258,7 +258,7 @@ setuid(p, uap, retval)
 	pc->pc_ucred->cr_uid = uid;
 	pc->p_ruid = uid;
 	pc->p_svuid = uid;
-	p->p_flag |= SUGID;
+	p->p_flag |= P_SUGID;
 	return (0);
 }
 
@@ -285,7 +285,7 @@ seteuid(p, uap, retval)
 	 */
 	pc->pc_ucred = crcopy(pc->pc_ucred);
 	pc->pc_ucred->cr_uid = euid;
-	p->p_flag |= SUGID;
+	p->p_flag |= P_SUGID;
 	return (0);
 }
 
@@ -309,7 +309,7 @@ setgid(p, uap, retval)
 	pc->pc_ucred->cr_groups[0] = gid;
 	pc->p_rgid = gid;
 	pc->p_svgid = gid;		/* ??? */
-	p->p_flag |= SUGID;
+	p->p_flag |= P_SUGID;
 	return (0);
 }
 
@@ -332,7 +332,7 @@ setegid(p, uap, retval)
 		return (error);
 	pc->pc_ucred = crcopy(pc->pc_ucred);
 	pc->pc_ucred->cr_groups[0] = egid;
-	p->p_flag |= SUGID;
+	p->p_flag |= P_SUGID;
 	return (0);
 }
 
@@ -359,7 +359,7 @@ setgroups(p, uap, retval)
 	    (caddr_t)pc->pc_ucred->cr_groups, ngrp * sizeof(gid_t)))
 		return (error);
 	pc->pc_ucred->cr_ngroups = ngrp;
-	p->p_flag |= SUGID;
+	p->p_flag |= P_SUGID;
 	return (0);
 }
 
