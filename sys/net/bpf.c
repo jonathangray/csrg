@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)bpf.c	8.2 (Berkeley) 03/28/94
+ *      @(#)bpf.c	8.3 (Berkeley) 08/10/94
  *
  * static char rcsid[] =
  * "$Header: bpf.c,v 1.33 91/10/27 21:21:58 mccanne Exp $";
@@ -44,12 +44,6 @@
 #include "bpfilter.h"
 
 #if NBPFILTER > 0
-
-#ifndef __GNUC__
-#define inline
-#else
-#define inline __inline
-#endif
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -133,7 +127,7 @@ static int	bpf_movein __P((struct uio *, int,
 		    struct mbuf **, struct sockaddr *, int *));
 static int	bpf_setif __P((struct bpf_d *, struct ifreq *));
 static int	bpf_setif __P((struct bpf_d *, struct ifreq *));
-static inline void
+static __inline void
 		bpf_wakeup __P((struct bpf_d *));
 static void	catchpacket __P((struct bpf_d *, u_char *, u_int,
 		    u_int, void (*)(const void *, void *, u_int)));
@@ -493,7 +487,7 @@ bpfread(dev, uio)
 /*
  * If there are processes sleeping on this descriptor, wake them up.
  */
-static inline void
+static __inline void
 bpf_wakeup(d)
 	register struct bpf_d *d;
 {
