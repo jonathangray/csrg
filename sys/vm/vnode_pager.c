@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode_pager.c	7.11 (Berkeley) 07/03/92
+ *	@(#)vnode_pager.c	7.12 (Berkeley) 07/08/92
  */
 
 /*
@@ -243,7 +243,7 @@ vnode_pager_putpage(pager, m, sync)
 		printf("vnode_pager_putpage(%x, %x)\n", pager, m);
 #endif
 	if (pager == NULL)
-		return;
+		return (FALSE);			/* ??? */
 	err = vnode_pager_io((vn_pager_t)pager->pg_data, m, UIO_WRITE);
 	if (err == VM_PAGER_OK) {
 		m->clean = TRUE;			/* XXX - wrong place */
