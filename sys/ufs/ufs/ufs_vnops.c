@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	7.78 (Berkeley) 02/15/92
+ *	@(#)ufs_vnops.c	7.79 (Berkeley) 02/21/92
  */
 
 #include <sys/param.h>
@@ -704,9 +704,6 @@ relookup(dvp, vpp, cnp)
 		if (*vpp != NULL)
 			panic("leaf should be empty");
 #endif
-#ifdef NAMEI_DIAGNOSTIC
-		printf("not found\n");
-#endif
 		if (cnp->cn_nameiop == LOOKUP || cnp->cn_nameiop == DELETE ||
 		    error != ENOENT)
 			goto bad;
@@ -728,25 +725,15 @@ relookup(dvp, vpp, cnp)
 		 */
 		return (0);
 	}
-#ifdef NAMEI_DIAGNOSTIC
-	printf("found\n");
-#endif
-
 	dp = *vpp;
+
 #ifdef DIAGNOSTIC
 	/*
 	 * Check for symbolic link
 	 */
-	if (dp->v_type == VLNK) {
+	if (dp->v_type == VLNK && (cnp->cn_flags & FOLLOW))
 		panic ("relookup: symlink found.\n");
-	};
-
-	/*
-	 * Check to see if the vnode has been mounted on;
-	 * if so find the root of the mounted file system.
-	 */
 #endif
-
 
 nextname:
 	/*
