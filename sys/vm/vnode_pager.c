@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode_pager.c	8.5 (Berkeley) 01/12/94
+ *	@(#)vnode_pager.c	8.6 (Berkeley) 01/13/94
  */
 
 /*
@@ -202,7 +202,9 @@ vnode_pager_dealloc(pager)
 {
 	register vn_pager_t vnp = (vn_pager_t)pager->pg_data;
 	register struct vnode *vp;
+#ifdef NOTDEF
 	struct proc *p = curproc;		/* XXX */
+#endif
 
 #ifdef DEBUG
 	if (vpagerdebug & VDB_FOLLOW)
@@ -211,7 +213,7 @@ vnode_pager_dealloc(pager)
 	if (vp = vnp->vnp_vp) {
 		vp->v_vmdata = NULL;
 		vp->v_flag &= ~VTEXT;
-#if 0
+#if NOTDEF
 		/* can hang if done at reboot on NFS FS */
 		(void) VOP_FSYNC(vp, p->p_ucred, p);
 #endif
