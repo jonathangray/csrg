@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)glob.h	5.19 (Berkeley) 06/01/90
+ *	@(#)glob.h	5.20 (Berkeley) 06/25/90
  */
 
 /*
@@ -51,7 +51,6 @@ int	loading;			/* Loading user definitions */
 int	cond;				/* Current state of conditional exc. */
 FILE	*itf;				/* Input temp file buffer */
 FILE	*otf;				/* Output temp file buffer */
-FILE	*pipef;				/* Pipe file we have opened */
 int	image;				/* File descriptor for image of msg */
 FILE	*input;				/* Current command input file */
 char	mailname[PATHSIZE];		/* Name of current file */
