@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lang.l	5.9 (Berkeley) 06/19/92
+ *	@(#)lang.l	5.10 (Berkeley) 05/09/93
  */
 
 #include <ctype.h>
@@ -69,6 +69,7 @@ struct kt {
 	{ "flags",	FLAGS },
 	{ "hz",		HZ },
 	{ "ident",	IDENT },
+	{ "interleave",	INTERLEAVE },
 #if MACHINE_I386
 	{ "iomem",	IOMEM },
 	{ "iosiz",	IOSIZ },
@@ -95,6 +96,7 @@ struct kt {
 #if MACHINE_HP300 || MACHINE_LUNA68K
 	{ "scode",	NEXUS },
 #endif
+	{ "sequential",	SEQUENTIAL },
 	{ "size",	SIZE },
 	{ "slave",	SLAVE },
 	{ "swap",	SWAP },
