@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_page.c	7.13 (Berkeley) 05/04/92
+ *	@(#)vm_page.c	7.14 (Berkeley) 10/01/92
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -254,11 +254,7 @@ void vm_page_startup(start, end)
 
 	pa = first_phys_addr;
 	while (npages--) {
-		m->copy_on_write = FALSE;
-		m->wanted = FALSE;
-		m->inactive = FALSE;
-		m->active = FALSE;
-		m->busy = FALSE;
+		m->flags = 0;
 		m->object = NULL;
 		m->phys_addr = pa;
 #ifdef i386
@@ -266,8 +262,7 @@ void vm_page_startup(start, end)
 			queue_enter(&vm_page_queue_free, m, vm_page_t, pageq);
 		} else {
 			/* perhaps iomem needs it's own type, or dev pager? */
-			m->fictitious = 1;
-			m->busy = TRUE;
+			m->flags |= PG_FICTITIOUS | PG_BUSY;
 			cnt.v_free_count--;
 		}
 #else /* i386 */
@@ -316,7 +311,7 @@ void vm_page_insert(mem, object, offset)
 
 	VM_PAGE_CHECK(mem);
 
-	if (mem->tabled)
+	if (mem->flags & PG_TABLED)
 		panic("vm_page_insert: already inserted");
 
 	/*
@@ -342,7 +337,7 @@ void vm_page_insert(mem, object, offset)
 	 */
 
 	queue_enter(&object->memq, mem, vm_page_t, listq);
-	mem->tabled = TRUE;
+	mem->flags |= PG_TABLED;
 
 	/*
 	 *	And show that the object has one more resident
@@ -370,7 +365,7 @@ void vm_page_remove(mem)
 
 	VM_PAGE_CHECK(mem);
 
-	if (!mem->tabled)
+	if (!(mem->flags & PG_TABLED))
 		return;
 
 	/*
@@ -397,7 +392,7 @@ void vm_page_remove(mem)
 
 	mem->object->resident_page_count--;
 
-	mem->tabled = FALSE;
+	mem->flags &= ~PG_TABLED;
 }
 
 /*
@@ -525,19 +520,19 @@ void vm_page_free(mem)
 	register vm_page_t	mem;
 {
 	vm_page_remove(mem);
-	if (mem->active) {
+	if (mem->flags & PG_ACTIVE) {
 		queue_remove(&vm_page_queue_active, mem, vm_page_t, pageq);
-		mem->active = FALSE;
+		mem->flags &= ~PG_ACTIVE;
 		cnt.v_active_count--;
 	}
 
-	if (mem->inactive) {
+	if (mem->flags & PG_INACTIVE) {
 		queue_remove(&vm_page_queue_inactive, mem, vm_page_t, pageq);
-		mem->inactive = FALSE;
+		mem->flags &= ~PG_INACTIVE;
 		cnt.v_inactive_count--;
 	}
 
-	if (!mem->fictitious) {
+	if (!(mem->flags & PG_FICTITIOUS)) {
 		int	spl;
 
 		spl = splimp();
@@ -565,17 +560,17 @@ void vm_page_wire(mem)
 	VM_PAGE_CHECK(mem);
 
 	if (mem->wire_count == 0) {
-		if (mem->active) {
+		if (mem->flags & PG_ACTIVE) {
 			queue_remove(&vm_page_queue_active, mem, vm_page_t,
 						pageq);
 			cnt.v_active_count--;
-			mem->active = FALSE;
+			mem->flags &= ~PG_ACTIVE;
 		}
-		if (mem->inactive) {
+		if (mem->flags & PG_INACTIVE) {
 			queue_remove(&vm_page_queue_inactive, mem, vm_page_t,
 						pageq);
 			cnt.v_inactive_count--;
-			mem->inactive = FALSE;
+			mem->flags &= ~PG_INACTIVE;
 		}
 		cnt.v_wire_count++;
 	}
@@ -599,7 +594,7 @@ void vm_page_unwire(mem)
 	if (mem->wire_count == 0) {
 		queue_enter(&vm_page_queue_active, mem, vm_page_t, pageq);
 		cnt.v_active_count++;
-		mem->active = TRUE;
+		mem->flags |= PG_ACTIVE;
 		cnt.v_wire_count--;
 	}
 }
@@ -623,17 +618,20 @@ void vm_page_deactivate(m)
 	 *	inactive ones.
 	 */
 
-	if (m->active) {
+	if (m->flags & PG_ACTIVE) {
 		pmap_clear_reference(VM_PAGE_TO_PHYS(m));
 		queue_remove(&vm_page_queue_active, m, vm_page_t, pageq);
 		queue_enter(&vm_page_queue_inactive, m, vm_page_t, pageq);
-		m->active = FALSE;
-		m->inactive = TRUE;
+		m->flags &= ~PG_ACTIVE;
+		m->flags |= PG_INACTIVE;
 		cnt.v_active_count--;
 		cnt.v_inactive_count++;
 		if (pmap_is_modified(VM_PAGE_TO_PHYS(m)))
-			m->clean = FALSE;
-		m->laundry = !m->clean;
+			m->flags &= ~PG_CLEAN;
+		if (m->flags & PG_CLEAN)
+			m->flags &= ~PG_LAUNDRY;
+		else
+			m->flags |= PG_LAUNDRY;
 	}
 }
 
@@ -650,18 +648,18 @@ void vm_page_activate(m)
 {
 	VM_PAGE_CHECK(m);
 
-	if (m->inactive) {
+	if (m->flags & PG_INACTIVE) {
 		queue_remove(&vm_page_queue_inactive, m, vm_page_t,
 						pageq);
 		cnt.v_inactive_count--;
-		m->inactive = FALSE;
+		m->flags &= ~PG_INACTIVE;
 	}
 	if (m->wire_count == 0) {
-		if (m->active)
+		if (m->flags & PG_ACTIVE)
 			panic("vm_page_activate: already active");
 
 		queue_enter(&vm_page_queue_active, m, vm_page_t, pageq);
-		m->active = TRUE;
+		m->flags |= PG_ACTIVE;
 		cnt.v_active_count++;
 	}
 }
@@ -679,7 +677,7 @@ boolean_t vm_page_zero_fill(m)
 {
 	VM_PAGE_CHECK(m);
 
-	m->clean = 0;
+	m->flags &= ~PG_CLEAN;
 	pmap_zero_page(VM_PAGE_TO_PHYS(m));
 	return(TRUE);
 }
@@ -697,6 +695,6 @@ void vm_page_copy(src_m, dest_m)
 	VM_PAGE_CHECK(src_m);
 	VM_PAGE_CHECK(dest_m);
 
-	dest_m->clean = 0;
+	dest_m->flags &= ~PG_CLEAN;
 	pmap_copy_page(VM_PAGE_TO_PHYS(src_m), VM_PAGE_TO_PHYS(dest_m));
 }
