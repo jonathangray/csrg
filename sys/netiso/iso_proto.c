@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)iso_proto.c	7.8 (Berkeley) 05/06/91
+ *	@(#)iso_proto.c	7.9 (Berkeley) 09/06/91
  */
 
 /***********************************************************
@@ -86,7 +86,7 @@ int	tp_ctloutput();
 int	tpclnp_ctlinput();
 int	tpclnp_input();
 int	tp_usrreq();
-int	tp_init(), tp_slowtimo(), tp_drain();
+int	tp_init(), tp_fasttimo(), tp_slowtimo(), tp_drain();
 int	cons_init(), tpcons_input();
 
 int	esis_input(), esis_ctlinput(), esis_init(), esis_usrreq();
@@ -147,7 +147,7 @@ struct protosw isosw[] = {
 { SOCK_SEQPACKET,	&isodomain,	ISOPROTO_TP,		PR_CONNREQUIRED|PR_WANTRCVD,
   tpclnp_input,		0,			tpclnp_ctlinput,	tp_ctloutput,
   tp_usrreq,
-  tp_init,			0,			tp_slowtimo,		tp_drain,
+  tp_init,			tp_fasttimo,			tp_slowtimo,		tp_drain,
 },
 
 #ifdef TPCONS
