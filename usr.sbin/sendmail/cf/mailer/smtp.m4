@@ -37,7 +37,7 @@ POPDIVERT
 ###   SMTP Mailer specification   ###
 #####################################
 
-VERSIONID(`@(#)smtp.m4	6.2 (Berkeley) 02/20/93')
+VERSIONID(`@(#)smtp.m4	6.3 (Berkeley) 02/21/93')
 
 Msmtp,		P=[IPC], F=mDFMueXLC, S=11, R=21, E=\r\n,
 		A=IPC $h
@@ -48,7 +48,7 @@ S11
 R$+			$: $>19 $1
 
 # if already @ qualified, we are done
-R$* < @ $+ > $*		$@ $1 < @ $2 > $3		already qualified
+R$* < @ $* > $*		$@ $1 < @ $2 > $3		already qualified
 
 # don't qualify list:; syntax
 R$* :;			$@ $1 :;
@@ -64,7 +64,7 @@ S21
 R$+			$: $>19 $1
 
 # if already @ qualified, we are done
-R$* < @ $+ > $*		$@ $1 < @ $2 > $3		already qualified
+R$* < @ $* > $*		$@ $1 < @ $2 > $3		already qualified
 
 # don't qualify list:; syntax
 R$* :;			$@ $1 :;
