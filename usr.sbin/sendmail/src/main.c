@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.1 (Berkeley) 06/07/93";
+static char sccsid[] = "@(#)main.c	8.2 (Berkeley) 07/11/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -246,10 +246,10 @@ main(argc, argv, envp)
 	**	to the run that froze the configuration.
 	*/
 	nothaw = FALSE;
-#ifdef __osf__
-#define OPTIONS		"B:b:C:cd:e:F:f:h:Iimno:p:q:r:sTtvx"
+#if defined(__osf__) || defined(_AIX3)
+#define OPTIONS		"B:b:C:cd:e:F:f:h:Iimno:p:q:r:sTtvX:x"
 #else
-#define OPTIONS		"B:b:C:cd:e:F:f:h:Iimno:p:q:r:sTtv"
+#define OPTIONS		"B:b:C:cd:e:F:f:h:Iimno:p:q:r:sTtvX:"
 #endif
 	while ((j = getopt(argc, argv, OPTIONS)) != EOF)
 	{
@@ -554,6 +554,21 @@ main(argc, argv, envp)
 			GrabTo = TRUE;
 			break;
 
+		  case 'X':	/* traffic log file */
+			setuid(getuid());
+			TrafficLogFile = fopen(optarg, "a");
+			if (TrafficLogFile == NULL)
+			{
+				syserr("cannot open %s", optarg);
+				break;
+			}
+#ifdef HASSETVBUF
+			setvbuf(TrafficLogFile, NULL, _IOLBF, BUFSIZ);
+#else
+			setlinebuf(TrafficLogFile);
+#endif
+			break;
+
 			/* compatibility flags */
 		  case 'c':	/* connect to non-local mailers */
 		  case 'i':	/* don't let dot stop me */
@@ -577,8 +592,8 @@ main(argc, argv, envp)
 			break;
 # endif /* DBM */
 
-# ifdef __osf__
-		  case 'x':	/* random flag that DEC OSF/1 mailx passes */
+# if defined(__osf__) || defined(_AIX3)
+		  case 'x':	/* random flag that OSF/1 & AIX mailx passes */
 			break;
 # endif
 
@@ -617,6 +632,8 @@ main(argc, argv, envp)
 		syserr("Warning: .cf version level (%d) exceeds program functionality (%d)",
 			ConfigLevel, MAXCONFIGLEVEL);
 	}
+
+
 # ifdef QUEUE
 	if (queuemode && getuid() != 0)
 	{
@@ -674,6 +691,11 @@ main(argc, argv, envp)
 		setoption('d', "", TRUE, FALSE, CurEnv);
 	}
 
+	if (ConfigLevel < 3)
+	{
+		UseErrorsTo = TRUE;
+	}
+
 	/* our name for SMTP codes */
 	expand("\201j", jbuf, &jbuf[sizeof jbuf - 1], CurEnv);
 	MyHostName = jbuf;
@@ -708,11 +730,11 @@ main(argc, argv, envp)
 	if (chdir(QueueDir) < 0)
 	{
 		syserr("cannot chdir(%s)", QueueDir);
-		exit(EX_SOFTWARE);
+		ExitStat = EX_SOFTWARE;
 	}
 
 	/* if we've had errors so far, exit now */
-	if (ExitStat != EX_OK)
+	if (ExitStat != EX_OK && OpMode != MD_TEST)
 		exit(ExitStat);
 
 	/*
@@ -956,9 +978,9 @@ main(argc, argv, envp)
 # ifdef _POSIX_JOB_CONTROL
 	(void) setpgid(0, getpid());
 # else
-# ifndef SYSTEM5
+#  ifndef SYSTEM5
 	(void) setpgrp(0, getpid());
-# endif
+#  endif
 # endif
 
 	initsys(CurEnv);
@@ -1052,9 +1074,6 @@ finis()
 
 	/* flush any cached connections */
 	mci_flush(TRUE, NULL);
-
-	/* post statistics */
-	poststats(StatFile);
 
 # ifdef XLA
 	/* clean up extended load average stuff */
