@@ -1,4 +1,4 @@
-#	Makefile	1.1	87/06/02
+#	Makefile	1.2	87/06/06
 #
 #	as.h		Definitions for data structures
 #	asnumber.h	Definitions for all numbers: byte .. G format float
