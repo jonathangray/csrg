@@ -10,7 +10,7 @@
  * File I/O.
  */
 
-static char *SccsId = "@(#)fio.c	2.3.1.1 03/15/82";
+static char *SccsId = "@(#)fio.c	2.8 03/15/82";
 
 /*
  * Set up the input pointers while copying the mail file into
