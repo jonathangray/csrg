@@ -35,18 +35,27 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)print.c	5.24 (Berkeley) 10/19/90";
+static char sccsid[] = "@(#)print.c	5.25 (Berkeley) 10/28/91";
 #endif /* not lint */
 
 #include <sys/param.h>
 #include <sys/stat.h>
-#include <stdio.h>
+#include <time.h>
+#include <errno.h>
 #include <grp.h>
 #include <pwd.h>
 #include <utmp.h>
 #include <tzfile.h>
+#include <stdio.h>
 #include "ls.h"
+#include "extern.h"
 
+static int	printaname __P((LS *));
+static void	printlink __P((char *));
+static void	printtime __P((time_t));
+static int	printtype __P((u_int));
+
+void
 printscol(stats, num)
 	register LS *stats;
 	register int num;
@@ -57,12 +66,12 @@ printscol(stats, num)
 	}
 }
 
+void
 printlong(stats, num)
 	LS *stats;
 	register int num;
 {
-	extern int errno;
-	char modep[15], *user_from_uid(), *group_from_gid(), *strerror();
+	char modep[15], *user_from_uid(), *group_from_gid();
 
 	if (f_total)
 		(void)printf("total %lu\n", f_kblocks ?
@@ -104,6 +113,7 @@ printlong(stats, num)
 
 #define	TAB	8
 
+void
 printcol(stats, num)
 	LS *stats;
 	int num;
@@ -155,6 +165,7 @@ printcol(stats, num)
  * print [inode] [size] name
  * return # of characters printed, no trailing characters
  */
+static int
 printaname(lp)
 	LS *lp;
 {
@@ -169,17 +180,17 @@ printaname(lp)
 	chcnt += printf("%s", lp->name);
 	if (f_type)
 		chcnt += printtype(lp->lstat.st_mode);
-	return(chcnt);
+	return (chcnt);
 }
 
+static void
 printtime(ftime)
 	time_t ftime;
 {
 	int i;
-	char *longstring, *ctime();
-	time_t time();
+	char *longstring;
 
-	longstring = ctime((long *)&ftime);
+	longstring = ctime((time_t *)&ftime);
 	for (i = 4; i < 11; ++i)
 		(void)putchar(longstring[i]);
 
@@ -198,32 +209,34 @@ printtime(ftime)
 	(void)putchar(' ');
 }
 
+static int
 printtype(mode)
-	mode_t mode;
+	u_int mode;
 {
 	switch(mode & S_IFMT) {
 	case S_IFDIR:
 		(void)putchar('/');
-		return(1);
+		return (1);
 	case S_IFLNK:
 		(void)putchar('@');
-		return(1);
+		return (1);
 	case S_IFSOCK:
 		(void)putchar('=');
-		return(1);
+		return (1);
 	}
 	if (mode & (S_IXUSR | S_IXGRP | S_IXOTH)) {
 		(void)putchar('*');
-		return(1);
+		return (1);
 	}
-	return(0);
+	return (0);
 }
 
+static void
 printlink(name)
 	char *name;
 {
 	int lnklen;
-	char path[MAXPATHLEN + 1], *strerror();
+	char path[MAXPATHLEN + 1];
 
 	if ((lnklen = readlink(name, path, MAXPATHLEN)) == -1) {
 		(void)fprintf(stderr, "\nls: %s: %s\n", name, strerror(errno));
