@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.1 (Berkeley) 06/05/93";
+static char sccsid[] = "@(#)main.c	8.2 (Berkeley) 01/23/94";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -301,8 +301,8 @@ checkfilesys(filesys, mntpt, auxdata, child)
 
 			if (flags & MNT_RDONLY) {
 				args.fspec = 0;
-				args.exflags = 0;
-				args.exroot = 0;
+				args.export.ex_flags = 0;
+				args.export.ex_root = 0;
 				flags |= MNT_UPDATE | MNT_RELOAD;
 				ret = mount(MOUNT_UFS, "/", flags, &args);
 				if (ret == 0)
