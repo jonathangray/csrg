@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dca.c	7.3 (Berkeley) 06/06/90
+ *	@(#)dca.c	7.4 (Berkeley) 06/06/90
  */
 
 #include "dca.h"
@@ -168,6 +168,7 @@ dcaopen(dev, flag)
 	tp->t_param = dcaparam;
 	tp->t_dev = dev;
 	if ((tp->t_state & TS_ISOPEN) == 0) {
+		tp->t_state |= TS_WOPEN;
 		ttychars(tp);
 		tp->t_iflag = TTYDEF_IFLAG;
 		tp->t_oflag = TTYDEF_OFLAG;
