@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)portal_vnops.c	1.1 (Berkeley) 06/03/92
+ *	@(#)portal_vnops.c	1.2 (Berkeley) 07/12/92
  *
  * $Id: portal_vnops.c,v 1.4 1992/05/30 10:05:24 jsp Exp jsp $
  */
@@ -95,7 +95,6 @@ portal_closefd(p, fd)
 portal_lookup (ap)
 	struct vop_lookup_args *ap;
 {
-	/*USES_VOP_LOCK;*/
 	char *pname = ap->a_cnp->cn_nameptr;
 	struct portalnode *pt;
 	int error;
@@ -130,12 +129,10 @@ portal_lookup (ap)
 	 * advance the namei next pointer to the end
 	 * of the string.
 	 */
-#ifdef notyet
 	for (size = 0, path = pname; *path; path++)
 		size++;
-	ndp->ni_next = path;
-	ndp->ni_pathlen -= size - ndp->ni_namelen;
-#endif
+	ap->a_cnp->cn_consume = size - ap->a_cnp->cn_namelen;
+
 	pt->pt_arg = malloc(size+1, M_TEMP, M_WAITOK);
 	pt->pt_size = size+1;
 	bcopy(pname, pt->pt_arg, pt->pt_size);
@@ -261,7 +258,7 @@ portal_open (ap)
 #ifdef PORTAL_DIAGNOSTIC
 	printf("portal_open: calling soreserve\n");
 #endif
-	res = max(512, pt->pt_size + 128);
+	res = pt->pt_size + sizeof(pcred) + 512;	/* XXX */
 	error = soreserve(so, res, res);
 	if (error)
 		goto bad;
@@ -323,8 +320,10 @@ portal_open (ap)
 	printf("portal_open: constructing data uio\n");
 #endif
 
+	pcred.pcr_flag = ap->a_mode;
 	pcred.pcr_uid = ap->a_cred->cr_uid;
-	pcred.pcr_gid = ap->a_cred->cr_gid;
+	pcred.pcr_ngroups = ap->a_cred->cr_ngroups;
+	bcopy(ap->a_cred->cr_groups, pcred.pcr_groups, NGROUPS * sizeof(gid_t));
 	aiov[0].iov_base = (caddr_t) &pcred;
 	aiov[0].iov_len = sizeof(pcred);
 	aiov[1].iov_base = pt->pt_arg;
@@ -562,7 +561,7 @@ portal_setattr (ap)
 portal_readdir (ap)
 	struct vop_readdir_args *ap;
 {
-	*ap->a_eofflagp = 1;
+	/* *ap->a_eofflagp = 1; */
 	return (0);
 }
 
@@ -663,7 +662,6 @@ portal_nullop()
 #define portal_islocked ((int (*) __P((struct  vop_islocked_args *)))nullop)
 #define portal_advlock ((int (*) __P((struct  vop_advlock_args *)))portal_enotsupp)
 #define portal_blkatoff ((int (*) __P((struct  vop_blkatoff_args *)))portal_enotsupp)
-#define portal_vget ((int (*) __P((struct  vop_vget_args *)))portal_enotsupp)
 #define portal_valloc ((int(*) __P(( \
 		struct vnode *pvp, \
 		int mode, \
@@ -710,7 +708,6 @@ struct vnodeopv_entry_desc portal_vnodeop_entries[] = {
 	{ &vop_islocked_desc, portal_islocked },	/* islocked */
 	{ &vop_advlock_desc, portal_advlock },		/* advlock */
 	{ &vop_blkatoff_desc, portal_blkatoff },	/* blkatoff */
-	{ &vop_vget_desc, portal_vget },		/* vget */
 	{ &vop_valloc_desc, portal_valloc },		/* valloc */
 	{ &vop_vfree_desc, portal_vfree },		/* vfree */
 	{ &vop_truncate_desc, portal_truncate },	/* truncate */
