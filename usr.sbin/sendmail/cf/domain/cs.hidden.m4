@@ -33,6 +33,6 @@ divert(-1)
 # SUCH DAMAGE.
 #
 divert(0)
-VERSIONID(@(#)cs.hidden.m4	2.1 (Berkeley) 10/02/91)
-DOMAIN(`cs.exposed')dnl
+VERSIONID(@(#)cs.hidden.m4	2.2 (Berkeley) 10/03/91)
+DOMAIN(cs.exposed)dnl
 define(`MASQUERADE_NAME', `CS.Berkeley.EDU')dnl
