@@ -138,6 +138,7 @@ __bt_open(fname, flags, mode, openinfo)
 			goto einval;
 	} else {
 		b.compare = __bt_defcmp;
+		b.cachesize = 0;
 		b.flags = 0;
 		b.lorder = BYTE_ORDER;
 		b.minkeypage = DEFMINKEYPAGE;
