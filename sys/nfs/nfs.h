@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs.h	7.18 (Berkeley) 09/16/92
+ *	@(#)nfs.h	7.19 (Berkeley) 10/20/92
  */
 
 /*
@@ -67,9 +67,9 @@
  */
 #define	NFS_ATTRTIMEO(np) \
 	((((np)->n_flag & NMODIFIED) || \
-	 5 * (time.tv_sec - (np)->n_mtime) < NFS_MINATTRTIMO) ? NFS_MINATTRTIMO : \
-	 (5 * (time.tv_sec - (np)->n_mtime) > NFS_MAXATTRTIMO ? NFS_MAXATTRTIMO : \
-	  5 * (time.tv_sec - (np)->n_mtime)))
+	 (time.tv_sec - (np)->n_mtime) / 10 < NFS_MINATTRTIMO) ? NFS_MINATTRTIMO : \
+	 ((time.tv_sec - (np)->n_mtime) / 10 > NFS_MAXATTRTIMO ? NFS_MAXATTRTIMO : \
+	  (time.tv_sec - (np)->n_mtime) / 10))
 
 /*
  * Structures for the nfssvc(2) syscall. Not that anyone but nfsd and mount_nfs
