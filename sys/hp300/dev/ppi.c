@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ppi.c	7.5 (Berkeley) 07/12/92
+ *	@(#)ppi.c	7.6 (Berkeley) 10/11/92
  */
 
 /*
@@ -40,14 +40,14 @@
 #include "ppi.h"
 #if NPPI > 0
 
-#include "sys/param.h"
-#include "sys/systm.h"
-#include "sys/errno.h"
-#include "sys/uio.h"
-#include "sys/malloc.h"
+#include <sys/param.h>
+#include <sys/systm.h>
+#include <sys/errno.h>
+#include <sys/uio.h>
+#include <sys/malloc.h>
 
-#include "hp/dev/device.h"
-#include "ppiioctl.h"
+#include <hp/dev/device.h>
+#include <hp300/dev/ppiioctl.h>
 
 int	ppiattach(), ppistart(), ppitimo();
 struct	driver ppidriver = {
