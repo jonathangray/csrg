@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.26 (Berkeley) 07/20/90";
+static char sccsid[] = "@(#)main.c	5.27 (Berkeley) 08/07/90";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -119,7 +119,7 @@ main(argc, argv)
 		(void)signal(SIGQUIT, catchquit);
 	if (argc) {
 		while (argc-- > 0)
-			(void)checkfilesys(*argv++, (char *)0, 0L);
+			(void)checkfilesys(*argv++, (char *)0, 0L, 0);
 		exit(0);
 	}
 	ret = checkfstab(preen, maxrun, docheck, checkfilesys);
@@ -161,7 +161,7 @@ docheck(fsp)
  * Check the specified filesystem.
  */
 /* ARGSUSED */
-checkfilesys(filesys, mntpt, auxdata)
+checkfilesys(filesys, mntpt, auxdata, child)
 	char *filesys, *mntpt;
 	long auxdata;
 {
@@ -169,7 +169,8 @@ checkfilesys(filesys, mntpt, auxdata)
 	struct dups *dp;
 	struct zlncnt *zlnp;
 
-	(void)signal(SIGQUIT, voidquit);
+	if (preen && child)
+		(void)signal(SIGQUIT, voidquit);
 	devname = filesys;
 	if (debug && preen)
 		pwarn("starting\n");
