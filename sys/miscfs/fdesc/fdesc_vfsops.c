@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fdesc_vfsops.c	1.3 (Berkeley) 07/12/92
+ *	@(#)fdesc_vfsops.c	1.4 (Berkeley) 07/12/92
  *
  * $Id: fdesc_vfsops.c,v 1.6 1992/05/30 10:25:59 jsp Exp jsp $
  */
@@ -54,7 +54,7 @@
 #include <sys/mount.h>
 #include <sys/namei.h>
 #include <sys/malloc.h>
-#include <fdesc/fdesc.h>
+#include <miscfs/fdesc/fdesc.h>
 
 static u_short fdesc_mntid;
 
