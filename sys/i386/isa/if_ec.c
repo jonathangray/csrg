@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1982, 1990 The Regents of the University of California.
+ * Copyright (c) 1991 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_ec.c	7.1 (Berkeley) 09/17/91
+ *	@(#)if_ec.c	7.2 (Berkeley) 09/17/91
  */
 
 #include "ec.h"
