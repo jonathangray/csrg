@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_usrreq.c	8.2 (Berkeley) 01/03/94
+ *	@(#)tcp_usrreq.c	8.3 (Berkeley) 01/09/95
  */
 
 #include <sys/param.h>
@@ -84,7 +84,7 @@ tcp_usrreq(so, req, m, nam, control)
 
 #if BSD>=43
 	if (req == PRU_CONTROL)
-		return (in_control(so, (int)m, (caddr_t)nam,
+		return (in_control(so, (u_long)m, (caddr_t)nam,
 			(struct ifnet *)control));
 	if (control && control->m_len) {
 		m_freem(control);
