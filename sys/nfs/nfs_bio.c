@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_bio.c	8.2 (Berkeley) 09/21/93
+ *	@(#)nfs_bio.c	8.3 (Berkeley) 09/23/93
  */
 
 #include <sys/param.h>
@@ -726,7 +726,7 @@ nfs_doio(bp, cr, p)
 			  np->n_mtime != np->n_vattr.va_mtime.ts_sec))) {
 			uprintf("Process killed due to text file modification\n");
 			psignal(p, SIGKILL);
-			p->p_flag |= SKEEP;
+			p->p_flag |= P_NOSWAP;
 		}
 		break;
 	    case VLNK:
