@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)lastcomm.c	5.13 (Berkeley) 05/17/93";
+static char sccsid[] = "@(#)lastcomm.c	5.14 (Berkeley) 06/02/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -56,7 +56,6 @@ static char sccsid[] = "@(#)lastcomm.c	5.13 (Berkeley) 05/17/93";
 #include <utmp.h>
 #include "pathnames.h"
 
-char	*devname __P((dev_t, mode_t));
 time_t	 expand __P((u_int));
 char	*flagbits __P((int));
 char	*getdev __P((dev_t));
