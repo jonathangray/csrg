@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)crypt.3	6.4 (Berkeley) 04/21/91
+.\"     @(#)crypt.3	6.5 (Berkeley) 05/06/91
 .\"
 .Dd 
 .Dt CRYPT 3
@@ -174,10 +174,14 @@ as described above.
 .%D July 1979
 .Re
 .Sh HISTORY
-A
+A rotor-based
 .Fn crypt
 function appeared in
 .At v6 .
+The current style
+.Fn crypt
+first appeared in
+.At v7 .
 .Sh BUGS
 Dropping the
 .Em least
