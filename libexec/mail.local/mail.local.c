@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)mail.local.c	5.6 (Berkeley) 06/19/91";
+static char sccsid[] = "@(#)mail.local.c	5.7 (Berkeley) 11/13/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -289,7 +289,7 @@ void
 #if __STDC__
 err(int isfatal, const char *fmt, ...)
 #else
-err(isfatal, fmt)
+err(isfatal, fmt, va_alist)
 	int isfatal;
 	char *fmt;
 	va_dcl
