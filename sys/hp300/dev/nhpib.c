@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nhpib.c	7.3 (Berkeley) 12/16/90
+ *	@(#)nhpib.c	7.4 (Berkeley) 05/07/91
  */
 
 /*
@@ -54,7 +54,7 @@ nhpibtype(hc)
 	register struct hpib_softc *hs = &hpib_softc[hc->hp_unit];
 	register struct nhpibdevice *hd = (struct nhpibdevice *)hc->hp_addr;
 
-	if ((int)hc->hp_addr == internalhpib) {
+	if (hc->hp_addr == internalhpib) {
 		hs->sc_type = HPIBA;
 		hs->sc_ba = HPIBA_BA;
 		hc->hp_ipl = HPIBA_IPL;
