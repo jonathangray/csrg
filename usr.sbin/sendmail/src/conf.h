@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.25 (Berkeley) 08/21/93
+ *	@(#)conf.h	8.26 (Berkeley) 08/23/93
  */
 
 /*
@@ -60,7 +60,6 @@
 # define MAXKEY		128		/* maximum size of a database key */
 # define MEMCHUNKSIZE	1024		/* chunk size for memory allocation */
 # define MAXUSERENVIRON	100		/* max envars saved, must be >= 3 */
-# define MAXIPADDR	16		/* max # of IP addrs for this host */
 # define MAXALIASDB	12		/* max # of alias databases */
 # define PSBUFSIZE	(MAXLINE + MAXATOM)	/* size of prescan buffer */
 
