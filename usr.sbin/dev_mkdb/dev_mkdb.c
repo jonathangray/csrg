@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)dev_mkdb.c	5.8 (Berkeley) 05/06/91";
+static char sccsid[] = "@(#)dev_mkdb.c	5.9 (Berkeley) 05/17/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -56,7 +56,7 @@ static char sccsid[] = "@(#)dev_mkdb.c	5.8 (Berkeley) 05/06/91";
 #include <stdlib.h>
 #include <string.h>
 
-static void error(), usage();
+void error(), usage();
 
 main(argc, argv)
 	int argc;
