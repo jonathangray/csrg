@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)proc.h	5.6 (Berkeley) 06/24/91
+ *	@(#)proc.h	5.7 (Berkeley) 07/19/91
  */
 
 /*
@@ -70,7 +70,7 @@ struct process {
 #define	PAWAITED	(1<<7)	/* top level is waiting for it */
 #define	PFOREGND	(1<<8)	/* started in shells pgrp */
 #define	PDUMPED		(1<<9)	/* process dumped core */
-#define	PDIAG		(1<<10)	/* diagnostic output also piped out */
+#define	PERR		(1<<10)	/* diagnostic output also piped out */
 #define	PPOU		(1<<11)	/* piped output */
 #define	PREPORTED	(1<<12)	/* status has been reported */
 #define	PINTERRUPTED	(1<<13)	/* job stopped via interrupt signal */
