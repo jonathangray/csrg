@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	6.10 (Berkeley) 01/22/93";
+static char sccsid[] = "@(#)main.c	6.11 (Berkeley) 01/26/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -900,6 +900,11 @@ main(argc, argv, envp)
 	*/
 
 	CurEnv->e_from.q_flags |= QDONTSEND;
+	if (tTd(1, 5))
+	{
+		printf("main: QDONTSEND ");
+		printaddr(&CurEnv->e_from, FALSE);
+	}
 	CurEnv->e_to = NULL;
 	sendall(CurEnv, SM_DEFAULT);
 
