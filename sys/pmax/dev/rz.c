@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)rz.c	7.6 (Berkeley) 10/11/92
+ *	@(#)rz.c	7.7 (Berkeley) 10/11/92
  */
 
 /*
@@ -60,8 +60,8 @@
 
 #include <ufs/ffs/fs.h>
 
-#include <mips/dev/device.h>
-#include <mips/dev/scsi.h>
+#include <pmax/dev/device.h>
+#include <pmax/dev/scsi.h>
 
 extern int splbio();
 extern void splx();
