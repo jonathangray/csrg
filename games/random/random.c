@@ -5,7 +5,6 @@
  * This code is derived from software contributed to Berkeley by
  * Guy Harris at Network Appliance Corp.
  *
- *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -42,7 +41,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)random.c	8.1 (Berkeley) 03/31/94";
+static char sccsid[] = "@(#)random.c	8.2 (Berkeley) 03/31/94";
 #endif /* not lint */
 
 #include <sys/types.h>
