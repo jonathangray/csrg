@@ -29,12 +29,11 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)pxref.1	6.4 (Berkeley) 03/14/91
+.\"     @(#)pxref.1	6.5 (Berkeley) 05/09/91
 .\"
-.Vx
-.Vx
 .Dd 
 .Dt PXREF 1
+.Os
 .Sh NAME
 .Nm pxref
 .Nd Pascal cross-reference program
@@ -58,11 +57,13 @@ are treated as identifiers for the purpose of the cross-reference.
 directives are not processed, but cause the placement of an entry
 indexed by `#include' in the cross-reference.
 .Sh SEE ALSO
-.Em Berkeley Pascal User's Manual
-.Sh AUTHOR
-Niklaus Wirth
+.Rs
+.%T "Berkeley Pascal User's Manual"
+.Re
 .Sh HISTORY
-.Nm Pxref
-appeared in 3 BSD.
+The
+.Nm pxref
+command appeared in
+.Bx 3.0 .
 .Sh BUGS
 Identifiers are trimmed to 10 characters.
