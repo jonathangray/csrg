@@ -35,11 +35,17 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)amd.c	8.1 (Berkeley) 06/06/93
+ *	@(#)amd.c	5.5 (Berkeley) 06/06/93
  *
  * $Id: amd.c,v 5.2.2.1 1992/02/09 15:08:15 jsp beta $
  *
  */
+
+#ifndef lint
+char copyright[] =
+"@(#) Copyright (c) 1993 The Regents of the University of California.\n\
+ All rights reserved.\n";
+#endif /* not lint */
 
 /*
  * Automounter
