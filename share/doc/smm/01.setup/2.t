@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)2.t	6.28 (Berkeley) 07/26/93
+.\"	@(#)2.t	6.29 (Berkeley) 07/26/93
 .\"
 .ds lq ``
 .ds rq ''
@@ -1073,6 +1073,16 @@ and a root filesystem of about 17 megabytes.
 The distributed system binaries occupy about 150 (180 with X11R5) megabytes
 .\" XXX check
 while the major sources occupy another 250 (340 with X11R5) megabytes.
+The
+.Pn /var
+filesystem as delivered on the tape is only 2Mb,
+however it should have at least 50Mb allocated to it just for
+normal system activity.
+Usually it is allocated the last partition on the disk
+so that it can provide as much space as possible to the
+.Pn /var/users
+filesystem.
+See section 2.5.4 for further details on disk layouts.
 .PP
 Be aware that the disks have their sizes
 measured in disk sectors (usually 512 bytes), while the UNIX filesystem
