@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)portal_vfsops.c	8.1 (Berkeley) 06/10/93
+ *	@(#)portal_vfsops.c	8.2 (Berkeley) 01/04/94
  *
  * $Id: portal_vfsops.c,v 1.5 1992/05/30 10:25:27 jsp Exp jsp $
  */
@@ -111,7 +111,7 @@ portal_mount(mp, path, data, ndp, p)
 	if (so->so_proto->pr_domain->dom_family != AF_UNIX)
 		return (ESOCKTNOSUPPORT);
 
-	error = getnewvnode(VT_UFS, mp, portal_vnodeop_p, &rvp); /* XXX */
+	error = getnewvnode(VT_PORTAL, mp, portal_vnodeop_p, &rvp); /* XXX */
 	if (error)
 		return (error);
 	MALLOC(rvp->v_data, void *, sizeof(struct portalnode),
