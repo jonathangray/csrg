@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)sys_bsd.c	8.3 (Berkeley) 02/16/95";
+static char sccsid[] = "@(#)sys_bsd.c	8.4 (Berkeley) 05/30/95";
 #endif /* not lint */
 
 /*
@@ -223,7 +223,7 @@ TerminalSpecialChars(c)
 /*
  * Flush output to the terminal
  */
- 
+
     void
 TerminalFlushOutput()
 {
@@ -328,7 +328,7 @@ TerminalDefaultChars()
     nttyb.sg_kill = ottyb.sg_kill;
     nttyb.sg_erase = ottyb.sg_erase;
 #else	/* USE_TERMIO */
-    memcpy(new_tc.c_cc, old_tc.c_cc, sizeof(old_tc.c_cc));
+    memmove(new_tc.c_cc, old_tc.c_cc, sizeof(old_tc.c_cc));
 # ifndef	VDISCARD
     termFlushChar = CONTROL('O');
 # endif
@@ -669,7 +669,11 @@ TerminalNewMode(f)
 #endif
 #ifdef	SIGTSTP
 	(void) signal(SIGTSTP, SIG_DFL);
+# ifndef SOLARIS
 	(void) sigsetmask(sigblock(0) & ~(1<<(SIGTSTP-1)));
+# else	SOLARIS
+	(void) sigrelse(SIGTSTP);
+# endif	SOLARIS
 #endif	/* SIGTSTP */
 #ifndef USE_TERMIO
 	ltc = oltc;
@@ -732,11 +736,11 @@ TerminalNewMode(f)
 # define B38400 B28800
 #endif
 
-#ifndef B57600 
+#ifndef B57600
 #define B57600  B38400
 #endif
 
-#ifndef B76800 
+#ifndef B76800
 #define B76800  B57600
 #endif
 
@@ -993,7 +997,7 @@ process_rings(netin, netout, netex, ttyin, ttyout, poll)
 
     if (netout) {
 	FD_SET(net, &obits);
-    } 
+    }
     if (ttyout) {
 	FD_SET(tout, &obits);
     }
@@ -1132,7 +1136,7 @@ process_rings(netin, netout, netex, ttyin, ttyout, poll)
 		    int i;
 		    i = recv(net, netiring.supply + c, canread - c, MSG_OOB);
 		    if (i == c &&
-			  bcmp(netiring.supply, netiring.supply + c, i) == 0) {
+			 memcmp(netiring.supply, netiring.supply + c, i) == 0) {
 			bogus_oob = 1;
 			first = 0;
 		    } else if (i < 0) {
