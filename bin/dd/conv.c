@@ -36,11 +36,12 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conv.c	8.1 (Berkeley) 05/31/93";
+static char sccsid[] = "@(#)conv.c	8.2 (Berkeley) 04/02/94";
 #endif /* not lint */
 
 #include <sys/param.h>
 
+#include <err.h>
 #include <string.h>
 
 #include "dd.h"
@@ -55,8 +56,8 @@ static char sccsid[] = "@(#)conv.c	8.1 (Berkeley) 05/31/93";
 void
 def()
 {
-	register int cnt;
-	register u_char *inp, *t;
+	int cnt;
+	u_char *inp, *t;
 
 	if (t = ctab)
 		for (inp = in.dbp - (cnt = in.dbrcnt); cnt--; ++inp)
@@ -99,9 +100,8 @@ void
 block()
 {
 	static int intrunc;
-	register int ch, cnt;
-	register u_char *inp, *outp, *t;
-	int maxlen;
+	int ch, cnt, maxlen;
+	u_char *inp, *outp, *t;
 
 	/*
 	 * Record truncation can cross block boundaries.  If currently in a
@@ -209,8 +209,8 @@ block_close()
 void
 unblock()
 {
-	register int cnt;
-	register u_char *inp, *t;
+	int cnt;
+	u_char *inp, *t;
 
 	/* Translation and case conversion. */
 	if (t = ctab)
@@ -242,11 +242,11 @@ unblock()
 void
 unblock_close()
 {
-	register int cnt;
-	register u_char *t;
+	int cnt;
+	u_char *t;
 
 	if (in.dbcnt) {
-		warn("%s: short input record", in.name);
+		warnx("%s: short input record", in.name);
 		for (t = in.db + in.dbcnt - 1; t >= in.db && *t == ' '; --t);
 		if (t >= in.db) {
 			cnt = t - in.db + 1;
