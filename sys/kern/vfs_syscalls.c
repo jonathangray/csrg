@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	8.37 (Berkeley) 05/14/95
+ *	@(#)vfs_syscalls.c	8.38 (Berkeley) 05/18/95
  */
 
 #include <sys/param.h>
@@ -636,11 +636,11 @@ fchdir(p, uap, retval)
 		vput(vp);
 		vp = tdp;
 	}
-	VOP_UNLOCK(vp, 0, p);
 	if (error) {
-		vrele(vp);
+		vput(vp);
 		return (error);
 	}
+	VOP_UNLOCK(vp, 0, p);
 	vrele(fdp->fd_cdir);
 	fdp->fd_cdir = vp;
 	return (0);
@@ -717,9 +717,10 @@ change_dir(ndp, p)
 		error = ENOTDIR;
 	else
 		error = VOP_ACCESS(vp, VEXEC, p->p_ucred, p);
-	VOP_UNLOCK(vp, 0, p);
 	if (error)
-		vrele(vp);
+		vput(vp);
+	else
+		VOP_UNLOCK(vp, 0, p);
 	return (error);
 }
 
@@ -2228,13 +2229,13 @@ unionread:
 #ifdef UNION
 {
 	extern int (**union_vnodeop_p)();
-	extern struct vnode *union_dircache __P((struct vnode *));
+	extern struct vnode *union_dircache __P((struct vnode*, struct proc*));
 
 	if ((SCARG(uap, count) == auio.uio_resid) &&
 	    (vp->v_op == union_vnodeop_p)) {
 		struct vnode *lvp;
 
-		lvp = union_dircache(vp);
+		lvp = union_dircache(vp, p);
 		if (lvp != NULLVP) {
 			struct vattr va;
 
@@ -2251,12 +2252,11 @@ unionread:
 		
 		if (lvp != NULLVP) {
 			error = VOP_OPEN(lvp, FREAD, fp->f_cred, p);
-			VOP_UNLOCK(lvp, 0, p);
-
 			if (error) {
-				vrele(lvp);
+				vput(lvp);
 				return (error);
 			}
+			VOP_UNLOCK(lvp, 0, p);
 			fp->f_data = (caddr_t) lvp;
 			fp->f_offset = 0;
 			error = vn_close(vp, FREAD, fp->f_cred, p);
@@ -2336,13 +2336,13 @@ unionread:
 #ifdef UNION
 {
 	extern int (**union_vnodeop_p)();
-	extern struct vnode *union_dircache __P((struct vnode *));
+	extern struct vnode *union_dircache __P((struct vnode*, struct proc*));
 
 	if ((SCARG(uap, count) == auio.uio_resid) &&
 	    (vp->v_op == union_vnodeop_p)) {
 		struct vnode *lvp;
 
-		lvp = union_dircache(vp);
+		lvp = union_dircache(vp, p);
 		if (lvp != NULLVP) {
 			struct vattr va;
 
@@ -2356,15 +2356,14 @@ unionread:
 				lvp = NULL;
 			}
 		}
-		
+
 		if (lvp != NULLVP) {
 			error = VOP_OPEN(lvp, FREAD, fp->f_cred, p);
-			VOP_UNLOCK(lvp, 0, p);
-
 			if (error) {
-				vrele(lvp);
+				vput(lvp);
 				return (error);
 			}
+			VOP_UNLOCK(lvp, 0, p);
 			fp->f_data = (caddr_t) lvp;
 			fp->f_offset = 0;
 			error = vn_close(vp, FREAD, fp->f_cred, p);
