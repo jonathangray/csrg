@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)cat.c	8.1 (Berkeley) 05/31/93";
+static char sccsid[] = "@(#)cat.c	5.18 (Berkeley) 07/19/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -243,7 +243,7 @@ raw_cat(rfd)
 			err(1, "");
 	}
 	while ((nr = read(rfd, buf, bsize)) > 0)
-		for (off = 0; off < nr; nr -= nw, off += nw)
+		for (off = 0; nr; nr -= nw, off += nw)
 			if ((nw = write(wfd, buf + off, nr)) < 0)
 				err(1, "stdout");
 	if (nr < 0)
