@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)rec_close.c	5.1 (Berkeley) 09/04/91";
+static char sccsid[] = "@(#)rec_close.c	5.2 (Berkeley) 09/11/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -41,7 +41,7 @@ static char sccsid[] = "@(#)rec_close.c	5.1 (Berkeley) 09/04/91";
 #include <db.h>
 #include <unistd.h>
 #include <stdio.h>
-#include "../btree/btree.h"
+#include "recno.h"
 
 /*
  * __REC_CLOSE -- Close a recno tree.
@@ -81,6 +81,7 @@ __rec_sync(dbp)
 	struct iovec iov[2];
 	BTREE *t;
 	DBT data, key;
+	off_t off;
 	recno_t scursor;
 	int status;
 
@@ -115,9 +116,12 @@ __rec_sync(dbp)
                 status = (dbp->seq)(dbp, &key, &data, R_NEXT);
         }
 	t->bt_rcursor = scursor;
-	if (status != RET_ERROR) {
-		UNSET(t, BTF_MODIFIED);
-		return (RET_SUCCESS);
-	}
-	return (RET_ERROR);
+	if (status == RET_ERROR)
+		return (RET_ERROR);
+	if ((off = lseek(t->bt_rfd, 0L, SEEK_CUR)) == -1)
+		return (RET_ERROR);
+	if (ftruncate(t->bt_rfd, off))
+		return (RET_ERROR);
+	UNSET(t, BTF_MODIFIED);
+	return (RET_SUCCESS);
 }
