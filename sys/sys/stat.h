@@ -1,4 +1,4 @@
-/*	stat.h	3.1	%H%	*/
+/*	stat.h	3.2	06/07/80	*/
 
 struct	stat
 {
