@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)interactive.c	5.20 (Berkeley) 02/11/93";
+static char sccsid[] = "@(#)interactive.c	5.21 (Berkeley) 05/30/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -106,7 +106,7 @@ runcmdshell()
 	arglist.glob.gl_flags = GLOB_ALTDIRFUNC;
 	arglist.glob.gl_opendir = (void *)rst_opendir;
 	arglist.glob.gl_readdir = (void *)glob_readdir;
-	arglist.glob.gl_closedir = rst_closedir;
+	arglist.glob.gl_closedir = (void *)rst_closedir;
 	arglist.glob.gl_lstat = glob_stat;
 	arglist.glob.gl_stat = glob_stat;
 	canon("/", curdir);
