@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)box.c	5.9 (Berkeley) 10/27/92";
+static char sccsid[] = "@(#)box.c	5.10 (Berkeley) 12/30/92";
 #endif	/* not lint */
 
 #include <curses.h>
@@ -74,5 +74,5 @@ box(win, vert, hor)
 		lp[endx].attr &= ~__STANDOUT;
 	}
 	__touchwin(win);
-	return (OK);
+	return (CURSES_OK);
 }
