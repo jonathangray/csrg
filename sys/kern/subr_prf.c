@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_prf.c	7.30.1.1 (Berkeley) 11/20/91
+ *	@(#)subr_prf.c	7.33 (Berkeley) 11/20/91
  */
 
 #include <sys/param.h>
