@@ -30,15 +30,20 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_cksum.c	5.2 (Berkeley) 10/02/91
+ *	@(#)lfs_cksum.c	5.3 (Berkeley) 11/01/91
  */
 
-#ifdef LOGFS
-#include <sys/types.h>
+#include <sys/param.h>
+
+#include <lfs/lfs.h>
+#include <lfs/lfs_extern.h>
 
 /*
  * Simple, general purpose, fast checksum.  Data must be short-aligned.
  * Returns a u_long in case we ever want to do something more rigorous.
+ *
+ * XXX
+ * Use the TCP/IP checksum instead.
  */
 u_long
 cksum(str, len)
@@ -52,4 +57,3 @@ cksum(str, len)
 		sum ^= *((u_short *)str)++;
 	return (sum);
 }
-#endif /* LOGFS */
