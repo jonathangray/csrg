@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)asc.c	8.3 (Berkeley) 07/03/94
+ *	@(#)asc.c	8.4 (Berkeley) 10/09/94
  */
 
 /* 
@@ -1146,7 +1146,9 @@ asc_get_status(asc, status, ss, ir)
 	 */
 	if ((data = regs->asc_flags & ASC_FLAGS_FIFO_CNT) != 2) {
 		printf("asc_get_status: fifo cnt %d\n", data); /* XXX */
+#ifdef DEBUG
 		asc_DumpLog("get_status"); /* XXX */
+#endif
 		if (data < 2) {
 			asc->regs->asc_cmd = ASC_CMD_MSG_ACPT;
 			readback(asc->regs->asc_cmd);
