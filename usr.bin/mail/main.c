@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.27 (Berkeley) 06/25/90";
+static char sccsid[] = "@(#)main.c	5.28 (Berkeley) 04/01/91";
 #endif /* not lint */
 
 #include "rcv.h"
@@ -60,11 +60,11 @@ main(argc, argv)
 	char *subject;
 	char *ef;
 	char nosrc = 0;
-	int hdrstop();
+	void hdrstop();
 	sig_t prevint;
-	int sigchild();
 	extern int getopt(), optind, opterr;
 	extern char *optarg;
+	void sigchild();
 
 	/*
 	 * Set up a reasonable environment.
@@ -252,6 +252,7 @@ Usage: mail [-iInv] [-s subject] [-c cc-addr] [-b bcc-addr] to-addr ...\n\
 /*
  * Interrupt printing of the headers.
  */
+void
 hdrstop()
 {
 
