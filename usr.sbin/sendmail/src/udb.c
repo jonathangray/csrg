@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef USERDB
-static char sccsid [] = "@(#)udb.c	6.22 (Berkeley) 05/28/93 (with USERDB)";
+static char sccsid [] = "@(#)udb.c	6.23 (Berkeley) 06/02/93 (with USERDB)";
 #else
-static char sccsid [] = "@(#)udb.c	6.22 (Berkeley) 05/28/93 (without USERDB)";
+static char sccsid [] = "@(#)udb.c	6.23 (Berkeley) 06/02/93 (without USERDB)";
 #endif
 #endif
 
@@ -196,6 +196,8 @@ udbexpand(a, sendq, e)
 		  case UDB_DBFETCH:
 			key.data = keybuf;
 			key.size = keylen;
+			if (tTd(28, 80))
+				printf("udbexpand: trying %s\n", keybuf);
 			i = (*up->udb_dbp->seq)(up->udb_dbp, &key, &info, R_CURSOR);
 			if (i > 0 || info.size <= 0)
 			{
@@ -203,6 +205,9 @@ udbexpand(a, sendq, e)
 					printf("udbexpand: no match on %s\n", keybuf);
 				continue;
 			}
+			if (tTd(28, 80))
+				printf("udbexpand: match %.*s: %.*s\n",
+					key.size, key.data, info.size, info.data);
 
 			naddrs = 0;
 			a->q_flags &= ~QSELFREF;
@@ -240,6 +245,11 @@ udbexpand(a, sendq, e)
 				/* get the next record */
 				i = (*up->udb_dbp->seq)(up->udb_dbp, &key, &info, R_NEXT);
 			}
+
+			/* if nothing ever matched, try next database */
+			if (!breakout)
+				continue;
+
 			if (naddrs > 0 && !bitset(QSELFREF, a->q_flags))
 			{
 				if (tTd(28, 5))
