@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	8.102 (Berkeley) 06/11/95";
+static char sccsid[] = "@(#)readcf.c	8.103 (Berkeley) 06/12/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1696,7 +1696,7 @@ setoption(opt, val, sticky)
 		}
 		if (tTd(8, 2))
 			printf("_res.options = %x, HasWildcardMX = %d\n",
-				_res.options, !NoMXforCanon);
+				_res.options, NoMXforCanon);
 #else
 		usrerr("name server (I option) specified but BIND not compiled in");
 #endif
