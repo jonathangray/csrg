@@ -6,7 +6,7 @@
 # include "sendmail.h"
 # include <sys/stat.h>
 
-SCCSID(@(#)main.c	3.118		09/26/82);
+SCCSID(@(#)main.c	3.119		10/06/82);
 
 /*
 **  SENDMAIL -- Post mail to a set of destinations.
