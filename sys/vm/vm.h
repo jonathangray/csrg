@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm.h	8.4 (Berkeley) 04/27/95
+ *	@(#)vm.h	8.5 (Berkeley) 05/11/95
  */
 
 #ifndef VM_H
@@ -57,7 +57,7 @@ struct pager_struct;
 typedef struct pager_struct *vm_pager_t;
 
 /*
- *	MACH VM locking primitives mappings to kernel locking primitives.
+ *	MACH VM locking type mappings to kernel types
  */
 typedef struct simplelock	simple_lock_data_t;
 typedef struct simplelock	*simple_lock_t;
@@ -66,8 +66,8 @@ typedef struct lock		*lock_t;
 
 #include <sys/vmmeter.h>
 #include <sys/queue.h>
-#include <sys/lock.h>
 #include <vm/vm_param.h>
+#include <sys/lock.h>
 #include <vm/vm_prot.h>
 #include <vm/vm_inherit.h>
 #include <vm/vm_map.h>
