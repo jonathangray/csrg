@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)glob.c	5.29 (Berkeley) 10/10/91";
+static char sccsid[] = "@(#)glob.c	5.30 (Berkeley) 10/28/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -100,9 +100,10 @@ globtilde(nv, s)
     gstart = gbuf;
     *gstart++ = *s++;
     u = s;
-    for (b = gstart, e = &gbuf[MAXPATHLEN - 1]; 
+    for (b = gstart, e = &gbuf[MAXPATHLEN - 1];
 	 *s && *s != '/' && *s != ':' && b < e;
-	 *b++ = *s++);
+	 *b++ = *s++)
+	 continue;
     *b = EOS;
     if (gethdir(gstart)) {
 	blkfree(nv);
@@ -390,7 +391,7 @@ libglob(vl)
 	gflgs |= GLOB_APPEND;
     }
     while (*++vl);
-    vl = (globv.gl_pathc == 0 || (magic && !match && !nonomatch)) ? 
+    vl = (globv.gl_pathc == 0 || (magic && !match && !nonomatch)) ?
 	NULL : blk2short(globv.gl_pathv);
     globfree(&globv);
     return (vl);
@@ -805,8 +806,10 @@ Gcat(s1, s2)
     register Char *p, *q;
     int     n;
 
-    for (p = s1; *p++;);
-    for (q = s2; *q++;);
+    for (p = s1; *p++;)
+	continue;
+    for (q = s2; *q++;)
+	continue;
     n = (p - s1) + (q - s2) - 1;
     if (++gargc >= gargsiz) {
 	gargsiz += GLOBSPACE;
@@ -815,8 +818,10 @@ Gcat(s1, s2)
     }
     gargv[gargc] = 0;
     p = gargv[gargc - 1] = (Char *) xmalloc((size_t) n * sizeof(Char));
-    for (q = s1; *p++ = *q++;);
-    for (p--, q = s2; *p++ = *q++;);
+    for (q = s1; *p++ = *q++;)
+	continue;
+    for (p--, q = s2; *p++ = *q++;)
+	continue;
 }
 
 #ifdef FILEC
