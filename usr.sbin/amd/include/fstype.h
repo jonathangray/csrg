@@ -1,5 +1,5 @@
 /*
- * $Id: fstype.h,v 5.2 90/06/23 22:20:30 jsp Rel $
+ * $Id: fstype.h,v 5.2.1.2 90/11/04 23:17:38 jsp Exp $
  *
  * Copyright (c) 1989 Jan-Simon Pendry
  * Copyright (c) 1989 Imperial College of Science, Technology & Medicine
@@ -37,7 +37,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fstype.h	5.1 (Berkeley) 07/19/90
+ *	@(#)fstype.h	5.2 (Berkeley) 03/17/91
  */
 
 /*
@@ -49,9 +49,10 @@
  */
 #define HAS_AFS
 extern am_ops	afs_ops;	/* Automount file system (this!) */
+extern am_ops	toplvl_ops;	/* Top-level automount file system */
+extern am_ops	root_ops;	/* Root file system */
 extern qelem	afs_srvr_list;
 extern fserver *find_afs_srvr P((mntfs*));
-
 
 /*
  * Direct Automount File System
@@ -93,7 +94,9 @@ extern am_ops lofs_ops;
  */
 #define HAS_NFS
 #define	HAS_HOST
+#define HAS_NFSX
 extern am_ops	nfs_ops;	/* NFS */
+extern am_ops	nfsx_ops;	/* NFS X */
 extern am_ops	host_ops;	/* NFS host */
 #ifdef HOST_EXEC
 extern char	*host_helper;	/* "/usr/local/etc/amd-host" */
@@ -132,3 +135,9 @@ extern am_ops	ufs_ops;	/* Un*x file system */
  */
 #define HAS_SFS
 extern am_ops	sfs_ops;	/* Symlink FS */
+
+/*
+ * Union file system
+ */
+#define	HAS_UNION_FS
+extern am_ops	union_ops;	/* Union FS */
