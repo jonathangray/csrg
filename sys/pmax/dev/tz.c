@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tz.c	7.4 (Berkeley) 04/19/92
+ *	@(#)tz.c	7.5 (Berkeley) 07/25/92
  *
  * from: $Header: /sprite/src/kernel/dev/RCS/devSCSITape.c,
  *	v 8.14 89/07/31 17:26:13 mendel Exp $ SPRITE (Berkeley)
@@ -525,7 +525,6 @@ tzopen(dev, flags, type, p)
 	case MT_ISAR:
 	case MT_ISHPDAT:
 	case MT_ISVIPER1:
-	case MT_ISPYTHON:
 		sc->sc_blklen = 512;
 		break;
 
@@ -538,6 +537,7 @@ tzopen(dev, flags, type, p)
 #endif
 		break;
 
+	case MT_ISPYTHON:
 	case MT_ISMFOUR:
 	case MT_ISTK50:
 		sc->sc_blklen = 0;
