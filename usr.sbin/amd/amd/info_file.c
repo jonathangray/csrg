@@ -1,6 +1,4 @@
 /*
- * $Id: info_file.c,v 5.2.1.2 91/03/03 20:39:34 jsp Alpha $
- *
  * Copyright (c) 1990 Jan-Simon Pendry
  * Copyright (c) 1990 Imperial College of Science, Technology & Medicine
  * Copyright (c) 1990 The Regents of the University of California.
@@ -37,7 +35,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)info_file.c	5.2 (Berkeley) 03/17/91
+ *	@(#)info_file.c	5.3 (Berkeley) 05/12/91
+ *
+ * $Id: info_file.c,v 5.2.1.4 91/05/07 22:17:57 jsp Alpha $
+ *
  */
 
 /*
@@ -69,6 +70,7 @@ FILE *fp;
 				int ch;
 				buf += len - 2;
 				size -= len - 2;
+				*buf = '\n'; buf[1] = '\0';
 				/*
 				 * Skip leading white space on next line
 				 */
