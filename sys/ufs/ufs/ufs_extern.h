@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_extern.h	8.6 (Berkeley) 08/10/94
+ *	@(#)ufs_extern.h	8.7 (Berkeley) 02/22/95
  */
 
 struct buf;
