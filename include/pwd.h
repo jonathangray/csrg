@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pwd.h	5.11 (Berkeley) 04/03/91
+ *	@(#)pwd.h	5.12 (Berkeley) 04/21/91
  */
 
 #ifndef _PWD_H_
@@ -47,9 +47,11 @@
 
 #define	_PATH_PWD_MKDB		"/usr/sbin/pwd_mkdb"
 
-#define	_PW_KEYBYNAME		'1'
-#define	_PW_KEYBYNUM		'2'
-#define	_PW_KEYBYUID		'3'
+#define	_PW_KEYBYNAME		'1'	/* stored by name */
+#define	_PW_KEYBYNUM		'2'	/* stored by entry in the "file" */
+#define	_PW_KEYBYUID		'3'	/* stored by uid */
+
+#define	_PASSWORD_EFMT1		'_'	/* extended encryption format */
 
 #define	_PASSWORD_LEN		128
 #endif
