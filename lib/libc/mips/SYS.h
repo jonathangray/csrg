@@ -33,11 +33,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)SYS.h	5.1 (Berkeley) 02/29/92
+ *	@(#)SYS.h	5.2 (Berkeley) 07/26/92
  */
 
 #include <sys/syscall.h>
-#include "DEFS.h"
+#include <machine/machAsmDefs.h>
 
 /* vax/tahoe compat */
 #define	ret
