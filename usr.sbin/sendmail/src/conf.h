@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.146 (Berkeley) 04/07/95
+ *	@(#)conf.h	8.147 (Berkeley) 04/09/95
  */
 
 /*
@@ -454,6 +454,7 @@ typedef int		pid_t;
 # ifndef LA_TYPE
 #  define LA_TYPE	LA_SUBR
 # endif
+# define GIDSET_T	gid_t
 # if defined(_BSDI_VERSION) && _BSDI_VERSION >= 199312
 			/* version 1.1 or later */
 #  undef SPT_TYPE
@@ -1177,7 +1178,6 @@ typedef int		(*sigfunc_t)();
 #  define IDENTPROTO	0	/* TCP/IP implementation is broken */
 # endif
 # ifdef uniosb
-#  define SYS_TIME	1	/* use <sys/time.h> instead of <time.h> */
 #  define NEEDVPRINTF	1	/* need a replacement for vprintf(3) */
 # endif
 # define NEEDGETOPT	1	/* need a replacement for getopt(3) */
