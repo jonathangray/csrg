@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mman.h	7.3 (Berkeley) 02/15/91
+ *	@(#)mman.h	7.4 (Berkeley) 02/22/91
  */
 
 /*
@@ -71,3 +71,17 @@
 #define	MADV_SEQUENTIAL	2	/* expect sequential page references */
 #define	MADV_WILLNEED	3	/* will need these pages */
 #define	MADV_DONTNEED	4	/* dont need these pages */
+
+#ifndef KERNEL
+
+#include <sys/cdefs.h>
+
+__BEGIN_DECLS
+/* Some of these int's should probably be size_t's */
+int	mmap __P((caddr_t, int, int, int, int, off_t));
+int	mprotect __P((caddr_t, int, int));
+int	munmap __P((caddr_t, int));
+int	msync __P((caddr_t, int));
+__END_DECLS
+
+#endif /* !KERNEL */
