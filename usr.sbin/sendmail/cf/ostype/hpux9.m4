@@ -32,7 +32,7 @@ divert(-1)
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-VERSIONID(@(#)hpux9.m4	2.3 (Berkeley) 11/13/92)
+VERSIONID(`@(#)hpux9.m4	2.4 (Berkeley) 11/13/92')
 #
 
 define(`_HPUX_', `')dnl
