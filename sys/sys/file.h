@@ -30,13 +30,16 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)file.h	7.11 (Berkeley) 06/21/91
+ *	@(#)file.h	7.11 (Berkeley) 03/02/92
  */
 
 #include <sys/fcntl.h>
 #include <sys/unistd.h>
 
 #ifdef KERNEL
+struct proc;
+struct uio;
+
 /*
  * Kernel descriptor table.
  * One entry for each open kernel vnode and socket.
