@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)rtsock.c	7.33 (Berkeley) 03/05/93
+ *	@(#)rtsock.c	7.34 (Berkeley) 03/05/93
  */
 
 #include <sys/param.h>
@@ -757,9 +757,9 @@ sysctl_rtable(name, namelen, where, given, new, newlen)
 	int	*name;
 	int	namelen;
 	caddr_t	where;
-	int	*given;
+	size_t	*given;
 	caddr_t	*new;
-	int	newlen;
+	size_t	newlen;
 {
 	register struct radix_node_head *rnh;
 	int	i, s, error = EINVAL;
