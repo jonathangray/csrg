@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_subr.c	7.16 (Berkeley) 10/02/91
+ *	@(#)tp_subr.c	7.17 (Berkeley) 10/08/91
  */
 
 /***********************************************************
@@ -98,6 +98,7 @@ SOFTWARE.
 
 int		tp_emit(), tp_sbdrop();
 int		tprexmtthresh = 3;
+extern int	ticks;
 void	tp_send();
 
 /*
@@ -165,8 +166,8 @@ void
 tp_rtt_rtv(tpcb)
 register struct tp_pcb *tpcb;
 {
-	int new, old = tpcb->tp_dt_ticks;
-	int delta, elapsed = tick - tpcb->tp_rttemit;
+	int old = tpcb->tp_rtt;
+	int delta, elapsed = ticks - tpcb->tp_rttemit;
 
 	if (tpcb->tp_rtt != 0) {
 		/*
@@ -214,10 +215,10 @@ register struct tp_pcb *tpcb;
 	 */
 	TP_RANGESET(tpcb->tp_dt_ticks, TP_REXMTVAL(tpcb),
 		tpcb->tp_peer_acktime, 128 /* XXX */);
-	IFTRACE(D_RTT)
-		tptraceTPCB(TPPTmisc, "oldticks ,rtv, rtt, newticks",
-			old, rtv, rtt, new);
-	ENDTRACE
+	IFDEBUG(D_RTT)
+		printf("%s tpcb 0x%x, elapsed %d, delta %d, rtt %d, rtv %d, old %d\n",
+			"tp_rtt_rtv:",tpcb,elapsed,delta,tpcb->tp_rtt,tpcb->tp_rtv,old);
+	ENDDEBUG
 	tpcb->tp_rxtcur = tpcb->tp_dt_ticks;
 }
 
@@ -287,6 +288,10 @@ tp_goodack(tpcb, cdt, seq, subseq)
 				struct mbuf *onxt_m = tpcb->tp_sndnxt_m;
 				u_int win = min(tpcb->tp_fcredit,
 							tpcb->tp_cong_win / tpcb->tp_l_tpdusize) / 2;
+				IFDEBUG(D_ACKRECV)
+					printf("%s tpcb 0x%x seq 0x%x rttseq 0x%x onxt 0x%x\n",
+						"goodack dupacks:", tpcb, seq, tpcb->tp_rttseq, onxt);
+				ENDDEBUG
 				if (win < 2)
 					win = 2;
 				tpcb->tp_ssthresh = win * tpcb->tp_l_tpdusize;
@@ -460,7 +465,7 @@ tp_send(tpcb)
 	SeqNum					highseq, checkseq;
 	int						idle, idleticks, off, cong_win;
 #ifdef TP_PERF_MEAS
-	int			 			send_start_time = tick;
+	int			 			send_start_time = ticks;
 	SeqNum					oldnxt = tpcb->tp_sndnxt; 
 #endif TP_PERF_MEAS
 
@@ -552,7 +557,7 @@ send:
 			 * not currently timing anything.
 			 */
 			if (tpcb->tp_rttemit == 0) {
-				tpcb->tp_rttemit = tick;
+				tpcb->tp_rttemit = ticks;
 				tpcb->tp_rttseq = tpcb->tp_sndnxt;
 			}
 			tpcb->tp_sndnxt = tpcb->tp_sndnew;
@@ -577,7 +582,7 @@ send:
 	IFPERF(tpcb)
 		{
 			register int npkts;
-			int	 elapsed = tick - send_start_time, *t;
+			int	 elapsed = ticks - send_start_time, *t;
 			struct timeval now;
 
 			npkts = SEQ_SUB(tpcb, tpcb->tp_sndnxt, oldnxt);
