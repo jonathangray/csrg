@@ -32,10 +32,9 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)courier.c	5.6 (Berkeley) 02/04/91";
+static char sccsid[] = "@(#)courier.c	5.7 (Berkeley) 03/02/91";
 #endif /* not lint */
 
-#define write cour_write
 /*
  * Routines for calling up on a Courier modem.
  * Derived from Hayes driver.
@@ -49,7 +48,7 @@ static	void sigALRM();
 static	int timeout = 0;
 static	int connected = 0;
 static	jmp_buf timeoutbuf, intbuf;
-static	int (*osigint)();
+static	int coursync();
 
 cour_dialer(num, acu)
 	register char *num;
@@ -59,6 +58,8 @@ cour_dialer(num, acu)
 #ifdef ACULOG
 	char line[80];
 #endif
+	static int cour_connect(), cour_swallow();
+
 	if (boolean(value(VERBOSE)))
 		printf("Using \"%s\"\n", acu);
 
@@ -74,23 +75,23 @@ badsynch:
 #endif
 		return (0);
 	}
-	write(FD, "AT E0\r", 6);	/* turn off echoing */
+	cour_write(FD, "AT E0\r", 6);	/* turn off echoing */
 	sleep(1);
 #ifdef DEBUG
 	if (boolean(value(VERBOSE)))
 		verbose_read();
 #endif
 	ioctl(FD, TIOCFLUSH, 0);	/* flush any clutter */
-	write(FD, "AT C1 E0 H0 Q0 X6 V1\r", 21);
+	cour_write(FD, "AT C1 E0 H0 Q0 X6 V1\r", 21);
 	if (!cour_swallow("\r\nOK\r\n"))
 		goto badsynch;
 	fflush(stdout);
-	write(FD, "AT D", 4);
+	cour_write(FD, "AT D", 4);
 	for (cp = num; *cp; cp++)
 		if (*cp == '=')
 			*cp = ',';
-	write(FD, num, strlen(num));
-	write(FD, "\r", 1);
+	cour_write(FD, num, strlen(num));
+	cour_write(FD, "\r", 1);
 	connected = cour_connect();
 #ifdef ACULOG
 	if (timeout) {
@@ -116,7 +117,7 @@ cour_disconnect()
 
 cour_abort()
 {
-	write(FD, "\r", 1);	/* send anything to abort the call */
+	cour_write(FD, "\r", 1);	/* send anything to abort the call */
 	cour_disconnect();
 }
 
@@ -261,7 +262,7 @@ coursync()
 
 	while (already++ < MAXRETRY) {
 		ioctl(FD, TIOCFLUSH, 0);	/* flush any clutter */
-		write(FD, "\rAT Z\r", 6);	/* reset modem */
+		cour_write(FD, "\rAT Z\r", 6);	/* reset modem */
 		bzero(buf, sizeof(buf));
 		sleep(1);
 		ioctl(FD, FIONREAD, &len);
@@ -280,7 +281,7 @@ coursync()
 		 * try to get command mode.
 		 */
 		sleep(1);
-		write(FD, "+++", 3);
+		cour_write(FD, "+++", 3);
 		sleep(1);
 		/*
 		 * Toggle DTR to force anyone off that might have left
@@ -290,11 +291,9 @@ coursync()
 		sleep(1);
 		ioctl(FD, TIOCSDTR, 0);
 	}
-	write(FD, "\rAT Z\r", 6);
+	cour_write(FD, "\rAT Z\r", 6);
 	return (0);
 }
-
-#undef write
 
 cour_write(fd, cp, n)
 int fd;
