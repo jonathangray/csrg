@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.113 (Berkeley) 07/04/94
+ *	@(#)conf.h	8.114 (Berkeley) 08/07/94
  */
 
 /*
@@ -543,6 +543,7 @@ extern int		errno;
 # define MAXPATHLEN	PATHSIZE
 # define LA_TYPE	LA_SHORT
 # define SFS_TYPE	SFS_STATFS	/* use <sys/statfs.h> statfs() impl */
+# define TZ_TYPE	TZ_USE_TM_NAME	/* use tm->tm_name */
 # undef NETUNIX			/* no unix domain socket support */
 #endif
 
@@ -973,6 +974,9 @@ extern int	syslog(int, char *, ...);
 # ifndef HASFLOCK
 #  define HASFLOCK	1	/* has flock(2) call */
 # endif
+# ifndef TZ_TYPE
+#  define TZ_TYPE	TZ_USE_TM_ZONE	/* use tm->tm_zone variable */
+# endif
 #endif
 
 /* general System V Release 4 defines */
@@ -1015,6 +1019,9 @@ extern int	syslog(int, char *, ...);
 # endif
 # ifndef SFS_TYPE
 #  define SFS_TYPE	SFS_USTAT	/* use System V ustat(2) syscall */
+# endif
+# ifndef TZ_TYPE
+#  define TZ_TYPE	TZ_USE_TZNAME	/* use tzname[] vector */
 # endif
 # define bcopy(s, d, l)		(memmove((d), (s), (l)))
 # define bzero(d, l)		(memset((d), '\0', (l)))
