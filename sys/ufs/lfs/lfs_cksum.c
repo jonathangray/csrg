@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_cksum.c	7.2 (Berkeley) 12/06/91
+ *	@(#)lfs_cksum.c	7.3 (Berkeley) 05/04/92
  */
 
 #include <sys/param.h>
@@ -53,7 +53,9 @@ cksum(str, len)
 	register u_long sum;
 	
 	len &= ~(sizeof(u_short) - 1);
-	for (sum = 0; len; len -= sizeof(u_short))
-		sum ^= *((u_short *)str)++;
+	for (sum = 0; len; len -= sizeof(u_short)) {
+		sum ^= *(u_short *)str;
+		++(u_short *)str;
+	}
 	return (sum);
 }
