@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_input.c	7.28 (Berkeley) 10/11/92
+ *	@(#)tcp_input.c	7.29 (Berkeley) 11/24/92
  */
 
 #include <sys/param.h>
@@ -1487,8 +1487,10 @@ tcp_mss(tp, offer)
 		if (bufsize < mss)
 			mss = bufsize;
 		else {
-			bufsize = min(bufsize, SB_MAX) / mss * mss;
-			(void) sbreserve(&so->so_snd, bufsize);
+			bufsize = roundup(bufsize, mss);
+			if (bufsize > SB_MAX)
+				bufsize = SB_MAX;
+			(void)sbreserve(&so->so_snd, bufsize);
 		}
 		tp->t_maxseg = mss;
 
@@ -1497,8 +1499,10 @@ tcp_mss(tp, offer)
 #endif
 			bufsize = so->so_rcv.sb_hiwat;
 		if (bufsize > mss) {
-			bufsize = min(bufsize, SB_MAX) / mss * mss;
-			(void) sbreserve(&so->so_rcv, bufsize);
+			bufsize = roundup(bufsize, mss);
+			if (bufsize > SB_MAX)
+				bufsize = SB_MAX;
+			(void)sbreserve(&so->so_rcv, bufsize);
 		}
 	}
 	tp->snd_cwnd = mss;
