@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)thash4.c	5.2 (Berkeley) 03/12/91";
+static char sccsid[] = "@(#)thash4.c	5.2 (Berkeley) 3/12/91";
 #endif /* not lint */
 
 #include <stdio.h>
@@ -55,7 +55,7 @@ static char sccsid[] = "@(#)thash4.c	5.2 (Berkeley) 03/12/91";
 #define MAXWORDS    25000	       /* # of elements in search table */
 
 /* Usage: thash pagesize fillfactor file */
-char	wp1[256];
+char	wp1[8192];
 char	wp2[8192];
 main(argc, argv)
 char **argv;
@@ -86,7 +86,7 @@ char **argv;
 
 	key.data = wp1;
 	item.data = wp2;
-	while ( fgets(wp1, 256, stdin) && 
+	while ( fgets(wp1, 8192, stdin) && 
 		fgets(wp2, 8192, stdin) && 
 		i++ < MAXWORDS) {
 /*
@@ -114,7 +114,7 @@ char **argv;
 			i++ < MAXWORDS) {
 
 		    key.size = strlen(wp1);
-		    stat = (dbp->get)(dbp, &key, &res);
+		    stat = (dbp->get)(dbp, &key, &res, 0);
 		    if (stat < 0 ) {
 			fprintf ( stderr, "Error retrieving %s\n", key.data );
 			fprintf(stderr, "\terrno: %d\n", errno);
