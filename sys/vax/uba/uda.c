@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uda.c	7.31 (Berkeley) 12/16/90
+ *	@(#)uda.c	7.32 (Berkeley) 02/13/91
  */
 
 /*
@@ -2222,7 +2222,7 @@ struct	udatypes {
 	{ MSCP_MKDRIVE2('R', 'A', 70), "ra70", ra70_sizes, 33, 11, 1507 },
 	{ MSCP_MKDRIVE2('R', 'A', 80), "ra80", ra80_sizes, 31, 14, 559 },
 	{ MSCP_MKDRIVE2('R', 'A', 81), "ra81", ra81_sizes, 51, 14, 1248 },
-	{ MSCP_MKDRIVE2('R', 'A', 82), "ra82", ra82_sizes, 57, 14, 1423 },
+	{ MSCP_MKDRIVE2('R', 'A', 82), "ra82", ra82_sizes, 57, 15, 1423 },
 	{ MSCP_MKDRIVE2('R', 'C', 25), "rc25-removable",
 						rc25_sizes, 42, 4, 302 },
 	{ MSCP_MKDRIVE3('R', 'C', 'F', 25), "rc25-fixed",
