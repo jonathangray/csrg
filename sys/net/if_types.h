@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_types.h	7.3 (Berkeley) 06/28/90
+ *	@(#)if_types.h	7.4 (Berkeley) 06/02/92
  */
 
 
@@ -62,3 +62,7 @@
 #define	IFT_XETHER	0x1a		/* obsolete 3MB experimental ethernet */
 #define	IFT_NSIP	0x1b		/* XNS over IP */
 #define	IFT_SLIP	0x1c		/* IP over generic TTY */
+#define	IFT_ULTRA	0x1d		/* Ultra Technologies */
+#define	IFT_DS3		0x1e		/* Generic T3 */
+#define	IFT_SIP		0x1f		/* SMDS */
+#define	IFT_FRELAY	0x20		/* Frame Relay */
