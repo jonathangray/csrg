@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_exec.c	7.29 (Berkeley) 06/28/90
+ *	@(#)kern_exec.c	7.30 (Berkeley) 06/30/90
  */
 
 #include "param.h"
@@ -672,6 +672,9 @@ getxfile(p, vp, ep, flags, nargc, uid, gid)
 #endif
 #ifdef hp300
 	TBIAU();
+#endif
+#if defined(i386)
+	tlbflush();
 #endif
 
 	/*
