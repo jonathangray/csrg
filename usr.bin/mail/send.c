@@ -13,7 +13,7 @@
  * Mail to others.
  */
 
-static char *SccsId = "@(#)send.c	2.10 02/09/83";
+static char *SccsId = "@(#)send.c	2.11 03/17/83";
 
 /*
  * Send message described by the passed pointer to the
