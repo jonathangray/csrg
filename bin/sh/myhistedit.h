@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)myhistedit.h	1.4 (Berkeley) 05/31/93
+ *	@(#)myhistedit.h	8.1 (Berkeley) 05/31/93
  */
 
 #include <histedit.h>
