@@ -1,5 +1,5 @@
 /*
- * $Id: misc-hpux.h,v 5.2 90/06/23 22:20:48 jsp Rel $
+ * $Id: misc-hpux.h,v 5.2.1.1 90/10/21 22:30:54 jsp Exp $
  *
  * Copyright (c) 1989 Jan-Simon Pendry
  * Copyright (c) 1989 Imperial College of Science, Technology & Medicine
@@ -37,7 +37,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)misc-hpux.h	5.1 (Berkeley) 06/29/90
+ *	@(#)misc-hpux.h	5.2 (Berkeley) 03/17/91
  */
 
 /*
