@@ -4,6 +4,7 @@
 .\" This code is derived from software contributed to Berkeley by
 .\" the Systems Programming Group of the University of Utah Computer
 .\" Science Department.
+.\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
 .\" are met:
@@ -32,7 +33,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)dcl.4	8.1 (Berkeley) 06/05/93
+.\"     @(#)dcl.4	5.3 (Berkeley) 06/09/93
 .\"
 .Dd 
 .Dt DCL 4 hp300
@@ -112,11 +113,6 @@ Where the errors are encoded:
 .El
 .Sh SEE ALSO
 .Xr tty 4
-.Sh HISTORY
-The
-.Nm
-driver
-.Ud
 .Sh BUGS
 Breaks received at a faster rate then 1 break every second will be 
 recognized as a single break.
