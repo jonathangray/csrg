@@ -43,12 +43,12 @@ static char *rcsid_forward_c =
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)forward.c	8.1 (Berkeley) 03/24/95";
+static char sccsid[] = "@(#)forward.c	8.2 (Berkeley) 05/30/95";
 #endif /* not lint */
 
 
 /* General-purpose forwarding routines. These routines may be put into */
-/* libkrb5.a to allow widespread use */ 
+/* libkrb5.a to allow widespread use */
 
 #if defined(KRB5) && defined(FORWARD)
 #include <stdio.h>
@@ -117,7 +117,7 @@ get_for_creds(etype, sumtype, rhost, client, enc_key, forwardable, outbuf)
     addrs = (krb5_address **) malloc ((i+1)*sizeof(*addrs));
     if (!addrs)
       return ENOMEM;
-    
+
     for(i=0; hp->h_addr_list[i]; i++) {
 	addrs[i] = (krb5_address *) malloc(sizeof(krb5_address));
 	if (addrs[i]) {
@@ -129,7 +129,7 @@ get_for_creds(etype, sumtype, rhost, client, enc_key, forwardable, outbuf)
 		return ENOMEM;
 	    }
 	    else
-	      memcpy ((char *)addrs[i]->contents, hp->h_addr_list[i],
+	      memmove ((char *)addrs[i]->contents, hp->h_addr_list[i],
 		      addrs[i]->length);
 	}
 	else {
@@ -141,7 +141,7 @@ get_for_creds(etype, sumtype, rhost, client, enc_key, forwardable, outbuf)
     memset((char *)&creds, 0, sizeof(creds));
     if (retval = krb5_copy_principal(client, &creds.client))
       return retval;
-    
+
     if (retval = krb5_build_principal_ext(&creds.server,
 					  strlen(hrealms[0]),
 					  hrealms[0],
@@ -151,14 +151,14 @@ get_for_creds(etype, sumtype, rhost, client, enc_key, forwardable, outbuf)
 					  client->realm.data,
 					  0))
       return retval;
-	
+
     creds.times.starttime = 0;
     if (retval = krb5_timeofday(&now)) {
 	return retval;
     }
     creds.times.endtime = now + KRB5_DEFAULT_LIFE;
     creds.times.renew_till = 0;
-    
+
     if (retval = krb5_cc_default(&cc)) {
 	return retval;
     }
@@ -219,7 +219,7 @@ get_for_creds(etype, sumtype, rhost, client, enc_key, forwardable, outbuf)
 				 &tgt.keyblock,
 				 etype, /* enctype */
 				 &dec_rep);
-    
+
     cleanup();
     if (retval)
 	return retval;
@@ -234,7 +234,7 @@ get_for_creds(etype, sumtype, rhost, client, enc_key, forwardable, outbuf)
 	cleanup();
 	return retval;
     }
-    
+
     /* now it's decrypted and ready for prime time */
 
     if (!krb5_principal_compare(dec_rep->client, tgt.client)) {
@@ -242,11 +242,11 @@ get_for_creds(etype, sumtype, rhost, client, enc_key, forwardable, outbuf)
 	return KRB5_KDCREP_MODIFIED;
     }
 
-    if (retval = mk_cred(dec_rep, 
-			 etype, 
+    if (retval = mk_cred(dec_rep,
+			 etype,
 			 enc_key,
 			 0,
-			 0, 
+			 0,
 			 outbuf))
       return retval;
 
@@ -283,16 +283,16 @@ krb5_data *outbuf;
     ret_cred.tickets[0] = dec_rep->ticket;
     ret_cred.tickets[1] = 0;
 
-    ret_cred.enc_part.etype = etype; 
+    ret_cred.enc_part.etype = etype;
     ret_cred.enc_part.kvno = 0;
 
-    cred_enc_part.ticket_info = (krb5_cred_info **) 
+    cred_enc_part.ticket_info = (krb5_cred_info **)
       calloc(2, sizeof(*cred_enc_part.ticket_info));
     if (!cred_enc_part.ticket_info) {
 	krb5_free_tickets(ret_cred.tickets);
 	return ENOMEM;
     }
-    cred_enc_part.ticket_info[0] = (krb5_cred_info *) 
+    cred_enc_part.ticket_info[0] = (krb5_cred_info *)
       malloc(sizeof(*cred_enc_part.ticket_info[0]));
     if (!cred_enc_part.ticket_info[0]) {
 	krb5_free_tickets(ret_cred.tickets);
@@ -340,8 +340,8 @@ krb5_data *outbuf;
 	  ret_cred.enc_part.ciphertext.length - scratch->length);
     if (!(ret_cred.enc_part.ciphertext.data =
 	  malloc(ret_cred.enc_part.ciphertext.length))) {
-        retval = ENOMEM;
-        goto clean_scratch;
+	retval = ENOMEM;
+	goto clean_scratch;
     }
 
 #define cleanup_encpart() {\
@@ -353,7 +353,7 @@ krb5_data *outbuf;
 
     /* do any necessary key pre-processing */
     if (retval = krb5_process_key(&eblock, key)) {
-        goto clean_encpart;
+	goto clean_encpart;
     }
 
 #define cleanup_prockey() {(void) krb5_finish_key(&eblock);}
@@ -361,22 +361,22 @@ krb5_data *outbuf;
     /* call the encryption routine */
     if (retval = krb5_encrypt((krb5_pointer) scratch->data,
 			      (krb5_pointer)
-			      ret_cred.enc_part.ciphertext.data, 
+			      ret_cred.enc_part.ciphertext.data,
 			      scratch->length, &eblock,
 			      0)) {
-        goto clean_prockey;
+	goto clean_prockey;
     }
-    
+
     /* private message is now assembled-- do some cleanup */
     cleanup_scratch();
 
     if (retval = krb5_finish_key(&eblock)) {
-        cleanup_encpart();
-        return retval;
+	cleanup_encpart();
+	return retval;
     }
     /* encode private message */
     if (retval = encode_krb5_cred(&ret_cred, &scratch))  {
-        cleanup_encpart();
+	cleanup_encpart();
 	return retval;
     }
 
@@ -415,11 +415,11 @@ rd_and_store_for_creds(inbuf, ticket, lusername)
     krb5_ccache ccache = NULL;
     struct passwd *pwd;
 
-    if (retval = rd_cred(inbuf, ticket->enc_part2->session, 
+    if (retval = rd_cred(inbuf, ticket->enc_part2->session,
 			 &creds, 0, 0)) {
 	return(retval);
     }
-    
+
     if (!(pwd = (struct passwd *) getpwnam(lusername))) {
 	return -1;
     }
@@ -448,7 +448,7 @@ rd_and_store_for_creds(inbuf, ticket, lusername)
 
 
 
-extern krb5_deltat krb5_clockskew;   
+extern krb5_deltat krb5_clockskew;
 #define in_clock_skew(date) (abs((date)-currenttime) < krb5_clockskew)
 
 /* Decode the KRB-CRED message, and return creds */
@@ -456,9 +456,9 @@ krb5_error_code
 rd_cred(inbuf, key, creds, sender_addr, recv_addr)
 const krb5_data *inbuf;
 const krb5_keyblock *key;
-krb5_creds *creds;                /* Filled in */
+krb5_creds *creds;		  /* Filled in */
 const krb5_address *sender_addr;  /* optional */
-const krb5_address *recv_addr;    /* optional */
+const krb5_address *recv_addr;	  /* optional */
 {
     krb5_error_code retval;
     krb5_encrypt_block eblock;
@@ -469,12 +469,12 @@ const krb5_address *recv_addr;    /* optional */
 
     if (!krb5_is_krb_cred(inbuf))
 	return KRB5KRB_AP_ERR_MSG_TYPE;
-    
+
     /* decode private message */
     if (retval = decode_krb5_cred(inbuf, &credmsg))  {
 	return retval;
     }
-    
+
 #define cleanup_credmsg() {(void)krb5_xfree(credmsg->enc_part.ciphertext.data); (void)krb5_xfree(credmsg);}
 
     if (!(scratch = (krb5_data *) malloc(sizeof(*scratch)))) {
@@ -495,7 +495,7 @@ const krb5_address *recv_addr;    /* optional */
 	krb5_xfree(creds->ticket.data);
 	return ENOMEM;
     }
-    memcpy((char *)creds->ticket.data, (char *) scratch->data, scratch->length);
+    memmove((char *)creds->ticket.data, (char *) scratch->data, scratch->length);
 
     cleanup_scratch();
 
@@ -508,21 +508,21 @@ const krb5_address *recv_addr;    /* optional */
 
     krb5_use_cstype(&eblock, credmsg->enc_part.etype);
     scratch->length = credmsg->enc_part.ciphertext.length;
-    
+
     if (!(scratch->data = malloc(scratch->length))) {
 	cleanup_credmsg();
-        return ENOMEM;
+	return ENOMEM;
     }
 
     /* do any necessary key pre-processing */
     if (retval = krb5_process_key(&eblock, key)) {
-        cleanup_credmsg();
+	cleanup_credmsg();
 	cleanup_scratch();
 	return retval;
     }
-    
+
 #define cleanup_prockey() {(void) krb5_finish_key(&eblock);}
-    
+
     /* call the decryption routine */
     if (retval = krb5_decrypt((krb5_pointer) credmsg->enc_part.ciphertext.data,
 			      (krb5_pointer) scratch->data,
@@ -530,7 +530,7 @@ const krb5_address *recv_addr;    /* optional */
 			      0)) {
 	cleanup_credmsg();
 	cleanup_scratch();
-        cleanup_prockey();
+	cleanup_prockey();
 	return retval;
     }
 
@@ -539,8 +539,8 @@ const krb5_address *recv_addr;    /* optional */
     cleanup_credmsg();
 
     if (retval = krb5_finish_key(&eblock)) {
-        cleanup_scratch();
-        return retval;
+	cleanup_scratch();
+	return retval;
     }
 
     /*  now decode the decrypted stuff */
@@ -557,31 +557,31 @@ const krb5_address *recv_addr;    /* optional */
 	return retval;
     }
     if (!in_clock_skew(credmsg_enc_part->timestamp)) {
-	cleanup_mesg();  
+	cleanup_mesg();
 	return KRB5KRB_AP_ERR_SKEW;
     }
 
     if (sender_addr && credmsg_enc_part->s_address &&
-	!krb5_address_compare(sender_addr, 
+	!krb5_address_compare(sender_addr,
 			      credmsg_enc_part->s_address)) {
 	cleanup_mesg();
 	return KRB5KRB_AP_ERR_BADADDR;
     }
     if (recv_addr && credmsg_enc_part->r_address &&
-	!krb5_address_compare(recv_addr, 
+	!krb5_address_compare(recv_addr,
 			      credmsg_enc_part->r_address)) {
 	cleanup_mesg();
 	return KRB5KRB_AP_ERR_BADADDR;
-    }	    
+    }
 
     if (credmsg_enc_part->r_address) {
 	krb5_address **our_addrs;
-	
+
 	if (retval = krb5_os_localaddr(&our_addrs)) {
 	    cleanup_mesg();
 	    return retval;
 	}
-	if (!krb5_address_search(credmsg_enc_part->r_address, 
+	if (!krb5_address_search(credmsg_enc_part->r_address,
 				 our_addrs)) {
 	    krb5_free_addresses(our_addrs);
 	    cleanup_mesg();
@@ -598,10 +598,10 @@ const krb5_address *recv_addr;    /* optional */
     if (retval = krb5_copy_principal(credmsg_enc_part->ticket_info[0]->server,
 				     &creds->server)) {
 	return(retval);
-    }  
+    }
 
     if (retval =
-	krb5_copy_keyblock_contents(credmsg_enc_part->ticket_info[0]->session, 
+	krb5_copy_keyblock_contents(credmsg_enc_part->ticket_info[0]->session,
 				    &creds->keyblock)) {
 	return(retval);
     }
