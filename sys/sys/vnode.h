@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode.h	7.33 (Berkeley) 04/15/91
+ *	@(#)vnode.h	7.34 (Berkeley) 04/19/91
  */
 
 #ifndef KERNEL
@@ -319,7 +319,8 @@ struct vnodeops {
 #define	VOP_BMAP(v,s,p,n)	(*((v)->v_op->vn_bmap))(v,s,p,n)
 #define	VOP_STRATEGY(b)		(*((b)->b_vp->v_op->vn_strategy))(b)
 #define	VOP_PRINT(v)		(*((v)->v_op->vn_print))(v)
-#define	VOP_ISLOCKED(v)		(*((v)->v_op->vn_islocked))(v)
+#define	VOP_ISLOCKED(v)		(((v)->v_flag & VXLOCK) || \
+				(*((v)->v_op->vn_islocked))(v))
 #define	VOP_ADVLOCK(v,p,o,l,f)	(*((v)->v_op->vn_advlock))(v,p,o,l,f)
 
 /*
