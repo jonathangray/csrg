@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cd9660_vfsops.c	8.8 (Berkeley) 12/05/94
+ *	@(#)cd9660_vfsops.c	8.9 (Berkeley) 12/05/94
  */
 
 #include <sys/param.h>
