@@ -36,7 +36,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)machdep.c	7.3 (Berkeley) 03/14/92
+ *	@(#)machdep.c	7.4 (Berkeley) 03/15/92
  */
 
 /* from: Utah $Hdr: machdep.c 1.63 91/04/24$ */
@@ -770,13 +770,8 @@ boot(howto)
 	}
 	(void) splhigh();		/* extreme priority */
 	if (howto & RB_HALT) {
-#ifdef DEBUG
-		void (*f)() = (void (*)())MACH_MON_RESTART;
-#else
 		void (*f)() = (void (*)())MACH_MON_REINIT;
-#endif
 
-		trapDump("boot"); /* XXX */
 		(*f)();	/* jump back to prom monitor */
 	} else {
 		void (*f)() = (void (*)())MACH_MON_AUTOBOOT;
