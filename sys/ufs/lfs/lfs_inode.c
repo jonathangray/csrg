@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_inode.c	7.51 (Berkeley) 12/30/91
+ *	@(#)lfs_inode.c	7.52 (Berkeley) 01/18/92
  */
 
 #include <sys/param.h>
@@ -58,6 +58,25 @@ lfs_init()
 	printf("lfs_init\n");
 #endif
 	return (ufs_init());
+}
+
+static daddr_t
+lfs_itod(fs, ino)
+	struct lfs *fs;
+	ino_t ino;
+{
+	BUF *bp;
+	IFILE *ifp;
+	daddr_t iaddr;
+
+	/* Translate an inode number to a disk address. */
+	if (ino == LFS_IFILE_INUM)
+		return (fs->lfs_idaddr);
+
+	LFS_IENTRY(ifp, fs, ino, bp);
+	iaddr = ifp->if_daddr;
+	brelse(bp);
+	return (iaddr);
 }
 
 /*
