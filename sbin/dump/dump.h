@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dump.h	5.17 (Berkeley) 07/23/91
+ *	@(#)dump.h	5.18 (Berkeley) 07/29/91
  */
 
 #define MAXINOPB	(MAXBSIZE / sizeof(struct dinode))
@@ -88,8 +88,15 @@ int	tp_bshift;	/* log2(TP_BSIZE) */
 /* operator interface functions */
 void	broadcast();
 void	lastdump();
+#if __STDC__
+void	msg(const char *fmt, ...);
+void	msgtail(const char *fmt, ...);
+void	quit(const char *fmt, ...);
+#else
 void	msg();
 void	msgtail();
+void	quit();
+#endif
 int	query();
 void	set_operators();
 void	timeest();
@@ -118,7 +125,6 @@ void	startnewtape();
 void	dumpabort();
 void	Exit();
 void	getfstab();
-void	quit();
 
 char	*rawname();
 struct dinode *getino();
