@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)collect.c	8.19 (Berkeley) 08/07/94";
+static char sccsid[] = "@(#)collect.c	8.20 (Berkeley) 08/07/94";
 #endif /* not lint */
 
 # include <errno.h>
@@ -117,6 +117,8 @@ maketemp(from)
 
 	if (!headeronly)
 	{
+		struct stat stbuf;
+
 		e->e_df = queuename(e, 'd');
 		e->e_df = newstr(e->e_df);
 		if ((tf = dfopen(e->e_df, O_WRONLY|O_CREAT|O_TRUNC, FileMode)) == NULL)
@@ -125,6 +127,10 @@ maketemp(from)
 			e->e_flags |= EF_NORETURN;
 			finis();
 		}
+		if (fstat(fileno(tf), &stbuf) < 0)
+			e->e_dfino = -1;
+		else
+			e->e_dfino = stbuf.st_ino;
 		HasEightBits = FALSE;
 	}
 
