@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lookup.c	8.13 (Berkeley) 05/17/95
+ *	@(#)ufs_lookup.c	8.14 (Berkeley) 05/27/95
  */
 
 #include <sys/param.h>
@@ -143,6 +143,9 @@ ufs_lookup(ap)
 		return (ENOTDIR);
 	if (error = VOP_ACCESS(vdp, VEXEC, cred, cnp->cn_proc))
 		return (error);
+	if ((flags & ISLASTCN) && (vdp->v_mount->mnt_flag & MNT_RDONLY) &&
+	    (cnp->cn_nameiop == DELETE || cnp->cn_nameiop == RENAME))
+		return (EROFS);
 
 	/*
 	 * We now have a segment name to search for, and a directory to search.
@@ -511,8 +514,7 @@ found:
 	 * Must get inode of directory entry to verify it's a
 	 * regular file, or empty directory.
 	 */
-	if (nameiop == RENAME && wantparent &&
-	    (flags & ISLASTCN)) {
+	if (nameiop == RENAME && wantparent && (flags & ISLASTCN)) {
 		if (error = VOP_ACCESS(vdp, VWRITE, cred, cnp->cn_proc))
 			return (error);
 		/*
