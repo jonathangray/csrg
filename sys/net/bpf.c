@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)bpf.c	7.12 (Berkeley) 07/16/92
+ *      @(#)bpf.c	7.13 (Berkeley) 02/10/93
  *
  * static char rcsid[] =
  * "$Header: bpf.c,v 1.33 91/10/27 21:21:58 mccanne Exp $";
@@ -55,7 +55,6 @@
 #include <sys/systm.h>
 #include <sys/mbuf.h>
 #include <sys/buf.h>
-#include <sys/dir.h>
 #include <sys/time.h>
 #include <sys/proc.h>
 #include <sys/user.h>
