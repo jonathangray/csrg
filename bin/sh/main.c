@@ -41,13 +41,16 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.3 (Berkeley) 04/27/95";
+static char sccsid[] = "@(#)main.c	8.4 (Berkeley) 05/04/95";
 #endif /* not lint */
 
-#include <sys/stat.h>
 #include <stdio.h>
 #include <signal.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <fcntl.h>
+
+
 #include "shell.h"
 #include "main.h"
 #include "mail.h"
@@ -60,6 +63,7 @@ static char sccsid[] = "@(#)main.c	8.3 (Berkeley) 04/27/95";
 #include "input.h"
 #include "trap.h"
 #include "var.h"
+#include "show.h"
 #include "memalloc.h"
 #include "error.h"
 #include "init.h"
@@ -78,14 +82,8 @@ short profile_buf[16384];
 extern int etext();
 #endif
 
-#ifdef __STDC__
-STATIC void read_profile(char *);
-char *getenv(char *);
-#else
-STATIC void read_profile();
-char *getenv();
-#endif
-
+STATIC void read_profile __P((char *));
+STATIC char *find_dot_file __P((char *));
 
 /*
  * Main routine.  We initialize things, parse the arguments, execute
@@ -95,7 +93,11 @@ char *getenv();
  * is used to figure out how far we had gotten.
  */
 
-main(argc, argv)  char **argv; {
+int
+main(argc, argv)
+	int argc;
+	char **argv; 
+{
 	struct jmploc jmploc;
 	struct stackmark smark;
 	volatile int state;
@@ -176,6 +178,8 @@ state4:	/* XXX ??? - why isn't this before the "if" statement */
 	monitor(0);
 #endif
 	exitshell(exitstatus);
+	/*NOTREACHED*/
+	return 0;
 }
 
 
@@ -185,7 +189,9 @@ state4:	/* XXX ??? - why isn't this before the "if" statement */
  */
 
 void
-cmdloop(top) {
+cmdloop(top) 
+	int top;
+{
 	union node *n;
 	struct stackmark smark;
 	int inter;
@@ -255,7 +261,7 @@ read_profile(name)
 void
 readcmdfile(name)
 	char *name;
-	{
+{
 	int fd;
 
 	INTOFF;
@@ -276,8 +282,10 @@ readcmdfile(name)
  */
 
 
-static char *
-find_dot_file(basename) char *basename; {
+STATIC char *
+find_dot_file(basename)
+	char *basename;
+{
 	static char localname[FILENAME_MAX+1];
 	char *fullname;
 	char *path = pathval();
@@ -296,7 +304,11 @@ find_dot_file(basename) char *basename; {
 	return basename;
 }
 
-dotcmd(argc, argv)  char **argv; {
+int
+dotcmd(argc, argv)  
+	int argc;
+	char **argv; 
+{
 	exitstatus = 0;
 	if (argc >= 2) {		/* That's what SVR2 does */
 		char *fullname = find_dot_file(argv[1]);
@@ -309,12 +321,18 @@ dotcmd(argc, argv)  char **argv; {
 }
 
 
-exitcmd(argc, argv)  char **argv; {
+int
+exitcmd(argc, argv)  
+	int argc;
+	char **argv; 
+{
 	if (stoppedjobs())
-		return;
+		return 0;
 	if (argc > 1)
 		exitstatus = number(argv[1]);
 	exitshell(exitstatus);
+	/*NOTREACHED*/
+	return 0;
 }
 
 
