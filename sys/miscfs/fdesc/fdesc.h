@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fdesc.h	8.5 (Berkeley) 01/21/94
+ *	@(#)fdesc.h	8.6 (Berkeley) 08/20/94
  *
  * $Id: fdesc.h,v 1.8 1993/04/06 15:28:33 jsp Exp $
  */
@@ -61,8 +61,7 @@ typedef enum {
 } fdntype;
 
 struct fdescnode {
-	struct fdescnode *fd_forw;	/* Hash chain */
-	struct fdescnode *fd_back;
+	LIST_ENTRY(fdescnode) fd_hash;	/* Hash list */
 	struct vnode	*fd_vnode;	/* Back ptr to vnode */
 	fdntype		fd_type;	/* Type of this node */
 	unsigned	fd_fd;		/* Fd to be dup'ed */
