@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_alloc.c	7.43 (Berkeley) 05/14/92
+ *	@(#)lfs_alloc.c	7.44 (Berkeley) 05/15/92
  */
 
 #include <sys/param.h>
@@ -201,7 +201,7 @@ lfs_vcreate(mp, ino, vpp)
 
 /* Free an inode. */
 /* ARGUSED */
-void
+int
 lfs_vfree (ap)
 	struct vop_vfree_args *ap;
 #define vp (ap->a_pvp)
@@ -250,7 +250,10 @@ lfs_vfree (ap)
 	/* Set superblock modified bit and decrement file count. */
 	fs->lfs_fmod = 1;
 	--fs->lfs_nfiles;
+	return (0);
 }
 #undef vp
 #undef notused1
 #undef notused2
+
+
