@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)file.h	7.10 (Berkeley) 06/04/91
+ *	@(#)file.h	7.11 (Berkeley) 06/21/91
  */
 
 #include <sys/fcntl.h>
