@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)savemail.c	6.3 (Berkeley) 01/21/93";
+static char sccsid[] = "@(#)savemail.c	6.4 (Berkeley) 02/15/93";
 #endif /* not lint */
 
 # include <sys/types.h>
@@ -295,7 +295,7 @@ savemail(e)
 				Verbose = oldverb;
 				e->e_to = buf;
 				q = NULL;
-				sendtolist(buf, (ADDRESS *) NULL, &q, e);
+				sendtolist(buf, &e->e_from, &q, e);
 				if (deliver(e, q) == 0)
 					state = ESM_DONE;
 				else
@@ -326,11 +326,11 @@ savemail(e)
 				break;
 			}
 
-			putfromline(fp, ProgMailer, e);
-			(*e->e_puthdr)(fp, ProgMailer, e);
-			putline("\n", fp, ProgMailer);
-			(*e->e_putbody)(fp, ProgMailer, e);
-			putline("\n", fp, ProgMailer);
+			putfromline(fp, FileMailer, e);
+			(*e->e_puthdr)(fp, FileMailer, e);
+			putline("\n", fp, FileMailer);
+			(*e->e_putbody)(fp, FileMailer, e);
+			putline("\n", fp, FileMailer);
 			(void) fflush(fp);
 			state = ferror(fp) ? ESM_PANIC : ESM_DONE;
 			(void) fclose(fp);
