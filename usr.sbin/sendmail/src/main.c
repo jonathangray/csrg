@@ -3,10 +3,10 @@
 # include <ctype.h>
 # include "dlvrmail.h"
 # ifdef LOG
-# include <log.h>
+# include <syslog.h>
 # endif LOG
 
-static char	SccsId[] = "@(#)main.c	2.3	01/10/81";
+static char	SccsId[] = "@(#)main.c	2.4	02/28/81";
 
 /*
 **  DELIVERMAIL -- Deliver mail to a set of destinations
