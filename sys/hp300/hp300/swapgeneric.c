@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)swapgeneric.c	8.1 (Berkeley) 06/10/93
+ *	@(#)swapgeneric.c	7.9 (Berkeley) 06/16/93
  */
 
 #include <sys/param.h>
@@ -50,7 +50,7 @@ dev_t	dumpdev = NODEV;
 int	nswap;
 struct	swdevt swdevt[] = {
 	{ -1,	1,	0 },
-	{ 0,	0,	0 },
+	{ NODEV,	0,	0 },
 };
 int	dmmin, dmmax, dmtext;
 
