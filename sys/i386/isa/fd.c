@@ -1,5 +1,3 @@
-#include "fd.h"
-#if NFD > 0
 /*-
  * Copyright (c) 1990 The Regents of the University of California.
  * All rights reserved.
@@ -35,12 +33,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fd.c	7.2 (Berkeley) 05/09/91
+ *	@(#)fd.c	7.3 (Berkeley) 05/21/91
  */
 
-/****************************************************************************/
-/*                               fd driver                                  */
-/****************************************************************************/
+#include "fd.h"
+#if NFD > 0
+
 #include "param.h"
 #include "dkbad.h"
 #include "systm.h"
