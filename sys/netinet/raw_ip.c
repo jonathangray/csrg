@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)raw_ip.c	7.8 (Berkeley) 07/25/90
+ *	@(#)raw_ip.c	7.9 (Berkeley) 02/15/92
  */
 
 #include "param.h"
