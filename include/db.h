@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)db.h	5.3 (Berkeley) 02/22/91
+ *	@(#)db.h	5.4 (Berkeley) 02/22/91
  */
 
 #ifndef _DB_H_
@@ -59,7 +59,7 @@ typedef struct {
 typedef struct {
 	char *internal;		/* access method private; really void * */
 	int (*close)();
-	int (*delete)();
+	int (*del)();
 	int (*get)();
 	int (*put)();
 	int (*seq)();
