@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	8.5 (Berkeley) 11/14/93
+ *	@(#)ufs_vnops.c	8.6 (Berkeley) 11/14/93
  */
 
 #include <sys/param.h>
@@ -423,7 +423,8 @@ ufs_chmod(vp, mode, cred, p)
 			return (EPERM);
 	}
 	ip->i_mode &= ~ALLPERMS;
-	ip->i_mode |= (mode & ALLPERMS) | IN_CHANGE;
+	ip->i_mode |= (mode & ALLPERMS);
+	ip->i_flag |= IN_CHANGE;
 	if ((vp->v_flag & VTEXT) && (ip->i_mode & S_ISTXT) == 0)
 		(void) vnode_pager_uncache(vp);
 	return (0);
