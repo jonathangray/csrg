@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)move.c	5.4 (Berkeley) 03/11/91";
+static char sccsid[] = "@(#)move.c	5.5 (Berkeley) 03/11/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -46,6 +46,7 @@ static char sccsid[] = "@(#)move.c	5.4 (Berkeley) 03/11/91";
 #include <stdio.h>
 #include <ar.h>
 #include "archive.h"
+#include "extern.h"
 #include "pathnames.h"
 
 extern CHDR chdr;			/* converted header */
@@ -65,7 +66,7 @@ move(argv)
 	extern char *posarg, *posname;	/* positioning file names */
 	CF cf;
 	off_t size, tsize;
-	int afd, curfd, eval, mods, tfd1, tfd2, tfd3;
+	int afd, curfd, mods, tfd1, tfd2, tfd3;
 	char *file;
 
 	afd = open_archive(O_RDWR);
@@ -86,7 +87,7 @@ move(argv)
 	/* Read and write to an archive; pad on both. */
 	SETCF(afd, archive, 0, tname, RPAD|WPAD);
 	for (curfd = tfd1; get_header(afd);) {	
-		if ((file = *argv) && files(argv)) {
+		if (*argv && (file = files(argv))) {
 			if (options & AR_V)
 				(void)printf("m - %s\n", file);
 			cf.wfd = tfd2;
@@ -115,9 +116,6 @@ move(argv)
 	}
 	(void)lseek(afd, (off_t)SARMAG, SEEK_SET);
 
-	eval = 0;
-	ORPHANS;
-
 	SETCF(tfd1, tname, afd, archive, NOPAD);
 	tsize = size = lseek(tfd1, (off_t)0, SEEK_CUR);
 	(void)lseek(tfd1, (off_t)0, SEEK_SET);
@@ -135,5 +133,10 @@ move(argv)
 
 	(void)ftruncate(afd, tsize + SARMAG);
 	close_archive(afd);
-	return(eval);
+
+	if (*argv) {
+		orphans(argv);
+		return(1);
+	}
+	return(0);
 }	
