@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)udp_usrreq.c	8.4 (Berkeley) 01/21/94
+ *	@(#)udp_usrreq.c	8.5 (Berkeley) 01/09/95
  */
 
 #include <sys/param.h>
@@ -477,7 +477,7 @@ udp_usrreq(so, req, m, addr, control)
 	int s;
 
 	if (req == PRU_CONTROL)
-		return (in_control(so, (int)m, (caddr_t)addr,
+		return (in_control(so, (u_long)m, (caddr_t)addr,
 			(struct ifnet *)control));
 	if (inp == NULL && req != PRU_ATTACH) {
 		error = EINVAL;
