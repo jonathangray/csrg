@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	8.2 (Berkeley) 08/20/93
+ *	@(#)pathnames.h	8.3 (Berkeley) 05/13/95
  */
 
 #ifndef _PATH_SENDMAILCF
@@ -43,4 +43,8 @@
 # else
 #  define _PATH_SENDMAILPID	"/etc/sendmail.pid"
 # endif
+#endif
+
+#ifndef _PATH_HOSTS
+# define _PATH_HOSTS		"/etc/hosts"
 #endif
