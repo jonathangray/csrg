@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufsmount.h	7.12 (Berkeley) 11/11/91
+ *	@(#)ufsmount.h	7.13 (Berkeley) 01/09/92
  */
 
 struct buf;
@@ -57,6 +57,8 @@ struct ufsmount {
 	time_t	um_btime[MAXQUOTAS];		/* block quota time limit */
 	time_t	um_itime[MAXQUOTAS];		/* inode quota time limit */
 	char	um_qflags[MAXQUOTAS];		/* quota specific flags */
+	struct	netaddrhash um_defexported;	/* Default export */
+	struct	netaddrhash *um_netaddr[NETHASHSZ+1]; /* Net addr hash lists */
 };
 /*
  * Flags describing the state of quotas.
