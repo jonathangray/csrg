@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_param.h	7.8 (Berkeley) 06/27/91
+ *	@(#)tp_param.h	7.9 (Berkeley) 09/03/91
  */
 
 /***********************************************************
@@ -334,12 +334,11 @@ bcopy((caddr_t)&(((struct tp_vbp *)(src))->tpv_val),(caddr_t)&(dst),sizeof(type)
 #if defined(ARGO_DEBUG)&&!defined(LOCAL_CREDIT_EXPAND)
 #define LOCAL_CREDIT(tpcb) tp_local_credit(tpcb)
 #else
-#define LOCAL_CREDIT( tpcb ) {\
+#define LOCAL_CREDIT(tpcb) {\
     register struct sockbuf *xxsb = &((tpcb)->tp_sock->so_rcv);\
-    register int xxi = ((xxsb)->sb_hiwat-(xxsb)->sb_cc);\
-    register int maxcredit = ((tpcb)->tp_xtd_format?0xffff:0xf);\
-    xxi = (xxi<0) ? 0 : ((xxi)>>(tpcb)->tp_tpdusize);\
-    xxi = MIN(xxi, maxcredit); \
+    register int xxi = sbspace(xxsb);\
+    xxi = (xxi<0) ? 0 : ((xxi) / (tpcb)->tp_l_tpdusize);\
+    xxi = min(xxi, (tpcb)->tp_maxlcredit); \
     if (!(tpcb->tp_cebit_off)) { \
         (tpcb)->tp_lcredit = ROUND((tpcb)->tp_win_recv); \
         if (xxi < (tpcb)->tp_lcredit) { \
@@ -353,6 +352,10 @@ bcopy((caddr_t)&(((struct tp_vbp *)(src))->tpv_val),(caddr_t)&(dst),sizeof(type)
 #endif ARGO_DEBUG
 
 #ifdef KERNEL
+#ifdef ARGO_DEBUG
+#include "syslog.h"
+#define printf logpri(LOG_DEBUG),addlog
+#endif
 
 #ifndef  tp_NSTATES 
 
