@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if.c	7.25 (Berkeley) 04/13/93
+ *	@(#)if.c	7.26 (Berkeley) 05/24/93
  */
 
 #include <sys/param.h>
@@ -365,7 +365,7 @@ if_up(ifp)
 	/* this has no effect on IP, and will kill all iso connections XXX */
 	for (ifa = ifp->if_addrlist; ifa; ifa = ifa->ifa_next)
 		pfctlinput(PRC_IFUP, ifa->ifa_addr);
-#endif notyet
+#endif
 	rt_ifmsg(ifp);
 }
 
