@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_inode.c	7.65 (Berkeley) 12/01/92
+ *	@(#)ffs_inode.c	7.66 (Berkeley) 01/08/93
  */
 
 #include <sys/param.h>
@@ -160,7 +160,8 @@ ffs_truncate(ap)
 
 	oip = VTOI(ovp);
 	tv = time;
-	if (ovp->v_type == VLNK && ovp->v_mount->mnt_maxsymlinklen > 0) {
+	if (ovp->v_type == VLNK &&
+	    oip->i_size < ovp->v_mount->mnt_maxsymlinklen) {
 #ifdef DIAGNOSTIC
 		if (length != 0)
 			panic("ffs_truncate: partial truncate of symlink");
