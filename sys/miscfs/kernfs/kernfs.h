@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kernfs.h	7.1 (Berkeley) 07/18/92
+ *	@(#)kernfs.h	7.2 (Berkeley) 07/19/92
  */
 
 #ifdef KERNEL
@@ -51,4 +51,5 @@ struct kernfs_node {
 
 extern int (**kernfs_vnodeop_p)();
 extern struct vfsops kernfs_vfsops;
+extern struct vnode *rrootvp;
 #endif /* KERNEL */
