@@ -5,7 +5,7 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)implement	8.1 (Berkeley) 06/08/93
+.\"	@(#)implement	8.2 (Berkeley) 06/01/94
 .\"
 .EH 'PSD:2-%''UNIX Implementation'
 .OH 'UNIX Implementation''PSD:2-%'
@@ -430,6 +430,7 @@ impacts the file system traffic.
 It is exactly these small systems
 that tend to double usage of limited disk
 resources.
+.sp 
 .NH 2
 Synchronization and scheduling
 .PP
