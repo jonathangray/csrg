@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)wwsuspend.c	3.15 (Berkeley) 08/12/90";
+static char sccsid[] = "@(#)wwsuspend.c	3.16 (Berkeley) 08/16/92";
 #endif /* not lint */
 
 #include "ww.h"
@@ -48,7 +48,7 @@ wwsuspend()
 	sig_t oldsig;
 
 	oldsig = signal(SIGTSTP, SIG_IGN);
-	wwend();
+	wwend(0);
 	(void) signal(SIGTSTP, SIG_DFL);
 	(void) kill(0, SIGTSTP);
 	(void) signal(SIGTSTP, SIG_IGN);
