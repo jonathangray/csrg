@@ -361,6 +361,7 @@ quotaon(p, mp, type, fname)
 	register int type;
 	caddr_t fname;
 {
+	USES_VOP_UNLOCK;
 	register struct ufsmount *ump = VFSTOUFS(mp);
 	register struct vnode *vp, **vpp;
 	struct vnode *nextvp;
@@ -615,6 +616,7 @@ int
 qsync(mp)
 	struct mount *mp;
 {
+	USES_VOP_ISLOCKED;
 	struct ufsmount *ump = VFSTOUFS(mp);
 	register struct vnode *vp, *nextvp;
 	register struct dquot *dq;
@@ -711,6 +713,9 @@ dqget(vp, id, ump, type, dqp)
 	register int type;
 	struct dquot **dqp;
 {
+	USES_VOP_LOCK;
+	USES_VOP_READ;
+	USES_VOP_UNLOCK;
 	register struct dquot *dq;
 	register union dqhead *dh;
 	register struct dquot *dp;
@@ -880,6 +885,9 @@ dqsync(vp, dq)
 	struct vnode *vp;
 	register struct dquot *dq;
 {
+	USES_VOP_LOCK;
+	USES_VOP_UNLOCK;
+	USES_VOP_WRITE;
 	struct vnode *dqvp;
 	struct iovec aiov;
 	struct uio auio;
