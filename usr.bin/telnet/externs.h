@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)externs.h	5.6 (Berkeley) 05/11/93
+ *	@(#)externs.h	5.7 (Berkeley) 05/20/93
  */
 
 #ifndef	BSD
