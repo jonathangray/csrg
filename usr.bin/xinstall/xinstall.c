@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)xinstall.c	5.31 (Berkeley) 03/11/93";
+static char sccsid[] = "@(#)xinstall.c	5.32 (Berkeley) 04/20/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -152,7 +152,7 @@ main(argc, argv)
 		 * off the append/immutable bits -- if we fail, go ahead,
 		 * it might work.
 		 */
-		if (to_sb.st_mode & (UF_IMMUTABLE | UF_APPEND))
+		if (to_sb.st_flags & (UF_IMMUTABLE | UF_APPEND))
 			(void)chflags(to_name,
 			    to_sb.st_flags & ~(UF_APPEND | UF_IMMUTABLE));
 		(void)unlink(to_name);
@@ -189,8 +189,10 @@ install(from_name, to_name, fset, flags)
 			to_name = pathbuf;
 		}
 		devnull = 0;
-	} else
+	} else {
+		from_sb.st_flags = 0;	/* XXX */
 		devnull = 1;
+	}
 
 	/*
 	 * Unlink now... avoid ETXTBSY errors later.  Try and turn
