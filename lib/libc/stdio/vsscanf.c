@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)vsscanf.c	5.1 (Berkeley) 04/15/91";
+static char sccsid[] = "@(#)vsscanf.c	5.2 (Berkeley) 06/23/92";
 #endif /* LIBC_SCCS and not lint */
 
 #include <stdio.h>
@@ -55,7 +55,7 @@ eofread(cookie, buf, len)
 vsscanf(str, fmt, ap)
 	const char *str;
 	const char *fmt;
-	_VA_LIST_ ap;
+	_BSD_VA_LIST_ ap;
 {
 	int ret;
 	FILE f;
