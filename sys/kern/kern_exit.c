@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_exit.c	7.44 (Berkeley) 06/20/92
+ *	@(#)kern_exit.c	7.45 (Berkeley) 06/23/92
  */
 
 #include "param.h"
@@ -49,6 +49,7 @@
 #include "syslog.h"
 #include "malloc.h"
 #include "resourcevar.h"
+#include "ptrace.h"
 
 #include "machine/cpu.h"
 #ifdef COMPAT_43
@@ -90,6 +91,9 @@ exit(p, rv)
 	register struct vmspace *vm;
 	int s;
 
+	if (p->p_pid == 1)
+		panic("init died (signal %d, exit %d)",
+		    WTERMSIG(rv), WEXITSTATUS(rv));
 #ifdef PGINPROF
 	vmsizmon();
 #endif
@@ -131,8 +135,6 @@ exit(p, rv)
 		(void) vm_map_remove(&vm->vm_map, VM_MIN_ADDRESS,
 		    VM_MAXUSER_ADDRESS);
 
-	if (p->p_pid == 1)
-		panic("init died");
 	if (SESS_LEADER(p)) {
 		register struct session *sp = p->p_session;
 
@@ -329,7 +331,7 @@ wait1(q, uap, retval)
 	int retval[];
 {
 	register int nfound;
-	register struct proc *p;
+	register struct proc *p, *t;
 	int status, error;
 
 	if (uap->pid == 0)
@@ -361,6 +363,17 @@ loop:
 			if (uap->rusage && (error = copyout((caddr_t)p->p_ru,
 			    (caddr_t)uap->rusage, sizeof (struct rusage))))
 				return (error);
+			/*
+			 * If we got the child via a ptrace 'attach',
+			 * we need to give it back to the old parent.
+			 */
+			if (p->p_oppid && (t = pfind(p->p_oppid))) {
+				p->p_oppid = 0;
+				proc_reparent(p, t);
+				psignal(t, SIGCHLD);
+				wakeup((caddr_t)t);
+				return (0);
+			}
 			p->p_xstat = 0;
 			ruadd(&q->p_stats->p_cru, p->p_ru);
 			FREE(p->p_ru, M_ZOMBIE);
@@ -421,4 +434,38 @@ loop:
 	if (error = tsleep((caddr_t)q, PWAIT | PCATCH, "wait", 0))
 		return (error);
 	goto loop;
+}
+
+/*
+ * make process 'parent' the new parent of process 'child'.
+ */
+void
+proc_reparent(child, parent)
+	register struct proc *child;
+	register struct proc *parent;
+{
+	register struct proc *o;
+	register struct proc *y;
+
+	if (child->p_pptr == parent)
+		return;
+
+	/* fix up the child linkage for the old parent */
+	o = child->p_osptr;
+	y = child->p_ysptr;
+	if (y)
+		y->p_osptr = o;
+	if (o)
+		o->p_ysptr = y;
+	if (child->p_pptr->p_cptr == child)
+		child->p_pptr->p_cptr = o;
+
+	/* fix up child linkage for new parent */
+	o = parent->p_cptr;
+	if (o)
+		o->p_ysptr = child;
+	child->p_osptr = o;
+	child->p_ysptr = NULL;
+	parent->p_cptr = child;
+	child->p_pptr = parent;
 }
