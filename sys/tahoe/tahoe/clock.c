@@ -30,17 +30,17 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)clock.c	7.3 (Berkeley) 06/28/90
+ *	@(#)clock.c	7.4 (Berkeley) 12/16/90
  */
 
-#include "param.h"
-#include "time.h"
-#include "kernel.h"
+#include "sys/param.h"
+#include "sys/time.h"
+#include "sys/kernel.h"
 
-#include "pte.h"
-#include "cpu.h"
-#include "mtpr.h"
-#include "clock.h"
+#include "../include/pte.h"
+#include "../include/cpu.h"
+#include "../include/mtpr.h"
+#include "../include/clock.h"
 #include "cp.h"
 
 /*
