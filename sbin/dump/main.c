@@ -1,4 +1,4 @@
-static	char *sccsid = "@(#)main.c	1.18 (Berkeley) 03/24/85";
+static	char *sccsid = "@(#)main.c	1.19 (Berkeley) 04/16/85";
 #include "dump.h"
 
 int	notify = 0;	/* notify operator flag */
