@@ -1,4 +1,4 @@
-static	char sccsid[] = "@(#)c21.c 4.10 03/08/84";
+static	char sccsid[] = "@(#)c21.c 4.11 07/23/84";
 /* char C21[] = {"@(#)c21.c 1.83 80/10/16 21:18:22 JFR"}; /* sccs ident */
 
 /*
