@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stdlib.h	8.1 (Berkeley) 06/02/93
+ *	@(#)stdlib.h	8.2 (Berkeley) 11/12/93
  */
 
 #ifndef _STDLIB_H_
@@ -60,6 +60,10 @@ typedef struct {
 	long quot;		/* quotient */
 	long rem;		/* remainder */
 } ldiv_t;
+
+#ifndef NULL
+#define	NULL	0
+#endif
 
 #define	EXIT_FAILURE	1
 #define	EXIT_SUCCESS	0
