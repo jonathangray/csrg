@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	8.9 (Berkeley) 01/21/94
+ *	@(#)vfs_subr.c	8.10 (Berkeley) 03/21/94
  */
 
 /*
@@ -616,6 +616,7 @@ vget(vp, lockflag)
 		    vp->v_freelist.tqe_prev == (struct vnode **)0xdeadb)
 			panic("vget: not on queue");
 		TAILQ_REMOVE(&vnode_free_list, vp, v_freelist);
+	}
 		vp->v_freelist.tqe_next = (struct vnode *)0xdeadf;
 		vp->v_freelist.tqe_prev = (struct vnode **)0xdeadb;
 	}
