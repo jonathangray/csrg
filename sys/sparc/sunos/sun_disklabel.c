@@ -9,7 +9,7 @@
  * All advertising materials mentioning features or use of this software
  * must display the following acknowledgement:
  *	This product includes software developed by the University of
- *	California, Lawrence Berkeley Laboratories.
+ *	California, Lawrence Berkeley Laboratory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sun_disklabel.c	7.3 (Berkeley) 10/11/92
+ *	@(#)sun_disklabel.c	7.4 (Berkeley) 04/06/93
  *
  * from: $Header: sun_disklabel.c,v 1.5 92/06/17 07:04:12 torek Exp $
  */
