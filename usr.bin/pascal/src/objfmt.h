@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)objfmt.h	8.1 (Berkeley) 06/06/93
+ *	@(#)objfmt.h	8.2 (Berkeley) 05/24/94
  */
 
 /*
@@ -199,7 +199,7 @@ struct formalrtn	frtn;
 #   define START 0x0				/* beginning of text */
 #endif tahoe
 #ifdef mc68000
-#   define HEADER_BYTES	3072			/* the size of px_header */
+#   define HEADER_BYTES	6092			/* the size of px_header */
 #   define START 0x8000				/* beginning of text */
 #endif mc68000
 #   define INDX 1				/* amt to shift display index */
