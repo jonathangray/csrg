@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1985, 1989, 1993
+ * Copyright (c) 1985, 1989, 1993, 1994
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ftp_var.h	8.2 (Berkeley) 04/02/94
+ *	@(#)ftp_var.h	8.3 (Berkeley) 04/02/94
  */
 
 /*
