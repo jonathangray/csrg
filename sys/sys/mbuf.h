@@ -29,11 +29,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mbuf.h	8.1 (Berkeley) 06/04/93
+ *	@(#)mbuf.h	8.2 (Berkeley) 01/11/94
  */
 
 #ifndef M_WAITOK
-#include "malloc.h"
+#include <sys/malloc.h>
 #endif
 
 /*
