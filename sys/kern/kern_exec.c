@@ -1,54 +1,25 @@
 /*
- * Copyright (c) 1982, 1986, 1989 Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1982, 1986, 1989, 1991 Regents of the University of California.
+ * All rights reserved.  The Berkeley software License Agreement
+ * specifies the terms and conditions for redistribution.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- *
- *	@(#)kern_exec.c	7.36 (Berkeley) 03/17/91
+ *	@(#)kern_exec.c	7.37 (Berkeley) 03/25/91
  */
 
 #include "param.h"
 #include "systm.h"
-#include "user.h"
 #include "filedesc.h"
 #include "kernel.h"
 #include "proc.h"
 #include "mount.h"
-#include "ucred.h"
 #include "malloc.h"
 #include "vnode.h"
 #include "seg.h"
 #include "file.h"
-#include "uio.h"
 #include "acct.h"
 #include "exec.h"
 #include "ktrace.h"
+#include "resourcevar.h"
 
 #include "machine/reg.h"
 
@@ -58,6 +29,10 @@
 #include "vm/vm_map.h"
 #include "vm/vm_kern.h"
 #include "vm/vm_pager.h"
+
+#include "signalvar.h"
+#include "kinfo_proc.h"
+#include "user.h"			/* for pcb, sigc */
 
 #ifdef HPUXCOMPAT
 #include "hp300/hpux/hpux_exec.h"
@@ -426,16 +401,20 @@ execve(p, uap, retval)
 	execsigs(p);
 
 	for (nc = fdp->fd_lastfile; nc >= 0; --nc) {
-		if (OFILEFLAGS(fdp, nc) & UF_EXCLOSE) {
-			(void) closef(OFILE(fdp, nc));
-			OFILE(fdp, nc) = NULL;
-			OFILEFLAGS(fdp, nc) = 0;
+		if (fdp->fd_ofileflags[nc] & UF_EXCLOSE) {
+			(void) closef(fdp->fd_ofiles[nc], p);
+			fdp->fd_ofiles[nc] = NULL;
+			fdp->fd_ofileflags[nc] = 0;
 			if (nc < fdp->fd_freefile)
 				fdp->fd_freefile = nc;
 		}
-		OFILEFLAGS(fdp, nc) &= ~UF_MAPPED;
+		fdp->fd_ofileflags[nc] &= ~UF_MAPPED;
 	}
-	while (fdp->fd_lastfile >= 0 && OFILE(fdp, fdp->fd_lastfile) == NULL)
+	/*
+	 * Adjust fd_lastfile to account for descriptors closed above.
+	 * Don't decrement fd_lastfile past 0, as it's unsigned.
+	 */
+	while (fdp->fd_lastfile > 0 && fdp->fd_ofiles[fdp->fd_lastfile] == NULL)
 		fdp->fd_lastfile--;
 	setregs(exdata.ex_exec.a_entry, retval);
 	/*
@@ -516,12 +495,25 @@ getxfile(p, vp, ep, flags, nargc, uid, gid)
 	ts = clrnd(btoc(ep->a_text));
 	ds = clrnd(btoc(ep->a_data + ep->a_bss));
 	ss = clrnd(SSIZE + btoc(nargc + sizeof(u.u_pcb.pcb_sigc)));
+
+	/*
+	 * If we're sharing the address space, allocate a new space
+	 * and release our reference to the old one.  Otherwise,
+	 * empty out the existing vmspace.
+	 */
+	if (vm->vm_refcnt > 1) {
+		p->p_vmspace = vmspace_alloc(vm_map_min(&vm->vm_map),
+		    vm_map_max(&vm->vm_map), 1);
+		vmspace_free(vm);
+		vm = p->p_vmspace;
+	} else {
 #ifdef SYSVSHM
-	if (vm->vm_shm)
-		shmexit(p);
+		if (vm->vm_shm)
+			shmexit(p);
 #endif
-	(void) vm_map_remove(&vm->vm_map, vm_map_min(&vm->vm_map),
-	    vm_map_max(&vm->vm_map));
+		(void) vm_map_remove(&vm->vm_map, vm_map_min(&vm->vm_map),
+		    vm_map_max(&vm->vm_map));
+	}
 	/*
 	 * If parent is waiting for us to exec or exit,
 	 * SPPWAIT will be set; clear it and wakeup parent.
@@ -557,14 +549,17 @@ getxfile(p, vp, ep, flags, nargc, uid, gid)
 	vm->vm_taddr = (caddr_t)VM_MIN_ADDRESS;
 	vm->vm_daddr = (caddr_t)(VM_MIN_ADDRESS + ctob(ts));
 
-	if ((flags & SPAGV) == 0)
+	if ((flags & SPAGV) == 0) {
+		/*
+		 * Read in data segment.
+		 */
 		(void) vn_rdwr(UIO_READ, vp, vm->vm_daddr, (int) ep->a_data,
 			(off_t)(toff + ep->a_text), UIO_USERSPACE,
 			(IO_UNIT|IO_NODELOCKED), cred, (int *)0);
-	/*
-	 * Read in text segment if necessary (0410), and read-protect it.
-	 */
-	if ((flags & SPAGV) == 0) {
+		/*
+		 * Read in text segment if necessary (0410),
+		 * and read-protect it.
+		 */
 		if (ep->a_text > 0) {
 			error = vn_rdwr(UIO_READ, vp, vm->vm_taddr,
 				(int)ep->a_text, toff, UIO_USERSPACE,
@@ -585,6 +580,7 @@ getxfile(p, vp, ep, flags, nargc, uid, gid)
 		(void) vm_map_protect(&vm->vm_map, addr,
 			addr + trunc_page(ep->a_text),
 			VM_PROT_READ|VM_PROT_EXECUTE, FALSE);
+		vp->v_flag |= VTEXT;
 	}
 badmap:
 	if (error) {
