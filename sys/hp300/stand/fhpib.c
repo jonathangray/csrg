@@ -30,15 +30,15 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fhpib.c	7.1 (Berkeley) 05/08/90
+ *	@(#)fhpib.c	7.2 (Berkeley) 12/16/90
  */
 
 /*
  * 98625A/B HPIB driver
  */
 
-#include "param.h"
-#include "../hpdev/fhpibreg.h"
+#include "sys/param.h"
+#include "../dev/fhpibreg.h"
 #include "hpibvar.h"
 
 fhpibinit(unit)
