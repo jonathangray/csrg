@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_subr.c	7.8 (Berkeley) 05/06/91
+ *	@(#)tp_subr.c	7.9 (Berkeley) 06/27/91
  */
 
 /***********************************************************
@@ -439,7 +439,11 @@ tp_send(tpcb)
 	SeqNum					lowseq, highseq ;
 	SeqNum					lowsave; 
 #ifdef TP_PERF_MEAS
+
 	struct timeval 			send_start_time;
+	IFPERF(tpcb)
+		GET_CUR_TIME(&send_start_time);
+	ENDPERF
 #endif TP_PERF_MEAS
 
 	lowsave =  lowseq = SEQ(tpcb, tpcb->tp_sndhiwat + 1);
@@ -472,10 +476,6 @@ tp_send(tpcb)
 
 	if	( SEQ_GT(tpcb, lowseq, highseq) )
 			return ; /* don't send, don't change hiwat, don't set timers */
-
-	IFPERF(tpcb)
-		GET_CUR_TIME(&send_start_time);
-	ENDPERF
 
 	ASSERT( SEQ_LEQ(tpcb, lowseq, highseq) );
 	SEQ_DEC(tpcb, lowseq);
@@ -590,6 +590,7 @@ tp_send(tpcb)
 	}
 
 done:
+#ifdef TP_PERF_MEAS
 	IFPERF(tpcb)
 		{
 			register int npkts;
@@ -623,6 +624,7 @@ done:
 					TPsbsend, &send_end_time, lowsave, tpcb->tp_Nwindow, npkts);
 		}
 	ENDPERF
+#endif TP_PERF_MEAS
 
 	tpcb->tp_sndhiwat = lowseq;
 
