@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_swap.c	8.4 (Berkeley) 01/06/94
+ *	@(#)vm_swap.c	8.5 (Berkeley) 02/17/94
  */
 
 #include <sys/param.h>
@@ -175,6 +175,7 @@ swstrategy(bp)
 #endif
 	sz = howmany(bp->b_bcount, DEV_BSIZE);
 	if (bp->b_blkno + sz > nswap) {
+		bp->b_error = EINVAL;
 		bp->b_flags |= B_ERROR;
 		biodone(bp);
 		return;
@@ -185,6 +186,7 @@ swstrategy(bp)
 			if (niswdev > 1) {
 				off = bp->b_blkno % dmmax;
 				if (off+sz > dmmax) {
+					bp->b_error = EINVAL;
 					bp->b_flags |= B_ERROR;
 					biodone(bp);
 					return;
@@ -208,6 +210,8 @@ swstrategy(bp)
 			}
 			if (swp->sw_dev == NODEV ||
 			    bp->b_blkno+sz > swp->sw_nblks) {
+				bp->b_error = swp->sw_dev == NODEV ?
+					ENODEV : EINVAL;
 				bp->b_flags |= B_ERROR;
 				biodone(bp);
 				return;
@@ -216,6 +220,7 @@ swstrategy(bp)
 #else
 		off = bp->b_blkno % dmmax;
 		if (off+sz > dmmax) {
+			bp->b_error = EINVAL;
 			bp->b_flags |= B_ERROR;
 			biodone(bp);
 			return;
