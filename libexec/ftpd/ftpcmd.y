@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ftpcmd.y	5.27 (Berkeley) 06/27/92
+ *	@(#)ftpcmd.y	5.28 (Berkeley) 05/17/93
  */
 
 /*
@@ -41,7 +41,7 @@
 %{
 
 #ifndef lint
-static char sccsid[] = "@(#)ftpcmd.y	5.27 (Berkeley) 06/27/92";
+static char sccsid[] = "@(#)ftpcmd.y	5.28 (Berkeley) 05/17/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -891,7 +891,7 @@ yylex()
 			if (strncasecmp(cbuf, "PASS", 4) != NULL)
 				setproctitle("%s: %s", proctitle, cbuf);
 #endif /* SETPROCTITLE */
-			if ((cp = index(cbuf, '\r'))) {
+			if ((cp = strchr(cbuf, '\r'))) {
 				*cp++ = '\n';
 				*cp = '\0';
 			}
