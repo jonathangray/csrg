@@ -33,14 +33,13 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.11 (Berkeley) 07/24/93";
+static char sccsid[] = "@(#)conf.c	8.12 (Berkeley) 07/26/93";
 #endif /* not lint */
 
 # include "sendmail.h"
 # include "pathnames.h"
 # include <sys/ioctl.h>
 # include <sys/param.h>
-# include <signal.h>
 # include <pwd.h>
 
 /*
@@ -508,6 +507,29 @@ checkcompat(to, e)
 	return (EX_OK);
 }
 /*
+**  SETSIGNAL -- set a signal handler
+**
+**	This is essentially old BSD "signal(3)".
+*/
+
+setsig_t
+setsignal(sig, handler)
+	int sig;
+	setsig_t handler;
+{
+#ifdef SYS5SIGNALS
+	return signal(sig, handler);
+#else
+	struct sigaction n, o;
+
+	bzero(&n, sizeof n);
+	n.sa_handler = handler;
+	if (sigaction(sig, &n, &o) < 0)
+		return SIG_ERR;
+	return o.sa_handler;
+#endif
+}
+/*
 **  HOLDSIGS -- arrange to hold all signals
 **
 **	Parameters:
@@ -902,8 +924,8 @@ reapchild()
 		continue;
 # endif /* WNOHANG */
 # endif
-# ifdef SYSTEM5
-	(void) signal(SIGCHLD, reapchild);
+# ifdef SYS5SIGNALS
+	(void) setsignal(SIGCHLD, reapchild);
 # endif
 }
 /*
@@ -1088,12 +1110,6 @@ uname(name)
 **
 **	Stub implementation for System V style systems
 */
-
-#ifndef HASINITGROUPS
-# if !defined(SYSTEM5) || defined(__hpux)
-#  define HASINITGROUPS
-# endif
-#endif
 
 #ifndef HASINITGROUPS
 
@@ -1460,7 +1476,7 @@ transienterror(err)
 	return FALSE;
 }
 /*
-**  LOCKFILE -- lock a file using flock or (shudder) lockf
+**  LOCKFILE -- lock a file using flock or (shudder) fcntl locking
 **
 **	Parameters:
 **		fd -- the file descriptor of the file.
@@ -1480,10 +1496,10 @@ lockfile(fd, filename, type)
 	char *filename;
 	int type;
 {
-# ifdef LOCKF
+# ifndef HASFLOCK
 	int action;
 	struct flock lfd;
-
+		
 	bzero(&lfd, sizeof lfd);
 	if (bitset(LOCK_UN, type))
 		lfd.l_type = F_UNLCK;
