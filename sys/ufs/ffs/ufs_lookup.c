@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lookup.c	7.29 (Berkeley) 04/16/91
+ *	@(#)ufs_lookup.c	7.30 (Berkeley) 04/16/91
  */
 
 #include "param.h"
@@ -532,7 +532,8 @@ dirbad(ip, offset, how)
 
 	printf("%s: bad dir ino %d at offset %d: %s\n",
 	    ip->i_fs->fs_fsmnt, ip->i_number, offset, how);
-	panic("bad dir");
+	if (ip->i_fs->fs_ronly == 0)
+		panic("bad dir");
 }
 
 /*
