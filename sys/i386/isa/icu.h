@@ -21,7 +21,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)icu.h	5.4 (Berkeley) 11/18/90
+ *	@(#)icu.h	5.5 (Berkeley) 01/08/91
  */
 
 /*
