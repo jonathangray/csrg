@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)clean.h	5.2 (Berkeley) 08/21/92
+ *	@(#)clean.h	5.3 (Berkeley) 08/26/92
  */
 
 /*
@@ -128,7 +128,7 @@ void	 toss __P((void *, int *, size_t,
 	fflush(stdout); \
 }
 
-#define PRINT_INODE(b, iip) { \
+#define PRINT_INODE(b, bip) { \
 	(void) printf("\t%s inode: %d daddr: 0x%lx create: %s\n", \
 	    b ? "KEEPING" : "TOSSING", (bip)->bi_inode, (bip)->bi_daddr, \
 	    ctime((time_t *)&(bip)->bi_segcreate)); \
@@ -159,7 +159,7 @@ void	 print_SEGSUM __P(( struct lfs *, SEGSUM *));
 void	 print_CLEANERINFO __P((CLEANERINFO *));
 #else
 #define	PRINT_FINFO(fp, ip)
-#define	PRINT_INODE(b, iip)
+#define	PRINT_INODE(b, bip)
 #define PRINT_BINFO(bip)
 #define	PRINT_SEGUSE(sup, n)
 #define	dump_cleaner_info(cip)
