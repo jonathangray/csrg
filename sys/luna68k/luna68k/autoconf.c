@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)autoconf.c	7.1 (Berkeley) 06/15/92
+ *	@(#)autoconf.c	7.2 (Berkeley) 10/11/92
  */
 
 /*
@@ -51,14 +51,14 @@
  * and the drivers are initialized.
  */
 
-#include "sys/param.h"
-#include "sys/systm.h"
-#include "sys/dkstat.h"
-#include "sys/conf.h"
-#include "sys/reboot.h"
+#include <sys/param.h>
+#include <sys/systm.h>
+#include <sys/dkstat.h>
+#include <sys/conf.h>
+#include <sys/reboot.h>
 
-#include "../include/cpu.h"
-#include "../dev/device.h"
+#include <machine/cpu.h>
+#include <luna68k/dev/device.h>
 
 /*
  * The following several variables are related to
