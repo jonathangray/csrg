@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	8.7 (Berkeley) 08/17/93";
+static char sccsid[] = "@(#)parseaddr.c	8.8 (Berkeley) 08/19/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -155,24 +155,12 @@ parseaddr(addr, a, flags, delim, delimptr, e)
 	if (rewrite(pvp, 0, e) == EX_TEMPFAIL)
 		queueup = TRUE;
 
-	/*
-	**  See if we resolved to a real mailer.
-	*/
-
-	if (pvp[0] == NULL || (pvp[0][0] & 0377) != CANONNET)
-	{
-		setstat(EX_USAGE);
-		syserr("554 cannot resolve name %s", addr);
-		return (NULL);
-	}
 
 	/*
 	**  Build canonical address from pvp.
 	*/
 
 	a = buildaddr(pvp, a, flags, e);
-	if (a == NULL)
-		return (NULL);
 
 	/*
 	**  Make local copies of the host & user and then
@@ -180,6 +168,8 @@ parseaddr(addr, a, flags, delim, delimptr, e)
 	*/
 
 	allocaddr(a, flags, addr, *delimptr);
+	if (bitset(QBADADDR, a->q_flags))
+		return a;
 
 	/*
 	**  If there was a parsing failure, mark it for queueing.
@@ -1566,6 +1556,8 @@ buildaddr(tv, a, flags, e)
 	register struct mailer *m;
 	char *bp;
 	int spaceleft;
+	static MAILER errormailer;
+	static char *errorargv[] = { "ERROR", NULL };
 	static char buf[MAXNAME];
 
 	if (a == NULL)
@@ -1576,7 +1568,17 @@ buildaddr(tv, a, flags, e)
 	if (*tv == NULL || **tv != CANONNET)
 	{
 		syserr("554 buildaddr: no net");
-		return (NULL);
+badaddr:
+		a->q_flags |= QBADADDR;
+		a->q_mailer = &errormailer;
+		if (errormailer.m_name == NULL)
+		{
+			/* initialize the bogus mailer */
+			errormailer.m_name = "*error*";
+			errormailer.m_mailer = "ERROR";
+			errormailer.m_argv = errorargv;
+		}
+		return a;
 	}
 	tv++;
 	if (strcasecmp(*tv, "error") == 0)
@@ -1615,7 +1617,7 @@ buildaddr(tv, a, flags, e)
 				CurEnv->e_id, buf);
 #endif /* LOG */
 		usrerr(buf);
-		return (NULL);
+		goto badaddr;
 	}
 
 	for (mp = Mailer; (m = *mp++) != NULL; )
@@ -1626,7 +1628,7 @@ buildaddr(tv, a, flags, e)
 	if (m == NULL)
 	{
 		syserr("554 buildaddr: unknown mailer %s", *tv);
-		return (NULL);
+		goto badaddr;
 	}
 	a->q_mailer = m;
 
@@ -1651,7 +1653,7 @@ buildaddr(tv, a, flags, e)
 	if (*tv == NULL || (**tv & 0377) != CANONUSER)
 	{
 		syserr("554 buildaddr: no user");
-		return (NULL);
+		goto badaddr;
 	}
 	tv++;
 
