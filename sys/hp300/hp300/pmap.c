@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.c	7.12 (Berkeley) 08/03/92
+ *	@(#)pmap.c	7.13 (Berkeley) 10/01/92
  */
 
 /*
@@ -2249,7 +2249,7 @@ pmap_enter_ptpage(pmap, va)
 #endif
 		ptpa = pmap_extract(kernel_pmap, va);
 #ifdef DEBUG
-		PHYS_TO_VM_PAGE(ptpa)->ptpage = TRUE;
+		PHYS_TO_VM_PAGE(ptpa)->flags |= PG_PTPAGE;
 #endif
 	}
 #if defined(HP380)
