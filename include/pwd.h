@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pwd.h	5.12 (Berkeley) 04/21/91
+ *	@(#)pwd.h	5.13 (Berkeley) 05/28/91
  */
 
 #ifndef _PWD_H_
@@ -53,7 +53,7 @@
 
 #define	_PASSWORD_EFMT1		'_'	/* extended encryption format */
 
-#define	_PASSWORD_LEN		128
+#define	_PASSWORD_LEN		128	/* max length, not counting NULL */
 #endif
 
 struct passwd {
