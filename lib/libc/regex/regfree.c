@@ -34,15 +34,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)regfree.c	5.1 (Berkeley) 08/06/92
+ *	@(#)regfree.c	5.2 (Berkeley) 05/21/93
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)regfree.c	5.1 (Berkeley) 08/06/92";
+static char sccsid[] = "@(#)regfree.c	5.2 (Berkeley) 05/21/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <regex.h>
@@ -52,6 +51,7 @@ static char sccsid[] = "@(#)regfree.c	5.1 (Berkeley) 08/06/92";
 
 /*
  - regfree - free everything
+ = extern void regfree(regex_t *preg);
  */
 void
 regfree(preg)
@@ -75,5 +75,6 @@ regex_t *preg;
 	if (g->setbits != NULL)
 		free((char *)g->setbits);
 	if (g->must != NULL)
-		free((char *)g->must);
+		free(g->must);
+	free((char *)g);
 }
