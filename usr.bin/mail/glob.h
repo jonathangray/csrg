@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)glob.h	5.20 (Berkeley) 06/25/90
+ *	@(#)glob.h	5.21 (Berkeley) 06/26/92
  */
 
 /*
