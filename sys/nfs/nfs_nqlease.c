@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_nqlease.c	7.2 (Berkeley) 01/14/92
+ *	@(#)nfs_nqlease.c	7.3 (Berkeley) 02/06/92
  */
 
 /*
@@ -60,10 +60,9 @@
 #include "socketvar.h"
 #include "file.h"
 #include "buf.h"
+#include "stat.h"
 #include "protosw.h"
 #include "machine/endian.h"
-#include "ufs/ufs/quota.h"
-#include "ufs/ufs/inode.h"
 #include "netinet/in.h"
 #include "rpcv2.h"
 #include "nfsv2.h"
