@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)hash_page.c	5.21 (Berkeley) 07/17/92";
+static char sccsid[] = "@(#)hash_page.c	5.22 (Berkeley) 07/17/92";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -841,7 +841,7 @@ open_temp()
 	static char namestr[] = "_hashXXXXXX";
 
 	/* Block signals; make sure file goes away at process exit. */
-	sigfillset(&set);
+	(void)sigfillset(&set);
 	(void)sigprocmask(SIG_BLOCK, &set, &oset);
 	if ((hashp->fp = mkstemp(namestr)) != -1) {
 		(void)unlink(namestr);
