@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_malloc.c	7.21 (Berkeley) 12/05/90
+ *	@(#)kern_malloc.c	7.12.1.2 (Berkeley) 12/12/90
  */
 
 #include "param.h"
@@ -47,6 +47,7 @@
 struct kmembuckets bucket[MINBUCKET + 16];
 struct kmemstats kmemstats[M_LAST];
 struct kmemusage *kmemusage;
+char *memname[] = INITKMEMNAMES;
 char *kmembase, *kmemlimit;
 char *memname[] = INITKMEMNAMES;
 long malloc_reentered;
@@ -66,13 +67,12 @@ malloc(size, type, flags)
 	register struct kmemusage *kup;
 	long indx, npg, alloc, allocsize;
 	int s;
-	caddr_t va, cp;
+	caddr_t va, cp, rp;
 #ifdef KMEMSTATS
 	register struct kmemstats *ksp = &kmemstats[type];
 
 	if (((unsigned long)type) > M_LAST)
 		panic("malloc - bogus type");
-#endif
 
 	indx = BUCKETINDX(size);
 	kbp = &bucket[indx];
@@ -123,9 +123,10 @@ malloc(size, type, flags)
 		kup->ku_freecnt = kbp->kb_elmpercl;
 		kbp->kb_totalfree += kbp->kb_elmpercl;
 #endif
+		rp = kbp->kb_next; /* returned while blocked in vmemall */
 		kbp->kb_next = va + (npg * NBPG) - allocsize;
 		for (cp = kbp->kb_next; cp >= va; cp -= allocsize) {
-			((caddr_t *)cp)[2] = (cp > va ? cp - allocsize : NULL);
+			((caddr_t *)cp)[2] = (cp > va ? cp - allocsize : rp);
 			if (indx == 7) {
 				long *lp = (long *)cp;
 				lp[0] = lp[1] = lp[3] = lp[4] = -1;
@@ -171,6 +172,15 @@ long addrmask[] = { 0x00000000,
 };
 #endif /* DIAGNOSTIC */
 
+#ifdef DIAGNOSTIC
+long addrmask[] = { 0x00000000,
+	0x00000001, 0x00000003, 0x00000007, 0x0000000f,
+	0x0000001f, 0x0000003f, 0x0000007f, 0x000000ff,
+	0x000001ff, 0x000003ff, 0x000007ff, 0x00000fff,
+	0x00001fff, 0x00003fff, 0x00007fff, 0x0000ffff,
+};
+#endif /* DIAGNOSTIC */
+
 /*
  * Free a block of memory allocated by malloc.
  */
@@ -188,6 +198,18 @@ free(addr, type)
 #endif
 
 	kup = btokup(addr);
+	size = 1 << kup->ku_indx;
+#ifdef DIAGNOSTIC
+	if (size > NBPG * CLSIZE)
+		alloc = addrmask[BUCKETINDX(NBPG * CLSIZE)];
+	else
+		alloc = addrmask[kup->ku_indx];
+	if (((u_long)addr & alloc) != 0) {
+		printf("free: unaligned addr 0x%x, size %d, type %d, mask %d\n",
+			addr, size, type, alloc);
+		panic("free: unaligned addr");
+	}
+#endif /* DIAGNOSTIC */
 	size = 1 << kup->ku_indx;
 #ifdef DIAGNOSTIC
 	if (size > NBPG * CLSIZE)
