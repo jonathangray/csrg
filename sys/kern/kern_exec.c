@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_exec.c	7.50 (Berkeley) 02/05/92
+ *	@(#)kern_exec.c	7.51 (Berkeley) 02/05/92
  */
 
 #include "param.h"
@@ -375,7 +375,7 @@ execve(p, uap, retval)
 	 */
 	ucp = USRSTACK - szsigcode - nc - NBPW;
 	ap = ucp - na*NBPW - 3*NBPW;
-	p->p_regs[SP] = ap;
+	cpu_setstack(p, ap);
 	(void) suword((caddr_t)ap, na-ne);
 	nc = 0;
 	cp = (char *) execargs;
