@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_segment.c	7.13 (Berkeley) 02/28/92
+ *	@(#)lfs_segment.c	7.14 (Berkeley) 03/03/92
  */
 
 #include <sys/param.h>
@@ -414,7 +414,8 @@ lfs_writeinode(fs, sp, ip)
 		LFS_SEGENTRY(sup, fs, datosn(fs, daddr), bp);
 #ifdef DIAGNOSTIC
 		if (sup->su_nbytes < sizeof(struct dinode))
-			panic("lfs: negative bytes (segment %d)\n",
+			/* XXX -- Change to a panic. */
+			printf("lfs: negative bytes (segment %d)\n",
 			    datosn(fs, daddr));
 #endif
 		sup->su_nbytes -= sizeof(struct dinode);
@@ -563,7 +564,8 @@ lfs_updatemeta(fs, sp, vp, lbp, bpp, nblocks)
 			LFS_SEGENTRY(sup, fs, datosn(fs, daddr), bp);
 #ifdef DIAGNOSTIC
 			if (sup->su_nbytes < fs->lfs_bsize)
-				panic("lfs: negative bytes (segment %d)\n",
+				/* XXX -- Change to a panic. */
+				printf("lfs: negative bytes (segment %d)\n",
 				    datosn(fs, daddr));
 #endif
 			sup->su_nbytes -= fs->lfs_bsize;
@@ -913,6 +915,7 @@ lfs_callback(bp)
 	if (bp->b_saveaddr) {
 		free(bp->b_un.b_addr, M_SEGMENT);
 		bp->b_un.b_addr = bp->b_saveaddr;
+		bp->b_saveaddr = NULL;
 	}
 	brelse(bp);
 }
