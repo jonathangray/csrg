@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode.h	8.5 (Berkeley) 01/04/94
+ *	@(#)vnode.h	8.6 (Berkeley) 01/12/94
  */
 
 #include <sys/queue.h>
@@ -53,7 +53,7 @@ enum vtype	{ VNON, VREG, VDIR, VBLK, VCHR, VLNK, VSOCK, VFIFO, VBAD };
  */
 enum vtagtype	{
 	VT_NON, VT_UFS, VT_NFS, VT_MFS, VT_PC, VT_LFS, VT_LOFS, VT_FDESC,
-	VT_PORTAL, VT_NULL, VT_UMAP, VT_KERNFS, VT_PROCFS, VT_AFS
+	VT_PORTAL, VT_NULL, VT_UMAP, VT_KERNFS, VT_PROCFS, VT_AFS, VT_ISOFS
 };
 
 /*
@@ -90,7 +90,8 @@ struct vnode {
 	daddr_t	v_lasta;			/* last allocation */
 	int	v_clen;				/* length of current cluster */
 	int	v_ralen;			/* Read-ahead length */
-	long	v_spare[8];			/* round to 128 bytes */
+	daddr_t	v_maxra;			/* last readahead block */
+	long	v_spare[7];			/* round to 128 bytes */
 	enum	vtagtype v_tag;			/* type of underlying data */
 	void 	*v_data;			/* private data for fs */
 };
