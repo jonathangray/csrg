@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_xxx.c	7.23 (Berkeley) 04/05/93
+ *	@(#)kern_xxx.c	7.24 (Berkeley) 04/27/93
  */
 
 #include <sys/param.h>
@@ -38,6 +38,7 @@
 #include <sys/kernel.h>
 #include <sys/proc.h>
 #include <sys/reboot.h>
+#include <vm/vm.h>
 #include <sys/sysctl.h>
 
 struct reboot_args {
