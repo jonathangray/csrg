@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)autoconf.c	7.2 (Berkeley) 10/11/92
+ *	@(#)autoconf.c	7.3 (Berkeley) 04/19/93
  */
 
 /*
@@ -98,9 +98,9 @@ swapconf()
 	register int nblks;
 extern int Maxmem;
 
-	for (swp = swdevt; swp->sw_dev > 0; swp++)
+	for (swp = swdevt; swp->sw_dev != NODEV; swp++)
 	{
-		if ( swp->sw_dev < 0 || swp->sw_dev > nblkdev ) break;
+		if ( (u_int)swp->sw_dev >= nblkdev ) break;	/* XXX */
 		if (bdevsw[major(swp->sw_dev)].d_psize) {
 			nblks =
 			  (*bdevsw[major(swp->sw_dev)].d_psize)(swp->sw_dev);
@@ -165,7 +165,7 @@ setroot()
 		mindev >> PARTITIONSHIFT, part + 'a');
 #ifdef DOSWAP
 	mindev &= ~PARTITIONMASK;
-	for (swp = swdevt; swp->sw_dev; swp++) {
+	for (swp = swdevt; swp->sw_dev != NODEV; swp++) {
 		if (majdev == major(swp->sw_dev) &&
 		    mindev == (minor(swp->sw_dev) & ~PARTITIONMASK)) {
 			temp = swdevt[0].sw_dev;
@@ -174,7 +174,7 @@ setroot()
 			break;
 		}
 	}
-	if (swp->sw_dev == 0)
+	if (swp->sw_dev == NODEV)
 		return;
 	/*
 	 * If dumpdev was the same as the old primary swap
