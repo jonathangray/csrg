@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.1 (Berkeley) 05/11/90
+#	@(#)Makefile	5.2 (Berkeley) 01/15/91
 
 PROG=	kdump
 CFLAGS+=-I${.CURDIR}/../ktrace
