@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	5.1 (Berkeley) 06/29/90
+ *	@(#)pathnames.h	5.2 (Berkeley) 03/07/92
  */
 
 #define	_PATH_PC0	"/usr/libexec/pascal/pc0"
@@ -40,8 +40,8 @@
 #define	_PATH_PC3	"/usr/libexec/pascal/pc3"
 #define	_PATH_PCEXTERN	"/usr/lib/pcexterns.o"
 
-#define	_PATH_AS	"/usr/bin/as"
-#define	_PATH_LD	"/usr/bin/ld"
+#define	_PATH_AS	"/usr/old/bin/as"
+#define	_PATH_LD	"/usr/old/bin/ld"
 #define	_PATH_CRT0	"/usr/lib/crt0.o"
 #define	_PATH_MCRT0	"/usr/lib/mcrt0.o"
 #define	_PATH_GCRT0	"/usr/lib/gcrt0.o"
