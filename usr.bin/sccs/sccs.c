@@ -104,6 +104,10 @@ static char SccsId[] = "@(#)sccs.c	1.43 10/25/80";
 # define PROGPATH(name)	"/usr/local/name"
 # endif CSVAX
 
+# ifdef INGVAX
+# define PROGPATH(name)	"/usr/local/name"
+# endif INGVAX
+
 /* end of berkeley systems defines */
 
 # ifndef SCCSPATH
