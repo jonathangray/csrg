@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.4 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)main.c	5.5 (Berkeley) 02/26/91";
 #endif /* not lint */
 
 /*
@@ -44,7 +44,13 @@ static char sccsid[] = "@(#)main.c	5.4 (Berkeley) 06/01/90";
  * by: oz
  */
 
+#include <signal.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "mdef.h"
+#include "pathnames.h"
 
 /*
  * m4 - macro processor
@@ -200,16 +206,14 @@ struct keyblk keywrds[] = {	/* m4 keywords to be installed */
 
 extern ndptr lookup();
 extern ndptr addent();
-extern int onintr();
-
-extern char *malloc();
-extern char *mktemp();
+extern void onintr();
 
 extern int optind;
 extern char *optarg;
 
 main(argc,argv)
-char *argv[];
+	int argc;
+	char **argv;
 {
 	register int c;
 	register int n;
