@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	8.4 (Berkeley) 12/30/93
+ *	@(#)vfs_syscalls.c	8.5 (Berkeley) 01/11/94
  */
 
 #include <sys/param.h>
@@ -162,10 +162,10 @@ update:
 		mp->mnt_flag |= MNT_RDONLY;
 	else if (mp->mnt_flag & MNT_RDONLY)
 		mp->mnt_flag |= MNT_WANTRDWR;
-	mp->mnt_flag &=~
-	    (MNT_NOSUID | MNT_NOEXEC | MNT_NODEV | MNT_SYNCHRONOUS | MNT_UNION);
-	mp->mnt_flag |= uap->flags &
-	    (MNT_NOSUID | MNT_NOEXEC | MNT_NODEV | MNT_SYNCHRONOUS | MNT_UNION);
+	mp->mnt_flag &=~ (MNT_NOSUID | MNT_NOEXEC | MNT_NODEV |
+	    MNT_SYNCHRONOUS | MNT_UNION | MNT_ASYNC);
+	mp->mnt_flag |= uap->flags & (MNT_NOSUID | MNT_NOEXEC | MNT_NODEV |
+	    MNT_SYNCHRONOUS | MNT_UNION | MNT_ASYNC);
 	/*
 	 * Mount the filesystem.
 	 */
