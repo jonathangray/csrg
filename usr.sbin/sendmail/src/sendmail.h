@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	6.23 (Berkeley) 02/26/93
+ *	@(#)sendmail.h	6.24 (Berkeley) 02/27/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	6.23		02/26/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	6.24		02/27/93";
 # endif lint
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -624,7 +624,6 @@ struct prival
 
 EXTERN bool	FromFlag;	/* if set, "From" person is explicit */
 EXTERN bool	NoAlias;	/* if set, don't do any aliasing */
-EXTERN bool	ForceMail;	/* if set, mail even if already got a copy */
 EXTERN bool	MeToo;		/* send to the sender also */
 EXTERN bool	IgnrDot;	/* don't let dot end messages */
 EXTERN bool	SaveFrom;	/* save leading "From" lines */
