@@ -27,7 +27,10 @@ int	tick;
 int	lbolt;				/* awoken once a second */
 int	realitexpire();
 
+fixpt_t	averunnable[3];
+#ifdef COMPAT_43
 double	avenrun[3];
+#endif /* COMPAT_43 */
 
 #ifdef GPROF
 extern	int profiling;
