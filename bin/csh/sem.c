@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)sem.c	5.19 (Berkeley) 07/19/91";
+static char sccsid[] = "@(#)sem.c	5.20 (Berkeley) 09/04/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -102,8 +102,6 @@ execute(t, wanttty, pipein, pipeout)
 	    if (noexec)
 		(void) close(0);
 	}
-	if (noexec)
-	    break;
 
 	set(STRstatus, Strsave(STR0));
 
@@ -150,15 +148,29 @@ execute(t, wanttty, pipein, pipeout)
 	    else
 		break;
 
-	/* is t a command */
+	/* is it a command */
 	if (t->t_dtyp == NODE_COMMAND) {
 	    /*
 	     * Check if we have a builtin function and remember which one.
 	     */
 	    bifunc = isbfunc(t);
+ 	    if (noexec) {
+		/*
+		 * Continue for builtins that are part of the scripting language
+		 */
+		if (bifunc->bfunct != dobreak   && bifunc->bfunct != docontin &&
+		    bifunc->bfunct != doelse    && bifunc->bfunct != doend    &&
+		    bifunc->bfunct != doforeach && bifunc->bfunct != dogoto   &&
+		    bifunc->bfunct != doif      && bifunc->bfunct != dorepeat &&
+		    bifunc->bfunct != doswbrk   && bifunc->bfunct != doswitch &&
+		    bifunc->bfunct != dowhile   && bifunc->bfunct != dozip)
+		    break;
+	    }
 	}
 	else {			/* not a command */
 	    bifunc = NULL;
+	    if (noexec)
+		break;
 	}
 
 	/*
