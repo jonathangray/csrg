@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)ungetc.c	8.1 (Berkeley) 06/04/93";
+static char sccsid[] = "@(#)ungetc.c	8.2 (Berkeley) 11/03/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <stdio.h>
@@ -119,6 +119,7 @@ ungetc(c, fp)
 		fp->_r++;
 		return (c);
 	}
+	fp->_flags &= ~__SEOF;
 
 	/*
 	 * If we can handle this by simply backing up, do so,
