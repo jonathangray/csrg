@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.11 (Berkeley) 08/08/93
+ *	@(#)sendmail.h	8.12 (Berkeley) 08/14/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.11		08/08/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.12		08/14/93";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -842,6 +842,7 @@ EXTERN FILE	*TrafficLogFile;	/* file in which to log all traffic */
 
 EXTERN struct
 {
+			/* RFC 1123-specified timeouts [minimum value] */
 	time_t	to_initial;	/* initial greeting timeout [5m] */
 	time_t	to_mail;	/* MAIL command [5m] */
 	time_t	to_rcpt;	/* RCPT command [5m] */
@@ -854,6 +855,7 @@ EXTERN struct
 	time_t	to_helo;	/* HELO command */
 	time_t	to_quit;	/* QUIT command */
 	time_t	to_miscshort;	/* misc short commands (NOOP, VERB, etc) */
+	time_t	to_ident;	/* IDENT protocol requests */
 			/* following are per message */
 	time_t	to_q_return;	/* queue return timeout */
 	time_t	to_q_warning;	/* queue warning timeout */
