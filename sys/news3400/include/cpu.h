@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 1992, 1993
- *	Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Ralph Campbell and Kazumasa Utashiro of Software Research
@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cpu.h	8.1 (Berkeley) 01/11/94
+ *	@(#)cpu.h	8.2 (Berkeley) 01/21/94
  */
 
 #ifndef _CPU_H_
