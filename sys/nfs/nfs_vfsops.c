@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vfsops.c	8.3 (Berkeley) 01/04/94
+ *	@(#)nfs_vfsops.c	8.4 (Berkeley) 08/18/94
  */
 
 #include <sys/param.h>
@@ -428,8 +428,7 @@ mountnfs(argp, mp, nam, pth, hst, vpp)
 	nmp->nm_readahead = NFS_DEFRAHEAD;
 	nmp->nm_leaseterm = NQ_DEFLEASE;
 	nmp->nm_deadthresh = NQ_DEADTHRESH;
-	nmp->nm_tnext = (struct nfsnode *)nmp;
-	nmp->nm_tprev = (struct nfsnode *)nmp;
+	CIRCLEQ_INIT(&nmp->nm_timerhead);
 	nmp->nm_inprog = NULLVP;
 	bcopy((caddr_t)argp->fh, (caddr_t)&nmp->nm_fh, sizeof(nfsv2fh_t));
 	mp->mnt_stat.f_type = MOUNT_NFS;
