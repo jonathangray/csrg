@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)rcmd.c	8.2 (Berkeley) 11/16/93";
+static char sccsid[] = "@(#)rcmd.c	8.2 (Berkeley) 03/17/94";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -345,10 +345,16 @@ __ivaliduser(hostf, raddr, luser, ruser)
 	const char *luser, *ruser;
 {
 	register char *user, *p;
+	int ch;
 	char ahost[MAXHOSTNAMELEN];
 
 	while (fgets(ahost, sizeof(ahost), hostf)) {
 		p = ahost;
+		/* Skip lines that are too long. */
+		if (strchr(p, '\n') == NULL) {
+			while ((ch = getc(hostf)) != '\n' && ch != EOF);
+			continue;
+		}
 		while (*p != '\n' && *p != ' ' && *p != '\t' && *p != '\0') {
 			*p = isupper(*p) ? tolower(*p) : *p;
 			p++;
