@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)scc.c	8.2 (Berkeley) 11/30/93
+ *	@(#)scc.c	8.3 (Berkeley) 06/02/95
  */
 
 /* 
@@ -420,7 +420,7 @@ sccwrite(dev, uio, flag)
 /*ARGSUSED*/
 sccioctl(dev, cmd, data, flag, p)
 	dev_t dev;
-	int cmd;
+	u_long cmd;
 	caddr_t data;
 	int flag;
 	struct proc *p;
