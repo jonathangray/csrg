@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	6.68 (Berkeley) 05/28/93";
+static char sccsid[] = "@(#)main.c	6.69 (Berkeley) 05/30/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -323,6 +323,11 @@ main(argc, argv, envp)
 	OpMode = MD_DELIVER;
 	FullName = getenv("NAME");
 
+#ifdef NAMED_BIND
+	if (tTd(8, 8))
+		_res.options |= RES_DEBUG;
+#endif
+
 	errno = 0;
 	from = NULL;
 
@@ -584,11 +589,6 @@ main(argc, argv, envp)
 		}
 	}
 	av += optind;
-
-#ifdef NAMED_BIND
-	if (tTd(8, 8))
-		_res.options |= RES_DEBUG;
-#endif
 
 	/*
 	**  Do basic initialization.
