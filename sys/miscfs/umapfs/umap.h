@@ -4,7 +4,7 @@
  * All rights reserved.
  *
  * This code is derived from software donated to Berkeley by
- * Jan-Simon Pendry.
+ * the UCLA Ficus project.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -34,15 +34,15 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lofs.h	1.1 (Berkeley) 6/3/92
+ *	@(#)umap.h	1.2 (Berkeley) 07/11/92
  *
- * $Id: lofs.h,v 1.8 1992/05/30 10:05:43 jsp Exp jsp $
+ * @(#)null_vnops.c       1.5 (Berkeley) 7/10/92
  */
 
 #define MAPFILEENTRIES 64
 #define GMAPFILEENTRIES 16
 #define NOBODY 32767
-#define UMAPGROUP 65534
+#define NULLGROUP 65534
 
 struct umap_args {
 	char		*target;	/* Target of loopback  */
@@ -78,6 +78,7 @@ extern int umap_node_create __P((struct mount *mp, struct vnode *target, struct 
 
 #define	MOUNTTOUMAPMOUNT(mp) ((struct umap_mount *)((mp)->mnt_data))
 #define	VTOUMAP(vp) ((struct umap_node *)(vp)->v_data)
+#define UMAPTOV(xp) ((xp)->umap_vnode)
 #ifdef UMAPFS_DIAGNOSTIC
 extern struct vnode *umap_checkvp __P((struct vnode *vp, char *fil, int lno));
 #define	UMAPVPTOLOWERVP(vp) umap_checkvp((vp), __FILE__, __LINE__)
