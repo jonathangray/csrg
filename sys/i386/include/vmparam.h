@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vmparam.h	5.8 (Berkeley) 05/09/91
+ *	@(#)vmparam.h	5.9 (Berkeley) 05/12/91
  */
 
 
@@ -53,7 +53,7 @@
  * kernal address space.
  */
 #define	USRTEXT		0
-#define	USRSTACK	0xFDBFD000
+#define	USRSTACK	0xFDBFE000
 #define	BTOPUSRSTACK	(0xFDC00-(UPAGES))	/* btop(USRSTACK) */
 #define	LOWPAGES	0
 #define HIGHPAGES	UPAGES
