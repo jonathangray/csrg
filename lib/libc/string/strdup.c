@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 1988 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1988, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)strdup.c	5.5 (Berkeley) 12/02/92";
+static char sccsid[] = "@(#)strdup.c	8.1 (Berkeley) 06/04/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
