@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	7.79 (Berkeley) 03/01/92
+ *	@(#)vfs_syscalls.c	7.80 (Berkeley) 03/03/92
  */
 
 #include "param.h"
@@ -791,7 +791,7 @@ out:
 	if (!error) {
 		LEASE_CHECK(xp, p, p->p_ucred, LEASE_WRITE);
 		LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
-		error = VOP_LINK(vp, nd.ni_dvp, &nd.ni_cnd);
+		error = VOP_LINK(nd.ni_dvp, vp, &nd.ni_cnd);
 	} else {
 		VOP_ABORTOP(nd.ni_dvp, &nd.ni_cnd);
 		if (nd.ni_dvp == nd.ni_vp)
