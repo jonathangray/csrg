@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	8.82 (Berkeley) 04/10/95";
+static char sccsid[] = "@(#)readcf.c	8.83 (Berkeley) 04/19/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -789,7 +789,6 @@ makemailer(line)
 	extern int NextMailer;
 	extern char **makeargv();
 	extern char *munchstring();
-	extern long atol();
 
 	/* allocate a mailer and set up defaults */
 	m = (struct mailer *) xalloc(sizeof *m);
