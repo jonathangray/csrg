@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)traverse.c	5.14 (Berkeley) 10/17/91";
+static char sccsid[] = "@(#)traverse.c	5.15 (Berkeley) 11/10/91";
 #endif /* not lint */
 
 #ifdef sunos
@@ -44,12 +44,13 @@ static char sccsid[] = "@(#)traverse.c	5.14 (Berkeley) 10/17/91";
 #include <sys/dir.h>
 #include <sys/vnode.h>
 #include <ufs/inode.h>
+#include <ufs/fs.h>
 #else
 #include <sys/param.h>
-#include <ufs/dir.h>
-#include <ufs/dinode.h>
+#include <ufs/ufs/dir.h>
+#include <ufs/ufs/dinode.h>
+#include <ufs/ffs/fs.h>
 #endif
-#include <ufs/fs.h>
 #include <protocols/dumprestore.h>
 #ifdef __STDC__
 #include <unistd.h>
