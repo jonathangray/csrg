@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)hash.c	8.1 (Berkeley) 06/04/93";
+static char sccsid[] = "@(#)hash.c	5.36 (Berkeley) 06/06/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -865,7 +865,7 @@ hash_realloc(p_ptr, oldsize, newsize)
 
 	if (p = malloc(newsize)) {
 		memmove(p, *p_ptr, oldsize);
-		memset(*p_ptr + oldsize, 0, newsize - oldsize);
+		memset(p + oldsize, 0, newsize - oldsize);
 		free(*p_ptr);
 		*p_ptr = p;
 	}
