@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)defs.h	8.1 (Berkeley) 06/05/93
+ *	@(#)defs.h	8.2 (Berkeley) 04/28/95
  */
 
 /*
@@ -63,7 +63,7 @@
 #define	CHECK_INTERVAL	(1*60)
 
 #define equal(a1, a2) \
-	(bcmp((caddr_t)(a1), (caddr_t)(a2), sizeof (struct sockaddr)) == 0)
+	(memcmp((a1), (a2), sizeof (struct sockaddr)) == 0)
 
 struct	sockaddr_in addr;	/* address of daemon's socket */
 
