@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_kern.c	7.8 (Berkeley) 02/19/92
+ *	@(#)vm_kern.c	7.9 (Berkeley) 05/04/92
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -66,12 +66,13 @@
  *	Kernel memory management.
  */
 
-#include "param.h"
+#include <sys/param.h>
+#include <sys/systm.h>
 
-#include "vm.h"
-#include "vm_page.h"
-#include "vm_pageout.h"
-#include "vm_kern.h"
+#include <vm/vm.h>
+#include <vm/vm_page.h>
+#include <vm/vm_pageout.h>
+#include <vm/vm_kern.h>
 
 /*
  *	kmem_alloc_pageable:
