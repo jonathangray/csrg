@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)logger.c	6.16 (Berkeley) 02/02/91";
+static char sccsid[] = "@(#)logger.c	6.15 (Berkeley) 03/01/91";
 #endif /* not lint */
 
 #include <stdio.h>
@@ -143,8 +143,11 @@ pencode(s)
 	if (*s) {
 		*s = '\0';
 		fac = decode(save, facilitynames);
-		if (fac < 0)
-			bailout("unknown facility name: ", save);
+		if (fac < 0) {
+			(void)fprintf(stderr,
+			    "logger: unknown facility name: %s.\n", save);
+			exit(1);
+		}
 		*s++ = '.';
 	}
 	else {
@@ -152,11 +155,13 @@ pencode(s)
 		s = save;
 	}
 	lev = decode(s, prioritynames);
-	if (lev < 0)
-		bailout("unknown priority name: ", save);
+	if (lev < 0) {
+		(void)fprintf(stderr,
+		    "logger: unknown priority name: %s.\n", save);
+		exit(1);
+	}
 	return ((lev & LOG_PRIMASK) | (fac & LOG_FACMASK));
 }
-
 
 decode(name, codetab)
 	char *name;
@@ -174,16 +179,9 @@ decode(name, codetab)
 	return (-1);
 }
 
-bailout(msg, arg)
-	char *msg, *arg;
-{
-	fprintf(stderr, "logger: %s%s\n", msg, arg);
-	exit(1);
-}
-
 usage()
 {
-	fputs("logger: [-i] [-f file] [-p pri] [-t tag] [ message ... ]\n",
-	    stderr);
+	(void)fprintf(stderr,
+	    "logger: [-i] [-f file] [-p pri] [-t tag] [ message ... ]\n");
 	exit(1);
 }
