@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if.h	7.10 (Berkeley) 08/30/90
+ *	@(#)if.h	7.11 (Berkeley) 03/19/91
  */
 
 /*
@@ -115,6 +115,7 @@ struct ifnet {
 	int	if_iqdrops;		/* dropped on input, this interface */
 	int	if_noproto;		/* destined for unsupported protocol */
 	int	if_baudrate;		/* linespeed */
+        int	if_pcount;		/* number of promiscuous listeners */
 };
 
 #define	IFF_UP		0x1		/* interface is up */
