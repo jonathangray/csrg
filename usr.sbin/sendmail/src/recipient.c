@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recipient.c	8.4 (Berkeley) 07/17/93";
+static char sccsid[] = "@(#)recipient.c	8.5 (Berkeley) 07/17/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -354,7 +354,7 @@ recipient(a, sendq, e)
 					syslog(LOG_ERR, "%s: include %s: transient error: %e",
 						e->e_id, a->q_user, errstring(ret));
 #endif
-				a->q_flags |= QQUEUEUP|QDONTSEND;
+				a->q_flags |= QQUEUEUP;
 				usrerr("451 Cannot open %s: %s",
 					a->q_user, errstring(ret));
 			}
@@ -405,7 +405,7 @@ recipient(a, sendq, e)
 
 		if (udbexpand(a, sendq, e) == EX_TEMPFAIL)
 		{
-			a->q_flags |= QQUEUEUP|QDONTSEND;
+			a->q_flags |= QQUEUEUP;
 			if (e->e_message == NULL)
 				e->e_message = newstr("Deferred: user database error");
 # ifdef LOG
@@ -714,7 +714,7 @@ include(fname, forwarding, ctladdr, sendq, e)
 
 	if (setjmp(CtxIncludeTimeout) != 0)
 	{
-		ctladdr->q_flags |= QQUEUEUP|QDONTSEND;
+		ctladdr->q_flags |= QQUEUEUP;
 		errno = 0;
 		usrerr("451 open timeout on %s", fname);
 		return ETIMEDOUT;
