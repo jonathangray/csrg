@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)trap.c	8.2 (Berkeley) 09/05/93
+ *	@(#)trap.c	8.3 (Berkeley) 09/21/93
  */
 
 /*
@@ -260,16 +260,17 @@ out:
 	p->p_pri = p->p_usrpri;
 	if (want_resched) {
 		int pl;
+
 		/*
 		 * Since we are curproc, clock will normally just change
 		 * our priority without moving us from one queue to another
 		 * (since the running process is not on a queue.)
-		 * If that happened after we setrq ourselves but before we
-		 * swtch()'ed, we might not be on the queue indicated by
-		 * our priority.
+		 * If that happened after we put ourselves on the run queue
+		 * but before we swtch()'ed, we might not be on the queue
+		 * indicated by our priority.
 		 */
 		pl = splclock();
-		setrq(p);
+		setrunqueue(p);
 		p->p_stats->p_ru.ru_nivcsw++;
 		swtch();
 		splx(pl);
@@ -377,16 +378,17 @@ done:
 	p->p_pri = p->p_usrpri;
 	if (want_resched) {
 		int pl;
+
 		/*
 		 * Since we are curproc, clock will normally just change
 		 * our priority without moving us from one queue to another
 		 * (since the running process is not on a queue.)
-		 * If that happened after we setrq ourselves but before we
-		 * swtch()'ed, we might not be on the queue indicated by
-		 * our priority.
+		 * If that happened after we put ourselves on the run queue
+		 * but before we swtch()'ed, we might not be on the queue
+		 * indicated by our priority.
 		 */
 		pl = splclock();
-		setrq(p);
+		setrunqueue(p);
 		p->p_stats->p_ru.ru_nivcsw++;
 		swtch();
 		splx(pl);
