@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode.h	7.38 (Berkeley) 06/21/91
+ *	@(#)vnode.h	7.39 (Berkeley) 06/27/91
  */
 
 #ifndef KERNEL
@@ -286,6 +286,7 @@ int	vn_read __P((struct file *fp, struct uio *uio, struct ucred *cred));
 int	vn_write __P((struct file *fp, struct uio *uio, struct ucred *cred));
 int	vn_ioctl __P((struct file *fp, int com, caddr_t data, struct proc *p));
 int	vn_select __P((struct file *fp, int which, struct proc *p));
+int 	vn_closefile __P((struct file *fp, struct proc *p));
 int 	getnewvnode __P((enum vtagtype tag, struct mount *mp,
 	    struct vnodeops *vops, struct vnode **vpp));
 int 	bdevvp __P((int dev, struct vnode **vpp));
