@@ -30,11 +30,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_subr.c	7.6 (Berkeley) 04/12/91
+ *	@(#)kern_subr.c	7.7 (Berkeley) 04/15/91
  */
 
 #include "param.h"
 #include "systm.h"
+#include "proc.h"
 
 uiomove(cp, n, uio)
 	register caddr_t cp;
@@ -45,8 +46,13 @@ uiomove(cp, n, uio)
 	u_int cnt;
 	int error = 0;
 
+
+#ifdef DIAGNOSTIC
 	if (uio->uio_rw != UIO_READ && uio->uio_rw != UIO_WRITE)
 		panic("uiomove: mode");
+	if (uio->uio_segflg == UIO_USERSPACE && uio->uio_procp != curproc)
+		panic("uiomove proc");
+#endif
 	while (n > 0 && uio->uio_resid) {
 		iov = uio->uio_iov;
 		cnt = iov->iov_len;
