@@ -35,12 +35,11 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)bt_split.c	8.1 (Berkeley) 06/04/93";
+static char sccsid[] = "@(#)bt_split.c	8.2 (Berkeley) 02/21/94";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
 
-#define	__DBINTERFACE_PRIVATE
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,12 +50,12 @@ static char sccsid[] = "@(#)bt_split.c	8.1 (Berkeley) 06/04/93";
 
 static int	 bt_broot __P((BTREE *, PAGE *, PAGE *, PAGE *));
 static PAGE	*bt_page
-		    __P((BTREE *, PAGE *, PAGE **, PAGE **, u_int *, size_t));
+		    __P((BTREE *, PAGE *, PAGE **, PAGE **, indx_t *, size_t));
 static int	 bt_preserve __P((BTREE *, pgno_t));
 static PAGE	*bt_psplit
-		    __P((BTREE *, PAGE *, PAGE *, PAGE *, u_int *, size_t));
+		    __P((BTREE *, PAGE *, PAGE *, PAGE *, indx_t *, size_t));
 static PAGE	*bt_root
-		    __P((BTREE *, PAGE *, PAGE **, PAGE **, u_int *, size_t));
+		    __P((BTREE *, PAGE *, PAGE **, PAGE **, indx_t *, size_t));
 static int	 bt_rroot __P((BTREE *, PAGE *, PAGE *, PAGE *));
 static recno_t	 rec_total __P((PAGE *));
 
@@ -84,9 +83,9 @@ __bt_split(t, sp, key, data, flags, ilen, skip)
 	BTREE *t;
 	PAGE *sp;
 	const DBT *key, *data;
-	u_long flags;
+	int flags;
 	size_t ilen;
-	u_int skip;
+	indx_t skip;
 {
 	BINTERNAL *bi;
 	BLEAF *bl, *tbl;
@@ -343,7 +342,7 @@ static PAGE *
 bt_page(t, h, lp, rp, skip, ilen)
 	BTREE *t;
 	PAGE *h, **lp, **rp;
-	u_int *skip;
+	indx_t *skip;
 	size_t ilen;
 {
 	PAGE *l, *r, *tp;
@@ -445,7 +444,7 @@ static PAGE *
 bt_root(t, h, lp, rp, skip, ilen)
 	BTREE *t;
 	PAGE *h, **lp, **rp;
-	u_int *skip;
+	indx_t *skip;
 	size_t ilen;
 {
 	PAGE *l, *r, *tp;
@@ -609,7 +608,7 @@ static PAGE *
 bt_psplit(t, h, l, r, pskip, ilen)
 	BTREE *t;
 	PAGE *h, *l, *r;
-	u_int *pskip;
+	indx_t *pskip;
 	size_t ilen;
 {
 	BINTERNAL *bi;
