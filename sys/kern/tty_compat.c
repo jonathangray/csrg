@@ -30,13 +30,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty_compat.c	7.10 (Berkeley) 05/09/91
+ *	@(#)tty_compat.c	7.11 (Berkeley) 02/14/92
  */
 
 /* 
  * mapping routines for old line discipline (yuck)
  */
-#ifdef COMPAT_43
+#if defined(COMPAT_43) || defined(COMPAT_SUNOS)
 
 #include "param.h"
 #include "systm.h"
@@ -395,4 +395,4 @@ ttcompatsetlflags(tp, t)
 	t->c_lflag = lflag;
 	t->c_cflag = cflag;
 }
-#endif	/* COMPAT_43 */
+#endif	/* COMPAT_43 || COMPAT_SUNOS */
