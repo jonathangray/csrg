@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)5.t	6.5 (Berkeley) 05/07/91
+.\"	@(#)5.t	8.1 (Berkeley) 06/08/93
 .\"
 .ds lq ``
 .ds rq ''
