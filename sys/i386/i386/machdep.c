@@ -33,9 +33,8 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)machdep.c	7.4 (Berkeley) 6/3/91
+ *	@(#)machdep.c	7.8 (Berkeley) 02/05/92
  */
-
 
 #include "param.h"
 #include "systm.h"
