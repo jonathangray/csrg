@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_vnops.c	8.11 (Berkeley) 05/07/94
+ *	@(#)union_vnops.c	8.12 (Berkeley) 05/10/94
  */
 
 #include <sys/param.h>
@@ -965,7 +965,6 @@ union_link(ap)
 		 * and do the link there.
 		 */
 		vput(ap->a_vp);
-		vrele(ap->a_tdvp);
 		error = EROFS;
 	}
 
