@@ -37,7 +37,7 @@
  *
  * from Utah: $Hdr: dcm.c 1.29 92/01/21$
  *
- *	@(#)dcm.c	8.4 (Berkeley) 01/12/94
+ *	@(#)dcm.c	8.5 (Berkeley) 01/09/95
  */
 
 /*
@@ -725,7 +725,7 @@ dcmmint(unit, mcnd, dcm)
 
 dcmioctl(dev, cmd, data, flag, p)
 	dev_t dev;
-	int cmd;
+	u_long cmd;
 	caddr_t data;
 	int flag;
 	struct proc *p;
