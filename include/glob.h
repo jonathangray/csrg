@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)glob.h	5.3 (Berkeley) 02/22/91
+ *	@(#)glob.h	5.4 (Berkeley) 03/07/91
  */
 
 typedef struct {
@@ -61,6 +61,6 @@ typedef struct {
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-int glob __P((const char *, int, const int (*)(char *, int), glob_t *));
+int glob __P((const char *, int, int (*)(char *, int), glob_t *));
 void globfree __P((glob_t *));
 __END_DECLS
