@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)vacation.c	5.20 (Berkeley) 09/23/91";
+static char sccsid[] = "@(#)vacation.c	5.21 (Berkeley) 02/19/93";
 #endif /* not lint */
 
 /*
@@ -217,7 +217,8 @@ char **shortp;
 			if (!*p)
 				break;
 			if (!strncasecmp(p, "junk", 4) ||
-			    !strncasecmp(p, "bulk", 4))
+			    !strncasecmp(p, "bulk", 4) ||
+			    !strncasecmp(p, "list", 4))
 				exit(0);
 			break;
 		case 'C':		/* "Cc:" */
@@ -251,7 +252,7 @@ findme:			for (cur = names; !tome && cur; cur = cur->next)
 
 /*
  * junkmail --
- *	read the header and return if automagic/junk/bulk mail
+ *	read the header and return if automagic/junk/bulk/list mail
  */
 junkmail()
 {
