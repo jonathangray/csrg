@@ -21,7 +21,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)wd.c	5.2 (Berkeley) 06/23/90
+ *	@(#)wd.c	5.3 (Berkeley) 11/08/90
  */
 
 #include "wd.h"
@@ -426,7 +426,7 @@ wdintr()
 		return;
 	}
 
-#ifdef	WDDEBUGx
+#ifdef	WDDEBUG
 	dprintf(DDSK,"I ");
 #endif
 	dp = wdtab.b_actf;
@@ -546,7 +546,6 @@ wdopen(dev, flags)
 	int i, error = 0;
 
 	unit = WDUNIT(dev);
-/*dprintf(DDSK,"wdopen %x\n",unit);*/
 	if (unit >= NWD) return (ENXIO) ;
 	du = &wddrives[unit];
 	if (du->dk_open){
@@ -574,7 +573,7 @@ wdopen(dev, flags)
 	 * during first read operation.
 	 */
 	bp = geteblk(512);
-	bp->b_dev = dev;
+	bp->b_dev = dev & 0xff00;
 	bp->b_blkno = bp->b_bcount = 0;
 	bp->b_flags = B_READ;
 	wdstrategy(bp);
@@ -648,7 +647,6 @@ wdcontrol(bp)
 	int s, cnt;
 	extern int bootdev, cyloffset;
 
-	cyloffset=0;
 	du = &wddrives[WDUNIT(bp->b_dev)];
 	unit = du->dk_unit;
 	switch (DISKSTATE(du->dk_state)) {
