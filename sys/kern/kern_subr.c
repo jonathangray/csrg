@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 1982, 1986, 1991 Regents of the University of California.
- * All rights reserved. 
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_subr.c	7.7 (Berkeley) 04/15/91
+ *	@(#)kern_subr.c	7.8 (Berkeley) 02/14/92
  */
 
 #include "param.h"
@@ -45,7 +45,6 @@ uiomove(cp, n, uio)
 	register struct iovec *iov;
 	u_int cnt;
 	int error = 0;
-
 
 #ifdef DIAGNOSTIC
 	if (uio->uio_rw != UIO_READ && uio->uio_rw != UIO_WRITE)
@@ -138,17 +137,17 @@ strcat(src, append)
 {
 
 	for (; *src; ++src)
-		;
+		continue;
 	while (*src++ = *append++)
-		;
+		continue;
 }
 
 strcpy(to, from)
 	register char *to, *from;
 {
 
-	for (; *from = *to; ++from, ++to)
-		;
+	for (; *to = *from; ++from, ++to)
+		continue;
 }
 
 strncpy(to, from, cnt)
@@ -157,11 +156,11 @@ strncpy(to, from, cnt)
 {
 
 	for (; cnt && (*to = *from); --cnt, ++from, ++to)
-		;
+		continue;
 	*to = '\0';
 }
 
-#ifndef lint	/* unused except by ct.c, other oddities XXX */
+#ifdef vax	/* unused except by ct.c, other oddities XXX */
 /*
  * Get next character written in by user from uio.
  */
@@ -205,4 +204,4 @@ again:
 	uio->uio_offset++;
 	return (c);
 }
-#endif /* notdef */
+#endif /* vax */
