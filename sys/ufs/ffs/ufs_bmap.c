@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_bmap.c	7.2 (Berkeley) 12/09/92
+ *	@(#)ufs_bmap.c	7.3 (Berkeley) 02/02/93
  */
 
 #include <sys/param.h>
@@ -172,7 +172,7 @@ ufs_bmaparray(vp, bn, bnp, ap, nump, runp)
 			brelse(bp);
 
 		xap->in_exists = 1;
-		bp = getblk(vp, metalbn, mp->mnt_stat.f_iosize);
+		bp = getblk(vp, metalbn, mp->mnt_stat.f_iosize, 0, 0);
 		if (bp->b_flags & (B_DONE | B_DELWRI)) {
 			trace(TR_BREADHIT, pack(vp, size), metalbn);
 		}
