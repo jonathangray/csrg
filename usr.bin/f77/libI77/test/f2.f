@@ -1,3 +1,14 @@
+C
+C Copyright (c) 1983 The Regents of the University of California.
+C All rights reserved.
+C
+C This module is believed to contain source code proprietary to AT&T.
+C Use and redistribution is subject to the Berkeley Software License
+C Agreement and your Software Agreement with AT&T (Western Electric).
+C
+C	@(#)f2.f	5.2 (Berkeley) 04/12/91
+C
+
 C From aho@ Tue Aug 23 13:07:25 1983
 C Date: Tue, 23 Aug 83 13:04:19 PDT
 C From: aho@@ (Alan Hopkins)
