@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cache.c	7.2 (Berkeley) 07/21/92
+ *	@(#)cache.c	7.3 (Berkeley) 10/11/92
  *
  * from: $Header: cache.c,v 1.5 92/06/17 05:21:56 torek Exp $ (LBL)
  */
@@ -48,13 +48,13 @@
  * Cache routines.
  */
 
-#include "param.h"
+#include <sys/param.h>
 
-#include "machine/pte.h"
+#include <machine/pte.h>
 
-#include "asm.h"
-#include "cache.h"
-#include "ctlreg.h"
+#include <sparc/sparc/asm.h>
+#include <sparc/sparc/cache.h>
+#include <sparc/sparc/ctlreg.h>
 
 enum vactype vactype;
 
