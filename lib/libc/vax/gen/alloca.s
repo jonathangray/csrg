@@ -1,25 +1,49 @@
 /*-
- * Copyright (c) 1983 The Regents of the University of California.
+ * Copyright (c) 1991 The Regents of the University of California.
  * All rights reserved.
  *
- * This module is believed to contain source code proprietary to AT&T.
- * Use and redistribution is subject to the Berkeley Software License
- * Agreement and your Software Agreement with AT&T (Western Electric).
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-	.asciz "@(#)alloca.s	5.4 (Berkeley) 04/12/91"
+	.asciz "@(#)alloca.s	5.5 (Berkeley) 04/18/91"
 #endif /* LIBC_SCCS and not lint */
-
-/* like alloc, but automatic free in return */
 
 #include "DEFS.h"
 
 ENTRY(alloca, 0)
-	subl2	4(ap),sp	/* crude allocation */
-	movl	16(fp),r1	/* pc */
-	movq	8(fp),ap	/* new (old) ap and fp */
-	bicl2	$3,sp		/* 4-byte align */
-	addl2	$7*4,sp		/* reuse space of mscp */
-	movl	sp,r0		/* return value */
-	jmp 	(r1)		/* funny return */
+	movl	4(ap),r0	# get allocation size
+	movl	16(fp),r2	# save return address before we smash it
+	movab	here,16(fp)
+	ret
+here:
+	subl2	r0,sp		# create stack space
+	bicl2	$3,sp		# align to longword boundary
+	movl	sp,r0
+	jmp	(r2)
