@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.6 (Berkeley) 07/19/93";
+static char sccsid[] = "@(#)main.c	8.7 (Berkeley) 07/19/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -262,9 +262,13 @@ main(argc, argv, envp)
 	*/
 	nothaw = FALSE;
 #if defined(__osf__) || defined(_AIX3)
-#define OPTIONS		"B:b:C:cd:e:F:f:h:Iimno:p:q:r:sTtvX:x"
+# define OPTIONS	"B:b:C:cd:e:F:f:h:Iimno:p:q:r:sTtvX:x"
 #else
-#define OPTIONS		"B:b:C:cd:e:F:f:h:Iimno:p:q:r:sTtvX:"
+# if defined(ultrix)
+#  define OPTIONS	"B:b:C:cd:e:F:f:h:IiM:mno:p:q:r:sTtvX:"
+# else
+#  define OPTIONS	"B:b:C:cd:e:F:f:h:Iimno:p:q:r:sTtvX:"
+# endif
 #endif
 	while ((j = getopt(argc, argv, OPTIONS)) != EOF)
 	{
@@ -594,6 +598,9 @@ main(argc, argv, envp)
 			break;
 
 		  case 'e':	/* error message disposition */
+# if defined(ultrix)
+		  case 'M':	/* define macro */
+# endif
 			setoption(j, optarg, FALSE, TRUE, CurEnv);
 			break;
 
