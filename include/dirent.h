@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dirent.h	8.1 (Berkeley) 06/02/93
+ *	@(#)dirent.h	5.20 (Berkeley) 06/08/93
  */
 
 #ifndef _DIRENT_H_
@@ -59,6 +59,7 @@ typedef struct _dirdesc {
 	char	*dd_buf;	/* data buffer */
 	int	dd_len;		/* size of data buffer */
 	long	dd_seek;	/* magic cookie returned by getdirentries */
+	long	dd_rewind;	/* magic cookie for rewinding */
 } DIR;
 
 #define	dirfd(dirp)	((dirp)->dd_fd)
