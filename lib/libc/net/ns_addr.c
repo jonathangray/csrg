@@ -2,6 +2,9 @@
  * Copyright (c) 1986 Regents of the University of California.
  * All rights reserved.
  *
+ * This code is derived from software contributed to Berkeley by
+ * J.Q. Johnson.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -29,13 +32,10 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- *
- * This code is derived from software contributed to Berkeley by
- * J.Q. Johnson at Cornell University.
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)ns_addr.c	6.5 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)ns_addr.c	6.6 (Berkeley) 06/06/90";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
