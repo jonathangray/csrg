@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)doc-syms	5.6 (Berkeley) 08/05/91
+.\"     @(#)doc-syms	5.7 (Berkeley) 08/06/91
 .\"
 .\"     %beginstrip%
 .\" NS Ux macro - UNIX
@@ -119,7 +119,7 @@
 .de Ud
 \&currently under development.
 ..
-.\" Ns At macro - AT&T UNIX
+.\" Ns At macro - AT&T UNIX (this macro does not handle punctuation)
 .de At
 .nr cF \\n(.f
 .nr cZ \\n(.s
@@ -139,6 +139,9 @@
 .	if "\\$1"V"  \&\\*(tNAT&T\\*(aa System V \\*(tNUNIX\\*(aa
 .	if "\\$1"V.1"  \&\\*(tNAT&T\\*(aa System V.1 \\*(tNUNIX\\*(aa
 .	if "\\$1"V.4"  \&\\*(tNAT&T\\*(aa System V.4 \\*(tNUNIX\\*(aa
+.\}
+.if \\n(.$==0 \{\
+\&\\*(tNAT&T UNIX\\*(aa
 .\}
 ..
 .\" The Bt macro should go away now
