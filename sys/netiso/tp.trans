@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp.trans	7.19 (Berkeley) 05/27/92
+ *	@(#)tp.trans	7.20 (Berkeley) 09/21/92
  */
 
 /***********************************************************
@@ -85,8 +85,9 @@ SOFTWARE.
 
 *INCLUDE
 {
-/* @(#)tp.trans	7.19 (Berkeley) 05/27/92 */
+/* @(#)tp.trans	7.20 (Berkeley) 09/21/92 */
 #include "param.h"
+#include "systm.h"
 #include "socket.h"
 #include "socketvar.h"
 #include "protosw.h"
