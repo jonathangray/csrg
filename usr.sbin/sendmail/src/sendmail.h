@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	6.16 (Berkeley) 02/21/93
+ *	@(#)sendmail.h	6.17 (Berkeley) 02/21/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	6.16		02/21/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	6.17		02/21/93";
 # endif lint
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -188,7 +188,7 @@ typedef struct mailer	MAILER;
 # define M_HST_UPPER	'h'	/* preserve host case distinction */
 		/*	'H'	/* UIUC: MAIL11V3: preview headers */
 # define M_INTERNAL	'I'	/* SMTP to another sendmail site */
-# define M_LOCAL	'l'	/* delivery is to this host */
+# define M_LOCALMAILER	'l'	/* delivery is to this host */
 # define M_LIMITS	'L'	/* must enforce SMTP line limits */
 # define M_MUSER	'm'	/* can handle multiple users at once */
 		/*	'M'	/* CF: include Message-Id: */
