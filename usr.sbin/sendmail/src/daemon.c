@@ -3,7 +3,7 @@
 # include <sys/mx.h>
 
 #ifndef DAEMON
-SCCSID(@(#)daemon.c	3.42		01/04/83	(w/o daemon mode));
+SCCSID(@(#)daemon.c	3.43		01/06/83	(w/o daemon mode));
 #else
 
 #include <sys/socket.h>
@@ -11,7 +11,7 @@ SCCSID(@(#)daemon.c	3.42		01/04/83	(w/o daemon mode));
 #include <netdb.h>
 #include <wait.h>
 
-SCCSID(@(#)daemon.c	3.42		01/04/83	(with daemon mode));
+SCCSID(@(#)daemon.c	3.43		01/06/83	(with daemon mode));
 
 /*
 **  DAEMON.C -- routines to use when running as a daemon.
@@ -76,7 +76,7 @@ getrequests()
 	if (sp == NULL)
 	{
 		syserr("server \"smtp\" unknown");
-		return (-1);
+		goto severe;
 	}
 	SendmailAddress.sin_family = AF_INET;
 	SendmailAddress.sin_addr.s_addr = INADDR_ANY;
