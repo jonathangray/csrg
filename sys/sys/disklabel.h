@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)disklabel.h	7.21 (Berkeley) 11/04/91
+ *	@(#)disklabel.h	7.22 (Berkeley) 11/10/92
  */
 
 /*
@@ -219,6 +219,9 @@ static char *dktypenames[] = {
 #define	FS_BSDFFS	7		/* 4.2BSD fast file system */
 #define	FS_MSDOS	8		/* MSDOS file system */
 #define	FS_BSDLFS	9		/* 4.4BSD log-structured file system */
+#define	FS_OTHER	10		/* in use, but unknown/unsupported */
+#define	FS_HPFS		11		/* OS/2 high-performance file system */
+#define	FS_ISO9660	12		/* ISO 9660, normally CD-ROM */
 
 #ifdef	DKTYPENAMES
 static char *fstypenames[] = {
@@ -232,6 +235,9 @@ static char *fstypenames[] = {
 	"4.2BSD",
 	"MSDOS",
 	"4.4LFS",
+	"unknown",
+	"HPFS",
+	"ISO9660",
 	0
 };
 #define FSMAXTYPES	(sizeof(fstypenames) / sizeof(fstypenames[0]) - 1)
