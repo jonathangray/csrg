@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_subr2.c	7.12 (Berkeley) 07/29/91
+ *	@(#)tp_subr2.c	7.13 (Berkeley) 09/03/91
  */
 
 /***********************************************************
@@ -299,7 +299,8 @@ struct tp_pcb *tpcb;
 	tpcb->tp_seqhalf = tpcb->tp_seqbit >> 1;
 	tpcb->tp_dt_ticks =
 		MAX(tpcb->tp_dt_ticks, (tpcb->tp_peer_acktime + 2));
-
+	(void) tp_rsyset(tpcb);
+	
 }
 
 /*
