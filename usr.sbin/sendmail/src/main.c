@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	6.55 (Berkeley) 04/14/93";
+static char sccsid[] = "@(#)main.c	6.56 (Berkeley) 04/15/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -249,9 +249,9 @@ main(argc, argv, envp)
 	*/
 	nothaw = FALSE;
 #ifdef __osf__
-#define OPTIONS		"b:C:cd:e:F:f:h:Iimno:p:q:r:sTtvx"
+#define OPTIONS		"B:b:C:cd:e:F:f:h:Iimno:p:q:r:sTtvx"
 #else
-#define OPTIONS		"b:C:cd:e:F:f:h:Iimno:p:q:r:sTtv"
+#define OPTIONS		"B:b:C:cd:e:F:f:h:Iimno:p:q:r:sTtv"
 #endif
 	while ((j = getopt(argc, argv, OPTIONS)) != EOF)
 	{
@@ -453,6 +453,10 @@ main(argc, argv, envp)
 				ExitStat = EX_USAGE;
 				break;
 			}
+			break;
+
+		  case 'B':	/* body type */
+			CurEnv->e_bodytype = newstr(optarg);
 			break;
 
 		  case 'C':	/* select configuration file (already done) */
