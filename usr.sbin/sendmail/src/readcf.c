@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	5.45 (Berkeley) 07/20/92";
+static char sccsid[] = "@(#)readcf.c	5.46 (Berkeley) 09/09/92";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -927,8 +927,8 @@ setoption(opt, val, sticky)
 
 	  case 'k':		/* connection cache size */
 		MaxMciCache = atoi(val);
-		if (MaxMciCache <= 0)
-			MaxMciCache = 1;
+		if (MaxMciCache < 0)
+			MaxMciCache = 0;
 		break;
 
 	  case 'K':		/* connection cache timeout */
