@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.41 (Berkeley) 10/17/93
+ *	@(#)conf.h	8.42 (Berkeley) 10/21/93
  */
 
 /*
@@ -284,6 +284,24 @@ typedef int		pid_t;
 
 #ifdef BSD4_4
 # define HASUNSETENV	1	/* has unsetenv(3) call */
+# define HASSTATFS	1	/* has the statfs(2) syscall */
+# include <sys/cdefs.h>
+# define ERRLIST_PREDEFINED	/* don't declare sys_errlist */
+# ifndef LA_TYPE
+#  define LA_TYPE	LA_SUBR
+# endif
+#endif
+
+
+/*
+**  386BSD / FreeBSD 1.0E (works) / NetBSD (not tested)
+**
+**  4.3BSD clone, closer to 4.4BSD
+*/
+
+#ifdef __386BSD__
+# define HASUNSETENV	1	/* has unsetenv(3) call */
+# define HASSETSID	1	/* has the setsid(2) POSIX syscall */
 # define HASSTATFS	1	/* has the statfs(2) syscall */
 # include <sys/cdefs.h>
 # define ERRLIST_PREDEFINED	/* don't declare sys_errlist */
