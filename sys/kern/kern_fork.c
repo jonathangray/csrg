@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_fork.c	7.31 (Berkeley) 11/19/91
+ *	@(#)kern_fork.c	7.32 (Berkeley) 02/14/92
  */
 
 #include "param.h"
@@ -49,7 +49,7 @@
 /* ARGSUSED */
 fork(p, uap, retval)
 	struct proc *p;
-	void *uap;
+	struct args *uap;
 	int retval[];
 {
 
@@ -59,7 +59,7 @@ fork(p, uap, retval)
 /* ARGSUSED */
 vfork(p, uap, retval)
 	struct proc *p;
-	void *uap;
+	struct args *uap;
 	int retval[];
 {
 
@@ -155,6 +155,7 @@ again:
 	 */
 	MALLOC(p2, struct proc *, sizeof(struct proc), M_PROC, M_WAITOK);
 	nprocs++;
+	p2->p_stat = SIDL;			/* protect against others */
 	p2->p_nxt = allproc;
 	p2->p_nxt->p_prev = &p2->p_nxt;		/* allproc is never NULL */
 	p2->p_prev = &allproc;
@@ -206,7 +207,6 @@ again:
 		p2->p_flag |= SCTTY;
 	if (isvfork)
 		p2->p_flag |= SPPWAIT;
-	p2->p_stat = SIDL;
 	p2->p_pid = nextpid;
 	{
 	struct proc **hash = &pidhash[PIDHASH(p2->p_pid)];
