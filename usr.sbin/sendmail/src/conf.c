@@ -1832,6 +1832,8 @@ solaris_gethostbyname(name)
 
 	return _switch_gethostbyname_r(name, &hp, buf, sizeof(buf), &h_errno);
 # else
+	extern struct hostent *__switch_gethostbyname();
+
 	return __switch_gethostbyname(name);
 # endif
 }
@@ -1849,6 +1851,8 @@ solaris_gethostbyaddr(addr, len, type)
 
 	return _switch_gethostbyaddr_r(addr, len, type, &hp, buf, sizeof(buf), &h_errno);
 # else
+	extern struct hostent *__switch_gethostbyaddr();
+
 	return __switch_gethostbyaddr(addr, len, type);
 # endif
 }
