@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_subr.c	7.18 (Berkeley) 06/28/90
+ *	@(#)tcp_subr.c	7.19 (Berkeley) 07/25/90
  */
 
 #include "param.h"
@@ -139,7 +139,8 @@ tcp_respond(tp, ti, m, ack, seq, flags)
 	tcp_seq ack, seq;
 	int flags;
 {
-	int win = 0, tlen;
+	register int tlen;
+	int win = 0;
 	struct route *ro = 0;
 
 	if (tp) {
@@ -170,10 +171,13 @@ tcp_respond(tp, ti, m, ack, seq, flags)
 		xchg(ti->ti_dport, ti->ti_sport, u_short);
 #undef xchg
 	}
-	m->m_len = sizeof (struct tcpiphdr) + tlen;
+	ti->ti_len = htons((u_short)(sizeof (struct tcphdr) + tlen));
+	tlen += sizeof (struct tcpiphdr);
+	m->m_len = tlen;
+	m->m_pkthdr.len = tlen;
+	m->m_pkthdr.rcvif = (struct ifnet *) 0;
 	ti->ti_next = ti->ti_prev = 0;
 	ti->ti_x1 = 0;
-	ti->ti_len = htons((u_short)(sizeof (struct tcphdr) + tlen));
 	ti->ti_seq = htonl(seq);
 	ti->ti_ack = htonl(ack);
 	ti->ti_x2 = 0;
@@ -181,8 +185,8 @@ tcp_respond(tp, ti, m, ack, seq, flags)
 	ti->ti_flags = flags;
 	ti->ti_win = htons((u_short)win);
 	ti->ti_urp = 0;
-	ti->ti_sum = in_cksum(m, sizeof (struct tcpiphdr) + tlen);
-	((struct ip *)ti)->ip_len = sizeof (struct tcpiphdr) + tlen;
+	ti->ti_sum = in_cksum(m, tlen);
+	((struct ip *)ti)->ip_len = tlen;
 	((struct ip *)ti)->ip_ttl = tcp_ttl;
 	(void) ip_output(m, (struct mbuf *)0, ro, 0);
 }
