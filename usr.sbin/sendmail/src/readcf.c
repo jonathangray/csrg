@@ -1,6 +1,6 @@
 # include "sendmail.h"
 
-SCCSID(@(#)readcf.c	4.12		05/24/85);
+SCCSID(@(#)readcf.c	4.13		06/02/85);
 
 /*
 **  READCF -- read control file.
