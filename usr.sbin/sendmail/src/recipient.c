@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recipient.c	8.95 (Berkeley) 06/15/95";
+static char sccsid[] = "@(#)recipient.c	8.96 (Berkeley) 06/15/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -447,7 +447,8 @@ recipient(a, sendq, aliaslevel, e)
 	}
 
 	/* try aliasing */
-	if (!bitset(QDONTSEND, a->q_flags) && bitnset(M_ALIASABLE, m->m_flags))
+	if (!quoted && !bitset(QDONTSEND, a->q_flags) &&
+	    bitnset(M_ALIASABLE, m->m_flags))
 		alias(a, sendq, aliaslevel, e);
 
 # if USERDB
