@@ -33,17 +33,17 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)scsi.c	7.2 (Berkeley) 03/29/92
+ *	@(#)scsi.c	7.3 (Berkeley) 10/11/92
  */
 
 /*
  * SCSI utility routines for making SCSI device drivers easier.
  */
 
-#include "param.h"
+#include <sys/param.h>
 
-#include "device.h"
-#include "scsi.h"
+#include <mips/dev/device.h>
+#include <mips/dev/scsi.h>
 
 /*
  * The error codes for class 0-6 sense data are class specific.
