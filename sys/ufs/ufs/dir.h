@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dir.h	8.3 (Berkeley) 07/08/94
+ *	@(#)dir.h	8.4 (Berkeley) 08/10/94
  */
 
 #ifndef _DIR_H_
@@ -88,6 +88,7 @@ struct	direct {
 #define	DT_REG		 8
 #define	DT_LNK		10
 #define	DT_SOCK		12
+#define	DT_WHT		14
 
 /*
  * Convert between stat structure types and directory types.
