@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_le.c	7.11 (Berkeley) 05/29/93
+ *	@(#)if_le.c	8.1 (Berkeley) 06/10/93
  */
 
 #include <le.h>
