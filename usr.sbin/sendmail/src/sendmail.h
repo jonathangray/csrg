@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.138 (Berkeley) 05/30/95
+ *	@(#)sendmail.h	8.139 (Berkeley) 06/10/95
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.138		05/30/95";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.139		06/10/95";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -1054,6 +1054,8 @@ EXTERN time_t	DialDelay;	/* delay between dial-on-demand tries */
 EXTERN char	*SafeFileEnv;	/* chroot location for file delivery */
 EXTERN char	*HostsFile;	/* path to /etc/hosts file */
 EXTERN int	MaxQueueRun;	/* maximum number of jobs in one queue run */
+EXTERN int	MaxChildren;	/* maximum number of daemonic children */
+EXTERN int	CurChildren;	/* current number of daemonic children */
 EXTERN char	*ServiceSwitchFile;	/* backup service switch */
 EXTERN char	*DefaultCharSet;	/* default character set for MIME */
 EXTERN int	DeliveryNiceness;	/* how nice to be during delivery */
