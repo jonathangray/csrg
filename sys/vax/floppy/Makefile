@@ -1,4 +1,4 @@
-#	Makefile	6.5	86/03/12
+#	Makefile	7.1	86/06/05
 #
 # Make a 780 rx01 floppy
 # 
