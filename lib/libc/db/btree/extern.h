@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.3 (Berkeley) 10/09/92
+ *	@(#)extern.h	5.4 (Berkeley) 11/13/92
  */
 
 int	 __bt_close __P((DB *));
@@ -48,7 +48,7 @@ DB	*__bt_open __P((const char *, int, int, const BTREEINFO *));
 void	 __bt_pgin __P((void *, pgno_t, void *));
 void	 __bt_pgout __P((void *, pgno_t, void *));
 int	 __bt_push __P((BTREE *, pgno_t, int));
-int	 __bt_put __P((const DB *dbp, const DBT *, const DBT *, u_int));
+int	 __bt_put __P((const DB *dbp, DBT *, const DBT *, u_int));
 int	 __bt_ret __P((BTREE *, EPG *, DBT *, DBT *));
 EPG	*__bt_search __P((BTREE *, const DBT *, int *));
 int	 __bt_seq __P((const DB *, DBT *, DBT *, u_int));
