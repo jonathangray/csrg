@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_prot.c	7.17 (Berkeley) 01/10/91
+ *	@(#)kern_prot.c	7.18 (Berkeley) 02/06/91
  */
 
 /*
@@ -426,7 +426,10 @@ groupmember(gid, cred)
 }
 
 /*
- * Test if the current user is the super user.
+ * Test whether the specified credentials imply "super-user"
+ * privilege; if so, and we have accounting info, set the flag
+ * indicating use of super-powers.
+ * Returns 0 or error.
  */
 suser(cred, acflag)
 	struct ucred *cred;
