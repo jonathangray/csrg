@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)find.h	5.7 (Berkeley) 05/23/91
+ *	@(#)find.h	5.8 (Berkeley) 05/24/91
  */
 
 /* node type */
@@ -83,9 +83,4 @@ typedef struct _plandata {
 #define	e_len	p_un.ex._e_len
 } PLAN;
 
-#define	error(name, number) \
-	(void)fprintf(stderr, "find: %s: %s\n", name, strerror(number));
-
-extern int ftsoptions;
-extern int isdeprecated, isdepth, isoutput, isrelative, isxargs;
-void *emalloc();
+#include "extern.h"
