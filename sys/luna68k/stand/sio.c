@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sio.c	7.1 (Berkeley) 12/13/92
+ *	@(#)sio.c	7.2 (Berkeley) 01/20/93
  */
 
 /* sio.c   NOV-25-1991 */
@@ -83,12 +83,8 @@ siointr(unit)
 		if (unit == 1) {
 			register int c = kbd_decode(sio_addr[unit]->sio_data);
 
-			if ((c & KC_TYPE) == 0) {
-				if (isprint(c))
-					PUSH_RBUF(unit, c);
-				else
-					PUSH_RBUF(unit, ' ');
-			}
+			if ((c & KC_TYPE) == KC_CODE)
+				PUSH_RBUF(unit, c);
 		} else {
 			PUSH_RBUF(unit, sio_addr[unit]->sio_data);
 		}
