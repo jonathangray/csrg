@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)syslogd.c	5.44 (Berkeley) 09/30/90";
+static char sccsid[] = "@(#)syslogd.c	5.45 (Berkeley) 03/02/91";
 #endif /* not lint */
 
 /*
@@ -625,7 +625,8 @@ fprintlog(f, flags, msg)
 		    iov[0].iov_base, iov[4].iov_base);
 		if (l > MAXLINE)
 			l = MAXLINE;
-		if (sendto(finet, line, l, 0, &f->f_un.f_forw.f_addr,
+		if (sendto(finet, line, l, 0,
+		    (struct sockaddr *)&f->f_un.f_forw.f_addr,
 		    sizeof f->f_un.f_forw.f_addr) != l) {
 			int e = errno;
 			(void) close(f->f_file);
@@ -745,7 +746,7 @@ reapchild()
 {
 	union wait status;
 
-	while (wait3(&status, WNOHANG, (struct rusage *) NULL) > 0)
+	while (wait3((int *)&status, WNOHANG, (struct rusage *) NULL) > 0)
 		;
 }
 
@@ -766,7 +767,8 @@ cvthname(f)
 		dprintf("Malformed from address\n");
 		return ("???");
 	}
-	hp = gethostbyaddr(&f->sin_addr, sizeof(struct in_addr), f->sin_family);
+	hp = gethostbyaddr((char *)&f->sin_addr,
+	    sizeof(struct in_addr), f->sin_family);
 	if (hp == 0) {
 		dprintf("Host name for your address (%s) unknown\n",
 			inet_ntoa(f->sin_addr));
