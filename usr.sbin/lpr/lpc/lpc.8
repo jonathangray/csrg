@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)lpc.8	8.1 (Berkeley) 06/06/93
+.\"     @(#)lpc.8	8.2 (Berkeley) 12/11/93
 .\"
 .Dd 
 .Dt LPC 8
@@ -60,7 +60,7 @@ disable or enable a printer's spooling queue,
 rearrange the order of jobs in a spooling queue,
 .It
 find the status of printers, and their associated
-spooling queues and printer dameons.
+spooling queues and printer daemons.
 .El
 .Pp
 Without any arguments,
@@ -80,7 +80,7 @@ the following is the list of recognized commands.
 .It Ic \&? No [ command ... ]
 .It Ic help No [ command ... ]
 Print a short description of each command specified in the argument list,
-or, if no arguments are given, a list of the recognized commands.
+or, if no argument is given, a list of the recognized commands.
 .Pp
 .It Ic abort  No {\ all\ |\ printer\ }
 Terminate an active spooling daemon on the local host immediately and
@@ -121,7 +121,7 @@ Exit from lpc.
 .It Ic restart  No {\ all\ |\ printer\ }
 Attempt to start a new printer daemon. 
 This is useful when some abnormal condition causes the daemon to
-die unexpectedly leaving jobs in the queue.
+die unexpectedly, leaving jobs in the queue.
 .Xr Lpq
 will report that there is no daemon present when this condition occurs. 
 If the user is the super-user,
