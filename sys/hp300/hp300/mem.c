@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: mem.c 1.14 90/10/12$
  *
- *	@(#)mem.c	8.3 (Berkeley) 01/12/94
+ *	@(#)mem.c	8.4 (Berkeley) 04/12/95
  */
 
 /*
@@ -52,10 +52,7 @@
 
 #include <machine/cpu.h>
 
-#include <vm/vm_param.h>
-#include <vm/lock.h>
-#include <vm/vm_prot.h>
-#include <vm/pmap.h>
+#include <vm/vm.h>
 
 extern u_int lowram;
 caddr_t zeropage;
