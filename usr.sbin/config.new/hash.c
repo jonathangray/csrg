@@ -39,9 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hash.c	5.1 (Berkeley) 01/12/93
- *
- * from: $Header: hash.c,v 1.2 93/01/12 03:57:57 torek Exp $
+ *	@(#)hash.c	5.2 (Berkeley) 04/18/93
  */
 
 #include <sys/param.h>
