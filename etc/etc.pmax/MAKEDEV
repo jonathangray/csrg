@@ -31,7 +31,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)MAKEDEV	5.2 (Berkeley) 04/19/92
+#	@(#)MAKEDEV	5.3 (Berkeley) 03/27/93
 #
 
 # Device "make" file.  Valid arguments:
@@ -143,8 +143,8 @@ dc*)
 	unit=`expr $i : 'dc\(.*\)'`
 	case $unit in
 	0)
-		mknod tty0 c 0 2
-		mknod tty1 c 0 3
+		mknod tty0 c 16 2
+		mknod tty1 c 16 3
 		;;
 	*)
 		echo bad unit for dc in: $i
