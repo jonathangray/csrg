@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_balloc.c	8.3 (Berkeley) 09/21/93
+ *	@(#)ffs_balloc.c	8.4 (Berkeley) 09/23/93
  */
 
 #include <sys/param.h>
@@ -93,7 +93,7 @@ ffs_balloc(ip, bn, size, cred, bpp, flags)
 			ip->i_size = (nb + 1) * fs->fs_bsize;
 			vnode_pager_setsize(vp, (u_long)ip->i_size);
 			ip->i_db[nb] = dbtofsb(fs, bp->b_blkno);
-			ip->i_flag |= IUPDATE | ICHANGE;
+			ip->i_flag |= IN_CHANGE | IN_UPDATE;
 			if (flags & B_SYNC)
 				bwrite(bp);
 			else
@@ -149,7 +149,7 @@ ffs_balloc(ip, bn, size, cred, bpp, flags)
 				clrbuf(bp);
 		}
 		ip->i_db[bn] = dbtofsb(fs, bp->b_blkno);
-		ip->i_flag |= IUPDATE | ICHANGE;
+		ip->i_flag |= IN_CHANGE | IN_UPDATE;
 		*bpp = bp;
 		return (0);
 	}
@@ -186,7 +186,7 @@ ffs_balloc(ip, bn, size, cred, bpp, flags)
 			return (error);
 		}
 		ip->i_ib[indirs[0].in_off] = newb;
-		ip->i_flag |= IUPDATE | ICHANGE;
+		ip->i_flag |= IN_CHANGE | IN_UPDATE;
 	}
 	/*
 	 * Fetch through the indirect blocks, allocating as necessary.
