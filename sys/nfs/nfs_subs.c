@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_subs.c	7.56 (Berkeley) 07/02/92
+ *	@(#)nfs_subs.c	7.57 (Berkeley) 07/03/92
  */
 
 /*
@@ -1010,7 +1010,6 @@ nfsrv_fhtovp(fhp, lockflag, vpp, cred, slp, nam, rdonlyp)
 	struct mbuf *nam;
 	int *rdonlyp;
 {
-	USES_VOP_UNLOCK;
 	register struct mount *mp;
 	register struct netaddrhash *np;
 	register struct ufsmount *ump;
