@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.9 (Berkeley) 07/01/90
+#	@(#)Makefile	5.10 (Berkeley) 02/09/91
 
 MAN8=	adduser.0 intro.0 makedev.0 rc.0 sticky.0
 SUBDIR=	man8.hp300 man8.vax
