@@ -7,7 +7,7 @@
 # include <syslog.h>
 # endif LOG
 
-static char	SccsId[] = "@(#)main.c	3.3	03/07/81";
+static char	SccsId[] = "@(#)main.c	3.4	03/07/81";
 
 /*
 **  POSTBOX -- Post mail to a set of destinations.
@@ -154,6 +154,7 @@ main(argc, argv)
 	extern char *Macro[];
 	extern char *index();
 	extern char *strcpy(), *strcat();
+	extern char *makemsgid();
 	bool canrename;
 
 	if (signal(SIGINT, SIG_IGN) != SIG_IGN)
