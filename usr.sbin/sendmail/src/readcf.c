@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	5.46 (Berkeley) 09/09/92";
+static char sccsid[] = "@(#)readcf.c	5.47 (Berkeley) 11/04/92";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -227,6 +227,8 @@ readcf(cfname)
 			rwp->r_lhs = prescan(exbuf, '\t', pvpbuf);
 			if (rwp->r_lhs != NULL)
 				rwp->r_lhs = copyplist(rwp->r_lhs, TRUE);
+			else
+				syserr("R line: null LHS");
 
 			/* expand and save the RHS */
 			while (*++p == '\t')
@@ -239,6 +241,8 @@ readcf(cfname)
 			rwp->r_rhs = prescan(exbuf, '\t', pvpbuf);
 			if (rwp->r_rhs != NULL)
 				rwp->r_rhs = copyplist(rwp->r_rhs, TRUE);
+			else
+				syserr("R line: null RHS");
 			break;
 
 		  case 'S':		/* select rewriting set */
