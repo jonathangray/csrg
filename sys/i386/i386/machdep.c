@@ -21,7 +21,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)machdep.c	5.5 (Berkeley) 11/25/90
+ *	@(#)machdep.c	5.6 (Berkeley) 01/15/91
  */
 
 #include "param.h"
