@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)w.c	5.32 (Berkeley) 04/03/92";
+static char sccsid[] = "@(#)w.c	5.33 (Berkeley) 05/20/92";
 #endif /* not lint */
 
 #define ADDRHACK
@@ -59,6 +59,7 @@ static char sccsid[] = "@(#)w.c	5.32 (Berkeley) 04/03/92";
 #include <sys/ioctl.h>
 #include <sys/tty.h>
 #include <ctype.h>
+#include <errno.h>
 #include <kvm.h>
 #include <nlist.h>
 #include <stdio.h>
@@ -201,6 +202,10 @@ main(argc, argv)
 #endif
 	time(&now);
 	ut = fopen(_PATH_UTMP, "r");
+	if (ut == NULL) {
+		error("%s: %s", _PATH_UTMP, strerror(errno));
+		exit(1);
+	}
 	while (fread(&utmp, sizeof(utmp), 1, ut)) {
 		if (utmp.ut_name[0] == '\0')
 			continue;
