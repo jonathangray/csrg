@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	6.44 (Berkeley) 03/16/93";
+static char sccsid[] = "@(#)deliver.c	6.45 (Berkeley) 03/16/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1819,7 +1819,7 @@ sendenvelope(e, mode)
 			exit(EX_OK);
 
 		/* be sure we are immune from the terminal */
-		disconnect(FALSE);
+		disconnect(FALSE, e);
 
 # ifdef LOCKF
 		/*
