@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dca.c	7.2 (Berkeley) 05/25/90
+ *	@(#)dca.c	7.3 (Berkeley) 06/06/90
  */
 
 #include "dca.h"
@@ -185,8 +185,9 @@ dcaopen(dev, flag)
 	while (!(flag&O_NONBLOCK) && !(tp->t_cflag&CLOCAL) &&
 	       (tp->t_state & TS_CARR_ON) == 0) {
 		tp->t_state |= TS_WOPEN;
-		if (error = tsleep((caddr_t)&tp->t_rawq, TTIPRI | PCATCH,
-				   ttopen, 0)) {
+		if ((error = tsleep((caddr_t)&tp->t_rawq, TTIPRI | PCATCH,
+				   ttopen, 0)) ||
+		    (error = ttclosed(tp))) {
 			tp->t_state &= ~TS_WOPEN;
 			(void) spl0();
 			return (error);
