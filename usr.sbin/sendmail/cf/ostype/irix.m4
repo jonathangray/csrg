@@ -32,9 +32,7 @@ divert(-1)
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-VERSIONID(`@(#)irix.m4	2.1 (Berkeley) 11/14/92')
-#
-
-define(`LOCAL_MAILER_FLAGS', Ehu)dnl
 
 divert(0)
+VERSIONID(`@(#)irix.m4	2.2 (Berkeley) 11/14/92')
+define(`LOCAL_MAILER_FLAGS', Ehu)dnl
