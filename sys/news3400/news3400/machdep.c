@@ -37,7 +37,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)machdep.c	7.7 (Berkeley) 01/20/93
+ *	@(#)machdep.c	7.8 (Berkeley) 03/09/93
  */
 
 /* from: Utah $Hdr: machdep.c 1.63 91/04/24$ */
@@ -125,6 +125,13 @@ mach_init(x_boothowto, x_unkown, x_bootdev, x_maxmem)
 #ifdef ATTR
 	extern char *pmap_attributes;
 #endif
+
+	/*
+	 * Save parameters into kernel work area.
+	 */
+	*(int *)(MACH_CACHED_TO_UNCACHED(MACH_MAXMEMSIZE_ADDR)) = x_maxmem;
+	*(int *)(MACH_CACHED_TO_UNCACHED(MACH_BOOTDEV_ADDR)) = x_bootdev;
+	*(int *)(MACH_CACHED_TO_UNCACHED(MACH_BOOTSW_ADDR)) = x_boothowto;
 
 	/* clear the BSS segment */
 	v = (caddr_t)pmax_round_page(end);
@@ -641,9 +648,8 @@ boot(howto)
 	if (curproc)
 		savectx(curproc->p_addr, 0);
 
-	howto |= RB_HALT; /* XXX */
 	boothowto = howto;
-	if ((howto&RB_NOSYNC) == 0 && waittime < 0) {
+	if ((howto & RB_NOSYNC) == 0 && waittime < 0) {
 		register struct buf *bp;
 		int iter, nbusy;
 
@@ -951,13 +957,3 @@ xgetc(chan)
 	return (c);
 }
 #endif /* CPU_SINGLE */
-
-_delay(time)
-	register int time;
-{
-	extern int cpuspeed;
-
-	time *= cpuspeed;
-	while(time--)
-		;
-}
