@@ -5,7 +5,7 @@
 
 /*
  *	defines.h 2.3 of 5/18/78
- *	defines.h 1.2 of 04/13/81
+ *	defines.h 1.3 of 04/13/81
  */
 
 # define CTLSTR		"%c%c\n"
