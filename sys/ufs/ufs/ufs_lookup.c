@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lookup.c	8.11 (Berkeley) 01/02/95
+ *	@(#)ufs_lookup.c	8.12 (Berkeley) 05/14/95
  */
 
 #include <sys/param.h>
@@ -126,6 +126,7 @@ ufs_lookup(ap)
 	struct ucred *cred = cnp->cn_cred;
 	int flags = cnp->cn_flags;
 	int nameiop = cnp->cn_nameiop;
+	struct proc *p = cnp->cn_proc;
 
 	bp = NULL;
 	slotoffset = -1;
@@ -168,14 +169,14 @@ ufs_lookup(ap)
 			VREF(vdp);
 			error = 0;
 		} else if (flags & ISDOTDOT) {
-			VOP_UNLOCK(pdp);
-			error = vget(vdp, 1);
+			VOP_UNLOCK(pdp, 0, p);
+			error = vget(vdp, LK_EXCLUSIVE, p);
 			if (!error && lockparent && (flags & ISLASTCN))
-				error = VOP_LOCK(pdp);
+				error = vn_lock(pdp, LK_EXCLUSIVE, p);
 		} else {
-			error = vget(vdp, 1);
+			error = vget(vdp, LK_EXCLUSIVE, p);
 			if (!lockparent || error || !(flags & ISLASTCN))
-				VOP_UNLOCK(pdp);
+				VOP_UNLOCK(pdp, 0, p);
 		}
 		/*
 		 * Check that the capability number did not change
@@ -186,9 +187,9 @@ ufs_lookup(ap)
 				return (0);
 			vput(vdp);
 			if (lockparent && pdp != vdp && (flags & ISLASTCN))
-				VOP_UNLOCK(pdp);
+				VOP_UNLOCK(pdp, 0, p);
 		}
-		if (error = VOP_LOCK(pdp))
+		if (error = vn_lock(pdp, LK_EXCLUSIVE, p))
 			return (error);
 		vdp = pdp;
 		dp = VTOI(pdp);
@@ -423,7 +424,7 @@ notfound:
 		 */
 		cnp->cn_flags |= SAVENAME;
 		if (!lockparent)
-			VOP_UNLOCK(vdp);
+			VOP_UNLOCK(vdp, 0, p);
 		return (EJUSTRETURN);
 	}
 	/*
@@ -499,7 +500,7 @@ found:
 		}
 		*vpp = tdp;
 		if (!lockparent)
-			VOP_UNLOCK(vdp);
+			VOP_UNLOCK(vdp, 0, p);
 		return (0);
 	}
 
@@ -524,7 +525,7 @@ found:
 		*vpp = tdp;
 		cnp->cn_flags |= SAVENAME;
 		if (!lockparent)
-			VOP_UNLOCK(vdp);
+			VOP_UNLOCK(vdp, 0, p);
 		return (0);
 	}
 
@@ -549,13 +550,13 @@ found:
 	 */
 	pdp = vdp;
 	if (flags & ISDOTDOT) {
-		VOP_UNLOCK(pdp);	/* race to get the inode */
+		VOP_UNLOCK(pdp, 0, p);	/* race to get the inode */
 		if (error = VFS_VGET(vdp->v_mount, dp->i_ino, &tdp)) {
-			VOP_LOCK(pdp);
+			vn_lock(pdp, LK_EXCLUSIVE | LK_RETRY, p);
 			return (error);
 		}
 		if (lockparent && (flags & ISLASTCN) &&
-		    (error = VOP_LOCK(pdp))) {
+		    (error = vn_lock(pdp, LK_EXCLUSIVE, p))) {
 			vput(tdp);
 			return (error);
 		}
@@ -567,7 +568,7 @@ found:
 		if (error = VFS_VGET(vdp->v_mount, dp->i_ino, &tdp))
 			return (error);
 		if (!lockparent || !(flags & ISLASTCN))
-			VOP_UNLOCK(pdp);
+			VOP_UNLOCK(pdp, 0, p);
 		*vpp = tdp;
 	}
 
