@@ -32,13 +32,14 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.5 (Berkeley) 11/15/90";
+static char sccsid[] = "@(#)main.c	5.6 (Berkeley) 03/09/91";
 #endif /* not lint */
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <stdio.h>
 #include <fts.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "find.h"
 
 void
