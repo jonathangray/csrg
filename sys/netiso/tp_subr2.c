@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_subr2.c	7.19 (Berkeley) 05/27/92
+ *	@(#)tp_subr2.c	7.20 (Berkeley) 09/21/92
  */
 
 /***********************************************************
@@ -301,7 +301,7 @@ struct tp_pcb *tpcb;
 		tpcb->tp_xtd_format ?	TP_XTD_FMT_BIT :	TP_NML_FMT_BIT ;
 	tpcb->tp_seqhalf = tpcb->tp_seqbit >> 1;
 	tpcb->tp_dt_ticks =
-		MAX(tpcb->tp_dt_ticks, (tpcb->tp_peer_acktime + 2));
+		max(tpcb->tp_dt_ticks, (tpcb->tp_peer_acktime + 2));
 	tp_rsyset(tpcb);
 	
 }
