@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)as.1	6.4 (Berkeley) 06/11/90
+.\"     @(#)as.1	6.5 (Berkeley) 07/24/90
 .\"
 .Dd 
 .Dt AS 1
@@ -48,7 +48,7 @@
 .Op Fl \&R
 .Op Fl \&t Ar directory
 .Op Fl \&o Ar outfile
-.Op Ar source_file(s)
+.Op Ar source_file ...
 .Sh DESCRIPTION
 The
 .Nm as
@@ -137,12 +137,11 @@ John F. Reiser
 .br
 Robert R. Henry
 .Sh HISTORY
-The
 .Nm As
-appeared as a PDP11
-assembler in Version 6 AT&T UNIX.  It has been hacked a bit
-at various times to accomodate different DEC hardware, including this
-VAX version.
+appeared
+in Version 6 AT&T UNIX.  The version decsribed here is derived from
+Version 7 AT&T
+.Nm as .
 .Sh BUGS
 .Fl J
 should be eliminated; the assembler should automatically choose among
