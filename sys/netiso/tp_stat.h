@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_stat.h	7.7 (Berkeley) 09/17/91
+ *	@(#)tp_stat.h	7.8 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -278,6 +278,6 @@ int PStat_Junk;
 #define IFPERF(x)	if (0) {
 #define ENDPERF }
 
-#endif TP_PERF_MEAS
+#endif /* TP_PERF_MEAS */
 
-#endif __TP_STAT__
+#endif /* __TP_STAT__ */
