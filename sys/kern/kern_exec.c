@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_exec.c	7.73 (Berkeley) 04/27/93
+ *	@(#)kern_exec.c	7.74 (Berkeley) 04/27/93
  */
 
 #include <sys/param.h>
@@ -91,11 +91,13 @@ execve(p, uap, retval)
 	extern long argdbsize;			/* XXX */
 #endif SECSIZE
 
-	NDINIT(&nd, LOOKUP, FOLLOW | LOCKLEAF | SAVENAME, UIO_USERSPACE,
+	NDINIT(&nd, LOOKUP, FOLLOW | SAVENAME, UIO_USERSPACE,
 		uap->fname, p);
 	if (error = namei(&nd))
 		return (error);
 	vp = nd.ni_vp;
+	LEASE_CHECK(vp, p, cred, LEASE_READ);
+	VOP_LOCK(vp);
 	indir = 0;
 	uid = cred->cr_uid;
 	gid = cred->cr_gid;
