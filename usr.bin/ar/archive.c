@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)archive.c	5.4 (Berkeley) 03/11/91";
+static char sccsid[] = "@(#)archive.c	5.5 (Berkeley) 03/11/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -46,7 +46,10 @@ static char sccsid[] = "@(#)archive.c	5.4 (Berkeley) 03/11/91";
 #include <dirent.h>
 #include <ar.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "archive.h"
+#include "extern.h"
 
 extern CHDR chdr;			/* converted header */
 extern char *archive;			/* archive name */
@@ -103,11 +106,11 @@ opened:	if (flock(fd, LOCK_EX|LOCK_NB) && errno != EOPNOTSUPP)
 	return(fd);
 }
 
+void
 close_archive(fd)
 	int fd;
 {
-	(void)flock(fd, LOCK_UN);
-	(void)close(fd);
+	(void)close(fd);			/* Implicit unlock. */
 }
 
 /* Convert ar header field to an integer. */
@@ -196,7 +199,6 @@ put_object(cfp, sb)
 	register char *name;
 	struct ar_hdr *hdr;
 	off_t size;
-	char *rname();
 
 	/*
 	 * If passed an sb structure, reading a file from disk.  Get stat(2)
@@ -215,7 +217,8 @@ put_object(cfp, sb)
 		lname = strlen(name);
 		if (options & AR_S) {
 			if (lname > OLDARMAXNAME) {
-				(void)fflush(stdout); (void)fprintf(stderr,
+				(void)fflush(stdout);
+				(void)fprintf(stderr,
 				    "ar: warning: %s truncated to %.*s\n",
 				    name, OLDARMAXNAME, name);
 				(void)fflush(stderr);
@@ -305,6 +308,7 @@ copyfile(cfp, size)
  * skipobj -
  *	Skip over an object -- taking care to skip the pad bytes.
  */
+void
 skipobj(fd)
 	int fd;
 {
