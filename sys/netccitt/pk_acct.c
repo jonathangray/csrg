@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pk_acct.c	7.4 (Berkeley) 03/12/91
+ *	@(#)pk_acct.c	7.5 (Berkeley) 04/12/91
  */
 
 #include "param.h"
@@ -149,5 +149,6 @@ register struct pklcd *lcp;
 	acbuf.x25acct_rxcnt = lcp -> lcd_rxcnt;
 
 	(void) vn_rdwr(UIO_WRITE, vp, (caddr_t)&acbuf, sizeof (acbuf),
-		(off_t)0, UIO_SYSSPACE, IO_UNIT|IO_APPEND, u.u_cred, (int *)0);
+		(off_t)0, UIO_SYSSPACE, IO_UNIT|IO_APPEND, u.u_cred, (int *)0,
+		(struct proc *)0);
 }
