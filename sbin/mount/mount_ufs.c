@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)mount_ufs.c	8.3 (Berkeley) 07/07/94";
+static char sccsid[] = "@(#)mount_ufs.c	8.4 (Berkeley) 04/26/95";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -50,6 +50,8 @@ static char sccsid[] = "@(#)mount_ufs.c	8.3 (Berkeley) 07/07/94";
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#include <ufs/ufs/ufsmount.h>
 
 #include "mntopts.h"
 
@@ -79,7 +81,7 @@ mount_ufs(argc, argv)
 	while ((ch = getopt(argc, argv, "o:")) != EOF)
 		switch (ch) {
 		case 'o':
-			getmntopts(optarg, mopts, &mntflags);
+			getmntopts(optarg, mopts, &mntflags, 0);
 			break;
 		case '?':
 		default:
@@ -101,7 +103,7 @@ mount_ufs(argc, argv)
 	else
 		args.export.ex_flags = 0;
 
-	if (mount(MOUNT_UFS, fs_name, mntflags, &args) < 0) {
+	if (mount("ufs", fs_name, mntflags, &args) < 0) {
 		(void)fprintf(stderr, "%s on %s: ", args.fspec, fs_name);
 		switch (errno) {
 		case EMFILE:
