@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_cluster.c	8.8 (Berkeley) 07/28/94
+ *	@(#)vfs_cluster.c	8.9 (Berkeley) 02/14/95
  */
 
 #include <sys/param.h>
@@ -137,7 +137,7 @@ cluster_read(vp, filesize, lblkno, size, cred, bpp)
 		trace(TR_BREADHIT, pack(vp, size), lblkno);
 		flags |= B_ASYNC;
 		ioblkno = lblkno + (vp->v_ralen ? vp->v_ralen : 1);
-		alreadyincore = (int)incore(vp, ioblkno);
+		alreadyincore = incore(vp, ioblkno) != NULL;
 		bp = NULL;
 	} else {
 		/* Block wasn't in cache, case 3, 4, 5. */
