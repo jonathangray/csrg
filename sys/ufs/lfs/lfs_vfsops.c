@@ -199,6 +199,10 @@ lfs_mountfs(devvp, mp, p)
 	struct mount *mp;
 	struct proc *p;
 {
+	USES_VOP_CLOSE;
+	USES_VOP_IOCTL;
+	USES_VOP_OPEN;
+	USES_VOP_VGET;
 	extern struct vnode *rootvp;
 	register struct lfs *fs;
 	register struct ufsmount *ump;
@@ -274,7 +278,7 @@ lfs_mountfs(devvp, mp, p)
 	 * artificially increment the reference count and keep a pointer
 	 * to it in the incore copy of the superblock.
 	 */
-	if (error = lfs_vget(mp, LFS_IFILE_INUM, &vp))
+	if (error = LFS_VGET(mp, LFS_IFILE_INUM, &vp))
 		goto out;
 	fs->lfs_ivnode = vp;
 	VREF(vp);
@@ -302,6 +306,7 @@ lfs_unmount(mp, mntflags, p)
 	int mntflags;
 	struct proc *p;
 {
+	USES_VOP_CLOSE;
 	extern int doforce;
 	register struct ufsmount *ump;
 	register struct lfs *fs;				/* LFS */
@@ -432,6 +437,7 @@ lfs_fhtovp(mp, fhp, setgen, vpp)
 	int setgen;
 	struct vnode **vpp;
 {
+	USES_VOP_VGET;
 	register struct inode *ip;
 	register struct ufid *ufhp;
 	struct vnode *nvp;
@@ -440,7 +446,7 @@ lfs_fhtovp(mp, fhp, setgen, vpp)
 	ufhp = (struct ufid *)fhp;
 	if (ufhp->ufid_ino < ROOTINO)
 		return (EINVAL);
-	if (error = lfs_vget(mp, ufhp->ufid_ino, &nvp)) {
+	if (error = LFS_VGET(mp, ufhp->ufid_ino, &nvp)) {
 		*vpp = NULLVP;
 		return (error);
 	}
