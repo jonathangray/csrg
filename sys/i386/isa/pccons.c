@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pccons.c	5.8 (Berkeley) 05/09/91
+ *	@(#)pccons.c	5.9 (Berkeley) 05/12/91
  */
 
 /*
@@ -623,7 +623,7 @@ u_char c, ca;
 #define	FUNC		0x0100	/* function key */
 #define	SCROLL		0x0200	/* scroll lock key */
 
-unsigned	__debug = 0xffe; /*0xffe */;
+unsigned	__debug = 0; /*0xffe */;
 u_short action[] = {
 0,     ASCII, ASCII, ASCII, ASCII, ASCII, ASCII, ASCII,		/* scan  0- 7 */
 ASCII, ASCII, ASCII, ASCII, ASCII, ASCII, ASCII, ASCII,		/* scan  8-15 */
