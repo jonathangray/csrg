@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dead_vnops.c	7.14 (Berkeley) 11/05/91
+ *	@(#)dead_vnops.c	7.15 (Berkeley) 02/03/92
  */
 
 #include "param.h"
@@ -47,18 +47,19 @@
 int	dead_badop(),
 	dead_ebadf();
 int	dead_lookup __P((
-		struct vnode *vp,
-		struct nameidata *ndp,
-		struct proc *p));
+		struct vnode *dvp,
+		struct vnode **vpp,
+		struct componentname *cnp));
 #define dead_create ((int (*) __P(( \
-		struct nameidata *ndp, \
-		struct vattr *vap, \
-		struct proc *p))) dead_badop)
+		struct vnode *dvp, \
+ 		struct vnode **vpp, \
+		struct componentname *cnp, \
+		struct vattr *vap))) dead_badop)
 #define dead_mknod ((int (*) __P(( \
-		struct nameidata *ndp, \
-		struct vattr *vap, \
-		struct ucred *cred, \
-		struct proc *p))) dead_badop)
+		struct vnode *dvp, \
+		struct vnode **vpp, \
+		struct componentname *cnp, \
+		struct vattr *vap))) dead_badop)
 int	dead_open __P((
 		struct vnode *vp,
 		int mode,
@@ -124,28 +125,35 @@ int	dead_select __P((
 		off_t newoff, \
 		struct ucred *cred))) nullop)
 #define dead_remove ((int (*) __P(( \
-		struct nameidata *ndp, \
-		struct proc *p))) dead_badop)
+		struct vnode *dvp, \
+	        struct vnode *vp, \
+		struct componentname *cnp))) dead_badop)
 #define dead_link ((int (*) __P(( \
-		struct vnode *vp, \
-		struct nameidata *ndp, \
-		struct proc *p))) dead_badop)
+		register struct vnode *vp, \
+		struct vnode *tdvp, \
+		struct componentname *cnp))) dead_badop)
 #define dead_rename ((int (*) __P(( \
-		struct nameidata *fndp, \
-		struct nameidata *tdnp, \
-		struct proc *p))) dead_badop)
+		struct vnode *fdvp, \
+	        struct vnode *fvp, \
+		struct componentname *fcnp, \
+		struct vnode *tdvp, \
+		struct vnode *tvp, \
+		struct componentname *tcnp))) dead_badop)
 #define dead_mkdir ((int (*) __P(( \
-		struct nameidata *ndp, \
-		struct vattr *vap, \
-		struct proc *p))) dead_badop)
+		struct vnode *dvp, \
+		struct vnode **vpp, \
+		struct componentname *cnp, \
+		struct vattr *vap))) dead_badop)
 #define dead_rmdir ((int (*) __P(( \
-		struct nameidata *ndp, \
-		struct proc *p))) dead_badop)
+		struct vnode *dvp, \
+		struct vnode *vp, \
+		struct componentname *cnp))) dead_badop)
 #define dead_symlink ((int (*) __P(( \
-		struct nameidata *ndp, \
+		struct vnode *dvp, \
+		struct vnode **vpp, \
+		struct componentname *cnp, \
 		struct vattr *vap, \
-		char *target, \
-		struct proc *p))) dead_badop)
+		char *target))) dead_badop)
 #define dead_readdir ((int (*) __P(( \
 		struct vnode *vp, \
 		struct uio *uio, \
@@ -156,7 +164,8 @@ int	dead_select __P((
 		struct uio *uio, \
 		struct ucred *cred))) dead_ebadf)
 #define dead_abortop ((int (*) __P(( \
-		struct nameidata *ndp))) dead_badop)
+		struct vnode *dvp, \
+		struct componentname *cnp))) dead_badop)
 #define dead_inactive ((int (*) __P(( \
 		struct vnode *vp, \
 		struct proc *p))) nullop)
@@ -260,14 +269,14 @@ struct vnodeops dead_vnodeops = {
  * Trivial lookup routine that always fails.
  */
 /* ARGSUSED */
-dead_lookup(vp, ndp, p)
-	struct vnode *vp;
-	struct nameidata *ndp;
-	struct proc *p;
+int
+dead_lookup(dvp, vpp, cnp)
+	struct vnode *dvp;
+	struct vnode **vpp;
+	struct componentname *cnp;
 {
 
-	ndp->ni_dvp = vp;
-	ndp->ni_vp = NULL;
+	*vpp = NULL;
 	return (ENOTDIR);
 }
 
