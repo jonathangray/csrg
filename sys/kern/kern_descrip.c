@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_descrip.c	8.5 (Berkeley) 01/21/94
+ *	@(#)kern_descrip.c	8.6 (Berkeley) 04/19/94
  */
 
 #include <sys/param.h>
@@ -588,6 +588,7 @@ falloc(p, resultfp, resultfd)
 	 */
 	nfiles++;
 	MALLOC(fp, struct file *, sizeof(struct file), M_FILE, M_WAITOK);
+	bzero(fp, sizeof(struct file));
 	if (fq = p->p_fd->fd_ofiles[0])
 		fpp = &fq->f_filef;
 	else
@@ -599,8 +600,6 @@ falloc(p, resultfp, resultfd)
 	fp->f_fileb = fpp;
 	*fpp = fp;
 	fp->f_count = 1;
-	fp->f_msgcount = 0;
-	fp->f_offset = 0;
 	fp->f_cred = p->p_ucred;
 	crhold(fp->f_cred);
 	if (resultfp)
@@ -753,7 +752,10 @@ closef(fp, p)
 		vp = (struct vnode *)fp->f_data;
 		(void) VOP_ADVLOCK(vp, (caddr_t)fp, F_UNLCK, &lf, F_FLOCK);
 	}
-	error = (*fp->f_ops->fo_close)(fp, p);
+	if (fp->f_ops)
+		error = (*fp->f_ops->fo_close)(fp, p);
+	else
+		error = 0;
 	ffree(fp);
 	return (error);
 }
