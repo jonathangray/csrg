@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)iso_proto.c	7.12 (Berkeley) 11/25/92
+ *	@(#)iso_proto.c	7.13 (Berkeley) 06/04/93
  */
 
 /***********************************************************
@@ -194,4 +194,4 @@ struct domain isodomain = {
 	48,					/* rtoffset */
 	sizeof(struct sockaddr_iso) /* maxkeylen */
 };
-#endif	ISO
+#endif	/* ISO */
