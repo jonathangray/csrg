@@ -1,6 +1,6 @@
 #!/bin/sh -
 #
-#	@(#)run.test	8.6 (Berkeley) 09/07/93
+#	@(#)run.test	8.7 (Berkeley) 09/07/93
 #
 
 # db regression tests
