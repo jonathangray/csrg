@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)user.h	7.19 (Berkeley) 05/04/91
+ *	@(#)user.h	7.20 (Berkeley) 11/11/91
  */
 
 #include <machine/pcb.h>
