@@ -1,4 +1,4 @@
-/*	callout.h	3.1	%H%	*/
+/*	callout.h	3.2	06/07/80	*/
 
 /*
  * The callout structure is for
