@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.c	7.10 (Berkeley) 02/19/92
+ *	@(#)pmap.c	7.11 (Berkeley) 05/11/92
  */
 
 /*
@@ -223,7 +223,11 @@ pmap_bootstrap(firstaddr, loadaddr)
 	extern vm_offset_t maxmem, physmem;
 extern int IdlePTD;
 
-#if	defined(ODYSSEUS) || defined(ARGO) || defined(CIRCE)
+
+/* disable pageing in basemem for all machines until this cryptic comment
+ * can be explained
+ */
+#if 1 ||	defined(ODYSSEUS) || defined(ARGO) || defined(CIRCE)
 firstaddr=0x100000;	/* for some reason, basemem screws up on this machine */
 #endif
 printf("ps %x pe %x ", firstaddr, maxmem <<PG_SHIFT);
@@ -799,7 +803,7 @@ pmap_protect(pmap, sva, eva, prot)
 			/* XXX: avoid address wrap around */
 			if (va >= i386_trunc_pdr((vm_offset_t)-1))
 				break;
-			va = i386_round_pdr(va + PAGE_SIZE);
+			va = i386_round_pdr(va + PAGE_SIZE) - PAGE_SIZE;
 			continue;
 		} else	pte = pmap_pte(pmap, va);
 
