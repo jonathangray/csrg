@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)sys_process.c	8.1 (Berkeley) 06/10/93
+ *	@(#)sys_process.c	8.2 (Berkeley) 09/21/93
  */
 
 #define IPCREG
@@ -107,7 +107,7 @@ ptrace(curp, uap, retval)
 	p->p_flag &= ~SWTED;
 	while (ipc.ip_req > 0) {
 		if (p->p_stat==SSTOP)
-			setrun(p);
+			setrunnable(p);
 		sleep((caddr_t)&ipc, IPCPRI);
 	}
 	*retval = ipc.ip_data;
