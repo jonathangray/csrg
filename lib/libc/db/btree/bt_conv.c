@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)bt_conv.c	5.3 (Berkeley) 11/20/91";
+static char sccsid[] = "@(#)bt_conv.c	5.4 (Berkeley) 12/16/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -129,7 +129,7 @@ kdswap(h)
 				p += sizeof(u_char);
 				BLPSWAP(p);
 				p += sizeof(pgno_t);
-				BSPSWAP(p);
+				BLPSWAP(p);
 			}
 		}
 		break;
@@ -137,9 +137,9 @@ kdswap(h)
 		for (i = 0; i < top; i++) {
 			BSSWAP(h->linp[i]);
 			p = (char *)GETBLEAF(h, i);
-			BSPSWAP(p);
+			BLPSWAP(p);
 			p += sizeof(size_t);
-			BSPSWAP(p);
+			BLPSWAP(p);
 			p += sizeof(size_t);
 			flags = *(u_char *)p;
 			if (flags & (P_BIGKEY | P_BIGDATA)) {
@@ -147,13 +147,13 @@ kdswap(h)
 				if (flags & P_BIGKEY) {
 					BLPSWAP(p);
 					p += sizeof(pgno_t);
-					BSPSWAP(p);
+					BLPSWAP(p);
 				}
 				if (flags & P_BIGDATA) {
 					p += sizeof(size_t);
 					BLPSWAP(p);
 					p += sizeof(pgno_t);
-					BSPSWAP(p);
+					BLPSWAP(p);
 				}
 			}
 		}
