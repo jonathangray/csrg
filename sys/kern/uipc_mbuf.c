@@ -29,13 +29,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_mbuf.c	7.18 (Berkeley) 12/05/90
+ *	@(#)uipc_mbuf.c	7.19 (Berkeley) 04/20/91
  */
 
 #include "param.h"
-#include "user.h"
 #include "proc.h"
-#include "cmap.h"
 #include "malloc.h"
 #include "map.h"
 #define MBTYPES
@@ -44,12 +42,11 @@
 #include "syslog.h"
 #include "domain.h"
 #include "protosw.h"
-#include "../vm/vm_param.h"
-#include "../vm/vm_map.h"
+#include "vm/vm.h"
 
-extern vm_map_t mb_map;
-struct mbuf *mbutl;
-char *mclrefcnt;
+extern	vm_map_t mb_map;
+struct	mbuf *mbutl;
+char	*mclrefcnt;
 
 mbinit()
 {
