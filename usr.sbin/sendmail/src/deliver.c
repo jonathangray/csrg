@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	6.1 (Berkeley) 12/21/92";
+static char sccsid[] = "@(#)deliver.c	6.2 (Berkeley) 01/01/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -802,7 +802,14 @@ openmailer(m, pvp, ctladdr, clever, e)
 			CurHostName = mxhosts[j];
 			mci = mci_get(CurHostName, m);
 			if (mci->mci_state != MCIS_CLOSED)
+			{
+				if (tTd(11, 1))
+				{
+					printf("openmailer: ");
+					mci_dump(mci);
+				}
 				return mci;
+			}
 			mci->mci_mailer = m;
 			if (mci->mci_exitstat != EX_OK)
 				continue;
@@ -832,6 +839,8 @@ openmailer(m, pvp, ctladdr, clever, e)
 		mci->mci_pid = 0;
 #else /* no DAEMON */
 		syserr("openmailer: no IPC");
+		if (tTd(11, 1))
+			printf("openmailer: NULL\n");
 		return NULL;
 #endif /* DAEMON */
 	}
@@ -841,6 +850,8 @@ openmailer(m, pvp, ctladdr, clever, e)
 		if (pipe(mpvect) < 0)
 		{
 			syserr("openmailer: pipe (to mailer)");
+			if (tTd(11, 1))
+				printf("openmailer: NULL\n");
 			return NULL;
 		}
 
@@ -850,6 +861,8 @@ openmailer(m, pvp, ctladdr, clever, e)
 			syserr("openmailer: pipe (from mailer)");
 			(void) close(mpvect[0]);
 			(void) close(mpvect[1]);
+			if (tTd(11, 1))
+				printf("openmailer: NULL\n");
 			return NULL;
 		}
 
@@ -880,6 +893,8 @@ openmailer(m, pvp, ctladdr, clever, e)
 				(void) close(rpvect[0]);
 				(void) close(rpvect[1]);
 			}
+			if (tTd(11, 1))
+				printf("openmailer: NULL\n");
 			return NULL;
 		}
 		else if (pid == 0)
@@ -995,6 +1010,11 @@ openmailer(m, pvp, ctladdr, clever, e)
 	if (clever && mci->mci_state != MCIS_CLOSED)
 	{
 		smtpinit(m, mci, e);
+	}
+	if (tTd(11, 1))
+	{
+		printf("openmailer: ");
+		mci_dump(mci);
 	}
 
 	return mci;
