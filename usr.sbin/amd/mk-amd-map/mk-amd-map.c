@@ -1,6 +1,4 @@
 /*
- * $Id: mk-amd-map.c,v 5.2.1.2 91/03/17 17:37:27 jsp Alpha $
- *
  * Copyright (c) 1990 Jan-Simon Pendry
  * Copyright (c) 1990 Imperial College of Science, Technology & Medicine
  * Copyright (c) 1990 The Regents of the University of California.
@@ -37,7 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mk-amd-map.c	5.3 (Berkeley) 03/17/91
+ *	@(#)mk-amd-map.c	5.4 (Berkeley) 05/12/91
+ *
+ * $Id: mk-amd-map.c,v 5.2.1.4 91/05/07 22:18:47 jsp Alpha $
  */
 
 /*
@@ -53,8 +53,8 @@ char copyright[] = "\
 #endif /* not lint */
 
 #ifndef lint
-static char rcsid[] = "$Id: mk-amd-map.c,v 5.2.1.2 91/03/17 17:37:27 jsp Alpha $";
-static char sccsid[] = "@(#)mk-amd-map.c	5.3 (Berkeley) 03/17/91";
+static char rcsid[] = "$Id: mk-amd-map.c,v 5.2.1.4 91/05/07 22:18:47 jsp Alpha $";
+static char sccsid[] = "@(#)mk-amd-map.c	5.4 (Berkeley) 05/12/91";
 #endif /* not lint */
 
 #include "am.h"
@@ -103,6 +103,7 @@ FILE *fp;
 				int ch;
 				buf += len - 2;
 				size -= len - 2;
+				*buf = '\n'; buf[1] = '\0';
 				/*
 				 * Skip leading white space on next line
 				 */
@@ -230,7 +231,7 @@ char *argv[];
 	char *map;
 	int rc = 0;
 	DBM *mapd;
-	char *maptmp = "dbmXXXXXX";
+	static char maptmp[] = "dbmXXXXXX";
 	char maptpag[16], maptdir[16];
 	char *mappag, *mapdir;
 	int len;
@@ -344,31 +345,4 @@ main()
 	fputs("mk-amd-map: This system does not support hashed database files\n", stderr);
 	exit(1);
 }
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
 #endif /* HAS_DATABASE */
