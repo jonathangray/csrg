@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mntopts.h	8.2 (Berkeley) 03/27/94
+ *	@(#)mntopts.h	8.3 (Berkeley) 03/27/94
  */
 
 struct mntopt {
@@ -49,7 +49,7 @@ struct mntopt {
 #define MOPT_UNION		{ "union",	0, MNT_UNION }
 
 /* Control flags. */
-#define MOPT_FORCE		{ "exec",	1, MNT_FORCE }
+#define MOPT_FORCE		{ "force",	1, MNT_FORCE }
 #define MOPT_UPDATE		{ "update",	0, MNT_UPDATE }
 
 /* Support for old-style "ro", "rw" flags. */
