@@ -3,7 +3,7 @@
  * All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
- * Sean Eric Fagan
+ * Sean Eric Fagan.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)modf.s	5.4 (Berkeley) 03/16/91";
+	.asciz "@(#)modf.s	5.5 (Berkeley) 03/18/91"
 #endif /* LIBC_SCCS and not lint */
 
 /*
