@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_vnops.c	8.5 (Berkeley) 12/08/94
+ *	@(#)vfs_vnops.c	8.6 (Berkeley) 01/09/95
  */
 
 #include <sys/param.h>
@@ -359,7 +359,7 @@ vn_stat(vp, sb, p)
  */
 vn_ioctl(fp, com, data, p)
 	struct file *fp;
-	int com;
+	u_long com;
 	caddr_t data;
 	struct proc *p;
 {
