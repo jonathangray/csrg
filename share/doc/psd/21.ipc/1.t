@@ -1,5 +1,5 @@
-.\" Copyright (c) 1986, 1993 The Regents of the University of California.
-.\" All rights reserved.
+.\" Copyright (c) 1986, 1993
+.\"	The Regents of the University of California.  All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)1.t	8.1 (Berkeley) 06/08/93
+.\"	@(#)1.t	8.1 (Berkeley) 08/14/93
 .\"
 .\".ds LH "4.4BSD IPC Primer
 .\".ds RH Introduction
