@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_exit.c	7.51 (Berkeley) 12/27/92
+ *	@(#)kern_exit.c	7.52 (Berkeley) 02/04/93
  */
 
 #include <sys/param.h>
@@ -73,7 +73,7 @@ rexit(p, uap, retval)
 	int *retval;
 {
 
-	exit(p, W_EXITCODE(uap->rval, 0));
+	exit1(p, W_EXITCODE(uap->rval, 0));
 	/* NOTREACHED */
 }
 
@@ -83,7 +83,7 @@ rexit(p, uap, retval)
  * and parent's lists.  Save exit status and rusage for wait().
  * Check for child processes and orphan them.
  */
-exit(p, rv)
+exit1(p, rv)
 	register struct proc *p;
 	int rv;
 {
