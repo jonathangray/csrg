@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)c_sqrt.c	5.1	06/07/85
+ *	@(#)c_sqrt.c	5.2	11/03/86
  */
 
 #include "complex"
