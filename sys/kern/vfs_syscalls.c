@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	7.60 (Berkeley) 12/05/90
+ *	@(#)vfs_syscalls.c	7.61 (Berkeley) 12/14/90
  */
 
 #include "param.h"
@@ -716,11 +716,10 @@ mkfifo(p, uap, retval)
 			vput(ndp->ni_dvp);
 		vrele(ndp->ni_vp);
 		RETURN (EEXIST);
-	} else {
-		VATTR_NULL(&vattr);
-		vattr.va_type = VFIFO;
-		vattr.va_mode = (uap->fmode & 07777) &~ u.u_cmask;
 	}
+	VATTR_NULL(&vattr);
+	vattr.va_type = VFIFO;
+	vattr.va_mode = (uap->fmode & 07777) &~ u.u_cmask;
 	RETURN (VOP_MKNOD(ndp, &vattr, ndp->ni_cred));
 #endif /* FIFO */
 }
@@ -1086,8 +1085,6 @@ chflags(p, uap, retval)
 	ndp->ni_nameiop = LOOKUP | FOLLOW | LOCKLEAF;
 	ndp->ni_segflg = UIO_USERSPACE;
 	ndp->ni_dirp = uap->fname;
-	VATTR_NULL(&vattr);
-	vattr.va_flags = uap->flags;
 	if (error = namei(ndp))
 		RETURN (error);
 	vp = ndp->ni_vp;
@@ -1095,6 +1092,8 @@ chflags(p, uap, retval)
 		error = EROFS;
 		goto out;
 	}
+	VATTR_NULL(&vattr);
+	vattr.va_flags = uap->flags;
 	error = VOP_SETATTR(vp, &vattr, ndp->ni_cred);
 out:
 	vput(vp);
@@ -1120,14 +1119,14 @@ fchflags(p, uap, retval)
 
 	if (error = getvnode(u.u_ofile, uap->fd, &fp))
 		RETURN (error);
-	VATTR_NULL(&vattr);
-	vattr.va_flags = uap->flags;
 	vp = (struct vnode *)fp->f_data;
 	VOP_LOCK(vp);
 	if (vp->v_mount->mnt_flag & MNT_RDONLY) {
 		error = EROFS;
 		goto out;
 	}
+	VATTR_NULL(&vattr);
+	vattr.va_flags = uap->flags;
 	error = VOP_SETATTR(vp, &vattr, fp->f_cred);
 out:
 	VOP_UNLOCK(vp);
@@ -1154,8 +1153,6 @@ chmod(p, uap, retval)
 	ndp->ni_nameiop = LOOKUP | FOLLOW | LOCKLEAF;
 	ndp->ni_segflg = UIO_USERSPACE;
 	ndp->ni_dirp = uap->fname;
-	VATTR_NULL(&vattr);
-	vattr.va_mode = uap->fmode & 07777;
 	if (error = namei(ndp))
 		RETURN (error);
 	vp = ndp->ni_vp;
@@ -1163,6 +1160,8 @@ chmod(p, uap, retval)
 		error = EROFS;
 		goto out;
 	}
+	VATTR_NULL(&vattr);
+	vattr.va_mode = uap->fmode & 07777;
 	error = VOP_SETATTR(vp, &vattr, ndp->ni_cred);
 out:
 	vput(vp);
@@ -1188,14 +1187,14 @@ fchmod(p, uap, retval)
 
 	if (error = getvnode(u.u_ofile, uap->fd, &fp))
 		RETURN (error);
-	VATTR_NULL(&vattr);
-	vattr.va_mode = uap->fmode & 07777;
 	vp = (struct vnode *)fp->f_data;
 	VOP_LOCK(vp);
 	if (vp->v_mount->mnt_flag & MNT_RDONLY) {
 		error = EROFS;
 		goto out;
 	}
+	VATTR_NULL(&vattr);
+	vattr.va_mode = uap->fmode & 07777;
 	error = VOP_SETATTR(vp, &vattr, fp->f_cred);
 out:
 	VOP_UNLOCK(vp);
@@ -1223,9 +1222,6 @@ chown(p, uap, retval)
 	ndp->ni_nameiop = LOOKUP | NOFOLLOW | LOCKLEAF;
 	ndp->ni_segflg = UIO_USERSPACE;
 	ndp->ni_dirp = uap->fname;
-	VATTR_NULL(&vattr);
-	vattr.va_uid = uap->uid;
-	vattr.va_gid = uap->gid;
 	if (error = namei(ndp))
 		RETURN (error);
 	vp = ndp->ni_vp;
@@ -1233,6 +1229,9 @@ chown(p, uap, retval)
 		error = EROFS;
 		goto out;
 	}
+	VATTR_NULL(&vattr);
+	vattr.va_uid = uap->uid;
+	vattr.va_gid = uap->gid;
 	error = VOP_SETATTR(vp, &vattr, ndp->ni_cred);
 out:
 	vput(vp);
@@ -1259,15 +1258,15 @@ fchown(p, uap, retval)
 
 	if (error = getvnode(u.u_ofile, uap->fd, &fp))
 		RETURN (error);
-	VATTR_NULL(&vattr);
-	vattr.va_uid = uap->uid;
-	vattr.va_gid = uap->gid;
 	vp = (struct vnode *)fp->f_data;
 	VOP_LOCK(vp);
 	if (vp->v_mount->mnt_flag & MNT_RDONLY) {
 		error = EROFS;
 		goto out;
 	}
+	VATTR_NULL(&vattr);
+	vattr.va_uid = uap->uid;
+	vattr.va_gid = uap->gid;
 	error = VOP_SETATTR(vp, &vattr, fp->f_cred);
 out:
 	VOP_UNLOCK(vp);
@@ -1297,9 +1296,6 @@ utimes(p, uap, retval)
 	ndp->ni_nameiop = LOOKUP | FOLLOW | LOCKLEAF;
 	ndp->ni_segflg = UIO_USERSPACE;
 	ndp->ni_dirp = uap->fname;
-	VATTR_NULL(&vattr);
-	vattr.va_atime = tv[0];
-	vattr.va_mtime = tv[1];
 	if (error = namei(ndp))
 		RETURN (error);
 	vp = ndp->ni_vp;
@@ -1307,6 +1303,9 @@ utimes(p, uap, retval)
 		error = EROFS;
 		goto out;
 	}
+	VATTR_NULL(&vattr);
+	vattr.va_atime = tv[0];
+	vattr.va_mtime = tv[1];
 	error = VOP_SETATTR(vp, &vattr, ndp->ni_cred);
 out:
 	vput(vp);
@@ -1333,8 +1332,6 @@ truncate(p, uap, retval)
 	ndp->ni_nameiop = LOOKUP | FOLLOW | LOCKLEAF;
 	ndp->ni_segflg = UIO_USERSPACE;
 	ndp->ni_dirp = uap->fname;
-	VATTR_NULL(&vattr);
-	vattr.va_size = uap->length;
 	if (error = namei(ndp))
 		RETURN (error);
 	vp = ndp->ni_vp;
@@ -1345,6 +1342,8 @@ truncate(p, uap, retval)
 	if ((error = vn_writechk(vp)) ||
 	    (error = VOP_ACCESS(vp, VWRITE, ndp->ni_cred)))
 		goto out;
+	VATTR_NULL(&vattr);
+	vattr.va_size = uap->length;
 	error = VOP_SETATTR(vp, &vattr, ndp->ni_cred);
 out:
 	vput(vp);
@@ -1372,8 +1371,6 @@ ftruncate(p, uap, retval)
 		RETURN (error);
 	if ((fp->f_flag & FWRITE) == 0)
 		RETURN (EINVAL);
-	VATTR_NULL(&vattr);
-	vattr.va_size = uap->length;
 	vp = (struct vnode *)fp->f_data;
 	VOP_LOCK(vp);
 	if (vp->v_type == VDIR) {
@@ -1382,6 +1379,8 @@ ftruncate(p, uap, retval)
 	}
 	if (error = vn_writechk(vp))
 		goto out;
+	VATTR_NULL(&vattr);
+	vattr.va_size = uap->length;
 	error = VOP_SETATTR(vp, &vattr, fp->f_cred);
 out:
 	VOP_UNLOCK(vp);
