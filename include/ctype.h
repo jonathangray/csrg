@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ctype.h	8.1 (Berkeley) 06/02/93
+ *	@(#)ctype.h	5.11 (Berkeley) 06/06/93
  */
 
 #ifndef	_CTYPE_H_
@@ -85,9 +85,9 @@
 
 /* See comments in <machine/ansi.h> about _BSD_RUNE_T_. */
 __BEGIN_DECLS
-extern unsigned long	___runetype __P((_BSD_RUNE_T_));
-extern _BSD_RUNE_T_	___tolower __P((_BSD_RUNE_T_));
-extern _BSD_RUNE_T_	___toupper __P((_BSD_RUNE_T_));
+unsigned long	___runetype __P((_BSD_RUNE_T_));
+_BSD_RUNE_T_	___tolower __P((_BSD_RUNE_T_));
+_BSD_RUNE_T_	___toupper __P((_BSD_RUNE_T_));
 __END_DECLS
 
 /*
@@ -134,10 +134,10 @@ tolower(_BSD_RUNE_T_ c)
 #else /* !_USE_CTYPE_INLINE_ */
 
 __BEGIN_DECLS
-extern int		__istype __P((_BSD_RUNE_T_, unsigned long));
-extern int		__isctype __P((_BSD_RUNE_T_, unsigned long));
-extern _BSD_RUNE_T_	toupper __P((_BSD_RUNE_T_));
-extern _BSD_RUNE_T_	tolower __P((_BSD_RUNE_T_));
+int		__istype __P((_BSD_RUNE_T_, unsigned long));
+int		__isctype __P((_BSD_RUNE_T_, unsigned long));
+_BSD_RUNE_T_	toupper __P((_BSD_RUNE_T_));
+_BSD_RUNE_T_	tolower __P((_BSD_RUNE_T_));
 __END_DECLS
 #endif /* _USE_CTYPE_INLINE_ */
 
