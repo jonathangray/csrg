@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)gcore.c	5.9 (Berkeley) 04/27/91";
+static char sccsid[] = "@(#)gcore.c	5.10 (Berkeley) 05/02/91";
 #endif /* not lint */
 
 /*
@@ -60,6 +60,7 @@ static char sccsid[] = "@(#)gcore.c	5.9 (Berkeley) 04/27/91";
  */
 #include <machine/pte.h>
 #include <sys/param.h>
+#include <sys/user.h>
 #include <sys/proc.h>
 #include <sys/vm.h>
 #include <setjmp.h>
