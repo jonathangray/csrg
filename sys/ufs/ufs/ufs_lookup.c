@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lookup.c	8.14 (Berkeley) 05/27/95
+ *	@(#)ufs_lookup.c	8.15 (Berkeley) 06/16/95
  */
 
 #include <sys/param.h>
@@ -339,7 +339,7 @@ searchloop:
 					slotoffset = dp->i_offset;
 					slotsize = ep->d_reclen;
 					dp->i_reclen = slotsize;
-					enduseful = slotoffset + slotsize;
+					enduseful = dp->i_size;
 					ap->a_cnp->cn_flags |= ISWHITEOUT;
 					numdirpasses--;
 					goto notfound;
