@@ -1,5 +1,5 @@
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)crypt.c	5.3 (Berkeley) 05/11/90";
+static char sccsid[] = "@(#)crypt.c	5.3.1.1 (Berkeley) 10/21/90";
 #endif LIBC_SCCS and not lint
 
 /*
