@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)tty_subr.c	7.9 (Berkeley) 02/15/92
+ *	@(#)tty_subr.c	7.10 (Berkeley) 07/12/92
  */
 
 #include "param.h"
@@ -118,8 +118,8 @@ q_to_b(q, cp, cc)
 
 	while (cc) {
 		nc = sizeof (struct cblock) - ((int)q->c_cf & CROUND);
-		nc = MIN(nc, cc);
-		nc = MIN(nc, q->c_cc);
+		nc = min(nc, cc);
+		nc = min(nc, q->c_cc);
 		(void) bcopy(q->c_cf, cp, (unsigned)nc);
 		q->c_cf += nc;
 		q->c_cc -= nc;
@@ -332,7 +332,7 @@ b_to_q(cp, cc, q)
 			bp->c_next = NULL;
 			cq = bp->c_info;
 		}
-		nc = MIN(cc, sizeof (struct cblock) - ((int)cq & CROUND));
+		nc = min(cc, sizeof (struct cblock) - ((int)cq & CROUND));
 		(void) bcopy(cp, cq, (unsigned)nc);
 		cp += nc;
 		cq += nc;
