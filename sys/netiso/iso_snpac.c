@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)iso_snpac.c	7.21 (Berkeley) 10/11/92
+ *	@(#)iso_snpac.c	7.22 (Berkeley) 02/12/93
  */
 
 /***********************************************************
@@ -248,11 +248,16 @@ iso_setmcasts(ifp, req)
 			if (ether_addmulti(&ifr, (struct arpcom *)ifp) == ENETRESET)
 				doreset++;
 		else
-			if (ether_addmulti(&ifr, (struct arpcom *)ifp) == ENETRESET)
+			if (ether_delmulti(&ifr, (struct arpcom *)ifp) == ENETRESET)
 				doreset++;
 	}
-	if (doreset)
-		(*ifp->if_reset)(ifp->if_unit);
+	if (doreset) {
+		if (ifp->if_reset)
+			(*ifp->if_reset)(ifp->if_unit);
+		else
+			printf("iso_setmcasts: %s%d needs reseting to receive iso mcasts\n",
+					ifp->if_name, ifp->if_unit);
+	}
 }
 /*
  * FUNCTION:		iso_snparesolve
