@@ -20,6 +20,7 @@
 #include "../h/map.h"
 #include "../h/vcmd.h"
 #include "../h/uio.h"
+#include "../h/kernel.h"
 
 #include "../vaxuba/ubavar.h"
 #include "../vaxuba/ubareg.h"
