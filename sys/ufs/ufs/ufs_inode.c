@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_inode.c	7.51 (Berkeley) 11/14/92
+ *	@(#)ufs_inode.c	7.52 (Berkeley) 12/09/92
  */
 
 #include <sys/param.h>
@@ -97,6 +97,10 @@ ufs_inactive(ap)
 #ifdef DIAGNOSTIC
 	if (VOP_ISLOCKED(vp))
 		panic("ffs_inactive: locked inode");
+	if (curproc)
+		ip->i_lockholder = curproc->p_pid;
+	else
+		ip->i_lockholder = -1;
 #endif
 	ip->i_flag |= ILOCKED;
 	if (ip->i_nlink <= 0 && (vp->v_mount->mnt_flag & MNT_RDONLY) == 0) {
