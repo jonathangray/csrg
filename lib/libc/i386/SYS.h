@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)SYS.h	5.1 (Berkeley) 04/23/90
+ *	@(#)SYS.h	5.2 (Berkeley) 05/30/90
  */
 
 #include <syscall.h>
@@ -50,5 +50,7 @@
 #define	CALL(x,y)	call _/**/y; addl $4*x,%esp
 /* gas fucks up offset -- although we don't currently need it, do for BCS */
 #define	LCALL(x,y)	.byte 0x9a ; .long y; .word x
+
+#define	ASMSTR		.asciz
 
 	.globl	cerror
