@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: vm_mmap.c 1.6 91/10/21$
  *
- *	@(#)vm_mmap.c	7.17 (Berkeley) 07/12/92
+ *	@(#)vm_mmap.c	7.18 (Berkeley) 02/03/93
  */
 
 /*
@@ -65,21 +65,6 @@ int mmapdebug = 0;
 #define MDB_SYNC	0x02
 #define MDB_MAPIT	0x04
 #endif
-
-struct getpagesize_args {
-	int	dummy;
-};
-/* ARGSUSED */
-int
-getpagesize(p, uap, retval)
-	struct proc *p;
-	struct getpagesize_args *uap;
-	int *retval;
-{
-
-	*retval = PAGE_SIZE;
-	return (0);
-}
 
 struct sbrk_args {
 	int	incr;
@@ -122,6 +107,21 @@ struct mmap_args {
 };
 
 #ifdef COMPAT_43
+struct getpagesize_args {
+	int	dummy;
+};
+/* ARGSUSED */
+int
+getpagesize(p, uap, retval)
+	struct proc *p;
+	struct getpagesize_args *uap;
+	int *retval;
+{
+
+	*retval = PAGE_SIZE;
+	return (0);
+}
+
 struct osmmap_args {
 	caddr_t	addr;
 	int	len;
