@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.3 (Berkeley) 07/13/93";
+static char sccsid[] = "@(#)conf.c	8.4 (Berkeley) 07/16/93";
 #endif /* not lint */
 
 # include <sys/ioctl.h>
@@ -491,7 +491,7 @@ checkcompat(to, e)
 # ifdef lint
 	if (to == NULL)
 		to++;
-# endif lint
+# endif /* lint */
 # ifdef EXAMPLE_CODE
 	/* this code is intended as an example only */
 	register STAB *s;
@@ -1324,7 +1324,7 @@ transienterror(err)
 #ifdef EADDRNOTAVAIL
 	  case EADDRNOTAVAIL:		/* Can't assign requested address */
 #endif
-#ifdef ENOSR
+#if defined(ENOSR) && (!defined(ENOBUFS) || (ENOBUFS != ENOSR))
 	  case ENOSR:			/* Out of streams resources */
 #endif
 		return TRUE;
