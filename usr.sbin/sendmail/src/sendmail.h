@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.48 (Berkeley) 08/07/94
+ *	@(#)sendmail.h	8.49 (Berkeley) 08/07/94
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.48		08/07/94";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.49		08/07/94";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -229,7 +229,7 @@ typedef struct mailer	MAILER;
 # define M_ROPT		'r'	/* mailer takes picky -r flag */
 # define M_SECURE_PORT	'R'	/* try to send on a reserved TCP port */
 # define M_STRIPQ	's'	/* strip quote chars from user/host */
-# define M_SPECFIC_UID	'S'	/* run as specific uid/gid */
+# define M_SPECIFIC_UID	'S'	/* run as specific uid/gid */
 # define M_USR_UPPER	'u'	/* preserve user case distinction */
 # define M_UGLYUUCP	'U'	/* this wants an ugly UUCP from line */
 		/*	'V'	/* UIUC: !-relativize all addresses */
