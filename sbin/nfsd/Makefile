@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.3 (Berkeley) 06/29/90
+#	@(#)Makefile	5.4 (Berkeley) 01/15/91
 
 PROG=	nfsd
 CFLAGS+=-DNFS
