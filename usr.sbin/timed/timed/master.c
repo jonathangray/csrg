@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)master.c	2.19 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)master.c	2.20 (Berkeley) 03/02/91";
 #endif /* not lint */
 
 #include "globals.h"
@@ -110,7 +110,8 @@ loop:
 			(void)strcpy(to.tsp_name, hostname);
 			bytenetorder(&to);
 			if (sendto(sock, (char *)&to, sizeof(struct tsp), 0,
-			    &ntp->dest_addr, sizeof(struct sockaddr_in)) < 0) {
+			    (struct sockaddr *)&ntp->dest_addr,
+			    sizeof(struct sockaddr_in)) < 0) {
 				syslog(LOG_ERR, "sendto: %m");
 				exit(1);
 			}
@@ -148,7 +149,8 @@ loop:
 			(void)strcpy(msg->tsp_name, hostname);
 			bytenetorder(msg);
 			if (sendto(sock, (char *)msg, sizeof(struct tsp), 0,
-			    &saveaddr, sizeof(struct sockaddr_in)) < 0) {
+			    (struct sockaddr *)&saveaddr,
+			    sizeof(struct sockaddr_in)) < 0) {
 				syslog(LOG_ERR, "sendto: %m");
 				exit(1);
 			}
@@ -509,7 +511,8 @@ struct netinfo *net;
 	to.tsp_vers = TSPVERSION;
 	(void)strcpy(to.tsp_name, hostname);
 	bytenetorder(&to);
-	if (sendto(sock, (char *)&to, sizeof(struct tsp), 0, &net->dest_addr,
+	if (sendto(sock, (char *)&to, sizeof(struct tsp), 0,
+	    (struct sockaddr *)&net->dest_addr,
 	    sizeof(struct sockaddr_in)) < 0) {
 		syslog(LOG_ERR, "sendto: %m");
 		exit(1);
