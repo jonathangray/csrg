@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	1.3 (Berkeley) 01/16/93
+ *	@(#)extern.h	1.4 (Berkeley) 03/12/93
  */
 
 /*
@@ -49,6 +49,7 @@
 extern char *arcname;
 int ar_open __P((char *));
 void ar_close __P((void));
+void ar_flush __P((void));
 int ar_set_wr __P((void));
 int ar_app_ok __P((void));
 int ar_read __P((register char *, register int));
