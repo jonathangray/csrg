@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_serv.c	7.65 (Berkeley) 05/21/93
+ *	@(#)nfs_serv.c	7.66 (Berkeley) 05/25/93
  */
 
 /*
@@ -788,6 +788,11 @@ nfsrv_create(nfsd, mrep, md, dpos, cred, nam, mrq)
 		} else
 			fxdr_hyper(&sp->sa_nqsize, &vap->va_size);
 		if (vap->va_size != -1) {
+			if (error = nfsrv_access(vp, VWRITE, cred,
+			    (nd.ni_cnd.cn_flags & RDONLY), nfsd->nd_procp)) {
+				vput(vp);
+				nfsm_reply(0);
+			}
 			nqsrv_getl(vp, NQL_WRITE);
 			if (error = VOP_SETATTR(vp, vap, cred, nfsd->nd_procp)) {
 				vput(vp);
