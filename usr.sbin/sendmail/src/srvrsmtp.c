@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	6.13 (Berkeley) 02/20/93 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.14 (Berkeley) 02/21/93 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	6.13 (Berkeley) 02/20/93 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.14 (Berkeley) 02/21/93 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -160,7 +160,7 @@ smtp(e)
 		(void) fflush(stdout);
 
 		/* read the input line */
-		p = sfgets(inp, sizeof inp, InChannel, ReadTimeout);
+		p = sfgets(inp, sizeof inp, InChannel, TimeOuts.to_nextcommand);
 
 		/* handle errors */
 		if (p == NULL)
@@ -215,17 +215,18 @@ smtp(e)
 		  case CMDHELO:		/* hello -- introduce yourself */
 			SmtpPhase = "HELO";
 			setproctitle("%s: %s", CurHostName, inp);
-			if (!strcasecmp(p, MyHostName))
+			if (strcasecmp(p, MyHostName) == 0)
 			{
 				/*
-				 * didn't know about alias,
-				 * or connected to an echo server
-				 */
+				**  Didn't know about alias or MX,
+				**  or connected to an echo server
+				*/
+
 				message("553", "%s config error: mail loops back to myself",
 					MyHostName);
 				break;
 			}
-			if (RealHostName != NULL && strcasecmp(p, RealHostName))
+			if (RealHostName != NULL && strcasecmp(p, RealHostName) != 0)
 			{
 				char hostbuf[MAXNAME];
 
@@ -250,7 +251,7 @@ smtp(e)
 				message("503", "Polite people say HELO first");
 				break;
 			}
-			if (hasmail)
+			if (gotmail)
 			{
 				message("503", "Sender already specified");
 				break;
@@ -287,7 +288,7 @@ smtp(e)
 			if (Errors == 0)
 			{
 				message("250", "Sender ok");
-				hasmail = TRUE;
+				gotmail = TRUE;
 			}
 			else if (InChild)
 				finis();
@@ -333,7 +334,7 @@ smtp(e)
 
 		  case CMDDATA:		/* data -- text of mail */
 			SmtpPhase = "DATA";
-			if (!hasmail)
+			if (!gotmail)
 			{
 				message("503", "Need MAIL command");
 				break;
@@ -396,7 +397,7 @@ smtp(e)
 				finis();
 
 			/* clean up a bit */
-			hasmail = FALSE;
+			gotmail = FALSE;
 			dropenvelope(e);
 			CurEnv = e = newenvelope(e);
 			e->e_flags = BlankEnvelope.e_flags;
@@ -406,6 +407,11 @@ smtp(e)
 			message("250", "Reset state");
 			if (InChild)
 				finis();
+
+			/* clean up a bit */
+			gotmail = FALSE;
+			dropenvelope(e);
+			CurEnv = e = newenvelope(e);
 			break;
 
 		  case CMDVRFY:		/* vrfy -- verify address */
