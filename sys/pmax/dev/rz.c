@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)rz.c	8.3 (Berkeley) 11/30/94
+ *	@(#)rz.c	8.4 (Berkeley) 06/02/95
  */
 
 /*
@@ -57,8 +57,6 @@
 #include <sys/uio.h>
 #include <sys/stat.h>
 #include <sys/syslog.h>
-
-#include <ufs/ffs/fs.h>
 
 #include <pmax/dev/device.h>
 #include <pmax/dev/scsi.h>
@@ -189,7 +187,7 @@ rzready(sc)
 	ScsiClass7Sense *sp;
 
 	/* don't print SCSI errors */
-	sc->sc_flags |= RZF_NOERR;
+	sc->sc_flags |= RZF_NOERR | RZF_ALTCMD;
 
 	/* see if the device is ready */
 	for (tries = 10; ; ) {
@@ -258,7 +256,7 @@ rzready(sc)
 	}
 
 	/* print SCSI errors */
-	sc->sc_flags &= ~RZF_NOERR;
+	sc->sc_flags &= ~(RZF_NOERR | RZF_ALTCMD);
 
 	/* find out how big a disk this is */
 	sc->sc_cdb.len = sizeof(ScsiGroup1Cmd);
@@ -763,8 +761,6 @@ rzgetinfo(dev)
 	lp->d_secsize = DEV_BSIZE;
 	lp->d_secperunit = sc->sc_blks;
 	lp->d_npartitions = MAXPARTITIONS;
-	lp->d_bbsize = BBSIZE;
-	lp->d_sbsize = SBSIZE;
 	for (i = 0; i < MAXPARTITIONS; i++) {
 		lp->d_partitions[i].p_size = rzdefaultpart[i].nblocks;
 		lp->d_partitions[i].p_offset = rzdefaultpart[i].strtblk;
@@ -906,7 +902,7 @@ rzwrite(dev, uio)
 int
 rzioctl(dev, cmd, data, flag, p)
 	dev_t dev;
-	int cmd;
+	u_long cmd;
 	caddr_t data;
 	int flag;
 	struct proc *p;
