@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)mount.8	6.16 (Berkeley) 05/04/91
+.\"     @(#)mount.8	6.17 (Berkeley) 08/05/91
 .\"
 .Dd 
 .Dt MOUNT 8
@@ -121,7 +121,9 @@ Do not interpret character or block special devices on the file system.
 This options is useful for a server that has file systems containing
 special devices for architectures other than its own.
 .It synchronous
-All I/O to the file system should be done synchronously.
+All
+.Tn I/O
+to the file system should be done synchronously.
 .El
 .It Fl r
 The file system object is to be mounted read-only.
