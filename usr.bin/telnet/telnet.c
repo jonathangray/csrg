@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1988 Regents of the University of California.
+ * Copyright (c) 1988, 1990 Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)telnet.c	5.50 (Berkeley) 06/28/90";
+static char sccsid[] = "@(#)telnet.c	5.51 (Berkeley) 09/14/90";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -513,6 +513,7 @@ dooption(option)
 	    if (new_state_ok) {
 		set_my_want_state_will(option);
 		send_will(option, 0);
+		setconnmode(0);			/* Set new tty mode */
 	    } else {
 		will_wont_resp[option]++;
 		send_wont(option, 0);
@@ -792,7 +793,7 @@ suboption()
 	if (my_want_state_is_wont(TELOPT_TSPEED))
 	    return;
 	if ((subbuffer[1]&0xff) == TELQUAL_SEND) {
-	    int ospeed, ispeed;
+	    long ospeed, ispeed;
 	    char temp[50];
 	    int len;
 
@@ -901,7 +902,7 @@ suboption()
 		int dokrb4 = 0, unknowntypes = 0, noresponse = 1;
 
 		while (cp < subend) {
-			switch (*cp) {
+			switch (*cp&0xff) {
 			case TELQUAL_AUTHTYPE_KERBEROS_V4:
 				dokrb4 = 1;
 				break;
@@ -994,7 +995,7 @@ cantsend4:
 			    cp = &subbuffer[2];
 #endif
 			    while (cp < subend) {
-				switch (*cp) {
+				switch (*cp&0xff) {
 				case TELQUAL_AUTHTYPE_KERBEROS_V4:
 			    		break;
 				default:
@@ -1021,7 +1022,7 @@ cantsend4:
 static char str_lm[] = { IAC, SB, TELOPT_LINEMODE, 0, 0, IAC, SE };
 
 lm_will(cmd, len)
-char *cmd;
+unsigned char *cmd;
 {
     if (len < 1) {
 /*@*/	printf("lm_will: no command!!!\n");	/* Should not happen... */
@@ -1042,7 +1043,7 @@ char *cmd;
 }
 
 lm_wont(cmd, len)
-char *cmd;
+unsigned char *cmd;
 {
     if (len < 1) {
 /*@*/	printf("lm_wont: no command!!!\n");	/* Should not happen... */
@@ -1057,7 +1058,7 @@ char *cmd;
 }
 
 lm_do(cmd, len)
-char *cmd;
+unsigned char *cmd;
 {
     if (len < 1) {
 /*@*/	printf("lm_do: no command!!!\n");	/* Should not happen... */
@@ -1078,7 +1079,7 @@ char *cmd;
 }
 
 lm_dont(cmd, len)
-char *cmd;
+unsigned char *cmd;
 {
     if (len < 1) {
 /*@*/	printf("lm_dont: no command!!!\n");	/* Should not happen... */
@@ -1250,10 +1251,13 @@ slc_export()
     slc_start_reply();
     for (spcp = &spc_data[1]; spcp < &spc_data[NSLC+1]; spcp++) {
 	if (spcp->mylevel != SLC_NOSUPPORT) {
-	    spcp->flags = spcp->mylevel;
+	    if (spcp->val == (cc_t)(_POSIX_VDISABLE))
+		spcp->flags = SLC_NOSUPPORT;
+	    else
+		spcp->flags = spcp->mylevel;
 	    if (spcp->valp)
 		spcp->val = *spcp->valp;
-	    slc_add_reply(spcp - spc_data, spcp->mylevel, spcp->val);
+	    slc_add_reply(spcp - spc_data, spcp->flags, spcp->val);
 	}
     }
     slc_end_reply();
@@ -1281,7 +1285,7 @@ int len;
 			continue;
 		}
 		if (func > NSLC) {
-			if (cp[SLC_FLAGS] & SLC_LEVELBITS != SLC_NOSUPPORT)
+			if ((cp[SLC_FLAGS] & SLC_LEVELBITS) != SLC_NOSUPPORT)
 				slc_add_reply(func, SLC_NOSUPPORT, 0);
 			continue;
 		}
@@ -1338,7 +1342,11 @@ slc_check()
     for (spcp = &spc_data[1]; spcp < &spc_data[NSLC+1]; spcp++) {
 	if (spcp->valp && spcp->val != *spcp->valp) {
 	    spcp->val = *spcp->valp;
-	    slc_add_reply(spcp - spc_data, spcp->mylevel, spcp->val);
+	    if (spcp->val == (cc_t)(_POSIX_VDISABLE))
+		spcp->flags = SLC_NOSUPPORT;
+	    else
+		spcp->flags = spcp->mylevel;
+	    slc_add_reply(spcp - spc_data, spcp->flags, spcp->val);
 	}
     }
     slc_end_reply();
@@ -1410,13 +1418,13 @@ register int len;
 	register char *ep = 0, *epc = 0;
 	register int i;
 
-	switch(buf[0]) {
+	switch(buf[0]&0xff) {
 	case TELQUAL_SEND:
 		env_opt_start();
 		if (len == 1) {
 			env_opt_add(NULL);
 		} else for (i = 1; i < len; i++) {
-			switch (buf[i]) {
+			switch (buf[i]&0xff) {
 			case ENV_VALUE:
 				if (ep) {
 					*epc = 0;
@@ -1517,7 +1525,7 @@ register char *ep;
 	*opt_replyp++ = ENV_VAR;
 	for (;;) {
 		while (c = *ep++) {
-			switch(c) {
+			switch(c&0xff) {
 			case IAC:
 				*opt_replyp++ = IAC;
 				break;
@@ -1681,6 +1689,7 @@ process_iac:
 		     * so make sure we flush whatever is in the
 		     * buffer currently.
 		     */
+		printoption("RCVD", "IAC", DM);
 		SYNCHing = 1;
 		(void) ttyflush(1);
 		SYNCHing = stilloob();
@@ -1704,6 +1713,7 @@ process_iac:
 			ISend = 1;
 		    }
 		}
+		printoption("RCVD", "IAC", EOR);
 		break;
 #	    endif /* defined(TN3270) */
 
@@ -2337,6 +2347,13 @@ sendeof()
 {
     NET2ADD(IAC, xEOF);
     printoption("SENT", "IAC", xEOF);
+}
+
+void
+sendayt()
+{
+    NET2ADD(IAC, AYT);
+    printoption("SENT", "IAC", AYT);
 }
 
 /*
