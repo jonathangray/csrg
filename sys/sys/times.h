@@ -1,4 +1,4 @@
-/*	times.h	3.1	%H%	*/
+/*	times.h	3.2	06/07/80	*/
 
 /*
  * Structure returned by times()
