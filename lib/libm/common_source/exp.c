@@ -29,15 +29,10 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- *
- * All recipients should regard themselves as participants in an ongoing
- * research project and hence should feel obligated to report their
- * experiences (good or bad) with these elementary function codes, using
- * the sendbug(8) program, to the authors.
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)exp.c	5.5 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)exp.c	5.6 (Berkeley) 10/09/90";
 #endif /* not lint */
 
 /* EXP(X)
