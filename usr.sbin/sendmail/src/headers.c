@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)headers.c	8.3 (Berkeley) 07/16/93";
+static char sccsid[] = "@(#)headers.c	8.4 (Berkeley) 08/07/93";
 #endif /* not lint */
 
 # include <errno.h>
@@ -166,7 +166,7 @@ chompheader(line, def, e)
 	/* create a new node */
 	h = (HDR *) xalloc(sizeof *h);
 	h->h_field = newstr(fname);
-	h->h_value = NULL;
+	h->h_value = newstr(fvalue);
 	h->h_link = NULL;
 	bcopy((char *) mopts, (char *) h->h_mflags, sizeof mopts);
 	*hp = h;
@@ -175,8 +175,6 @@ chompheader(line, def, e)
 		h->h_flags |= H_DEFAULT;
 	if (cond)
 		h->h_flags |= H_CHECK;
-	if (h->h_value != NULL)
-		free((char *) h->h_value);
 		(void) sendto(h->h_value, 0, (ADDRESS *) NULL, 0);
 
 	/* hack to see if this is a new format message */
