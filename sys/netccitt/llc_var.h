@@ -36,7 +36,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)llc_var.h	7.2 (Berkeley) 02/23/93
+ *	@(#)llc_var.h	7.3 (Berkeley) 06/05/93
  */
 
 #ifdef __STDC__
@@ -65,7 +65,7 @@ struct npaidbentry {
 			u_short SI_window;
 			u_short SI_trace;
 			u_short SI_xchxid;
-			int (*SI_input) 
+			void (*SI_input) 
 				__P((struct mbuf *));
 			caddr_t (*SI_ctlinput) 
 				__P((int, struct sockaddr *, caddr_t));
