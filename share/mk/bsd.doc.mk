@@ -1,4 +1,4 @@
-#	@(#)bsd.doc.mk	5.10 (Berkeley) 06/05/93
+#	@(#)bsd.doc.mk	8.1 (Berkeley) 06/08/93
 
 BIB?=		bib
 EQN?=		eqn
