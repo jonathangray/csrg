@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	5.40 (Berkeley) 07/12/92";
+static char sccsid[] = "@(#)readcf.c	5.41 (Berkeley) 07/12/92";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -75,6 +75,7 @@ static char sccsid[] = "@(#)readcf.c	5.40 (Berkeley) 07/12/92";
 **		cfname -- control file name.
 **		safe -- TRUE if this is the system config file;
 **			FALSE otherwise.
+**		e -- the main envelope.
 **
 **	Returns:
 **		none.
@@ -86,6 +87,7 @@ static char sccsid[] = "@(#)readcf.c	5.40 (Berkeley) 07/12/92";
 readcf(cfname)
 	char *cfname;
 	bool safe;
+	register ENVELOPE *e;
 {
 	FILE *cf;
 	int ruleset = 0;
@@ -221,7 +223,7 @@ readcf(cfname)
 
 			/* expand and save the LHS */
 			*p = '\0';
-			expand(&buf[1], exbuf, &exbuf[sizeof exbuf], CurEnv);
+			expand(&buf[1], exbuf, &exbuf[sizeof exbuf], e);
 			rwp->r_lhs = prescan(exbuf, '\t', pvpbuf);
 			if (rwp->r_lhs != NULL)
 				rwp->r_lhs = copyplist(rwp->r_lhs, TRUE);
@@ -233,7 +235,7 @@ readcf(cfname)
 			while (*p != '\0' && *p != '\t')
 				p++;
 			*p = '\0';
-			expand(q, exbuf, &exbuf[sizeof exbuf], CurEnv);
+			expand(q, exbuf, &exbuf[sizeof exbuf], e);
 			rwp->r_rhs = prescan(exbuf, '\t', pvpbuf);
 			if (rwp->r_rhs != NULL)
 				rwp->r_rhs = copyplist(rwp->r_rhs, TRUE);
@@ -250,11 +252,11 @@ readcf(cfname)
 			break;
 
 		  case 'D':		/* macro definition */
-			define(buf[1], newstr(munchstring(&buf[2])), CurEnv);
+			define(buf[1], newstr(munchstring(&buf[2])), e);
 			break;
 
 		  case 'H':		/* required header line */
-			(void) chompheader(&buf[1], TRUE);
+			(void) chompheader(&buf[1], TRUE, e);
 			break;
 
 		  case 'C':		/* word class */
