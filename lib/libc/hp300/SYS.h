@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)SYS.h	5.4 (Berkeley) 04/28/91
+ *	@(#)SYS.h	5.5 (Berkeley) 05/07/91
  */
 
 #include <sys/syscall.h>
@@ -52,7 +52,8 @@
 #define	ENTRY(x)	.globl _/**/x; .even; _/**/x:
 #endif PROF
 #define	SYSCALL(x)	.even; err: jmp cerror; ENTRY(x); movl #SYS_/**/x,d0; \
-			trap #0; jcs err; rts
+			trap #0; jcs err
+#define	RSYSCALL(x)	SYSCALL(x); rts
 #define	PSEUDO(x,y)	ENTRY(x); movl #SYS_/**/y,d0; trap #0; rts
 
 #define	ASMSTR		.asciz
