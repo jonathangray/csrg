@@ -1,6 +1,6 @@
 /*-
- * Copyright (c) 1990 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1990, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -31,7 +31,7 @@
  * SUCH DAMAGE.
  *
  * from tahoe:	in_cksum.c	1.2	86/01/05
- *	@(#)in_cksum.c	7.2 (Berkeley) 10/11/92
+ *	@(#)in_cksum.c	8.1 (Berkeley) 06/11/93
  */
 
 #include <sys/param.h>
