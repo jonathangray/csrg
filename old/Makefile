@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.13 (Berkeley) 03/04/91
+#	@(#)Makefile	5.14 (Berkeley) 03/08/91
 
 SUBDIR=	compact hostid lex make yacc
 
