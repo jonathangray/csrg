@@ -32,12 +32,13 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)proc.c	5.16 (Berkeley) 06/04/91";
+static char sccsid[] = "@(#)proc.c	5.17 (Berkeley) 06/07/91";
 #endif /* not lint */
 
-#include "sh.h"
-#include "sh.dir.h"
-#include "sh.proc.h"
+#include "csh.h"
+#include "dir.h"
+#include "proc.h"
+#include "extern.h"
 #include <sys/wait.h>
 
 #define BIGINDEX	9	/* largest desirable job index */
@@ -62,8 +63,10 @@ static void okpcntl();
  *	childs status.  Top level routines (like pwait) must be sure
  *	to mask interrupts when playing with the proclist data structures!
  */
+/* ARGUSED */
 void
-pchild()
+pchild(notused)
+	int notused;
 {
     register struct process *pp;
     register struct process *fp;
