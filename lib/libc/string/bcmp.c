@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)bcmp.c	5.6 (Berkeley) 02/24/91";
+static char sccsid[] = "@(#)bcmp.c	5.7 (Berkeley) 10/04/92";
 #endif /* LIBC_SCCS and not lint */
 
 #include <string.h>
@@ -40,6 +40,7 @@ static char sccsid[] = "@(#)bcmp.c	5.6 (Berkeley) 02/24/91";
 /*
  * bcmp -- vax cmpc3 instruction
  */
+int
 bcmp(b1, b2, length)
 	const void *b1, *b2;
 	register size_t length;
