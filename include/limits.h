@@ -30,8 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)limits.h	5.8 (Berkeley) 12/02/90
+ *	@(#)limits.h	5.9 (Berkeley) 04/03/91
  */
+
+#ifndef _LIMITS_H_
+#define	_LIMITS_H_
 
 #define	_POSIX_ARG_MAX		4096
 #define	_POSIX_CHILD_MAX	6
@@ -55,3 +58,5 @@
 
 #include <machine/limits.h>
 #include <sys/syslimits.h>
+
+#endif /* !_LIMITS_H_ */
