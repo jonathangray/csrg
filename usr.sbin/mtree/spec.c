@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)spec.c	5.8 (Berkeley) 05/25/90";
+static char sccsid[] = "@(#)spec.c	5.9 (Berkeley) 05/25/90";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -43,20 +43,18 @@ static char sccsid[] = "@(#)spec.c	5.8 (Berkeley) 05/25/90";
 #include <ctype.h>
 #include "mtree.h"
 
-extern ENTRY *root;			/* root of the tree */
+extern NODE *root;			/* root of the tree */
 
 static int lineno;			/* current spec line number */
 
 spec()
 {
+	register NODE *centry, *last;
 	register char *p;
-	ENTRY *centry, *last;
-	INFO info, ginfo;
+	NODE ginfo, *emalloc();
 	char buf[2048];
-	ENTRY *emalloc();
 
-	ginfo.flags = info.flags = 0;
-	ginfo.type = info.type = F_NONE;
+	bzero((void *)&ginfo, sizeof(ginfo));
 	for (lineno = 1; fgets(buf, sizeof(buf), stdin); ++lineno) {
 		if (!(p = index(buf, '\n'))) {
 			(void)fprintf(stderr,
@@ -96,7 +94,7 @@ spec()
 			/* don't go up, if haven't gone down */
 			if (!root)
 				noparent();
-			if (last->info.type != F_DIR || last->flags&F_DONE) {
+			if (last->type != F_DIR || last->flags & F_DONE) {
 				if (last == root)
 					noparent();
 				last = last->parent;
@@ -105,18 +103,18 @@ spec()
 			continue;
 		}
 
-		centry = emalloc(sizeof(ENTRY) + strlen(p));
+		centry = emalloc(sizeof(NODE) + strlen(p));
+		*centry = ginfo;
 		(void)strcpy(centry->name, p);
 #define	MAGIC	"?*["
 		if (strpbrk(p, MAGIC))
 			centry->flags |= F_MAGIC;
-		centry->info = ginfo;
-		set(&centry->info);
+		set(centry);
 
 		if (!root) {
 			last = root = centry;
 			root->parent = root;
-		} else if (last->info.type == F_DIR && !(last->flags&F_DONE)) {
+		} else if (last->type == F_DIR && !(last->flags & F_DONE)) {
 			centry->parent = last;
 			last = last->child = centry;
 		} else {
@@ -129,10 +127,10 @@ spec()
 
 static
 set(ip)
-	INFO *ip;
+	register NODE *ip;
 {
-	int type;
-	char *kw, *val;
+	register int type;
+	register char *kw, *val;
 	gid_t getgroup();
 	uid_t getowner();
 	long atol(), strtol();
@@ -214,7 +212,7 @@ set(ip)
 
 static
 unset(ip)
-	register INFO *ip;
+	register NODE *ip;
 {
 	register char *p;
 
@@ -323,7 +321,7 @@ specerr()
 	exit(1);
 }
 
-static ENTRY *
+static NODE *
 emalloc(size)
 	int size;
 {
@@ -333,7 +331,7 @@ emalloc(size)
 	if (!(p = malloc((u_int)size)))
 		nomem();
 	bzero(p, size);
-	return((ENTRY *)p);
+	return((NODE *)p);
 }
 
 static
