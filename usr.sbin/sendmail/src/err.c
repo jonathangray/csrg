@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)err.c	6.8 (Berkeley) 03/17/93";
+static char sccsid[] = "@(#)err.c	6.9 (Berkeley) 03/23/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -74,6 +74,7 @@ static void fmtmsg();
 
 /*VARARGS1*/
 #ifdef __STDC__
+void
 syserr(char *fmt, ...)
 #else
 syserr(fmt, va_alist)
@@ -139,6 +140,7 @@ syserr(fmt, va_alist)
 
 /*VARARGS1*/
 #ifdef __STDC__
+void
 usrerr(char *fmt, ...)
 #else
 usrerr(fmt, va_alist)
@@ -186,6 +188,7 @@ usrerr(fmt, va_alist)
 
 /*VARARGS2*/
 #ifdef __STDC__
+void
 message(char *msg, ...)
 #else
 message(msg, va_alist)
@@ -221,6 +224,7 @@ message(msg, va_alist)
 
 /*VARARGS2*/
 #ifdef __STDC__
+void
 nmessage(char *msg, ...)
 #else
 nmessage(msg, va_alist)
