@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	6.20 (Berkeley) 03/01/93 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.21 (Berkeley) 03/01/93 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	6.20 (Berkeley) 03/01/93 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.21 (Berkeley) 03/01/93 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -274,11 +274,6 @@ smtp(e)
 				syserr("503 Nested MAIL command: MAIL %s", p);
 				finis();
 			}
-			if (!enoughspace())
-			{
-				message("452 Insufficient disk space; try again later");
-				break;
-			}
 
 			/* fork a subprocess to process this command */
 			if (runinchild("SMTP-MAIL", e) > 0)
@@ -303,7 +298,71 @@ smtp(e)
 				break;
 			}
 			QuickAbort = TRUE;
-			setsender(p, e);
+
+			/* must parse sender first */
+			delimptr = NULL;
+			setsender(p, e, &delimptr);
+			p = delimptr;
+			if (p != NULL && *p != '\0')
+				*p++ = '\0';
+
+			/* now parse ESMTP arguments */
+			msize = 0;
+			for (; p != NULL && *p != '\0'; p++)
+			{
+				char *kp;
+				char *vp;
+
+				/* locate the beginning of the keyword */
+				while (isascii(*p) && isspace(*p))
+					p++;
+				if (*p == '\0')
+					break;
+				kp = p;
+
+				/* skip to the value portion */
+				while (isascii(*p) && isalnum(*p) || *p == '-')
+					p++;
+				if (*p == '=')
+				{
+					*p++ = '\0';
+					vp = p;
+
+					/* skip to the end of the value */
+					while (*p != '\0' && *p != ' ' &&
+					       !(isascii(*p) && iscntrl(*p)) &&
+					       *p != '=')
+						p++;
+				}
+
+				if (*p != '\0')
+					*p++ = '\0';
+
+				if (tTd(19, 1))
+					printf("MAIL: got arg %s=%s\n", kp,
+						vp == NULL ? "<null>" : vp);
+
+				if (strcasecmp(kp, "size") == 0)
+				{
+					if (kp == NULL)
+					{
+						usrerr("501 SIZE requires a value");
+						/* NOTREACHED */
+					}
+					msize = atol(vp);
+				}
+				else
+				{
+					usrerr("501 %s parameter unrecognized", kp);
+					/* NOTREACHED */
+				}
+			}
+				
+			if (!enoughspace(msize))
+			{
+				message("452 Insufficient disk space; try again later");
+				break;
+			}
 			message("250 Sender ok");
 			gotmail = TRUE;
 			break;
