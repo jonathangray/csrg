@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_fault.c	7.12 (Berkeley) 06/02/92
+ *	@(#)vm_fault.c	7.13 (Berkeley) 06/05/92
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -409,10 +409,7 @@ vm_fault(map, vaddr, fault_type, change_wiring)
 			}
 			if (object != first_object) {
 				FREE_PAGE(m);
-				/*
-				 * XXX - we cannot just fall out at this
-				 * point, m has been freed and is invalid!
-				 */
+				/* note that `m' is not used after this */
 			}
 		}
 
