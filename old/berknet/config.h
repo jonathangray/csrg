@@ -1,4 +1,4 @@
-/*	@(#)config.h	4.2	(Berkeley)	09/20/82	*/
+/*	@(#)config.h	4.3	(Berkeley)	10/02/82	*/
 
 /*
 	These are machine-configuration dependent
