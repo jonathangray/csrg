@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_fork.c	7.27 (Berkeley) 05/04/91
+ *	@(#)kern_fork.c	7.28 (Berkeley) 05/15/91
  */
 
 #include "param.h"
@@ -172,6 +172,10 @@ again:
 	    (unsigned) ((caddr_t)&p2->p_endzero - (caddr_t)&p2->p_startzero));
 	bcopy(&p1->p_startcopy, &p2->p_startcopy,
 	    (unsigned) ((caddr_t)&p2->p_endcopy - (caddr_t)&p2->p_startcopy));
+	p2->p_spare[0] = 0;	/* XXX - should be in zero range */
+	p2->p_spare[1] = 0;	/* XXX - should be in zero range */
+	p2->p_spare[2] = 0;	/* XXX - should be in zero range */
+	p2->p_spare[3] = 0;	/* XXX - should be in zero range */
 
 	/*
 	 * Duplicate sub-structures as needed.
