@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 1991 The Regents of the University of California.
+ * Copyright (c) 1992 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,16 +32,19 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)misc.c	5.1 (Berkeley) 9/19/91";
+static char sccsid[] = "@(#)misc.c	5.1 (Berkeley) 08/06/92";
 #endif /* not lint */
 
 #include <sys/types.h>
+
 #include <unistd.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
 extern char *special;
+
 #if __STDC__
 #include <stdarg.h>
 #else
@@ -87,4 +90,3 @@ get(fd, off, p, len)
 	if (rbytes != len)
 		err(1, "%s: short read (%d, not %d)", special, rbytes, len);
 }
-
