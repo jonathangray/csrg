@@ -30,12 +30,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)buf.h	8.5 (Berkeley) 01/04/94
+ *	@(#)buf.h	8.6 (Berkeley) 01/06/94
  */
 
 #ifndef _SYS_BUF_H_
 #define	_SYS_BUF_H_
 #include <sys/queue.h>
+
+#define NOLIST ((struct buf *)0x87654321)
 
 /*
  * The buffer header describes an I/O operation in the kernel.
