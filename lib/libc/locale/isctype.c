@@ -40,7 +40,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)isctype.c	8.2 (Berkeley) 01/21/94";
+static char sccsid[] = "@(#)isctype.c	8.3 (Berkeley) 02/24/94";
 #endif /* LIBC_SCCS and not lint */
 
 #define _ANSI_LIBRARY
@@ -163,7 +163,7 @@ int
 tolower(c)
 	int c;
 {
-        return((c & _CRMASK) ? ___toupper(c) : _CurrentRuneLocale->mapupper[c]);
+        return((c & _CRMASK) ? ___tolower(c) : _CurrentRuneLocale->maplower[c]);
 }
 
 #undef toupper
@@ -171,5 +171,5 @@ int
 toupper(c)
 	int c;
 {
-        return((c & _CRMASK) ? ___tolower(c) : _CurrentRuneLocale->maplower[c]);
+        return((c & _CRMASK) ? ___toupper(c) : _CurrentRuneLocale->mapupper[c]);
 }
