@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pk_acct.c	7.6 (Berkeley) 06/26/91
+ *	@(#)pk_acct.c	7.7 (Berkeley) 02/05/92
  */
 
 #include "param.h"
@@ -72,9 +72,8 @@ pk_accton (path)
 
 	if (path == 0)
 		goto close;
-	nd.ni_segflg = UIO_USERSPACE;
-	nd.ni_dirp = path;
-	if (error = vn_open (&nd, p, FWRITE, 0644))
+	NDINIT(&nd, LOOKUP, FOLLOW, UIO_USERSPACE, path, p);
+	if (error = vn_open (&nd, FWRITE, 0644))
 		return (error);
 	vp = nd.ni_vp;
 	VOP_UNLOCK(vp);
