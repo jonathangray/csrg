@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.31 (Berkeley) 07/20/90";
+static char sccsid[] = "@(#)main.c	5.32 (Berkeley) 03/02/91";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -136,7 +136,7 @@ main(argc, argv, envp)
 	extern time_t convtime();
 	extern putheader(), putbody();
 	extern ENVELOPE *newenvelope();
-	extern intsig();
+	extern void intsig();
 	extern char **myhostname();
 	extern char *arpadate();
 	extern char **environ;
@@ -803,6 +803,7 @@ finis()
 **		Unlocks the current job.
 */
 
+void
 intsig()
 {
 	FileName = NULL;
