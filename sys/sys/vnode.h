@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode.h	8.9 (Berkeley) 08/10/94
+ *	@(#)vnode.h	8.10 (Berkeley) 08/10/94
  */
 
 #include <sys/queue.h>
@@ -222,12 +222,6 @@ extern	struct vattr va_null;		/* predefined null vattr structure */
 #define	LEASE_READ	0x1		/* Check lease for readers */
 #define	LEASE_WRITE	0x2		/* Check lease for modifiers */
 
-#ifdef NFS
-void	lease_updatetime __P((int deltat));
-#define	LEASE_UPDATETIME(dt)		lease_updatetime(dt)
-#else
-#define	LEASE_UPDATETIME(dt)
-#endif /* NFS */
 #endif /* KERNEL */
 
 
