@@ -43,7 +43,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.23 (Berkeley) 10/11/90";
+static char sccsid[] = "@(#)main.c	5.24 (Berkeley) 02/02/91";
 #endif /* not lint */
 
 /*-
@@ -76,6 +76,7 @@ static char sccsid[] = "@(#)main.c	5.23 (Berkeley) 10/11/90";
 #include <sys/param.h>
 #include <sys/signal.h>
 #include <sys/stat.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <varargs.h>
@@ -359,8 +360,6 @@ main(argc, argv)
 			}
 		}
 		if (chdir(path)) {
-			extern int errno;
-
 			(void)fprintf(stderr, "make: %s: %s.\n",
 			    path, strerror(errno));
 			exit(2);
@@ -758,7 +757,6 @@ char *
 emalloc(len)
 	u_int len;
 {
-	extern int errno;
 	char *p, *malloc();
 
 	if (!(p = malloc(len)))
