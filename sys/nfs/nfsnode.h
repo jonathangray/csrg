@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsnode.h	7.27 (Berkeley) 07/22/92
+ *	@(#)nfsnode.h	7.28 (Berkeley) 07/24/92
  */
 
 /*
@@ -95,13 +95,6 @@ struct nfsnode {
 #define	n_tnext		n_un.un_nqnfs.un_tnext
 #define	n_tprev		n_un.un_nqnfs.un_tprev
 
-#ifdef KERNEL
-/*
- * Convert between nfsnode pointers and vnode pointers
- */
-#define VTONFS(vp)	((struct nfsnode *)(vp)->v_data)
-#define NFSTOV(np)	((struct vnode *)(np)->n_vnode)
-#endif
 /*
  * Flags for n_flag
  */
@@ -114,6 +107,13 @@ struct nfsnode {
 #define	NUPD		0x0200	/* Special file updated */
 #define	NCHG		0x0400	/* Special file times changed */
 
+/*
+ * Convert between nfsnode pointers and vnode pointers
+ */
+#define VTONFS(vp)	((struct nfsnode *)(vp)->v_data)
+#define NFSTOV(np)	((struct vnode *)(np)->n_vnode)
+
+#ifdef KERNEL
 /*
  * Prototypes for NFS vnode operations
  */
@@ -167,3 +167,4 @@ int	nfs_vfree __P((struct vop_vfree_args *));
 int	nfs_truncate __P((struct vop_truncate_args *));
 int	nfs_update __P((struct vop_update_args *));
 int	bwrite();		/* NFS needs a bwrite routine */
+#endif /* KERNEL */
