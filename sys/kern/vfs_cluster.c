@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_cluster.c	8.3 (Berkeley) 10/14/93
+ *	@(#)vfs_cluster.c	8.4 (Berkeley) 01/04/94
  */
 
 #include <sys/param.h>
@@ -322,7 +322,6 @@ cluster_callback(bp)
 {
 	struct cluster_save *b_save;
 	struct buf **tbp;
-	long bsize;
 	caddr_t cp;
 
 	daddr_t	daddr;
