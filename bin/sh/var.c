@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)var.c	5.4 (Berkeley) 04/16/92";
+static char sccsid[] = "@(#)var.c	5.5 (Berkeley) 05/19/92";
 #endif /* not lint */
 
 /*
@@ -186,7 +186,7 @@ setvar(name, val, flags)
 	}
 	namelen = p - name;
 	if (isbad)
-		error("%.*s: is read only", namelen, name);
+		error("%.*s: bad variable name", namelen, name);
 	len = namelen + 2;		/* 2 is space for '=' and '\0' */
 	if (val == NULL) {
 		flags |= VUNSET;
