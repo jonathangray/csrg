@@ -3,7 +3,7 @@
 # include <errno.h>
 # include "sendmail.h"
 
-static char	SccsId[] = "@(#)collect.c	3.12	08/09/81";
+static char	SccsId[] = "@(#)collect.c	3.13	08/17/81";
 
 /*
 **  COLLECT -- read & parse message header & make temp file.
@@ -175,7 +175,9 @@ maketemp(from)
 		define('x', p);
 
 	/* date message originated */
-	p = hvalue("date");
+	p = hvalue("posted-date");
+	if (p == NULL)
+		p = hvalue("date");
 	if (p != NULL)
 	{
 		define('a', p);
