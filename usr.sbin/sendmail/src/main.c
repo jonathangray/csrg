@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.47 (Berkeley) 04/16/92";
+static char sccsid[] = "@(#)main.c	5.48 (Berkeley) 05/06/92";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -177,7 +177,12 @@ main(argc, argv, envp)
 	if (TimeZoneSpec == NULL)
 		unsetenv("TZ");
 	else if (TimeZoneSpec[0] != '\0')
-		setenv("TZ", TimeZoneSpec);
+	{
+		p = xalloc(strlen(TimeZoneSpec) + 4);
+		(void) strcpy(p, "TZ=");
+		(void) strcat(p, TimeZoneSpec);
+		putenv(p);
+	}
 #else
 	/* enforce use of kernel-supplied time zone information */
 	unsetenv("TZ");
