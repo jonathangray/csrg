@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kbd.c	7.3 (Berkeley) 04/28/91
+ *	@(#)kbd.c	7.4 (Berkeley) 05/04/91
  */
 
 #define	L		0x01	/* locking function */
@@ -232,6 +232,7 @@ u_char getchar() {
 	u_char c;
 
 	c = kbd();
+	if (c == '\b' || c == '\177') return(c);
 	if (c == '\r') c = '\n';
 	putchar(c);
 	return(c);
