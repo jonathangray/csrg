@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_prof.c	7.18 (Berkeley) 04/27/93
+ *	@(#)subr_prof.c	7.19 (Berkeley) 04/29/93
  */
 
 #include <sys/param.h>
@@ -65,6 +65,7 @@ kmstartup()
 	printf("Profiling kernel, textsize=%d [%x..%x]\n",
 	       p->textsize, p->lowpc, p->highpc);
 	p->kcountsize = p->textsize / HISTFRACTION;
+	p->hashfraction = HASHFRACTION;
 	p->fromssize = p->textsize / HASHFRACTION;
 	p->tolimit = p->textsize * ARCDENSITY / 100;
 	if (p->tolimit < MINARCS)
@@ -116,6 +117,8 @@ sysctl_doprof(name, namelen, oldp, oldlenp, newp, newlen, p)
 	case GPROF_TOS:
 		return (sysctl_struct(oldp, oldlenp, newp, newlen,
 		    gp->tos, gp->tossize));
+	case GPROF_GMONPARAM:
+		return (sysctl_rdstruct(oldp, oldlenp, newp, gp, sizeof *gp));
 	default:
 		return (EOPNOTSUPP);
 	}
