@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	7.60 (Berkeley) 05/24/91
+ *	@(#)nfs_vnops.c	7.61 (Berkeley) 09/06/91
  */
 
 /*
@@ -66,8 +66,6 @@
 #include "xdr_subs.h"
 #include "nfsm_subs.h"
 #include "nfsiom.h"
-
-#include "machine/mtpr.h"
 
 /* Defs */
 #define	TRUE	1
@@ -1559,14 +1557,6 @@ nfs_doio(bp)
 	int error;
 	struct uio uio;
 	struct iovec io;
-#if !defined(hp300) && !defined(i386)
-	register struct pte *pte, *ppte;
-	register caddr_t vaddr;
-	int npf, npf2;
-	int reg, o;
-	caddr_t vbase;
-	unsigned v;
-#endif
 
 	vp = bp->b_vp;
 	np = VTONFS(vp);
@@ -1586,49 +1576,8 @@ nfs_doio(bp)
 		if (bp->b_flags & B_DIRTY)
 			uiop->uio_procp = pageproc;
 		cr = crcopy(uiop->uio_procp->p_ucred);
-#if defined(hp300) || defined(i386)
 		/* mapping was already done by vmapbuf */
 		io.iov_base = bp->b_un.b_addr;
-#else
-		o = (int)bp->b_un.b_addr & PGOFSET;
-		npf2 = npf = btoc(bp->b_bcount + o);
-
-		/*
-		 * Get some mapping page table entries
-		 */
-		while ((reg = rmalloc(nfsmap, (long)npf)) == 0) {
-			nfsmap_want++;
-			(void) tsleep((caddr_t)&nfsmap_want, PZERO-1, "nfsmap",
-					0);
-		}
-		reg--;
-		if (bp->b_flags & B_PAGET)
-			pte = &Usrptmap[btokmx((struct pte *)bp->b_un.b_addr)];
-		else {
-			v = btop(bp->b_un.b_addr);
-			if (bp->b_flags & B_UAREA)
-				pte = &uiop->uio_procp->p_addr[v];
-			else
-				pte = vtopte(uiop->uio_procp, v);
-		}
-
-		/*
-		 * Play vmaccess() but with the Nfsiomap page table
-		 */
-		ppte = &Nfsiomap[reg];
-		vbase = vaddr = &nfsiobuf[reg*NBPG];
-		while (npf != 0) {
-			mapin(ppte, (u_int)vaddr, pte->pg_pfnum, (int)(PG_V|PG_KW));
-#if defined(tahoe)
-			mtpr(P1DC, vaddr);
-#endif
-			ppte++;
-			pte++;
-			vaddr += NBPG;
-			--npf;
-		}
-		io.iov_base = vbase+o;
-#endif /* !defined(hp300) */
 
 		/*
 		 * And do the i/o rpc
@@ -1650,13 +1599,6 @@ nfs_doio(bp)
 		 * Finally, release pte's used by physical i/o
 		 */
 		crfree(cr);
-#if !defined(hp300) && !defined(i386)
-		rmfree(nfsmap, (long)npf2, (long)++reg);
-		if (nfsmap_want) {
-			nfsmap_want = 0;
-			wakeup((caddr_t)&nfsmap_want);
-		}
-#endif
 	} else {
 		if (bp->b_flags & B_READ) {
 			io.iov_len = uiop->uio_resid = bp->b_bcount;
