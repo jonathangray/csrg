@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)optr.c	5.12 (Berkeley) 07/29/91";
+static char sccsid[] = "@(#)optr.c	5.13 (Berkeley) 06/18/92";
 #endif /* not lint */
 
 #ifdef sunos
@@ -42,7 +42,6 @@ static char sccsid[] = "@(#)optr.c	5.12 (Berkeley) 07/29/91";
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <sys/time.h>
-#include <sys/dir.h>
 #else
 #include <sys/param.h>
 #include <sys/wait.h>
@@ -118,10 +117,10 @@ query(question)
 	/*
 	 *	Turn off the alarm, and reset the signal to trap out..
 	 */
-	alarm(0);
+	(void) alarm(0);
 	if (signal(SIGALRM, sigalrm) == SIG_IGN)
 		signal(SIGALRM, SIG_IGN);
-	fclose(mytty);
+	(void) fclose(mytty);
 	return(back);
 }
 
@@ -150,7 +149,7 @@ alarmcatch()
 		    attnmessage);
 	}
 	signal(SIGALRM, alarmcatch);
-	alarm(120);
+	(void) alarm(120);
 	timeout = 1;
 }
 
@@ -181,7 +180,7 @@ set_operators()
 	if (!notify)		/*not going to notify*/
 		return;
 	gp = getgrnam(OPGRENT);
-	endgrent();
+	(void) endgrent();
 	if (gp == NULL) {
 		msg("No group entry for %s.\n", OPGRENT);
 		notify = 0;
@@ -203,7 +202,6 @@ broadcast(message)
 	time_t		clock;
 	FILE	*f_utmp;
 	struct	utmp	utmp;
-	int	nusers;
 	char	**np;
 	int	pid, s;
 
@@ -221,7 +219,7 @@ broadcast(message)
 		return;
 	}
 
-	clock = time(0);
+	clock = time((time_t *)0);
 	localclock = localtime(&clock);
 
 	if ((f_utmp = fopen(_PATH_UTMP, "r")) == NULL) {
@@ -229,13 +227,11 @@ broadcast(message)
 		return;
 	}
 
-	nusers = 0;
 	while (!feof(f_utmp)) {
-		if (fread(&utmp, sizeof (struct utmp), 1, f_utmp) != 1)
+		if (fread((char *) &utmp, sizeof (struct utmp), 1, f_utmp) != 1)
 			break;
 		if (utmp.ut_name[0] == 0)
 			continue;
-		nusers++;
 		for (np = gp->gr_mem; *np; np++) {
 			if (strncmp(*np, utmp.ut_name, sizeof(utmp.ut_name)) != 0)
 				continue;
@@ -303,7 +299,7 @@ timeest()
 {
 	time_t	tnow, deltat;
 
-	time (&tnow);
+	(void) time((time_t *) &tnow);
 	if (tnow >= tschedule) {
 		tschedule = tnow + 300;
 		if (blockswritten < 500)
@@ -315,23 +311,6 @@ timeest()
 			(blockswritten * 100.0) / tapesize,
 			deltat / 3600, (deltat % 3600) / 60);
 	}
-}
-
-/*
- *	tapesize: total number of blocks estimated over all reels
- *	blockswritten:	blocks actually written, over all reels
- *	etapes:	estimated number of tapes to write
- *
- *	tsize:	blocks can write on this reel
- *	asize:	blocks written on this reel
- *	tapeno:	number of tapes written so far
- */
-int
-blocksontape()
-{
-	if (tapeno == etapes)
-		return (tapesize - (etapes - 1) * tsize);
-	return (tsize);
 }
 
 void
@@ -400,7 +379,7 @@ quit(fmt, va_alist)
 #else
 	va_start(ap);
 #endif
-	vfprintf(stderr, fmt, ap);
+	(void) vfprintf(stderr, fmt, ap);
 	va_end(ap);
 	(void) fflush(stdout);
 	(void) fflush(stderr);
@@ -459,7 +438,7 @@ getfstab()
 		pf->pf_next = table;
 		table = pf;
 	}
-	endfsent();
+	(void) endfsent();
 }
 
 /*
@@ -513,10 +492,10 @@ lastdump(arg)
 	int dumpme, datesort();
 	time_t tnow;
 
-	time(&tnow);
+	(void) time(&tnow);
 	getfstab();		/* /etc/fstab input */
 	initdumptimes();	/* /etc/dumpdates input */
-	qsort(ddatev, nddates, sizeof(struct dumpdates *), datesort);
+	qsort((char *) ddatev, nddates, sizeof(struct dumpdates *), datesort);
 
 	if (arg == 'w')
 		(void) printf("Dump these file systems:\n");
@@ -559,13 +538,3 @@ datesort(a1, a2)
 	return (diff);
 }
 
-int max(a, b)
-	int a, b;
-{
-	return (a > b ? a : b);
-}
-int min(a, b)
-	int a, b;
-{
-	return (a < b ? a : b);
-}
