@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)add_line.c	5.4 (Berkeley) 03/02/93";
+static char sccsid[] = "@(#)add_line.c	5.5 (Berkeley) 03/18/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -62,11 +62,8 @@ add_line(p, len)
 {
 	extern int file_loc;
 	long l_key;
-	int l_jmp_flag;
 
-	if (l_jmp_flag = setjmp(ctrl_position2))
-		return (0);
-	sigspecial2 = 1;
+	sigspecial++;
 	if (file_seek)  /* x-ref to get_line for what this does */ {
 		file_seek = 0;
 		fseek(fhtmp, 0L, 2); /* set to end-to-file */
@@ -74,7 +71,7 @@ add_line(p, len)
 	l_key = ftell(fhtmp);
 					/* keeps user time down 20% approx. */
 	file_loc = l_key + fwrite(p, sizeof(char), len, fhtmp);
-	sigspecial2 = 0;
+	sigspecial--;
 	return (l_key);
 }
 #endif
@@ -87,18 +84,15 @@ add_line(p, len)
 {
 	DBT db_key, db_data;
 	static recno_t l_key=0;
-	int l_jmp_flag;
 
-	if (l_jmp_flag = setjmp(ctrl_position2))
-		return ((recno_t)0);
-	sigspecial2 = 1;
+	sigspecial++;
 	l_key++;
 	(db_key.data) = &l_key;
 	(db_key.size) = sizeof(recno_t);
 	(db_data.data) = p;
 	(db_data.size) = len;
 	(dbhtmp->put)(dbhtmp, &db_key, &db_data, (u_int)(R_NOOVERWRITE));
-	sigspecial2 = 0;
+	sigspecial--;
 	return (l_key);
 }
 #endif
@@ -110,17 +104,14 @@ add_line(p, len)
 	long len;
 {
 	char *tmp;
-	int l_jmp_flag;
 
-	if (l_jmp_flag = setjmp(ctrl_position2))
-		return (NULL);
-	sigspecial2 = 1;
+	sigspecial++;
 	tmp = (char *)calloc(len+1, sizeof(char));
 	if (tmp) {
 		bcopy(p, tmp, len);
 		tmp[len] = '\0';
 	}
-	sigspecial2 = 0;
+	sigspecial--;
 	return (tmp);
 }
 #endif
