@@ -1,4 +1,10 @@
-/*	t..c	4.4	88/07/22	*/
+/*-
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ *
+ *	@(#)t..c	4.5 (Berkeley) 04/18/91
+ */
 
 /* t..c : external declarations */
 
