@@ -3,7 +3,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	5.6 (Berkeley) 10/30/86
+#	@(#)Makefile	5.7 (Berkeley) 06/19/87
 #
 
 # Makefile for f77 I/O lib, libI77.a
