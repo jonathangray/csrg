@@ -33,6 +33,8 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
+ *
+ *	@(#)quad.h	5.6 (Berkeley) 06/02/92
  */
 
 /*
@@ -60,8 +62,8 @@
  * most little-endian machines, all you need do is exchange _QUAD_HIGHWORD
  * and _QUAD_LOWWORD.
  */
-#define _QUAD_HIGHWORD 0
-#define _QUAD_LOWWORD 1
+#define _QUAD_HIGHWORD	0
+#define _QUAD_LOWWORD	1
 #endif
 
 typedef long long quad;
