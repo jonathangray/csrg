@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_dp.c	7.3 (Berkeley) 09/12/90
+ *	@(#)if_dp.c	7.4 (Berkeley) 09/14/90
  */
 
 #include "dp.h"
@@ -132,6 +132,7 @@ struct	pdma dppdma[2*NDP];
 struct dp_softc {
 	struct	ifnet dp_if;		/* network-visible interface */
 	int	dp_ipl;
+	struct	dpdevice *dp_addr;	/* dpcsr address */
 	short	dp_iused;		/* input buffers given to DP */
 	short	dp_flags;		/* flags */
 #define DPF_RUNNING	0x01		/* device initialized */
@@ -160,7 +161,7 @@ dpprobe(reg, ui)
 {
 	register int br, cvec;
 	register struct dpdevice *addr = (struct dpdevice *)reg;
-	register int i;
+	register int unit = ui->ui_unit;
 
 #ifdef lint
 	br = 0; cvec = br; br = cvec;
@@ -170,7 +171,8 @@ dpprobe(reg, ui)
 	addr->dpclr = DP_CLR;
 	addr->dpclr = DP_XIE|DP_XE;
 	DELAY(100000);
-	dp_softc[ui->ui_unit].dp_ipl = br = qbgetpri();
+	dp_softc[unit].dp_ipl = br = qbgetpri();
+	dp_softc[unit].dp_addr = addr;
 	addr->dpclr = 0;
 	if (cvec && cvec != 0x200){
 		cvec -= 4;
@@ -216,15 +218,9 @@ dpreset(unit, uban)
 	if (unit >= NDP || (ui = dpinfo[unit]) == 0 || ui->ui_alive == 0 ||
 	    ui->ui_ubanum != uban)
 		return;
-	printf(" dp%d", unit);
-	dp->dp_flags = 0;
-	dp->dp_if.if_flags &= ~IFF_RUNNING;
-	addr = (struct dpdevice *)ui->ui_addr;
-	addr->dpclr = DP_CLR;
-	DELAY(1000);
-	addr->dpsar = 0;
-	addr->dprcsr = 0;
+	dpdown(unit);
 	dpinit(unit);
+	printf(" dp%d", unit);
 }
 
 /*
@@ -234,7 +230,6 @@ dpinit(unit)
 	int unit;
 {
 	register struct dp_softc *dp = &dp_softc[unit];
-	register struct uba_device *ui = dpinfo[unit];
 	register struct dpdevice *addr;
 	register struct ifaddr *ifa;
 	register struct pdma *pdp = &dppdma[unit*2];
@@ -250,7 +245,7 @@ dpinit(unit)
 	if (ifa == (struct ifaddr *) 0)
 		return;
 
-	addr = (struct dpdevice *)ui->ui_addr;
+	addr = dp->dp_addr;
 	s = splimp();
 	dp->dp_iused = 0;
 	dp->dp_istate = dp->dp_ostate = DPS_IDLE;
@@ -291,8 +286,7 @@ dpstart(ifp)
 {
 	int s, unit = ifp->if_unit, error = 0, len;
 	register struct dp_softc *dp = &dp_softc[unit];
-	register struct dpdevice *addr =
-				(struct dpdevice *)(dpinfo[unit]->ui_addr);
+	register struct dpdevice *addr = dp_addr;
 	register struct mbuf *m;
 	register char *cp;
 	char *cplim;
@@ -302,7 +296,8 @@ dpstart(ifp)
 	 * complete or error.
 	 */
 	dpstat.start++;
-	if (dp->dp_if.if_flags & IFF_OACTIVE)
+	if ((dp->dp_if.if_flags & IFF_OACTIVE) ||
+	    ! (dp->dp_if.if_flags & IFF_RUNNING))
 		goto out;
 	IF_DEQUEUE(&dp->dp_if.if_snd, m);
 	if (m == 0)
@@ -614,13 +609,21 @@ dpioctl(ifp, cmd, data)
  * Flush output queue and drop queue limit.
  */
 dpdown(unit)
-	int unit;
+int unit;
 {
+
 	register struct dp_softc *dp = &dp_softc[unit];
+	register struct dpdevice *addr = dp->dp_addr;
 
 	dpstat.down++;
 	if_qflush(&dp->dp_if.if_snd);
-	dpreset(unit);
+	dp->dp_flags = 0;
+	dp->dp_if.if_flags &= ~(IFF_RUNNING | IFF_OACTIVE);
+
+	addr->dpclr = DP_CLR;
+	DELAY(1000);
+	addr->dpsar = 0;
+	addr->dprcsr = 0;
 }
 
 /*
