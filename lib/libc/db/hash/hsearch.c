@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)hsearch.c	8.2 (Berkeley) 09/07/93";
+static char sccsid[] = "@(#)hsearch.c	8.3 (Berkeley) 02/21/94";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -43,7 +43,6 @@ static char sccsid[] = "@(#)hsearch.c	8.2 (Berkeley) 09/07/93";
 #include <fcntl.h>
 #include <string.h>
 
-#define	__DBINTERFACE_PRIVATE
 #include <db.h>
 #include "search.h"
 
