@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tz.c	8.1 (Berkeley) 06/29/93
+ *	@(#)tz.c	8.2 (Berkeley) 11/30/93
  *
  * from: $Header: /sprite/src/kernel/dev/RCS/devSCSITape.c,
  *	v 8.14 89/07/31 17:26:13 mendel Exp $ SPRITE (Berkeley)
@@ -164,7 +164,8 @@ tzprobe(sd)
 	if (i == 5 && inqbuf.version == 1 && inqbuf.qualifier == 0x50) {
 		printf(" TK50\n");
 		sc->sc_tapeid = MT_ISTK50;
-	} else if (i == 5 && inqbuf.version == 1 && inqbuf.qualifier == 0) {
+	} else if (i == 5 && inqbuf.version == 1 && inqbuf.qualifier == 0 &&
+	    inqbuf.length == 0) {
 		/* assume Emultex MT02 controller */
 		printf(" MT02\n");
 		sc->sc_tapeid = MT_ISMT02;
