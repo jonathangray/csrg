@@ -36,7 +36,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-	.asciz "@(#)sbrk.s	5.1 (Berkeley) 05/12/90"
+	.asciz "@(#)sbrk.s	8.1 (Berkeley) 06/04/93"
 #endif /* LIBC_SCCS and not lint */
 
 #include "SYS.h"
