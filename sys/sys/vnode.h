@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode.h	8.12 (Berkeley) 01/09/95
+ *	@(#)vnode.h	8.13 (Berkeley) 02/19/95
  */
 
 #include <sys/queue.h>
@@ -349,6 +349,7 @@ struct vop_generic_args {
 struct file;
 struct mount;
 struct nameidata;
+struct ostat;
 struct proc;
 struct stat;
 struct ucred;
@@ -358,8 +359,10 @@ struct vnode;
 struct vop_bwrite_args;
 
 int 	bdevvp __P((dev_t dev, struct vnode **vpp));
+void	cvtstat __P((struct stat *st, struct ostat *ost));
 int 	getnewvnode __P((enum vtagtype tag,
 	    struct mount *mp, int (**vops)(), struct vnode **vpp));
+void	insmntque __P((struct vnode *vp, struct mount *mp));
 void 	vattr_null __P((struct vattr *vap));
 int 	vcount __P((struct vnode *vp));
 int 	vget __P((struct vnode *vp, int lockflag));
