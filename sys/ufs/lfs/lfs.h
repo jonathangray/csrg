@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs.h	7.17 (Berkeley) 07/22/92
+ *	@(#)lfs.h	7.18 (Berkeley) 07/23/92
  */
 
 #define	LFS_LABELPAD	8192		/* LFS label size */
@@ -57,16 +57,17 @@ typedef struct segusage SEGUSE;
 struct segusage {
 	u_long	su_nbytes;		/* number of live bytes */
 	u_long	su_lastmod;		/* SEGUSE last modified timestamp */
+	u_short	su_nsums;		/* number of summaries in segment */
+	u_short	su_ninos;		/* number of inode blocks in seg */
 #define	SEGUSE_ACTIVE		0x1	/* segment is currently being written */
 #define	SEGUSE_DIRTY		0x2	/* segment has data in it */
 #define	SEGUSE_SUPERBLOCK	0x4	/* segment contains a superblock */
-#define	SEGUSE_LIVELOG		0x8	/* segment has not been checkpointed */
 	u_long	su_flags;
 };
 
+#define	SEGUPB(fs)	(1 << (fs)->lfs_sushift);
 #define	SEGTABSIZE_SU(fs) \
-	(((fs)->lfs_nseg * sizeof(SEGUSE) + \
-	((fs)->lfs_bsize - 1)) >> (fs)->lfs_bshift)
+	((fs)->lfs_nseg >> ((fs)->lfs_bshift - (fs)->lfs_sushift))
 
 /* On-disk file information.  One per file with data blocks in the segment. */
 typedef struct finfo FINFO;
@@ -93,7 +94,7 @@ struct lfs {
 
 /* Checkpoint region. */
 	ino_t	lfs_free;		/* start of the free list */
-	u_long	lfs_bfree;		/* number of free blocks */
+	u_long	lfs_bfree;		/* number of free disk blocks */
 	u_long	lfs_nfiles;		/* number of allocated inodes */
 	daddr_t	lfs_idaddr;		/* inode file disk address */
 	ino_t	lfs_ifile;		/* inode file inode number */
@@ -128,6 +129,7 @@ struct lfs {
 	u_long	lfs_fbmask;		/* calc frag offset from block offset */
 	u_long	lfs_fbshift;		/* fast mult/div for frag from block */
 	u_long	lfs_fsbtodb;		/* fsbtodb and dbtofsb shift constant */
+	u_long	lfs_sushift;		/* fast mult/div for segusage table */
 
 #define	LFS_MIN_SBINTERVAL	5	/* minimum superblock segment spacing */
 #define	LFS_MAXNUMSB		10	/* superblock disk offsets */
@@ -233,6 +235,7 @@ struct segsum {
 #define	blksize(fs)		((fs)->lfs_bsize)
 #define	blkoff(fs, loc)		((loc) & (fs)->lfs_bmask)
 #define	fsbtodb(fs, b)		((b) << (fs)->lfs_fsbtodb)
+#define	dbtofsb(fs, b)		((b) >> (fs)->lfs_fsbtodb)
 #define	lblkno(fs, loc)		((loc) >> (fs)->lfs_bshift)
 #define	lblktosize(fs, blk)	((blk) << (fs)->lfs_bshift)
 #define numfrags(fs, loc)	/* calculates (loc / fs->fs_fsize) */ \
@@ -265,10 +268,11 @@ struct segsum {
 /* Read in the block with a specific segment usage entry from the ifile. */
 #define	LFS_SEGENTRY(SP, F, IN, BP) { \
 	VTOI((F)->lfs_ivnode)->i_flag |= IACC; \
-	if (bread((F)->lfs_ivnode, (IN) / (F)->lfs_sepb + (F)->lfs_cleansz, \
+	if (bread((F)->lfs_ivnode, \
+	    ((IN) >> (F)->lfs_sushift) + (F)->lfs_cleansz, \
 	    (F)->lfs_bsize, NOCRED, &(BP))) \
 		panic("lfs: ifile read"); \
-	(SP) = (SEGUSE *)(BP)->b_un.b_addr + (IN) % (F)->lfs_sepb; \
+	(SP) = (SEGUSE *)(BP)->b_un.b_addr + ((IN) & (F)->lfs_sepb - 1); \
 }
 
 /* Write a block and update the inode change times. */
