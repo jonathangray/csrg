@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)ar.c	5.7 (Berkeley) 03/10/91";
+static char sccsid[] = "@(#)ar.c	5.8 (Berkeley) 03/11/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -54,7 +54,7 @@ static char sccsid[] = "@(#)ar.c	5.7 (Berkeley) 03/10/91";
 
 CHDR chdr;
 u_int options;
-char *archive, *envtmp, *posname;
+char *archive, *envtmp, *posarg, *posname;
 
 /*
  * main --
@@ -167,12 +167,12 @@ main(argc, argv)
 	}
 	/* -ab require a position argument. */
 	if (options & (AR_A|AR_B)) {
-		if (!(posname = *argv++)) {
+		if (!(posarg = *argv++)) {
 			(void)fprintf(stderr,
 			    "ar: no position operand specified.\n");
 			usage();
 		}
-		posname = rname(posname);
+		posname = rname(posarg);
 	}
 	/* -d only valid with -sv. */
 	if (options & AR_D && options & ~(AR_D|AR_S|AR_V))
