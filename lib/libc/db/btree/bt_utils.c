@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)bt_utils.c	5.2 (Berkeley) 02/22/91";
+static char sccsid[] = "@(#)bt_utils.c	5.3 (Berkeley) 03/03/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -86,7 +86,7 @@ _bt_buildret(t, d, data, key)
 		      	     sizeof(chain));
 		if (_bt_getbig(t, chain, &_key, &_key_s) == RET_ERROR)
 			return (RET_ERROR);
-		key->data = _key;
+		key->data = (u_char *)_key;
 		key->size = _key_s;
 	} else {
 		/* need more space for key? */
@@ -99,7 +99,7 @@ _bt_buildret(t, d, data, key)
 			_key_s = d->d_ksize;
 		}
 
-		key->data = _key;
+		key->data = (u_char *)_key;
 		if ((key->size = d->d_ksize) > 0)
 			(void) bcopy(&(d->d_bytes[0]),
 				     _key,
@@ -114,7 +114,7 @@ _bt_buildret(t, d, data, key)
 		      	     sizeof(chain));
 		if (_bt_getbig(t, chain, &_data, &_data_s) == RET_ERROR)
 			return (RET_ERROR);
-		data->data = _data;
+		data->data = (u_char *)_data;
 		data->size = _data_s;
 	} else {
 		/* need more space for data? */
@@ -127,7 +127,7 @@ _bt_buildret(t, d, data, key)
 			_data_s = d->d_dsize;
 		}
 
-		data->data = _data;
+		data->data = (u_char *)_data;
 
 		if ((data->size = d->d_dsize) > 0)
 			(void) bcopy(&(d->d_bytes[d->d_ksize]),
