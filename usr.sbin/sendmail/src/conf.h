@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.71 (Berkeley) 12/29/93
+ *	@(#)conf.h	8.72 (Berkeley) 01/03/94
  */
 
 /*
@@ -135,7 +135,11 @@
 # define HASSETREUID	1	/* has setreuid(2) call */
 # define setreuid(r, e)		setresuid(r, e, -1)	
 # define LA_TYPE	LA_FLOAT
+# define GIDSET_T	gid_t
 # define _PATH_UNIX	"/hp-ux"
+# ifndef _PATH_SENDMAILCF
+#  define _PATH_SENDMAILCF	"/usr/lib/sendmail.cf"
+# endif
 # ifndef IDENTPROTO
 #  define IDENTPROTO	0	/* TCP/IP implementation is broken */
 # endif
