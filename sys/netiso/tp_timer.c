@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_timer.c	7.11 (Berkeley) 10/02/91
+ *	@(#)tp_timer.c	7.12 (Berkeley) 10/02/91
  */
 
 /***********************************************************
@@ -75,12 +75,12 @@ SOFTWARE.
 #include "socket.h"
 #include "kernel.h"
 
+#include "argo_debug.h"
 #include "tp_param.h"
 #include "tp_timer.h"
 #include "tp_stat.h"
 #include "tp_pcb.h"
 #include "tp_tpdu.h"
-#include "argo_debug.h"
 #include "tp_trace.h"
 #include "tp_seq.h"
 
