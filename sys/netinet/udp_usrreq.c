@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)udp_usrreq.c	8.2 (Berkeley) 12/30/93
+ *	@(#)udp_usrreq.c	8.3 (Berkeley) 01/04/94
  */
 
 #include <sys/param.h>
@@ -626,9 +626,7 @@ udp_sysctl(name, namelen, oldp, oldlenp, newp, newlen)
 	void *newp;
 	size_t newlen;
 {
-	extern int ip_ttl;
-
-	/* all sysctl names at this level are terminal */
+	/* All sysctl names at this level are terminal. */
 	if (namelen != 1)
 		return (ENOTDIR);
 
