@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_inode.c	7.63 (Berkeley) 10/23/92
+ *	@(#)ffs_inode.c	7.64 (Berkeley) 11/13/92
  */
 
 #include <sys/param.h>
@@ -87,8 +87,10 @@ ffs_update(ap)
 	struct dinode *dp;
 	register struct fs *fs;
 
-	if (ap->a_vp->v_mount->mnt_flag & MNT_RDONLY)
+	if (ap->a_vp->v_mount->mnt_flag & MNT_RDONLY) {
+		ip->i_flag &= ~(IUPD|IACC|ICHG|IMOD);
 		return (0);
+	}
 	ip = VTOI(ap->a_vp);
 	if ((ip->i_flag & (IUPD|IACC|ICHG|IMOD)) == 0)
 		return (0);
