@@ -5,23 +5,35 @@
  * This code is derived from software contributed to Berkeley by
  * William Jolitz.
  *
- * Copying or redistribution in any form is explicitly forbidden
- * unless prior written permission is obtained from William Jolitz or an
- * authorized representative of the University of California, Berkeley.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
  *
- * Freely redistributable copies of this code will be available in
- * the near future; for more information contact William Jolitz or
- * the Computer Systems Research Group at the University of California,
- * Berkeley.
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
  *
- * The name of the University may not be used to endorse or promote
- * products derived from this software without specific prior written
- * permission.  THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE.
- *
- *	@(#)icu.s	5.5 (Berkeley) 01/08/91
+ *	@(#)icu.s	7.1 (Berkeley) 05/09/91
  */
 
 /*
@@ -43,6 +55,8 @@ _ttymask:	.long	0
 _biomask:	.long	0
 	.globl	_netmask
 _netmask:	.long	0
+	.globl	_isa_intr
+_isa_intr:	.space	16*4
 
 	.text
 /*
@@ -63,6 +77,7 @@ doreti:
 	NOP
 	outb	%al,$ IO_ICU2+1
 	NOP
+	inb	$0x84,%al
 
 	andw	$0xffff,%cx	
 	cmpw	$0,%cx			# returning to zero?
@@ -119,6 +134,7 @@ doreti:
 	NOP
 	outb	%al,$ IO_ICU2+1
 	NOP
+	inb	$0x84,%al
 
 	# btrl	$ NETISR_SCLK,_netisr
 	movl	$ NETISR_SCLK,%eax	# stupid assembler, as usual
@@ -173,6 +189,7 @@ _splclock:
 	NOP
 	outb	%al,$ IO_ICU2+1
 	NOP
+	inb	$0x84,%al
 	movzwl	_cpl,%eax		# return old priority
 	movw	%dx,_cpl		# set new priority level
 	sti				# enable interrupts
@@ -193,6 +210,7 @@ _spltty:
 	NOP
 	outb	%al,$ IO_ICU2+1
 	NOP
+	inb	$0x84,%al
 	movzwl	_cpl,%eax		# return old priority
 	movw	%dx,_cpl		# set new priority level
 	sti				# enable interrupts
@@ -215,6 +233,7 @@ _splnet:
 	NOP
 	outb	%al,$ IO_ICU2+1
 	NOP
+	inb	$0x84,%al
 	movzwl	_cpl,%eax		# return old priority
 	movw	%dx,_cpl		# set new priority level
 	sti				# enable interrupts
@@ -235,6 +254,7 @@ _splbio:
 	NOP
 	outb	%al,$ IO_ICU2+1
 	NOP
+	inb	$0x84,%al
 	movzwl	_cpl,%eax		# return old priority
 	movw	%dx,_cpl		# set new priority level
 	sti				# enable interrupts
@@ -255,6 +275,7 @@ _splsoftclock:
 	NOP
 	outb	%al,$ IO_ICU2+1
 	NOP
+	inb	$0x84,%al
 	movzwl	_cpl,%eax		# return old priority
 	movw	%dx,_cpl		# set new priority level
 	sti				# enable interrupts
@@ -277,6 +298,7 @@ _spl0:
 	NOP
 	outb	%al,$ IO_ICU2+1
 	NOP
+	inb	$0x84,%al
 	sti				# enable interrupts
 
 	DONET(NETISR_RAW,_rawintr)
@@ -296,6 +318,7 @@ _spl0:
 	NOP
 	outb	%al,$ IO_ICU2+1
 	NOP
+	inb	$0x84,%al
 	movzwl	_cpl,%eax		# return old priority
 	movw	%dx,_cpl		# set new priority level
 	sti				# enable interrupts
@@ -318,6 +341,7 @@ _splx:
 	NOP
 	outb	%al,$ IO_ICU2+1
 	NOP
+	inb	$0x84,%al
 	movzwl	_cpl,%eax		# return old priority
 	movw	%dx,_cpl		# set new priority level
 	sti				# enable interrupts
@@ -520,51 +544,51 @@ _iml6:
 	.globl	_isa_strayintr
 
 IDTVEC(intr0)
-	INTR(0) ; call	_isa_strayintr ; INTREXT1
+	INTR(0, _highmask, 0) ; call	_isa_strayintr ; INTREXIT1
 
 IDTVEC(intr1)
-	INTR(1) ; call	_isa_strayintr ; INTREXT1
+	INTR(1, _highmask, 1) ; call	_isa_strayintr ; INTREXIT1
 
 IDTVEC(intr2)
-	INTR(2) ; call	_isa_strayintr ; INTREXT1
+	INTR(2, _highmask, 2) ; call	_isa_strayintr ; INTREXIT1
 
 IDTVEC(intr3)
-	INTR(3) ; call	_isa_strayintr ; INTREXT1
+	INTR(3, _highmask, 3) ; call	_isa_strayintr ; INTREXIT1
 
 IDTVEC(intr4)
-	INTR(4) ; call	_isa_strayintr ; INTREXT1
+	INTR(4, _highmask, 4) ; call	_isa_strayintr ; INTREXIT1
 
 IDTVEC(intr5)
-	INTR(5) ; call	_isa_strayintr ; INTREXT1
+	INTR(5, _highmask, 5) ; call	_isa_strayintr ; INTREXIT1
 
 IDTVEC(intr6)
-	INTR(6) ; call	_isa_strayintr ; INTREXT1
+	INTR(6, _highmask, 6) ; call	_isa_strayintr ; INTREXIT1
 
 IDTVEC(intr7)
-	INTR(7) ; call	_isa_strayintr ; INTREXT1
+	INTR(7, _highmask, 7) ; call	_isa_strayintr ; INTREXIT1
 
 
 IDTVEC(intr8)
-	INTR(8) ; call	_isa_strayintr ; INTREXT2
+	INTR(8, _highmask, 8) ; call	_isa_strayintr ; INTREXIT2
 
 IDTVEC(intr9)
-	INTR(9) ; call	_isa_strayintr ; INTREXT2
+	INTR(9, _highmask, 9) ; call	_isa_strayintr ; INTREXIT2
 
 IDTVEC(intr10)
-	INTR(10) ; call	_isa_strayintr ; INTREXT2
+	INTR(10, _highmask, 10) ; call	_isa_strayintr ; INTREXIT2
 
 IDTVEC(intr11)
-	INTR(11) ; call	_isa_strayintr ; INTREXT2
+	INTR(11, _highmask, 11) ; call	_isa_strayintr ; INTREXIT2
 
 IDTVEC(intr12)
-	INTR(12) ; call	_isa_strayintr ; INTREXT2
+	INTR(12, _highmask, 12) ; call	_isa_strayintr ; INTREXIT2
 
 IDTVEC(intr13)
-	INTR(13) ; call	_isa_strayintr ; INTREXT2
+	INTR(13, _highmask, 13) ; call	_isa_strayintr ; INTREXIT2
 
 IDTVEC(intr14)
-	INTR(14) ; call	_isa_strayintr ; INTREXT2
+	INTR(14, _highmask, 14) ; call	_isa_strayintr ; INTREXIT2
 
 IDTVEC(intr15)
-	INTR(15) ; call	_isa_strayintr ; INTREXT2
+	INTR(15, _highmask, 15) ; call	_isa_strayintr ; INTREXIT2
 
