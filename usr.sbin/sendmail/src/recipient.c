@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recipient.c	5.33 (Berkeley) 07/12/92";
+static char sccsid[] = "@(#)recipient.c	5.34 (Berkeley) 07/18/92";
 #endif /* not lint */
 
 # include <sys/types.h>
@@ -367,6 +367,9 @@ recipient(a, sendq, e)
 	*/
 
   trylocaluser:
+	if (tTd(29, 7))
+		printf("at trylocaluser %s\n", a->q_user);
+
 	if (m == LocalMailer && !bitset(QDONTSEND, a->q_flags))
 	{
 		if (strncmp(a->q_user, ":include:", 9) == 0)
@@ -471,11 +474,12 @@ recipient(a, sendq, e)
 
 	if (!bitset(QDONTSEND, a->q_flags))
 	{
+		auto bool fuzzy;
 		register struct passwd *pw;
 		extern struct passwd *finduser();
 
 		/* warning -- finduser may trash buf */
-		pw = finduser(buf);
+		pw = finduser(buf, &fuzzy);
 		if (pw == NULL)
 		{
 			a->q_flags |= QBADADDR;
@@ -485,7 +489,7 @@ recipient(a, sendq, e)
 		{
 			char nbuf[MAXNAME];
 
-			if (strcmp(a->q_user, pw->pw_name) != 0)
+			if (fuzzy)
 			{
 				/* name was a fuzzy match */
 				a->q_user = newstr(pw->pw_name);
@@ -526,6 +530,9 @@ recipient(a, sendq, e)
 **
 **	Parameters:
 **		name -- the name to match against.
+**		fuzzyp -- an outarg that is set to TRUE if this entry
+**			was found using the fuzzy matching algorithm;
+**			set to FALSE otherwise.
 **
 **	Returns:
 **		A pointer to a pw struct.
@@ -536,13 +543,17 @@ recipient(a, sendq, e)
 */
 
 struct passwd *
-finduser(name)
+finduser(name, fuzzyp)
 	char *name;
+	bool *fuzzyp;
 {
 	register struct passwd *pw;
 	register char *p;
 	extern struct passwd *getpwent();
 	extern struct passwd *getpwnam();
+
+	if (tTd(29, 4))
+		printf("finduser(%s): ", name);
 
 	/* map upper => lower case */
 	for (p = name; *p != '\0'; p++)
@@ -550,15 +561,24 @@ finduser(name)
 		if (isascii(*p) && isupper(*p))
 			*p = tolower(*p);
 	}
+	*fuzzyp = FALSE;
 
 	/* look up this login name using fast path */
 	if ((pw = getpwnam(name)) != NULL)
+	{
+		if (tTd(29, 4))
+			printf("found (non-fuzzy)\n");
 		return (pw);
+	}
 
 #ifdef MATCHGECOS
 	/* see if fuzzy matching allowed */
 	if (!MatchGecos)
+	{
+		if (tTd(29, 4))
+			printf("not found (fuzzy disabled)\n");
 		return NULL;
+	}
 
 	/* search for a matching full name instead */
 	for (p = name; *p != '\0'; p++)
@@ -574,12 +594,16 @@ finduser(name)
 		fullname(pw, buf);
 		if (index(buf, ' ') != NULL && !strcasecmp(buf, name))
 		{
+			if (tTd(29, 4))
+				printf("fuzzy matches %s\n", pw->pw_name);
 				message(Arpa_Info, "sending to %s <%s>",
 				    buf, pw->pw_name);
 			return (pw);
 		}
 	}
 #endif
+	if (tTd(29, 4))
+		printf("no fuzzy match found\n");
 	return (NULL);
 }
 /*
