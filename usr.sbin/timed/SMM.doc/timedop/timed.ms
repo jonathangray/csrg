@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)timed.ms	6.3 (Berkeley) 04/17/91
+.\"	@(#)timed.ms	6.4 (Berkeley) 06/05/93
 .\"
 .TL
 Timed Installation and Operation Guide
@@ -59,8 +59,8 @@ either expressed or implied, of the Defense Research Projects Agency,
 of the US Government, or of CSELT.
 .FE
 .LP
-.EH 'SMM:8-%''Timed Installation and Operation'
-.OH 'Timed Installation and Operation''SMM:8-%'
+.EH 'SMM:11-%''Timed Installation and Operation'
+.OH 'Timed Installation and Operation''SMM:11-%'
 .SH 
 Introduction
 .PP
