@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmaxtype.h	7.1 (Berkeley) 11/15/92
+ *	@(#)pmaxtype.h	7.2 (Berkeley) 12/20/92
  */
 
 /*
@@ -46,5 +46,6 @@
 #define	DS_LSIS		0x5	/* DECsystem 5800 */
 #define	DS_MIPSFAIR	0x6	/* DECsystem 5400 */
 #define	DS_MAXINE	0x7	/* Personal DECstation 5000/xx */
+#define	DS_3MAXPLUS	0x8	/* DECstation 5000/240 (JUST A GUESS) */
 #define	DS_MIPSFAIR2	0xb	/* DECsystem 5500 */
 #define	DS_MIPSMATE	0xc	/* DECsystem 5100 */
