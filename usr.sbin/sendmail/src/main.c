@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.103 (Berkeley) 04/21/95";
+static char sccsid[] = "@(#)main.c	8.104 (Berkeley) 04/22/95";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -868,11 +868,13 @@ main(argc, argv, envp)
 			setbitn(M_RUNASRCPT, FileMailer->m_flags);
 	}
 
-	/* initialize standard MIME classes */
-	setclass('n', "message/rfc822");
-	setclass('n', "message/partial");
-	setclass('n', "message/external-body");
+	/* MIME Content-Types that cannot be transfer encoded */
 	setclass('n', "multipart/signed");
+
+	/* MIME Content-Transfer-Encodings that can be encoded */
+	setclass('e', "7bit");
+	setclass('e', "8bit");
+	setclass('e', "binary");
 
 	/* operate in queue directory */
 	if (OpMode != MD_TEST && chdir(QueueDir) < 0)
