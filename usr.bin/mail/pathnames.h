@@ -5,7 +5,7 @@
  */
  
 /*
- * Sccs Id = "@(#)pathnames.h	2.4 12/26/82";
+ * Sccs Id = "@(#)pathnames.h	2.5 01/29/83";
  */
 
 #define	GETHOST				/* System has gethostname syscall */
