@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sysctl.c	7.29 (Berkeley) 03/03/93
+ *	@(#)kern_sysctl.c	7.30 (Berkeley) 03/04/93
  */
 
 /*
@@ -624,7 +624,8 @@ getkerninfo(p, uap, retval)
 	int error, name[5];
 	u_int size;
 
-	if (error = copyin((caddr_t)uap->size, (caddr_t)&size, sizeof(size)))
+	if (uap->size &&
+	    error = copyin((caddr_t)uap->size, (caddr_t)&size, sizeof(size)))
 		return (error);
 
 	switch (uap->op & 0xff00) {
@@ -676,6 +677,9 @@ getkerninfo(p, uap, retval)
 	if (error)
 		return (error);
 	*retval = size;
-	return (copyout((caddr_t)&size, (caddr_t)uap->size, sizeof(size)));
+	if (uap->size)
+		error = copyout((caddr_t)&size, (caddr_t)uap->size,
+		    sizeof(size));
+	return (error);
 }
 #endif /* COMPAT_43 */
