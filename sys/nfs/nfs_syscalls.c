@@ -33,19 +33,17 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_syscalls.c	7.24 (Berkeley) 03/04/91
+ *	@(#)nfs_syscalls.c	7.25 (Berkeley) 03/19/91
  */
 
 #include "param.h"
 #include "systm.h"
-#include "user.h"
 #include "kernel.h"
 #include "file.h"
 #include "stat.h"
 #include "vnode.h"
 #include "mount.h"
 #include "proc.h"
-#include "uio.h"
 #include "malloc.h"
 #include "buf.h"
 #include "mbuf.h"
@@ -53,8 +51,10 @@
 #include "socketvar.h"
 #include "domain.h"
 #include "protosw.h"
+
 #include "../netinet/in.h"
 #include "../netinet/tcp.h"
+
 #include "nfsv2.h"
 #include "nfs.h"
 #include "nfsrvcache.h"
@@ -342,7 +342,7 @@ async_daemon(p, uap, retval)
 	 */
 	for (;;) {
 		while (dp->b_actf == NULL && error == 0) {
-			nfs_iodwant[myiod] = u.u_procp;
+			nfs_iodwant[myiod] = curproc;
 			error = tsleep((caddr_t)&nfs_iodwant[myiod],
 				PWAIT | PCATCH, "nfsidl", 0);
 			nfs_iodwant[myiod] = (struct proc *)0;
