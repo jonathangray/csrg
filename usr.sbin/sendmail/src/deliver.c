@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	8.157 (Berkeley) 06/13/95";
+static char sccsid[] = "@(#)deliver.c	8.158 (Berkeley) 06/13/95";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -544,7 +544,7 @@ sendenvelope(e, mode)
 	/* now run through the queue */
 	for (q = e->e_sendqueue; q != NULL; q = q->q_next)
 	{
-#ifdef XDEBUG
+#if XDEBUG
 		char wbuf[MAXNAME + 20];
 
 		(void) sprintf(wbuf, "sendall(%s)", q->q_paddr);
@@ -589,7 +589,7 @@ sendenvelope(e, mode)
 		e->e_ntries++;
 	}
 
-#ifdef XDEBUG
+#if XDEBUG
 	checkfd012("end of sendenvelope");
 #endif
 
@@ -1061,7 +1061,7 @@ deliver(e, firstto)
 	SmtpPhase = NULL;
 	mci = NULL;
 
-#ifdef XDEBUG
+#if XDEBUG
 	{
 		char wbuf[MAXLINE];
 
@@ -1663,7 +1663,7 @@ tryhost:
 	**  Restore state and return.
 	*/
 
-#ifdef XDEBUG
+#if XDEBUG
 	{
 		char wbuf[MAXLINE];
 
@@ -2255,7 +2255,6 @@ putfromline(mci, e)
 	if (bitnset(M_NHDR, mci->mci_mailer->m_flags))
 		return;
 
-# ifdef UGLYUUCP
 	if (bitnset(M_UGLYUUCP, mci->mci_mailer->m_flags))
 	{
 		char *bang;
@@ -2275,7 +2274,6 @@ putfromline(mci, e)
 			template = xbuf;
 		}
 	}
-# endif /* UGLYUUCP */
 	expand(template, buf, sizeof buf, e);
 	putxline(buf, mci, PXLF_NOTHINGSPECIAL);
 }
