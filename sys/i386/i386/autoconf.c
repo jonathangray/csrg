@@ -21,10 +21,8 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)autoconf.c	5.2 (Berkeley) 06/23/90
+ *	@(#)autoconf.c	5.3 (Berkeley) 11/14/90
  */
-
-/*	autoconf.c	1.13	87/04/02	*/
 
 /*
  * Setup the system to run on the current machine.
