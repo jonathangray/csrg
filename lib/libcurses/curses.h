@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)curses.h	5.10 (Berkeley) 05/15/92
+ *	@(#)curses.h	5.11 (Berkeley) 06/17/92
  */
 
 #ifndef WINDOW
