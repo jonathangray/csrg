@@ -1,3 +1,17 @@
+/*
+**  Sendmail
+**  Copyright (c) 1983  Eric P. Allman
+**  Berkeley, California
+**
+**  Copyright (c) 1983 Regents of the University of California.
+**  All rights reserved.  The Berkeley software License Agreement
+**  specifies the terms and conditions for redistribution.
+*/
+
+#ifndef lint
+static char	SccsId[] = "@(#)util.c	5.1 (Berkeley) 06/07/85";
+#endif not lint
+
 # include <stdio.h>
 # include <pwd.h>
 # include <sys/types.h>
@@ -8,7 +22,7 @@
 # include "sendmail.h"
 # include "conf.h"
 
-SCCSID(@(#)util.c	4.11		04/28/85);
+SCCSID(@(#)util.c	5.1		06/07/85);
 
 /*
 **  STRIPQUOTES -- Strip quotes & quote bits from a string.
