@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_extern.h	7.14 (Berkeley) 09/14/92
+ *	@(#)ufs_extern.h	7.15 (Berkeley) 09/24/92
  */
 
 struct buf;
@@ -61,7 +61,6 @@ int	 writedisklabel __P((dev_t, int (*)(), struct disklabel *));
 int	 ufs_abortop __P((struct vop_abortop_args *));
 int	 ufs_access __P((struct vop_access_args *));
 int	 ufs_advlock __P((struct vop_advlock_args *));
-void	 ufs_bufstats __P((void));
 int	 ufs_check_export __P((struct mount *, struct ufid *, struct mbuf *,
 		struct vnode **, int *exflagsp, struct ucred **));
 int	 ufs_checkpath __P((struct inode *, struct inode *, struct ucred *));
