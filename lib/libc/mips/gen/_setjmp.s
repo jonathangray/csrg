@@ -34,10 +34,11 @@
  * SUCH DAMAGE.
  */
 
+#include <machine/reg.h>
 #include "DEFS.h"
 
 #if defined(LIBC_SCCS) && !defined(lint)
-	ASMSTR("@(#)_setjmp.s	5.2 (Berkeley) 02/29/92")
+	ASMSTR("@(#)_setjmp.s	5.3 (Berkeley) 03/07/92")
 #endif /* LIBC_SCCS and not lint */
 
 /*
