@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: hil.c 1.38 92/01/21$
  *
- *	@(#)hil.c	8.1 (Berkeley) 06/10/93
+ *	@(#)hil.c	8.2 (Berkeley) 01/12/94
  */
 
 #include <sys/param.h>
@@ -224,6 +224,7 @@ hilopen(dev, flags, mode, p)
 /* ARGSUSED */
 hilclose(dev, flags, mode, p)
 	dev_t dev;
+	int flags, mode;
 	struct proc *p;
 {
   	register struct hilloop *hilp = &hilloop[HILLOOP(dev)];
@@ -355,6 +356,7 @@ hilread(dev, uio)
 
 hilioctl(dev, cmd, data, flag, p)
 	dev_t dev;
+	int cmd, flag;
 	caddr_t data;
 	struct proc *p;
 {
@@ -532,6 +534,7 @@ hilioctl(dev, cmd, data, flag, p)
 /* ARGSUSED */
 hpuxhilioctl(dev, cmd, data, flag)
 	dev_t dev;
+	int cmd, flag;
 	caddr_t data;
 {
 	register struct hilloop *hilp = &hilloop[HILLOOP(dev)];
@@ -658,13 +661,14 @@ hpuxhilioctl(dev, cmd, data, flag)
 /* ARGSUSED */
 hilmap(dev, off, prot)
 	dev_t dev;
-	register int off;
+	int off, prot;
 {
 }
 
 /*ARGSUSED*/
 hilselect(dev, rw, p)
 	dev_t dev;
+	int rw;
 	struct proc *p;
 {
 	register struct hilloop *hilp = &hilloop[HILLOOP(dev)];
@@ -729,6 +733,7 @@ hilselect(dev, rw, p)
 
 /*ARGSUSED*/
 hilint(unit)
+	int unit;
 {
 #ifdef hp300
 	struct hilloop *hilp = &hilloop[0]; /* XXX how do we know on 300? */
@@ -992,6 +997,7 @@ hilqalloc(hilp, qip)
 }
 
 hilqfree(hilp, qnum)
+	register struct hilloop *hilp;
 	register int qnum;
 {
 	struct proc *p = curproc;		/* XXX */
