@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_inode.c	7.75 (Berkeley) 07/23/92
+ *	@(#)lfs_inode.c	7.76 (Berkeley) 07/29/92
  */
 
 #include <sys/param.h>
@@ -121,6 +121,9 @@ lfs_update(ap)
 #define UPDATE_SEGUSE \
 	if (lastseg != -1) { \
 		LFS_SEGENTRY(sup, fs, lastseg, sup_bp); \
+		if ((num << fs->lfs_bshift) > sup->su_nbytes) \
+			panic("lfs_truncate: negative bytes in segment %d\n", \
+			    lastseg); \
 		sup->su_nbytes -= num << fs->lfs_bshift; \
 		LFS_UBWRITE(sup_bp); \
 		blocksreleased += num; \
@@ -186,13 +189,6 @@ lfs_truncate(ap)
 	vnode_pager_setsize(vp, (u_long)length);
 
 	fs = ip->i_lfs;
-
-	/* If truncating the file to 0, update the version number. */
-	if (length == 0) {
-		LFS_IENTRY(ifp, fs, ip->i_number, bp);
-		++ifp->if_version;
-		LFS_UBWRITE(bp);
-	}
 
 	/* If length is larger than the file, just update the times. */
 	if (ip->i_size <= length) {
@@ -308,6 +304,14 @@ lfs_truncate(ap)
 		}
 	}
 	UPDATE_SEGUSE;
+
+	/* If truncating the file to 0, update the version number. */
+	if (length == 0) {
+		LFS_IENTRY(ifp, fs, ip->i_number, bp);
+		++ifp->if_version;
+		LFS_UBWRITE(bp);
+	}
+
 	ip->i_blocks -= btodb(blocksreleased << fs->lfs_bshift);
 	fs->lfs_bfree +=  btodb(blocksreleased << fs->lfs_bshift);
 #ifdef DIAGNOSTIC
