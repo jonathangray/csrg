@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vfsops.c	8.4 (Berkeley) 12/30/93
+ *	@(#)ffs_vfsops.c	8.5 (Berkeley) 01/04/94
  */
 
 #include <sys/param.h>
@@ -694,7 +694,6 @@ ffs_vget(mp, ino, vpp)
 	struct ufsmount *ump;
 	struct buf *bp;
 	struct vnode *vp;
-	union ihead *ih;
 	dev_t dev;
 	int i, type, error;
 
