@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_subr.c	7.10 (Berkeley) 05/13/92
+ *	@(#)lfs_subr.c	7.10 (Berkeley) 05/14/92
  */
 
 #include <sys/param.h>
