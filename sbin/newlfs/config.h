@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)config.h	5.1 (Berkeley) 09/19/91
+ *	@(#)config.h	5.2 (Berkeley) 12/06/91
  */
 
 /*
@@ -112,7 +112,7 @@
 #define	LFS_MINSEGSIZE		(128*1024)
 #define	DFL_LFSSEG		(1024 * 1024)
 #define	DFL_LFSSEG_SHIFT	20
-#define	DFL_LFSSEG_MASK		0x7FFFF
+#define	DFL_LFSSEG_MASK		0xFFFFF
 
 #define	LFS_MINBLOCKSIZE	1024
 #define	DFL_LFSBLOCK		4096
