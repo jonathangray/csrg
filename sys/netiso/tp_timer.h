@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_timer.h	7.7 (Berkeley) 10/02/91
+ *	@(#)tp_timer.h	7.8 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -88,6 +88,6 @@ SOFTWARE.
 #define tp_euntimeout tp_cuntimeout
 #define tp_ctimeout_MIN(p, w, t) \
     { if((p)->tp_timer[w] > (t)) (p)->tp_timer[w] = (t);}
-#endif TP_DEBUG_TIMERS
+#endif /* TP_DEBUG_TIMERS */
 
-#endif __TP_TIMER__
+#endif /* __TP_TIMER__ */
