@@ -30,11 +30,23 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.1 (Berkeley) 02/28/93
+ *	@(#)extern.h	5.2 (Berkeley) 02/28/93
  */
 
+#include <sys/cdefs.h>
+
 void	 a __P((FILE *, int *));
+
+#ifdef STDIO
+long	add_line __P((char *, long));
+#endif
+#ifdef DBI
 recno_t	 add_line __P((char *, long));
+#endif
+#ifdef MEMORY
+char	*add_line __P((char *, long));
+#endif
+
 int	 address_check __P((LINE *, LINE *));
 LINE	*address_conv __P((LINE *, FILE *, int *));
 void	 bang __P((FILE *, int *));
@@ -51,8 +63,16 @@ void	 equal __P((FILE *, int *));
 void	 f __P((FILE *, int *));
 char	*filename __P((FILE *, int *));
 void	 g __P((FILE *, int *));
+#ifdef STDIO
+void     get_line __P((long, int));
+#endif
+#ifdef DBI
 void	 get_line __P((recno_t, int));
-LINE	*get_mark __P((int *));
+#endif
+#ifdef MEMORY
+void     get_line __P((char *, int));
+#endif;
+LINE	*get_mark __P((FILE *, int *));
 char	*get_pattern __P((int, FILE *, int *, int));
 void	 i __P((FILE *, int *));
 long	 input_lines __P((FILE *, int *));
