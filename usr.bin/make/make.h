@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)make.h	5.12 (Berkeley) 06/01/90
+ *	@(#)make.h	5.13 (Berkeley) 03/01/91
  */
 
 /*-
