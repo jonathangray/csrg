@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)raw_usrreq.c	7.10 (Berkeley) 02/15/92
+ *	@(#)raw_usrreq.c	7.10 (Berkeley) 03/07/92
  */
 
 #include "param.h"
@@ -45,8 +45,6 @@
 #include "route.h"
 #include "netisr.h"
 #include "raw_cb.h"
-
-#include "machine/mtpr.h"
 
 /*
  * Initialize raw connection block q.
