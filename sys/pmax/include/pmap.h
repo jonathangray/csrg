@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.h	7.5 (Berkeley) 10/24/92
+ *	@(#)pmap.h	7.6 (Berkeley) 02/04/93
  */
 
 #ifndef	_PMAP_MACHINE_
@@ -64,7 +64,7 @@
  * Note: PMAP_HASH_UPAGES should be a multiple of MACH pages (see pmap_enter()).
  */
 #define PMAP_HASH_UPAGES	1
-#define PMAP_HASH_KPAGES	4
+#define PMAP_HASH_KPAGES	5
 #define PMAP_HASH_UADDR		(UADDR - PMAP_HASH_UPAGES * NBPG)
 #define PMAP_HASH_KADDR		(UADDR - (PMAP_HASH_UPAGES + PMAP_HASH_KPAGES) * NBPG)
 #define PMAP_HASH_NUM_ENTRIES	256
