@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_lookup.c	7.43 (Berkeley) 07/20/92
+ *	@(#)vfs_lookup.c	7.44 (Berkeley) 09/21/92
  */
 
 #include "param.h"
@@ -333,6 +333,7 @@ dirloop:
 	/*
 	 * Handle "..": two special cases.
 	 * 1. If at root directory (e.g. after chroot)
+	 *    or at absolute root directory
 	 *    then ignore it so can't get out.
 	 * 2. If this vnode is the root of a mounted
 	 *    filesystem, then replace it with the
@@ -341,7 +342,7 @@ dirloop:
 	 */
 	if (cnp->cn_flags & ISDOTDOT) {
 		for (;;) {
-			if (dp == ndp->ni_rootdir) {
+			if (dp == ndp->ni_rootdir || dp == rootdir) {
 				ndp->ni_dvp = dp;
 				ndp->ni_vp = dp;
 				VREF(dp);
