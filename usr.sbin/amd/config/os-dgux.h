@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)os-dgux.h	5.3 (Berkeley) 05/12/91
+ *	@(#)os-dgux.h	5.4 (Berkeley) 02/09/92
  *
- * $Id: os-dgux.h,v 5.2.1.2 91/05/07 22:19:39 jsp Alpha $
+ * $Id: os-dgux.h,v 5.2.2.1 1992/02/09 15:10:18 jsp beta $
  *
  * dg/ux definitions for Amd (automounter)
  */
