@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_map.c	7.3 (Berkeley) 04/21/91
+ *	@(#)vm_map.c	7.4 (Berkeley) 08/28/91
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -1519,7 +1519,7 @@ void vm_map_copy_entry(src_map, dst_map, src_entry, dst_entry)
 		return;
 
 	if (dst_entry->object.vm_object != NULL &&
-	    !dst_entry->object.vm_object->internal)
+	    (dst_entry->object.vm_object->flags & OBJ_INTERNAL) == 0)
 		printf("vm_map_copy_entry: copying over permanent data!\n");
 
 	/*
