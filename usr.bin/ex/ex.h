@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)ex.h	7.9 (Berkeley) 01/02/88
+ *	@(#)ex.h	7.9.1.1 (Berkeley) 08/08/88
  */
 
 #ifdef V6
