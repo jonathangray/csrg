@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_inode.c	8.7 (Berkeley) 03/21/95
+ *	@(#)lfs_inode.c	8.8 (Berkeley) 03/30/95
  */
 
 #include <sys/param.h>
@@ -52,12 +52,6 @@
 
 #include <ufs/lfs/lfs.h>
 #include <ufs/lfs/lfs_extern.h>
-
-int
-lfs_init()
-{
-	return (ufs_init());
-}
 
 /* Search a block for a specific dinode. */
 struct dinode *
