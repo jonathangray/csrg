@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	5.20 (Berkeley) 07/26/91
+ *	@(#)conf.h	5.21 (Berkeley) 12/08/91
  */
 
 /*
@@ -74,6 +74,7 @@
 # define SETPROCTITLE	1	/* munge argv to display current status */
 # define NAMED_BIND	1	/* use Berkeley Internet Domain Server */
 # define USERDB		1	/* look in user database */
+/* # define LOCKF	1	/* use System V lockf instead of flock */
 
 /*
 **  Older systems don't have this error code -- it should be in
