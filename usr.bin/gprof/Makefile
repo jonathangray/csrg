@@ -1,4 +1,4 @@
-SCCSID = @(#)Makefile	1.14 (Berkeley) 06/14/82
+SCCSID = @(#)Makefile	1.15 (Berkeley) 06/17/82
 
 DFLAGS = 
 CFLAGS = -O ${DFLAGS}
