@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mroute.c	7.1 (Berkeley) 07/06/92
+ *	@(#)mroute.c	7.2 (Berkeley) 07/07/92
  */
 
 /*
@@ -60,7 +60,7 @@
 
 void
 mroutepr(mrpaddr, mrtaddr, vifaddr)
-	off_t mrpaddr, mrtaddr, vifaddr;
+	u_long mrpaddr, mrtaddr, vifaddr;
 {
 	u_int mrtproto;
 	struct mrt *mrttable[MRTHASHSIZ];
@@ -79,7 +79,7 @@ mroutepr(mrpaddr, mrtaddr, vifaddr)
 		return;
 	}
 
-	kread((off_t)mrpaddr, (char *)&mrtproto, sizeof(mrtproto));
+	kread(mrpaddr, (char *)&mrtproto, sizeof(mrtproto));
 	switch (mrtproto) {
 
 	case 0:
@@ -106,7 +106,7 @@ mroutepr(mrpaddr, mrtaddr, vifaddr)
 	saved_nflag = nflag;
 	nflag = 1;
 
-	kread((off_t)vifaddr, (char *)&viftable, sizeof(viftable));
+	kread(vifaddr, (char *)&viftable, sizeof(viftable));
 	banner_printed = 0;
 	for (vifi = 0, v = viftable; vifi < MAXVIFS; ++vifi, ++v) {
 		if (v->v_lcl_addr.s_addr == 0)
@@ -130,7 +130,7 @@ mroutepr(mrpaddr, mrtaddr, vifaddr)
 			printf("v_lcl_grps_n: malloc failed\n");
 			return;
 		}
-		kread((off_t)v->v_lcl_grps, (caddr_t)grp, n * sizeof(*grp));
+		kread((u_long)v->v_lcl_grps, (caddr_t)grp, n * sizeof(*grp));
 		for (i = 0; i < n; ++i)
 			printf("%51s %-15.15s\n",
 			    "", routename((grp++)->s_addr));
@@ -139,7 +139,7 @@ mroutepr(mrpaddr, mrtaddr, vifaddr)
 	if (!banner_printed)
 		printf("\nVirtual Interface Table is empty\n");
 
-	kread((off_t)mrtaddr, (char *)&mrttable, sizeof(mrttable));
+	kread(mrtaddr, (char *)&mrttable, sizeof(mrttable));
 	banner_printed = 0;
 	for (i = 0; i < MRTHASHSIZ; ++i) {
 		for (mrt = mrttable[i]; mrt != NULL; mrt = mrt->mrt_next) {
@@ -149,7 +149,7 @@ mroutepr(mrpaddr, mrtaddr, vifaddr)
 				banner_printed = 1;
 			}
 
-			kread((off_t)mrt, (char *)&smrt, sizeof(*mrt));
+			kread((u_long)mrt, (char *)&smrt, sizeof(*mrt));
 			mrt = &smrt;
 			printf(" %3u   %-15.15s  %2u   ",
 			    i, netname(mrt->mrt_origin.s_addr,
@@ -174,7 +174,7 @@ mroutepr(mrpaddr, mrtaddr, vifaddr)
 
 void
 mrt_stats(mrpaddr, mstaddr)
-	off_t mrpaddr, mstaddr;
+	u_long mrpaddr, mstaddr;
 {
 	u_int mrtproto;
 	struct mrtstat mrtstat;
@@ -184,7 +184,7 @@ mrt_stats(mrpaddr, mstaddr)
 		return;
 	}
 
-	kread((off_t)mrpaddr, (char *)&mrtproto, sizeof(mrtproto));
+	kread(mrpaddr, (char *)&mrtproto, sizeof(mrtproto));
 	switch (mrtproto) {
 	    case 0:
 		printf("no multicast routing compiled into this system\n");
@@ -203,7 +203,7 @@ mrt_stats(mrpaddr, mstaddr)
 		return;
 	}
 
-	kread((off_t)mstaddr, (char *)&mrtstat, sizeof(mrtstat));
+	kread(mstaddr, (char *)&mrtstat, sizeof(mrtstat));
 	printf("multicast routing:\n");
 	printf(" %10u multicast route lookup%s\n",
 	  mrtstat.mrts_mrt_lookups, plural(mrtstat.mrts_mrt_lookups));
