@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sys_generic.c	7.22 (Berkeley) 06/28/90
+ *	@(#)sys_generic.c	7.23 (Berkeley) 07/22/90
  */
 
 #include "param.h"
@@ -114,8 +114,10 @@ readv(p, uap, retval)
 	register struct file *fp;
 	struct uio auio;
 	register struct iovec *iov;
+	struct iovec *saveiov;
 	struct iovec aiov[UIO_SMALLIOV];
 	long i, cnt, error = 0;
+	unsigned iovlen;
 #ifdef KTRACE
 	struct iovec *ktriov = NULL;
 #endif
@@ -124,19 +126,20 @@ readv(p, uap, retval)
 	    (fp = u.u_ofile[uap->fdes]) == NULL ||
 	    (fp->f_flag & FREAD) == 0)
 		return (EBADF);
+	/* note: can't use iovlen until iovcnt is validated */
+	iovlen = uap->iovcnt * sizeof (struct iovec);
 	if (uap->iovcnt > UIO_SMALLIOV) {
 		if (uap->iovcnt > UIO_MAXIOV)
 			return (EINVAL);
-		MALLOC(iov, struct iovec *, 
-		      sizeof(struct iovec) * uap->iovcnt, M_IOV, M_WAITOK);
+		MALLOC(iov, struct iovec *, iovlen, M_IOV, M_WAITOK);
+		saveiov = iov;
 	} else
 		iov = aiov;
 	auio.uio_iov = iov;
 	auio.uio_iovcnt = uap->iovcnt;
 	auio.uio_rw = UIO_READ;
 	auio.uio_segflg = UIO_USERSPACE;
-	if (error = copyin((caddr_t)uap->iovp, (caddr_t)iov,
-	    uap->iovcnt * sizeof (struct iovec)))
+	if (error = copyin((caddr_t)uap->iovp, (caddr_t)iov, iovlen))
 		goto done;
 	auio.uio_resid = 0;
 	for (i = 0; i < uap->iovcnt; i++) {
@@ -156,8 +159,6 @@ readv(p, uap, retval)
 	 * if tracing, save a copy of iovec
 	 */
 	if (KTRPOINT(p, KTR_GENIO))  {
-		unsigned iovlen = auio.uio_iovcnt * sizeof (struct iovec);
-
 		MALLOC(ktriov, struct iovec *, iovlen, M_TEMP, M_WAITOK);
 		bcopy((caddr_t)auio.uio_iov, (caddr_t)ktriov, iovlen);
 	}
@@ -179,7 +180,7 @@ readv(p, uap, retval)
 	*retval = cnt;
 done:
 	if (uap->iovcnt > UIO_SMALLIOV)
-		FREE(iov, M_IOV);
+		FREE(saveiov, M_IOV);
 	return (error);
 }
 
@@ -254,8 +255,10 @@ writev(p, uap, retval)
 	register struct file *fp;
 	struct uio auio;
 	register struct iovec *iov;
+	struct iovec *saveiov;
 	struct iovec aiov[UIO_SMALLIOV];
 	long i, cnt, error = 0;
+	unsigned iovlen;
 #ifdef KTRACE
 	struct iovec *ktriov = NULL;
 #endif
@@ -264,19 +267,20 @@ writev(p, uap, retval)
 	    (fp = u.u_ofile[uap->fdes]) == NULL ||
 	    (fp->f_flag & FWRITE) == 0)
 		return (EBADF);
+	/* note: can't use iovlen until iovcnt is validated */
+	iovlen = uap->iovcnt * sizeof (struct iovec);
 	if (uap->iovcnt > UIO_SMALLIOV) {
 		if (uap->iovcnt > UIO_MAXIOV)
 			return (EINVAL);
-		MALLOC(iov, struct iovec *, 
-		      sizeof(struct iovec) * uap->iovcnt, M_IOV, M_WAITOK);
+		MALLOC(iov, struct iovec *, iovlen, M_IOV, M_WAITOK);
+		saveiov = iov;
 	} else
 		iov = aiov;
 	auio.uio_iov = iov;
 	auio.uio_iovcnt = uap->iovcnt;
 	auio.uio_rw = UIO_WRITE;
 	auio.uio_segflg = UIO_USERSPACE;
-	if (error = copyin((caddr_t)uap->iovp, (caddr_t)iov,
-	    uap->iovcnt * sizeof (struct iovec)))
+	if (error = copyin((caddr_t)uap->iovp, (caddr_t)iov, iovlen))
 		goto done;
 	auio.uio_resid = 0;
 	for (i = 0; i < uap->iovcnt; i++) {
@@ -296,8 +300,6 @@ writev(p, uap, retval)
 	 * if tracing, save a copy of iovec
 	 */
 	if (KTRPOINT(p, KTR_GENIO))  {
-		unsigned iovlen = auio.uio_iovcnt * sizeof (struct iovec);
-
 		MALLOC(ktriov, struct iovec *, iovlen, M_TEMP, M_WAITOK);
 		bcopy((caddr_t)auio.uio_iov, (caddr_t)ktriov, iovlen);
 	}
@@ -322,7 +324,7 @@ writev(p, uap, retval)
 	*retval = cnt;
 done:
 	if (uap->iovcnt > UIO_SMALLIOV)
-		FREE(iov, M_IOV);
+		FREE(saveiov, M_IOV);
 	return (error);
 }
 
