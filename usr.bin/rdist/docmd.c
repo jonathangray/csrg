@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)docmd.c	5.7 (Berkeley) 08/27/90";
+static char sccsid[] = "@(#)docmd.c	5.8 (Berkeley) 03/01/91";
 #endif /* not lint */
 
 #include "defs.h"
@@ -43,8 +43,7 @@ FILE	*lfp;			/* log file for recording files updated */
 struct	subcmd *subcmds;	/* list of sub-commands for current cmd */
 jmp_buf	env;
 
-int	cleanup();
-int	lostconn();
+void cleanup(), lostconn();
 
 /*
  * Do the commands in cmds (initialized by yyparse).
@@ -278,6 +277,7 @@ closeconn()
 	}
 }
 
+void
 lostconn()
 {
 	if (iamremote)
