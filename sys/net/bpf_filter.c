@@ -1,10 +1,10 @@
-/*-
- * Copyright (c) 1990-1991 The Regents of the University of California.
+/*
+ * Copyright (c) 1990, 1991 Regents of the University of California.
  * All rights reserved.
  *
  * This code is derived from the Stanford/CMU enet packet filter,
  * (net/enet.c) distributed as part of 4.3BSD, and code contributed
- * to Berkeley by Steven McCanne and Van Jacobson both of Lawrence 
+ * to Berkeley by Steven McCanne and Van Jacobson both of Lawrence
  * Berkeley Laboratory.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,15 +35,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)bpf.c	7.5 (Berkeley) 7/15/91
+ *      @(#)bpf_filter.c	7.4 (Berkeley) 10/29/91
  *
  * static char rcsid[] =
  * "$Header: bpf_filter.c,v 1.16 91/10/27 21:22:35 mccanne Exp $";
  */
-#if !(defined(lint) || defined(KERNEL))
-static char rcsid[] =
-    "@(#) $Header: bpf_filter.c,v 1.16 91/10/27 21:22:35 mccanne Exp $ (LBL)";
-#endif
 
 #include <sys/param.h>
 #include <sys/types.h>
