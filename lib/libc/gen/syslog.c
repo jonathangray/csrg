@@ -5,7 +5,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)syslog.c	5.8 (Berkeley) 04/24/86";
+static char sccsid[] = "@(#)syslog.c	5.9 (Berkeley) 05/07/86";
 #endif LIBC_SCCS and not lint
 
 /*
