@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)boot.c	7.6 (Berkeley) 10/11/92
+ *	@(#)boot.c	7.7 (Berkeley) 12/26/92
  */
 
 #include <sys/param.h>
@@ -87,6 +87,8 @@ main()
 		cp = "345/375/400"; break;
 	case HP_380:
 		cp = "380/425"; break;
+	case HP_433:
+		cp = "433"; break;
 	default:
 		cp = "???"; break;
 	}
