@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_inode.c	7.48 (Berkeley) 07/03/92
+ *	@(#)ufs_inode.c	7.49 (Berkeley) 07/20/92
  */
 
 #include <sys/param.h>
@@ -100,7 +100,7 @@ ufs_reclaim(ap)
 	 * Remove the inode from its hash chain.
 	 */
 	ip = VTOI(vp);
-	remque(ip);
+	ufs_ihashrem(ip);
 	/*
 	 * Purge old data structures associated with the inode.
 	 */
