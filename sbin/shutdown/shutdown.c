@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)shutdown.c	5.14 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)shutdown.c	5.15 (Berkeley) 06/22/90";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -46,7 +46,7 @@ static char sccsid[] = "@(#)shutdown.c	5.14 (Berkeley) 06/01/90";
 #include <sys/file.h>
 #include <sys/resource.h>
 #include <sys/syslog.h>
-#include <signal.h>
+#include <sys/signal.h>
 #include <setjmp.h>
 #include <tzfile.h>
 #include <pwd.h>
@@ -94,7 +94,7 @@ main(argc, argv)
 
 #ifndef DEBUG
 	if (geteuid()) {
-		fprintf(stderr, "shutdown: NOT super-user\n");
+		(void)fprintf(stderr, "shutdown: NOT super-user\n");
 		exit(1);
 	}
 #endif
@@ -131,12 +131,12 @@ main(argc, argv)
 		usage();
 
 	if (dofast && nosync) {
-		fprintf(stderr,
+		(void)fprintf(stderr,
 		    "shutdown: incompatible switches -f and -n.\n");
 		usage();
 	}
 	if (doreboot && dohalt) {
-		fprintf(stderr, 
+		(void)fprintf(stderr,
 		    "shutdown: incompatible switches -h and -r.\n");
 		usage();
 	}
@@ -173,9 +173,9 @@ main(argc, argv)
 	mbuflen = strlen(mbuf);
 
 	if (offset)
-		printf("Shutdown at %.24s.\n", ctime(&shuttime));
+		(void)printf("Shutdown at %.24s.\n", ctime(&shuttime));
 	else
-		printf("Shutdown NOW!\n");
+		(void)printf("Shutdown NOW!\n");
 
 	if (!(whom = getlogin()))
 		whom = (pw = getpwuid(getuid())) ? pw->pw_name : "???";
@@ -193,7 +193,7 @@ main(argc, argv)
 			exit(1);
 		}
 		if (forkpid) {
-			printf("shutdown: [pid %d]\n", forkpid);
+			(void)printf("shutdown: [pid %d]\n", forkpid);
 			exit(0);
 		}
 	}
@@ -252,31 +252,32 @@ warn()
 	char wcmd[MAXPATHLEN + 4];
 	FILE *pf;
 	char *ctime();
-	int timeout();
+	void timeout();
 
 	if (!first++)
 		(void)gethostname(hostname, sizeof(hostname));
 
 	/* undoc -n option to wall suppresses normal wall banner */
-	(void) sprintf(wcmd, "%s -n", _PATH_WALL);
+	(void)sprintf(wcmd, "%s -n", _PATH_WALL);
 	if (!(pf = popen(wcmd, "w"))) {
 		syslog(LOG_ERR, "shutdown: can't find %s: %m", _PATH_WALL);
 		return;
 	}
 
-	fprintf(pf, "\007*** %sSystem shutdown message from %s@%s ***\007\n",
+	(void)fprintf(pf,
+	    "\007*** %sSystem shutdown message from %s@%s ***\007\n",
 	    tp->timeleft ? "": "FINAL ", whom, hostname);
 
 	if (tp->timeleft > 10*60)
-		fprintf(pf, "System going down at %5.5s\n\n",
+		(void)fprintf(pf, "System going down at %5.5s\n\n",
 		    ctime(&shuttime) + 11);
 	else if (tp->timeleft > 59)
-		fprintf(pf, "System going down in %d minute%s\n\n",
+		(void)fprintf(pf, "System going down in %d minute%s\n\n",
 		    tp->timeleft / 60, (tp->timeleft > 60) ? "s" : "");
 	else if (tp->timeleft)
-		fprintf(pf, "System going down in 30 seconds\n\n");
+		(void)fprintf(pf, "System going down in 30 seconds\n\n");
 	else
-		fprintf(pf, "System going down IMMEDIATELY\n\n");
+		(void)fprintf(pf, "System going down IMMEDIATELY\n\n");
 
 	if (mbuflen)
 		(void)fwrite(mbuf, sizeof(*mbuf), mbuflen, pf);
@@ -294,6 +295,7 @@ warn()
 	}
 }
 
+void
 timeout()
 {
 	longjmp(alarmbuf, 1);
@@ -301,27 +303,29 @@ timeout()
 
 die_you_gravy_sucking_pig_dog()
 {
+	void finish();
+
 	syslog(LOG_NOTICE, "%s by %s: %s",
 	    doreboot ? "reboot" : dohalt ? "halt" : "shutdown", whom, mbuf);
 	(void)sleep(2);
 
-	printf("\r\nSystem shutdown time has arrived\007\007\r\n");
+	(void)printf("\r\nSystem shutdown time has arrived\007\007\r\n");
 	if (killflg) {
-		printf("\rbut you'll have to do it yourself\r\n");
+		(void)printf("\rbut you'll have to do it yourself\r\n");
 		finish();
 	}
 	if (dofast)
 		doitfast();
 #ifdef DEBUG
 	if (doreboot)
-		printf("reboot");
+		(void)printf("reboot");
 	else if (dohalt)
-		printf("halt");
+		(void)printf("halt");
 	if (nosync)
-		printf(" no sync");
+		(void)printf(" no sync");
 	if (dofast)
-		printf(" no fsck");
-	printf("\nkill -HUP 1\n");
+		(void)printf(" no fsck");
+	(void)printf("\nkill -HUP 1\n");
 #else
 	if (doreboot) {
 		execle(_PATH_REBOOT, "reboot", "-l", nosync, 0);
@@ -339,8 +343,6 @@ die_you_gravy_sucking_pig_dog()
 }
 
 #define	ATOI2(p)	(p[0] - '0') * 10 + (p[1] - '0'); p += 2;
-static int dmsize[] =
-	{ -1, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
 getoffset(timearg)
 	register char *timearg;
@@ -348,7 +350,6 @@ getoffset(timearg)
 	register struct tm *lt;
 	register char *p;
 	time_t now, time();
-	int year, month, day, hour, min;
 
 	if (!strcasecmp(timearg, "now")) {		/* now */
 		offset = 0;
@@ -358,9 +359,8 @@ getoffset(timearg)
 	(void)time(&now);
 	if (*timearg == '+') {				/* +minutes */
 		if (!isdigit(*++timearg))
-			goto badtime;
-		min = atoi(timearg);
-		offset = min * 60;
+			badtime();
+		offset = atoi(timearg) * 60;
 		shuttime = now + offset;
 		return;
 	}
@@ -374,51 +374,43 @@ getoffset(timearg)
 				p[2] = '\0';
 			}
 			else
-				goto badtime;
+				badtime();
 
 	unsetenv("TZ");					/* OUR timezone */
-	lt = localtime(&now);				/* [yymmdd]hhmm */
-	year = lt->tm_year;
-	month = lt->tm_mon + 1;
-	day = lt->tm_mday;
+	lt = localtime(&now);				/* current time val */
 
 	switch(strlen(timearg)) {
 	case 10:
-		year = ATOI2(timearg);
+		lt->tm_year = ATOI2(timearg);
 		/* FALLTHROUGH */
 	case 8:
-		month = ATOI2(timearg);
+		lt->tm_mon = ATOI2(timearg);
+		if (--lt->tm_mon < 0 || lt->tm_mon > 11)
+			badtime();
 		/* FALLTHROUGH */
 	case 6:
-		day = ATOI2(timearg);
+		lt->tm_mday = ATOI2(timearg);
+		if (lt->tm_mday < 1 || lt->tm_mday > 31)
+			badtime();
 		/* FALLTHROUGH */
 	case 4:
-		hour = ATOI2(timearg);
-		min = ATOI2(timearg);
-		if (month < 1 || month > 12 || day < 1 || day > 31 ||
-		    hour < 0 || hour > 23 || min < 0 || min > 59)
-			goto badtime;
-		shuttime = 0;
-		year += TM_YEAR_BASE;
-		if (isleap(year) && month > 2)
-			++shuttime;
-		for (--year; year >= EPOCH_YEAR; --year)
-			shuttime += isleap(year) ?
-			    DAYSPERLYEAR : DAYSPERNYEAR;
-		while (--month)
-			shuttime += dmsize[month];
-		shuttime += day - 1;
-		shuttime = HOURSPERDAY * shuttime + hour;
-		shuttime = MINSPERHOUR * shuttime + min;
-		shuttime *= SECSPERMIN;
-		shuttime -= lt->tm_gmtoff;
-		if ((offset = shuttime - now) >= 0)
-			break;
-		/* FALLTHROUGH */
+		lt->tm_hour = ATOI2(timearg);
+		if (lt->tm_hour < 0 || lt->tm_hour > 23)
+			badtime();
+		lt->tm_min = ATOI2(timearg);
+		if (lt->tm_min < 0 || lt->tm_min > 59)
+			badtime();
+		lt->tm_sec = 0;
+		if ((shuttime = mktime(lt)) == -1)
+			badtime();
+		if ((offset = shuttime - now) < 0) {
+			(void)fprintf(stderr,
+			    "shutdown: that time is already past.\n");
+			exit(1);
+		}
+		break;
 	default:
-badtime:	fprintf(stderr,
-		    "shutdown: bad time format, or already past.\n");
-		exit(1);
+		badtime();
 	}
 }
 
@@ -437,8 +429,9 @@ doitfast()
 #define	NOMSG	"\n\nNO LOGINS: System going down at "
 nolog()
 {
-	int logfd, finish();
+	int logfd;
 	char *ct, *ctime();
+	void finish();
 
 	(void)unlink(_PATH_NOLOGIN);	/* in case linked to another file */
 	(void)signal(SIGINT, finish);
@@ -456,10 +449,17 @@ nolog()
 	}
 }
 
+void
 finish()
 {
 	(void)unlink(_PATH_NOLOGIN);
 	exit(0);
+}
+
+badtime()
+{
+	(void)fprintf(stderr, "shutdown: bad time format.\n");
+	exit(1);
 }
 
 usage()
