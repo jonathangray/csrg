@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	1.13 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)main.c	1.14 (Berkeley) 06/28/90";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -77,6 +77,8 @@ main(argc, argv)
 	int argc;
 	char *argv[];
 {
+    char *user = 0;
+
     tninit();		/* Clear out things */
 #ifdef	CRAY
     _setlist_init();	/* Work around compiler bug */
@@ -84,7 +86,7 @@ main(argc, argv)
 
     TerminalSaveState();
 
-    prompt = (unsigned char *)argv[0];
+    prompt = argv[0];
     while ((argc > 1) && (argv[1][0] == '-')) {
 	if (!strcmp(argv[1], "-d")) {
 	    debug = 1;
@@ -94,6 +96,14 @@ main(argc, argv)
 		argv++;
 		argc--;
 	    }
+	} else if (!strcmp(argv[1], "-l")) {
+	    if ((argc > 1) && (argv[2][0] != '-')) {	/* get user name */
+		user = argv[2];
+		argv++;
+		argc--;
+	    }
+	} else if (!strncmp(argv[1], "-e", 2)) {
+		set_escape_char(&argv[1][2]);
 	} else {
 #if	defined(TN3270) && defined(unix)
 	    if (!strcmp(argv[1], "-t")) {
@@ -122,6 +132,13 @@ main(argc, argv)
     if (argc != 1) {
 	if (setjmp(toplevel) != 0)
 	    Exit(0);
+	if (user) {
+	    argc += 2;
+	    argv -= 2;
+	    argv[0] = argv[2];
+	    argv[1] = "-l";
+	    argv[2] = user;
+	}
 	if (tn(argc, argv) == 1) {
 	    return 0;
 	} else {
