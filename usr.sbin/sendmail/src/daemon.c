@@ -39,9 +39,9 @@
 
 #ifndef lint
 #ifdef DAEMON
-static char sccsid[] = "@(#)daemon.c	6.25 (Berkeley) 03/24/93 (with daemon mode)";
+static char sccsid[] = "@(#)daemon.c	6.26 (Berkeley) 03/29/93 (with daemon mode)";
 #else
-static char sccsid[] = "@(#)daemon.c	6.25 (Berkeley) 03/24/93 (without daemon mode)";
+static char sccsid[] = "@(#)daemon.c	6.26 (Berkeley) 03/29/93 (without daemon mode)";
 #endif
 #endif /* not lint */
 
@@ -106,7 +106,8 @@ static FILE	*MailPort;	/* port that mail comes in on */
 **		to the communication channel.
 */
 
-int	DaemonSocket	= -1;		/* fd describing socket */
+int		DaemonSocket	= -1;		/* fd describing socket */
+SOCKADDR	DaemonAddr;			/* socket for incoming */
 
 getrequests()
 {
@@ -115,29 +116,33 @@ getrequests()
 	int on = 1;
 	bool refusingconnections = TRUE;
 	FILE *pidf;
-	SOCKADDR srvraddr;
 	extern void reapchild();
 
 	/*
 	**  Set up the address for the mailer.
 	*/
 
-	sp = getservbyname("smtp", "tcp");
-	if (sp == NULL)
+	if (DaemonAddr.sin.sin_family == 0)
+		DaemonAddr.sin.sin_family = AF_INET;
+	if (DaemonAddr.sin.sin_addr.s_addr == 0)
+		DaemonAddr.sin.sin_addr.s_addr = INADDR_ANY;
+	if (DaemonAddr.sin.sin_port == 0)
 	{
-		syserr("554 server \"smtp\" unknown");
-		goto severe;
+		sp = getservbyname("smtp", "tcp");
+		if (sp == NULL)
+		{
+			syserr("554 server \"smtp\" unknown");
+			goto severe;
+		}
+		DaemonAddr.sin.sin_port = sp->s_port;
 	}
-	srvraddr.sin.sin_family = AF_INET;
-	srvraddr.sin.sin_addr.s_addr = INADDR_ANY;
-	srvraddr.sin.sin_port = sp->s_port;
 
 	/*
 	**  Try to actually open the connection.
 	*/
 
 	if (tTd(15, 1))
-		printf("getrequests: port 0x%x\n", srvraddr.sin.sin_port);
+		printf("getrequests: port 0x%x\n", DaemonAddr.sin.sin_port);
 
 	/* get a socket for the SMTP connection */
 	DaemonSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -159,7 +164,7 @@ getrequests()
 	(void) setsockopt(DaemonSocket, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof on);
 	(void) setsockopt(DaemonSocket, SOL_SOCKET, SO_KEEPALIVE, (char *)&on, sizeof on);
 
-	if (bind(DaemonSocket, &srvraddr.sa, sizeof srvraddr) < 0)
+	if (bind(DaemonSocket, &DaemonAddr.sa, sizeof DaemonAddr) < 0)
 	{
 		syserr("getrequests: cannot bind");
 		(void) close(DaemonSocket);
