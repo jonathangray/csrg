@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)5.t	8.1 (Berkeley) 06/08/93
+.\"	@(#)5.t	5.4 (Berkeley) 08/02/93
 .\"
 .\".ds RH "Advanced Topics
 .bp
@@ -932,7 +932,7 @@ center;
 l | l
 l | n.
 _
-Scope   Initial TTL
+Scope	Initial TTL
 =
 restricted to the same host	0
 restricted to the same subnet	1
