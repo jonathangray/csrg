@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_vnops.c	8.7 (Berkeley) 02/14/95
+ *	@(#)vfs_vnops.c	8.8 (Berkeley) 03/22/95
  */
 
 #include <sys/param.h>
@@ -82,6 +82,8 @@ vn_open(ndp, fmode, cmode)
 			VATTR_NULL(vap);
 			vap->va_type = VREG;
 			vap->va_mode = cmode;
+			if (fmode & O_EXCL)
+				vap->va_vaflags |= VA_EXCLUSIVE;
 			VOP_LEASE(ndp->ni_dvp, p, cred, LEASE_WRITE);
 			if (error = VOP_CREATE(ndp->ni_dvp, &ndp->ni_vp,
 			    &ndp->ni_cnd, vap))
