@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_subs.c	7.47 (Berkeley) 02/04/92
+ *	@(#)nfs_subs.c	7.48 (Berkeley) 03/16/92
  */
 
 /*
@@ -614,6 +614,7 @@ nfs_init()
 		nfs_iodwant[i] = (struct proc *)0;
 	nfs_xdrneg1 = txdr_unsigned(-1);
 	nfs_nhinit();			/* Init the nfsnode table */
+	nfsrv_init(0);			/* Init server data structures */
 	nfsrv_initcache();		/* Init the server request cache */
 
 	/*
