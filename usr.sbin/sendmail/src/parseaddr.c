@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	8.17 (Berkeley) 10/31/93";
+static char sccsid[] = "@(#)parseaddr.c	8.18 (Berkeley) 11/20/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1640,6 +1640,8 @@ badaddr:
 			}
 			tv++;
 		}
+		else
+			setstat(EX_UNAVAILABLE);
 		buf[0] = '\0';
 		for (; (*tv != NULL) && (**tv != CANONUSER); tv++)
 		{
