@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	8.21 (Berkeley) 12/10/93";
+static char sccsid[] = "@(#)parseaddr.c	8.22 (Berkeley) 12/10/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -129,7 +129,7 @@ parseaddr(addr, a, flags, delim, delimptr, e)
 	if (delimptr == NULL)
 		delimptr = &delimptrbuf;
 
-	pvp = prescan(addr, delim, pvpbuf, delimptr);
+	pvp = prescan(addr, delim, pvpbuf, sizeof pvpbuf, delimptr);
 	if (pvp == NULL)
 	{
 		if (tTd(20, 1))
@@ -373,6 +373,7 @@ invalidaddr(addr)
 **			If '\t' then we are reading the .cf file.
 **		pvpbuf -- place to put the saved text -- note that
 **			the pointers are static.
+**		pvpbsize -- size of pvpbuf.
 **		delimptr -- if non-NULL, set to the location of the
 **			terminating delimiter.
 **
@@ -409,7 +410,7 @@ static short StateTab[NSTATES][NSTATES] =
 # define NOCHAR		-1	/* signal nothing in lookahead token */
 
 char **
-prescan(addr, delim, pvpbuf, delimptr)
+prescan(addr, delim, pvpbuf, pvpbsize, delimptr)
 	char *addr;
 	char delim;
 	char pvpbuf[];
@@ -457,7 +458,7 @@ prescan(addr, delim, pvpbuf, delimptr)
 			if (c != NOCHAR && !bslashmode)
 			{
 				/* see if there is room */
-				if (q >= &pvpbuf[PSBUFSIZE - 5])
+				if (q >= &pvpbuf[pvpbsize - 5])
 				{
 					usrerr("553 Address too long");
 	returnnull:
@@ -2003,7 +2004,7 @@ remotename(name, m, flags, pstat, e)
 	**	domain will be appended.
 	*/
 
-	pvp = prescan(name, '\0', pvpbuf, NULL);
+	pvp = prescan(name, '\0', pvpbuf, sizeof pvpbuf, NULL);
 	if (pvp == NULL)
 		return (name);
 	if (rewrite(pvp, 3, e) == EX_TEMPFAIL)
@@ -2164,7 +2165,7 @@ maplocaluser(a, sendq, e)
 		printf("maplocaluser: ");
 		printaddr(a, FALSE);
 	}
-	pvp = prescan(a->q_user, '\0', pvpbuf, &delimptr);
+	pvp = prescan(a->q_user, '\0', pvpbuf, sizeof pvpbuf, &delimptr);
 	if (pvp == NULL)
 		return;
 
