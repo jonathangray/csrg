@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.125 (Berkeley) 04/22/95
+ *	@(#)sendmail.h	8.126 (Berkeley) 04/23/95
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.125		04/22/95";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.126		04/23/95";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -254,6 +254,7 @@ typedef struct mailer	MAILER;
 # define M_HASPWENT	'w'	/* check for /etc/passwd entry */
 		/*	'x'	/* CF: include Full-Name: */
 # define M_XDOT		'X'	/* use hidden-dot algorithm */
+# define M_EBCDIC	'3'	/* extend Q-P encoding for EBCDIC */
 # define M_TRYRULESET5	'5'	/* use ruleset 5 after local aliasing */
 # define M_7BITS	'7'	/* use 7-bit path */
 # define M_8BITS	'8'	/* force "just send 8" behaviour */
