@@ -30,19 +30,21 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)res_debug.c	5.32 (Berkeley) 02/21/91
+ *	@(#)res_debug.c	5.33 (Berkeley) 02/24/91
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)res_debug.c	5.32 (Berkeley) 02/21/91";
+static char sccsid[] = "@(#)res_debug.c	5.33 (Berkeley) 02/24/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
 #include <netinet/in.h>
-#include <stdio.h>
+#include <arpa/inet.h>
 #include <arpa/nameser.h>
+#include <resolv.h>
+#include <stdio.h>
+#include <string.h>
 
-extern char *inet_ntoa();
 static char *p_cdname(), *p_class(), *p_rr(), *p_time(), *p_type();
 
 char *_res_opcodes[] = {
@@ -86,6 +88,8 @@ char *_res_resultcodes[] = {
 __p_query(msg)
 	char *msg;
 {
+	static void fp_query();
+
 	fp_query(msg,stdout);
 }
 
@@ -93,7 +97,7 @@ __p_query(msg)
  * Print the contents of a query.
  * This is intended to be primarily a debugging routine.
  */
-static
+static void
 fp_query(msg,file)
 	char *msg;
 	FILE *file;
@@ -191,7 +195,8 @@ p_cdname(cp, msg, file)
 	char name[MAXDNAME];
 	int n;
 
-	if ((n = dn_expand(msg, msg + 512, cp, name, sizeof(name))) < 0)
+	if ((n = dn_expand((u_char *)msg, (u_char *)msg + 512, (u_char *)cp,
+	    (u_char *)name, sizeof(name))) < 0)
 		return (NULL);
 	if (name[0] == '\0') {
 		name[0] = '.';
