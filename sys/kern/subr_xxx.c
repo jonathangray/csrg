@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_xxx.c	7.11 (Berkeley) 02/05/92
+ *	@(#)subr_xxx.c	7.12 (Berkeley) 06/20/92
  */
 
 /*
@@ -197,8 +197,9 @@ bcmp(v1, v2, len)
 #endif /* NEED_BCMP */
 
 #ifdef NEED_STRLEN
+size_t
 strlen(s1)
-	register char *s1;
+	register const char *s1;
 {
 	register int len;
 
