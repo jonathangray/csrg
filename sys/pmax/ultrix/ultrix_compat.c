@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: hpux_compat.c 1.41 91/04/06$
  *
- *	@(#)ultrix_compat.c	7.2 (Berkeley) 03/28/92
+ *	@(#)ultrix_compat.c	7.3 (Berkeley) 09/13/92
  */
 
 /*
@@ -111,13 +111,15 @@ notimp(p, uap, retval)
 	return (error);
 }
 
+struct wait3_args {
+	int	*status;
+	int	options;
+	int	rusage;
+};
+
 ultrixwait3(p, uap, retval)
 	struct proc *p;
-	struct args {
-		int	*status;
-		int	options;
-		int	rusage;
-	} *uap;
+	struct wait3_args *uap;
 	int *retval;
 {
 	struct {
@@ -139,12 +141,14 @@ ultrixwait3(p, uap, retval)
 	return (wait1(p, &bsd_uap, retval));
 }
 
+struct domainname_args {
+	char	*domainname;
+	u_int	len;
+};
+
 ultrixgetdomainname(p, uap, retval)
 	struct proc *p;
-	register struct args {
-		char	*domainname;
-		u_int	len;
-	} *uap;
+	register struct domainname_args *uap;
 	int *retval;
 {
 	if (uap->len > domainnamelen + 1)
@@ -154,10 +158,7 @@ ultrixgetdomainname(p, uap, retval)
 
 ultrixsetdomainname(p, uap, retval)
 	struct proc *p;
-	register struct args {
-		char	*domainname;
-		u_int	len;
-	} *uap;
+	register struct domainname_args *uap;
 	int *retval;
 {
 	int error;
@@ -172,15 +173,17 @@ ultrixsetdomainname(p, uap, retval)
 	return (error);
 }
 
+struct getpgrp_args {
+	int pid;
+};
+
 /*
  * This is the equivalent of BSD getpgrp but with more restrictions.
  * Note we do not check the real uid or "saved" uid.
  */
 ultrixgetpgrp(cp, uap, retval)
 	struct proc *cp;
-	register struct args {
-		int pid;
-	} *uap;
+	register struct getpgrp_args *uap;
 	int *retval;
 {
 	register struct proc *p;
@@ -197,16 +200,17 @@ ultrixgetpgrp(cp, uap, retval)
 	return (0);
 }
 
+struct setpgrp_args {
+	int	pid;
+	int	pgrp;
+} *uap;
 /*
  * This is the equivalent of BSD setpgrp but with more restrictions.
  * Note we do not check the real uid or "saved" uid or pgrp.
  */
 ultrixsetpgrp(p, uap, retval)
 	struct proc *p;
-	struct args {
-		int	pid;
-		int	pgrp;
-	} *uap;
+	struct setpgrp_args *uap;
 	int *retval;
 {
 	/* empirically determined */
@@ -215,14 +219,16 @@ ultrixsetpgrp(p, uap, retval)
 	return (setpgid(p, uap, retval));
 }
 
+struct sigvec_args {
+	int	signo;
+	struct	sigvec *nsv;
+	struct	sigvec *osv;
+	caddr_t	sigcode;	/* handler return address */
+};
+
 ultrixsigvec(p, uap, retval)
 	struct proc *p;
-	register struct args {
-		int	signo;
-		struct	sigvec *nsv;
-		struct	sigvec *osv;
-		caddr_t	sigcode;	/* handler return address */
-	} *uap;
+	register struct sigvec_args *uap;
 	int *retval;
 {
 	return (osigvec(p, uap, retval));
