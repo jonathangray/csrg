@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_prf.c	7.27 (Berkeley) 05/28/91
+ *	@(#)subr_prf.c	7.28 (Berkeley) 05/28/91
  */
 
 #include "param.h"
@@ -357,13 +357,13 @@ kprintf(fmt, flags, tp, ap)
 	for (;;) {
 		padc = ' ';
 		width = 0;
-		while ((ch = *fmt++) != '%') {
+		while ((ch = *(u_char *)fmt++) != '%') {
 			if (ch == '\0')
 				return;
 			putchar(ch, flags, tp);
 		}
 		lflag = 0;
-reswitch:	switch (ch = *fmt++) {
+reswitch:	switch (ch = *(u_char *)fmt++) {
 		case '0':
 			padc = '0';
 			goto reswitch;
