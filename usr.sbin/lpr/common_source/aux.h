@@ -1,11 +1,5 @@
 /*
- * Auxillary stuff from 4.4BSD not found in some other systems
- *
- * !!!USE THIS FILE ONLY IF YOU ARE NOT RUNNING 4.4BSD!!!
- */
-
-/*-
- * Copyright (c) 1990, 1993
+ * Copyright (c) 1995
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,6 +29,13 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
+ */
+
+/*
+ * Auxillary functions to aid portability to other systems.
+ * These are 4.4BSD routines that are often not found on other systems.
+ *
+ * !!!USE THIS FILE ONLY IF YOU ARE NOT RUNNING 4.4BSD!!!
  */
 
 #ifdef PREPOSIX
