@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_physio.c	7.27 (Berkeley) 10/02/92
+ *	@(#)kern_physio.c	7.28 (Berkeley) 12/27/92
  */
 
 #include <sys/param.h>
@@ -15,10 +15,6 @@
 #include <sys/conf.h>
 #include <sys/proc.h>
 #include <sys/vnode.h>
-
-#ifdef HPUXCOMPAT
-#include <sys/user.h>
-#endif
 
 static void freeswbuf __P((struct buf *));
 static struct buf *getswbuf __P((int));
@@ -119,9 +115,6 @@ physio(strat, bp, dev, rw, mincnt, uio)
 		uio->uio_iov++;
 		uio->uio_iovcnt--;
 	}
-#if defined(hp300)
-	DCIU();
-#endif
 	if (allocbuf)
 		freeswbuf(bp);
 	return (error);
