@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.h	7.9 (Berkeley) 06/05/92
+ *	@(#)pmap.h	7.10 (Berkeley) 06/22/92
  */
 
 #ifndef	_PMAP_MACHINE_
@@ -83,7 +83,7 @@ extern struct pmap	kernel_pmap_store;
  * page is used.  WARNING: don't change MAXUL2SIZE unless you can allocate
  * physically contiguous pages for the ST in pmap.c!
  */
-#define	MAXKL2SIZE	16
+#define	MAXKL2SIZE	32
 #define MAXUL2SIZE	8
 #define l2tobm(n)	(1 << (n))
 #define	bmtol2(n)	(ffs(n) - 1)
