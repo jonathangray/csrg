@@ -38,12 +38,9 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)reboot.c	5.11 (Berkeley) 02/26/91";
+static char sccsid[] = "@(#)reboot.c	5.11 (Berkeley) 02/27/91";
 #endif /* not lint */
 
-/*
- * Reboot
- */
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/syslog.h>
@@ -135,6 +132,7 @@ main(argc, argv)
 	exit(1);
 }
 
+void
 dingdong()
 {
 	/* RRRIIINNNGGG RRRIIINNNGGG */
