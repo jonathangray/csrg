@@ -39,9 +39,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)rcons_kern.c	8.1 (Berkeley) 06/11/93
+ *	@(#)rcons_kern.c	8.2 (Berkeley) 09/27/93
  *
- * from: $Header: rcons_kern.c,v 1.28 93/04/20 11:15:38 torek Exp $
+ * from: $Header: rcons_kern.c,v 1.29 93/09/27 00:52:02 torek Exp $
  */
 
 #include <sys/param.h>
@@ -199,7 +199,6 @@ rcons_init(fb)
 	register struct winsize *ws;
 	register int i;
 	static int row, col;
-	char buf[100];
 
 	myfbdevicep = fb;
 
@@ -258,12 +257,7 @@ rcons_init(fb)
 	fb->fb_emuheight = fb->fb_maxrow * fb->fb_font->height;
 
 	/* Determine addresses of prom emulator row and column */
-	fb->fb_row = fb->fb_col = NULL;
-	sprintf(buf, "' line# >body >user %x !", &fb->fb_row);
-	rominterpret(buf);
-	sprintf(buf, "' column# >body >user %x !", &fb->fb_col);
-	rominterpret(buf);
-	if (fb->fb_row == NULL || fb->fb_col == NULL) {
+	if (romgetcursoraddr(&fb->fb_row, &fb->fb_col)) {
 		/* Can't find addresses; use private copies */
 		fb->fb_row = &row;
 		fb->fb_col = &col;
