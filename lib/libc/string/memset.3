@@ -33,7 +33,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)memset.3	5.4 (Berkeley) 06/29/91
+.\"     @(#)memset.3	5.5 (Berkeley) 07/12/92
 .\"
 .Dd 
 .Dt MEMSET 3
@@ -55,6 +55,10 @@ bytes of value
 .Fa c
 (converted to an unsigned char) to the string
 .Fa b .
+.Sh RETURNS
+The
+.Fn memset
+function returns its first argument.
 .Sh SEE ALSO
 .Xr bzero 3 ,
 .Xr swab 3
