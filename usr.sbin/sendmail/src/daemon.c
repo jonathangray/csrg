@@ -39,9 +39,9 @@
 
 #ifndef lint
 #ifdef DAEMON
-static char sccsid[] = "@(#)daemon.c	6.44 (Berkeley) 05/04/93 (with daemon mode)";
+static char sccsid[] = "@(#)daemon.c	6.45 (Berkeley) 05/07/93 (with daemon mode)";
 #else
-static char sccsid[] = "@(#)daemon.c	6.44 (Berkeley) 05/04/93 (without daemon mode)";
+static char sccsid[] = "@(#)daemon.c	6.45 (Berkeley) 05/07/93 (without daemon mode)";
 #endif
 #endif /* not lint */
 
@@ -109,6 +109,7 @@ static FILE	*MailPort;	/* port that mail comes in on */
 
 int		DaemonSocket	= -1;		/* fd describing socket */
 SOCKADDR	DaemonAddr;			/* socket for incoming */
+int		ListenQueueSize = 10;		/* size of listen queue */
 
 getrequests()
 {
