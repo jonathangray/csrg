@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)miscbltin.c	5.1 (Berkeley) 03/07/91";
+static char sccsid[] = "@(#)miscbltin.c	5.2 (Berkeley) 03/13/91";
 #endif /* not lint */
 
 /*
@@ -76,7 +76,7 @@ readcmd(argc, argv)  char **argv; {
 
 	eflag = 0;
 	prompt = NULL;
-	while ((i = nextopt("ep:")) >= 0) {
+	while ((i = nextopt("ep:")) != '\0') {
 		if (i == 'p')
 			prompt = optarg;
 		else
