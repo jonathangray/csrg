@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)udp_usrreq.c	7.21 (Berkeley) 07/31/91
+ *	@(#)udp_usrreq.c	7.22 (Berkeley) 10/02/91
  */
 
 #include "param.h"
@@ -39,6 +39,7 @@
 #include "protosw.h"
 #include "socket.h"
 #include "socketvar.h"
+#include "errno.h"
 #include "stat.h"
 
 #include "../net/if.h"
