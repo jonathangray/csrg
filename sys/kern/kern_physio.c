@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_physio.c	7.26 (Berkeley) 08/03/92
+ *	@(#)kern_physio.c	7.27 (Berkeley) 10/02/92
  */
 
 #include <sys/param.h>
@@ -149,12 +149,12 @@ getswbuf(prio)
 	struct buf *bp;
 
 	s = splbio();
-	while (bswlist.av_forw == NULL) {
+	while (bswlist.b_actf == NULL) {
 		bswlist.b_flags |= B_WANTED;
 		sleep((caddr_t)&bswlist, prio);
 	}
-	bp = bswlist.av_forw;
-	bswlist.av_forw = bp->av_forw;
+	bp = bswlist.b_actf;
+	bswlist.b_actf = bp->b_actf;
 	splx(s);
 	return (bp);
 }
@@ -166,8 +166,8 @@ freeswbuf(bp)
 	int s;
 
 	s = splbio();
-	bp->av_forw = bswlist.av_forw;
-	bswlist.av_forw = bp;
+	bp->b_actf = bswlist.b_actf;
+	bswlist.b_actf = bp;
 	if (bp->b_vp)
 		brelvp(bp);
 	if (bswlist.b_flags & B_WANTED) {
