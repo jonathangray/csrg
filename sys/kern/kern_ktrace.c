@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_ktrace.c	7.19 (Berkeley) 07/07/92
+ *	@(#)kern_ktrace.c	7.20 (Berkeley) 07/10/92
  */
 
 #ifdef KTRACE
@@ -211,15 +211,16 @@ ktrcsw(vp, out, user)
 /*
  * ktrace system call
  */
+struct ktrace_args {
+	char	*fname;
+	int	ops;
+	int	facs;
+	int	pid;
+};
 /* ARGSUSED */
 ktrace(curp, uap, retval)
 	struct proc *curp;
-	register struct args {
-		char	*fname;
-		int	ops;
-		int	facs;
-		int	pid;
-	} *uap;
+	register struct ktrace_args *uap;
 	int *retval;
 {
 	register struct vnode *vp = NULL;
