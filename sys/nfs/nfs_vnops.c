@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	7.49 (Berkeley) 01/10/91
+ *	@(#)nfs_vnops.c	7.50 (Berkeley) 02/01/91
  */
 
 /*
@@ -98,7 +98,8 @@ int	nfs_lookup(),
 	nfs_inactive(),
 	nfs_reclaim(),
 	nfs_print(),
-	nfs_islocked();
+	nfs_islocked(),
+	nfs_advlock();
 
 struct vnodeops nfsv2_vnodeops = {
 	nfs_lookup,		/* lookup */
@@ -133,6 +134,7 @@ struct vnodeops nfsv2_vnodeops = {
 	nfs_strategy,		/* strategy */
 	nfs_print,		/* print */
 	nfs_islocked,		/* islocked */
+	nfs_advlock,		/* advlock */
 };
 
 /* Special device vnode ops */
@@ -146,7 +148,8 @@ int	spec_lookup(),
 	spec_select(),
 	spec_close(),
 	spec_badop(),
-	spec_nullop();
+	spec_nullop(),
+	spec_advlock();
 
 struct vnodeops spec_nfsv2nodeops = {
 	spec_lookup,		/* lookup */
@@ -181,6 +184,7 @@ struct vnodeops spec_nfsv2nodeops = {
 	spec_strategy,		/* strategy */
 	nfs_print,		/* print */
 	nfs_islocked,		/* islocked */
+	spec_advlock,		/* advlock */
 };
 
 #ifdef FIFO
@@ -194,7 +198,8 @@ int	fifo_lookup(),
 	fifo_close(),
 	fifo_print(),
 	fifo_badop(),
-	fifo_nullop();
+	fifo_nullop(),
+	fifo_advlock();
 
 struct vnodeops fifo_nfsv2nodeops = {
 	fifo_lookup,		/* lookup */
@@ -229,6 +234,7 @@ struct vnodeops fifo_nfsv2nodeops = {
 	fifo_badop,		/* strategy */
 	nfs_print,		/* print */
 	nfs_islocked,		/* islocked */
+	fifo_advlock,		/* advlock */
 };
 #endif /* FIFO */
 
@@ -1757,6 +1763,21 @@ nfs_fsync(vp, fflags, cred, waitfor)
 	if (!error && (np->n_flag & NWRITEERR))
 		error = np->n_error;
 	return (error);
+}
+
+/*
+ * NFS advisory byte-level locks.
+ * Currently unsupported.
+ */
+nfs_advlock(vp, id, op, fl, flags)
+	struct vnode *vp;
+	caddr_t id;
+	int op;
+	struct flock *fl;
+	int flags;
+{
+
+	return (EOPNOTSUPP);
 }
 
 /*
