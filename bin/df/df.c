@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 1980, 1990, 1993
  *	The Regents of the University of California.  All rights reserved.
- *
  * (c) UNIX System Laboratories, Inc.
  * All or some portions of this file are derived from material licensed
  * to the University of California by American Telephone and Telegraph
@@ -44,7 +43,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)df.c	8.3 (Berkeley) 01/21/94";
+static char sccsid[] = "@(#)df.c	8.4 (Berkeley) 01/21/94";
 #endif /* not lint */
 
 #include <sys/param.h>
