@@ -31,9 +31,9 @@
  * SUCH DAMAGE.
  */
 
-#if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)disklabel.c	5.19 (Berkeley) 3/19/92";
-#endif /* LIBC_SCCS and not lint */
+#ifndef lint
+static char sccsid[] = "@(#)disklabel.c	5.21 (Berkeley) 09/14/92";
+#endif /* not lint */
 
 #include <sys/param.h>
 #include <sys/errno.h>
