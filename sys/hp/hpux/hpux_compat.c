@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: hpux_compat.c 1.3 90/09/17$
  *
- *	@(#)hpux_compat.c	7.12 (Berkeley) 01/11/91
+ *	@(#)hpux_compat.c	7.13 (Berkeley) 04/20/91
  */
 
 /*
@@ -48,27 +48,28 @@
 
 #include "sys/param.h"
 #include "sys/systm.h"
-#include "sys/user.h"
+#include "sys/signalvar.h"
 #include "sys/kernel.h"
 #include "sys/filedesc.h"
 #include "sys/proc.h"
 #include "sys/buf.h"
 #include "sys/wait.h"
 #include "sys/file.h"
+#include "sys/namei.h"
 #include "sys/vnode.h"
 #include "sys/ioctl.h"
-#include "sys/uio.h"
 #include "sys/ptrace.h"
 #include "sys/stat.h"
 #include "sys/syslog.h"
 #include "sys/malloc.h"
 #include "sys/mount.h"
 #include "sys/ipc.h"
+#include "sys/user.h"
 
-#include "../include/cpu.h"
-#include "../include/reg.h"
-#include "../include/psl.h"
-#include "../include/vmparam.h"
+#include "machine/cpu.h"
+#include "machine/reg.h"
+#include "machine/psl.h"
+#include "machine/vmparam.h"
 #include "hpux.h"
 #include "hpux_termio.h"
 
@@ -141,6 +142,21 @@ notimp(p, uap, retval, code, nargs)
 	return (error);
 }
 
+hpuxexecv(p, uap, retval)
+	struct proc *p;
+	struct args {
+		char	*fname;
+		char	**argp;
+		char	**envp;
+	} *uap;
+	int *retval;
+{
+	extern int execve();
+
+	uap->envp = NULL;
+	return (execve(p, uap, retval));
+}
+
 /*
  * HPUX versions of wait and wait3 actually pass the parameters
  * (status pointer, options, rusage) into the kernel rather than
@@ -159,9 +175,9 @@ hpuxwait3(p, uap, retval)
 	/* rusage pointer must be zero */
 	if (uap->rusage)
 		return (EINVAL);
-	u.u_ar0[PS] = PSL_ALLCC;
-	u.u_ar0[R0] = uap->options;
-	u.u_ar0[R1] = uap->rusage;
+	p->p_regs[PS] = PSL_ALLCC;
+	p->p_regs[R0] = uap->options;
+	p->p_regs[R1] = uap->rusage;
 	return (hpuxwait(p, uap, retval));
 }
 
@@ -257,7 +273,7 @@ hpuxopen(p, uap, retval)
 		 * EXCL is set in which case we will return the
 		 * proper error).
 		 */
-		if ((mode & HPUXFEXCL) || ((mode-FOPEN) & FWRITE))
+		if ((mode & HPUXFEXCL) || (FFLAGS(mode) & FWRITE))
 			uap->mode |= FCREAT;
 	}
 	if (mode & HPUXFTRUNC)
@@ -322,7 +338,7 @@ hpuxread(p, uap, retval)
 
 	error = read(p, uap, retval);
 	if (error == EWOULDBLOCK &&
-	    (OFILE(p->p_fd, uap->fd))->f_type == DTYPE_VNODE) {
+	    p->p_fd->fd_ofiles[uap->fd]->f_type == DTYPE_VNODE) {
 		error = 0;
 		*retval = 0;
 	}
@@ -340,7 +356,7 @@ hpuxwrite(p, uap, retval)
 
 	error = write(p, uap, retval);
 	if (error == EWOULDBLOCK &&
-	    (OFILE(p->p_fd, uap->fd))->f_type == DTYPE_VNODE) {
+	    p->p_fd->fd_ofiles[uap->fd]->f_type == DTYPE_VNODE) {
 		error = 0;
 		*retval = 0;
 	}
@@ -358,7 +374,7 @@ hpuxreadv(p, uap, retval)
 
 	error = readv(p, uap, retval);
 	if (error == EWOULDBLOCK &&
-	    (OFILE(p->p_fd, uap->fd))->f_type == DTYPE_VNODE) {
+	    p->p_fd->fd_ofiles[uap->fd]->f_type == DTYPE_VNODE) {
 		error = 0;
 		*retval = 0;
 	}
@@ -376,7 +392,7 @@ hpuxwritev(p, uap, retval)
 
 	error = writev(p, uap, retval);
 	if (error == EWOULDBLOCK &&
-	    (OFILE(p->p_fd, uap->fd))->f_type == DTYPE_VNODE) {
+	    p->p_fd->fd_ofiles[uap->fd]->f_type == DTYPE_VNODE) {
 		error = 0;
 		*retval = 0;
 	}
@@ -398,13 +414,13 @@ hpuxdup(p, uap, retval)
 	struct file *fp;
 	int fd, error;
 
-	if (((unsigned)uap->i) >= fdp->fd_maxfiles ||
-	    (fp = OFILE(fdp, uap->i)) == NULL)
+	if (((unsigned)uap->i) >= fdp->fd_nfiles ||
+	    (fp = fdp->fd_ofiles[uap->i]) == NULL)
 		return (EBADF);
-	if (error = ufalloc(fdp, 0, &fd))
+	if (error = fdalloc(p, 0, &fd))
 		return (error);
-	OFILE(fdp, fd) = fp;
-	OFILEFLAGS(fdp, fd) = OFILEFLAGS(fdp, uap->i) &~ UF_EXCLOSE;
+	fdp->fd_ofiles[fd] = fp;
+	fdp->fd_ofileflags[fd] = fdp->fd_ofileflags[uap->i] &~ UF_EXCLOSE;
 	fp->f_count++;
 	if (fd > fdp->fd_lastfile)
 		fdp->fd_lastfile = fd;
@@ -516,8 +532,8 @@ hpuxfstat(p, uap, retval)
 	struct stat sb;
 	int error;
 
-	if (((unsigned)uap->fdes) >= fdp->fd_maxfiles ||
-	    (fp = OFILE(fdp, uap->fdes)) == NULL)
+	if (((unsigned)uap->fdes) >= fdp->fd_nfiles ||
+	    (fp = fdp->fd_ofiles[uap->fdes]) == NULL)
 		return (EBADF);
 
 	switch (fp->f_type) {
@@ -551,12 +567,12 @@ hpuxulimit(p, uap, retval)
 	struct rlimit *limp;
 	int error = 0;
 
-	limp = &u.u_rlimit[RLIMIT_FSIZE];
+	limp = &p->p_rlimit[RLIMIT_FSIZE];
 	switch (uap->cmd) {
 	case 2:
 		uap->newlimit *= 512;
 		if (uap->newlimit > limp->rlim_max &&
-		    (error = suser(u.u_cred, &u.u_acflag)))
+		    (error = suser(p->p_ucred, &p->p_acflag)))
 			break;
 		limp->rlim_cur = limp->rlim_max = uap->newlimit;
 		/* else fall into... */
@@ -566,8 +582,8 @@ hpuxulimit(p, uap, retval)
 		break;
 
 	case 3:
-		limp = &u.u_rlimit[RLIMIT_DATA];
-		*retval = ctob(u.u_tsize) + limp->rlim_max;
+		limp = &p->p_rlimit[RLIMIT_DATA];
+		*retval = ctob(p->p_vmspace->vm_tsize) + limp->rlim_max;
 		break;
 
 	default:
@@ -697,7 +713,7 @@ hpuxsetdomainname(p, uap, retval)
 {
 	int error;
 
-	if (error = suser(u.u_cred, &u.u_acflag))
+	if (error = suser(p->p_ucred, &p->p_acflag))
 		return (error);
 	if (uap->len > sizeof (domainname) - 1)
 		return (EINVAL);
@@ -795,14 +811,16 @@ hpuxstat1(fname, hsb, follow)
 	struct hpuxstat *hsb;
 	int follow;
 {
-	register struct nameidata *ndp = &u.u_nd;
-	struct stat sb;
+	register struct nameidata *ndp;
 	int error;
+	struct stat sb;
+	struct nameidata nd;
 
+	ndp = &nd;
 	ndp->ni_nameiop = LOOKUP | LOCKLEAF | follow;
 	ndp->ni_segflg = UIO_USERSPACE;
 	ndp->ni_dirp = fname;
-	if (error = namei(ndp))
+	if (error = namei(ndp, curproc))
 		return (error);
 	error = vn_stat(ndp->ni_vp, &sb);
 	vput(ndp->ni_vp);
@@ -896,8 +914,8 @@ hpuxioctl(p, uap, retval)
 	if (com == HPUXTIOCGETP || com == HPUXTIOCSETP)
 		return (getsettty(p, uap->fdes, com, uap->cmarg));
 
-	if (((unsigned)uap->fdes) >= fdp->fd_maxfiles ||
-	    (fp = OFILE(fdp, uap->fdes)) == NULL)
+	if (((unsigned)uap->fdes) >= fdp->fd_nfiles ||
+	    (fp = fdp->fd_ofiles[uap->fdes]) == NULL)
 		return (EBADF);
 	if ((fp->f_flag & (FREAD|FWRITE)) == 0)
 		return (EBADF);
@@ -937,7 +955,7 @@ hpuxioctl(p, uap, retval)
 
 	case HPUXTIOCCONS:
 		*(int *)data = 1;
-		error = (*fp->f_ops->fo_ioctl)(fp, TIOCCONS, data);
+		error = (*fp->f_ops->fo_ioctl)(fp, TIOCCONS, data, p);
 		break;
 
 	/* BSD-style job control ioctls */
@@ -953,7 +971,8 @@ hpuxioctl(p, uap, retval)
 	case HPUXTIOCGLTC:
 	case HPUXTIOCSPGRP:
 	case HPUXTIOCGPGRP:
-		error = (*fp->f_ops->fo_ioctl)(fp, hpuxtobsdioctl(com), data);
+		error = (*fp->f_ops->fo_ioctl)
+			(fp, hpuxtobsdioctl(com), data, p);
 		if (error == 0 && com == HPUXTIOCLGET) {
 			*(int *)data &= LTOSTOP;
 			if (*(int *)data & LTOSTOP)
@@ -966,11 +985,11 @@ hpuxioctl(p, uap, retval)
 	case HPUXTCSETA:
 	case HPUXTCSETAW:
 	case HPUXTCSETAF:
-		error = hpuxtermio(fp, com, data);
+		error = hpuxtermio(fp, com, data, p);
 		break;
 
 	default:
-		error = (*fp->f_ops->fo_ioctl)(fp, com, data);
+		error = (*fp->f_ops->fo_ioctl)(fp, com, data, p);
 		break;
 	}
 	/*
@@ -1024,7 +1043,8 @@ hpuxgetpgrp2(cp, uap, retval)
 	p = pfind(uap->pid);
 	if (p == 0)
 		return (ESRCH);
-	if (u.u_uid && p->p_uid != u.u_uid && !inferior(p))
+	if (cp->p_ucred->cr_uid && p->p_ucred->cr_uid != cp->p_ucred->cr_uid &&
+	    !inferior(p))
 		return (EPERM);
 	*retval = p->p_pgid;
 	return (0);
@@ -1045,7 +1065,7 @@ hpuxsetpgrp2(p, uap, retval)
 	/* empirically determined */
 	if (uap->pgrp < 0 || uap->pgrp >= 30000)
 		return (EINVAL);
-	return (setpgrp(p, uap, retval));
+	return (setpgid(p, uap, retval));
 }
 
 /*
@@ -1106,7 +1126,7 @@ hpuxgetaccess(p, uap, retval)
 	} *uap;
 	int *retval;
 {
-	struct nameidata *ndp = &u.u_nd;
+	struct nameidata *ndp;
 	int lgroups[NGROUPS];
 	int error = 0;
 	register struct ucred *cred;
@@ -1115,12 +1135,12 @@ hpuxgetaccess(p, uap, retval)
 	/*
 	 * Build an appropriate credential structure
 	 */
-	cred = crdup(ndp->ni_cred);
+	cred = crdup(p->p_ucred);
 	switch (uap->uid) {
 	case 65502:	/* UID_EUID */
 		break;
 	case 65503:	/* UID_RUID */
-		cred->cr_uid = p->p_ruid;
+		cred->cr_uid = p->p_cred->p_ruid;
 		break;
 	case 65504:	/* UID_SUID */
 		error = EINVAL;
@@ -1139,10 +1159,10 @@ hpuxgetaccess(p, uap, retval)
 		break;
 	case -2:	/* NGROUPS_RGID */
 		cred->cr_ngroups = 1;
-		cred->cr_gid = p->p_rgid;
+		cred->cr_gid = p->p_cred->p_rgid;
 		break;
 	case -6:	/* NGROUPS_RGID_SUPP */
-		cred->cr_gid = p->p_rgid;
+		cred->cr_gid = p->p_cred->p_rgid;
 		break;
 	case -3:	/* NGROUPS_SGID */
 	case -7:	/* NGROUPS_SGID_SUPP */
@@ -1177,7 +1197,7 @@ hpuxgetaccess(p, uap, retval)
 		ndp->ni_nameiop = LOOKUP | FOLLOW | LOCKLEAF;
 		ndp->ni_segflg = UIO_USERSPACE;
 		ndp->ni_dirp = uap->path;
-		error = namei(ndp);
+		error = namei(ndp, p);
 	}
 	if (error) {
 		crfree(cred);
@@ -1188,12 +1208,12 @@ hpuxgetaccess(p, uap, retval)
 	 */
 	vp = ndp->ni_vp;
 	*retval = 0;
-	if (VOP_ACCESS(vp, VREAD, cred) == 0)
+	if (VOP_ACCESS(vp, VREAD, cred, p) == 0)
 		*retval |= R_OK;
-	if (vn_writechk(vp) == 0 && VOP_ACCESS(vp, VWRITE, cred) == 0)
+	if (vn_writechk(vp) == 0 && VOP_ACCESS(vp, VWRITE, cred, p) == 0)
 		*retval |= W_OK;
 	/* XXX we return X_OK for root on VREG even if not */
-	if (VOP_ACCESS(vp, VEXEC, cred) == 0)
+	if (VOP_ACCESS(vp, VEXEC, cred, p) == 0)
 		*retval |= X_OK;
 	vput(vp);
 	crfree(cred);
@@ -1218,13 +1238,14 @@ struct bsdfp {
 hpuxtobsduoff(off)
 	int *off;
 {
+	register int *ar0 = curproc->p_regs;
 	struct hpuxfp *hp;
 	struct bsdfp *bp;
 	register u_int raddr;
 
-	/* u_ar0 field */
+	/* u_ar0 field; procxmt puts in U_ar0 */
 	if ((int)off == HPUOFF(hpuxu_ar0))
-		return(UOFF(u_ar0));
+		return(UOFF(U_ar0));
 
 #ifdef FPCOPROC
 	/* 68881 registers from PCB */
@@ -1250,23 +1271,23 @@ hpuxtobsduoff(off)
 	 * The only difference is that their PS is 2 bytes instead of a
 	 * padded 4 like ours throwing the alignment off.
 	 */
-	if (off >= u.u_ar0 && off < &u.u_ar0[18]) {
+	if (off >= ar0 && off < &ar0[18]) {
 		/*
 		 * PS: return low word and high word of PC as HP-UX would
 		 * (e.g. &u.u_ar0[16.5]).
 		 */
-		if (off == &u.u_ar0[PS])
-			raddr = (u_int) &((short *)u.u_ar0)[PS*2+1];
+		if (off == &ar0[PS])
+			raddr = (u_int) &((short *)ar0)[PS*2+1];
 		/*
 		 * PC: off will be &u.u_ar0[16.5]
 		 */
-		else if (off == (int *)&(((short *)u.u_ar0)[PS*2+1]))
-			raddr = (u_int) &u.u_ar0[PC];
+		else if (off == (int *)&(((short *)ar0)[PS*2+1]))
+			raddr = (u_int) &ar0[PC];
 		/*
 		 * D0-D7, A0-A7: easy
 		 */
 		else
-			raddr = (u_int) &u.u_ar0[(int)(off - u.u_ar0)];
+			raddr = (u_int) &ar0[(int)(off - ar0)];
 		return((int)(raddr - (u_int)&u));
 	}
 
@@ -1283,6 +1304,7 @@ hpuxdumpu(vp, cred)
 	struct vnode *vp;
 	struct ucred *cred;
 {
+	struct proc *p = curproc;
 	int error;
 	struct hpuxuser *faku;
 	struct bsdfp *bp;
@@ -1297,9 +1319,9 @@ hpuxdumpu(vp, cred)
 	/*
 	 * Fill in the process sizes.
 	 */
-	faku->hpuxu_tsize = u.u_tsize;
-	faku->hpuxu_dsize = u.u_dsize;
-	faku->hpuxu_ssize = u.u_ssize;
+	faku->hpuxu_tsize = p->p_vmspace->vm_tsize;
+	faku->hpuxu_dsize = p->p_vmspace->vm_dsize;
+	faku->hpuxu_ssize = p->p_vmspace->vm_ssize;
 	/*
 	 * Fill in the exec header for CDB.
 	 * This was saved back in exec().  As far as I can tell CDB
@@ -1313,8 +1335,8 @@ hpuxdumpu(vp, cred)
 	 * HPUX order.  Note that HPUX saves the SR as 2 bytes not 4
 	 * so we have to move it up.
 	 */
-	faku->hpuxu_ar0 = u.u_ar0;
-	foop = (short *) u.u_ar0;
+	faku->hpuxu_ar0 = p->p_regs;
+	foop = (short *) p->p_regs;
 	foop[32] = foop[33];
 	foop[33] = foop[34];
 	foop[34] = foop[35];
@@ -1338,16 +1360,17 @@ hpuxdumpu(vp, cred)
 	 * Dump this artfully constructed page in place of the
 	 * user struct page.
 	 */
-	error = vn_rdwr(UIO_WRITE, vp,
-			(caddr_t)faku, ctob(1), (off_t)0,
-			UIO_SYSSPACE, IO_NODELOCKED|IO_UNIT, cred, (int *)0);
+	error = vn_rdwr(UIO_WRITE, vp, (caddr_t)faku, ctob(1), (off_t)0,
+			UIO_SYSSPACE, IO_NODELOCKED|IO_UNIT, cred,
+			(int *)0, (struct proc *)0);
 	/*
 	 * Dump the remaining UPAGES-1 pages normally
 	 */
 	if (!error) 
 		error = vn_rdwr(UIO_WRITE, vp, ((caddr_t)&u)+ctob(1),
 				ctob(UPAGES-1), (off_t)ctob(1), UIO_SYSSPACE,
-				IO_NODELOCKED|IO_UNIT, cred, (int *)0);
+				IO_NODELOCKED|IO_UNIT, cred, (int *)0,
+				(struct proc *)0);
 	free((caddr_t)faku, M_TEMP);
 	return(error);
 }
@@ -1395,7 +1418,7 @@ ohpuxsetpgrp(p, uap, retval)
 	int *uap, *retval;
 {
 	if (p->p_pid != p->p_pgid)
-		pgmv(p, p->p_pid, 0);
+		enterpgrp(p, p->p_pid, 0);
 	*retval = p->p_pgid;
 	return (0);
 }
@@ -1428,7 +1451,7 @@ ohpuxstime(p, uap, retval)
 
 	tv.tv_sec = uap->time;
 	tv.tv_usec = 0;
-	if (error = suser(u.u_cred, &u.u_acflag))
+	if (error = suser(p->p_ucred, &p->p_acflag))
 		return (error);
 
 	/* WHAT DO WE DO ABOUT PENDING REAL-TIME TIMEOUTS??? */
@@ -1509,10 +1532,10 @@ ohpuxtimes(p, uap, retval)
 	struct tms atms;
 	int error;
 
-	atms.tms_utime = hpuxscale(&u.u_ru.ru_utime);
-	atms.tms_stime = hpuxscale(&u.u_ru.ru_stime);
-	atms.tms_cutime = hpuxscale(&u.u_cru.ru_utime);
-	atms.tms_cstime = hpuxscale(&u.u_cru.ru_stime);
+	atms.tms_utime = hpuxscale(&p->p_utime);
+	atms.tms_stime = hpuxscale(&p->p_stime);
+	atms.tms_cutime = hpuxscale(&p->p_stats->p_cru.ru_utime);
+	atms.tms_cstime = hpuxscale(&p->p_stats->p_cru.ru_stime);
 	error = copyout((caddr_t)&atms, (caddr_t)uap->tmsb, sizeof (atms));
 	if (error == 0)
 		*retval = hpuxscale(&time) - hpuxscale(&boottime);
@@ -1542,12 +1565,14 @@ ohpuxutime(p, uap, retval)
 	} *uap;
 	int *retval;
 {
+	register struct vnode *vp;
+	register struct nameidata *ndp;
 	struct vattr vattr;
 	time_t tv[2];
-	register struct vnode *vp;
-	register struct nameidata *ndp = &u.u_nd;
 	int error;
+	struct nameidata nd;
 
+	ndp = &nd;
 	if (uap->tptr) {
 		error = copyin((caddr_t)uap->tptr, (caddr_t)tv, sizeof (tv));
 		if (error)
@@ -1562,13 +1587,13 @@ ohpuxutime(p, uap, retval)
 	vattr.va_atime.tv_usec = 0;
 	vattr.va_mtime.tv_sec = tv[1];
 	vattr.va_mtime.tv_usec = 0;
-	if (error = namei(ndp))
+	if (error = namei(ndp, p))
 		return (error);
 	vp = ndp->ni_vp;
 	if (vp->v_mount->mnt_flag & MNT_RDONLY)
 		error = EROFS;
 	else
-		error = VOP_SETATTR(vp, &vattr, ndp->ni_cred);
+		error = VOP_SETATTR(vp, &vattr, ndp->ni_cred, p);
 	vput(vp);
 	return (error);
 }
@@ -1596,8 +1621,8 @@ ohpuxfstat(p, uap, retval)
 	register struct filedesc *fdp = p->p_fd;
 	struct file *fp;
 
-	if (((unsigned)uap->fd) >= fdp->fd_maxfiles ||
-	    (fp = OFILE(fdp, uap->fd)) == NULL)
+	if (((unsigned)uap->fd) >= fdp->fd_nfiles ||
+	    (fp = fdp->fd_ofiles[uap->fd]) == NULL)
 		return (EBADF);
 	if (fp->f_type != DTYPE_VNODE)
 		return (EINVAL);
@@ -1615,13 +1640,15 @@ ohpuxstat(p, uap, retval)
 	} *uap;
 	int *retval;
 {
-	register struct nameidata *ndp = &u.u_nd;
+	register struct nameidata *ndp;
 	int error;
+	struct nameidata nd;
 
+	ndp = &nd;
 	ndp->ni_nameiop = LOOKUP | LOCKLEAF | FOLLOW;
 	ndp->ni_segflg = UIO_USERSPACE;
 	ndp->ni_dirp = uap->fname;
-	if (error = namei(ndp))
+	if (error = namei(ndp, p))
 		return (error);
 	error = ohpuxstat1(ndp->ni_vp, uap->sb);
 	vput(ndp->ni_vp);
@@ -1637,7 +1664,7 @@ ohpuxstat1(vp, ub)
 	struct vattr vattr;
 	register int error;
 
-	error = VOP_GETATTR(vp, &vattr, u.u_cred);
+	error = VOP_GETATTR(vp, &vattr, curproc->p_ucred, curproc);
 	if (error)
 		return(error);
 	/*
