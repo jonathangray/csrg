@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.c	8.2 (Berkeley) 11/14/93
+ *	@(#)conf.c	8.3 (Berkeley) 11/21/94
  */
 
 #include <sys/param.h>
@@ -398,6 +398,28 @@ iszerodev(dev)
 	dev_t dev;
 {
 	return (major(dev) == 3 && minor(dev) == 12);
+}
+
+/*
+ * Routine to determine if a device is a tty.
+ *
+ * A minimal stub routine can always return 0.
+ */
+istty(dev)
+	dev_t dev;
+{
+
+	switch (major(dev)) {
+	case 0:
+	case 1:
+	case 2:
+	case 8:
+	case 9:
+	case 11:
+		return (1);
+	default:
+		return (0);
+	}
 }
 
 /*
