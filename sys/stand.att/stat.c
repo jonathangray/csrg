@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stat.c	7.3 (Berkeley) 05/24/93
+ *	@(#)stat.c	7.4 (Berkeley) 05/25/93
  */
 
 #include <sys/param.h>
@@ -71,4 +71,4 @@ stat(str, sb)
 	close(fd);
 	return(rv);
 }
-#endif SMALL
+#endif /* SMALL */
