@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.40 (Berkeley) 12/20/91";
+static char sccsid[] = "@(#)main.c	5.41 (Berkeley) 12/21/91";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -519,6 +519,11 @@ main(argc, argv, envp)
 
 	  case MD_INITALIAS:
 		Verbose = TRUE;
+		break;
+
+	  case MD_DAEMON:
+		/* remove things that don't make sense in daemon mode */
+		FullName = NULL;
 		break;
 	}
 
