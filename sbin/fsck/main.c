@@ -1,4 +1,4 @@
-static	char sccsid[] = "@(#)main.c	2.16	(Berkeley)	10/13/82";
+static	char sccsid[] = "@(#)main.c	2.11.1.1	(Berkeley)	11/14/82";
 
 #include <stdio.h>
 #include <ctype.h>
