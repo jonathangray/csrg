@@ -33,8 +33,8 @@ divert(-1)
 # SUCH DAMAGE.
 #
 divert(0)
-VERSIONID(`@(#)Berkeley.EDU.m4	8.1 (Berkeley) 06/07/93')
+VERSIONID(`@(#)Berkeley.EDU.m4	8.2 (Berkeley) 08/07/93')
 define(`UUCP_RELAY', `ucbvax.Berkeley.EDU')dnl
 define(`BITNET_RELAY', `jade.Berkeley.EDU')dnl
-define(`CSNET_RELAY', `Relay.Prime.COM')dnl
+define(`CSNET_RELAY', `Relay.CV.COM')dnl
 FEATURE(redirect)dnl
