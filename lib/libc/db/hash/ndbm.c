@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)ndbm.c	5.3 (Berkeley) 02/18/91";
+static char sccsid[] = "@(#)ndbm.c	5.3 (Berkeley) 02/22/91";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -54,7 +54,7 @@ static char sccsid[] = "@(#)ndbm.c	5.3 (Berkeley) 02/18/91";
 */
 extern DBM *
 dbm_open( file, flags, mode )
-char 	*file;
+const char 	*file;
 int	flags;
 int	mode;
 {
@@ -145,7 +145,7 @@ datum	key;
 {
     int	status;
 
-    status = (db->delete)( db, (DBT *)&key );
+    status = (db->del)( db, (DBT *)&key );
     if ( status ) {
 	return(-1);
     } else {
