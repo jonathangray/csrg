@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ct.c	7.6 (Berkeley) 10/11/92
+ *	@(#)ct.c	7.7 (Berkeley) 05/24/93
  */
 
 /*
@@ -40,7 +40,7 @@
 
 #include <hp300/dev/ctreg.h>
 
-#include <stand/saio.h>
+#include <stand.att/saio.h>
 #include <hp300/stand/samachdep.h>
 
 struct	ct_iocmd ct_ioc;
