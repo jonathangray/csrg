@@ -1,4 +1,8 @@
-.\"	@(#)Clib.ms	6.1 (Berkeley) 05/14/86
+.\" This module is believed to contain source code proprietary to AT&T.
+.\" Use and redistribution is subject to the Berkeley Software License
+.\" Agreement and your Software Agreement with AT&T (Western Electric).
+.\"
+.\"	@(#)Clib.ms	6.2 (Berkeley) 04/17/91
 .\"
 .so /k3/unx/MACROS/cmac1
 .CH 3 "C LIBRARIES"
