@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-	.asciz "@(#)htons.s	5.1 (Berkeley) 04/23/90"
+	.asciz "@(#)htons.s	5.2 (Berkeley) 12/17/90"
 #endif /* LIBC_SCCS and not lint */
 
 /* netorder = htons(hostorder) */
@@ -43,6 +43,6 @@
 #include "DEFS.h"
 
 ENTRY(htons)
-	movzwl	4(sp),%eax
-	xchg	%al,%ah
+	movzwl	4(%esp),%eax
+	xchgb	%al,%ah
 	ret
