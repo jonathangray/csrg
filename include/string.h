@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)string.h	5.8 (Berkeley) 02/22/91
+ *	@(#)string.h	5.9 (Berkeley) 02/24/91
  */
 
 #ifndef _STRING_H_
@@ -86,7 +86,7 @@ char	*strdup __P((const char *));
 void	 strmode __P((int, char *));
 int	 strncasecmp __P((const char *, const char *, size_t));
 char	*strsep __P((char **, const char *));
-void	 swab __P((const char *, char *, size_t));
+void	 swab __P((const void *, void *, size_t));
 #endif 
 __END_DECLS
 
