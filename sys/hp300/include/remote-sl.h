@@ -1,6 +1,6 @@
 /*-
- * Copyright (c) 1991 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1991, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Steven McCanne of Lawrence Berkeley Laboratory.
@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)remote-sl.h	7.4 (Berkeley) 07/24/92
+ *	@(#)remote-sl.h	8.1 (Berkeley) 06/10/93
  *
  * $Header: remote-sl.h,v 1.2 92/07/23 19:38:20 mccanne Exp $ (LBL)
  */
