@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)err.c	5.10 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)err.c	5.11 (Berkeley) 03/02/91";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -64,6 +64,8 @@ int	sys_nerr;
 char	*sys_errlist[];
 # endif lint
 char	MsgBuf[BUFSIZ*2];	/* text of most recent message */
+
+static void fmtmsg();
 
 /*VARARGS1*/
 syserr(fmt, a, b, c, d, e)
@@ -265,7 +267,7 @@ puterrmsg(msg)
 */
 
 /*VARARGS5*/
-static
+static void
 fmtmsg(eb, to, num, eno, fmt, a, b, c, d, e)
 	register char *eb;
 	char *to;
