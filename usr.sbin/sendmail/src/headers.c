@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)headers.c	8.42 (Berkeley) 11/19/94";
+static char sccsid[] = "@(#)headers.c	8.43 (Berkeley) 11/19/94";
 #endif /* not lint */
 
 # include <errno.h>
@@ -1017,7 +1017,8 @@ putheader(mci, h, e, flags)
 		}
 
 		/* suppress Content-Type: if we are not including the body */
-		if (bitset(PF_NOBODYPART, flags) && bitset(H_CTYPE, h->h_flags))
+		if (bitset(PF_DELETEMIMEHDRS, flags) &&
+		    bitset(H_CTYPE, h->h_flags))
 		{
 			if (tTd(34, 11))
 				printf(" (skipped (content-type))\n");
@@ -1027,7 +1028,7 @@ putheader(mci, h, e, flags)
 		/* suppress Content-Transfer-Encoding: if we are MIMEing */
 		if (bitset(H_CTE, h->h_flags) &&
 		    (bitset(MCIF_CVT8TO7, mci->mci_flags) ||
-		     bitset(PF_NOBODYPART, flags)))
+		     bitset(PF_DELETEMIMEHDRS, flags)))
 		{
 			if (tTd(34, 11))
 				printf(" (skipped (content-transfer-encoding))\n");
