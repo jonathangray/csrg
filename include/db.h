@@ -30,12 +30,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)db.h	5.17 (Berkeley) 09/26/91
+ *	@(#)db.h	5.18 (Berkeley) 04/25/92
  */
 
 #ifndef _DB_H_
 #define	_DB_H_
 
+#include <sys/types.h>
 #include <sys/cdefs.h>
 
 #define	RET_ERROR	-1		/* Return values. */
