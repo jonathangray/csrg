@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.c	7.4 (Berkeley) 04/20/93
+ *	@(#)conf.c	7.5 (Berkeley) 05/05/93
  *
  * from: $Header: conf.c,v 1.14 92/11/26 03:04:49 torek Exp $ (LBL)
  */
