@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)lpc.c	5.12 (Berkeley) 07/21/92";
+static char sccsid[] = "@(#)lpc.c	5.13 (Berkeley) 8/6/92";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -80,7 +80,6 @@ main(argc, argv)
 	char *argv[];
 {
 	register struct cmd *c;
-	extern char *name;
 
 	name = argv[0];
 	openlog("lpd", 0, LOG_LPR);
