@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sd.c	7.10 (Berkeley) 09/12/91
+ *	@(#)sd.c	7.11 (Berkeley) 11/05/91
  */
 
 /*
@@ -898,7 +898,8 @@ sddump(dev)
 		if (i && (i % NPGMB) == 0)
 			printf("%d ", i / NPGMB);
 #undef NPBMG
-		pmap_enter(pmap_kernel(), vmmap, maddr, VM_PROT_READ, TRUE);
+		pmap_enter(pmap_kernel(), (vm_offset_t)vmmap, maddr,
+		    VM_PROT_READ, TRUE);
 		stat = scsi_tt_write(hp->hp_ctlr, hp->hp_slave, sc->sc_punit,
 				     vmmap, NBPG, baddr, sc->sc_bshift);
 		if (stat) {
