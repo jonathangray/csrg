@@ -39,13 +39,12 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	6.58 (Berkeley) 04/26/93";
+static char sccsid[] = "@(#)main.c	6.59 (Berkeley) 04/27/93";
 #endif /* not lint */
 
 #define	_DEFINE
 
 #include "sendmail.h"
-#include <sys/stat.h>
 #include <signal.h>
 #include <sgtty.h>
 #ifdef NAMED_BIND
