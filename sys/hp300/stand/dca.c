@@ -35,14 +35,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dca.c	7.4 (Berkeley) 06/18/92
+ *	@(#)dca.c	7.5 (Berkeley) 10/11/92
  */
 
 #ifdef DCACONSOLE
-#include "sys/param.h"
-#include "hp/dev/dcareg.h"
-#include "../include/cpu.h"
-#include "hp/dev/cons.h"
+#include <sys/param.h>
+#include <hp/dev/dcareg.h>
+#include <machine/cpu.h>
+#include <hp/dev/cons.h>
 
 struct dcadevice *dcacnaddr = 0;
 
