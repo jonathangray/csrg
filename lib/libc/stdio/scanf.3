@@ -32,12 +32,12 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)scanf.3	6.3 (Berkeley) 01/20/91
+.\"	@(#)scanf.3	6.4 (Berkeley) 03/06/91
 .\"
 .TH SCANF 3 ""
 .UC 7
 .SH NAME
-scanf, fscanf, sscanf \- formatted input conversion
+scanf, fscanf, sscanf, vfscanf \- formatted input conversion
 .SH SYNOPSIS
 .B #include <stdio.h>
 .PP
@@ -61,7 +61,22 @@ scanf, fscanf, sscanf \- formatted input conversion
 [ , pointer ... ]
 .B )
 .br
-.B char *str, *format;
+.B char *str;
+.br
+.B char *format;
+.PP
+.B #include <varargs.h>
+.PP
+.B vfscanf(stream, format, ap)
+.br
+.SM
+.B FILE
+.B *stream;
+.br
+.B char *format;
+.br
+.B va_list ap;
+.br
 .SH DESCRIPTION
 The
 .I scanf
@@ -84,6 +99,13 @@ and
 .I sscanf
 reads from the character string
 .IR str .
+.I Vfscanf
+is analogous to
+.I vfprintf
+and reads from a named input
+.I stream
+using a variable argument list of pointers (see
+.IR varargs (3)).
 Each successive
 .I pointer
 argument must correspond properly with
@@ -376,3 +398,9 @@ and
 conversions is unfortunate.
 .br
 All of the backwards compatibility formats will be removed in the future.
+.br
+There is no
+.I vscanf
+or
+.IR vsscanf .
+.\" Had to draw the line somewhere!
