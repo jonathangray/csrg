@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sprite.h	5.3 (Berkeley) 06/01/90
+ *	@(#)sprite.h	5.4 (Berkeley) 11/06/92
  */
 
 /*
@@ -86,7 +86,7 @@ typedef int  ReturnStatus;
  * by user processes.
  */
 
-#define NIL 		0xFFFFFFFF
+#define NIL 		(~0)
 #define USER_NIL 	0
 #ifndef NULL
 #define NULL	 	0
