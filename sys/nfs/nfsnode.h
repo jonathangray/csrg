@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsnode.h	7.25 (Berkeley) 06/26/92
+ *	@(#)nfsnode.h	7.26 (Berkeley) 07/03/92
  */
 
 /*
@@ -163,7 +163,7 @@ int	nfs_print __P((struct vop_print_args *));
 int	nfs_islocked __P((struct vop_islocked_args *));
 int	nfs_advlock __P((struct vop_advlock_args *));
 int	nfs_blkatoff __P((struct vop_blkatoff_args *));
-int	nfs_vget __P((struct vop_vget_args *));
+int	nfs_vget __P((struct mount *, ino_t, struct vnode **));
 int	nfs_valloc __P((struct vop_valloc_args *));
 int	nfs_vfree __P((struct vop_vfree_args *));
 int	nfs_truncate __P((struct vop_truncate_args *));
