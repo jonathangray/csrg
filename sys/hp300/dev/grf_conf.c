@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: grf_conf.c 1.2 92/01/22$
  *
- *	@(#)grf_conf.c	7.1 (Berkeley) 06/05/92
+ *	@(#)grf_conf.c	7.2 (Berkeley) 10/11/92
  */
 
 /*
@@ -46,11 +46,12 @@
 #include "grf.h"
 #if NGRF > 0
 
-#include "sys/types.h"
-#include "hp/dev/device.h"
-#include "hp/dev/grfioctl.h"
-#include "hp/dev/grfvar.h"
-#include "hp/dev/grfreg.h"
+#include <sys/types.h>
+
+#include <hp/dev/device.h>
+#include <hp/dev/grfioctl.h>
+#include <hp/dev/grfvar.h>
+#include <hp/dev/grfreg.h>
 
 extern	int tc_init(), tc_mode();
 extern	int gb_init(), gb_mode();
@@ -73,7 +74,7 @@ int	ngrfsw = sizeof(grfsw) / sizeof(grfsw[0]);
 #include "ite.h"
 #if NITE > 0
 
-#include "hp/dev/itevar.h"
+#include <hp/dev/itevar.h>
 
 extern	u_char ite_readbyte();
 extern	int ite_writeglyph();
