@@ -3,7 +3,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	5.1 (Berkeley) 05/06/85
+#	@(#)Makefile	5.2 (Berkeley) 06/18/85
 #
 #	dump.h			header file
 #	dumpitime.c		reads /etc/ddate
