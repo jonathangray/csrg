@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_segment.c	7.36 (Berkeley) 10/08/92
+ *	@(#)lfs_segment.c	7.37 (Berkeley) 10/24/92
  */
 
 #include <sys/param.h>
@@ -793,8 +793,11 @@ lfs_writeseg(fs, sp)
 	 * and it is not a checkpoint, don't do anything.  On a checkpoint,
 	 * even if there aren't any buffers, you need to write the superblock.
 	 */
-	if ((nblocks = sp->cbpp - sp->bpp) == 1 && !(sp->seg_flags & SEGM_CKP))
+	if ((nblocks = sp->cbpp - sp->bpp) == 1) {
+		brelvp(*sp->cbpp);
+		free(*sp->cbpp, M_SEGMENT);
 		return (0);
+	}
 
 	ssp = (SEGSUM *)sp->segsum;
 
