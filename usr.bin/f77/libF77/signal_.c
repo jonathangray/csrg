@@ -1,10 +1,17 @@
+/*-
+ * Copyright (c) 1980 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ */
+
+#ifndef lint
+static char sccsid[] = "@(#)signal_.c	5.4 (Berkeley) 04/12/91";
+#endif /* not lint */
+
 /*
- * Copyright (c) 1980 Regents of the University of California.
- * All rights reserved.  The Berkeley software License Agreement
- * specifies the terms and conditions for redistribution.
- *
- *	@(#)signal_.c	5.3	09/11/85
- *
  * change the action for a specified signal
  *
  * calling sequence:
