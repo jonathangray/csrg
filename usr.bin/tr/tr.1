@@ -32,7 +32,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)tr.1	6.8 (Berkeley) 10/27/91
+.\"     @(#)tr.1	6.9 (Berkeley) 10/27/91
 .\"
 .Dd 
 .Dt TR 1
@@ -241,7 +241,7 @@ Translate the contents of file1 to upper-case.
 .sp
 Strip out non-printable characters from file1.
 .sp
-.D1 Li "tr -d \*q[:print:]\*q < file1"
+.D1 Li "tr -cd \*q[:print:]\*q < file1"
 .Sh COMPATIBILITY
 System V has historically implemented character ranges using the syntax
 ``[c-c]'' instead of the ``c-c'' used by historic BSD implementations and
