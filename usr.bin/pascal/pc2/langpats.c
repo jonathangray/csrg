@@ -1,6 +1,6 @@
 /* Copyright (c) 1979 Regents of the University of California */
 
-static char sccsid[] = "@(#)langpats.c 1.9 04/01/81";
+static char sccsid[] = "@(#)langpats.c 1.10 06/08/81";
 
 #include <stdio.h>
 #include <ctype.h>
