@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_subr.c	7.21 (Berkeley) 05/27/92
+ *	@(#)ffs_subr.c	7.22 (Berkeley) 06/04/92
  */
 
 #include <sys/param.h>
@@ -232,7 +232,7 @@ ffs_setblock(fs, cp, h)
 	}
 }
 
-#if (!defined(vax) && !defined(tahoe) && !defined(hp300)) \
+#if (!defined(vax) && !defined(tahoe) && !defined(hp300) && !defined(luna68k)) \
 	|| defined(VAX630) || defined(VAX650)
 /*
  * C definitions of special instructions.
@@ -252,7 +252,7 @@ scanc(size, cp, table, mask)
 }
 #endif
 
-#if !defined(vax) && !defined(tahoe) && !defined(hp300)
+#if !defined(vax) && !defined(tahoe) && !defined(hp300) && !defined(luna68k)
 int
 skpc(mask, size, cp)
 	register u_char mask;
