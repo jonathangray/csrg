@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)state.c	5.11 (Berkeley) 12/18/92";
+static char sccsid[] = "@(#)state.c	5.12 (Berkeley) 01/19/93";
 #endif /* not lint */
 
 #include "telnetd.h"
@@ -644,6 +644,9 @@ willoption(option)
 			func = encrypt_send_support;
 			break;
 #endif
+		case TELOPT_LFLOW:
+			func = localstat;
+			break;
 		}
 	    }
 	}
