@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dkbad.c	8.1 (Berkeley) 06/10/93
+ *	@(#)dkbad.c	8.2 (Berkeley) 01/12/94
  */
 
 #ifndef NOBADSECT
@@ -46,6 +46,7 @@
 
 isbad(bt, cyl, trk, sec)
 	register struct dkbad *bt;
+	int cyl, trk, sec;
 {
 	register int i;
 	register long blk, bblk;
