@@ -5,25 +5,35 @@
  * This code is derived from software contributed to Berkeley by
  * William Jolitz.
  *
- * Added support for ibmpc term type and improved keyboard support. -Don Ahn
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
  *
- * Copying or redistribution in any form is explicitly forbidden
- * unless prior written permission is obtained from William Jolitz or an
- * authorized representative of the University of California, Berkeley.
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
  *
- * Freely redistributable copies of this code will be available in
- * the near future; for more information contact William Jolitz or
- * the Computer Systems Research Group at the University of California,
- * Berkeley.
- *
- * The name of the University may not be used to endorse or promote
- * products derived from this software without specific prior written
- * permission.  THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE.
- *
- *	@(#)pccons.c	5.6 (Berkeley) 02/26/91
+ *	@(#)pccons.c	5.7 (Berkeley) 05/09/91
  */
 
 /*
@@ -31,18 +41,17 @@
  */
 #include "param.h"
 #include "conf.h"
-#include "dir.h"
 #include "ioctl.h"
-#include "user.h"
 #include "proc.h"
+#include "user.h"
 #include "tty.h"
 #include "uio.h"
-#include "machine/isa/isa_device.h"
+#include "i386/isa/isa_device.h"
 #include "callout.h"
 #include "systm.h"
 #include "kernel.h"
 #include "syslog.h"
-#include "icu.h"
+#include "i386/isa/icu.h"
 
 struct	tty cons;
 
@@ -65,41 +74,20 @@ struct	isa_driver cndriver = {
 #define	ROW		25
 #define	CHR		2
 #define MONO_BASE	0x3B4
-#define MONO_BUF	0xB0000
+#define MONO_BUF	0xfe0B0000
 #define CGA_BASE	0x3D4
-#define CGA_BUF		0xB8000
+#define CGA_BUF		0xfe0B8000
 #define IOPHYSMEM	0xA0000
 
 u_char	color = 0xe ;
 static unsigned int addr_6845 = MONO_BASE;
 u_short *Crtat = (u_short *)MONO_BUF;
-
-/*
- * We check the console periodically to make sure
- * that it hasn't wedged.  Unfortunately, if an XOFF
- * is typed on the console, that can't be distinguished
- * from more catastrophic failure.
- */
-#define	CN_TIMERVAL	(hz)		/* frequency at which to check cons */
-#define	CN_TIMO		(2*60)		/* intervals to allow for output char */
+static openf;
 
 int	cnstart();
+int	cnparam();
 int	ttrstrt();
 char	partab[];
-
-/*
- * Wait for CP to accept last CP command sent
- * before setting up next command.
- */
-#define	waitforlast(timo) { \
-	if (cnlast) { \
-		(timo) = 10000; \
-		do \
-			uncache((char *)&cnlast->cp_unit); \
-		while ((cnlast->cp_unit&CPTAKE) == 0 && --(timo)); \
-	} \
-}
-
 u_char inb();
 
 cnprobe(dev)
@@ -124,7 +112,7 @@ struct isa_device *dev;
 		}
 	}
 	/* pick up keyboard reset return code */
-	while((c=inb(0x60))!=0xAA)nullop();
+	while((c=inb(0x60))!=0xAA);
 	return 1;
 }
 
@@ -145,50 +133,64 @@ struct isa_device *dev;
 		printf("<mono>");
 	else	printf("<color>");
 	*Crtat = was;
+	cursor();
 }
 
-/*ARGSUSED*/
-cnopen(dev, flag)
+/* ARGSUSED */
+#ifdef __STDC__
+cnopen(dev_t dev, int flag, int mode, struct proc *p)
+#else
+cnopen(dev, flag, mode, p)
 	dev_t dev;
+	int flag, mode;
+	struct proc *p;
+#endif
 {
 	register struct tty *tp;
-	int unit = minor(dev);
 
 	tp = &cons;
-	if (tp->t_state&TS_XCLUDE && u.u_uid != 0)
-		return (EBUSY);
 	tp->t_oproc = cnstart;
-	if ((tp->t_state&TS_ISOPEN) == 0) {
+	tp->t_param = cnparam;
+	tp->t_dev = dev;
+	openf++;
+	if ((tp->t_state & TS_ISOPEN) == 0) {
+		tp->t_state |= TS_WOPEN;
 		ttychars(tp);
-		tp->t_state = TS_ISOPEN|TS_CARR_ON;
-		tp->t_flags = EVENP|ECHO|XTABS|CRMOD;
-		splnone();
-	}
+		tp->t_iflag = TTYDEF_IFLAG;
+		tp->t_oflag = TTYDEF_OFLAG;
+		tp->t_cflag = TTYDEF_CFLAG;
+		tp->t_lflag = TTYDEF_LFLAG;
+		tp->t_ispeed = tp->t_ospeed = TTYDEF_SPEED;
+		cnparam(tp, &tp->t_termios);
+		ttsetwater(tp);
+	} else if (tp->t_state&TS_XCLUDE && p->p_ucred->cr_uid != 0)
+		return (EBUSY);
+	tp->t_state |= TS_CARR_ON;
 	return ((*linesw[tp->t_line].l_open)(dev, tp));
 }
 
-
-cnclose(dev)
+cnclose(dev, flag)
 	dev_t dev;
 {
 	(*linesw[cons.t_line].l_close)(&cons);
 	ttyclose(&cons);
+	return(0);
 }
 
 /*ARGSUSED*/
-cnread(dev, uio)
+cnread(dev, uio, flag)
 	dev_t dev;
 	struct uio *uio;
 {
-	return ((*linesw[cons.t_line].l_read)(&cons, uio));
+	return ((*linesw[cons.t_line].l_read)(&cons, uio, flag));
 }
 
 /*ARGSUSED*/
-cnwrite(dev, uio)
+cnwrite(dev, uio, flag)
 	dev_t dev;
 	struct uio *uio;
 {
-	return ((*linesw[cons.t_line].l_write)(&cons, uio));
+	return ((*linesw[cons.t_line].l_write)(&cons, uio, flag));
 }
 
 /*
@@ -212,24 +214,23 @@ cnrint(dev, irq, cpl)
 	(*linesw[cons.t_line].l_rint)(c&0xff, &cons);
 }
 
-cnioctl(dev, cmd, addr, flag)
+cnioctl(dev, cmd, data, flag)
 	dev_t dev;
-	caddr_t addr;
+	caddr_t data;
 {
 	register struct tty *tp = &cons;
 	register error;
  
-	error = (*linesw[tp->t_line].l_ioctl)(tp, cmd, addr);
+	error = (*linesw[tp->t_line].l_ioctl)(tp, cmd, data, flag);
 	if (error >= 0)
-		return error;
-	if ((error = ttioctl(tp, cmd, addr, flag)) < 0)
-		error = ENOTTY;
-	else if (cmd == TIOCSETP || cmd == TIOCSETN)
-		cnparams(tp);
-	return (error);
+		return (error);
+	error = ttioctl(tp, cmd, data, flag);
+	if (error >= 0)
+		return (error);
+	return (ENOTTY);
 }
 
-int	consintr = 1;
+extern int	consintr ;
 /*
  * Got a console transmission interrupt -
  * the console processor wants another character.
@@ -258,7 +259,8 @@ cnstart(tp)
 	s = spltty();
 	if (tp->t_state & (TS_TIMEOUT|TS_BUSY|TS_TTSTOP))
 		goto out;
-	if (tp->t_outq.c_cc <= TTLOWAT(tp)) {
+	do {
+	if (tp->t_outq.c_cc <= tp->t_lowat) {
 		if (tp->t_state&TS_ASLEEP) {
 			tp->t_state &= ~TS_ASLEEP;
 			wakeup((caddr_t)&tp->t_outq);
@@ -269,31 +271,28 @@ cnstart(tp)
 			tp->t_state &= ~TS_WCOLL;
 		}
 	}
-	while (tp->t_outq.c_cc != 0) {
-		c = getc(&tp->t_outq) & 0xff;
-		if ((tp->t_flags & (RAW|LITOUT)) == 0) {
-			if (c > 0177)
-			{
-				timeout(ttrstrt, (caddr_t)tp, (c&0177));
-				tp->t_state |= TS_TIMEOUT;
-				break;
-			}
-			c &= 0177;
-		}
-		splx(s);
-		sput(c,0x7);
-		s = spltty();
-	}
+	if (tp->t_outq.c_cc == 0)
+		goto out;
+	c = getc(&tp->t_outq);
+	splx(s);
+	sput(c,0x7);
+	s = spltty();
+	} while(1);
 out:
 	splx(s);
 }
 
+static __color;
+
 cnputc(c)
 	char c;
-{
+{	int clr;
+	clr = __color;
+	if (clr == 0) clr = 0x30;
+	else clr |= 0x60;
 	if (c == '\n')
-		sput('\r',0x3);
-	sput(c, 0x3);
+		sput('\r',clr);
+	sput(c, clr);
 }
 
 /*
@@ -331,9 +330,17 @@ cngetchar(tp)
 /*
  * Set line parameters
  */
-cnparams(tp)
+cnparam(tp, t)
 	register struct tty *tp;
+	register struct termios *t;
 {
+	register int cflag = t->c_cflag;
+        /* and copy to tty */
+        tp->t_ispeed = t->c_ispeed;
+        tp->t_ospeed = t->c_ospeed;
+        tp->t_cflag = cflag;
+
+	return(0);
 }
 
 #ifdef KDB
@@ -348,14 +355,17 @@ cnpoll(onoff)
 
 extern int hz;
 
+static beeping;
 sysbeepstop()
 {
 	/* disable counter 2 */
 	outb(0x61,inb(0x61)&0xFC);
+	beeping = 0;
 }
 
 sysbeep()
 {
+
 	/* enable counter 2 */
 	outb(0x61,inb(0x61)|3);
 	/* set command for counter 2, 2 byte write */
@@ -363,7 +373,8 @@ sysbeep()
 	/* send 0x637 for 750 HZ */
 	outb(0x42,0x37);
 	outb(0x42,0x06);
-	timeout(sysbeepstop,0,hz/4);
+	if(!beeping)timeout(sysbeepstop,0,hz/4);
+	beeping = 1;
 }
 
 /* cursor() sets an offset (0-1999) into the 80x25 text area    */
@@ -379,7 +390,15 @@ cursor()
 	outb(addr_6845+1,pos >> 8);
 	outb(addr_6845,15);
 	outb(addr_6845+1,pos&0xff);
+	timeout(cursor,0,hz/10);
 }
+
+u_char shfts, ctls, alts, caps, num, stp, scroll;
+
+/*
+ * Compensate for abysmally stupid frame buffer aribitration with macro
+ */
+#define	wrtchar(c) { do *crtat = (c); while ((c) != *crtat); crtat++; row++; }
 
 /* sput has support for emulation of the 'ibmpc' termcap entry. */
 /* This is a bare-bones implementation of a bare-bones entry    */
@@ -425,8 +444,8 @@ u_char c, ca;
 
 	case '\t':
 		do {
-			*crtat++ = (ca<<8)| ' '; row++ ;
-		} while (row %8);
+			wrtchar((ca<<8)| ' ');
+		} while (row % 8);
 		break;
 
 	case '\010':
@@ -469,7 +488,8 @@ u_char c, ca;
 					esc = 0; ebrac = 0; eparm = 0;
 					break;
 				case 'K': /* Clear to EOL */
-					fillw((bg_at<<8)+' ', crtat, COL-row);
+					fillw((bg_at<<8)+' ', crtat,
+						COL-(crtat-Crtat)%COL);
 					esc = 0; ebrac = 0; eparm = 0;
 					break;
 				case 'H': /* Cursor move */
@@ -510,16 +530,14 @@ u_char c, ca;
 				 esc = 0; ebrac = 0; eparm = 0;
 			}
 		} else {
-			if (c == 7) {
+			if (c == 7)
 				sysbeep();
-			}
 			/* Print only printables */
 			else /*if (c >= ' ') */ {
-				while(inb(0x3da)&1)nullop();
 				if (so) {
-					*crtat++ = (so_at<<8)| c; row++ ;
+					wrtchar((so_at<<8)| c); 
 				} else {
-					*crtat++ = (ca<<8)| c; row++ ;
+					wrtchar((ca<<8)| c); 
 				}
 				if (row >= COL) row = 0;
 				break ;
@@ -527,12 +545,12 @@ u_char c, ca;
 		}
 	}
 	if (crtat >= Crtat+COL*(ROW)) { /* scroll check */
+		if (openf) do sgetc(1); while (scroll);
 		bcopy(Crtat+COL,Crtat,COL*(ROW-1)*CHR);
-		fillw ((bg_at<<8)+' ', Crtat+COL*(ROW-1),COL) ;
+		fillw ((bg_at<<8) + ' ', Crtat+COL*(ROW-1),COL) ;
 		crtat -= COL ;
 	}
 }
-
 
 #define	L		0x0001	/* locking function */
 #define	SHF		0x0002	/* keyboard shift */
@@ -545,7 +563,7 @@ u_char c, ca;
 #define	FUNC		0x0100	/* function key */
 #define	SCROLL		0x0200	/* scroll lock key */
 
-unsigned	__debug = 0;
+unsigned	__debug = 0xffe;
 u_short action[] = {
 0,     ASCII, ASCII, ASCII, ASCII, ASCII, ASCII, ASCII,		/* scan  0- 7 */
 ASCII, ASCII, ASCII, ASCII, ASCII, ASCII, ASCII, ASCII,		/* scan  8-15 */
@@ -555,7 +573,7 @@ ASCII, ASCII, ASCII, ASCII, ASCII, ASCII, ASCII, ASCII,		/* scan 32-39 */
 ASCII, ASCII, SHF  , ASCII, ASCII, ASCII, ASCII, ASCII,		/* scan 40-47 */
 ASCII, ASCII, ASCII, ASCII, ASCII, ASCII,  SHF,  ASCII,		/* scan 48-55 */
   ALT, ASCII, CPS  , FUNC , FUNC , FUNC , FUNC , FUNC ,		/* scan 56-63 */
-FUNC , FUNC , FUNC , FUNC , FUNC , NUM, STP, ASCII,		/* scan 64-71 */
+FUNC , FUNC , FUNC , FUNC , FUNC , NUM, SCROLL, ASCII,		/* scan 64-71 */
 ASCII, ASCII, ASCII, ASCII, ASCII, ASCII, ASCII, ASCII,		/* scan 72-79 */
 ASCII, ASCII, ASCII, ASCII,     0,     0,     0,     0,		/* scan 80-87 */
 0,0,0,0,0,0,0,0,
@@ -623,7 +641,6 @@ struct key {
 };
 #endif
 
-u_char shfts, ctls, alts, caps, num, stp, scroll;
 
 #define	KBSTAT		0x64	/* kbd status port */
 #define	KBS_INP_BUF_FUL	0x02	/* kbd char ready */
@@ -754,3 +771,36 @@ getchar()
 		}
 	/*}*/
 }
+
+#include "machine/dbg.h"
+#include "machine/stdarg.h"
+static nrow;
+
+void
+#ifdef __STDC__
+dprintf(unsigned flgs, const char *fmt, ...)
+#else
+dprintf(flgs, fmt /*, va_alist */)
+        char *fmt;
+	unsigned flgs;
+#endif
+{	extern unsigned __debug;
+	va_list ap;
+
+	if((flgs&__debug) > DPAUSE) {
+		__color = ffs(flgs&__debug)+1;
+		va_start(ap,fmt);
+		kprintf(fmt, 1, (struct tty *)0, ap);
+		va_end(ap);
+	if (flgs&DPAUSE || nrow%24 == 23) { 
+		int x;
+		x = splhigh();
+		if (nrow%24 == 23) nrow = 0;
+		sgetc(0);
+		splx(x);
+	}
+	}
+	__color = 0;
+}
+
+consinit() {}
