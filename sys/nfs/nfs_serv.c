@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_serv.c	7.54 (Berkeley) 07/03/92
+ *	@(#)nfs_serv.c	7.55 (Berkeley) 07/12/92
  */
 
 /*
@@ -422,7 +422,7 @@ nfsrv_read(nfsd, mrep, md, dpos, cred, nam, mrq)
 		       M_TEMP, M_WAITOK);
 		iv2 = iv;
 		while (left > 0) {
-			siz = MIN(M_TRAILINGSPACE(m), left);
+			siz = min(M_TRAILINGSPACE(m), left);
 			if (siz > 0) {
 				m->m_len += siz;
 				iv->iov_base = bpos;
