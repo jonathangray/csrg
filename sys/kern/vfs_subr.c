@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.76 (Berkeley) 05/15/92
+ *	@(#)vfs_subr.c	7.77 (Berkeley) 06/02/92
  */
 
 /*
@@ -1179,7 +1179,7 @@ kinfo_vnode(op, where, acopysize, arg, aneeded)
 	struct mount *omp;
 	struct vnode *vp;
 	register char *bp = where, *savebp;
-	char *ewhere = where + *acopysize;
+	char *ewhere;
 	int error;
 
 #define VPTRSZ	sizeof (struct vnode *)
@@ -1188,6 +1188,7 @@ kinfo_vnode(op, where, acopysize, arg, aneeded)
 		*aneeded = (numvnodes + KINFO_VNODESLOP) * (VPTRSZ + VNODESZ);
 		return (0);
 	}
+	ewhere = where + *acopysize;
 		
 	do {
 		if (vfs_busy(mp)) {
