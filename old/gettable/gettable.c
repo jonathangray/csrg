@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)gettable.c	5.5 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)gettable.c	5.6 (Berkeley) 03/02/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -108,13 +108,13 @@ main(argc, argv)
 		perror("gettable: socket");
 		exit(4);
 	}
-	if (bind(s, &sin, sizeof (sin)) < 0) {
+	if (bind(s, (struct sockaddr *)&sin, sizeof (sin)) < 0) {
 		perror("gettable: bind");
 		exit(5);
 	}
-	bcopy(hp->h_addr, (char *)&sin.sin_addr, hp->h_length);
+	bcopy(hp->h_addr, &sin.sin_addr, hp->h_length);
 	sin.sin_port = sp->s_port;
-	if (connect(s, &sin, sizeof (sin)) < 0) {
+	if (connect(s, (struct sockaddr *)&sin, sizeof (sin)) < 0) {
 		perror("gettable: connect");
 		exit(6);
 	}
