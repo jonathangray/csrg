@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)amq.c	8.1 (Berkeley) 06/06/93
+ *	@(#)amq.c	5.6 (Berkeley) 06/06/93
  *
  * $Id: amq.c,v 5.2.2.1 1992/02/09 15:09:16 jsp beta $
  *
@@ -55,7 +55,7 @@ char copyright[] = "\
 
 #ifndef lint
 static char rcsid[] = "$Id: amq.c,v 5.2.2.1 1992/02/09 15:09:16 jsp beta $";
-static char sccsid[] = "@(#)amq.c	8.1 (Berkeley) 06/06/93";
+static char sccsid[] = "@(#)amq.c	5.6 (Berkeley) 06/06/93";
 #endif /* not lint */
 
 #include "am.h"
