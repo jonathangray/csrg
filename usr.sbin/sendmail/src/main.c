@@ -39,13 +39,13 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.51 (Berkeley) 03/08/94";
+static char sccsid[] = "@(#)main.c	8.52 (Berkeley) 03/11/94";
 #endif /* not lint */
 
 #define	_DEFINE
 
 #include "sendmail.h"
-#ifdef NAMED_BIND
+#if NAMED_BIND
 #include <arpa/nameser.h>
 #include <resolv.h>
 #endif
@@ -323,7 +323,7 @@ main(argc, argv, envp)
 	OpMode = MD_DELIVER;
 	FullName = getenv("NAME");
 
-#ifdef NAMED_BIND
+#if NAMED_BIND
 	if (tTd(8, 8))
 		_res.options |= RES_DEBUG;
 #endif
