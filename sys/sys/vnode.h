@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode.h	7.60 (Berkeley) 07/24/92
+ *	@(#)vnode.h	7.61 (Berkeley) 10/07/92
  */
 
 #ifndef KERNEL
@@ -171,6 +171,8 @@ extern int		vttoif_tab[];
 #define	SKIPSYSTEM	0x0001		/* vflush: skip vnodes marked VSYSTEM */
 #define	FORCECLOSE	0x0002		/* vflush: force file closeure */
 #define	DOCLOSE		0x0004		/* vclean: close active files */
+#define	V_SAVE		0x0001		/* vinvalbuf: sync file first */
+#define	V_SAVEMETA	0x0002		/* vinvalbuf: leave indirect blocks */
 
 #ifdef DIAGNOSTIC
 #define	HOLDRELE(vp)	holdrele(vp)
