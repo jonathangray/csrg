@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)signalvar.h	8.2 (Berkeley) 09/23/93
+ *	@(#)signalvar.h	8.3 (Berkeley) 01/04/94
  */
 
-#ifndef	_SIGNALVAR_H_		/* tmp for user.h */
-#define	_SIGNALVAR_H_
+#ifndef	_SYS_SIGNALVAR_H_		/* tmp for user.h */
+#define	_SYS_SIGNALVAR_H_
 
 /*
  * Kernel signal definitions and data structures,
@@ -164,4 +164,4 @@ void	trapsignal __P((struct proc *p, int sig, unsigned code));
  */
 void	sendsig __P((sig_t action, int sig, int returnmask, unsigned code));
 #endif	/* KERNEL */
-#endif	/* !_SIGNALVAR_H_ */
+#endif	/* !_SYS_SIGNALVAR_H_ */
