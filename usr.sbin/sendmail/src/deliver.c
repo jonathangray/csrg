@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	8.68 (Berkeley) 02/06/94";
+static char sccsid[] = "@(#)deliver.c	8.69 (Berkeley) 02/06/94";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -399,9 +399,6 @@ sendall(e, mode)
 						e->e_df, ee->e_df);
 				}
 			}
-
-			if (mode != SM_VERIFY)
-				openxscript(ee);
 #ifdef LOG
 			if (LogLevel > 4)
 				syslog(LOG_INFO, "%s: clone %s",
@@ -633,8 +630,8 @@ deliver(e, firstto)
 	SmtpError[0] = '\0';
 
 	if (tTd(10, 1))
-		printf("\n--deliver, mailer=%d, host=`%s', first user=`%s'\n",
-			m->m_mno, host, to->q_user);
+		printf("\n--deliver, id=%s, mailer=%s, host=`%s', first user=`%s'\n",
+			e->e_id, m->m_name, host, to->q_user);
 	if (tTd(10, 100))
 		printopenfds(FALSE);
 
