@@ -1,7 +1,7 @@
 #!/bin/csh -f
 #
-# Copyright (c) 1980 The Regents of the University of California.
-# All rights reserved.
+# Copyright (c) 1980, 1993
+#	The Regents of the University of California.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -31,7 +31,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#       @(#)vgrind.sh	5.9 (Berkeley) 09/15/92
+#       @(#)vgrind.sh	8.1 (Berkeley) 06/06/93
 #
 
 set voptions=
