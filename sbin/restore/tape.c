@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)tape.c	5.21 (Berkeley) 02/22/91";
+static char sccsid[] = "@(#)tape.c	5.22 (Berkeley) 07/29/91";
 #endif /* not lint */
 
 #include "restore.h"
@@ -52,10 +52,11 @@ static int	bct;
 static int	numtrec;
 static char	*tbf;
 static union	u_spcl endoftapemark;
-static long	blksread;
+static long	blksread;		/* blocks read since last header */
 static long	tapesread;
 static jmp_buf	restart;
 static int	gettingfile = 0;	/* restart has a valid frame */
+static char	*host = NULL;
 
 static int	ofile;
 static char	*map;
@@ -65,6 +66,7 @@ static int	pathlen;
 int		Bcvt;		/* Swap Bytes (for CCI or sun) */
 static int	Qcvt;		/* Swap quads (for sun) */
 u_long		swabl();
+
 /*
  * Set up an input source
  */
@@ -72,9 +74,6 @@ setinput(source)
 	char *source;
 {
 	extern int errno;
-#ifdef RRESTORE
-	char *host, *tape;
-#endif RRESTORE
 	char *strerror();
 
 	flsht();
@@ -83,20 +82,16 @@ setinput(source)
 	else
 		newtapebuf(NTREC > HIGHDENSITYTREC ? NTREC : HIGHDENSITYTREC);
 	terminal = stdin;
+
 #ifdef RRESTORE
-	host = source;
-	tape = index(host, ':');
-	if (tape == 0) {
-nohost:
-		msg("need keyletter ``f'' and device ``host:tape''\n");
-		done(1);
-	}
-	*tape++ = '\0';
-	(void) strcpy(magtape, tape);
-	if (rmthost(host) == 0)
-		done(1);
-	setuid(getuid());	/* no longer need or want root privileges */
-#else
+	if (index(source, ':')) {
+		host = source;
+		source = index(host, ':');
+		*source++ = '\0';
+		if (rmthost(host) == 0)
+			done(1);
+	} else
+#endif
 	if (strcmp(source, "-") == 0) {
 		/*
 		 * Since input is coming from a pipe we must establish
@@ -105,18 +100,18 @@ nohost:
 		terminal = fopen(_PATH_TTY, "r");
 		if (terminal == NULL) {
 			(void)fprintf(stderr, "Cannot open %s: %s\n",
-			    _PATH_TTY, strerror(errno));
+				      _PATH_TTY, strerror(errno));
 			terminal = fopen(_PATH_DEVNULL, "r");
 			if (terminal == NULL) {
-			    (void)fprintf(stderr, "Cannot open %s: %s\n",
-				_PATH_DEVNULL, strerror(errno));
+				(void)fprintf(stderr, "Cannot open %s: %s\n",
+					      _PATH_DEVNULL, strerror(errno));
 				done(1);
 			}
 		}
 		pipein++;
 	}
+	setuid(getuid());	/* no longer need or want root privileges */
 	(void) strcpy(magtape, source);
-#endif RRESTORE
 }
 
 newtapebuf(size)
@@ -149,13 +144,15 @@ setup()
 
 	vprintf(stdout, "Verify tape and initialize maps\n");
 #ifdef RRESTORE
-	if ((mt = rmtopen(magtape, 0)) < 0)
-#else
+	if (host)
+		mt = rmtopen(magtape, 0);
+	else
+#endif
 	if (pipein)
 		mt = 0;
-	else if ((mt = open(magtape, 0)) < 0)
-#endif
-	{
+	else
+		mt = open(magtape, 0);
+	if (mt < 0) {
 		perror(magtape);
 		done(1);
 	}
@@ -166,6 +163,7 @@ setup()
 		findtapeblksize();
 	if (gethead(&spcl) == FAIL) {
 		bct--; /* push back this block */
+		blksread--;
 		cvtflag++;
 		if (gethead(&spcl) == FAIL) {
 			fprintf(stderr, "Tape is not a dump tape\n");
@@ -239,8 +237,7 @@ setup()
 getvol(nextvol)
 	long nextvol;
 {
-	long newvol;
-	long savecnt, i;
+	long newvol, savecnt, i;
 	union u_spcl tmpspcl;
 #	define tmpbuf tmpspcl.s_spcl
 	char buf[TP_BSIZE];
@@ -263,7 +260,7 @@ again:
 		done(1); /* pipes do not get a second chance */
 	if (command == 'R' || command == 'r' || curfile.action != SKIP)
 		newvol = nextvol;
-	else 
+	else
 		newvol = 0;
 	while (newvol <= 0) {
 		if (tapesread == 0) {
@@ -323,11 +320,13 @@ again:
 		magtape[strlen(magtape) - 1] = '\0';
 	}
 #ifdef RRESTORE
-	if ((mt = rmtopen(magtape, 0)) == -1)
-#else
-	if ((mt = open(magtape, 0)) == -1)
+	if (host)
+		mt = rmtopen(magtape, 0);
+	else
 #endif
-	{
+		mt = open(magtape, 0);
+
+	if (mt == -1) {
 		fprintf(stderr, "Cannot open %s\n", magtape);
 		volno = -1;
 		goto again;
@@ -391,11 +390,12 @@ setdumpnum()
 	tcom.mt_op = MTFSF;
 	tcom.mt_count = dumpnum - 1;
 #ifdef RRESTORE
-	rmtioctl(MTFSF, dumpnum - 1);
-#else
-	if (ioctl(mt, (int)MTIOCTOP, (char *)&tcom) < 0)
-		perror("ioctl MTFSF");
+	if (host)
+		rmtioctl(MTFSF, dumpnum - 1);
+	else 
 #endif
+		if (ioctl(mt, (int)MTIOCTOP, (char *)&tcom) < 0)
+			perror("ioctl MTFSF");
 }
 
 printdumpinfo()
@@ -682,8 +682,8 @@ readtape(b)
 	register long i;
 	long rd, newvol;
 	int cnt;
+	int seek_failed;
 
-top:
 	if (bct < numtrec) {
 		bcopy(&tbf[(bct++*TP_BSIZE)], b, (long)TP_BSIZE);
 		blksread++;
@@ -693,26 +693,27 @@ top:
 		((struct s_spcl *)&tbf[i*TP_BSIZE])->c_magic = 0;
 	if (numtrec == 0)
 		numtrec = ntrec;
-	cnt = ntrec*TP_BSIZE;
+	cnt = ntrec * TP_BSIZE;
 	rd = 0;
 getmore:
 #ifdef RRESTORE
-	i = rmtread(&tbf[rd], cnt);
-#else
-	i = read(mt, &tbf[rd], cnt);
+	if (host)
+		i = rmtread(&tbf[rd], cnt);
+	else
 #endif
+		i = read(mt, &tbf[rd], cnt);
 	/*
 	 * Check for mid-tape short read error.
-	 * If found, return rest of buffer.
+	 * If found, skip rest of buffer and start with the next.
 	 */
-	if (numtrec < ntrec && i != 0) {
+	if (!pipein && numtrec < ntrec && i > 0) {
+		dprintf(stdout, "mid-media short read error.\n");
 		numtrec = ntrec;
-		goto top;
 	}
 	/*
 	 * Handle partial block read.
 	 */
-	if (i > 0 && i != ntrec*TP_BSIZE) {
+	if (i > 0 && i != ntrec * TP_BSIZE) {
 		if (pipein) {
 			rd += i;
 			cnt -= i;
@@ -720,9 +721,13 @@ getmore:
 				goto getmore;
 			i = rd;
 		} else {
+			/*
+			 * Short read. Process the blocks read.
+			 */
 			if (i % TP_BSIZE != 0)
-				panic("partial block read: %d should be %d\n",
-					i, ntrec * TP_BSIZE);
+				vprintf(stdout,
+				    "partial block read: %d should be %d\n",
+				    i, ntrec * TP_BSIZE);
 			numtrec = i / TP_BSIZE;
 		}
 	}
@@ -751,11 +756,13 @@ getmore:
 		i = ntrec*TP_BSIZE;
 		bzero(tbf, i);
 #ifdef RRESTORE
-		if (rmtseek(i, 1) < 0)
-#else
-		if (lseek(mt, i, 1) == (long)-1)
+		if (host)
+			seek_failed = (rmtseek(i, 1) < 0);
+		else
 #endif
-		{
+			seek_failed = (lseek(mt, i, 1) == (long)-1);
+
+		if (seek_failed) {
 			perror("continuation failed");
 			done(1);
 		}
@@ -764,6 +771,7 @@ getmore:
 	 * Handle end of tape.
 	 */
 	if (i == 0) {
+		vprintf(stdout, "End-of-tape encountered\n");
 		if (!pipein) {
 			newvol = volno + 1;
 			volno = 0;
@@ -790,10 +798,12 @@ findtapeblksize()
 		((struct s_spcl *)&tbf[i * TP_BSIZE])->c_magic = 0;
 	bct = 0;
 #ifdef RRESTORE
-	i = rmtread(tbf, ntrec * TP_BSIZE);
-#else
-	i = read(mt, tbf, ntrec * TP_BSIZE);
+	if (host)
+		i = rmtread(tbf, ntrec * TP_BSIZE);
+	else
 #endif
+		i = read(mt, tbf, ntrec * TP_BSIZE);
+
 	if (i <= 0) {
 		perror("Tape read error");
 		done(1);
@@ -819,10 +829,11 @@ closemt()
 	if (mt < 0)
 		return;
 #ifdef RRESTORE
-	rmtclose();
-#else
-	(void) close(mt);
+	if (host)
+		rmtclose();
+	else
 #endif
+		(void) close(mt);
 }
 
 checkvol(b, t)
@@ -938,6 +949,7 @@ good:
 		buf->c_dinode.di_qsize.val[1] = buf->c_dinode.di_qsize.val[0];
 		buf->c_dinode.di_qsize.val[0] = i;
 	}
+
 	switch (buf->c_type) {
 
 	case TS_CLRI:
@@ -1133,7 +1145,7 @@ msg(cp, a1, a2, a3)
 
 	fprintf(stderr, cp, a1, a2, a3);
 }
-#endif RRESTORE
+#endif /* RRESTORE */
 
 u_char *
 swabshort(sp, n)
