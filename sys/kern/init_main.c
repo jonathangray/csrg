@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)init_main.c	7.56 (Berkeley) 12/01/92
+ *	@(#)init_main.c	7.57 (Berkeley) 12/01/92
  */
 
 #include <sys/param.h>
@@ -165,7 +165,7 @@ main()
 	for (i = 0; i < sizeof(p->p_rlimit)/sizeof(p->p_rlimit[0]); i++)
 		limit0.pl_rlimit[i].rlim_cur =
 		    limit0.pl_rlimit[i].rlim_max = RLIM_INFINITY;
-	limit0.pl_rlimit[RLIMIT_OFILE].rlim_cur = NOFILE;
+	limit0.pl_rlimit[RLIMIT_NOFILE].rlim_cur = NOFILE;
 	limit0.pl_rlimit[RLIMIT_NPROC].rlim_cur = MAXUPRC;
 	limit0.p_refcnt = 1;
 
