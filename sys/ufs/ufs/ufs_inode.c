@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_inode.c	7.40 (Berkeley) 05/08/91
+ *	@(#)ufs_inode.c	7.40.1.1 (Berkeley) 06/03/91
  */
 
 #include "param.h"
@@ -680,6 +680,7 @@ ilock(ip)
 	ip->i_spare1 = 0;
 	ip->i_spare0 = curproc->p_pid;
 	ip->i_flag |= ILOCKED;
+	curproc->p_spare[2]++;
 }
 
 /*
@@ -693,6 +694,7 @@ iunlock(ip)
 		vprint("iunlock: unlocked inode", ITOV(ip));
 	ip->i_spare0 = 0;
 	ip->i_flag &= ~ILOCKED;
+	curproc->p_spare[2]--;
 	if (ip->i_flag&IWANT) {
 		ip->i_flag &= ~IWANT;
 		wakeup((caddr_t)ip);
