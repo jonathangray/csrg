@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_exit.c	7.47 (Berkeley) 07/08/92
+ *	@(#)kern_exit.c	7.48 (Berkeley) 07/10/92
  */
 
 #include "param.h"
@@ -63,12 +63,13 @@
 /*
  * Exit system call: pass back caller's arg
  */
+struct rexit_args {
+	int	rval;
+};
 /* ARGSUSED */
 rexit(p, uap, retval)
 	struct proc *p;
-	struct args {
-		int	rval;
-	} *uap;
+	struct rexit_args *uap;
 	int *retval;
 {
 
@@ -261,46 +262,44 @@ done:
 	/* NOTREACHED */
 }
 
+struct wait_args {
+	int	pid;
+	int	*status;
+	int	options;
+	struct	rusage *rusage;
+#ifdef COMPAT_43
+	int	compat;		/* pseudo */
+#endif
+};
+
 #ifdef COMPAT_43
 owait(p, uap, retval)
 	struct proc *p;
-	register struct args {
-		int	pid;
-		int	*status;
-		int	options;
-		struct	rusage *rusage;
-		int	compat;
-	} *uap;
+	register struct wait_args *uap;
 	int *retval;
 {
 
 #ifdef PSL_ALLCC
 	if ((p->p_md.md_regs[PS] & PSL_ALLCC) != PSL_ALLCC) {
 		uap->options = 0;
-		uap->rusage = 0;
+		uap->rusage = NULL;
 	} else {
 		uap->options = p->p_md.md_regs[R0];
 		uap->rusage = (struct rusage *)p->p_md.md_regs[R1];
 	}
 #else
 	uap->options = 0;
-	uap->rusage = 0;
+	uap->rusage = NULL;
 #endif
 	uap->pid = WAIT_ANY;
-	uap->status = 0;
+	uap->status = NULL;
 	uap->compat = 1;
 	return (wait1(p, uap, retval));
 }
 
 wait4(p, uap, retval)
 	struct proc *p;
-	struct args {
-		int	pid;
-		int	*status;
-		int	options;
-		struct	rusage *rusage;
-		int	compat;
-	} *uap;
+	struct wait_args *uap;
 	int *retval;
 {
 
@@ -318,15 +317,7 @@ wait4(p, uap, retval)
  */
 wait1(q, uap, retval)
 	register struct proc *q;
-	register struct args {
-		int	pid;
-		int	*status;
-		int	options;
-		struct	rusage *rusage;
-#ifdef COMPAT_43
-		int compat;
-#endif
-	} *uap;
+	register struct wait_args *uap;
 	int retval[];
 {
 	register int nfound;
