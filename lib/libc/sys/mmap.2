@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)mmap.2	8.3 (Berkeley) 05/27/94
+.\"	@(#)mmap.2	8.4 (Berkeley) 05/11/95
 .\"
 .Dd ""
 .Dt MMAP 2
@@ -165,12 +165,10 @@ parameter and
 .Fa fd
 was not open for reading.
 The flags
-.Dv PROT_WRITE ,
 .Dv MAP_SHARED
 and
-.Dv MAP_WRITE
-were specified as part
-of the
+.Dv PROT_WRITE
+were specified as part of the
 .Fa flags
 and
 .Fa prot
