@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tip.h	5.6 (Berkeley) 02/04/91
+ *	@(#)tip.h	5.7 (Berkeley) 03/27/91
  */
 
 /*
@@ -38,6 +38,7 @@
  */
 
 #include <sys/types.h>
+#include <machine/endian.h>
 #include <sys/file.h>
 #include <sys/time.h>
 
@@ -152,13 +153,17 @@ typedef
 #define value(v)	vtable[v].v_value
 
 #define number(v)	((((zzhack *)(&(v))))->zz_number)
-#ifdef vax
+
+#if BYTE_ORDER == LITTLE_ENDIAN
 #define boolean(v)	((((zzhack *)(&(v))))->zz_boolean[0])
 #define character(v)	((((zzhack *)(&(v))))->zz_character[0])
-#else
+#endif
+
+#if BYTE_ORDER == BIG_ENDIAN
 #define boolean(v)	((((zzhack *)(&(v))))->zz_boolean[1])
 #define character(v)	((((zzhack *)(&(v))))->zz_character[3])
 #endif
+
 #define address(v)	((((zzhack *)(&(v))))->zz_address)
 
 /*
