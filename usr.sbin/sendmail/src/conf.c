@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.89.1.2 (Berkeley) 03/01/95";
+static char sccsid[] = "@(#)conf.c	8.137 (Berkeley) 03/05/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1011,6 +1011,26 @@ init_md(argc, argv)
 #else
 	VendorCode = VENDOR_BERKELEY;
 #endif
+}
+/*
+**  INIT_VENDOR_MACROS -- vendor-dependent macro initializations
+**
+**	Called once, on startup.
+**
+**	Parameters:
+**		e -- the global envelope.
+**
+**	Returns:
+**		none.
+**
+**	Side Effects:
+**		vendor-dependent.
+*/
+
+void
+init_vendor_macros(e)
+	register ENVELOPE *e;
+{
 }
 /*
 **  GETLA -- get the current load average
