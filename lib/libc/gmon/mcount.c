@@ -32,7 +32,7 @@
  */
 
 #if !defined(lint) && !defined(KERNEL) && defined(LIBC_SCCS)
-static char sccsid[] = "@(#)mcount.c	5.2 (Berkeley) 07/13/92";
+static char sccsid[] = "@(#)mcount.c	5.3 (Berkeley) 04/30/93";
 #endif
 
 #include <sys/param.h>
@@ -85,7 +85,7 @@ _MCOUNT_DECL(frompc, selfpc)	/* _mcount; may be static, inline, etc */
 	if (frompc > p->textsize)
 		goto done;
 
-	frompcindex = &p->froms[frompc / (HASHFRACTION * sizeof(*p->froms))];
+	frompcindex = &p->froms[frompc / (p->hashfraction * sizeof(*p->froms))];
 	toindex = *frompcindex;
 	if (toindex == 0) {
 		/*
