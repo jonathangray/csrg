@@ -32,7 +32,7 @@ divert(0)dnl
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)cf.m4	2.14 (Berkeley) 12/17/91
+#	@(#)cf.m4	2.15 (Berkeley) 11/13/92
 #
 
 
@@ -51,16 +51,17 @@ syscmd(rm -f TEMPFILE)dnl
 
 divert(-1)
 
+changecom()
 define(`PUSHDIVERT', `pushdef(`__D__', divnum)divert($1)')
 define(`POPDIVERT', `divert(__D__)popdef(`__D__')')
 define(`OSTYPE', `include(../ostype/$1.m4)')
 define(`MAILER',
 `ifdef(`_MAILER_$1_', `dnl`'',
-`define(`_MAILER_$1_')PUSHDIVERT(7)include(../mailer/$1.m4)POPDIVERT`'')')
+`define(`_MAILER_$1_', `')PUSHDIVERT(7)include(../mailer/$1.m4)POPDIVERT`'')')
 define(`DOMAIN', `include(../domain/$1.m4)')
 define(`FEATURE', `include(../feature/$1.m4)')
 define(`HACK', `include(../hack/$1.m4)')
-define(`OLDSENDMAIL', `define(`_OLD_SENDMAIL_')')
+define(`OLDSENDMAIL', `define(`_OLD_SENDMAIL_', `')')
 define(`VERSIONID', ``#####  $1  #####'')
 define(`LOCAL_RULE_3', `divert(2)')
 define(`LOCAL_RULE_0', `divert(3)')
@@ -70,7 +71,7 @@ define(`CONCAT', `$1$2$3$4$5$6$7')
 define(`DOL', ``$'$1')
 define(`SITECONFIG',
 `CONCAT(D, $3, $2)
-define(`_CLASS_$3_')dnl
+define(`_CLASS_$3_', `')dnl
 ifelse($3, U, Cw$2, `dnl')
 define(`SITE', `ifelse(CONCAT($'2`, $3), SU,
 		CONCAT(CY, $'1`),
