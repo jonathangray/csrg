@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	6.20 (Berkeley) 04/26/93
+ *	@(#)conf.h	6.21 (Berkeley) 04/26/93
  */
 
 /*
@@ -117,6 +117,10 @@
 
 #ifdef _POSIX_VERSION
 # define HASSETSID	1	/* has setsid(2) call */
+#endif
+
+#ifdef NeXT
+# define	sleep	sleepX
 #endif
 
 /*
