@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)types.h	7.1 (Berkeley) 07/13/92
+ *	@(#)types.h	7.2 (Berkeley) 07/14/92
  *
  * from: $Header: types.h,v 1.4 92/06/17 06:10:30 torek Exp $ (LBL)
  */
@@ -45,10 +45,25 @@
 typedef struct _physadr {
 	short r[1];
 } *physadr;
+
 typedef struct label_t {
 	int val[2];
 } label_t;
+
 typedef	u_long	vm_offset_t;
 typedef	u_long	vm_size_t;
+
+#ifdef	__GNUC__
+typedef	char			s1byte_t;	/* Basic data types. */
+typedef	unsigned char		u1byte_t;
+typedef	short			s2byte_t;
+typedef	unsigned short		u2byte_t;
+typedef	long			s4byte_t;
+typedef	unsigned long		u4byte_t;
+typedef	long long		s8byte_t;
+typedef	unsigned long long	u8byte_t;
+typedef	float			f4byte_t;
+typedef	double			f8byte_t;
+#endif
 
 #endif	/* _MACHTYPES_H_ */
