@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)map.c	8.78 (Berkeley) 06/15/95";
+static char sccsid[] = "@(#)map.c	8.79 (Berkeley) 06/20/95";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -515,7 +515,6 @@ getcanonname(host, hbsize, trymx)
 	auto int stat;
 	char *maptype[MAXMAPSTACK];
 	short mapreturn[MAXMAPACTIONS];
-	extern int h_errno;
 
 	nmaps = switch_map_find("hosts", maptype, mapreturn);
 	for (mapno = 0; mapno < nmaps; mapno++)
