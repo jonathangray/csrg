@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)rsh.c	5.19 (Berkeley) 04/10/90";
+static char sccsid[] = "@(#)rsh.c	5.20 (Berkeley) 05/11/90";
 #endif /* not lint */
 
 /*
@@ -63,6 +63,7 @@ static char sccsid[] = "@(#)rsh.c	5.19 (Berkeley) 04/10/90";
 #include "pathnames.h"
 
 #ifdef KERBEROS
+#include <kerberosIV/des.h>
 #include <kerberosIV/krb.h>
 
 CREDENTIALS cred;
