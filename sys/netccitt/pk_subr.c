@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pk_subr.c	7.14 (Berkeley) 05/16/91
+ *	@(#)pk_subr.c	7.15 (Berkeley) 05/29/91
  */
 
 #include "param.h"
@@ -357,7 +357,8 @@ int (*callee) ();
 			sa -> x25_udata[0] = spi;
 			lcp -> lcd_upper = callee;
 			lcp -> lcd_flags = X25_MBS_HOLD;
-			error = pk_bind (lcp, nam) || pk_listen (lcp);
+			if ((error = pk_bind (lcp, nam)) == 0)
+				error = pk_listen (lcp);
 			(void) m_free (nam);
 		}
 		if (error)
@@ -413,6 +414,10 @@ register struct sockaddr_x25 *sa;
 		/*
 		 * use first net configured (last in list
 		 * headed by pkcbhead) if net is zero
+		 *
+		 * This is clearly bogus for many llc2's sharing
+		 * the same xcp; we will replace this with a
+		 * routing lookup.
 		 */
 		if (sa -> x25_net == 0 && pkp -> pk_next == 0)
 			break;
@@ -431,7 +436,7 @@ register struct sockaddr_x25 *sa;
 		soisconnecting (lcp -> lcd_so);
 	lcp -> lcd_template = pk_template (lcp -> lcd_lcn, X25_CALL);
 	pk_callrequest (lcp, lcp -> lcd_ceaddr, pkp -> pk_xcp);
-	return (*pkp -> pk_start) (lcp);
+	return (*pkp -> pk_ia -> ia_start) (lcp);
 }
 
 struct bcdinfo {
@@ -608,7 +613,8 @@ register struct pklcd *lcp;
 	    (forced == 0 && lcp -> lcd_rxrnr_condition == inhibit))
 		return;
 	lcp -> lcd_rxrnr_condition = inhibit;
-	lcp -> lcd_template = pk_template (lcp -> lcd_lcn, inhibit ? RNR : RR);
+	lcp -> lcd_template =
+		pk_template (lcp -> lcd_lcn, inhibit ? X25_RNR : X25_RR);
 	pk_output (lcp);
 }
 
@@ -886,7 +892,8 @@ register struct x25_packet *xp;
 	pk_message(LCN(xp), lcp -> lcd_pkp, "reset code 0x%x, diagnostic 0x%x",
 			xp -> packet_data, 4[(u_char *)xp]);
 			
-	lcp -> lcd_so -> so_error = Reset_cause[code];
+	if (lcp -> lcd_so)
+		lcp -> lcd_so -> so_error = Reset_cause[code];
 }
 
 #define MAXCLEARCAUSE	25
@@ -942,17 +949,6 @@ char *fmt;
 
 	printf (fmt, a1, a2, a3, a4, a5, a6);
 	printf ("\n");
-}
-
-pk_ifattach (ia, lloutput, llnext)
-register struct x25_ifaddr *ia;
-int (*lloutput) ();
-caddr_t llnext;
-{
-	/* this is here because you can't include both pk_var and hd_var */
-	/* this will probably be replace by a streams gluing mechanism */
-	ia -> ia_pkcb.pk_lloutput = lloutput;
-	ia -> ia_pkcb.pk_llnext = llnext;
 }
 
 pk_fragment (lcp, m0, qbit, mbit, wait)
