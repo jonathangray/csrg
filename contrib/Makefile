@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.9 (Berkeley) 06/07/93
+#	@(#)Makefile	8.1 (Berkeley) 06/09/93
 
 SUBDIR=	ansi bib bind-4.9 gawk-2.15.2 emacs-18.57 gas-1.38 gcc-2.3.3 \
 	gdb-4.7.lbl groff-1.08 gzip-1.0.7 jove-4.14.6 kermit-5A.188 \
