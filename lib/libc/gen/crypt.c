@@ -1,5 +1,5 @@
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)crypt.c	5.2.1.1 (Berkeley) 08/12/86";
+static char sccsid[] = "@(#)crypt.c	5.3 (Berkeley) 05/11/90";
 #endif LIBC_SCCS and not lint
 
 /*
@@ -226,7 +226,7 @@ static	char	P[] = {
 /*
  * The current block, divided into 2 halves.
  */
-static	char	L[32], R[32];
+static	char	L[64], *R = L+32;
 static	char	tempL[32];
 static	char	f[32];
 
