@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.67.1.1 (Berkeley) 02/03/92
+ *	@(#)vfs_subr.c	7.68 (Berkeley) 02/05/92
  */
 
 /*
@@ -42,12 +42,22 @@
 #include <sys/mount.h>
 #include <sys/time.h>
 #include <sys/vnode.h>
+#include <sys/stat.h>
 #include <sys/specdev.h>
 #include <sys/namei.h>
 #include <sys/ucred.h>
 #include <sys/buf.h>
 #include <sys/errno.h>
 #include <sys/malloc.h>
+
+enum vtype iftovt_tab[16] = {
+	VNON, VFIFO, VCHR, VNON, VDIR, VNON, VBLK, VNON,
+	VREG, VNON, VLNK, VNON, VSOCK, VNON, VNON, VBAD,
+};
+int	vttoif_tab[9] = {
+	0, S_IFREG, S_IFDIR, S_IFBLK, S_IFCHR, S_IFLNK,
+	S_IFSOCK, S_IFIFO, S_IFMT,
+};
 
 /*
  * Remove a mount point from the list of mounted filesystems.
