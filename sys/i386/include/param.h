@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)param.h	5.7 (Berkeley) 06/26/91
+ *	@(#)param.h	5.8 (Berkeley) 06/28/91
  */
 
 /*
@@ -98,7 +98,7 @@
  * Size of kernel malloc arena in CLBYTES-sized logical pages
  */ 
 #ifndef NKMEMCLUSTERS
-#define	NKMEMCLUSTERS	(512*1024/CLBYTES)
+#define	NKMEMCLUSTERS	(2048*1024/CLBYTES)
 #endif
 /*
  * Some macros for units conversion
