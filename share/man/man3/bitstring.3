@@ -31,7 +31,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)bitstring.3	8.1 (Berkeley) 06/09/93
+.\"     @(#)bitstring.3	5.6 (Berkeley) 07/19/93
 .\"
 .Dd 
 .Dt BITSTRING 3
@@ -112,11 +112,11 @@ in the bit string
 The
 .Fn bit_test
 macro
-evaluates to zero if the zero-based numbered bit
+evaluates to non-zero if the zero-based numbered bit
 .Fa bit
 of bit string
 .Fa name
-is set, and non-zero otherwise.
+is set, and zero otherwise.
 .Pp
 The
 .Fn bit_ffs
