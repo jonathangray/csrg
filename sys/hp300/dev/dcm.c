@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * from: $Hdr: dcm.c 1.1 90/07/09$
+ * from: $Hdr: dcm.c 1.26 91/01/21$
  *
- *	@(#)dcm.c	7.11 (Berkeley) 05/04/91
+ *	@(#)dcm.c	7.12 (Berkeley) 05/07/91
  */
 
 /*
@@ -251,6 +251,7 @@ dcmprobe(hd)
 	if (major(kgdb_dev) == dcmmajor && BOARD(kgdb_dev) == brd) {
 		if (dcmconsole == UNIT(kgdb_dev))
 			kgdb_dev = -1;	/* can't debug over console port */
+#ifndef KGDB_CHEAT
 		/*
 		 * The following could potentially be replaced
 		 * by the corresponding code in dcmcnprobe.
@@ -264,6 +265,7 @@ dcmprobe(hd)
 				printf("dcm%d: kgdb enabled\n", UNIT(kgdb_dev));
 		}
 		/* end could be replaced */
+#endif
 	}
 #endif
 	if (dcmistype == DIS_TIMER)
@@ -1103,14 +1105,14 @@ dcmcnprobe(cp)
 	 * anything different, you're screwed.
 	 */
 	for (hw = sc_table; hw->hw_type; hw++)
-	        if (hw->hw_type == COMMDCM && !badaddr((short *)hw->hw_addr))
+		if (HW_ISDEV(hw, D_COMMDCM) && !badaddr((short *)hw->hw_kva))
 			break;
-	if (hw->hw_type != COMMDCM) {
+	if (!HW_ISDEV(hw, D_COMMDCM)) {
 		cp->cn_pri = CN_DEAD;
 		return;
 	}
 	unit = CONUNIT;
-	dcm_addr[BOARD(CONUNIT)] = (struct dcmdevice *)hw->hw_addr;
+	dcm_addr[BOARD(CONUNIT)] = (struct dcmdevice *)hw->hw_kva;
 
 	/* initialize required fields */
 	cp->cn_dev = makedev(dcmmajor, unit);
@@ -1134,7 +1136,7 @@ dcmcnprobe(cp)
 #ifdef KGDB
 	if (major(kgdb_dev) == 2)			/* XXX */
 		kgdb_dev = makedev(dcmmajor, minor(kgdb_dev));
-#ifdef notdef
+#ifdef KGDB_CHEAT
 	/*
 	 * This doesn't currently work, at least not with ite consoles;
 	 * the console hasn't been initialized yet.
