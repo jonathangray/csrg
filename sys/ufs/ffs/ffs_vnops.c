@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	7.69 (Berkeley) 02/03/92
+ *	@(#)ffs_vnops.c	7.70 (Berkeley) 03/22/92
  */
 
 #include <sys/param.h>
@@ -234,10 +234,10 @@ ffs_read(vp, uio, ioflag, cred)
 		if (vp->v_lastr + 1 == lbn &&
 		    lblktosize(fs, rablock) < ip->i_size) {
 			rasize = blksize(fs, ip, rablock);
-			error = breadn(ITOV(ip), lbn, size, &rablock,
+			error = breadn(vp, lbn, size, &rablock,
 				&rasize, 1, NOCRED, &bp);
 		} else
-			error = bread(ITOV(ip), lbn, size, NOCRED, &bp);
+			error = bread(vp, lbn, size, NOCRED, &bp);
 		vp->v_lastr = lbn;
 		n = MIN(n, size - bp->b_resid);
 		if (error) {
