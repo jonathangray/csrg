@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty.h	5.4 (Berkeley) 07/16/92
+ *	@(#)tty.h	5.5 (Berkeley) 07/18/92
  */
 
 /*
@@ -459,6 +459,7 @@ protected int	tty_rawmode	__P((EditLine *));
 protected int	tty_cookedmode	__P((EditLine *));
 protected int	tty_quotemode	__P((EditLine *));
 protected int	tty_noquotemode	__P((EditLine *));
+protected void	tty_bind_char	__P((EditLine *, int));
 
 typedef struct {
     ttyperm_t t_t;
