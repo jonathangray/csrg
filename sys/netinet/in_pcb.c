@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)in_pcb.c	7.21 (Berkeley) 07/18/92
+ *	@(#)in_pcb.c	7.22 (Berkeley) 07/22/92
  */
 
 #include "param.h"
@@ -396,6 +396,7 @@ in_losing(inp)
 	struct rt_addrinfo info;
 
 	if ((rt = inp->inp_route.ro_rt)) {
+		inp->inp_route.ro_rt = 0;
 		bzero((caddr_t)&info, sizeof(info));
 		info.rti_info[RTAX_DST] =
 			(struct sockaddr *)&inp->inp_route.ro_dst;
@@ -406,12 +407,12 @@ in_losing(inp)
 			(void) rtrequest(RTM_DELETE, rt_key(rt),
 				rt->rt_gateway, rt_mask(rt), rt->rt_flags, 
 				(struct rtentry **)0);
-		inp->inp_route.ro_rt = 0;
-		rtfree(rt);
+		else 
 		/*
 		 * A new route can be allocated
 		 * the next time output is attempted.
 		 */
+			rtfree(rt);
 	}
 }
 
