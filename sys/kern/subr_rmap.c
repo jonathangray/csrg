@@ -6,15 +6,15 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)subr_rmap.c	7.10 (Berkeley) 05/13/92
+ *	@(#)subr_rmap.c	7.11 (Berkeley) 10/11/92
  */
 
-#include "param.h"
-#include "systm.h"
-#include "map.h"
-#include "dmap.h"		/* XXX */
-#include "proc.h"
-#include "kernel.h"
+#include <sys/param.h>
+#include <sys/systm.h>
+#include <sys/map.h>
+#include <sys/dmap.h>		/* XXX */
+#include <sys/proc.h>
+#include <sys/kernel.h>
 
 /*
  * Resource map handling routines.
