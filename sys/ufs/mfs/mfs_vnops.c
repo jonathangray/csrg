@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mfs_vnops.c	7.18 (Berkeley) 07/02/90
+ *	@(#)mfs_vnops.c	7.19 (Berkeley) 12/05/90
  */
 
 #include "param.h"
@@ -39,14 +39,12 @@
 #include "proc.h"
 #include "user.h"
 #include "buf.h"
-#include "vmmac.h"
 #include "errno.h"
 #include "map.h"
 #include "vnode.h"
 #include "../ufs/mfsnode.h"
 #include "../ufs/mfsiom.h"
 #include "machine/vmparam.h"
-#include "machine/pte.h"
 #include "machine/mtpr.h"
 
 #if !defined(hp300) && !defined(i386)
