@@ -1,8 +1,13 @@
-#ifndef lint
-static char ehash_sccsid[] = "@(#)ehash.c	4.3	(Berkeley)	91/02/02";
-#endif not lint
+/*-
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ */
 
-#
+#ifndef lint
+static char sccsid[] = "@(#)ehash.c	4.4 (Berkeley) 04/17/91";
+#endif /* not lint */
+
 struct hnode {
 	char *aakey;
 	struct dict *aadata;
