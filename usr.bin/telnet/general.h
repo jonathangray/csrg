@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)general.h	1.5 (Berkeley) 06/28/90
+ *	@(#)general.h	5.1 (Berkeley) 09/14/90
  */
 
 /*
