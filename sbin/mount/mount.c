@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)mount.c	5.47 (Berkeley) 01/06/92";
+static char sccsid[] = "@(#)mount.c	5.48 (Berkeley) 01/13/92";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -199,8 +199,10 @@ main(argc, argv, arge)
 		 * an NFS filesystem is being specified ala Sun.
 		 */
 		if (vfslist == (char **)0 &&
-		    (index(argv[0], ':') || index(argv[0], '@')))
+		    (index(argv[0], ':') || index(argv[0], '@'))) {
 			mnttype = MOUNT_NFS;
+			mntname = "nfs";
+		}
 		ret = mountfs(argv[0], argv[1], updateflg, type, options,
 		    (char *)NULL);
 	}
