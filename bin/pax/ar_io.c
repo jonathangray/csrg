@@ -36,7 +36,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)ar_io.c	8.1 (Berkeley) 05/31/93";
+static char sccsid[] = "@(#)ar_io.c	8.2 (Berkeley) 04/18/94";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -318,8 +318,9 @@ ar_close()
 	if (vflag && (artyp == ISTAPE)) {
 		if (vfpart)
 			(void)putc('\n', outf);
-		(void)fputs("pax: Waiting for tape drive close to complete...",
-		    outf);
+		(void)fprintf(outf,
+			"%s: Waiting for tape drive close to complete...",
+			argv0);
 		(void)fflush(outf);
 	}
 
@@ -375,11 +376,11 @@ ar_close()
 	 */
 	if (frmt == NULL) {
 #	ifdef NET2_STAT
-		(void)fprintf(outf, "pax: unknown format, %lu bytes skipped.\n",
+		(void)fprintf(outf, "%s: unknown format, %lu bytes skipped.\n",
 #	else
-		(void)fprintf(outf, "pax: unknown format, %qu bytes skipped.\n",
+		(void)fprintf(outf, "%s: unknown format, %qu bytes skipped.\n",
 #	endif
-		    rdcnt);
+		    argv0, rdcnt);
 		(void)fflush(outf);
 		flcnt = 0;
 		return;
@@ -387,11 +388,11 @@ ar_close()
 
 	(void)fprintf(outf,
 #	ifdef NET2_STAT
-	    "pax: %s vol %d, %lu files, %lu bytes read, %lu bytes written.\n",
+	    "%s: %s vol %d, %lu files, %lu bytes read, %lu bytes written.\n",
 #	else
-	    "pax: %s vol %d, %lu files, %qu bytes read, %qu bytes written.\n",
+	    "%s: %s vol %d, %lu files, %qu bytes read, %qu bytes written.\n",
 #	endif
-	    frmt->name, arvol-1, flcnt, rdcnt, wrcnt);
+	    argv0, frmt->name, arvol-1, flcnt, rdcnt, wrcnt);
 	(void)fflush(outf);
 	flcnt = 0;
 }
@@ -498,8 +499,8 @@ ar_app_ok()
 
 	if (!invld_rec)
 		return(0);
-	warn(1,"Cannot append, device record size %d does not support pax spec",
-		rdblksz);
+	warn(1,"Cannot append, device record size %d does not support %s spec",
+		rdblksz, argv0);
 	return(-1);
 }
 
@@ -895,7 +896,7 @@ ar_rev(sksz)
 {
 	off_t cpos;
         struct mtop mb;
-	register int phyblk;
+	register int phyblk; 
 
 	/*
 	 * make sure we do not have try to reverse on a flawed archive
@@ -1166,7 +1167,7 @@ ar_next()
 	if (done || !wr_trail)
 		return(-1);
 
-	tty_prnt("\nATTENTION! Pax archive volume change required.\n");
+	tty_prnt("\nATTENTION! %s archive volume change required.\n", argv0);
 
 	/*
 	 * if i/o is on stdin or stdout, we cannot reopen it (we do not know
@@ -1190,7 +1191,8 @@ ar_next()
 			tty_prnt("\n");
 
 		for(;;) {
-			tty_prnt("Type \"y\" to continue, \".\" to quit pax,");
+			tty_prnt("Type \"y\" to continue, \".\" to quit %s,",
+				argv0);
 			tty_prnt(" or \"s\" to switch to new device.\nIf you");
 			tty_prnt(" cannot change storage media, type \"s\"\n");
 			tty_prnt("Is the device ready and online? > ");
@@ -1198,7 +1200,7 @@ ar_next()
 			if ((tty_read(buf,sizeof(buf))<0) || !strcmp(buf,".")){
 				done = 1;
 				lstrval = -1;
-				tty_prnt("Quitting pax!\n");
+				tty_prnt("Quitting %s!\n", argv0);
 				vfpart = 0;
 				return(-1);
 			}
@@ -1239,13 +1241,13 @@ ar_next()
 	 * have to go to a different archive
 	 */
 	for (;;) {
-		tty_prnt("Input archive name or \".\" to quit pax.\n");
+		tty_prnt("Input archive name or \".\" to quit %s.\n", argv0);
 		tty_prnt("Archive name > ");
 
 		if ((tty_read(buf, sizeof(buf)) < 0) || !strcmp(buf, ".")) {
 			done = 1;
 			lstrval = -1;
-			tty_prnt("Quitting pax!\n");
+			tty_prnt("Quitting %s!\n", argv0);
 			vfpart = 0;
 			return(-1);
 		}
