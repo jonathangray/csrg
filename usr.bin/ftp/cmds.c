@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)cmds.c	5.25 (Berkeley) 03/01/91";
+static char sccsid[] = "@(#)cmds.c	5.26 (Berkeley) 03/05/91";
 #endif /* not lint */
 
 /*
@@ -57,7 +57,7 @@ static char sccsid[] = "@(#)cmds.c	5.25 (Berkeley) 03/01/91";
 #include "pathnames.h"
 
 extern	char *globerr;
-extern	char **glob();
+extern	char **ftpglob();
 extern	char *home;
 extern	char *remglob();
 extern	char *getenv();
@@ -519,7 +519,7 @@ mput(argc, argv)
 			}
 			continue;
 		}
-		gargs = glob(argv[i]);
+		gargs = ftpglob(argv[i]);
 		if (globerr != NULL) {
 			printf("%s\n", globerr);
 			if (gargs) {
@@ -1499,7 +1499,7 @@ globulize(cpp)
 
 	if (!doglob)
 		return (1);
-	globbed = glob(*cpp);
+	globbed = ftpglob(*cpp);
 	if (globerr != NULL) {
 		printf("%s: %s\n", *cpp, globerr);
 		if (globbed) {
