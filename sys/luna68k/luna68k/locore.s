@@ -39,7 +39,7 @@
  * from: Utah $Hdr: locore.s 1.62 92/01/20$
  * from: hp300/hp300/locore.s	7.22 (Berkeley) 2/18/93
  *
- *	@(#)locore.s	7.13 (Berkeley) 05/12/93
+ *	@(#)locore.s	7.14 (Berkeley) 06/02/93
  */
 
 /*
@@ -1018,8 +1018,13 @@ _szicode:
 #define EXPORT(name)	.globl _/**/name; _/**/name:
 #endif
 #ifdef GPROF
+#if __GNUC__ >= 2
 #define	ENTRY(name) \
 	EXPORT(name) link a6,\#0; jbsr mcount; unlk a6
+#else
+#define	ENTRY(name) \
+	EXPORT(name) link a6,#0; jbsr mcount; unlk a6
+#endif
 #define ALTENTRY(name, rname) \
 	ENTRY(name); jra rname+12
 #else
