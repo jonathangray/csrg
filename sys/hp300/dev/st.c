@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: st.c 1.8 90/10/14$
  *
- *      @(#)st.c	7.4 (Berkeley) 09/18/91
+ *      @(#)st.c	7.5 (Berkeley) 02/15/92
  */
 
 /*
@@ -80,8 +80,8 @@
 #include "buf.h"
 #include "scsireg.h"
 #include "file.h"
-#include "tty.h"
 #include "proc.h"
+#include "tty.h"
 #include "mtio.h"
 #include "ioctl.h"
 #include "kernel.h"
