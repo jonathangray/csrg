@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)mloop.c	3.17 (Berkeley) 06/06/90";
+static char sccsid[] = "@(#)mloop.c	3.18 (Berkeley) 08/16/92";
 #endif /* not lint */
 
 #include "defs.h"
@@ -59,7 +59,7 @@ mloop()
 
 			if (wwibp >= wwibq)
 				wwiomux();
-			for (p = wwibp; p < wwibq && *p != escapec;
+			for (p = wwibp; p < wwibq && wwmaskc(*p) != escapec;
 			     p++)
 				;
 			if ((n = p - wwibp) > 0) {
