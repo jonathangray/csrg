@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)rk.c	7.5 (Berkeley) 02/24/88
+ *	@(#)rk.c	7.6 (Berkeley) 02/25/88
  */
 
 /*
