@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_alloc.c	7.22 (Berkeley) 09/01/90
+ *	@(#)ffs_alloc.c	7.23 (Berkeley) 12/05/90
  */
 
 #include "param.h"
@@ -144,9 +144,8 @@ realloccg(ip, lbprev, bpref, osize, nsize, bpp)
 {
 	register struct fs *fs;
 	struct buf *bp, *obp;
-	int cg, request;
-	daddr_t bprev, bno, bn;
-	int i, error, count;
+	int cg, request, error;
+	daddr_t bprev, bno;
 	struct ucred *cred = u.u_cred;		/* XXX */
 	
 	*bpp = 0;
@@ -247,7 +246,6 @@ realloccg(ip, lbprev, bpref, osize, nsize, bpp)
 		obp = bread(ip->i_dev, fsbtodb(fs, bprev), osize,
 		    fs->fs_dbsize);
 #else SECSIZE
-		bp->b_blkno = bn = fsbtodb(fs, bno);
 		count = howmany(osize, CLBYTES);
 		for (i = 0; i < count; i++)
 #ifdef SECSIZE
