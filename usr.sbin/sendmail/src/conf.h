@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.35 (Berkeley) 09/22/93
+ *	@(#)conf.h	8.36 (Berkeley) 09/22/93
  */
 
 /*
@@ -234,6 +234,7 @@
 # define HASFLOCK	1	/* has flock(2) call */
 # define NEEDGETOPT	1	/* need a replacement for getopt(3) */
 # define HASSTATFS	1	/* has the statfs(2) syscall */
+# define WAITUNION	1	/* use "union wait" as wait argument type */
 # define sleep		sleepX
 # define setpgid	setpgrp
 # ifndef LA_TYPE
