@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)cabs.c	5.6 (Berkeley) 10/09/90";
+static char sccsid[] = "@(#)cabs.c	5.7 (Berkeley) 03/08/93";
 #endif /* not lint */
 
 /* HYPOT(X,Y)
@@ -170,16 +170,18 @@ double x, y;
  *	cabs(z) = hypot(x,y) .
  */
 
+struct complex { double x, y; };
+
 double
 cabs(z)
-struct { double x, y;} z;
+struct complex z;
 {
 	return hypot(z.x,z.y);
 }
 
 double
 z_abs(z)
-struct { double x,y;} *z;
+struct complex *z;
 {
 	return hypot(z->x,z->y);
 }
