@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)map.c	5.2 (Berkeley) 11/15/92";
+static char sccsid[] = "@(#)map.c	5.3 (Berkeley) 11/16/92";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -241,6 +241,14 @@ db_map_lookup(map, buf, bufsiz, av)
 
 	key.data = buf;
 	key.size = strlen(buf);
+	if (bitset(MF_FOLDCASE, map->map_flags))
+	{
+		register char *p;
+
+		for (p = buf; *p != '\0'; p++)
+			if (isupper(*p))
+				*p = tolower(*p);
+	}
 	if (bitset(MF_INCLNULL, map->map_flags))
 		key.size++;
 	if (((DB *) map->map_db)->get((DB *) map->map_db, &key, &val, 0) != 0)
@@ -288,6 +296,10 @@ map_parseargs(map, pp, mapname)
 
 		  case 'o':
 			map->map_flags |= MF_OPTIONAL;
+			break;
+
+		  case 'f':
+			map->map_flags |= MF_FOLDCASE;
 			break;
 
 		  case 'a':
