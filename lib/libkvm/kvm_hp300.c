@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)kvm_hp300.c	5.12 (Berkeley) 02/24/91";
+static char sccsid[] = "@(#)kvm_hp300.c	5.13 (Berkeley) 02/24/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <machine/pte.h>
@@ -141,6 +141,10 @@ static struct nlist nl[] = {
 #endif
 	{ "" },
 };
+
+static off_t vtophys();
+static void klseek(), seterr(), setsyserr(), vstodb();
+static int getkvars(), kvm_doprocs(), kvm_init();
 
 /*
  * returns 	0 if files were opened now,
@@ -343,6 +347,7 @@ hard2:
 }
 
 kvm_getprocs(what, arg)
+	int what, arg;
 {
 	if (kvminit == 0 && kvm_init(NULL, NULL, NULL, 0) == -1)
 		return (NULL);
@@ -544,14 +549,13 @@ kvm_nextproc()
 
 struct eproc *
 kvm_geteproc(p)
-	struct proc *p;
+	const struct proc *p;
 {
 	return ((struct eproc *)(((char *)p) + sizeof (struct proc)));
 }
 
 kvm_setproc()
 {
-
 	kvmprocptr = kvmprocbase;
 }
 
@@ -566,7 +570,7 @@ kvm_freeprocs()
 
 struct user *
 kvm_getu(p)
-	struct proc *p;
+	const struct proc *p;
 {
 	struct pte *pteaddr, apte;
 	struct pte arguutl[HIGHPAGES+(CLSIZE*2)];
@@ -634,8 +638,8 @@ kvm_getu(p)
 
 char *
 kvm_getargs(p, up)
-	struct proc *p;
-	struct user *up;
+	const struct proc *p;
+	const struct user *up;
 {
 	char cmdbuf[CLBYTES*2];
 	union {
@@ -728,7 +732,6 @@ retucomm:
 static
 getkvars()
 {
-
 	if (kvm_nlist(nl) == -1)
 		return (-1);
 	if (deadkernel) {
@@ -803,7 +806,7 @@ kvm_read(loc, buf, len)
 	return (len);
 }
 
-static
+static void
 klseek(fd, loc, off)
 	int fd;
 	off_t loc;
@@ -811,8 +814,6 @@ klseek(fd, loc, off)
 {
 
 	if (deadkernel) {
-		off_t vtophys();
-
 		if ((loc = vtophys(loc)) == -1)
 			return;
 	}
@@ -824,7 +825,7 @@ klseek(fd, loc, off)
  * return a physical base/size pair which is the
  * (largest) initial, physically contiguous block.
  */
-static
+static void
 vstodb(vsbase, vssize, dmp, dbp, rev)
 	register int vsbase;
 	int vssize;
@@ -888,7 +889,7 @@ vtophys(loc)
 #include <varargs.h>
 static char errbuf[_POSIX2_LINE_MAX];
 
-static
+static void
 seterr(va_alist)
 	va_dcl
 {
@@ -901,7 +902,7 @@ seterr(va_alist)
 	va_end(ap);
 }
 
-static
+static void
 setsyserr(va_alist)
 	va_dcl
 {
