@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union.h	8.6 (Berkeley) 06/17/94
+ *	@(#)union.h	8.7 (Berkeley) 07/28/94
  */
 
 struct union_args {
@@ -102,6 +102,8 @@ extern int union_copyup __P((struct union_node *, int, struct ucred *,
 				struct proc *));
 extern int union_mkshadow __P((struct union_mount *, struct vnode *,
 				struct componentname *, struct vnode **));
+extern int union_mkwhiteout __P((struct union_mount *, struct vnode *,
+				struct componentname *, char *));
 extern int union_vn_create __P((struct vnode **, struct union_node *,
 				struct proc *));
 extern int union_cn_close __P((struct vnode *, int, struct ucred *,
