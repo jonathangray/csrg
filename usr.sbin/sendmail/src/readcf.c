@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	8.24 (Berkeley) 06/17/94";
+static char sccsid[] = "@(#)readcf.c	8.25 (Berkeley) 07/02/94";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1155,9 +1155,6 @@ setoption(opt, val, sticky)
 		  case EM_MAIL:		/* mail back */
 		  case EM_BERKNET:	/* do berknet error processing */
 		  case EM_WRITE:	/* write back (or mail) */
-			HoldErrs = TRUE;
-			/* fall through... */
-
 		  case EM_PRINT:	/* print errors normally (default) */
 			e->e_errormode = *val;
 			break;
