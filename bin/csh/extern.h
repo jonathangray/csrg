@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.14 (Berkeley) 02/12/92
+ *	@(#)extern.h	5.15 (Berkeley) 05/22/93
  */
 
 #include <sys/cdefs.h>
