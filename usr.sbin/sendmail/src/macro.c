@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)macro.c	6.7 (Berkeley) 04/04/93";
+static char sccsid[] = "@(#)macro.c	6.8 (Berkeley) 05/27/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -56,6 +56,7 @@ static char sccsid[] = "@(#)macro.c	6.7 (Berkeley) 04/04/93";
 **		none.
 */
 
+void
 expand(s, buf, buflim, e)
 	register char *s;
 	register char *buf;
@@ -69,7 +70,6 @@ expand(s, buf, buflim, e)
 	int i;
 	int iflev;		/* if nesting level */
 	char xbuf[BUFSIZ];
-	extern char *macvalue();
 
 	if (tTd(35, 24))
 	{
@@ -229,6 +229,7 @@ expand(s, buf, buflim, e)
 **		are available.
 */
 
+void
 define(n, v, e)
 	char n;
 	char *v;
