@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cons.c	8.2 (Berkeley) 12/10/93
+ *	@(#)cons.c	8.3 (Berkeley) 12/14/93
  *
  * from: $Header: cons.c,v 1.12 93/07/20 00:49:45 torek Exp $
  */
@@ -78,7 +78,7 @@ static void cnfbstart __P((struct tty *));
 static void cnfbstop __P((struct tty *, int));
 static void cnfbdma __P((void *));
 
-extern char char_type[];
+extern const char char_type[];
 
 consinit()
 {
@@ -400,12 +400,14 @@ cnrint()
 		return;
 	tp = &cons;
 	if ((tp->t_cflag & CSIZE) == CS7) {
+#if 0
 		/* XXX this should be done elsewhere, if at all */
 		if (tp->t_cflag & PARENB)
 			if (tp->t_cflag & PARODD ?
 			    (char_type[c & 0177] & 0200) == (c & 0200) :
 			    (char_type[c & 0177] & 0200) != (c & 0200))
 				c |= TTY_PE;
+#endif
 		c &= ~0200;
 	}
 	(*linesw[tp->t_line].l_rint)(c, tp);
