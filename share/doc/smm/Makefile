@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.2.1.1 (Berkeley) 05/07/91
+#	@(#)Makefile	5.3 (Berkeley) 05/07/91
 
 # Missing: 03.kdebug 09.uucpimpl 12.uchanges 13.kchanges 17.security
 #	   18.password 19.porttour 21.uucpnet
