@@ -36,7 +36,7 @@
 # include <pwd.h>
 
 #ifndef lint
-static char sccsid[] = "@(#)alias.c	8.28 (Berkeley) 06/19/94";
+static char sccsid[] = "@(#)alias.c	8.29 (Berkeley) 07/03/94";
 #endif /* not lint */
 
 
@@ -777,7 +777,8 @@ forward(user, sendq, e)
 	if (tTd(27, 1))
 		printf("forward(%s)\n", user->q_paddr);
 
-	if (user->q_mailer != LocalMailer || bitset(QBADADDR, user->q_flags))
+	if (!bitnset(M_HASPWENT, user->q_mailer->m_flags) ||
+	    bitset(QBADADDR, user->q_flags))
 		return;
 	if (user->q_home == NULL)
 	{
