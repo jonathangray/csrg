@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 1988, 1990 Regents of the University of California.
+/*-
+ * Copyright (c) 1988, 1990 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,12 +30,20 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+
+#ifndef lint
+char copyright[] =
+"@(#) Copyright (c) 1988, 1990 The Regents of the University of California.\n\
+ All rights reserved.\n";
+#endif /* not lint */
+
+#ifndef lint
+static char sccsid[] = "@(#)Tesis.c	7.1 (Berkeley) 05/07/91";
+#endif /* not lint */
+
 /* Modifications
  * Copyright (c) 1990 Robert Hagens
  */
-#ifndef lint
-static char sccsid[] = "@(#)Tesis.c	1.1 (Berkeley) 05/07/91";
-#endif /* not lint */
 
 /*
  * This is a test program to listen to esis packets.
