@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.75 (Berkeley) 11/22/94
+ *	@(#)sendmail.h	8.76 (Berkeley) 11/25/94
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.75		11/22/94";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.76		11/25/94";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -189,6 +189,7 @@ struct mailer
 {
 	char	*m_name;	/* symbolic name of this mailer */
 	char	*m_mailer;	/* pathname of the mailer to use */
+	char	*m_mtstype;	/* type of this MTS */
 	BITMAP	m_flags;	/* status flags, see below */
 	short	m_mno;		/* mailer number internally */
 	char	**m_argv;	/* template argument vector */
@@ -1074,6 +1075,7 @@ extern void		commaize __P((HDR *, char *, int, MCI *, ENVELOPE *));
 extern char		*hvalue __P((char *, HDR *));
 extern char		*defcharset __P((ENVELOPE *));
 extern bool		emptyaddr __P((ADDRESS *));
+extern int		sendtolist __P((char *, ADDRESS *, ADDRESS **, int, ENVELOPE *));
 
 /* ellipsis is a different case though */
 #ifdef __STDC__
