@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: reg.h 1.1 90/07/09$
  *
- *	@(#)reg.h	8.1 (Berkeley) 06/10/93
+ *	@(#)reg.h	8.2 (Berkeley) 01/03/94
  */
 
 /*
