@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)doc	5.2 (Berkeley) 03/14/91
+.\"     @(#)doc	5.3 (Berkeley) 03/15/91
 .\"
 .\" .mdoc-parse - attempt to parse troff request arguments
 .\"     %beginstrip%
@@ -41,14 +41,6 @@
 .\}
 .so /usr/share/tmac/tmac.doc-common
 .so /usr/share/tmac/tmac.doc-syms
-.\" .if t \{\
-.\" .	so /usr/u0/cael/man/tmac.doc-ditroff
-.\" .\}
-.\" .if n \{\
-.\" .	so /usr/u0/cael/man/tmac.doc-nroff
-.\" .\}
-.\" .so /usr/u0/cael/man/tmac.doc-common
-.\" .so /usr/u0/cael/man/tmac.doc-syms
 .\"
 .\" NS Db macro - start/stop DEBUG MODE
 .\" NS Db register DEBUG MODE
@@ -583,7 +575,10 @@
 .ds mN Fd
 .if \\n(nS>0 \{\
 .	if \\n(fZ>0 \{\
-.		ie \\n(fD==0 .Pp
+.		ie \\n(fD==0 \{\
+.			Pp
+.			rs
+.		\}
 .		el .br
 .	\}
 .	nr fD+1
@@ -2268,7 +2263,9 @@
 .nr fZ 0
 .de Ft
 .if \\n(nS>0 \{\
-.	if \\n(fZ>0 .Pp
+.	if \\n(fZ>0 \{\
+.		Pp
+.	\}
 .	nr fZ+1
 .	nr fY+1
 .\}
@@ -2343,6 +2340,20 @@
 .	\}
 .	nr fD 0
 .\}
+.if \\n(nS \{\
+.	if "\\*(mN"Fn" \{\
+.		rs
+.	        ie \\n(nS>1 .br
+.	        el \{\
+.			if \\n(iS==0 \{\
+.	                        nr iS ((6)*\\n(fW)u
+.	               \}
+.	        \}
+.	        in +\\n(iSu
+.	        ti -\\n(iSu
+.	        nr nS \\n(nS+1
+.        \}
+.\}
 .if \\n(aC>\\n(aP \{\
 .	nr aP+1
 .	nr cF \\n(.f
@@ -2357,7 +2368,9 @@
 .		as b1 \|\\*(rp
 .		aZ
 .	\}
-.	if \\n(nS>0 .br
+.	if \\n(nS>0 \{\
+. 		in -\\n(iSu
+.	\}
 .\}
 ..
 .\"
