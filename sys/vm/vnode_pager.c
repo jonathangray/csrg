@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode_pager.c	8.8 (Berkeley) 02/13/94
+ *	@(#)vnode_pager.c	8.9 (Berkeley) 11/21/94
  */
 
 /*
@@ -459,8 +459,7 @@ vnode_pager_uncache(vp)
 	/*
 	 * Not a mapped vnode
 	 */
-	pager = (vm_pager_t)vp->v_vmdata;
-	if (pager == NULL)
+	if (vp->v_type != VREG || (pager = (vm_pager_t)vp->v_vmdata) == NULL)
 		return (TRUE);
 #ifdef DEBUG
 	if (!VOP_ISLOCKED(vp)) {
