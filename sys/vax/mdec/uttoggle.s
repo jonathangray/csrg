@@ -1,4 +1,4 @@
-/*	uttoggle.s	4.1	83/02/16	*/
+/*	uttoggle.s	4.2	83/02/21	*/
 
 /*
  * Prototype toggle in bootstrap code for tm type tapes.
