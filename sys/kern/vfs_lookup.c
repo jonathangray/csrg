@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_lookup.c	8.4 (Berkeley) 02/16/94
+ *	@(#)vfs_lookup.c	8.5 (Berkeley) 05/21/94
  */
 
 #include <sys/param.h>
@@ -318,12 +318,12 @@ dirloop:
 	 * e.g. like "/." or ".".
 	 */
 	if (cnp->cn_nameptr[0] == '\0') {
-		if (cnp->cn_nameiop != LOOKUP) {
-			error = EISDIR;
-			goto bad;
-		}
 		if (dp->v_type != VDIR) {
 			error = ENOTDIR;
+			goto bad;
+		}
+		if (cnp->cn_nameiop != LOOKUP) {
+			error = EISDIR;
 			goto bad;
 		}
 		if (wantparent) {
