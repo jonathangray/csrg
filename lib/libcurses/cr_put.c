@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)cr_put.c	5.16 (Berkeley) 01/24/93";
+static char sccsid[] = "@(#)cr_put.c	5.17 (Berkeley) 05/11/93";
 #endif	/* not lint */
 
 #include <curses.h>
@@ -47,10 +47,12 @@ static char sccsid[] = "@(#)cr_put.c	5.16 (Berkeley) 01/24/93";
  * line numbering and the like).
  */
 
-static void	fgoto __P((void));
-static int	plod __P((int));
+static void	fgoto __P((int));
+static int	plod __P((int, int));
 static void	plodput __P((int));
 static int	tabcol __P((int, int));
+
+static int outcol, outline, destcol, destline;
 
 /*
  * Sync the position of the output cursor.  Most work here is rounding for
@@ -58,13 +60,9 @@ static int	tabcol __P((int, int));
  * the lack thereof and rolling up the screen to get destline on the screen.
  */
 
-static int outcol, outline, destcol, destline;
-
-WINDOW *_win;
-
 int
-mvcur(ly, lx, y, x)
-	int ly, lx, y, x;
+__mvcur(ly, lx, y, x, in_refresh)
+	int ly, lx, y, x, in_refresh;
 {
 #ifdef DEBUG
 	__TRACE("mvcur: moving cursor from (%d, %d) to (%d, %d)\n",
@@ -74,12 +72,13 @@ mvcur(ly, lx, y, x)
 	destline = y;
 	outcol = lx;
 	outline = ly;
-	fgoto();
+	fgoto(in_refresh);
 	return (OK);
-}
-
+}	
+        
 static void
-fgoto()
+fgoto(in_refresh)
+	int in_refresh;
 {
 	register int c, l;
 	register char *cgp;
@@ -119,7 +118,7 @@ fgoto()
 			c = destcol;
 			if (__pfast == 0 && !CA)
 				destcol = 0;
-			fgoto();
+			fgoto(in_refresh);
 			destcol = c;
 		}
 		while (l >= LINES) {
@@ -158,12 +157,12 @@ fgoto()
 		 * Need this condition due to inconsistent behavior
 		 * of backspace on the last column.
 		 */
-		if (outcol != COLS - 1 && plod(strlen(cgp)) > 0)
-			plod(0);
+		if (outcol != COLS - 1 && plod(strlen(cgp), in_refresh) > 0)
+			plod(0, in_refresh);
 		else 
 			tputs(cgp, 0, __cputchar);
 	} else
-		plod(0);
+		plod(0, in_refresh);
 	outline = destline;
 	outcol = destcol;
 }
@@ -187,8 +186,8 @@ plodput(c)
 }
 
 static int
-plod(cnt)
-	int cnt;
+plod(cnt, in_refresh)
+	int cnt, in_refresh;
 {
 	register int i, j, k, soutcol, soutline;
 
@@ -378,7 +377,7 @@ dontcr:	while (outline < destline) {
 		 * Move one char to the right.  We don't use ND space because
 		 * it's better to just print the char we are moving over.
 		 */
-		if (_win != NULL)
+		if (!in_refresh)
 			if (plodflg)	/* Avoid a complex calculation. */
 				plodcnt--;
 			else {
