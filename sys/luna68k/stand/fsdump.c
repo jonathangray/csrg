@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fsdump.c	7.2 (Berkeley) 02/09/93
+ *	@(#)fsdump.c	7.3 (Berkeley) 02/10/93
  */
 
 /*
@@ -97,6 +97,8 @@ fsdump(argc, argv)
 		    (i != 5)) {
 			pp->p_size = 0;
 		}
+		if (i == 5 && argc > 1 && !strcmp(argv[1], "tailor"))
+			pp->p_size = 0;
 	}
 
 	st_rewind(rst0);
