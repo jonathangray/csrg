@@ -2,10 +2,10 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)ss..	6.2 (Berkeley) 04/17/91
+.\"	@(#)ss..	6.3 (Berkeley) 06/05/93
 .\"
-.EH 'PS1:15-%''Yacc: Yet Another Compiler-Compiler'
-.OH 'Yacc: Yet Another Compiler-Compiler''PS1:15-%'
+.EH 'PSD:15-%''Yacc: Yet Another Compiler-Compiler'
+.OH 'Yacc: Yet Another Compiler-Compiler''PSD:15-%'
 .\".RP
 .ND "July 31, 1978"
 .TL
