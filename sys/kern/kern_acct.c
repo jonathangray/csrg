@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_acct.c	8.1 (Berkeley) 06/14/93
+ *	@(#)kern_acct.c	8.2 (Berkeley) 09/23/93
  */
 
 #include <sys/param.h>
@@ -160,7 +160,7 @@ acct_process(p)
 	else
 		ap->ac_mem = 0;
 	ap->ac_io = compress(ru->ru_inblock + ru->ru_oublock, (long)0);
-	if (p->p_flag&SCTTY && p->p_session->s_ttyp)
+	if (p->p_flag & P_CONTROLT && p->p_session->s_ttyp)
 		ap->ac_tty = p->p_session->s_ttyp->t_dev;
 	else
 		ap->ac_tty = NODEV;
