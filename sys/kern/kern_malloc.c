@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_malloc.c	7.35 (Berkeley) 10/11/92
+ *	@(#)kern_malloc.c	7.36 (Berkeley) 10/22/92
  */
 
 #include <sys/param.h>
@@ -135,6 +135,7 @@ malloc(size, type, flags)
 		tsleep((caddr_t)ksp, PSWP+2, memname[type], 0);
 		IN;
 	}
+	ksp->ks_size |= 1 << indx;
 #endif
 #ifdef DIAGNOSTIC
 	copysize = 1 << indx < MAX_COPY ? 1 << indx : MAX_COPY;
