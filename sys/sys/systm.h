@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)systm.h	8.3 (Berkeley) 01/21/94
+ *	@(#)systm.h	8.4 (Berkeley) 02/23/94
  */
 
 /*
@@ -125,8 +125,8 @@ void	printf __P((const char *, ...));
 int	sprintf __P((char *buf, const char *, ...));
 void	ttyprintf __P((struct tty *, const char *, ...));
 
-void	bcopy __P((void *from, void *to, u_int len));
-void	ovbcopy __P((void *from, void *to, u_int len));
+void	bcopy __P((const void *from, void *to, u_int len));
+void	ovbcopy __P((const void *from, void *to, u_int len));
 void	bzero __P((void *buf, u_int len));
 
 int	copystr __P((void *kfaddr, void *kdaddr, u_int len, u_int *done));
