@@ -37,7 +37,7 @@ POPDIVERT
 ###   SMTP Mailer specification   ###
 #####################################
 
-VERSIONID(`@(#)smtp.m4	6.1 (Berkeley) 12/21/92')
+VERSIONID(`@(#)smtp.m4	6.2 (Berkeley) 12/21/92')
 
 Msmtp,	P=[IPC], F=mDFMueXLC, S=11, R=21, A=IPC $h, E=\r\n
 
