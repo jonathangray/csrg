@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)doc-ditroff	5.2 (Berkeley) 03/14/91
+.\"     @(#)doc-ditroff	5.3 (Berkeley) 03/15/91
 .\"
 .\" tmac.mdoc-ditroff
 .\"     %beginstrip%
@@ -100,8 +100,8 @@
 .ds sL \(ga
 .ds q \&"
 .\"
+.nr gX 0
 .de hK
-.nr % 1
 .ds hT \\*(dT
 .if !"\\*(cH"Null" \{\
 .       ie !"\\*(gP"Null" .as hT \|(\|\\*(cH\\*(gP\|)
@@ -112,7 +112,10 @@
 .\}
 .wh 0 hM
 .wh -1.25i fM
-'bp
+.if \\n(gX==1 .bp
+.if \\n(gX==0 'bp
+.nr % 1
+.nr gX 0
 .em lM
 ..
 .\"
