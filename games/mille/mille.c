@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)mille.c	5.6 (Berkeley) 03/08/92";
+static char sccsid[] = "@(#)mille.c	5.7 (Berkeley) 01/11/93";
 #endif /* not lint */
 
 # include	"mille.h"
@@ -81,13 +81,6 @@ reg char	*av[]; {
 	}
 	Play = PLAYER;
 	initscr();
-# ifdef attron
-#	define	CA	cursor_address
-# endif
-	if (!CA) {
-		printf("Sorry.  Need cursor addressing to play mille\n");
-		exit(-1);
-	}
 	delwin(stdscr);
 	stdscr = Board = newwin(BOARD_Y, BOARD_X, 0, 0);
 	Score = newwin(SCORE_Y, SCORE_X, 0, 40);
