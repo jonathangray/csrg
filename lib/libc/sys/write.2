@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)write.2	8.1 (Berkeley) 06/04/93
+.\"     @(#)write.2	8.2 (Berkeley) 02/21/94
 .\"
 .Dd 
 .Dt WRITE 2
@@ -39,9 +39,9 @@
 .Nm writev
 .Nd write output
 .Sh SYNOPSIS
-.Fd #include <unistd.h>
 .Fd #include <sys/types.h>
 .Fd #include <sys/uio.h>
+.Fd #include <unistd.h>
 .Ft ssize_t
 .Fn write "int d" "const void *buf" "size_t nbytes"
 .Ft int
@@ -67,10 +67,11 @@ For
 the 
 .Fa iovec
 structure is defined as:
+.Pp
 .Bd -literal -offset indent -compact
 struct iovec {
 	void *iov_base;
-	int iov_len;
+	size_t iov_len;
 };
 .Ed
 .Pp
