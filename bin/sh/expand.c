@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)expand.c	5.8 (Berkeley) 07/30/92";
+static char sccsid[] = "@(#)expand.c	5.9 (Berkeley) 07/31/92";
 #endif /* not lint */
 
 /*
@@ -204,6 +204,7 @@ argstr(p, flag)
 	{
 	register char c;
 	int quotes = flag & (EXP_FULL | EXP_CASE);	/* do CTLESC */
+	int firsteq = 1;
 
 	if (*p == '~' && (flag & (EXP_TILDE | EXP_VARTILDE)))
 		p = exptilde(p, flag);
@@ -230,9 +231,21 @@ argstr(p, flag)
 			expari(flag);
 			break;
 		case ':':
+		case '=':
+			/*
+			 * sort of a hack - expand tildes in variable
+			 * assignments (after the first '=' and after ':'s).
+			 */
 			STPUTC(c, expdest);
-			if (flag & EXP_VARTILDE && *p == '~')
+			if (flag & EXP_VARTILDE && *p == '~') {
+				if (c == '=') {
+					if (firsteq)
+						firsteq = 0;
+					else
+						break;
+				}
 				p = exptilde(p, flag);
+			}
 			break;
 		default:
 			STPUTC(c, expdest);
