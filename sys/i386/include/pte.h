@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pte.h	5.4 (Berkeley) 01/18/91
+ *	@(#)pte.h	5.5 (Berkeley) 05/09/91
  */
 
 /*
@@ -130,18 +130,7 @@ unsigned int
 
 #ifndef LOCORE
 #ifdef KERNEL
-/* utilities defined in locore.s */
-extern	struct pte Sysmap[];
-extern	struct pte Usrptmap[];
-extern	struct pte usrpt[];
-extern	struct pte Swapmap[];
-extern	struct pte Forkmap[];
-extern	struct pte Xswapmap[];
-extern	struct pte Xswap2map[];
-extern	struct pte Pushmap[];
-extern	struct pte Vfmap[];
-extern	struct pte mmap[];
-extern	struct pte msgbufmap[];
-extern	struct pte kmempt[], ekmempt[];
+/* utilities defined in pmap.c */
+extern	struct pte *Sysmap;
 #endif
 #endif
