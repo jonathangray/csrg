@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)portal_vfsops.c	1.2 (Berkeley) 07/12/92
+ *	@(#)portal_vfsops.c	7.1 (Berkeley) 07/12/92
  *
  * $Id: portal_vfsops.c,v 1.5 1992/05/30 10:25:27 jsp Exp jsp $
  */
@@ -48,7 +48,6 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/proc.h>
-/*#include <sys/resourcevar.h>*/
 #include <sys/filedesc.h>
 #include <sys/file.h>
 #include <sys/vnode.h>
@@ -61,12 +60,13 @@
 #include <sys/protosw.h>
 #include <sys/domain.h>
 #include <sys/un.h>
-#include <portal/portal.h>
+#include <miscfs/portal/portal.h>
 
 static u_short portal_mntid;
 
 int portal_init()
 {
+
 #ifdef PORTAL_DIAGNOSTIC
 	printf("portal_init\n");		/* printed during system boot */
 #endif
@@ -157,6 +157,7 @@ portal_start(mp, flags, p)
 	int flags;
 	struct proc *p;
 {
+
 	return (0);
 }
 
@@ -186,7 +187,7 @@ portal_unmount(mp, mntflags, p)
 	 * ever get anything cached at this level at the
 	 * moment, but who knows...
 	 */
-#if 0
+#ifdef notyet
 #ifdef PORTAL_DIAGNOSTIC
 	printf("portal_unmount: calling mntflushbuf\n");
 #endif
@@ -238,7 +239,7 @@ portal_unmount(mp, mntflags, p)
 	 */
 	free(mp->mnt_data, M_UFSMNT);	/* XXX */
 	mp->mnt_data = 0;
-	return 0;
+	return (0);
 }
 
 portal_root(mp, vpp)
@@ -269,6 +270,7 @@ portal_quotactl(mp, cmd, uid, arg, p)
 	caddr_t arg;
 	struct proc *p;
 {
+
 	return (EOPNOTSUPP);
 }
 
@@ -308,6 +310,7 @@ portal_sync(mp, waitfor)
 	struct mount *mp;
 	int waitfor;
 {
+
 	return (0);
 }
 
@@ -325,6 +328,7 @@ portal_fhtovp(mp, fhp, vpp)
 	struct fid *fhp;
 	struct vnode **vpp;
 {
+
 	return (EOPNOTSUPP);
 }
 
@@ -332,6 +336,7 @@ portal_vptofh(vp, fhp)
 	struct vnode *vp;
 	struct fid *fhp;
 {
+
 	return (EOPNOTSUPP);
 }
 
