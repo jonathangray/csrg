@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_glue.c	8.1 (Berkeley) 07/15/93
+ *	@(#)vm_glue.c	8.2 (Berkeley) 09/05/93
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -304,7 +304,7 @@ int	swapdebug = 0;
  *	   clear some space.
  */
 void
-sched()
+scheduler()
 {
 	register struct proc *p;
 	register int pri;
