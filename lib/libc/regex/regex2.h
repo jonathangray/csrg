@@ -4,7 +4,7 @@
  *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
- * Henry Spencer of the University of Toronto.
+ * Henry Spencer.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)regex2.h	8.3 (Berkeley) 03/16/94
+ *	@(#)regex2.h	8.4 (Berkeley) 03/20/94
  */
 
 /*
