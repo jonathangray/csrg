@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)calloc.c	5.4 (Berkeley) 05/16/90";
+static char sccsid[] = "@(#)calloc.c	5.5 (Berkeley) 05/17/90";
 #endif /* LIBC_SCCS and not lint */
 
 #include <stdlib.h>
@@ -50,6 +50,7 @@ calloc(num, size)
 	return(p);
 }
 
+void
 cfree(p, num, size)
 	void *p;
 	size_t num, size;
