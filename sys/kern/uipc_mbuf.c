@@ -29,7 +29,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_mbuf.c	7.16 (Berkeley) 06/28/90
+ *	@(#)uipc_mbuf.c	7.17 (Berkeley) 07/25/90
  */
 
 #include "param.h"
@@ -488,8 +488,10 @@ m_pullup(n, len)
 		if (m == 0)
 			goto bad;
 		m->m_len = 0;
-		if (n->m_flags & M_PKTHDR)
+		if (n->m_flags & M_PKTHDR) {
 			M_COPY_PKTHDR(m, n);
+			n->m_flags &= ~M_PKTHDR;
+		}
 	}
 	space = &m->m_dat[MLEN] - (m->m_data + m->m_len);
 	do {
