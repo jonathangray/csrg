@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)lex.c	5.22 (Berkeley) 09/09/91";
+static char sccsid[] = "@(#)lex.c	5.23 (Berkeley) 09/15/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -1117,7 +1117,7 @@ gethent(sc)
 	    }
 	    np = lhsb;
 	    event = 0;
-	    while (!cmap(c, _ESC | _META | _Q | _Q1) && !any("{}:", c)) {
+	    while (!cmap(c, _ESC | _META | _Q | _Q1) && !any("${}:", c)) {
 		if (event != -1 && Isdigit(c))
 		    event = event * 10 + c - '0';
 		else
