@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hd_subr.c	7.8 (Berkeley) 12/08/92
+ *	@(#)hd_subr.c	7.9 (Berkeley) 12/08/92
  */
 
 #include <sys/param.h>
@@ -43,6 +43,7 @@
 #include <sys/mbuf.h>
 #include <sys/domain.h>
 #include <sys/socket.h>
+#include <sys/socketvar.h>
 #include <sys/protosw.h>
 #include <sys/errno.h>
 #include <sys/time.h>
@@ -53,6 +54,7 @@
 #include <netccitt/hdlc.h>
 #include <netccitt/hd_var.h>
 #include <netccitt/x25.h>
+#include <netccitt/pk_var.h>
 
 hd_init ()
 {
