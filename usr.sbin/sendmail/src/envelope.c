@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)envelope.c	8.46 (Berkeley) 11/22/94";
+static char sccsid[] = "@(#)envelope.c	8.47 (Berkeley) 11/22/94";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -154,7 +154,7 @@ dropenvelope(e)
 			failure_return = TRUE;
 			if (q->q_owner == NULL && !emptyaddr(&e->e_from))
 				(void) sendtolist(e->e_from.q_paddr, NULL,
-						  &e->e_errorqueue, e);
+						  &e->e_errorqueue, 0, e);
 		}
 		else if (bitset(QSENT, q->q_flags) &&
 		    bitnset(M_LOCALMAILER, q->q_mailer->m_flags) &&
@@ -267,7 +267,7 @@ dropenvelope(e)
 		auto ADDRESS *rlist = NULL;
 
 		e->e_flags |= EF_SENDRECEIPT;
-		(void) sendtolist(e->e_receiptto, NULLADDR, &rlist, e);
+		(void) sendtolist(e->e_receiptto, NULLADDR, &rlist, 0, e);
 		(void) returntosender("Return receipt", rlist, return_yes, e);
 	}
 	e->e_flags &= ~EF_SENDRECEIPT;
@@ -288,7 +288,7 @@ dropenvelope(e)
 	{
 		auto ADDRESS *rlist = NULL;
 
-		(void) sendtolist(PostMasterCopy, NULLADDR, &rlist, e);
+		(void) sendtolist(PostMasterCopy, NULLADDR, &rlist, 0, e);
 		(void) returntosender(e->e_message, rlist, FALSE, e);
 	}
 
