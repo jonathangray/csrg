@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1985, 1988 Regents of the University of California.
+ * Copyright (c) 1985, 1988, 1990 Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,12 +33,12 @@
 
 #ifndef lint
 char copyright[] =
-"@(#) Copyright (c) 1985, 1988 Regents of the University of California.\n\
+"@(#) Copyright (c) 1985, 1988, 1990 Regents of the University of California.\n\
  All rights reserved.\n";
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)ftpd.c	5.36	(Berkeley) 06/01/90";
+static char sccsid[] = "@(#)ftpd.c	5.37 (Berkeley) 06/27/90";
 #endif /* not lint */
 
 /*
@@ -53,6 +53,8 @@ static char sccsid[] = "@(#)ftpd.c	5.36	(Berkeley) 06/01/90";
 #include <sys/dir.h>
 
 #include <netinet/in.h>
+#include <netinet/in_systm.h>
+#include <netinet/ip.h>
 
 #define	FTP_NAMES
 #include <arpa/ftp.h>
@@ -144,7 +146,7 @@ main(argc, argv, envp)
 	char *argv[];
 	char **envp;
 {
-	int addrlen, on = 1;
+	int addrlen, on = 1, tos;
 	char *cp;
 
 	addrlen = sizeof (his_addr);
@@ -157,6 +159,11 @@ main(argc, argv, envp)
 		syslog(LOG_ERR, "getsockname (%s): %m",argv[0]);
 		exit(1);
 	}
+#ifdef IP_TOS
+	tos = IPTOS_LOWDELAY;
+	if (setsockopt(0, IPPROTO_IP, IP_TOS, (char *)&tos, sizeof(int)) < 0)
+		syslog(LOG_WARNING, "setsockopt (IP_TOS): %m");
+#endif
 	data_source.sin_port = htons(ntohs(ctrl_addr.sin_port) - 1);
 	debug = 0;
 	openlog("ftpd", LOG_PID, LOG_DAEMON);
@@ -612,6 +619,11 @@ getdatasock(mode)
 		sleep(tries);
 	}
 	(void) seteuid((uid_t)pw->pw_uid);
+#ifdef IP_TOS
+	on = IPTOS_THROUGHPUT;
+	if (setsockopt(s, IPPROTO_IP, IP_TOS, (char *)&on, sizeof(int)) < 0)
+		syslog(LOG_WARNING, "setsockopt (IP_TOS): %m");
+#endif
 	return (fdopen(s, mode));
 bad:
 	(void) seteuid((uid_t)pw->pw_uid);
@@ -627,7 +639,7 @@ dataconn(name, size, mode)
 {
 	char sizebuf[32];
 	FILE *file;
-	int retry = 0;
+	int retry = 0, tos;
 
 	file_size = size;
 	byte_count = 0;
@@ -648,6 +660,11 @@ dataconn(name, size, mode)
 		}
 		(void) close(pdata);
 		pdata = s;
+#ifdef IP_TOS
+		tos = IPTOS_LOWDELAY;
+		(void) setsockopt(s, IPPROTO_IP, IP_TOS, (char *)&tos,
+		    sizeof(int));
+#endif
 		reply(150, "Opening %s mode data connection for %s%s.",
 		     type == TYPE_A ? "ASCII" : "BINARY", name, sizebuf);
 		return(fdopen(pdata, mode));
