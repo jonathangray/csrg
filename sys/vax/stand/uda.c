@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)uda.c	7.2 (Berkeley) 02/21/87
+ *	@(#)uda.c	7.3 (Berkeley) 09/16/87
  */
 
 /*
