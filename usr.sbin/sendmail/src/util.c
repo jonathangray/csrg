@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)util.c	5.27 (Berkeley) 07/12/92";
+static char sccsid[] = "@(#)util.c	5.28 (Berkeley) 07/14/92";
 #endif /* not lint */
 
 # include <stdio.h>
@@ -394,7 +394,7 @@ fullname(pw, buf)
 	/* now fill in buf */
 	if (quoteit)
 		*bp++ = '"';
-	while (*p != '\0' && *p != ',' && *p != ';' && *p != '%')
+	for (p = gecos; *p != '\0' && *p != ',' && *p != ';' && *p != '%'; p++)
 	{
 		if (*p == '&')
 		{
@@ -402,10 +402,9 @@ fullname(pw, buf)
 			*bp = toupper(*bp);
 			while (*bp != '\0')
 				bp++;
-			p++;
 		}
 		else
-			*bp++ = *p++;
+			*bp++ = *p;
 	}
 	if (quoteit)
 		*bp++ = '"';
