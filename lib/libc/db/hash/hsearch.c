@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)hsearch.c	5.1 (Berkeley) 02/12/91";
+static char sccsid[] = "@(#)hsearch.c	5.2 (Berkeley) 02/19/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/file.h>
@@ -96,7 +96,9 @@ ACTION	action;
 	    item.data = val.data;
 	}
     }
-    return ( &item );
+    retval.key = item.key;
+    retval.data = item.data;
+    return ( &retval );
 }
 
 
