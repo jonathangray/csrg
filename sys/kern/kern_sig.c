@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sig.c	7.23 (Berkeley) 06/28/90
+ *	@(#)kern_sig.c	7.24 (Berkeley) 12/01/90
  */
 
 #include "param.h"
@@ -608,6 +608,16 @@ psignal(p, sig)
 	case SIGTSTP:
 	case SIGTTIN:
 	case SIGTTOU:
+		/*
+		 * If sending a tty stop signal to a member of an orphaned
+		 * process group, discard the signal here if the action
+		 * is default; don't stop the process below if sleeping,
+		 * and don't clear any pending SIGCONT.
+		 */
+		if (p->p_pgrp->pg_jobc == 0 && action == SIG_DFL)
+			return;
+		/* FALLTHROUGH */
+
 	case SIGSTOP:
 		p->p_sig &= ~sigmask(SIGCONT);
 		break;
