@@ -38,14 +38,25 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)column.c	5.7 (Berkeley) 02/24/91";
+static char sccsid[] = "@(#)column.c	5.8 (Berkeley) 08/26/91";
 #endif /* not lint */
 
 #include <sys/types.h>
 #include <sys/ioctl.h>
+#include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+
+void  c_columnate __P((void));
+void *emalloc __P((int));
+void  input __P((FILE *));
+void  maketbl __P((void));
+void  nomem __P((void));
+void  print __P((void));
+void  r_columnate __P((void));
+void  usage __P((void));
 
 int termwidth = 80;		/* default terminal width */
 
@@ -55,16 +66,15 @@ int maxlength;			/* longest record */
 char **list;			/* array of pointers to records */
 char *separator = "\t ";	/* field separator for table option */
 
+int
 main(argc, argv)
 	int argc;
 	char **argv;
 {
-	extern char *optarg;
-	extern int errno, optind;
 	struct winsize win;
 	FILE *fp;
 	int ch, tflag, xflag;
-	char *p, *getenv();
+	char *p;
 
 	if (ioctl(1, TIOCGWINSZ, &win) == -1 || !win.ws_col) {
 		if (p = getenv("COLUMNS"))
@@ -72,7 +82,7 @@ main(argc, argv)
 	} else
 		termwidth = win.ws_col;
 
-	xflag = 0;
+	tflag = xflag = 0;
 	while ((ch = getopt(argc, argv, "c:s:tx")) != EOF)
 		switch(ch) {
 		case 'c':
@@ -121,6 +131,7 @@ main(argc, argv)
 }
 
 #define	TAB	8
+void
 c_columnate()
 {
 	register int chcnt, col, cnt, numcols;
@@ -150,6 +161,7 @@ c_columnate()
 		putchar('\n');
 }
 
+void
 r_columnate()
 {
 	register int base, chcnt, cnt, col;
@@ -177,6 +189,7 @@ r_columnate()
 	}
 }
 
+void
 print()
 {
 	register int cnt;
@@ -192,6 +205,7 @@ typedef struct _tbl {
 } TBL;
 #define	DEFCOLS	25
 
+void
 maketbl()
 {
 	register TBL *t;
@@ -199,26 +213,26 @@ maketbl()
 	register char *p, **lp;
 	int *lens, maxcols;
 	TBL *tbl;
-	char **cols, *emalloc(), *realloc();
+	char **cols;
 
-	t = tbl = (TBL *)emalloc(entries * sizeof(TBL));
-	cols = (char **)emalloc((maxcols = DEFCOLS) * sizeof(char *));
-	lens = (int *)emalloc(maxcols * sizeof(int));
+	t = tbl = emalloc(entries * sizeof(TBL));
+	cols = emalloc((maxcols = DEFCOLS) * sizeof(char *));
+	lens = emalloc(maxcols * sizeof(int));
 	for (cnt = 0, lp = list; cnt < entries; ++cnt, ++lp, ++t) {
 		for (coloff = 0, p = *lp; cols[coloff] = strtok(p, separator);
 		    p = NULL)
 			if (++coloff == maxcols) {
-				if (!(cols = (char **)realloc((char *)cols,
-				    (u_int)maxcols + DEFCOLS * sizeof(char *))) ||
-				    !(lens = (int *)realloc((char *)lens,
+				if (!(cols = realloc(cols, (u_int)maxcols +
+				    DEFCOLS * sizeof(char *))) ||
+				    !(lens = realloc(lens,
 				    (u_int)maxcols + DEFCOLS * sizeof(int))))
 					nomem();
 				bzero((char *)lens + maxcols * sizeof(int),
 				    DEFCOLS * sizeof(int));
 				maxcols += DEFCOLS;
 			}
-		t->list = (char **)emalloc(coloff * sizeof(char *));
-		t->len = (int *)emalloc(coloff * sizeof(int));
+		t->list = emalloc(coloff * sizeof(char *));
+		t->len = emalloc(coloff * sizeof(int));
 		for (t->cols = coloff; --coloff >= 0;) {
 			t->list[coloff] = cols[coloff];
 			t->len[coloff] = strlen(cols[coloff]);
@@ -237,16 +251,17 @@ maketbl()
 #define	DEFNUM		1000
 #define	MAXLINELEN	(2048 + 1)
 
+void
 input(fp)
 	register FILE *fp;
 {
 	static int maxentry;
 	register int len;
 	register char *p;
-	char buf[MAXLINELEN], *emalloc(), *realloc();
+	char buf[MAXLINELEN];
 
 	if (!list)
-		list = (char **)emalloc((maxentry = DEFNUM) * sizeof(char *));
+		list = emalloc((maxentry = DEFNUM) * sizeof(char *));
 	while (fgets(buf, MAXLINELEN, fp)) {
 		for (p = buf; *p && isspace(*p); ++p);
 		if (!*p)
@@ -262,8 +277,7 @@ input(fp)
 			maxlength = len;
 		if (entries == maxentry) {
 			maxentry += DEFNUM;
-			if (!(list =
-			    (char **)realloc((char *)list,
+			if (!(list = realloc(list,
 			    (u_int)maxentry * sizeof(char *))))
 				nomem();
 		}
@@ -271,25 +285,26 @@ input(fp)
 	}
 }
 
-char *
+void *
 emalloc(size)
 	int size;
 {
-	char *p, *malloc();
+	char *p;
 
-	/* NOSTRICT */
-	if (!(p = malloc((u_int)size)))
+	if (!(p = malloc(size)))
 		nomem();
 	bzero(p, size);
 	return(p);
 }
 
+void
 nomem()
 {
 	(void)fprintf(stderr, "column: out of memory.\n");
 	exit(1);
 }
 
+void
 usage()
 {
 	(void)fprintf(stderr,
