@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_x25subr.c	7.13 (Berkeley) 06/06/91
+ *	@(#)if_x25subr.c	7.14 (Berkeley) 06/26/91
  */
 
 #include "param.h"
@@ -700,7 +700,7 @@ gotspi:	if (info[1])
 	for (lcp = pk_listenhead; lcp; lcp = lcp->lcd_listen)
 		if (lcp->lcd_laddr.x25_udlen == dp->spilen &&
 		    Bcmp(&dp->spi, lcp->lcd_laddr.x25_udata, dp->spilen) == 0) {
-			pk_close(lcp);
+			pk_disconnect(lcp);
 			return 0;
 		}
 	return ESRCH;
