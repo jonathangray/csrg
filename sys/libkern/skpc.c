@@ -30,10 +30,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)skpc.c	7.3 (Berkeley) 06/21/92
+ *	@(#)skpc.c	7.4 (Berkeley) 10/11/92
  */
 
-#include "libkern.h"
+#include <libkern/libkern.h>
 
 int
 skpc(mask0, size, cp0)
