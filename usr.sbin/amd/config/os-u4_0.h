@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)os-u4_0.h	5.3 (Berkeley) 05/12/91
+ *	@(#)os-u4_0.h	5.4 (Berkeley) 02/09/92
  *
- * $Id: os-u4_0.h,v 5.2.1.1 91/05/07 22:20:04 jsp Alpha $
+ * $Id: os-u4_0.h,v 5.2.2.1 1992/02/09 15:10:53 jsp beta $
  *
  * Ultrix 4.0 definitions for Amd (automounter)
  *		from Chris Lindblad <cjl@ai.mit.edu>
