@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.199 (Berkeley) 06/16/95";
+static char sccsid[] = "@(#)conf.c	8.200 (Berkeley) 06/18/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -3139,17 +3139,14 @@ sm_gethostbyname(name)
 	h = __switch_gethostbyname(name);
 # endif
 #else
-# if defined(NIS)
 	int nmaps;
 	char *maptype[MAXMAPSTACK];
 	short mapreturn[MAXMAPACTIONS];
 	char hbuf[MAXNAME];
-# endif
 
 	if (tTd(61, 10))
 		printf("gethostbyname(%s)... ", name);
 	h = gethostbyname(name);
-# if defined(NIS)
 	if (h == NULL)
 	{
 		if (tTd(61, 10))
@@ -3157,7 +3154,8 @@ sm_gethostbyname(name)
 
 		nmaps = switch_map_find("hosts", maptype, mapreturn);
 		while (--nmaps >= 0)
-			if (strcmp(maptype[nmaps], "nis") == 0)
+			if (strcmp(maptype[nmaps], "nis") == 0 ||
+			    strcmp(maptype[nmaps], "files") == 0)
 				break;
 		if (nmaps >= 0)
 		{
@@ -3176,7 +3174,6 @@ sm_gethostbyname(name)
 			}
 		}
 	}
-# endif
 #endif
 	if (tTd(61, 10))
 	{
