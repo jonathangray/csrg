@@ -1,6 +1,6 @@
 /*-
- * Copyright (c) 1982, 1986 The Regents of the University of California.
- * Copyright (c) 1989, 1990 William Jolitz
+ * Copyright (c) 1982, 1986, 1993
+ *	The Regents of the University of California.  All rights reserved.
  * All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_machdep.c	7.10 (Berkeley) 10/11/92
+ *	@(#)vm_machdep.c	8.1 (Berkeley) 06/11/93
  *	Utah $Hdr: vm_machdep.c 1.16.1.1 89/06/23$
  */
 
