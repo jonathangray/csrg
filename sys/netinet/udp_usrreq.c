@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)udp_usrreq.c	7.20 (Berkeley) 04/20/91
+ *	@(#)udp_usrreq.c	7.21 (Berkeley) 07/31/91
  */
 
 #include "param.h"
@@ -317,7 +317,11 @@ udp_output(inp, m, addr, control)
 	 * Calculate data length and get a mbuf
 	 * for UDP and IP headers.
 	 */
-	M_PREPEND(m, sizeof(struct udpiphdr), M_WAIT);
+	M_PREPEND(m, sizeof(struct udpiphdr), M_DONTWAIT);
+	if (m == 0) {
+		error = ENOBUFS;
+		goto release;
+	}
 
 	/*
 	 * Fill in mbuf with extended UDP header
