@@ -30,12 +30,12 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)Makefile	5.14 (Berkeley) 03/01/91
+#	@(#)Makefile	5.15 (Berkeley) 03/05/91
 #
 
 PROG=	telnetd
 CFLAGS+=-DLINEMODE -DKLUDGELINEMODE -DUSE_TERMIO -DDIAGNOSTICS
-CFLAGS+=-DAUTHENTICATE -DENCRYPT -I/usr/src/lib
+CFLAGS+=-DAUTHENTICATE -DENCRYPT -I${.CURDIR}/../../lib
 SRCS=	authenc.c global.c slc.c state.c sys_term.c telnetd.c \
 	termstat.c utility.c
 DPADD=	${LIBUTIL} ${LIBTERM}
