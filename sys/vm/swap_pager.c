@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)swap_pager.c	7.2 (Berkeley) 03/04/91
+ *	@(#)swap_pager.c	7.3 (Berkeley) 04/20/91
  */
 
 /*
@@ -49,7 +49,6 @@
 #if NSWAPPAGER > 0
 
 #include "param.h"
-#include "user.h"
 #include "proc.h"
 #include "buf.h"
 #include "map.h"
@@ -59,11 +58,14 @@
 #include "malloc.h"
 #include "queue.h"
 
-#include "../vm/vm_param.h"
-#include "../vm/vm_pager.h"
-#include "../vm/vm_page.h"
-#include "../vm/vm_pageout.h"
-#include "../vm/swap_pager.h"
+#include "vm_param.h"
+#include "queue.h"
+#include "lock.h"
+#include "vm_prot.h"
+#include "vm_object.h"
+#include "vm_page.h"
+#include "vm_pageout.h"
+#include "swap_pager.h"
 
 #define NSWSIZES	16	/* size of swtab */
 #define NPENDINGIO	64	/* max # of pending cleans */
@@ -92,8 +94,6 @@ struct swpagerclean {
 	vm_page_t		spc_m;
 } swcleanlist[NPENDINGIO];
 typedef	struct swpagerclean	*swp_clean_t;
-
-#define SWP_CLEAN_NULL		((swp_clean_t)0)
 
 /* spc_flags values */
 #define SPC_FREE	0x00
@@ -208,13 +208,13 @@ swap_pager_alloc(handle, size, prot)
 	 */
 	if (handle) {
 		pager = vm_pager_lookup(&swap_pager_list, handle);
-		if (pager != VM_PAGER_NULL) {
+		if (pager != NULL) {
 			/*
 			 * Use vm_object_lookup to gain a reference
 			 * to the object and also to remove from the
 			 * object cache.
 			 */
-			if (vm_object_lookup(pager) == VM_OBJECT_NULL)
+			if (vm_object_lookup(pager) == NULL)
 				panic("swap_pager_alloc: bad object");
 			return(pager);
 		}
@@ -225,8 +225,8 @@ swap_pager_alloc(handle, size, prot)
 	 */
 	waitok = handle ? M_WAITOK : M_NOWAIT;
 	pager = (vm_pager_t)malloc(sizeof *pager, M_VMPAGER, waitok);
-	if (pager == VM_PAGER_NULL)
-		return(VM_PAGER_NULL);
+	if (pager == NULL)
+		return(NULL);
 	swp = (sw_pager_t)malloc(sizeof *swp, M_VMPGDATA, waitok);
 	if (swp == NULL) {
 #ifdef DEBUG
@@ -234,7 +234,7 @@ swap_pager_alloc(handle, size, prot)
 			printf("swpg_alloc: swpager malloc failed\n");
 #endif
 		free((caddr_t)pager, M_VMPAGER);
-		return(VM_PAGER_NULL);
+		return(NULL);
 	}
 	size = round_page(size);
 	for (swt = swtab; swt->st_osize; swt++)
@@ -338,7 +338,7 @@ swap_pager_dealloc(pager)
 		thread_block();
 	}
 	splx(s);
-	(void) swap_pager_clean(VM_PAGE_NULL, B_WRITE);
+	(void) swap_pager_clean(NULL, B_WRITE);
 
 	/*
 	 * Free left over swap blocks
@@ -383,8 +383,8 @@ swap_pager_putpage(pager, m, sync)
 	if (swpagerdebug & SDB_FOLLOW)
 		printf("swpg_putpage(%x, %x, %d)\n", pager, m, sync);
 #endif
-	if (pager == VM_PAGER_NULL) {
-		(void) swap_pager_clean(VM_PAGE_NULL, B_WRITE);
+	if (pager == NULL) {
+		(void) swap_pager_clean(NULL, B_WRITE);
 		return;
 	}
 	flags = B_WRITE;
@@ -552,7 +552,7 @@ swap_pager_io(swp, m, flags)
 	bswlist.av_forw = bp->av_forw;
 	splx(s);
 	bp->b_flags = B_BUSY | (flags & B_READ);
-	bp->b_proc = &proc[0];	/* XXX (but without B_PHYS set this is ok) */
+	bp->b_proc = &proc0;	/* XXX (but without B_PHYS set this is ok) */
 	bp->b_un.b_addr = (caddr_t)kva;
 	bp->b_blkno = swb->swb_block + btodb(off);
 	VHOLD(swapdev_vp);
@@ -681,7 +681,7 @@ swap_pager_clean(m, rw)
 	if (swpagerdebug & SDB_FOLLOW)
 		printf("swpg_clean(%x, %d)\n", m, rw);
 #endif
-	tspc = SWP_CLEAN_NULL;
+	tspc = NULL;
 	for (;;) {
 		/*
 		 * Look up and removal from inuse list must be done
@@ -724,7 +724,7 @@ swap_pager_clean(m, rw)
 				printf("swpg_clean: %x done while looking\n",
 				       m);
 #endif
-			tspc = SWP_CLEAN_NULL;
+			tspc = NULL;
 		}
 		spc->spc_flags = SPC_FREE;
 		vm_pager_unmap_page(spc->spc_kva);
