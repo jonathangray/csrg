@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pccons.c	5.13 (Berkeley) 02/28/92
+ *	@(#)pccons.c	5.14 (Berkeley) 05/20/92
  */
 
 /*
@@ -237,7 +237,8 @@ pcrint(dev, irq, cpl)
 	if (kdbrintr(c, &pccons))
 		return;
 #endif
-	(*linesw[pccons.t_line].l_rint)(c&0xff, &pccons);
+	if (openf) /* 386bsd */
+		(*linesw[pccons.t_line].l_rint)(c&0xff, &pccons);
 }
 
 pcioctl(dev, cmd, data, flag, p)
