@@ -3,7 +3,7 @@
  * All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
- * Tim L. Tucker
+ * Tim L. Tucker.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_we.c	7.2 (Berkeley) 05/12/91
+ *	@(#)if_we.c	7.3 (Berkeley) 05/21/91
  */
 
 /*
