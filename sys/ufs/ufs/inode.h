@@ -35,10 +35,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)inode.h	8.7 (Berkeley) 04/27/95
+ *	@(#)inode.h	8.8 (Berkeley) 04/27/95
  */
 
 #include <ufs/ufs/dinode.h>
+#include <ufs/ufs/dir.h>
 
 /*
  * The inode is used to describe each active (or recently active) file in the
