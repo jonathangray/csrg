@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kgdb_stub.c	7.8 (Berkeley) 04/20/91
+ *	@(#)kgdb_stub.c	7.9 (Berkeley) 05/04/91
  */
 /*
  * "Stub" to allow remote cpu to debug over a serial line using gdb.
@@ -488,13 +488,13 @@ kgdb_trap(int type, struct frame *frame)
 kgdb_acc(addr, len, rw)
 	caddr_t addr;
 {
-	extern char proc0paddr[], u[];		/* XXX! */
+	extern char proc0paddr[], kstack[];	/* XXX */
 	extern char *kernel_map;		/* XXX! */
 
 	if (kernel_map != NULL)
 		return (kernacc(addr, len, rw));
 	if (addr < proc0paddr + UPAGES * NBPG  ||
-	    u <= addr && addr < u + UPAGES * NBPG)
+	    kstack <= addr && addr < kstack + UPAGES * NBPG)
 		return (1);
 	return (0);
 }
