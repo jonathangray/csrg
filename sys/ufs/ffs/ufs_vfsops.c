@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vfsops.c	7.67 (Berkeley) 04/08/93
+ *	@(#)ufs_vfsops.c	7.68 (Berkeley) 04/16/93
  */
 
 #include <sys/param.h>
@@ -232,6 +232,7 @@ ufs_free_netcred(rn, w)
 	caddr_t w;
 {
 	free((caddr_t)rn, M_NETADDR);
+	return (0);
 }
 	
 
