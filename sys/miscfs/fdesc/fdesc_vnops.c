@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fdesc_vnops.c	7.4 (Berkeley) 04/22/93
+ *	@(#)fdesc_vnops.c	7.5 (Berkeley) 04/28/93
  *
  * $Id: fdesc_vnops.c,v 1.12 1993/04/06 16:17:17 jsp Exp $
  */
@@ -84,9 +84,9 @@ fdesc_allocvp(ftype, ix, mp, vpp)
 	/* get stashed copy of the vnode */
 	if (ix >= 0 && ix < FD_MAX) {
 		nvpp = &fdescvp[ix];
-		if (*nvpp) {
+		if (*nvpp && vget(*nvpp) == 0) {
+			VOP_UNLOCK(*nvpp);
 			*vpp = *nvpp;
-			VREF(*nvpp);
 			return (error);
 		}
 	}
