@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	8.84 (Berkeley) 05/12/94";
+static char sccsid[] = "@(#)deliver.c	8.84 (Berkeley) 05/13/94";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1006,7 +1006,7 @@ deliver(e, firstto)
 		if (curhost == NULL || curhost[0] == '\0')
 		{
 			syserr("null host signature for %s", pv[1]);
-			rcode = EX_OSERR;
+			rcode = EX_CONFIG;
 			goto give_up;
 		}
 
