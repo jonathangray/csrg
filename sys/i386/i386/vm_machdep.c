@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_machdep.c	7.3 (Berkeley) 05/13/91
+ *	@(#)vm_machdep.c	7.3 (Berkeley) 5/13/91
  */
 
 /*
@@ -69,6 +69,7 @@ cpu_fork(p1, p2)
 	register struct user *up = p2->p_addr;
 	int foo, offset, addr, i;
 	extern char kstack[];
+	extern int mvesp();
 
 	/*
 	 * Copy pcb and stack from proc p1 to p2. 
@@ -82,7 +83,7 @@ cpu_fork(p1, p2)
 	 * replacing the bcopy and savectx.
 	 */
 	p2->p_addr->u_pcb = p1->p_addr->u_pcb;
-	offset = (caddr_t)&foo - kstack;
+	offset = mvesp() - (int)kstack;
 	bcopy((caddr_t)kstack + offset, (caddr_t)p2->p_addr + offset,
 	    (unsigned) ctob(UPAGES) - offset);
 	p2->p_regs = p1->p_regs;
@@ -92,12 +93,11 @@ cpu_fork(p1, p2)
 	 * First, fault in a page of pte's to map it.
 	 */
         addr = trunc_page((u_int)vtopte(kstack));
-	(void)vm_fault(&p2->p_vmspace->vm_map,
-		trunc_page((u_int)vtopte(kstack)), VM_PROT_READ, FALSE);
+	(void)vm_map_pageable(&p2->p_vmspace->vm_map, addr, addr+NBPG, FALSE);
 	for (i=0; i < UPAGES; i++)
 		pmap_enter(&p2->p_vmspace->vm_pmap, kstack+i*NBPG,
-			pmap_extract(kernel_pmap, ((int)p2->p_addr)+i*NBPG), VM_PROT_READ, 1);
-
+			pmap_extract(kernel_pmap, ((int)p2->p_addr)+i*NBPG),
+			VM_PROT_READ, 1);
 	pmap_activate(&p2->p_vmspace->vm_pmap, &up->u_pcb);
 
 	/*
