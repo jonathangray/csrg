@@ -34,11 +34,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)regcomp.c	5.4 (Berkeley) 10/01/92
+ *	@(#)regcomp.c	5.5 (Berkeley) 10/23/92
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)regcomp.c	5.4 (Berkeley) 10/01/92";
+static char sccsid[] = "@(#)regcomp.c	5.5 (Berkeley) 10/23/92";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -607,6 +607,8 @@ register struct parse *p;
 		invert++;	/* make note to invert set at end */
 	if (EAT(']'))
 		CHadd(cs, ']');
+	else if (EAT('-'))
+		CHadd(cs, '-');
 	while ((c = PEEK()) != '\0' && c != ']' && !SEETWO('-', ']'))
 		p_b_term(p, cs);
 	if (EAT('-'))
