@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)mci.c	8.7 (Berkeley) 11/08/93";
+static char sccsid[] = "@(#)mci.c	8.8 (Berkeley) 12/01/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -369,6 +369,9 @@ mci_dump_all(logit)
 	bool logit;
 {
 	register int i;
+
+	if (MciCache == NULL)
+		return;
 
 	for (i = 0; i < MaxMciCache; i++)
 		mci_dump(MciCache[i], logit);
