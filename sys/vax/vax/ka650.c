@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ka650.c	7.6 (Berkeley) 06/28/90
+ *	@(#)ka650.c	7.7 (Berkeley) 12/16/90
  */
 
 #if VAX650
@@ -42,16 +42,16 @@
  * vax650-specific code.
  */
 
-#include "param.h"
-#include "time.h"
-#include "kernel.h"
-#include "systm.h"
+#include "sys/param.h"
+#include "sys/time.h"
+#include "sys/kernel.h"
+#include "sys/systm.h"
 
-#include "cpu.h"
-#include "clock.h"
-#include "psl.h"
+#include "../include/cpu.h"
+#include "../include/clock.h"
+#include "../include/psl.h"
 #include "mem.h"
-#include "mtpr.h"
+#include "../include/mtpr.h"
 #include "ka650.h"
 
 
