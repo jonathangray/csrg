@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_inode.c	7.47 (Berkeley) 03/26/92
+ *	@(#)ffs_inode.c	7.47 (Berkeley) 04/21/92
  */
 
 #include <sys/param.h>
@@ -231,7 +231,7 @@ ffs_update(vp, ta, tm, waitfor)
  */
 ffs_truncate(ovp, length, flags)
 	register struct vnode *ovp;
-	u_long length;
+	off_t length;
 	int flags;
 {
 	register daddr_t lastblock;
@@ -240,13 +240,14 @@ ffs_truncate(ovp, length, flags)
 	register struct fs *fs;
 	register struct inode *ip;
 	struct buf *bp;
-	int offset, osize, size, level;
+	int offset, size, level;
 	long count, nblocks, blocksreleased = 0;
 	register int i;
 	int aflags, error, allerror;
 	struct inode tip;
+	off_t osize;
 
-	vnode_pager_setsize(ovp, length);
+	vnode_pager_setsize(ovp, (u_long)length);
 	oip = VTOI(ovp);
 	if (oip->i_size <= length) {
 		oip->i_flag |= ICHG|IUPD;
@@ -330,7 +331,7 @@ ffs_truncate(ovp, length, flags)
 			blocksreleased += count;
 			if (lastiblock[level] < 0) {
 				ip->i_ib[level] = 0;
-				ffs_blkfree(ip, bn, (off_t)fs->fs_bsize);
+				ffs_blkfree(ip, bn, fs->fs_bsize);
 				blocksreleased += nblocks;
 			}
 		}
@@ -342,13 +343,13 @@ ffs_truncate(ovp, length, flags)
 	 * All whole direct blocks or frags.
 	 */
 	for (i = NDADDR - 1; i > lastblock; i--) {
-		register off_t bsize;
+		register long bsize;
 
 		bn = ip->i_db[i];
 		if (bn == 0)
 			continue;
 		ip->i_db[i] = 0;
-		bsize = (off_t)blksize(fs, ip, i);
+		bsize = blksize(fs, ip, i);
 		ffs_blkfree(ip, bn, bsize);
 		blocksreleased += btodb(bsize);
 	}
@@ -361,7 +362,7 @@ ffs_truncate(ovp, length, flags)
 	 */
 	bn = ip->i_db[lastblock];
 	if (bn != 0) {
-		off_t oldspace, newspace;
+		long oldspace, newspace;
 
 		/*
 		 * Calculate amount of space we're giving
@@ -481,7 +482,7 @@ ffs_indirtrunc(ip, bn, lastbn, level, countp)
 				allerror = error;
 			blocksreleased += blkcount;
 		}
-		ffs_blkfree(ip, nb, (off_t)fs->fs_bsize);
+		ffs_blkfree(ip, nb, fs->fs_bsize);
 		blocksreleased += nblocks;
 	}
 
