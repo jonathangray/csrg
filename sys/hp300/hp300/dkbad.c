@@ -30,13 +30,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dkbad.c	7.2 (Berkeley) 12/16/90
+ *	@(#)dkbad.c	7.3 (Berkeley) 10/11/92
  */
 
 #ifndef NOBADSECT
-#include "sys/param.h"
-#include "sys/buf.h"
-#include "sys/dkbad.h"
+#include <sys/param.h>
+#include <sys/buf.h>
+#include <sys/dkbad.h>
 
 /*
  * Search the bad sector table looking for
