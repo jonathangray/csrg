@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_subr.c	7.27 (Berkeley) 05/24/93
+ *	@(#)tcp_subr.c	7.28 (Berkeley) 06/04/93
  */
 
 #include <sys/param.h>
@@ -69,6 +69,7 @@ extern	struct inpcb *tcp_last_inpcb;
 /*
  * Tcp initialization
  */
+void
 tcp_init()
 {
 
@@ -133,6 +134,7 @@ tcp_template(tp)
  * In any case the ack and sequence number of the transmitted
  * segment are as specified by the parameters.
  */
+void
 tcp_respond(tp, ti, m, ack, seq, flags)
 	struct tcpcb *tp;
 	register struct tcpiphdr *ti;
@@ -193,7 +195,7 @@ tcp_respond(tp, ti, m, ack, seq, flags)
 	ti->ti_sum = in_cksum(m, tlen);
 	((struct ip *)ti)->ip_len = tlen;
 	((struct ip *)ti)->ip_ttl = ip_defttl;
-	(void) ip_output(m, (struct mbuf *)0, ro, 0);
+	(void) ip_output(m, NULL, ro, 0, NULL);
 }
 
 /*
@@ -363,6 +365,7 @@ tcp_close(tp)
 	return ((struct tcpcb *)0);
 }
 
+void
 tcp_drain()
 {
 
@@ -373,6 +376,7 @@ tcp_drain()
  * store error as soft error, but wake up user
  * (for now, won't do anything until can select for soft error).
  */
+void
 tcp_notify(inp, error)
 	struct inpcb *inp;
 	int error;
@@ -401,6 +405,7 @@ tcp_notify(inp, error)
 	sowwakeup(so);
 }
 
+void
 tcp_ctlinput(cmd, sa, ip)
 	int cmd;
 	struct sockaddr *sa;
@@ -409,7 +414,7 @@ tcp_ctlinput(cmd, sa, ip)
 	register struct tcphdr *th;
 	extern struct in_addr zeroin_addr;
 	extern u_char inetctlerrmap[];
-	int (*notify)() = tcp_notify, tcp_quench();
+	void (*notify) __P((struct inpcb *, int)) = tcp_notify;
 
 	if (cmd == PRC_QUENCH)
 		notify = tcp_quench;
@@ -437,8 +442,10 @@ tcp_abort(inp)
  * When a source quench is received, close congestion window
  * to one segment.  We will gradually open it again as we proceed.
  */
-tcp_quench(inp)
+void
+tcp_quench(inp, errno)
 	struct inpcb *inp;
+	int errno;
 {
 	struct tcpcb *tp = intotcpcb(inp);
 
