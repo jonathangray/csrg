@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)0.t	6.5 (Berkeley) 07/12/93
+.\"	@(#)0.t	6.6 (Berkeley) 07/15/93
 .\"
 .ds Ux \s-1UNIX\s0
 .ds Bs \s-1BSD\s0
@@ -73,8 +73,6 @@ Marshall Kirk McKusick
 .AU
 Keith Bostic
 .AU
-Mike Hibler
-.AU
 Michael J. Karels
 .AU
 Samuel J. Leffler
@@ -84,9 +82,14 @@ Department of Electrical Engineering and Computer Science
 University of California, Berkeley
 Berkeley, California  94720
 (415) 642-7780
-.de IR
-\\fI\\$1\|\\fP\\$2
-..
+.AU
+Mike Hibler
+.AI
+Center for Software Science
+Department of Computer Science
+University of Utah
+Salt Lake City, Utah  84112
+(801) 581-5017
 .AB
 .PP
 This document contains instructions for the
