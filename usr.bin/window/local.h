@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)local.h	3.11 (Berkeley) 06/06/90
+ *	@(#)local.h	3.12 (Berkeley) 08/16/92
  */
 
 /*
@@ -43,3 +43,9 @@
 #define RUNCOM		".windowrc"
 #define ESCAPEC		ctrl('p')
 #define NLINE		48			/* default text buffer size */
+
+#ifdef TERMINFO
+#define _PATH_CAPTOINFO	"/usr/5bin/captoinfo"
+#define _PATH_TIC	"/usr/5bin/tic"
+#define _PATH_RM	"/bin/rm"
+#endif
