@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)f77.ms	8.1 (Berkeley) 08/14/93
+.\"	@(#)f77.ms	8.2 (Berkeley) 04/20/94
 .\"
 .rm CM
 .hw name-list
