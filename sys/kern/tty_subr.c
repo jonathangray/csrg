@@ -1,12 +1,12 @@
 /*-
- * Copyright (c) 1982, 1986 The Regents of the University of California.
+ * Copyright (c) 1982, 1986, 1993 The Regents of the University of California.
  * All rights reserved.
  *
  * This module is believed to contain source code proprietary to AT&T.
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)tty_subr.c	7.12 (Berkeley) 05/24/93
+ *	@(#)tty_subr.c	7.13 (Berkeley) 06/04/93
  */
 
 #include <sys/param.h>
@@ -18,6 +18,8 @@
 #include <sys/clist.h>
 
 char	cwaiting;
+struct	cblock *cfree, *cfreelist;
+int	cfreecount, nclist;
 
 #define setquote(cp) \
 	setbit(((char *)((int)(cp)&~CROUND)+sizeof(struct cblock *)), \
