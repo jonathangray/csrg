@@ -1,14 +1,20 @@
-/*
- * Copyright (c) 1980 Regents of the University of California.
- * All rights reserved.  The Berkeley software License Agreement
- * specifies the terms and conditions for redistribution.
+/*-
+ * Copyright (c) 1980 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
  */
 
 #ifndef lint
-static char *sccsid = "@(#)printf.c	7.4 (Berkeley) 03/09/87";
+static char sccsid[] = "@(#)printf.c	7.5 (Berkeley) 04/17/91";
+#endif /* not lint */
+
+#ifndef lint
 /* The pwb version this is based on */
 static char *printf_id = "@(#) printf.c:2.2 6/5/79";
-#endif not lint
+#endif /* not lint */
 
 #include <varargs.h>
  
