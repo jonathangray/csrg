@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode.h	7.54 (Berkeley) 06/19/92
+ *	@(#)vnode.h	7.55 (Berkeley) 06/23/92
  */
 
 #ifndef KERNEL
@@ -104,6 +104,7 @@ struct vnode {
 #define	VXWANT		0x0200	/* process is waiting for vnode */
 #define	VBWAIT		0x0400	/* waiting for output to complete */
 #define	VALIASED	0x0800	/* vnode has an alias */
+#define	VDIROP		0x1000	/* LFS: vnode is involved in a directory op */
 
 /*
  * Vnode attributes.  A field value of VNOVAL represents a field whose value
