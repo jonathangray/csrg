@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)mount_lfs.8	8.1 (Berkeley) 06/08/93
+.\"	@(#)mount_lfs.8	8.2 (Berkeley) 12/11/93
 .\"
 .Dd ""
 .Dt MOUNT_LFS 8
@@ -46,7 +46,7 @@
 .Sh DESCRIPTION
 The
 .Nm mount_lfs
-command attaches the log-structed file system
+command attaches the log-structured file system
 residing on the device named by
 .Ar device
 to the global file system namespace.
@@ -82,5 +82,5 @@ mainly for debugging this doesn't make much
 of a difference in normal operation.
 .Sh HISTORY
 The
-.Nm sysconf
+.Nm mount_lfs
 function first appeared in 4.4BSD.
