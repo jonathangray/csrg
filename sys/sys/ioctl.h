@@ -1,30 +1,50 @@
-/*
- * Copyright (c) 1982, 1986 Regents of the University of California.
- * All rights reserved.  The Berkeley software License Agreement
- * specifies the terms and conditions for redistribution.
+/*-
+ * Copyright (c) 1982, 1986, 1990 The Regents of the University of California.
+ * All rights reserved.
  *
- *	@(#)ioctl.h	7.13 (Berkeley) 02/05/91
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ *
+ *	@(#)ioctl.h	7.14 (Berkeley) 02/15/91
  */
 
-/*
- * Ioctl definitions
- */
 #ifndef	_IOCTL_H_
 #define	_IOCTL_H_
 
 /*
- * Window/terminal size structure.
- * This information is stored by the kernel
- * in order to provide a consistent interface,
- * but is not used by the kernel.
- *
- * Type must be "unsigned short" so that types.h not required.
+ * Window/terminal size structure.  This information is stored by the kernel
+ * in order to provide a consistent interface, but is not used by the kernel.
  */
 struct winsize {
-	unsigned short	ws_row;			/* rows, in characters */
-	unsigned short	ws_col;			/* columns, in characters */
-	unsigned short	ws_xpixel;		/* horizontal size, pixels */
-	unsigned short	ws_ypixel;		/* vertical size, pixels */
+	unsigned short	ws_row;		/* rows, in characters */
+	unsigned short	ws_col;		/* columns, in characters */
+	unsigned short	ws_xpixel;	/* horizontal size, pixels */
+	unsigned short	ws_ypixel;	/* vertical size, pixels */
 };
 
 /*
@@ -41,10 +61,9 @@ struct ttysize {
 
 #ifndef _IO
 /*
- * Ioctl's have the command encoded in the lower word,
- * and the size of any in or out parameters in the upper
- * word.  The high 3 bits of the upper word are used
- * to encode the in/out status of the parameter.
+ * Ioctl's have the command encoded in the lower word, and the size of
+ * any in or out parameters in the upper word.  The high 3 bits of the
+ * upper word are used to encode the in/out status of the parameter.
  */
 #define	IOCPARM_MASK	0x1fff		/* parameter length, at most 13 bits */
 #define	IOCPARM_LEN(x)	(((x) >> 16) & IOCPARM_MASK)
@@ -68,11 +87,6 @@ struct ttysize {
 #define	_IOWX(x,y,s)	(IOC_IN|(((s)&IOCPARM_MASK)<<16)|(x<<8)|(y))
 #endif
 
-
-/*
- * tty ioctl commands
- */
-						/* 0-2 compat */
 #define	TIOCMODG	_IOR('t', 3, int)	/* get modem control state */
 #define	TIOCMODS	_IOW('t', 4, int)	/* set modem control state */
 #define		TIOCM_LE	0001		/* line enable */
