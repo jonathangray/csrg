@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)redir.h	5.1 (Berkeley) 03/07/91
+ *	@(#)redir.h	5.2 (Berkeley) 05/24/93
  */
 
 /* flags passed to redirect */
@@ -46,9 +46,11 @@ void redirect(union node *, int);
 void popredir(void);
 void clearredir(void);
 int copyfd(int, int);
+int fd0_redirected_p(void);
 #else
 void redirect();
 void popredir();
 void clearredir();
 int copyfd();
+int fd0_redirected_p();
 #endif
