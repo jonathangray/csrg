@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_socket.c	7.38 (Berkeley) 02/27/93
+ *	@(#)uipc_socket.c	7.39 (Berkeley) 03/06/93
  */
 
 #include <sys/param.h>
@@ -703,8 +703,11 @@ restart:
 					so->so_state |= SS_RCVATMARK;
 					break;
 				}
-			} else
+			} else {
 				offset += len;
+				if (offset == so->so_oobmark)
+					break;
+			}
 		}
 		if (m == 0 && record_eor) {
 			flags |= record_eor;
