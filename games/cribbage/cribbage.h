@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cribbage.h	5.4 (Berkeley) 06/01/90
+ *	@(#)cribbage.h	5.5 (Berkeley) 02/03/93
  */
 
 extern  CARD		deck[ CARDS ];		/* a deck */
@@ -59,3 +59,10 @@ extern	BOOLEAN		playing;		/* currently playing game */
 
 extern  char		expl[];			/* string for explanation */
 
+#if __STDC__
+void	msg(const char *fmt, ...);
+void	addmsg(const char *fmt, ...);
+#else
+void	msg();
+void	addmsg();
+#endif
