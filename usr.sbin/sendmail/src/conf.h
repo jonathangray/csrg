@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.49 (Berkeley) 11/13/93
+ *	@(#)conf.h	8.50 (Berkeley) 11/14/93
  */
 
 /*
@@ -176,6 +176,10 @@
 # define HASSETREUID	1	/* has setreuid(2) call */
 # define HASINITGROUPS	1	/* has initgroups(3) call */
 # define HASUNAME	1	/* use System V uname(2) system call */
+
+# ifdef SOLARIS_2_3
+#  define SOLARIS
+# endif
 
 # ifdef SOLARIS
 			/* Solaris 2.x (a.k.a. SunOS 5.x) */
