@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_malloc.c	7.19 (Berkeley) 07/27/90
+ *	@(#)kern_malloc.c	7.20 (Berkeley) 08/29/90
  */
 
 #include "param.h"
@@ -47,6 +47,7 @@
 struct kmembuckets bucket[MINBUCKET + 16];
 struct kmemstats kmemstats[M_LAST];
 struct kmemusage *kmemusage;
+char *memname[] = INITKMEMNAMES;
 long wantkmemmap;
 long malloc_reentered;
 #define IN { if (malloc_reentered) panic("malloc reentered");\
@@ -88,7 +89,7 @@ again:
 		if (ksp->ks_limblocks < 65535)
 			ksp->ks_limblocks++;
 		OUT;
-		sleep((caddr_t)ksp, PSWP+2);
+		tsleep((caddr_t)ksp, PSWP+2, memname[type], 0);
 		IN;
 	}
 #endif
@@ -116,7 +117,7 @@ again:
 #endif
 			wantkmemmap++;
 			OUT;
-			sleep((caddr_t)&wantkmemmap, PSWP+2);
+			tsleep((caddr_t)&wantkmemmap, PSWP+2, memname[type], 0);
 			IN;
 			goto again;
 		}
