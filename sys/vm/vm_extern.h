@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_extern.h	8.1 (Berkeley) 06/11/93
+ *	@(#)vm_extern.h	8.2 (Berkeley) 01/12/94
  */
 
 struct buf;
@@ -109,13 +109,8 @@ void		 vm_init_limits __P((struct proc *));
 void		 vm_mem_init __P((void));
 int		 vm_mmap __P((vm_map_t, vm_offset_t *, vm_size_t,
 		    vm_prot_t, vm_prot_t, int, caddr_t, vm_offset_t));
-vm_offset_t	 vm_move __P((vm_map_t,
-		    vm_offset_t, vm_map_t, vm_offset_t, boolean_t));
 int		 vm_protect __P((vm_map_t,
 		    vm_offset_t, vm_size_t, boolean_t, vm_prot_t));
-int		 vm_region __P((vm_map_t, vm_offset_t *, vm_size_t *,
-		    vm_prot_t *, vm_prot_t *, vm_inherit_t *, boolean_t *,
-		    vm_object_t *, vm_offset_t *));
 void		 vm_set_page_size __P((void));
 void		 vmmeter __P((void));
 struct vmspace	*vmspace_alloc __P((vm_offset_t, vm_offset_t, int));
