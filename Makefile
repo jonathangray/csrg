@@ -3,7 +3,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	4.15	(Berkeley)	05/13/87
+#	@(#)Makefile	4.16	(Berkeley)	07/27/87
 #
 # This makefile is designed to be run in one of three ways:
 #
