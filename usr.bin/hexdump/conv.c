@@ -32,13 +32,16 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conv.c	5.4 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)conv.c	5.5 (Berkeley) 07/14/92";
 #endif /* not lint */
 
 #include <sys/types.h>
+
+#include <stdio.h>
 #include <ctype.h>
 #include "hexdump.h"
 
+void
 conv_c(pr, p)
 	PR *pr;
 	u_char *p;
@@ -89,6 +92,7 @@ strpr:		*pr->cchar = 's';
 	}
 }
 
+void
 conv_u(pr, p)
 	PR *pr;
 	u_char *p;
@@ -111,7 +115,7 @@ conv_u(pr, p)
 	} else if (*p == 0x7f) {
 		*pr->cchar = 's';
 		(void)printf(pr->fmt, "del");
-	} else if (deprecated && *p == 0x20) {	/* od replace space with sp */
+	} else if (deprecated && *p == 0x20) {	/* od replaced space with sp */
 		*pr->cchar = 's';
 		(void)printf(pr->fmt, " sp");
 	} else if (isprint(*p)) {
