@@ -34,7 +34,7 @@ divert(-1)
 #
 divert(0)
 
-VERSIONID(`@(#)proto.m4	6.39 (Berkeley) 05/21/93')
+VERSIONID(`@(#)proto.m4	6.40 (Berkeley) 05/24/93')
 
 MAILER(local)dnl
 
@@ -406,8 +406,10 @@ R$* @ $*		$@ $>6 $1 < @ $2 >		Insert < > and finish
 S6
 
 # handle special cases for local names
-R$* < @ $=w > $*		$: $1 < @ $j . > $3		no domain at all
-R$* < @ $=w . UUCP > $*		$: $1 < @ $j . > $3		.UUCP domain
+R$* < @ localhost > $*		$: $1 < @ $j . > $2		no domain at all
+R$* < @ localhost . $m > $*	$: $1 < @ $j . > $2		local domain
+ifdef(`_NO_UUCP_', `dnl',
+`R$* < @ localhost . UUCP > $*	$: $1 < @ $j . > $2		.UUCP domain')
 undivert(2)dnl
 
 ifdef(`_NO_UUCP_', `dnl',
@@ -436,9 +438,6 @@ ifdef(`_NO_CANONIFY_', `dnl',
 `# pass to name server to make hostname canonical
 R$* < @ $* $~P > $*		$: $1 < @ $[ $2 $3 $] > $4
 ')
-# handle possible alternate names
-R$* < @ $=w . $m . > $*		$: $1 < @ $j . > $3
-R$* < @ $=w . $m > $*		$: $1 < @ $j . > $3
 undivert(8)dnl
 
 # if this is the local hostname, make sure we treat is as canonical
