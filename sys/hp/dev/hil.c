@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: hil.c 1.38 92/01/21$
  *
- *	@(#)hil.c	7.12 (Berkeley) 06/05/92
+ *	@(#)hil.c	7.13 (Berkeley) 07/12/92
  */
 
 #include "sys/param.h"
