@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)terminal.c	5.1 (Berkeley) 09/14/90";
+static char sccsid[] = "@(#)terminal.c	5.2 (Berkeley) 03/01/91";
 #endif /* not lint */
 
 #include <arpa/telnet.h>
@@ -43,8 +43,8 @@ static char sccsid[] = "@(#)terminal.c	5.1 (Berkeley) 09/14/90";
 #include "externs.h"
 #include "types.h"
 
-Ring	ttyoring, ttyiring;
-char	ttyobuf[2*BUFSIZ], ttyibuf[BUFSIZ];
+Ring		ttyoring, ttyiring;
+unsigned char	ttyobuf[2*BUFSIZ], ttyibuf[BUFSIZ];
 
 int termdata;			/* Debugging flag */
 
@@ -88,6 +88,7 @@ cc_t termAytChar;
  * initialize the terminal data structures.
  */
 
+    void
 init_terminal()
 {
     if (ring_init(&ttyoring, ttyobuf, sizeof ttyobuf) != 1) {
@@ -111,9 +112,9 @@ init_terminal()
  */
 
 
-int
+    int
 ttyflush(drop)
-int drop;
+    int drop;
 {
     register int n, n0, n1;
 
@@ -160,7 +161,7 @@ int drop;
  */
 
 
-int
+    int
 getconnmode()
 {
     extern int linemode;
@@ -200,14 +201,38 @@ getconnmode()
     return(mode);
 }
 
-void
+    void
 setconnmode(force)
+    int force;
 {
-    TerminalNewMode(getconnmode()|(force?MODE_FORCE:0));
+#ifdef	ENCRYPT
+    static int enc_passwd = 0;
+#endif
+    register int newmode;
+
+    newmode = getconnmode()|(force?MODE_FORCE:0);
+
+    TerminalNewMode(newmode);
+
+#ifdef  ENCRYPT
+    if ((newmode & (MODE_ECHO|MODE_EDIT)) == MODE_EDIT) {
+	if (my_want_state_is_will(TELOPT_ENCRYPT)
+				&& (enc_passwd == 0) && !encrypt_output) {
+	    encrypt_request_start();
+	    enc_passwd = 1;
+	}
+    } else {
+	if (enc_passwd) {
+	    encrypt_request_end();
+	    enc_passwd = 0;
+	}
+    }
+#endif
+
 }
 
 
-void
+    void
 setcommandmode()
 {
     TerminalNewMode(-1);
