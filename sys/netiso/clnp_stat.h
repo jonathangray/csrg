@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)clnp_stat.h	7.4 (Berkeley) 05/06/91
+ *	@(#)clnp_stat.h	7.5 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -97,7 +97,7 @@ struct clnp_stat {
 
 #ifdef INCSTAT
 #undef INCSTAT
-#endif INCSTAT
+#endif /* INCSTAT */
 #define INCSTAT(x) clnp_stat./**/x/**/++
 
-#endif __CLNP_STAT__
+#endif /* __CLNP_STAT__ */
