@@ -30,15 +30,15 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nhpib.c	7.1 (Berkeley) 05/08/90
+ *	@(#)nhpib.c	7.2 (Berkeley) 12/16/90
  */
 
 /*
  * Internal/98624 HPIB driver
  */
 
-#include "param.h"
-#include "../hpdev/nhpibreg.h"
+#include "sys/param.h"
+#include "../dev/nhpibreg.h"
 #include "hpibvar.h"
 
 nhpibinit(unit)
