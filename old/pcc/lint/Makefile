@@ -1,5 +1,5 @@
 #
-#	@(#)Makefile	1.16	(Berkeley)	04/22/87
+#	@(#)Makefile	1.17	(Berkeley)	05/31/87
 #
 M=/usr/src/lib/mip
 #ifdef vax
