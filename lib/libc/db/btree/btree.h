@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)btree.h	5.6 (Berkeley) 12/16/91
+ *	@(#)btree.h	5.7 (Berkeley) 06/23/92
  */
 
 #include <mpool.h>
@@ -306,6 +306,7 @@ typedef struct BTREE {
 	caddr_t	bt_smap;		/* R: start of mapped space */
 	caddr_t bt_emap;		/* R: end of mapped space */
 	size_t	bt_reclen;		/* R: fixed record length */
+	int	bt_reof;		/* R: end of input file reached. */
 	u_char	bt_bval;		/* R: delimiting byte/pad character */
 
 #define	BTF_DELCRSR	0x001		/* cursor has been deleted */
