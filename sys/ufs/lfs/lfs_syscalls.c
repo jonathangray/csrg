@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_syscalls.c	7.5 (Berkeley) 12/31/91
+ *	@(#)lfs_syscalls.c	7.6 (Berkeley) 12/31/91
  */
 
 #include <sys/param.h>
@@ -256,7 +256,7 @@ lfs_segclean(p, uap, retval)
 
 	LFS_SEGENTRY(sup, fs, uap->segment, bp);
 	sup->su_flags &= ~SEGUSE_DIRTY;
-	sup->su_nbytes = sup->su_flags & SEGUSE_SUPERBLOCK ? LFS_SBPAD : 0;
+	sup->su_nbytes = 0;
 	LFS_UBWRITE(bp);
 
 	LFS_CLEANERINFO(cip, fs, bp);
