@@ -31,6 +31,10 @@
  * SUCH DAMAGE.
  */
 
+#ifndef lint
+static char sccsid[] = "@(#)md-nop.c	5.3 (Berkeley) 06/29/92";
+#endif /* not lint */
+
 #include <sys/param.h>
 #include <sys/kinfo.h>
 #include <sys/kinfo_proc.h>
