@@ -29,10 +29,8 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)od.1	5.6 (Berkeley) 03/14/91
+.\"	@(#)od.1	5.7 (Berkeley) 07/22/91
 .\"
-.Vx
-.Vx
 .Dd %Q
 .Os
 .Dt OD 1
@@ -42,13 +40,13 @@
 .Sh SYNOPSIS
 .Nm od
 .Op Fl aBbcDdeFfHhIiLlOovXx
-.Cx [
-.Op Sy \&+
+.Sm off
+.Oo
+.Op Cm \&+
 .Li offset
-.Op Sy \&.
-.Op Sy Bb
-.Cx ]
-.Cx
+.Op Cm \&.
+.Op Cm Bb
+.Oc
 .Ar file
 .Sh DESCRIPTION
 .Nm Od
@@ -63,7 +61,7 @@ provides compatibility for the options listed above.
 It does not provide compatibility for the
 .Fl s
 option (see
-.Xr strings 1)
+.Xr strings 1 )
 or the
 .Fl P ,
 .Fl p ,
