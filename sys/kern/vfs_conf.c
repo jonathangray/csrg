@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_conf.c	7.10 (Berkeley) 06/03/92
+ *	@(#)vfs_conf.c	7.11 (Berkeley) 06/06/92
  */
 
 #include <sys/param.h>
@@ -242,6 +242,9 @@ extern struct vnodeopv_desc spec_vnodeop_opv_desc;
 extern struct vnodeopv_desc nfsv2_vnodeop_opv_desc;
 extern struct vnodeopv_desc spec_nfsv2nodeop_opv_desc;
 extern struct vnodeopv_desc fifo_nfsv2nodeop_opv_desc;
+extern struct vnodeopv_desc lofs_vnodeop_opv_desc;
+extern struct vnodeopv_desc fdesc_vnodeop_opv_desc;
+extern struct vnodeopv_desc portal_vnodeop_opv_desc;
 
 struct vnodeopv_desc *vfs_opv_descs[] = {
 	&ffs_vnodeop_opv_desc,
@@ -262,6 +265,15 @@ struct vnodeopv_desc *vfs_opv_descs[] = {
 	&nfsv2_vnodeop_opv_desc,
 	&spec_nfsv2nodeop_opv_desc,
 	&fifo_nfsv2nodeop_opv_desc,
+#endif
+#ifdef LOFS
+	&lofs_vnodeop_opv_desc,
+#endif
+#ifdef FDESC
+	&fdesc_vnodeop_opv_desc,
+#endif
+#ifdef PORTAL
+	&portal_vnodeop_opv_desc,
 #endif
 	NULL
 };
