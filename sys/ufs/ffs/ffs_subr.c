@@ -49,11 +49,12 @@
  * remaining space in the directory.
  */
 int
-ffs_blkatoff(vp, offset, res, bpp)
-	struct vnode *vp;
-	off_t offset;
-	char **res;
-	struct buf **bpp;
+ffs_blkatoff (ap)
+	struct vop_blkatoff_args *ap;
+#define vp (ap->a_vp)
+#define offset (ap->a_offset)
+#define res (ap->a_res)
+#define bpp (ap->a_bpp)
 {
 	struct inode *ip;
 	register struct fs *fs;
@@ -76,6 +77,10 @@ ffs_blkatoff(vp, offset, res, bpp)
 	*bpp = bp;
 	return (0);
 }
+#undef vp
+#undef offset
+#undef res
+#undef bpp
 #endif
 
 /*
@@ -119,6 +124,7 @@ ffs_checkoverlap(bp, ip)
 	struct buf *bp;
 	struct inode *ip;
 {
+	USES_VOP_BMAP;
 	register struct buf *ebp, *ep;
 	register daddr_t start, last;
 	struct vnode *vp;
