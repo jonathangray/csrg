@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)optr.c	5.13 (Berkeley) 06/18/92";
+static char sccsid[] = "@(#)optr.c	5.14 (Berkeley) 07/16/92";
 #endif /* not lint */
 
 #ifdef sunos
@@ -118,7 +118,7 @@ query(question)
 	 *	Turn off the alarm, and reset the signal to trap out..
 	 */
 	(void) alarm(0);
-	if (signal(SIGALRM, sigalrm) == SIG_IGN)
+	if (signal(SIGALRM, sig) == SIG_IGN)
 		signal(SIGALRM, SIG_IGN);
 	(void) fclose(mytty);
 	return(back);
@@ -157,11 +157,12 @@ alarmcatch()
  *	Here if an inquisitive operator interrupts the dump program
  */
 void
-interrupt()
+interrupt(signo)
+	int signo;
 {
 	msg("Interrupt received.\n");
 	if (query("Do you want to abort dump?"))
-		dumpabort();
+		dumpabort(0);
 }
 
 /*
@@ -383,7 +384,7 @@ quit(fmt, va_alist)
 	va_end(ap);
 	(void) fflush(stdout);
 	(void) fflush(stderr);
-	dumpabort();
+	dumpabort(0);
 }
 
 /*
