@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_alloc.c	8.3 (Berkeley) 09/23/93
+ *	@(#)ffs_alloc.c	8.4 (Berkeley) 01/04/94
  */
 
 #include <sys/param.h>
@@ -88,9 +88,8 @@ ffs_alloc(ip, lbn, bpref, size, cred, bnp)
 	struct ucred *cred;
 	daddr_t *bnp;
 {
-	daddr_t bno;
 	register struct fs *fs;
-	register struct buf *bp;
+	daddr_t bno;
 	int cg, error;
 	
 	*bnp = 0;
@@ -155,7 +154,7 @@ ffs_realloccg(ip, lbprev, bpref, osize, nsize, cred, bpp)
 	struct buf **bpp;
 {
 	register struct fs *fs;
-	struct buf *bp, *obp;
+	struct buf *bp;
 	int cg, request, error;
 	daddr_t bprev, bno;
 	
