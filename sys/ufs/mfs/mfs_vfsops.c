@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mfs_vfsops.c	8.8 (Berkeley) 05/10/95
+ *	@(#)mfs_vfsops.c	8.9 (Berkeley) 05/10/95
  */
 
 #include <sys/param.h>
@@ -96,9 +96,11 @@ mfs_mountroot()
 	/*
 	 * Get vnodes for swapdev and rootdev.
 	 */
-	if (bdevvp(swapdev, &swapdev_vp) || bdevvp(rootdev, &rootvp))
-		panic("mfs_mountroot: can't setup bdevvp's");
-
+	if ((error = bdevvp(swapdev, &swapdev_vp)) ||
+	    (error = bdevvp(rootdev, &rootvp))) {
+		printf("mfs_mountroot: can't setup bdevvp's");
+		return (error);
+	}
 	if (error = vfs_rootmountalloc("mfs", "mfs_root", &mp))
 		return (error);
 	mfsp = malloc(sizeof *mfsp, M_MFSNODE, M_WAITOK);
