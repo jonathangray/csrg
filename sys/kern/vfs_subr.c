@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	8.7 (Berkeley) 01/12/94
+ *	@(#)vfs_subr.c	8.8 (Berkeley) 01/14/94
  */
 
 /*
@@ -283,13 +283,14 @@ newnodes++;
 #endif
 		vp->v_flag = 0;
 		vp->v_lastr = 0;
+		vp->v_ralen = 0;
+		vp->v_maxra = 0;
 		vp->v_lastw = 0;
 		vp->v_lasta = 0;
 		vp->v_cstart = 0;
 		vp->v_clen = 0;
 		vp->v_socket = 0;
 	}
-	vp->v_ralen = 1;
 	vp->v_type = VNON;
 	cache_purge(vp);
 	vp->v_tag = tag;
