@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)ndbm.c	5.5 (Berkeley) 03/03/91";
+static char sccsid[] = "@(#)ndbm.c	5.6 (Berkeley) 03/12/91";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -65,7 +65,7 @@ int	mode;
     info.bsize = 1024;
     info.ffactor = 5;
     info.nelem = 1;
-    info.ncached = NULL;
+    info.cachesize = NULL;
     info.hash = NULL;
     info.lorder = 0;
     (void)sprintf(path, "%s%s", file, DBM_SUFFIX);
@@ -94,6 +94,7 @@ datum	key;
     status = (db->get) ( db, (DBT *)&key, (DBT *)&retval, 0 );
     if ( status ) {
 	retval.dptr = NULL;
+	retval.dsize = 0;
     }
     return(retval);
 }
