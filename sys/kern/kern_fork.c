@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_fork.c	7.32 (Berkeley) 02/14/92
+ *	@(#)kern_fork.c	7.33 (Berkeley) 05/20/92
  */
 
 #include "param.h"
@@ -74,6 +74,7 @@ fork1(p1, isvfork, retval)
 {
 	register struct proc *p2;
 	register int count, uid;
+	struct proc **hash;
 	static int nextpid, pidchecked = 0;
 
 	count = 0;
@@ -86,13 +87,11 @@ fork1(p1, isvfork, retval)
 				count++;
 	}
 	/*
-	 * Although process entries are dynamically created,
-	 * we still keep a global limit on the maximum number
-	 * we will create.  Don't allow a nonprivileged user
-	 * to exceed its current limit or to bring us within one
-	 * of the global limit; don't let root exceed the limit.
-	 * nprocs is the current number of processes,
-	 * maxproc is the limit.
+	 * Although process entries are dynamically created, we still keep
+	 * a global limit on the maximum number we will create.  Don't allow
+	 * a nonprivileged user to exceed its current limit or to bring us
+	 * within one of the global limit; don't let root exceed the limit.
+	 * nprocs is the current number of processes, maxproc is the limit.
 	 */
 	if (nprocs >= maxproc || uid == 0 && nprocs >= maxproc + 1) {
 		tablefull("proc");
@@ -101,10 +100,12 @@ fork1(p1, isvfork, retval)
 	if (count > p1->p_rlimit[RLIMIT_NPROC].rlim_cur)
 		return (EAGAIN);
 
+	/* Allocate new proc. */
+	MALLOC(p2, struct proc *, sizeof(struct proc), M_PROC, M_WAITOK);
+
 	/*
-	 * Find an unused process ID.
-	 * We remember a range of unused IDs ready to use
-	 * (from nextpid+1 through pidchecked-1).
+	 * Find an unused process ID.  We remember a range of unused IDs
+	 * ready to use (from nextpid+1 through pidchecked-1).
 	 */
 	nextpid++;
 retry:
@@ -129,7 +130,7 @@ retry:
 		p2 = allproc;
 again:
 		for (; p2 != NULL; p2 = p2->p_nxt) {
-			if (p2->p_pid == nextpid ||
+			while (p2->p_pid == nextpid ||
 			    p2->p_pgrp->pg_id == nextpid) {
 				nextpid++;
 				if (nextpid >= pidchecked)
@@ -149,19 +150,21 @@ again:
 	}
 
 
-	/*
-	 * Allocate new proc.
-	 * Link onto allproc (this should probably be delayed).
-	 */
-	MALLOC(p2, struct proc *, sizeof(struct proc), M_PROC, M_WAITOK);
+	/* Link onto allproc (this should probably be delayed). */
 	nprocs++;
 	p2->p_stat = SIDL;			/* protect against others */
+	p2->p_pid = nextpid;
 	p2->p_nxt = allproc;
 	p2->p_nxt->p_prev = &p2->p_nxt;		/* allproc is never NULL */
 	p2->p_prev = &allproc;
 	allproc = p2;
 	p2->p_link = NULL;			/* shouldn't be necessary */
 	p2->p_rlink = NULL;			/* shouldn't be necessary */
+
+	/* Insert on the hash chain. */
+	hash = &pidhash[PIDHASH(p2->p_pid)];
+	p2->p_hash = *hash;
+	*hash = p2;
 
 	/*
 	 * Make a proc table entry for the new process.
@@ -207,13 +210,6 @@ again:
 		p2->p_flag |= SCTTY;
 	if (isvfork)
 		p2->p_flag |= SPPWAIT;
-	p2->p_pid = nextpid;
-	{
-	struct proc **hash = &pidhash[PIDHASH(p2->p_pid)];
-
-	p2->p_hash = *hash;
-	*hash = p2;
-	}
 	p2->p_pgrpnxt = p1->p_pgrpnxt;
 	p1->p_pgrpnxt = p2;
 	p2->p_pptr = p1;
