@@ -1,6 +1,6 @@
 /* Copyright (c) 1979 Regents of the University of California */
 
-static char sccsid[] = "@(#)interp.c 1.2 01/10/81";
+static char sccsid[] = "@(#)interp.c 1.3 01/13/81";
 
 #include <math.h>
 #include "vars.h"
