@@ -55,10 +55,12 @@ extern u_long nextgennumber;
 /* Allocate a new inode. */
 /* ARGSUSED */
 int
-lfs_valloc(pvp, notused, cred, vpp)
-	struct vnode *pvp, **vpp;
-	int notused;
-	struct ucred *cred;
+lfs_valloc (ap)
+	struct vop_valloc_args *ap;
+#define pvp (ap->a_pvp)
+#define notused (ap->a_mode)
+#define cred (ap->a_cred)
+#define vpp (ap->a_vpp)
 {
 	struct lfs *fs;
 	struct buf *bp;
@@ -148,6 +150,10 @@ printf("Extending ifile: blocks = %d size = %d\n", ip->i_blocks, ip->i_size);
 	++fs->lfs_nfiles;
 	return (0);
 }
+#undef pvp
+#undef notused
+#undef cred
+#undef vpp
 
 /* Create a new vnode/inode pair and initialize what fields we can. */
 int
@@ -156,7 +162,7 @@ lfs_vcreate(mp, ino, vpp)
 	ino_t ino;
 	struct vnode **vpp;
 {
-	extern struct vnodeops lfs_vnodeops;
+	extern int (**lfs_vnodeop_p)();
 	struct inode *ip;
 	struct ufsmount *ump;
 	int error, i;
@@ -165,7 +171,7 @@ lfs_vcreate(mp, ino, vpp)
 	printf("lfs_vcreate: ino %d\n", ino);
 #endif
 	/* Create the vnode. */
-	if (error = getnewvnode(VT_LFS, mp, &lfs_vnodeops, vpp)) {
+	if (error = getnewvnode(VT_LFS, mp, lfs_vnodeop_p, vpp)) {
 		*vpp = NULL;
 		return (error);
 	}
@@ -196,10 +202,11 @@ lfs_vcreate(mp, ino, vpp)
 /* Free an inode. */
 /* ARGUSED */
 void
-lfs_vfree(vp, notused1, notused2)
-	struct vnode *vp;
-	ino_t notused1;
-	int notused2;
+lfs_vfree (ap)
+	struct vop_vfree_args *ap;
+#define vp (ap->a_pvp)
+#define notused1 (ap->a_ino)
+#define notused2 (ap->a_mode)
 {
 	SEGUSE *sup;
 	struct buf *bp;
@@ -244,3 +251,6 @@ lfs_vfree(vp, notused1, notused2)
 	fs->lfs_fmod = 1;
 	--fs->lfs_nfiles;
 }
+#undef vp
+#undef notused1
+#undef notused2
