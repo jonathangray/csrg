@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)vfontedpr.c	5.7 (Berkeley) 8/6/92";
+static char sccsid[] = "@(#)vfontedpr.c	5.7 (Berkeley) 09/13/92";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -92,15 +92,15 @@ static boolean  pass = FALSE;	/*
 				 * input.
 				 */
 
-statis int	blklevel;	/* current nesting level */
-statis int	comtype;	/* type of comment */
+static int	blklevel;	/* current nesting level */
+static int	comtype;	/* type of comment */
 static char    *defsfile[2] = { _PATH_VGRINDEFS, 0 };
 				/* name of language definitions file */
-statis int	margin;
-statis int	plstack[PSMAX];	/* the procedure nesting level stack */
+static int	margin;
+static int	plstack[PSMAX];	/* the procedure nesting level stack */
 static char	pname[BUFSIZ+1]; 
 static boolean  prccont;	/* continue last procedure */
-statis int	psptr;		/* the stack index of the current procedure */
+static int	psptr;		/* the stack index of the current procedure */
 static char	pstack[PSMAX][PNAMELEN+1];	/* the procedure name stack */
 
 /*
