@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kernel.h	7.6 (Berkeley) 02/25/92
+ *	@(#)kernel.h	7.7 (Berkeley) 03/09/92
  */
 
 /* Global variables for the kernel. */
@@ -53,13 +53,6 @@ extern int tick;			/* usec per tick */
 extern int profhz;			/* profiling clock's frequency */
 extern int lbolt;			/* once a second sleep address */
 extern int realitexpire();
-
-struct clockinfo {
-	int hz;		/* clock frequency */
-	int tick;	/* micro-seconds per hz tick */
-	int phz;	/* alternate clock frequency */
-	int profhz;	/* profiling clock frequency */
-};
 
 struct loadavg {
 	fixpt_t ldavg[3];
