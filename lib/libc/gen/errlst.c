@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)errlst.c	5.9 (Berkeley) 11/28/90";
+static char sccsid[] = "@(#)errlst.c	5.10 (Berkeley) 02/19/91";
 #endif /* LIBC_SCCS and not lint */
 
 char *sys_errlist[] = {
@@ -72,7 +72,7 @@ char *sys_errlist[] = {
 
 /* math software */
 	"Numerical argument out of domain",	/* 33 - EDOM */
-	"Numerical result out of range",	/* 34 - ERANGE */
+	"Result too large",			/* 34 - ERANGE */
 
 /* non-blocking and interrupt i/o */
 	"Resource temporarily unavailable",	/* 35 - EAGAIN */
