@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)quad.h	5.8 (Berkeley) 06/25/92
+ *	@(#)quad.h	5.9 (Berkeley) 07/28/92
  */
 
 /*
@@ -103,7 +103,7 @@ extern u_quad_t __qdivrem __P((u_quad_t u, u_quad_t v, u_quad_t *rem));
  * as u_quad_t, while gcc 2 correctly uses int.  Unfortunately, we still use
  * both compilers.
  */
-#ifdef sparc
+#if __GNUC__ >= 2
 typedef unsigned int	qshift_t;
 #else
 typedef u_quad_t	qshift_t;
