@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)unistd.h	5.10 (Berkeley) 02/18/91
+ *	@(#)unistd.h	5.11 (Berkeley) 02/19/91
  */
 
 #ifndef _UNISTD_H_
@@ -114,7 +114,6 @@ unsigned int	alarm __P((unsigned int));
 int		chdir __P((const char *));
 int		chown __P((const char *, uid_t, gid_t));
 int		close __P((int));
-char		*ctermid __P((char *));		/* not yet implemented */
 char		*cuserid __P((const char *));
 int		dup __P((int));
 int		dup2 __P((int, int));
