@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)envelope.c	6.25 (Berkeley) 03/19/93";
+static char sccsid[] = "@(#)envelope.c	6.26 (Berkeley) 03/19/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -281,7 +281,8 @@ initsys(e)
 	**	tucked away in the transcript).
 	*/
 
-	if (OpMode == MD_DAEMON && QueueRun && e->e_xfp != NULL)
+	if (OpMode == MD_DAEMON && !bitset(EF_QUEUERUN, e->e_flags) &&
+	    e->e_xfp != NULL)
 		OutChannel = e->e_xfp;
 
 	/*
@@ -468,7 +469,7 @@ setsender(from, e, delimptr, internal)
 	**	Username can return errno != 0 on non-errors.
 	*/
 
-	if (QueueRun || OpMode == MD_SMTP)
+	if (bitset(EF_QUEUERUN, e->e_flags) || OpMode == MD_SMTP)
 		realname = from;
 	if (realname == NULL || realname[0] == '\0')
 	{
