@@ -38,7 +38,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pk_subr.c	7.25 (Berkeley) 02/23/93
+ *	@(#)pk_subr.c	7.26 (Berkeley) 06/05/93
  */
 
 #include <sys/param.h>
@@ -485,7 +485,7 @@ register struct sockaddr_x25 *sa;
 	/*
 	 * Is the destination address known?
 	 */
-	if (!(rt = rtalloc1 (sa, 1)))
+	if (!(rt = rtalloc1 ((struct sockaddr *)sa, 1)))
 		return (ENETUNREACH);
 
 	if (!(pkp = XTRACTPKP(rt)))
