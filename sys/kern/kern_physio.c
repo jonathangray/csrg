@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_physio.c	7.23 (Berkeley) 11/19/91
+ *	@(#)kern_physio.c	7.24 (Berkeley) 02/05/92
  */
 
 #include <sys/param.h>
@@ -43,7 +43,7 @@ physio(strat, bp, dev, rw, mincnt, uio)
 	struct uio *uio;
 {
 	register struct iovec *iov;
-	register int requested, done;
+	register int requested = 0, done = 0;
 	register struct proc *p = curproc;
 	char *a;
 	int s, allocbuf = 0, error = 0;
