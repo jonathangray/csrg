@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.1 (Berkeley) 07/19/92
+ *	@(#)extern.h	5.2 (Berkeley) 04/29/93
  */
 
 typedef struct {
@@ -42,9 +42,9 @@ extern int iamremote;
 
 BUF	*allocbuf __P((BUF *, int, int));
 char	*colon __P((char *));
-void	 err __P((const char *, ...));
 void	 lostconn __P((int));
 void	 nospace __P((void));
 int	 okname __P((char *));
+void	 run_err __P((const char *, ...));
 int	 susystem __P((char *, int));
 void	 verifydir __P((char *));
