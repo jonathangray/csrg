@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	8.59 (Berkeley) 01/07/95";
+static char sccsid[] = "@(#)readcf.c	8.60 (Berkeley) 01/25/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -574,6 +574,21 @@ readcf(cfname)
 					UseNameServer = TRUE;
 			}
 		}
+
+#ifdef HESIOD
+		nmaps = switch_map_find("passwd", maptype, mapreturn);
+		UseHesiod = FALSE;
+		if (nmaps > 0 && nmaps <= MAXMAPSTACK)
+		{
+			register int mapno;
+
+			for (mapno = 0; mapno < nmaps && !UseHesiod; mapno++)
+			{
+				if (strcmp(maptype[mapno], "hesiod") == 0)
+					UseHesiod = TRUE;
+			}
+		}
+#endif
 	}
 }
 /*
