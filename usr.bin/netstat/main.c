@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 1983, 1988 Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1983, 1988, 1993
+ *	Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -33,12 +33,12 @@
 
 #ifndef lint
 char copyright[] =
-"@(#) Copyright (c) 1983, 1988 Regents of the University of California.\n\
- All rights reserved.\n";
+"@(#) Copyright (c) 1983, 1988, 1993\n\
+	Regents of the University of California.  All rights reserved.\n";
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.33 (Berkeley) 06/12/93";
+static char sccsid[] = "@(#)main.c	8.1 (Berkeley) 06/12/93";
 #endif /* not lint */
 
 #include <sys/param.h>
