@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pk.h	7.5 (Berkeley) 10/30/90
+ *	@(#)pk.h	7.6 (Berkeley) 01/09/91
  */
 
 /*
@@ -142,7 +142,7 @@ struct data_packet {
 #define SET_LCN(xp, lcn) ((xp -> logical_channel_number = lcn), \
 	(xp -> lc_group_number = lcn > 255 ? lcn >> 8 : 0))
 
-struct x25_packet *pk_template ();
+struct mbuf *pk_template ();
 
 /* Define X.25 packet level states. */
 
