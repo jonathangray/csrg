@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: grf.c 1.28 89/08/14$
  *
- *	@(#)grf.c	7.6 (Berkeley) 12/16/90
+ *	@(#)grf.c	7.7 (Berkeley) 05/04/91
  */
 
 /*
@@ -49,31 +49,30 @@
 #include "grf.h"
 #if NGRF > 0
 
-#include "sys/param.h"
-#include "sys/user.h"
-#include "sys/proc.h"
-#include "sys/ioctl.h"
-#include "sys/file.h"
-#include "sys/malloc.h"
+#include "param.h"
+#include "proc.h"
+#include "ioctl.h"
+#include "file.h"
+#include "malloc.h"
 
 #include "device.h"
 #include "grfioctl.h"
 #include "grfvar.h"
 
-#include "../include/cpu.h"
+#include "machine/cpu.h"
 
 #ifdef HPUXCOMPAT
 #include "../hpux/hpux.h"
 #endif
 
-#include "vm/vm_param.h"
-#include "vm/vm_map.h"
+#include "vm/vm.h"
 #include "vm/vm_kern.h"
 #include "vm/vm_page.h"
 #include "vm/vm_pager.h"
-#include "sys/specdev.h"
-#include "sys/vnode.h"
-#include "sys/mman.h"
+
+#include "specdev.h"
+#include "vnode.h"
+#include "mman.h"
 
 #include "ite.h"
 #if NITE == 0
@@ -222,7 +221,7 @@ grfopen(dev, flags)
 	/*
 	 * XXX: cannot handle both HPUX and BSD processes at the same time
 	 */
-	if (u.u_procp->p_flag & SHPUX)
+	if (curproc->p_flag & SHPUX)
 		if (gp->g_flags & GF_BSDOPEN)
 			return(EBUSY);
 		else
@@ -258,16 +257,17 @@ grfclose(dev, flags)
 }
 
 /*ARGSUSED*/
-grfioctl(dev, cmd, data, flag)
+grfioctl(dev, cmd, data, flag, p)
 	dev_t dev;
 	caddr_t data;
+	struct proc *p;
 {
 	register struct grf_softc *gp = &grf_softc[GRFUNIT(dev)];
 	int error;
 
 #ifdef HPUXCOMPAT
-	if (u.u_procp->p_flag & SHPUX)
-		return(hpuxgrfioctl(dev, cmd, data, flag));
+	if (p->p_flag & SHPUX)
+		return(hpuxgrfioctl(dev, cmd, data, flag, p));
 #endif
 	error = 0;
 	switch (cmd) {
@@ -290,11 +290,11 @@ grfioctl(dev, cmd, data, flag)
 		break;
 
 	case GRFIOCMAP:
-		error = grfmmap(dev, (caddr_t *)data);
+		error = grfmmap(dev, (caddr_t *)data, p);
 		break;
 
 	case GRFIOCUNMAP:
-		error = grfunmmap(dev, *(caddr_t *)data);
+		error = grfunmmap(dev, *(caddr_t *)data, p);
 		break;
 
 	default:
@@ -318,7 +318,7 @@ grflock(gp, block)
 	register struct grf_softc *gp;
 	int block;
 {
-	struct proc *p = u.u_procp;		/* XXX */
+	struct proc *p = curproc;		/* XXX */
 	int error;
 	extern char devioc[];
 
@@ -376,10 +376,10 @@ grfunlock(gp)
 #ifdef DEBUG
 	if (grfdebug & GDB_LOCK)
 		printf("grfunlock(%d): dev %x flags %x lockpid %d\n",
-		       u.u_procp->p_pid, gp-grf_softc, gp->g_flags,
+		       curproc->p_pid, gp-grf_softc, gp->g_flags,
 		       gp->g_lockp ? gp->g_lockp->p_pid : -1);
 #endif
-	if (gp->g_lockp != u.u_procp)
+	if (gp->g_lockp != curproc)
 		return(EBUSY);
 #ifdef HPUXCOMPAT
 	if (gp->g_pid) {
@@ -411,9 +411,10 @@ grfmap(dev, off, prot)
 #ifdef HPUXCOMPAT
 
 /*ARGSUSED*/
-hpuxgrfioctl(dev, cmd, data, flag)
+hpuxgrfioctl(dev, cmd, data, flag, p)
 	dev_t dev;
 	caddr_t data;
+	struct proc *p;
 {
 	register struct grf_softc *gp = &grf_softc[GRFUNIT(dev)];
 	int error;
@@ -452,11 +453,11 @@ hpuxgrfioctl(dev, cmd, data, flag)
 
 	/* map in control regs and frame buffer */
 	case GCMAP:
-		error = grfmmap(dev, (caddr_t *)data);
+		error = grfmmap(dev, (caddr_t *)data, p);
 		break;
 
 	case GCUNMAP:
-		error = grfunmmap(dev, *(caddr_t *)data);
+		error = grfunmmap(dev, *(caddr_t *)data, p);
 		/* XXX: HP-UX uses GCUNMAP to get rid of GCSLOT memory */
 		if (error)
 			error = grflckunmmap(dev, *(caddr_t *)data);
@@ -533,7 +534,7 @@ grfoff(dev)
 	struct grf_softc *gp = &grf_softc[unit];
 	int error;
 
-	(void) grfunmmap(dev, (caddr_t)0);
+	(void) grfunmmap(dev, (caddr_t)0, curproc);
 	error = (*grfdev[gp->g_type].gd_mode)
 			(gp, (dev&GRFOVDEV) ? GM_GRFOVOFF : GM_GRFOFF);
 	/* XXX: see comment for iteoff above */
@@ -594,11 +595,11 @@ grfdevno(dev)
 }
 #endif
 
-grfmmap(dev, addrp)
+grfmmap(dev, addrp, p)
 	dev_t dev;
 	caddr_t *addrp;
+	struct proc *p;
 {
-	struct proc *p = u.u_procp;		/* XXX */
 	struct grf_softc *gp = &grf_softc[GRFUNIT(dev)];
 	int len, error;
 	struct vnode vn;
@@ -618,16 +619,16 @@ grfmmap(dev, addrp)
 	vn.v_type = VCHR;			/* XXX */
 	vn.v_specinfo = &si;			/* XXX */
 	vn.v_rdev = dev;			/* XXX */
-	error = vm_mmap(u.u_procp->p_map, (vm_offset_t *)addrp,
+	error = vm_mmap(&p->p_vmspace->vm_map, (vm_offset_t *)addrp,
 			(vm_size_t)len, VM_PROT_ALL, flags, (caddr_t)&vn, 0);
 	return(error);
 }
 
-grfunmmap(dev, addr)
+grfunmmap(dev, addr, p)
 	dev_t dev;
 	caddr_t addr;
+	struct proc *p;
 {
-	struct proc *p = u.u_procp;		/* XXX */
 	struct grf_softc *gp = &grf_softc[GRFUNIT(dev)];
 	vm_size_t size;
 	int rv;
@@ -639,7 +640,7 @@ grfunmmap(dev, addr)
 	if (addr == 0)
 		return(EINVAL);		/* XXX: how do we deal with this? */
 	size = round_page(gp->g_display.gd_regsize + gp->g_display.gd_fbsize);
-	rv = vm_deallocate(p->p_map, (vm_offset_t)addr, size);
+	rv = vm_deallocate(p->p_vmspace->vm_map, (vm_offset_t)addr, size);
 	return(rv == KERN_SUCCESS ? 0 : EINVAL);
 }
 
@@ -648,7 +649,7 @@ iommap(dev, addrp)
 	dev_t dev;
 	caddr_t *addrp;
 {
-	struct proc *p = u.u_procp;		/* XXX */
+	struct proc *p = curproc;		/* XXX */
 	struct grf_softc *gp = &grf_softc[GRFUNIT(dev)];
 
 #ifdef DEBUG
@@ -667,7 +668,7 @@ iounmmap(dev, addr)
 #ifdef DEBUG
 	if (grfdebug & (GDB_MMAP|GDB_IOMAP))
 		printf("iounmmap(%d): id %d addr %x\n",
-		       u.u_procp->p_pid, unit, addr);
+		       curproc->p_pid, unit, addr);
 #endif
 	return(0);
 }
@@ -691,7 +692,7 @@ grffindpid(gp)
 			malloc(GRFMAXLCK * sizeof(short), M_DEVBUF, M_WAITOK);
 		bzero((caddr_t)gp->g_pid, GRFMAXLCK * sizeof(short));
 	}
-	pid = u.u_procp->p_pid;
+	pid = curproc->p_pid;
 	ni = limit = gp->g_pid[0];
 	for (i = 1, sp = &gp->g_pid[1]; i <= limit; i++, sp++) {
 		if (*sp == pid)
@@ -726,7 +727,7 @@ grfrmpid(gp)
 
 	if (gp->g_pid == NULL || (limit = gp->g_pid[0]) == 0)
 		return;
-	pid = u.u_procp->p_pid;
+	pid = curproc->p_pid;
 	limit = gp->g_pid[0];
 	mi = 0;
 	for (i = 1, sp = &gp->g_pid[1]; i <= limit; i++, sp++) {
@@ -749,9 +750,9 @@ grflckmmap(dev, addrp)
 	dev_t dev;
 	caddr_t *addrp;
 {
-	struct proc *p = u.u_procp;		/* XXX */
-
 #ifdef DEBUG
+	struct proc *p = curproc;		/* XXX */
+
 	if (grfdebug & (GDB_MMAP|GDB_LOCK))
 		printf("grflckmmap(%d): addr %x\n",
 		       p->p_pid, *addrp);
@@ -763,12 +764,12 @@ grflckunmmap(dev, addr)
 	dev_t dev;
 	caddr_t addr;
 {
+#ifdef DEBUG
 	int unit = minor(dev);
 
-#ifdef DEBUG
 	if (grfdebug & (GDB_MMAP|GDB_LOCK))
 		printf("grflckunmmap(%d): id %d addr %x\n",
-		       u.u_procp->p_pid, unit, addr);
+		       curproc->p_pid, unit, addr);
 #endif
 	return(EINVAL);
 }
