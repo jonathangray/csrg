@@ -36,7 +36,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-	.asciz "@(#)setjmp.s	5.1 (Berkeley) 05/12/90"
+	.asciz "@(#)setjmp.s	5.2 (Berkeley) 05/28/92"
 #endif /* LIBC_SCCS and not lint */
 
 /*
