@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsnode.h	8.2 (Berkeley) 11/14/93
+ *	@(#)nfsnode.h	8.3 (Berkeley) 12/30/93
  */
 
 /*
@@ -99,6 +99,11 @@ struct nfsnode {
  */
 #define VTONFS(vp)	((struct nfsnode *)(vp)->v_data)
 #define NFSTOV(np)	((struct vnode *)(np)->n_vnode)
+
+/*
+ * Queue head for nfsiod's
+ */
+TAILQ_HEAD(nfsbufs, buf) nfs_bufq;
 
 #ifdef KERNEL
 /*
