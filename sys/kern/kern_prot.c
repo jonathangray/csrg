@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_prot.c	7.24 (Berkeley) 07/09/92
+ *	@(#)kern_prot.c	7.25 (Berkeley) 07/10/92
  */
 
 /*
@@ -46,10 +46,14 @@
 #include "times.h"
 #include "malloc.h"
 
+struct args {
+	int	dummy;
+};
+
 /* ARGSUSED */
 getpid(p, uap, retval)
 	struct proc *p;
-	void *uap;
+	struct args *uap;
 	int *retval;
 {
 
@@ -63,7 +67,7 @@ getpid(p, uap, retval)
 /* ARGSUSED */
 getppid(p, uap, retval)
 	struct proc *p;
-	void *uap;
+	struct args *uap;
 	int *retval;
 {
 
@@ -74,7 +78,7 @@ getppid(p, uap, retval)
 /* Get process group ID; note that POSIX getpgrp takes no parameter */
 getpgrp(p, uap, retval)
 	struct proc *p;
-	void *uap;
+	struct args *uap;
 	int *retval;
 {
 
@@ -85,7 +89,7 @@ getpgrp(p, uap, retval)
 /* ARGSUSED */
 getuid(p, uap, retval)
 	struct proc *p;
-	void *uap;
+	struct args *uap;
 	int *retval;
 {
 
@@ -99,7 +103,7 @@ getuid(p, uap, retval)
 /* ARGSUSED */
 geteuid(p, uap, retval)
 	struct proc *p;
-	void *uap;
+	struct args *uap;
 	int *retval;
 {
 
@@ -110,7 +114,7 @@ geteuid(p, uap, retval)
 /* ARGSUSED */
 getgid(p, uap, retval)
 	struct proc *p;
-	void *uap;
+	struct args *uap;
 	int *retval;
 {
 
@@ -129,7 +133,7 @@ getgid(p, uap, retval)
 /* ARGSUSED */
 getegid(p, uap, retval)
 	struct proc *p;
-	void *uap;
+	struct args *uap;
 	int *retval;
 {
 
@@ -137,12 +141,13 @@ getegid(p, uap, retval)
 	return (0);
 }
 
+struct getgroups_args {
+	u_int	gidsetsize;
+	int	*gidset;		/* XXX not yet POSIX */
+};
 getgroups(p, uap, retval)
 	struct proc *p;
-	register struct	arg {
-		u_int	gidsetsize;
-		int	*gidset;		/* XXX not yet POSIX */
-	} *uap;
+	register struct	getgroups_args *uap;
 	int *retval;
 {
 	register struct pcred *pc = p->p_cred;
@@ -171,7 +176,7 @@ getgroups(p, uap, retval)
 /* ARGSUSED */
 setsid(p, uap, retval)
 	register struct proc *p;
-	void *uap;
+	struct args *uap;
 	int *retval;
 {
 
@@ -197,13 +202,14 @@ setsid(p, uap, retval)
  * 	there must exist some pid in same session having pgid (EPERM)
  * pid must not be session leader (EPERM)
  */
+struct setpgid_args {
+	int	pid;	/* target process id */
+	int	pgid;	/* target pgrp id */
+};
 /* ARGSUSED */
 setpgid(curp, uap, retval)
 	struct proc *curp;
-	register struct args {
-		int	pid;	/* target process id */
-		int	pgid;	/* target pgrp id */
-	} *uap;
+	register struct setpgid_args *uap;
 	int *retval;
 {
 	register struct proc *targp;		/* target process */
@@ -230,12 +236,13 @@ setpgid(curp, uap, retval)
 	return (0);
 }
 
+struct setuid_args {
+	int	uid;
+};
 /* ARGSUSED */
 setuid(p, uap, retval)
 	struct proc *p;
-	struct args {
-		int	uid;
-	} *uap;
+	struct setuid_args *uap;
 	int *retval;
 {
 	register struct pcred *pc = p->p_cred;
@@ -258,12 +265,13 @@ setuid(p, uap, retval)
 	return (0);
 }
 
+struct seteuid_args {
+	int	euid;
+};
 /* ARGSUSED */
 seteuid(p, uap, retval)
 	struct proc *p;
-	struct args {
-		int	euid;
-	} *uap;
+	struct seteuid_args *uap;
 	int *retval;
 {
 	register struct pcred *pc = p->p_cred;
@@ -284,12 +292,13 @@ seteuid(p, uap, retval)
 	return (0);
 }
 
+struct setgid_args {
+	int	gid;
+};
 /* ARGSUSED */
 setgid(p, uap, retval)
 	struct proc *p;
-	struct args {
-		int	gid;
-	} *uap;
+	struct setgid_args *uap;
 	int *retval;
 {
 	register struct pcred *pc = p->p_cred;
@@ -307,12 +316,13 @@ setgid(p, uap, retval)
 	return (0);
 }
 
+struct setegid_args {
+	int	egid;
+};
 /* ARGSUSED */
 setegid(p, uap, retval)
 	struct proc *p;
-	struct args {
-		int	egid;
-	} *uap;
+	struct setegid_args *uap;
 	int *retval;
 {
 	register struct pcred *pc = p->p_cred;
@@ -329,13 +339,14 @@ setegid(p, uap, retval)
 	return (0);
 }
 
+struct setgroups_args {
+	u_int	gidsetsize;
+	int	*gidset;
+};
 /* ARGSUSED */
 setgroups(p, uap, retval)
 	struct proc *p;
-	struct args {
-		u_int	gidsetsize;
-		int	*gidset;
-	} *uap;
+	struct setgroups_args *uap;
 	int *retval;
 {
 	register struct pcred *pc = p->p_cred;
@@ -462,13 +473,14 @@ crdup(cr)
 /*
  * Get login name, if available.
  */
+struct getlogin_args {
+	char	*namebuf;
+	u_int	namelen;
+};
 /* ARGSUSED */
 getlogin(p, uap, retval)
 	struct proc *p;
-	struct args {
-		char	*namebuf;
-		u_int	namelen;
-	} *uap;
+	struct getlogin_args *uap;
 	int *retval;
 {
 
@@ -481,12 +493,13 @@ getlogin(p, uap, retval)
 /*
  * Set login name.
  */
+struct setlogin_args {
+	char	*namebuf;
+};
 /* ARGSUSED */
 setlogin(p, uap, retval)
 	struct proc *p;
-	struct args {
-		char	*namebuf;
-	} *uap;
+	struct setlogin_args *uap;
 	int *retval;
 {
 	int error;
