@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cd9660_node.c	8.5 (Berkeley) 12/05/94
+ *	@(#)cd9660_node.c	8.6 (Berkeley) 03/30/95
  */
 
 #include <sys/param.h>
@@ -51,6 +51,7 @@
 
 #include <isofs/cd9660/iso.h>
 #include <isofs/cd9660/cd9660_node.h>
+#include <isofs/cd9660/cd9660_mount.h>
 #include <isofs/cd9660/iso_rrip.h>
 
 /*
@@ -71,7 +72,8 @@ int prtactive;	/* 1 => print out reclaim of active vnodes */
 /*
  * Initialize hash links for inodes and dnodes.
  */
-cd9660_init()
+cd9660_init(vfsp)
+	struct vfsconf *vfsp;
 {
 
 	isohashtbl = hashinit(desiredvnodes, M_ISOFSMNT, &isohash);
