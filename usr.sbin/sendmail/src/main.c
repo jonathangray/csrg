@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.56 (Berkeley) 09/22/92";
+static char sccsid[] = "@(#)main.c	5.57 (Berkeley) 09/23/92";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -265,6 +265,7 @@ main(argc, argv, envp)
 	i = j = 0;
 	while (j < MAXUSERENVIRON && (p = envp[i++]) != NULL)
 	{
+		/* strip out "dangerous" envariables */
 		if (strncmp(p, "FS=", 3) == 0 || strncmp(p, "LD_", 3) == 0)
 			continue;
 		UserEnviron[j++] = newstr(p);
@@ -278,7 +279,7 @@ main(argc, argv, envp)
 	*/
 
 	Argv = argv;
-	if (i > 0)
+	if (--i > 0)
 		LastArgv = envp[i - 1] + strlen(envp[i - 1]);
 	else
 		LastArgv = argv[argc - 1] + strlen(argv[argc - 1]);
