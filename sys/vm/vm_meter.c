@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_meter.c	7.12 (Berkeley) 09/03/91
+ *	@(#)vm_meter.c	7.13 (Berkeley) 02/25/92
  */
 
 #include "param.h"
@@ -39,7 +39,7 @@
 #include "kernel.h"
 #include "vm.h"
 
-fixpt_t	averunnable[3];		/* load average, of runnable procs */
+struct	loadavg averunnable;		/* load average, of runnable procs */
 
 int	maxslp = MAXSLP;
 int	saferss = SAFERSS;
@@ -50,7 +50,7 @@ vmmeter()
 	register unsigned *cp, *rp, *sp;
 
 	if (time.tv_sec % 5 == 0)
-		loadav(averunnable);
+		loadav(&averunnable);
 	if (proc0.p_slptime > maxslp/2)
 		wakeup((caddr_t)&proc0);
 }
@@ -70,7 +70,7 @@ fixpt_t	cexp[3] = {
  * 1, 5 and 15 minute intervals.
  */
 loadav(avg)
-	register fixpt_t *avg;
+	register struct loadavg *avg;
 {
 	register int i, nrun;
 	register struct proc *p;
@@ -87,12 +87,44 @@ loadav(avg)
 		}
 	}
 	for (i = 0; i < 3; i++)
-		avg[i] = (cexp[i] * avg[i] + nrun * FSCALE * (FSCALE - cexp[i]))
-		         >> FSHIFT;
+		avg->ldavg[i] = (cexp[i] * avg->ldavg[i] +
+			nrun * FSCALE * (FSCALE - cexp[i])) >> FSHIFT;
 #if defined(COMPAT_43) && (defined(vax) || defined(tahoe))
 	for (i = 0; i < 3; i++)
-		avenrun[i] = (double) averunnable[i] / FSCALE;
+		avenrun[i] = (double) avg->ldavg[i] / FSCALE;
 #endif /* COMPAT_43 */
+}
+
+/*
+ * Load average information
+ */
+/* ARGSUSED */
+kinfo_loadavg(op, where, acopysize, arg, aneeded)
+	int op;
+	register char *where;
+	int *acopysize, arg, *aneeded;
+{
+	int buflen, error;
+
+	*aneeded = sizeof(averunnable);
+	if (where == NULL)
+		return (0);
+	/*
+	 * Check for enough buffering.
+	 */
+	buflen = *acopysize;
+	if (buflen < sizeof(averunnable)) {
+		*acopysize = 0;
+		return (0);
+	}
+	/*
+	 * Copyout averunnable structure.
+	 */
+	averunnable.fscale = FSCALE;
+	if (error = copyout((caddr_t)&averunnable, where, sizeof(averunnable)))
+		return (error);
+	*acopysize = sizeof(averunnable);
+	return (0);
 }
 
 /*
