@@ -30,18 +30,20 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_subr.c	7.15 (Berkeley) 11/05/91
+ *	@(#)ffs_subr.c	7.16 (Berkeley) 11/11/91
  */
 
 #include <sys/param.h>
 #include <sys/buf.h>
-#include <sys/vnode.h>
 
 #include <ufs/ufs/quota.h>
 #include <ufs/ufs/inode.h>
 
 #include <ufs/ffs/fs.h>
 #include <ufs/ffs/ffs_extern.h>
+
+#ifdef KERNEL
+#include <sys/vnode.h>
 
 /*
  * Return buffer with the contents of block "offset" from the beginning of
@@ -76,6 +78,7 @@ ffs_blkatoff(vp, offset, res, bpp)
 	*bpp = bp;
 	return (0);
 }
+#endif
 
 /*
  * Update the frsum fields to reflect addition or deletion 
@@ -112,7 +115,7 @@ ffs_fragacct(fs, fragmap, fraglist, cnt)
 	}
 }
 
-#ifdef DIAGNOSTIC
+#if defined(KERNEL) && defined(DIAGNOSTIC)
 void
 ffs_checkoverlap(bp, ip)
 	struct buf *bp;
