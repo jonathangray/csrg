@@ -1,17 +1,20 @@
-/*
- * Copyright (c) 1987 Regents of the University of California.
- * All rights reserved.  The Berkeley software License Agreement
- * specifies the terms and conditions for redistribution.
+/*-
+ * Copyright (c) 1987 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
  */
 
 #ifndef lint
 char copyright[] =
-"@(#) Copyright (c) 1987 Regents of the University of California.\n\
+"@(#) Copyright (c) 1987 The Regents of the University of California.\n\
  All rights reserved.\n";
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)checkeq.c	4.3 (Berkeley) 12/02/87";
+static char sccsid[] = "@(#)checkeq.c	4.4 (Berkeley) 04/17/91";
 #endif /* not lint */
 
 #include <stdio.h>
