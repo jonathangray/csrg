@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)xdr_subs.h	7.5 (Berkeley) 09/16/92
+ *	@(#)xdr_subs.h	7.6 (Berkeley) 09/16/92
  */
 
 /*
@@ -102,7 +102,7 @@ union _hq {
 
 #define	txdr_unsigned(v)	((long)(v))
 #define	txdr_nqtime(f, t) \
-	*(t) = *((struct timespec *)(f))
+	*(t) = *((struct nqnfs_time *)(f))
 #define	txdr_nfstime(f, t) { \
 	((struct nfsv2_time *)(t))->nfs_sec = (f)->ts_sec; \
 	((struct nfsv2_time *)(t))->nfs_usec = (f)->ts_nsec / 1000; \
