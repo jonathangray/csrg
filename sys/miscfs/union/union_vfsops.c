@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_vfsops.c	8.6 (Berkeley) 02/21/94
+ *	@(#)union_vfsops.c	8.7 (Berkeley) 03/05/94
  */
 
 /*
@@ -235,13 +235,13 @@ union_mount(mp, path, data, ndp, p)
 
 	switch (um->um_op) {
 	case UNMNT_ABOVE:
-		cp = "un-above:";
+		cp = "<above>";
 		break;
 	case UNMNT_BELOW:
-		cp = "un-below:";
+		cp = "<below>";
 		break;
 	case UNMNT_REPLACE:
-		cp = "replace:";
+		cp = "";
 		break;
 	}
 	len = strlen(cp);
