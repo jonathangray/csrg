@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_xxx.c	7.21 (Berkeley) 02/04/93
+ *	@(#)kern_xxx.c	7.22 (Berkeley) 04/04/93
  */
 
 #include <sys/param.h>
@@ -65,7 +65,7 @@ struct gethostid_args {
 	int	dummy;
 };
 /* ARGSUSED */
-gethostid(p, uap, retval)
+ogethostid(p, uap, retval)
 	struct proc *p;
 	struct gethostid_args *uap;
 	int *retval;
@@ -79,7 +79,7 @@ struct sethostid_args {
 	long	hostid;
 };
 /* ARGSUSED */
-sethostid(p, uap, retval)
+osethostid(p, uap, retval)
 	struct proc *p;
 	struct sethostid_args *uap;
 	int *retval;
@@ -93,7 +93,7 @@ struct gethostname_args {
 	u_int	len;
 };
 /* ARGSUSED */
-gethostname(p, uap, retval)
+ogethostname(p, uap, retval)
 	struct proc *p;
 	struct gethostname_args *uap;
 	int *retval;
@@ -109,7 +109,7 @@ struct sethostname_args {
 	u_int	len;
 };
 /* ARGSUSED */
-sethostname(p, uap, retval)
+osethostname(p, uap, retval)
 	struct proc *p;
 	register struct sethostname_args *uap;
 	int *retval;
