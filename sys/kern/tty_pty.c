@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty_pty.c	8.1 (Berkeley) 06/10/93
+ *	@(#)tty_pty.c	7.30 (Berkeley) 06/30/93
  */
 
 /*
@@ -600,14 +600,14 @@ ptyioctl(dev, cmd, data, flag, p)
 		if (*(int *)data) {
 			if (pti->pt_flags & PF_PKT) {
 				pti->pt_send |= TIOCPKT_IOCTL;
-				ptcwakeup(tp);
+				ptcwakeup(tp, FREAD);
 			}
 			tp->t_lflag |= EXTPROC;
 		} else {
 			if ((tp->t_state & EXTPROC) &&
 			    (pti->pt_flags & PF_PKT)) {
 				pti->pt_send |= TIOCPKT_IOCTL;
-				ptcwakeup(tp);
+				ptcwakeup(tp, FREAD);
 			}
 			tp->t_lflag &= ~EXTPROC;
 		}
@@ -805,6 +805,7 @@ ptyioctl(dev, cmd, data, flag, p)
 		case TIOCLSET:
 #endif
 			pti->pt_send |= TIOCPKT_IOCTL;
+			ptcwakeup(tp, FREAD);
 		default:
 			break;
 		}
