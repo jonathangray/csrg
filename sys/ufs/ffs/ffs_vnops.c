@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	7.95 (Berkeley) 10/22/92
+ *	@(#)ffs_vnops.c	7.96 (Berkeley) 11/02/92
  */
 
 #include <sys/param.h>
@@ -224,14 +224,13 @@ ffs_read(ap)
 	struct buf *bp;
 	daddr_t lbn, bn, rablock;
 	off_t diff;
-	int rasize, error = 0;
+	int type, rasize, error = 0;
 	long size, n, on;
 
+	type = ip->i_mode & IFMT;
 #ifdef DIAGNOSTIC
-	int type;
 	if (uio->uio_rw != UIO_READ)
 		panic("ffs_read mode");
-	type = ip->i_mode & IFMT;
 	if (type != IFDIR && type != IFREG && type != IFLNK)
 		panic("ffs_read type");
 	if (type == IFLNK && (int)ip->i_size < vp->v_mount->mnt_maxsymlinklen)
@@ -268,7 +267,8 @@ ffs_read(ap)
 			return (error);
 		}
 		error = uiomove(bp->b_un.b_addr + on, (int)n, uio);
-		if (n + on == fs->fs_bsize || uio->uio_offset == ip->i_size)
+		if (type == IFREG &&
+		    (n + on == fs->fs_bsize || uio->uio_offset == ip->i_size))
 			bp->b_flags |= B_AGE;
 		brelse(bp);
 	} while (error == 0 && uio->uio_resid > 0 && n != 0);
