@@ -38,9 +38,9 @@
 
 #ifndef lint
 #ifdef DAEMON
-static char sccsid[] = "@(#)daemon.c	5.45 (Berkeley) 05/31/92 (with daemon mode)";
+static char sccsid[] = "@(#)daemon.c	5.46 (Berkeley) 07/11/92 (with daemon mode)";
 #else
-static char sccsid[] = "@(#)daemon.c	5.45 (Berkeley) 05/31/92 (without daemon mode)";
+static char sccsid[] = "@(#)daemon.c	5.46 (Berkeley) 07/11/92 (without daemon mode)";
 #endif
 #endif /* not lint */
 
@@ -193,10 +193,11 @@ getrequests()
 **		none.
 */
 
+int
 makeconnection(host, port, mci, usesecureport)
 	char *host;
 	u_short port;
-	register MCONINFO *mci;
+	register MCI *mci;
 	bool usesecureport;
 {
 	register int i, s;
@@ -310,7 +311,7 @@ again:
 	}
 
 	if (tTd(16, 1))
-		printf("makeconnection: %d\n", s);
+		printf("makeconnection: fd=%d\n", s);
 
 	/* turn on network debugging? */
 	if (tTd(16, 14))
