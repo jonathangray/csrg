@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_socket.c	7.29 (Berkeley) 03/17/92
+ *	@(#)nfs_socket.c	7.30 (Berkeley) 05/11/92
  */
 
 /*
@@ -829,8 +829,11 @@ nfsmout:
 		if (rep == &nfsreqh) {
 			nfsstats.rpcunexpected++;
 			m_freem(mrep);
-		} else if (rep == myrep)
+		} else if (rep == myrep) {
+			if (rep->r_mrep == NULL)
+				panic("nfsreply nil");
 			return (0);
+		}
 	}
 }
 
@@ -903,6 +906,8 @@ kerbauth:
 		}
 	} else {
 		auth_type = RPCAUTH_UNIX;
+		if (cred->cr_ngroups < 1)
+			panic("nfsreq nogrps");
 		auth_len = ((((cred->cr_ngroups - 1) > nmp->nm_numgrps) ?
 			nmp->nm_numgrps : (cred->cr_ngroups - 1)) << 2) +
 			5 * NFSX_UNSIGNED;
