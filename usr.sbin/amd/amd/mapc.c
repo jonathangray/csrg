@@ -1,4 +1,4 @@
-/*
+/*-
  * Copyright (c) 1989 Jan-Simon Pendry
  * Copyright (c) 1989 Imperial College of Science, Technology & Medicine
  * Copyright (c) 1989 The Regents of the University of California.
@@ -35,11 +35,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mapc.c	1.2 (Berkeley) 6/25/91
- *
  * $Id: mapc.c,v 5.2.2.1 1992/02/09 15:08:38 jsp beta $
- *
  */
+
+#ifndef lint
+static char sccsid[] = "@(#)mapc.c	5.6 (Berkeley) 07/30/92";
+#endif /* not lint */
 
 /*
  * Mount map cache
