@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	6.8 (Berkeley) 02/21/93
+ *	@(#)conf.h	6.9 (Berkeley) 02/23/93
  */
 
 /*
@@ -160,4 +160,20 @@ struct utsname
 
 #ifndef MAXHOSTNAMELEN
 #define MAXHOSTNAMELEN	256
+#endif
+
+#if !defined(SIGCHLD) && defined(SIGCLD)
+# define SIGCHLD	SIGCLD
+#endif
+
+#ifndef STDIN_FILENO
+#define STDIN_FILENO	0
+#endif
+
+#ifndef STDOUT_FILENO
+#define STDOUT_FILENO	1
+#endif
+
+#ifndef STDERR_FILENO
+#define STDERR_FILENO	2
 #endif
