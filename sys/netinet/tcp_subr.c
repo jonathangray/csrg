@@ -30,10 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_subr.c	7.20 (Berkeley) 12/01/90
+ *	@(#)tcp_subr.c	7.21 (Berkeley) 02/15/92
  */
 
 #include "param.h"
+#include "proc.h"
 #include "systm.h"
 #include "malloc.h"
 #include "mbuf.h"
