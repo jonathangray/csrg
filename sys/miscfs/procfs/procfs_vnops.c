@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)procfs_vnops.c	8.16 (Berkeley) 05/10/95
+ *	@(#)procfs_vnops.c	8.17 (Berkeley) 05/14/95
  *
  * From:
  *	$Id: procfs_vnops.c,v 3.2 1993/12/15 09:40:17 jsp Exp $
@@ -589,6 +589,7 @@ procfs_lookup(ap)
 	struct vnode **vpp = ap->a_vpp;
 	struct vnode *dvp = ap->a_dvp;
 	char *pname = cnp->cn_nameptr;
+	struct proc *curp = cnp->cn_proc;
 	int error = 0;
 	struct proc_target *pt;
 	struct vnode *fvp;
@@ -605,7 +606,7 @@ procfs_lookup(ap)
 	if (cnp->cn_namelen == 1 && *pname == '.') {
 		*vpp = dvp;
 		VREF(dvp);
-		/*VOP_LOCK(dvp);*/
+		/* vn_lock(dvp, LK_EXCLUSIVE | LK_RETRY, curp); */
 		return (0);
 	}
 
@@ -649,7 +650,7 @@ procfs_lookup(ap)
 			fvp = procfs_findtextvp(p);
 			/* We already checked that it exists. */
 			VREF(fvp);
-			VOP_LOCK(fvp);
+			vn_lock(fvp, LK_EXCLUSIVE | LK_RETRY, curp);
 			*vpp = fvp;
 			return (0);
 		}
