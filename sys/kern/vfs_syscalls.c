@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	7.85 (Berkeley) 06/19/92
+ *	@(#)vfs_syscalls.c	7.86 (Berkeley) 06/20/92
  */
 
 #include "param.h"
@@ -133,9 +133,8 @@ mount(p, uap, retval)
 	 */
 	mp = (struct mount *)malloc((u_long)sizeof(struct mount),
 		M_MOUNT, M_WAITOK);
+	bzero((char *)mp, (u_long)sizeof(struct mount));
 	mp->mnt_op = vfssw[uap->type];
-	mp->mnt_flag = 0;
-	mp->mnt_mounth = NULLVP;
 	if (error = vfs_lock(mp)) {
 		free((caddr_t)mp, M_MOUNT);
 		vput(vp);
