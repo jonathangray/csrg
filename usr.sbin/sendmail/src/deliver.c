@@ -6,7 +6,7 @@
 # include <log.h>
 # endif LOG
 
-static char SccsId[] = "@(#)deliver.c	2.1.1.1	11/20/80";
+static char SccsId[] = "@(#)deliver.c	2.2	11/20/80";
 
 /*
 **  DELIVER -- Deliver a message to a particular address.
@@ -70,6 +70,7 @@ deliver(to, editfcn)
 	FILE *mfile;
 	extern putheader();
 	extern pipesig();
+	extern bool GotHdr;
 
 	/*
 	**  Compute receiving mailer, host, and to addreses.
@@ -158,7 +159,7 @@ deliver(to, editfcn)
 	**  If the mailer wants a From line, insert a new editfcn.
 	*/
 
-	if (flagset(M_HDR, m->m_flags) && editfcn == NULL)
+	if (flagset(M_HDR, m->m_flags) && editfcn == NULL && !GotHdr)
 		editfcn = putheader;
 
 	/*
