@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_prf.c	7.26 (Berkeley) 05/28/91
+ *	@(#)subr_prf.c	7.27 (Berkeley) 05/28/91
  */
 
 #include "param.h"
@@ -75,8 +75,8 @@ int	(*v_putc)() = cnputc;          	/* routine to putc on virtual console */
 
 static void  logpri __P((int level));
 static void  putchar __P((int ch, int flags, struct tty *tp));
-static void  kprintf __P((const char *fmt, int flags, struct tty *tp, va_list));
 static char *ksprintn __P((u_long num, int base, int *len));
+void  kprintf __P((const char *fmt, int flags, struct tty *tp, va_list));
 
 extern	cnputc();			/* standard console putc */
 extern	struct tty cons;		/* standard console tty */
@@ -341,7 +341,7 @@ printf(fmt /*, va_alist */)
  * Space or zero padding and a field width are supported for the numeric
  * formats only.
  */
-static void
+void
 kprintf(fmt, flags, tp, ap)
 	register const char *fmt;
 	int flags;
