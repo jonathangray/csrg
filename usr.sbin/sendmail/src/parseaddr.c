@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	6.18 (Berkeley) 02/21/93";
+static char sccsid[] = "@(#)parseaddr.c	6.19 (Berkeley) 02/23/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -157,7 +157,7 @@ parseaddr(addr, a, copyf, delim, e)
 	if ((pvp[0][0] & 0377) != CANONNET)
 	{
 		setstat(EX_USAGE);
-		usrerr("cannot resolve name");
+		syserr("554 cannot resolve name");
 		return (NULL);
 	}
 
@@ -208,7 +208,7 @@ invalidaddr(addr)
 		if ((*addr & 0340) != 0200)
 			continue;
 		setstat(EX_USAGE);
-		usrerr("Address contained invalid control characters");
+		usrerr("553 Address contained invalid control characters");
 		return TRUE;
 	}
 	return FALSE;
@@ -439,7 +439,7 @@ prescan(addr, delim, pvpbuf)
 				/* see if there is room */
 				if (q >= &pvpbuf[PSBUFSIZE - 5])
 				{
-					usrerr("Address too long");
+					usrerr("553 Address too long");
 					DelimChar = p;
 					return (NULL);
 				}
@@ -455,18 +455,18 @@ prescan(addr, delim, pvpbuf)
 				/* diagnose and patch up bad syntax */
 				if (state == QST)
 				{
-					usrerr("Unbalanced '\"'");
+					usrerr("553 Unbalanced '\"'");
 					c = '"';
 				}
 				else if (cmntcnt > 0)
 				{
-					usrerr("Unbalanced '('");
+					usrerr("553 Unbalanced '('");
 					c = ')';
 				}
 				else if (anglecnt > 0)
 				{
 					c = '>';
-					usrerr("Unbalanced '<'");
+					usrerr("553 Unbalanced '<'");
 				}
 				else
 					break;
@@ -514,7 +514,7 @@ prescan(addr, delim, pvpbuf)
 			{
 				if (cmntcnt <= 0)
 				{
-					usrerr("Unbalanced ')'");
+					usrerr("553 Unbalanced ')'");
 					DelimChar = p;
 					return (NULL);
 				}
@@ -529,7 +529,7 @@ prescan(addr, delim, pvpbuf)
 			{
 				if (anglecnt <= 0)
 				{
-					usrerr("Unbalanced '>'");
+					usrerr("553 Unbalanced '>'");
 					DelimChar = p;
 					return (NULL);
 				}
@@ -581,7 +581,7 @@ prescan(addr, delim, pvpbuf)
 			}
 			if (avp >= &av[MAXATOM])
 			{
-				syserr("prescan: too many tokens");
+				syserr("553 prescan: too many tokens");
 				DelimChar = p;
 				return (NULL);
 			}
@@ -744,7 +744,7 @@ _rewrite(pvp, ruleset)
 	}
 	if (ruleset < 0 || ruleset >= MAXRWSETS)
 	{
-		syserr("rewrite: illegal ruleset number %d", ruleset);
+		syserr("554 rewrite: illegal ruleset number %d", ruleset);
 		return;
 	}
 	if (pvp == NULL)
@@ -828,7 +828,7 @@ _rewrite(pvp, ruleset)
 			}
 			if (++loopcount > 100)
 			{
-				syserr("Infinite loop in ruleset %d", ruleset);
+				syserr("554 Infinite loop in ruleset %d", ruleset);
 				printf("workspace: ");
 				printav(pvp);
 				break;
@@ -1275,7 +1275,7 @@ backup:
 			}
 			map = stab(mapname, ST_MAP, ST_FIND);
 			if (map == NULL)
-				syserr("rewrite: map %s not found", mapname);
+				syserr("554 rewrite: map %s not found", mapname);
 
 			/* extract the match part */
 			key_rvp = ++rvp;
@@ -1513,7 +1513,7 @@ buildaddr(tv, a)
 	/* figure out what net/mailer to use */
 	if (*tv == NULL || **tv != CANONNET)
 	{
-		syserr("buildaddr: no net");
+		syserr("554 buildaddr: no net");
 		return (NULL);
 	}
 	tv++;
@@ -1544,7 +1544,7 @@ buildaddr(tv, a)
 			(void) strcat(buf, *tv);
 		}
 		if ((**tv & 0377) != CANONUSER)
-			syserr("buildaddr: error: no user");
+			syserr("554 buildaddr: error: no user");
 		cataddr(++tv, buf, sizeof buf, ' ');
 		stripquotes(buf);
 #ifdef LOG
@@ -1563,7 +1563,7 @@ buildaddr(tv, a)
 	}
 	if (m == NULL)
 	{
-		syserr("buildaddr: unknown mailer %s", *tv);
+		syserr("554 buildaddr: unknown mailer %s", *tv);
 		return (NULL);
 	}
 	a->q_mailer = m;
@@ -1573,7 +1573,7 @@ buildaddr(tv, a)
 	{
 		if (!bitnset(M_LOCAL, m->m_flags))
 		{
-			syserr("buildaddr: no host");
+			syserr("554 buildaddr: no host");
 			return (NULL);
 		}
 		a->q_host = NULL;
@@ -1593,7 +1593,7 @@ buildaddr(tv, a)
 	/* figure out the user */
 	if (*tv == NULL || (**tv & 0377) != CANONUSER)
 	{
-		syserr("buildaddr: no user");
+		syserr("554 buildaddr: no user");
 		return (NULL);
 	}
 	tv++;
