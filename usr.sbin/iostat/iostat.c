@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)iostat.c	5.7 (Berkeley) 04/24/91";
+static char sccsid[] = "@(#)iostat.c	5.8 (Berkeley) 04/24/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -308,8 +308,7 @@ main(argc, argv)
 
 		if (reps >= 0 && --reps <= 0)
 			break;
-		if (interval)
-			(void)sleep(interval);
+		(void)sleep(interval);
 	}
 	exit(0);
 }
