@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_lookup.c	8.5 (Berkeley) 05/21/94
+ *	@(#)vfs_lookup.c	8.6 (Berkeley) 11/21/94
  */
 
 #include <sys/param.h>
