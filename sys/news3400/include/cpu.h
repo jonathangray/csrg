@@ -34,13 +34,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cpu.h	7.2 (Berkeley) 07/28/92
+ *	@(#)cpu.h	7.3 (Berkeley) 12/17/92
  */
 
 #ifndef _CPU_H_
 #define _CPU_H_
 
-#include "machConst.h"
+#include <machine/machConst.h>
 
 /*
  * Exported definitions unique to pmax/mips cpu support.
