@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 1982, 1992 Regents of the University of California.
+ * Copyright (c) 1982, 1992 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,9 +30,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_lereg.h	7.1 (Berkeley) 07/13/92
+ *	@(#)if_lereg.h	7.2 (Berkeley) 04/20/93
  *
- * from: $Header: if_lereg.h,v 1.5 92/07/10 06:45:26 torek Exp $
+ * from: $Header: if_lereg.h,v 1.6 92/11/26 02:28:12 torek Exp $
  */
 
 #define	LEMTU		1518
