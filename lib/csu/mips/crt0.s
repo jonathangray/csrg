@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)crt0.s	5.6 (Berkeley) 02/21/93
+ *	@(#)crt0.s	5.7 (Berkeley) 02/26/93
  */
 
 #include <machine/regdef.h>
@@ -49,7 +49,7 @@ $L1:
 	.word	0		# null string plus padding
 	.text
 
-NON_LEAF(__start, 24, ra)
+NON_LEAF(start, 24, ra)
 	.set	noreorder
 	lw	s0, 0(sp)	# get argc from stack
 	addu	s1, sp, 4	# get pointer to argv
@@ -66,8 +66,8 @@ eprol:
 	la	a1, etext
 	jal	monstartup	# monstartup(eprol, etext);
 	nop
-	la	a0, mcleanup
-	jal	atexit		# atext(mcleanup);
+	la	a0, _mcleanup
+	jal	atexit		# atext(_mcleanup);
 	nop
 	sw	zero, errno
 #endif
@@ -91,7 +91,7 @@ eprol:
 	move	a0, v0
 	break	0
 	.set	reorder
-END(__start)
+END(start)
 
 LEAF(__main)
 	j	ra
