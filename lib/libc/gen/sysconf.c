@@ -35,11 +35,13 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)sysconf.c	5.2 (Berkeley) 05/24/93";
+static char sccsid[] = "@(#)sysconf.c	5.3 (Berkeley) 05/24/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
 #include <sys/sysctl.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 
 #include <errno.h>
 #include <unistd.h>
@@ -61,6 +63,7 @@ sysconf(name)
 	int name;
 {
 	struct clockinfo clk;
+	struct rlimit rl;
 	size_t len;
 	int mib[2], value;
 
@@ -73,9 +76,7 @@ sysconf(name)
 		mib[1] = KERN_ARGMAX;
 		break;
 	case _SC_CHILD_MAX:
-		mib[0] = CTL_KERN;
-		mib[1] = KERN_MAXUPROC;
-		break;
+		return (getrlimit(RLIMIT_NPROC, &rl) ? -1 : rl.rlim_max);
 	case _SC_CLK_TCK:
 		return (CLK_TCK);
 	case _SC_JOB_CONTROL:
@@ -87,9 +88,7 @@ sysconf(name)
 		mib[1] = KERN_NGROUPS;
 		break;
 	case _SC_OPEN_MAX:
-		mib[0] = CTL_KERN;
-		mib[1] = KERN_MAXUFILES;
-		break;
+		return (getrlimit(RLIMIT_NOFILE, &rl) ? -1 : rl.rlim_max);
 	case _SC_STREAM_MAX:
 		mib[0] = CTL_USER;
 		mib[1] = USER_STREAM_MAX;
