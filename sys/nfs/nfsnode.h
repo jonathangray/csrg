@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsnode.h	7.20 (Berkeley) 05/13/92
+ *	@(#)nfsnode.h	7.21 (Berkeley) 05/13/92
  */
 
 /*
