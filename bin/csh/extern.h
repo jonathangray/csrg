@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.8 (Berkeley) 09/06/91
+ *	@(#)extern.h	5.9 (Berkeley) 10/27/91
  */
 
 #include <sys/cdefs.h>
@@ -145,7 +145,7 @@ void	func __P((struct command *, struct biltins *));
 struct	biltins *
 	isbfunc __P((struct command *));
 void	prvars __P((void));
-void	search __P((int, int, Char *));
+void	gotolab __P((Char *));
 int	srchx __P((Char *));
 void	unalias __P((Char **, struct command *));
 void	wfree __P((void));
