@@ -30,12 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	7.68 (Berkeley) 01/14/92
+ *	@(#)ffs_vnops.c	7.69 (Berkeley) 02/03/92
  */
 
 #include <sys/param.h>
 #include <sys/systm.h>
-#include <sys/namei.h>
 #include <sys/resourcevar.h>
 #include <sys/kernel.h>
 #include <sys/file.h>
@@ -190,7 +189,6 @@ struct vnodeops ffs_fifoops = {
 };
 #endif /* FIFO */
 
-int	maknode __P((int, struct nameidata *, struct inode **));
 
 /*
  * Vnode op for reading.
