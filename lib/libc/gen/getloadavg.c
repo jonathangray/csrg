@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)getloadavg.c	6.6 (Berkeley) 04/27/93";
+static char sccsid[] = "@(#)getloadavg.c	6.7 (Berkeley) 05/25/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -55,7 +55,8 @@ getloadavg(loadavg, nelem)
 	int nelem;
 {
 	struct loadavg loadinfo;
-	int size, i, mib[2];
+	int i, mib[2];
+	size_t size;
 
 	mib[0] = CTL_VM;
 	mib[1] = VM_LOADAVG;
