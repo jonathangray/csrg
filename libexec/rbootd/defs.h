@@ -38,7 +38,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)defs.h	5.2 (Berkeley) 07/23/92
+ *	@(#)defs.h	8.1 (Berkeley) 06/04/93
  *
  * Utah $Hdr: defs.h 3.1 92/07/06$
  * Author: Jeff Forys, University of Utah CSS
