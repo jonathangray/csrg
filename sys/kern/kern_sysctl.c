@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sysctl.c	7.17 (Berkeley) 06/26/91
+ *	@(#)kern_sysctl.c	7.18 (Berkeley) 08/28/91
  */
 
 #include "param.h"
@@ -47,6 +47,7 @@
 
 #define snderr(e) { error = (e); goto release;}
 extern int kinfo_doproc(), kinfo_rtable(), kinfo_vnode(), kinfo_file();
+extern int kinfo_meter();
 struct kinfo_lock kinfo_lock;
 
 /* ARGSUSED */
@@ -84,6 +85,10 @@ getkerninfo(p, uap, retval)
 
 	case KINFO_FILE:
 		server = kinfo_file;
+		break;
+
+	case KINFO_METER:
+		server = kinfo_meter;
 		break;
 
 	default:
