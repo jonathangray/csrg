@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.182 (Berkeley) 06/10/95
+ *	@(#)conf.h	8.183 (Berkeley) 06/10/95
  */
 
 /*
@@ -251,6 +251,7 @@ extern void	hard_syslog(int, char *, ...);
 # endif
 # if defined(IRIX64) || defined(IRIX5)
 #  define ARGV_T	char *const *
+#  define HASSETRLIMIT	1	/* has setrlimit(2) syscall */
 # else
 #  define ARGV_T	const char **
 #  define WAITUNION	1	/* use "union wait" as wait argument type */
