@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.70 (Berkeley) 12/26/93
+ *	@(#)conf.h	8.71 (Berkeley) 12/29/93
  */
 
 /*
@@ -195,7 +195,9 @@
 
 # ifdef SOLARIS
 			/* Solaris 2.x (a.k.a. SunOS 5.x) */
-			/* see also __svr4__ defines below */
+#  ifndef __svr4__
+#   define __svr4__		/* use all System V Releae 4 defines below */
+#  endif
 #  include <sys/time.h>
 #  define gethostbyname	solaris_gethostbyname	/* get working version */
 #  define gethostbyaddr	solaris_gethostbyaddr	/* get working version */
