@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)pxinfo.h	5.2 (Berkeley) 04/07/87
+ *	@(#)pxinfo.h	5.3 (Berkeley) 01/09/89
  */
 
 /*
