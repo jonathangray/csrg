@@ -1,4 +1,8 @@
-.\"	@(#)network.ms	5.3 (Berkeley) 05/25/86
+.\" This module is believed to contain source code proprietary to AT&T.
+.\" Use and redistribution is subject to the Berkeley Software License
+.\" Agreement and your Software Agreement with AT&T (Western Electric).
+.\"
+.\"	@(#)network.ms	5.4 (Berkeley) 04/17/91
 .\"
 .EH 'SMM:21-%''A Dial-Up Network of \s-2UNIX\s+2 Systems'
 .OH 'Dial-Up Network of \s-2UNIX\s+2 Systems''SMM:21-%'
