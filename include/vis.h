@@ -30,8 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vis.h	5.8 (Berkeley) 02/23/91
+ *	@(#)vis.h	5.9 (Berkeley) 04/03/91
  */
+
+#ifndef _VIS_H_
+#define	_VIS_H_
 
 /*
  * to select alternate encoding format
@@ -77,3 +80,5 @@ int	strvisx __P((char *, const char *, size_t, int));
 int	strunvis __P((char *, const char *));
 int	unvis __P((char *, char, int *, int));
 __END_DECLS
+
+#endif /* !_VIS_H_ */
