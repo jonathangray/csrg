@@ -1,6 +1,10 @@
 # include "sendmail.h"
 
-static char	SccsId[] =	"@(#)srvrsmtp.c	3.10	11/21/81";
+# ifndef SMTP
+static char	SccsId[] =	"@(#)srvrsmtp.c	3.11	12/05/81	(no SMTP)";
+# else SMTP
+
+static char	SccsId[] =	"@(#)srvrsmtp.c	3.11	12/05/81";
 
 /*
 **  SMTP -- run the SMTP protocol.
@@ -411,3 +415,5 @@ paddrtree(a)
 			message("550", "User unknown");
 	}
 }
+
+# endif SMTP
