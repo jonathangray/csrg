@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	8.127 (Berkeley) 03/11/95";
+static char sccsid[] = "@(#)deliver.c	8.128 (Berkeley) 03/11/95";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -2304,6 +2304,8 @@ putbody(mci, e, separator)
 
 	if (bitset(MCIF_CVT8TO7, mci->mci_flags))
 	{
+		char *boundaries[MAXMIMENESTING + 1];
+
 		/*
 		**  Do 8 to 7 bit MIME conversion.
 		*/
@@ -2320,7 +2322,8 @@ putbody(mci, e, separator)
 		}
 
 		/* now do the hard work */
-		mime8to7(mci, e->e_header, e, NULL);
+		boundaries[0] = NULL;
+		mime8to7(mci, e->e_header, e, boundaries, M87F_OUTER);
 	}
 	else
 	{
