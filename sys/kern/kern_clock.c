@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_clock.c	7.23 (Berkeley) 07/10/92
+ *	@(#)kern_clock.c	7.24 (Berkeley) 07/16/92
  */
 
 #include "param.h"
@@ -174,7 +174,8 @@ hardclock(frame)
 		statclock(frame);
 
 	/*
-	 * Increment the time-of-day.
+	 * Increment the time-of-day.  The increment is just ``tick'' unless
+	 * we are still adjusting the clock; see adjtime().
 	 */
 #ifdef ADJTIME
 	if (adjtimedelta == 0)
@@ -189,22 +190,14 @@ hardclock(frame)
 		}
 	}
 #else
-	if (timedelta == 0) {
-		BUMPTIME(&time, tick);
-		BUMPTIME(&mono_time, tick);
-	} else {
-		register int delta;
-
-		if (timedelta < 0) {
-			delta = tick - tickdelta;
-			timedelta += tickdelta;
-		} else {
-			delta = tick + tickdelta;
-			timedelta -= tickdelta;
-		}
-		BUMPTIME(&time, delta);
-		BUMPTIME(&mono_time, delta);
+	if (timedelta == 0)
+		delta = tick;
+	else {
+		delta = tick + tickdelta;
+		timedelta -= tickdelta;
 	}
+	BUMPTIME(&time, delta);
+	BUMPTIME(&mono_time, delta);
 
 	/*
 	 * Process callouts at a very low cpu priority, so we don't keep the
