@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)function.c	5.15 (Berkeley) 05/23/91";
+static char sccsid[] = "@(#)function.c	5.16 (Berkeley) 05/24/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -69,13 +69,7 @@ static char sccsid[] = "@(#)function.c	5.15 (Berkeley) 05/23/91";
 	return(0); \
 }
 
-#define NEW(t, f) { \
-	new = (PLAN *)emalloc(sizeof(PLAN)); \
-	new->type = t; \
-	new->eval = f; \
-	new->flags = 0; \
-	new->next = NULL; \
-}
+static PLAN *palloc __P((enum ntype, int (*)()));
 
 /*
  * find_parsenum --
@@ -88,7 +82,6 @@ find_parsenum(plan, option, str, endch)
 {
 	long value;
 	char *endchar;		/* pointer to character ending conversion */
-	void bad_arg();
     
 	/* determine comparison from leading + or - */
 	switch(*str) {
@@ -113,7 +106,7 @@ find_parsenum(plan, option, str, endch)
 	value = strtol(str, &endchar, 10);
 	if (!value && endchar == str ||
 	    endchar[0] && (!endch || endchar[0] != *endch))
-		bad_arg(option, "illegal numeric value");
+		err("%s: %s", option, "illegal numeric value");
 	if (endch)
 		*endch = endchar[0];
 	return(value);
@@ -144,8 +137,8 @@ c_atime(arg)
 
 	ftsoptions &= ~FTS_NOSTAT;
 
-	NEW(N_ATIME, f_atime);
-	new->t_data = find_parsenum(new, "-atime", arg, (char *)NULL);
+	new = palloc(N_ATIME, f_atime);
+	new->t_data = find_parsenum(new, "-atime", arg, NULL);
 	return(new);
 }
 /*
@@ -172,7 +165,7 @@ c_ctime(arg)
 
 	ftsoptions &= ~FTS_NOSTAT;
 
-	NEW(N_CTIME, f_ctime);
+	new = palloc(N_CTIME, f_ctime);
 	new->t_data = find_parsenum(new, "-ctime", arg, (char *)NULL);
 	return(new);
 }
@@ -195,12 +188,9 @@ f_always_true(plan, entry)
 PLAN *
 c_depth()
 {
-	PLAN *new;
-    
 	isdepth = 1;
 
-	NEW(N_DEPTH, f_always_true);
-	return(new);
+	return(palloc(N_DEPTH, f_always_true));
 }
  
 /*
@@ -222,7 +212,6 @@ f_exec(plan, entry)
 	register int cnt;
 	pid_t pid;
 	int status;
-	void brace_subst();
 
 	for (cnt = 0; plan->e_argv[cnt]; ++cnt)
 		if (plan->e_len[cnt])
@@ -234,13 +223,11 @@ f_exec(plan, entry)
 
 	switch(pid = vfork()) {
 	case -1:
-		error("fork", errno);
-		exit(1);
+		err("fork: %s", strerror(errno));
 		/* NOTREACHED */
 	case 0:
 		execvp(plan->e_argv[0], plan->e_argv);
-		error(plan->e_argv[0], errno);
-		exit(1);
+		err("%s: %s", plan->e_argv[0], strerror(errno));
 		/* NOTREACHED */
 	}
 	pid = waitpid(pid, &status, 0);
@@ -262,18 +249,18 @@ c_exec(argvp, isok)
 	PLAN *new;			/* node returned */
 	register int cnt;
 	register char **argv, **ap, *p;
-	void bad_arg();
 
 	if (!isrelative)
 		ftsoptions |= FTS_NOCHDIR;
 	isoutput = 1;
     
-	NEW(N_EXEC, f_exec);
+	new = palloc(N_EXEC, f_exec);
 	new->flags = isok;
 
 	for (ap = argv = *argvp;; ++ap) {
 		if (!*ap)
-			bad_arg(isok ? "-ok" : "-exec", "no terminating \";\"");
+			err("%s: %s",
+			    isok ? "-ok" : "-exec", "no terminating \";\"");
 		if (**ap == ';')
 			break;
 	}
@@ -311,13 +298,10 @@ c_exec(argvp, isok)
 PLAN *
 c_follow()
 {
-	PLAN *new;
-    
 	ftsoptions &= ~FTS_PHYSICAL;
 	ftsoptions |= FTS_LOGICAL;
 
-	NEW(N_FOLLOW, f_always_true);
-	return(new);
+	return(palloc(N_FOLLOW, f_always_true));
 }
  
 /*
@@ -357,10 +341,8 @@ f_fstype(plan, entry)
 		} else 
 			p = NULL;
 
-		if (statfs(entry->fts_accpath, &sb)) {
-			error(entry->fts_accpath, errno);
-			exit(1);
-		}
+		if (statfs(entry->fts_accpath, &sb))
+			err("%s: %s", entry->fts_accpath, strerror(errno));
 
 		if (p) {
 			p[0] = save[0];
@@ -382,7 +364,7 @@ c_fstype(arg)
     
 	ftsoptions &= ~FTS_NOSTAT;
     
-	NEW(N_FSTYPE, f_fstype);
+	new = palloc(N_FSTYPE, f_fstype);
 	switch(*arg) {
 	case 'l':
 		if (!strcmp(arg, "local")) {
@@ -415,8 +397,7 @@ c_fstype(arg)
 		}
 		break;
 	}
-	(void)fprintf(stderr, "find: unknown file type %s.\n", arg);
-	exit(1);
+	err("unknown file type %s", arg);
 	/* NOTREACHED */
 }
  
@@ -441,7 +422,6 @@ c_group(gname)
 	PLAN *new;
 	struct group *g;
 	gid_t gid;
-	void bad_arg();
     
 	ftsoptions &= ~FTS_NOSTAT;
 
@@ -449,11 +429,11 @@ c_group(gname)
 	if (g == NULL) {
 		gid = atoi(gname);
 		if (gid == 0 && gname[0] != '0')
-			bad_arg("-group", "no such group");
+			err("%s: %s", "-group", "no such group");
 	} else
 		gid = g->gr_gid;
     
-	NEW(N_GROUP, f_group);
+	new = palloc(N_GROUP, f_group);
 	new->g_data = gid;
 	return(new);
 }
@@ -478,7 +458,7 @@ c_inum(arg)
     
 	ftsoptions &= ~FTS_NOSTAT;
     
-	NEW(N_INUM, f_inum);
+	new = palloc(N_INUM, f_inum);
 	new->i_data = find_parsenum(new, "-inum", arg, (char *)NULL);
 	return(new);
 }
@@ -503,7 +483,7 @@ c_links(arg)
     
 	ftsoptions &= ~FTS_NOSTAT;
     
-	NEW(N_LINKS, f_links);
+	new = palloc(N_LINKS, f_links);
 	new->l_data = (nlink_t)find_parsenum(new, "-links", arg, (char *)NULL);
 	return(new);
 }
@@ -527,13 +507,10 @@ f_ls(plan, entry)
 PLAN *
 c_ls()
 {
-	PLAN *new;
-    
 	ftsoptions &= ~FTS_NOSTAT;
 	isoutput = 1;
     
-	NEW(N_LS, f_ls);
-	return(new);
+	return(palloc(N_LS, f_ls));
 }
 
 /*
@@ -555,7 +532,7 @@ c_name(pattern)
 {
 	PLAN *new;
 
-	NEW(N_NAME, f_name);
+	new = palloc(N_NAME, f_name);
 	new->c_data = pattern;
 	return(new);
 }
@@ -583,11 +560,9 @@ c_newer(filename)
     
 	ftsoptions &= ~FTS_NOSTAT;
 
-	if (stat(filename, &sb)) {
-		error(filename, errno);
-		exit(1);
-	}
-	NEW(N_NEWER, f_newer);
+	if (stat(filename, &sb))
+		err("%s: %s", filename, strerror(errno));
+	new = palloc(N_NEWER, f_newer);
 	new->t_data = sb.st_mtime;
 	return(new);
 }
@@ -611,12 +586,9 @@ f_nogroup(plan, entry)
 PLAN *
 c_nogroup()
 {
-	PLAN *new;
-    
 	ftsoptions &= ~FTS_NOSTAT;
 
-	NEW(N_NOGROUP, f_nogroup);
-	return(new);
+	return(palloc(N_NOGROUP, f_nogroup));
 }
  
 /*
@@ -638,12 +610,9 @@ f_nouser(plan, entry)
 PLAN *
 c_nouser()
 {
-	PLAN *new;
-    
 	ftsoptions &= ~FTS_NOSTAT;
 
-	NEW(N_NOUSER, f_nouser);
-	return(new);
+	return(palloc(N_NOUSER, f_nouser));
 }
  
 /*
@@ -674,11 +643,10 @@ c_perm(perm)
 {
 	PLAN *new;
 	mode_t *set;
-	void bad_arg();
 
 	ftsoptions &= ~FTS_NOSTAT;
 
-	NEW(N_PERM, f_perm);
+	new = palloc(N_PERM, f_perm);
 
 	if (*perm == '-') {
 		new->flags = 1;
@@ -686,7 +654,7 @@ c_perm(perm)
 	}
 
 	if ((set = setmode(perm)) == NULL)
-		bad_arg("-perm", "illegal mode string");
+		err("%s: %s", "-perm", "illegal mode string");
 
 	new->m_data = getmode(set, 0);
 	return(new);
@@ -710,12 +678,9 @@ f_print(plan, entry)
 PLAN *
 c_print()
 {
-	PLAN *new;
-    
 	isoutput = 1;
 
-	NEW(N_PRINT, f_print);
-	return(new);
+	return(palloc(N_PRINT, f_print));
 }
  
 /*
@@ -730,20 +695,15 @@ f_prune(plan, entry)
 {
 	extern FTS *tree;
 
-	if (fts_set(tree, entry, FTS_SKIP)) {
-		error(entry->fts_path, errno);
-		exit(1);
-	}
+	if (fts_set(tree, entry, FTS_SKIP))
+		err("%s: %s", entry->fts_path, strerror(errno));
 	return(1);
 }
  
 PLAN *
 c_prune()
 {
-	PLAN *new;
-
-	NEW(N_PRUNE, f_prune);
-	return(new);
+	return(palloc(N_PRUNE, f_prune));
 }
  
 /*
@@ -776,7 +736,7 @@ c_size(arg)
     
 	ftsoptions &= ~FTS_NOSTAT;
 
-	NEW(N_SIZE, f_size);
+	new = palloc(N_SIZE, f_size);
 	new->o_data = find_parsenum(new, "-size", arg, &endch);
 	if (endch == 'c')
 		divsize = 0;
@@ -803,7 +763,6 @@ c_type(typestring)
 {
 	PLAN *new;
 	mode_t  mask;
-	void bad_arg();
     
 	ftsoptions &= ~FTS_NOSTAT;
 
@@ -830,10 +789,10 @@ c_type(typestring)
 		mask = S_IFSOCK;
 		break;
 	default:
-		bad_arg("-type", "unknown type");
+		err("%s: %s", "-type", "unknown type");
 	}
     
-	NEW(N_TYPE, f_type);
+	new = palloc(N_TYPE, f_type);
 	new->m_data = mask;
 	return(new);
 }
@@ -859,7 +818,6 @@ c_user(username)
 	PLAN *new;
 	struct passwd *p;
 	uid_t uid;
-	void bad_arg();
     
 	ftsoptions &= ~FTS_NOSTAT;
 
@@ -867,11 +825,11 @@ c_user(username)
 	if (p == NULL) {
 		uid = atoi(username);
 		if (uid == 0 && username[0] != '0')
-			bad_arg("-user", "no such user");
+			err("%s: %s", "-user", "no such user");
 	} else
 		uid = p->pw_uid;
 
-	NEW(N_USER, f_user);
+	new = palloc(N_USER, f_user);
 	new->u_data = uid;
 	return(new);
 }
@@ -885,12 +843,9 @@ c_user(username)
 PLAN *
 c_xdev()
 {
-	PLAN *new;
-    
 	ftsoptions |= FTS_XDEV;
 
-	NEW(N_XDEV, f_always_true);
-	return(new);
+	return(palloc(N_XDEV, f_always_true));
 }
 
 /*
@@ -918,19 +873,13 @@ f_expr(plan, entry)
 PLAN *
 c_openparen()
 {
-	PLAN *new;
-
-	NEW(N_OPENPAREN, (int (*)())-1);
-	return(new);
+	return(palloc(N_OPENPAREN, (int (*)())-1));
 }
  
 PLAN *
 c_closeparen()
 {
-	PLAN *new;
-
-	NEW(N_CLOSEPAREN, (int (*)())-1);
-	return(new);
+	return(palloc(N_CLOSEPAREN, (int (*)())-1));
 }
  
 /*
@@ -957,7 +906,7 @@ c_mtime(arg)
 
 	ftsoptions &= ~FTS_NOSTAT;
 
-	NEW(N_MTIME, f_mtime);
+	new = palloc(N_MTIME, f_mtime);
 	new->t_data = find_parsenum(new, "-mtime", arg, (char *)NULL);
 	return(new);
 }
@@ -982,10 +931,7 @@ f_not(plan, entry)
 PLAN *
 c_not()
 {
-	PLAN *new;
-
-	NEW(N_NOT, f_not);
-	return(new);
+	return(palloc(N_NOT, f_not));
 }
  
 /*
@@ -1015,8 +961,23 @@ f_or(plan, entry)
 PLAN *
 c_or()
 {
+	return(palloc(N_OR, f_or));
+}
+
+static PLAN *
+palloc(t, f)
+	enum ntype t;
+	int (*f)();
+{
 	PLAN *new;
 
-	NEW(N_OR, f_or);
-	return(new);
+	if (new = malloc(sizeof(PLAN))) {
+		new->type = t;
+		new->eval = f;
+		new->flags = 0;
+		new->next = NULL;
+		return(new);
+	}
+	err("%s", strerror(errno));
+	/* NOTREACHED */
 }
