@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_inet.c	7.10 (Berkeley) 10/02/91
+ *	@(#)tp_inet.c	7.11 (Berkeley) 10/11/92
  */
 
 /***********************************************************
@@ -84,25 +84,27 @@ SOFTWARE.
 
 #ifdef INET
 
-#include "param.h"
-#include "socket.h"
-#include "socketvar.h"
-#include "mbuf.h"
-#include "errno.h"
-#include "time.h"
-#include "../net/if.h"
-#include "tp_param.h"
-#include "argo_debug.h"
-#include "tp_stat.h"
-#include "tp_ip.h"
-#include "tp_pcb.h"
-#include "tp_trace.h"
-#include "tp_stat.h"
-#include "tp_tpdu.h"
-#include "../netinet/in_var.h"
+#include <sys/param.h>
+#include <sys/socket.h>
+#include <sys/socketvar.h>
+#include <sys/mbuf.h>
+#include <sys/errno.h>
+#include <sys/time.h>
+
+#include <net/if.h>
+
+#include <netiso/tp_param.h>
+#include <netiso/argo_debug.h>
+#include <netiso/tp_stat.h>
+#include <netiso/tp_ip.h>
+#include <netiso/tp_pcb.h>
+#include <netiso/tp_trace.h>
+#include <netiso/tp_stat.h>
+#include <netiso/tp_tpdu.h>
+#include <netinet/in_var.h>
 
 #ifndef ISO
-#include "iso_chksum.c"
+#include <netiso/iso_chksum.c>
 #endif
 
 /*
@@ -546,8 +548,8 @@ discard:
 }
 
 
-#include "protosw.h"
-#include "../netinet/ip_icmp.h"
+#include <sys/protosw.h>
+#include <netinet/ip_icmp.h>
 
 extern void tp_quench();
 /*
