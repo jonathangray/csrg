@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_serv.c	7.64 (Berkeley) 04/29/93
+ *	@(#)nfs_serv.c	7.65 (Berkeley) 05/21/93
  */
 
 /*
@@ -456,6 +456,11 @@ nfsrv_read(nfsd, mrep, md, dpos, cred, nam, mrq)
 	nfsm_srvstrsiz(cnt, NFS_MAXDATA);
 	if (error = nfsrv_fhtovp(fhp, TRUE, &vp, cred, nfsd->nd_slp, nam, &rdonly))
 		nfsm_reply(0);
+	if (vp->v_type != VREG) {
+		error = (vp->v_type == VDIR) ? EISDIR : EACCES;
+		vput(vp);
+		nfsm_reply(0);
+	}
 	nqsrv_getl(vp, NQL_READ);
 	if ((error = nfsrv_access(vp, VREAD, cred, rdonly, nfsd->nd_procp)) &&
 	    (error = nfsrv_access(vp, VEXEC, cred, rdonly, nfsd->nd_procp))) {
@@ -590,6 +595,11 @@ nfsrv_write(nfsd, mrep, md, dpos, cred, nam, mrq)
 	}
 	if (error = nfsrv_fhtovp(fhp, TRUE, &vp, cred, nfsd->nd_slp, nam, &rdonly))
 		nfsm_reply(0);
+	if (vp->v_type != VREG) {
+		error = (vp->v_type == VDIR) ? EISDIR : EACCES;
+		vput(vp);
+		nfsm_reply(0);
+	}
 	nqsrv_getl(vp, NQL_WRITE);
 	if (error = nfsrv_access(vp, VWRITE, cred, rdonly, nfsd->nd_procp)) {
 		vput(vp);
