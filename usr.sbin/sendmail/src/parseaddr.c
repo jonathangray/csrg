@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	6.45 (Berkeley) 04/26/93";
+static char sccsid[] = "@(#)parseaddr.c	6.46 (Berkeley) 04/29/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1967,9 +1967,12 @@ remotename(name, m, flags, pstat, e)
 	*/
 
 	else
+	{
 	if (rwset > 0)
+	{
 		if (rewrite(pvp, rwset, e) == EX_TEMPFAIL)
 			*pstat = EX_TEMPFAIL;
+	}
 
 	/*
 	**  Do any final sanitation the address may require.
