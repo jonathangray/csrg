@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	6.12 (Berkeley) 01/28/93";
+static char sccsid[] = "@(#)conf.c	6.13 (Berkeley) 02/12/93";
 #endif /* not lint */
 
 # include <sys/ioctl.h>
@@ -936,7 +936,7 @@ getdtablesize()
 **  UNAME -- get the UUCP name of this system.
 */
 
-#ifndef UNAME
+#ifndef HASUNAME
 
 int
 uname(name)
@@ -993,4 +993,4 @@ uname(name)
 	
 	return (-1);
 }
-#endif /* UNAME */
+#endif /* HASUNAME */
