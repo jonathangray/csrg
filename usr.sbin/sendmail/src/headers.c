@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)headers.c	6.27 (Berkeley) 03/31/93";
+static char sccsid[] = "@(#)headers.c	6.28 (Berkeley) 04/01/93";
 #endif /* not lint */
 
 # include <errno.h>
@@ -301,6 +301,8 @@ isheader(s)
 **
 **	Parameters:
 **		e -- the envelope to process.
+**		full -- if set, do full processing (e.g., compute
+**			message priority).
 **
 **	Returns:
 **		none.
@@ -311,8 +313,9 @@ isheader(s)
 **		Aborts the message if the hop count is exceeded.
 */
 
-eatheader(e)
+eatheader(e, full)
 	register ENVELOPE *e;
+	bool full;
 {
 	register HDR *h;
 	register char *p;
@@ -362,7 +365,7 @@ eatheader(e)
 		}
 
 		/* save the message-id for logging */
-		if (!bitset(EF_QUEUERUN, e->e_flags) && h->h_value != NULL &&
+		if (full && h->h_value != NULL &&
 		    strcmp(h->h_field, "message-id") == 0)
 		{
 			msgid = h->h_value;
@@ -392,7 +395,7 @@ eatheader(e)
 	p = hvalue("precedence", e);
 	if (p != NULL)
 		e->e_class = priencode(p);
-	if (!bitset(EF_QUEUERUN, e->e_flags))
+	if (full)
 		e->e_msgpriority = e->e_msgsize
 				 - e->e_class * WkClassFact
 				 + e->e_nrcpts * WkRecipFact;
@@ -414,7 +417,7 @@ eatheader(e)
 	*/
 
 # ifdef LOG
-	if (!bitset(EF_QUEUERUN, e->e_flags) && LogLevel > 4)
+	if (full && LogLevel > 4)
 	{
 		char *name;
 		char hbuf[MAXNAME];
