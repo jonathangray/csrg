@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)res_debug.c	5.31 (Berkeley) 12/28/90
+ *	@(#)res_debug.c	5.32 (Berkeley) 02/21/91
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)res_debug.c	5.31 (Berkeley) 12/28/90";
+static char sccsid[] = "@(#)res_debug.c	5.32 (Berkeley) 02/21/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -42,8 +42,8 @@ static char sccsid[] = "@(#)res_debug.c	5.31 (Berkeley) 12/28/90";
 #include <stdio.h>
 #include <arpa/nameser.h>
 
-extern char *p_cdname(), *p_rr(), *p_type(), *p_class(), *p_time();
 extern char *inet_ntoa();
+static char *p_cdname(), *p_class(), *p_rr(), *p_time(), *p_type();
 
 char *_res_opcodes[] = {
 	"QUERY",
@@ -83,7 +83,7 @@ char *_res_resultcodes[] = {
 	"NOCHANGE",
 };
 
-p_query(msg)
+__p_query(msg)
 	char *msg;
 {
 	fp_query(msg,stdout);
@@ -93,6 +93,7 @@ p_query(msg)
  * Print the contents of a query.
  * This is intended to be primarily a debugging routine.
  */
+static
 fp_query(msg,file)
 	char *msg;
 	FILE *file;
@@ -139,7 +140,8 @@ fp_query(msg,file)
 				return;
 			fprintf(file,", type = %s", p_type(_getshort(cp)));
 			cp += sizeof(u_short);
-			fprintf(file,", class = %s\n\n", p_class(_getshort(cp)));
+			fprintf(file,
+			    ", class = %s\n\n", p_class(_getshort(cp)));
 			cp += sizeof(u_short);
 		}
 	}
@@ -181,7 +183,7 @@ fp_query(msg,file)
 	}
 }
 
-char *
+static char *
 p_cdname(cp, msg, file)
 	char *cp, *msg;
 	FILE *file;
@@ -202,7 +204,7 @@ p_cdname(cp, msg, file)
 /*
  * Print resource record fields in human readable form.
  */
-char *
+static char *
 p_rr(cp, msg, file)
 	char *cp, *msg;
 	FILE *file;
@@ -384,7 +386,7 @@ static	char nbuf[40];
 /*
  * Return a string for the type
  */
-char *
+static char *
 p_type(type)
 	int type;
 {
@@ -444,7 +446,7 @@ p_type(type)
 /*
  * Return a mnemonic for class
  */
-char *
+static char *
 p_class(class)
 	int class;
 {
@@ -465,7 +467,7 @@ p_class(class)
 /*
  * Return a mnemonic for a time to live
  */
-char *
+static char *
 p_time(value)
 	u_long value;
 {
