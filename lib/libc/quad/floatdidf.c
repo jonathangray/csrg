@@ -36,7 +36,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)floatdidf.c	5.3 (Berkeley) 06/02/92";
+static char sccsid[] = "@(#)floatdidf.c	5.4 (Berkeley) 06/25/92";
 #endif /* LIBC_SCCS and not lint */
 
 #include "quad.h"
@@ -45,7 +45,8 @@ static char sccsid[] = "@(#)floatdidf.c	5.3 (Berkeley) 06/02/92";
  * Convert (signed) quad to double.
  */
 double
-__floatdidf(quad x)
+__floatdidf(x)
+	quad_t x;
 {
 	double d;
 	union uu u;
