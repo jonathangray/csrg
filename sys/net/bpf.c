@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)bpf.c	7.4 (Berkeley) 06/17/91
+ *	@(#)bpf.c	7.5 (Berkeley) 07/15/91
  *
  * static char rcsid[] =
  * "$Header: bpf.c,v 1.23 91/01/30 18:22:13 mccanne Exp $";
@@ -698,10 +698,8 @@ bpf_setf(d, fp)
 
 	size = flen * sizeof(*fp->bf_insns);
 	fcode = (struct bpf_insn *)malloc(size, M_DEVBUF, M_WAITOK);
-	if (copyin((caddr_t)fp->bf_insns, (caddr_t)fcode, size))
-		return (EINVAL);
-	
-	if (bpf_validate(fcode, (int)flen)) {
+	if (copyin((caddr_t)fp->bf_insns, (caddr_t)fcode, size) == 0 &&
+	    bpf_validate(fcode, (int)flen)) {
 		s = splimp();
 		d->bd_filter = fcode;
 		reset_d(d);
