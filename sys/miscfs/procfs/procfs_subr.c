@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)procfs_subr.c	8.1 (Berkeley) 01/05/94
+ *	@(#)procfs_subr.c	8.2 (Berkeley) 01/05/94
  *
  * From:
  *	$Id: procfs_subr.c,v 3.2 1993/12/15 09:40:17 jsp Exp $
@@ -94,9 +94,8 @@ loop:
 		if (pfs->pfs_pid == pid &&
 		    pfs->pfs_type == pfs_type &&
 		    PFSTOV(pfs)->v_mount == mp) {
-			if (vget(pfs->pfs_vnode, 1))
+			if (vget(pfs->pfs_vnode, 0))
 				goto loop;
-			VOP_UNLOCK(pfs->pfs_vnode);
 			*vpp = pfs->pfs_vnode;
 			return (0);
 		}
