@@ -37,7 +37,7 @@
  *
  * from: $Hdr: dcm.c 1.26 91/01/21$
  *
- *	@(#)dcm.c	7.14 (Berkeley) 06/27/91
+ *	@(#)dcm.c	7.15 (Berkeley) 02/05/92
  */
 
 /*
@@ -73,8 +73,8 @@
 #endif
 
 int	ttrstrt();
-int	dcmprobe(), dcmstart(), dcmintr(), dcmparam();
-
+int	dcmprobe(), dcmintr(), dcmparam();
+void	dcmstart();
 struct	driver dcmdriver = {
 	dcmprobe, "dcm",
 };
@@ -870,6 +870,7 @@ dcmparam(tp, t)
 	return (0);
 }
  
+void
 dcmstart(tp)
 	register struct tty *tp;
 {
