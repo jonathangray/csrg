@@ -30,10 +30,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)random.c	7.1 (Berkeley) 06/24/92
+ *	@(#)random.c	7.2 (Berkeley) 10/11/92
  */
 
-#include "libkern.h"
+#include <libkern/libkern.h>
 
 /*
  * Pseudo-random number generator for randomizing the profiling clock,
