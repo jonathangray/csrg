@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_glue.c	8.2 (Berkeley) 09/05/93
+ *	@(#)vm_glue.c	8.3 (Berkeley) 09/21/93
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -358,7 +358,7 @@ loop:
 		vm_map_pageable(kernel_map, addr, addr+size, FALSE);
 		(void) splstatclock();
 		if (p->p_stat == SRUN)
-			setrq(p);
+			setrunqueue(p);
 		p->p_flag |= SLOAD;
 		(void) spl0();
 		p->p_time = 0;
