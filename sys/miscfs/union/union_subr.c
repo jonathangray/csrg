@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_subr.c	8.9 (Berkeley) 05/17/94
+ *	@(#)union_subr.c	8.10 (Berkeley) 06/16/94
  */
 
 #include <sys/param.h>
@@ -133,8 +133,8 @@ union_updatevp(un, uppervp, lowervp)
 
 	if (ohash != nhash || !docache) {
 		if (un->un_flags & UN_CACHED) {
-			LIST_REMOVE(un, un_cache);
 			un->un_flags &= ~UN_CACHED;
+			LIST_REMOVE(un, un_cache);
 		}
 	}
 
@@ -514,8 +514,8 @@ union_freevp(vp)
 	struct union_node *un = VTOUNION(vp);
 
 	if (un->un_flags & UN_CACHED) {
-		LIST_REMOVE(un, un_cache);
 		un->un_flags &= ~UN_CACHED;
+		LIST_REMOVE(un, un_cache);
 	}
 
 	if (un->un_uppervp != NULLVP)
@@ -863,12 +863,16 @@ void
 union_removed_upper(un)
 	struct union_node *un;
 {
+
 	if (un->un_flags & UN_ULOCK) {
 		un->un_flags &= ~UN_ULOCK;
 		VOP_UNLOCK(un->un_uppervp);
 	}
 
-	union_newupper(un, NULLVP);
+	if (un->un_flags & UN_CACHED) {
+		un->un_flags &= ~UN_CACHED;
+		LIST_REMOVE(un, un_cache);
+	}
 }
 
 struct vnode *
