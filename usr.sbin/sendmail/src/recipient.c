@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recipient.c	8.5 (Berkeley) 07/17/93";
+static char sccsid[] = "@(#)recipient.c	8.6 (Berkeley) 07/19/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -695,6 +695,8 @@ include(fname, forwarding, ctladdr, sendq, e)
 
 	if (tTd(27, 2))
 		printf("include(%s)\n", fname);
+	if (tTd(27, 4))
+		printf("   ruid=%d euid=%d\n", getuid(), geteuid());
 	if (tTd(27, 14))
 	{
 		printf("ctladdr ");
@@ -738,6 +740,8 @@ include(fname, forwarding, ctladdr, sendq, e)
 		int ret = errno;
 
 		clrevent(ev);
+		if (tTd(27, 4))
+			printf("include: open: %s\n", errstring(ret));
 		return ret;
 	}
 
@@ -796,6 +800,9 @@ include(fname, forwarding, ctladdr, sendq, e)
 		sendto(buf, 1, ctladdr, 0);
 		AliasLevel--;
 	}
+
+	if (ferror(fp) && tTd(27, 3))
+		printf("include: read error: %s\n", errstring(errno));
 	if (nincludes > 0 && !bitset(QSELFREF, ctladdr->q_flags))
 	{
 		if (tTd(27, 5))
