@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty_pty.c	7.25 (Berkeley) 03/14/92
+ *	@(#)tty_pty.c	7.26 (Berkeley) 05/20/92
  */
 
 /*
@@ -136,11 +136,13 @@ ptsclose(dev, flag, mode, p)
 	struct proc *p;
 {
 	register struct tty *tp;
+	int err;
 
 	tp = &pt_tty[minor(dev)];
-	(*linesw[tp->t_line].l_close)(tp, flag);
-	ttyclose(tp);
+	err = (*linesw[tp->t_line].l_close)(tp, flag);
+	err |= ttyclose(tp);
 	ptcwakeup(tp, FREAD|FWRITE);
+	return (err);
 	return (0);
 }
 
@@ -291,6 +293,7 @@ ptcclose(dev)
 	tp->t_state &= ~TS_CARR_ON;
 	tp->t_oproc = 0;		/* mark closed */
 	tp->t_session = 0;
+	return (0);
 	return (0);
 }
 
