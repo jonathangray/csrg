@@ -36,7 +36,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)ar_subs.c	1.3 (Berkeley) 01/16/93";
+static char sccsid[] = "@(#)ar_subs.c	1.4 (Berkeley) 01/16/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -54,7 +54,7 @@ static char sccsid[] = "@(#)ar_subs.c	1.3 (Berkeley) 01/16/93";
 #include "pax.h"
 #include "extern.h"
 
-static void wr_archive __P((register ARCHD *));
+static void wr_archive __P((register ARCHD *, int is_app));
 static int get_arc __P((void));
 static int next_head __P((register ARCHD *));
 extern sigset_t s_mask;
@@ -345,15 +345,17 @@ extract()
 
 #if __STDC__
 static void
-wr_archive(register ARCHD *arcn)
+wr_archive(register ARCHD *arcn, int is_app)
 #else
 static void
-wr_archive(arcn)
+wr_archive(arcn, is_app)
 	register ARCHD *arcn;
+	int is_app;
 #endif
 {
 	register int res;
 	register int hlk;
+	register int wr_one;
 	off_t cnt;
 	int (*wrf)();
 	int fd = -1;
@@ -378,6 +380,11 @@ wr_archive(arcn)
 	 */
 	if (iflag && (name_start() < 0))
 		return;
+
+	/*
+	 * if this not append, and there are no files, we do no write a trailer
+	 */
+	wr_one = is_app;
 
 	/*
 	 * while there are files to archive, process them one at at time
@@ -461,6 +468,7 @@ wr_archive(arcn)
 			rdfile_close(arcn, &fd);
 			break;
 		}
+		wr_one = 1;
 		if (res > 0) {
 			/* 
 			 * format write says no file data needs to be stored
@@ -505,8 +513,10 @@ wr_archive(arcn)
 	 * were matched. block off signals to avoid chance for multiple entry
 	 * into the cleanup code
 	 */
-	(*frmt->end_wr)();
-	wr_fin();
+	if (wr_one) {
+		(*frmt->end_wr)();
+		wr_fin();
+	}
 	(void)sigprocmask(SIG_BLOCK, &s_mask, (sigset_t *)NULL);
 	ar_close();
 	if (tflag)
@@ -669,7 +679,7 @@ append()
 	/*
 	 * go to the writing phase to add the new members
 	 */
-	wr_archive(arcn);
+	wr_archive(arcn, 1);
 }
 
 /*
@@ -697,7 +707,7 @@ archive()
 	if ((*frmt->options)() < 0)
 		return;
 
-	wr_archive(&archd);
+	wr_archive(&archd, 0);
 }
 
 /*
