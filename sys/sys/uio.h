@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uio.h	8.4 (Berkeley) 02/21/94
+ *	@(#)uio.h	8.5 (Berkeley) 02/22/94
  */
 
 #ifndef _SYS_UIO_H_
@@ -45,18 +45,16 @@ struct iovec {
 	size_t	 iov_len;	/* Length. */
 };
 
-#ifdef KERNEL
 enum	uio_rw { UIO_READ, UIO_WRITE };
 
-/*
- * Segment flag values.
- */
+/* Segment flag values. */
 enum uio_seg {
 	UIO_USERSPACE,		/* from user data space */
 	UIO_SYSSPACE,		/* from system space */
 	UIO_USERISPACE		/* from user I space */
 };
 
+#ifdef KERNEL
 struct uio {
 	struct	iovec *uio_iov;
 	int	uio_iovcnt;
