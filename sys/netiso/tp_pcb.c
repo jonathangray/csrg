@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_pcb.c	7.21 (Berkeley) 10/02/91
+ *	@(#)tp_pcb.c	7.22 (Berkeley) 10/02/91
  */
 
 /***********************************************************
@@ -662,7 +662,7 @@ tp_attach(so, protocol)
 	}
 
 	if (so->so_snd.sb_hiwat == 0 || so->so_rcv.sb_hiwat == 0)
-		error = soreserve(so, tp_sendsize, tp_recvsize);
+		error = soreserve(so, tp_sendspace, tp_recvspace);
 		/* later an ioctl will allow reallocation IF still in closed state */
 
 	if (error)
