@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.194 (Berkeley) 06/11/95";
+static char sccsid[] = "@(#)conf.c	8.195 (Berkeley) 06/13/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -358,7 +358,7 @@ setupmaps()
 		hes_map_lookup, null_map_store);
 #endif
 
-#ifdef NETINFO
+#if NETINFO
 	MAPDEF("netinfo", NULL, MCF_ALIASOK,
 		map_parseargs, ni_map_open, null_map_close,
 		ni_map_lookup, null_map_store);
@@ -2870,7 +2870,7 @@ getcfname()
 
 	if (ConfFile != NULL)
 		return ConfFile;
-#ifdef NETINFO
+#if NETINFO
 	{
 		extern char *ni_propval();
 		char *cflocation;
@@ -3368,7 +3368,7 @@ load_if_names()
 **      	Caller should free the return value of ni_proval
 */
 
-#ifdef NETINFO
+#if NETINFO
 
 # include <netinfo/ni.h>
 
