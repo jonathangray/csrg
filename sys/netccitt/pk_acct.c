@@ -64,6 +64,7 @@ struct	vnode *pkacctp;
 pk_accton (path)
 	char *path;
 {
+	USES_VOP_UNLOCK;
 	register struct vnode *vp = NULL;
 	struct nameidata nd;
 	struct vnode *oacctp = pkacctp;
