@@ -32,12 +32,10 @@ divert(-1)
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-VERSIONID(@(#)bsd4.4.m4	2.1 (Berkeley) 10/02/91)
+VERSIONID(@(#)bsd4.4.m4	2.2 (Berkeley) 12/12/91)
 #
 
-define(`ALIAS_FILE', /etc/aliases)dnl
 define(`HELP_FILE', /usr/share/misc/sendmail.hf)dnl
-define(`QUEUE_DIR', /var/spool/mqueue)dnl
 define(`STATUS_FILE', /var/log/sendmail.st)dnl
 define(`LOCAL_MAILER', /usr/libexec/mail.local)dnl
 
