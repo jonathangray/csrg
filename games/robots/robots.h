@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)robots.h	5.6 (Berkeley) 02/28/91
+ *	@(#)robots.h	5.7 (Berkeley) 08/31/92
  */
 
 # include	<curses.h>
@@ -63,13 +63,6 @@
 # define	ROBOT	'+'
 # define	HEAP	'*'
 # define	PLAYER	'@'
-
-/*
- * pseudo functions
- */
-
-# undef		CTRL
-# define	CTRL(X)	('X' - 'A' + 1)
 
 /*
  * type definitions
@@ -108,3 +101,7 @@ int	cmp_sc();
 void	move_robots();
 
 COORD	*rnd_pos();
+
+
+
+
