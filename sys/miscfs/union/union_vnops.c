@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_vnops.c	8.30 (Berkeley) 05/20/95
+ *	@(#)union_vnops.c	8.31 (Berkeley) 05/22/95
  */
 
 #include <sys/param.h>
@@ -1367,13 +1367,13 @@ union_lock(ap)
 	struct union_node *un;
 	int error;
 
+
+	vop_nolock(ap);
+	if ((flags & LK_TYPE_MASK) == LK_DRAIN)
+		return (0);
+	flags &= ~LK_INTERLOCK;
+
 start:
-
-	if (flags & LK_INTERLOCK) {
-		simple_unlock(&vp->v_interlock);
-		flags &= ~LK_INTERLOCK;
-	}
-
 	un = VTOUNION(vp);
 
 	if (un->un_uppervp != NULLVP) {
@@ -1459,6 +1459,7 @@ union_unlock(ap)
 #ifdef DIAGNOSTIC
 	un->un_pid = 0;
 #endif
+	vop_nounlock(ap);
 
 	return (0);
 }
