@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.c	7.6 (Berkeley) 05/11/92
+ *	@(#)pmap.c	7.7 (Berkeley) 05/15/92
  */
 
 /*
@@ -1439,7 +1439,7 @@ pmap_alloc_tlbpid(p)
 					printf("Clearing wired user entry! h %x l %x\n", hp->high, hp->low);
 					panic("pmap_alloc_tlbpid: wired");
 				}
-				pmap_remove_pv(pmap, hp->high & PG_FRAME,
+				pmap_remove_pv(q_pmap, hp->high & PG_FRAME,
 					hp->low & PG_FRAME);
 				hp->high = 0;
 				q_pmap->pm_stats.resident_count--;
