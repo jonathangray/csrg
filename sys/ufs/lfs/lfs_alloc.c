@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_alloc.c	8.1 (Berkeley) 06/11/93
+ *	@(#)lfs_alloc.c	8.2 (Berkeley) 09/21/93
  */
 
 #include <sys/param.h>
@@ -104,7 +104,7 @@ lfs_valloc(ap)
 		    fs->lfs_ifpb;
 		fs->lfs_free = i;
 		max = i + fs->lfs_ifpb;
-		for (ifp = (struct ifile *)bp->b_un.b_words; i < max; ++ifp) {
+		for (ifp = (struct ifile *)bp->b_data; i < max; ++ifp) {
 			ifp->if_version = 1;
 			ifp->if_daddr = LFS_UNUSED_DADDR;
 			ifp->if_nextfree = ++i;
@@ -175,7 +175,7 @@ lfs_vcreate(mp, ino, vpp)
 	(*vpp)->v_data = ip;
 	ip->i_vnode = *vpp;
 	ip->i_devvp = ump->um_devvp;
-	ip->i_flag = IMOD;
+	ip->i_flag = IMODIFIED;
 	ip->i_dev = ump->um_dev;
 	ip->i_number = ip->i_din.di_inumber = ino;
 ip->i_din.di_spare[0] = 0xdeadbeef;
@@ -217,9 +217,9 @@ lfs_vfree(ap)
 	ip = VTOI(ap->a_pvp);
 	fs = ip->i_lfs;
 	ino = ip->i_number;
-	if (ip->i_flag & IMOD) {
+	if (ip->i_flag & IMODIFIED) {
 		--fs->lfs_uinodes;
-		ip->i_flag &= ~(IMOD | IACC | IUPD | ICHG);
+		ip->i_flag &= ~(IMODIFIED | IACCESS | IUPDATE | ICHANGE);
 	}
 	/*
 	 * Set the ifile's inode entry to unused, increment its version number
