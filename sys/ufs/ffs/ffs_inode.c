@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_inode.c	8.3 (Berkeley) 09/21/93
+ *	@(#)ffs_inode.c	8.4 (Berkeley) 09/23/93
  */
 
 #include <sys/param.h>
@@ -85,25 +85,26 @@ ffs_update(ap)
 	register struct fs *fs;
 	struct buf *bp;
 	struct inode *ip;
-	struct dinode *dp;
 	register struct fs *fs;
 
 	ip = VTOI(ap->a_vp);
 	if (ap->a_vp->v_mount->mnt_flag & MNT_RDONLY) {
-		ip->i_flag &= ~(IUPDATE | IACCESS | ICHANGE | IMODIFIED);
+		ip->i_flag &=
+		    ~(IN_ACCESS | IN_CHANGE | IN_MODIFIED | IN_UPDATE);
 		return (0);
 	}
-	if ((ip->i_flag & (IUPDATE | IACCESS | ICHANGE | IMODIFIED)) == 0)
+	if ((ip->i_flag &
+	    (IN_ACCESS | IN_CHANGE | IN_MODIFIED | IN_UPDATE)) == 0)
 		return (0);
-	if (ip->i_flag & IACCESS)
+	if (ip->i_flag & IN_ACCESS)
 		ip->i_atime.ts_sec = ap->a_access->tv_sec;
-	if (ip->i_flag & IUPDATE) {
+	if (ip->i_flag & IN_UPDATE) {
 		ip->i_mtime.ts_sec = ap->a_modify->tv_sec;
 		ip->i_modrev++;
 	}
-	if (ip->i_flag & ICHANGE)
+	if (ip->i_flag & IN_CHANGE)
 		ip->i_ctime.ts_sec = time.tv_sec;
-	ip->i_flag &= ~(IUPDATE | IACCESS | ICHANGE | IMODIFIED);
+	ip->i_flag &= ~(IN_ACCESS | IN_CHANGE | IN_MODIFIED | IN_UPDATE);
 	fs = ip->i_fs;
 	/*
 	 * Ensure that uid and gid are correct. This is a temporary
@@ -113,13 +114,14 @@ ffs_update(ap)
 		ip->i_din.di_ouid = ip->i_uid;		/* XXX */
 		ip->i_din.di_ogid = ip->i_gid;		/* XXX */
 	}						/* XXX */
-	if (error = bread(ip->i_devvp, fsbtodb(fs, itod(fs, ip->i_number)),
+	if (error = bread(ip->i_devvp,
+	    fsbtodb(fs, ino_to_fsba(fs, ip->i_number)),
 		(int)fs->fs_bsize, NOCRED, &bp)) {
 		brelse(bp);
 		return (error);
 	}
-	dp = (struct dinode *)bp->b_data + itoo(fs, ip->i_number);
-	*dp = ip->i_din;
+	*((struct dinode *)bp->b_data +
+	    ino_to_fsbo(fs, ip->i_number)) = ip->i_din;
 	if (ap->a_waitfor)
 		return (bwrite(bp));
 	else {
@@ -132,8 +134,8 @@ ffs_update(ap)
 #define	DOUBLE	1	/* index of double indirect block */
 #define	TRIPLE	2	/* index of triple indirect block */
 /*
- * Truncate the inode oip to at most length size.  Free affected disk
- * blocks -- the blocks of the file are removed in reverse order.
+ * Truncate the inode oip to at most length size, freeing the
+ * disk blocks.
  */
 ffs_truncate(ap)
 	struct vop_truncate_args /* {
@@ -169,11 +171,11 @@ ffs_truncate(ap)
 #endif
 		bzero((char *)&oip->i_shortlink, (u_int)oip->i_size);
 		oip->i_size = 0;
-		oip->i_flag |= IUPDATE | ICHANGE;
+		oip->i_flag |= IN_CHANGE | IN_UPDATE;
 		return (VOP_UPDATE(ovp, &tv, &tv, 1));
 	}
 	if (oip->i_size == length) {
-		oip->i_flag |= IUPDATE | ICHANGE;
+		oip->i_flag |= IN_CHANGE | IN_UPDATE;
 		return (VOP_UPDATE(ovp, &tv, &tv, 0));
 	}
 #ifdef QUOTA
@@ -203,7 +205,7 @@ ffs_truncate(ap)
 			bwrite(bp);
 		else
 			bawrite(bp);
-		oip->i_flag |= IUPDATE | ICHANGE;
+		oip->i_flag |= IN_CHANGE | IN_UPDATE;
 		return (VOP_UPDATE(ovp, &tv, &tv, 1));
 	}
 	/*
@@ -259,7 +261,7 @@ ffs_truncate(ap)
 		}
 	for (i = NDADDR - 1; i > lastblock; i--)
 		oip->i_db[i] = 0;
-	oip->i_flag |= IUPDATE | ICHANGE;
+	oip->i_flag |= IN_CHANGE | IN_UPDATE;
 	if (error = VOP_UPDATE(ovp, &tv, &tv, MNT_WAIT))
 		allerror = error;
 	/*
@@ -362,7 +364,7 @@ done:
 	oip->i_blocks -= blocksreleased;
 	if (oip->i_blocks < 0)			/* sanity */
 		oip->i_blocks = 0;
-	oip->i_flag |= ICHANGE;
+	oip->i_flag |= IN_CHANGE;
 #ifdef QUOTA
 	(void) chkdq(oip, -blocksreleased, NOCRED, 0);
 #endif
