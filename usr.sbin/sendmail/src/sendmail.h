@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.50 (Berkeley) 08/07/94
+ *	@(#)sendmail.h	8.51 (Berkeley) 08/07/94
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.50		08/07/94";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.51		08/07/94";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -888,7 +888,7 @@ EXTERN long	MaxMessageSize;	/* advertised max size we will accept */
 EXTERN char	*PostMasterCopy;	/* address to get errs cc's */
 EXTERN int	CheckpointInterval;	/* queue file checkpoint interval */
 EXTERN bool	DontPruneRoutes;	/* don't prune source routes */
-extern bool	BrokenSmtpPeers;	/* peers can't handle 2-line greeting */
+EXTERN bool	BrokenSmtpPeers;	/* peers can't handle 2-line greeting */
 EXTERN bool	SortQueueByHost;	/* order queue by host name first */
 EXTERN int	MaxMciCache;		/* maximum entries in MCI cache */
 EXTERN time_t	MciCacheTimeout;	/* maximum idle time on connections */
