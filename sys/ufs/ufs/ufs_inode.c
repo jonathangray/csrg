@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_inode.c	7.43 (Berkeley) 12/16/91
+ *	@(#)ufs_inode.c	7.44 (Berkeley) 12/19/91
  */
 
 #include <sys/param.h>
@@ -139,16 +139,24 @@ void
 ufs_ilock(ip)
 	register struct inode *ip;
 {
+	struct proc *p = curproc;	/* XXX */
 
 	while (ip->i_flag & ILOCKED) {
 		ip->i_flag |= IWANT;
-		if (ip->i_lockholder == curproc->p_pid)
-			panic("locking against myself");
-		ip->i_lockwaiter = curproc->p_pid;
+#ifdef DIAGNOSTIC
+		if (p) {
+			if (p->p_pid == ip->i_lockholder)
+				panic("locking against myself");
+			ip->i_lockwaiter = p->p_pid;
+		}
+#endif
 		(void) sleep((caddr_t)ip, PINOD);
 	}
+#ifdef DIAGNOSTIC
 	ip->i_lockwaiter = 0;
-	ip->i_lockholder = curproc->p_pid;
+	if (p)
+		ip->i_lockholder = p->p_pid;
+#endif
 	ip->i_flag |= ILOCKED;
 	curproc->p_spare[2]++;
 }
@@ -163,7 +171,9 @@ ufs_iunlock(ip)
 
 	if ((ip->i_flag & ILOCKED) == 0)
 		vprint("ufs_iunlock: unlocked inode", ITOV(ip));
+#ifdef DIAGNOSTIC
 	ip->i_lockholder = 0;
+#endif
 	ip->i_flag &= ~ILOCKED;
 	curproc->p_spare[2]--;
 	if (ip->i_flag&IWANT) {
