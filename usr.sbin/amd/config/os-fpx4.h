@@ -1,4 +1,4 @@
-/* $Id: os-fpx4.h,v 5.2 90/06/23 22:20:45 jsp Rel $ */
+/* $Id: os-fpx4.h,v 5.2.1.1 90/10/21 22:30:51 jsp Exp $ */
 
 /*
  * Celerity FPX 4.1/2 definitions for Amd (automounter)
@@ -40,7 +40,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)os-fpx4.h	5.1 (Berkeley) 06/29/90
+ *	@(#)os-fpx4.h	5.2 (Berkeley) 03/17/91
  */
 
 /*
