@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)tty.c	5.1 (Berkeley) 08/23/92";
+static char sccsid[] = "@(#)tty.c	5.2 (Berkeley) 08/31/92";
 #endif /* not lint */
 
 /*
@@ -59,7 +59,7 @@ gettmode()
 		return (OK);
 
 	GT = (origtermio.c_oflag & OXTABS) == 0;
-	NONL = (origtermio.c_iflag & ICRNL) == 0;
+	NONL = (origtermio.c_oflag & ONLCR) == 0;
 
 	norawt = origtermio;
 	norawt.c_oflag &= ~OXTABS;
@@ -140,6 +140,8 @@ nl()
 {
 	rawt.c_iflag |= ICRNL;
 	rawt.c_oflag |= ONLCR;
+	norawt.c_iflag |= ICRNL;
+	norawt.c_oflag |= ONLCR;
 
 	__pfast = __rawmode;
 	if (useraw) 
@@ -153,6 +155,8 @@ nonl()
 {
 	rawt.c_iflag &= ~ICRNL;
 	rawt.c_oflag &= ~ONLCR;
+	norawt.c_iflag &= ~ICRNL;
+	norawt.c_oflag &= ~ONLCR;
 
 	__pfast = 1;
 	if (useraw) 
