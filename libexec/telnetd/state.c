@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)state.c	8.3 (Berkeley) 02/16/95";
+static char sccsid[] = "@(#)state.c	8.4 (Berkeley) 02/20/95";
 #endif /* not lint */
 
 #include "telnetd.h"
@@ -716,7 +716,6 @@ wontoption(option)
 			 */
 			if (lmodetype != REAL_LINEMODE)
 				break;
-			lmodetype = KLUDGE_LINEMODE;
 # endif	/* KLUDGELINEMODE */
 			clientstat(TELOPT_LINEMODE, WONT, 0);
 			break;
