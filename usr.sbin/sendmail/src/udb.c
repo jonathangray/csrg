@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef USERDB
-static char sccsid [] = "@(#)udb.c	8.17 (Berkeley) 03/31/95 (with USERDB)";
+static char sccsid [] = "@(#)udb.c	8.18 (Berkeley) 04/12/95 (with USERDB)";
 #else
-static char sccsid [] = "@(#)udb.c	8.17 (Berkeley) 03/31/95 (without USERDB)";
+static char sccsid [] = "@(#)udb.c	8.18 (Berkeley) 04/12/95 (without USERDB)";
 #endif
 #endif
 
@@ -203,6 +203,7 @@ udbexpand(a, sendq, aliaslevel, e)
 
 		switch (up->udb_type)
 		{
+#ifdef NEWDB
 		  case UDB_DBFETCH:
 			key.data = keybuf;
 			key.size = keylen;
@@ -303,6 +304,7 @@ udbexpand(a, sendq, aliaslevel, e)
 			e->e_flags |= EF_SENDRECEIPT;
 			a->q_flags |= QREPORT|QEXPLODED;
 			break;
+#endif
 
 #ifdef HESIOD
 		  case UDB_HESIOD:
@@ -506,6 +508,7 @@ udbmatch(user, field)
 
 		switch (up->udb_type)
 		{
+#ifdef NEWDB
 		  case UDB_DBFETCH:
 			key.data = keybuf;
 			key.size = keylen;
@@ -525,6 +528,7 @@ udbmatch(user, field)
 				printf("udbmatch ==> %s\n", p);
 			return p;
 			break;
+#endif
 
 #ifdef HESIOD
 		  case UDB_HESIOD:
@@ -569,6 +573,7 @@ udbmatch(user, field)
 	{
 		switch (up->udb_type)
 		{
+#ifdef NEWDB
 		  case UDB_DBFETCH:
 			/* get the default case for this database */
 			if (up->udb_default == NULL)
@@ -610,6 +615,7 @@ udbmatch(user, field)
 				printf("udbmatch ==> %s\n", p);
 			return p;
 			break;
+#endif
 
 #ifdef HESIOD
 		  case UDB_HESIOD:
@@ -777,6 +783,7 @@ _udbx_init()
 
 		switch (*spec)
 		{
+#if 0
 		  case '+':	/* search remote database */
 		  case '*':	/* search remote database (expand MX) */
 			if (*spec == '*')
@@ -826,6 +833,7 @@ _udbx_init()
 				(void) fcntl(UdbSock, F_SETFD, 1);
 			}
 			break;
+#endif
 
 		  case '@':	/* forward to remote host */
 			up->udb_type = UDB_FORWARD;
@@ -833,16 +841,17 @@ _udbx_init()
 			up++;
 			break;
 
+#ifdef HESIOD
 		  case 'h':	/* use hesiod */
 		  case 'H':
-#ifdef HESIOD
 			if (strcasecmp(spec, "hesiod") != 0)
-				break;
+				goto badspec;
 			up->udb_type = UDB_HESIOD;
 			up++;
-#endif /* HESIOD */
 			break;
+#endif /* HESIOD */
 
+#ifdef NEWDB
 		  case '/':	/* look up remote name */
 			up->udb_dbname = spec;
 			errno = 0;
@@ -871,6 +880,12 @@ _udbx_init()
 			}
 			up->udb_type = UDB_DBFETCH;
 			up++;
+			break;
+#endif
+
+		  default:
+badspec:
+			syserr("Unknown UDB spec %s", spec);
 			break;
 		}
 	}
@@ -918,6 +933,7 @@ _udbx_init()
 	*/
 
   tempfail:
+#ifdef NEWDB
 	for (up = UdbEnts; up->udb_type != UDB_EOLIST; up++)
 	{
 		if (up->udb_type == UDB_DBFETCH)
@@ -925,6 +941,7 @@ _udbx_init()
 			(*up->udb_dbp->close)(up->udb_dbp);
 		}
 	}
+#endif
 	return EX_TEMPFAIL;
 }
 
