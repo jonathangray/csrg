@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.55 (Berkeley) 07/20/92";
+static char sccsid[] = "@(#)main.c	5.56 (Berkeley) 09/22/92";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -144,6 +144,7 @@ main(argc, argv, envp)
 	typedef int (*fnptr)();
 	STAB *st;
 	register int i;
+	int j;
 	bool readconfig = TRUE;
 	bool queuemode = FALSE;		/* process queue requests */
 	bool nothaw;
@@ -261,9 +262,14 @@ main(argc, argv, envp)
 		readconfig = !thaw(FreezeFile);
 
 	/* reset the environment after the thaw */
-	for (i = 0; i < MAXUSERENVIRON && envp[i] != NULL; i++)
-		UserEnviron[i] = newstr(envp[i]);
-	UserEnviron[i] = NULL;
+	i = j = 0;
+	while (j < MAXUSERENVIRON && (p = envp[i++]) != NULL)
+	{
+		if (strncmp(p, "FS=", 3) == 0 || strncmp(p, "LD_", 3) == 0)
+			continue;
+		UserEnviron[j++] = newstr(p);
+	}
+	UserEnviron[j] = NULL;
 	environ = UserEnviron;
 
 # ifdef SETPROCTITLE
@@ -468,6 +474,7 @@ main(argc, argv, envp)
 				}
 			}
 			(void) unsetenv("HOSTALIASES");
+			FullName = NULL;
 			queuemode = TRUE;
 			QueueIntvl = convtime(&p[2]);
 # else QUEUE
