@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.26 (Berkeley) 09/04/93";
+static char sccsid[] = "@(#)main.c	8.27 (Berkeley) 09/22/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -150,6 +150,7 @@ main(argc, argv, envp)
 	extern char **myhostname();
 	extern char *arpadate();
 	extern char *getauthinfo();
+	extern char *getcfname();
 	extern char *optarg;
 	extern char **environ;
 
@@ -600,7 +601,7 @@ main(argc, argv, envp)
 	**	Extract special fields for local use.
 	*/
 
-	readcf(ConfFile, safecf, CurEnv);
+	readcf(getcfname(), safecf, CurEnv);
 
 	if (tTd(0, 1))
 	{
