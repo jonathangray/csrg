@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_pageout.c	8.6 (Berkeley) 01/09/95
+ *	@(#)vm_pageout.c	8.7 (Berkeley) 06/19/95
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -321,7 +321,11 @@ vm_pageout_page(m, object)
 		 * shortage, so we put pause for awhile and try again.
 		 * XXX could get stuck here.
 		 */
+		vm_page_unlock_queues();
+		vm_object_unlock(object);
 		(void) tsleep((caddr_t)&lbolt, PZERO|PCATCH, "pageout", 0);
+		vm_object_lock(object);
+		vm_page_lock_queues();
 		break;
 	}
 	case VM_PAGER_FAIL:
