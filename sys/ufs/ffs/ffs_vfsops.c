@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vfsops.c	7.61 (Berkeley) 01/13/92
+ *	@(#)ffs_vfsops.c	7.62 (Berkeley) 02/04/92
  */
 
 #include <sys/param.h>
@@ -176,10 +176,8 @@ ffs_mount(mp, path, data, ndp, p)
 	 * Not an update, or updating the name: look up the name
 	 * and verify that it refers to a sensible block device.
 	 */
-	ndp->ni_nameiop = LOOKUP | FOLLOW;
-	ndp->ni_segflg = UIO_USERSPACE;
-	ndp->ni_dirp = args.fspec;
-	if (error = namei(ndp, p))
+	NDINIT(ndp, LOOKUP, FOLLOW, UIO_USERSPACE, args.fspec, p);
+	if (error = namei(ndp))
 		return (error);
 	devvp = ndp->ni_vp;
 
