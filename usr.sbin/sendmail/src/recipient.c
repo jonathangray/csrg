@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recipient.c	8.55 (Berkeley) 11/22/94";
+static char sccsid[] = "@(#)recipient.c	8.56 (Berkeley) 11/22/94";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -59,6 +59,8 @@ static char sccsid[] = "@(#)recipient.c	8.55 (Berkeley) 11/22/94";
 **			expansion.
 **		sendq -- a pointer to the head of a queue to put
 **			these people into.
+**		aliaslevel -- the current alias nesting depth -- to
+**			diagnose loops.
 **		e -- the envelope in which to add these recipients.
 **		qflags -- special flags to set in the q_flags field.
 **
@@ -79,6 +81,7 @@ sendto(list, copyf, ctladdr, qflags)
 	char *list;
 	ADDRESS *ctladdr;
 	ADDRESS **sendq;
+	int aliaslevel;
 	register ENVELOPE *e;
 	u_short qflags;
 {
@@ -225,6 +228,7 @@ addrref(a, r)
 **		sendq -- a pointer to the head of a queue to put the
 **			recipient in.  Duplicate supression is done
 **			in this queue.
+**		aliaslevel -- the current alias nesting depth.
 **		e -- the current envelope.
 **
 **	Returns:
@@ -236,9 +240,10 @@ addrref(a, r)
 
 ADDRESS *
 ADDRESS *
-recipient(a, sendq, e)
+recipient(a, sendq, aliaslevel, e)
 	register ADDRESS *a;
 	register ADDRESS **sendq;
+	int aliaslevel;
 	register ENVELOPE *e;
 {
 	register ADDRESS *q;
@@ -271,7 +276,7 @@ recipient(a, sendq, e)
 	}
 
 	/* break aliasing loops */
-	if (AliasLevel > MAXRCRSN)
+	if (aliaslevel > MAXRCRSN)
 	{
 		usrerr("554 aliasing/forwarding loop broken");
 		return (NULL);
@@ -386,7 +391,7 @@ recipient(a, sendq, e)
 			int ret;
 
 			message("including file %s", a->q_user);
-			ret = include(a->q_user, FALSE, a, sendq, e);
+			ret = include(a->q_user, FALSE, a, sendq, aliaslevel, e);
 			if (transienterror(ret))
 			{
 #ifdef LOG
@@ -439,7 +444,7 @@ recipient(a, sendq, e)
 
 	/* try aliasing */
 	if (!bitset(QDONTSEND, a->q_flags) && bitnset(M_ALIASABLE, m->m_flags))
-		alias(a, sendq, e);
+		alias(a, sendq, aliaslevel, e);
 
 # ifdef USERDB
 	/* if not aliased, look it up in the user database */
@@ -448,7 +453,7 @@ recipient(a, sendq, e)
 	{
 		extern int udbexpand();
 
-		if (udbexpand(a, sendq, e) == EX_TEMPFAIL)
+		if (udbexpand(a, sendq, aliaslevel, e) == EX_TEMPFAIL)
 		{
 			a->q_flags |= QQUEUEUP;
 			if (e->e_message == NULL)
@@ -484,7 +489,7 @@ recipient(a, sendq, e)
 	    ConfigLevel >= 2 && RewriteRules[5] != NULL &&
 	    bitnset(M_TRYRULESET5, m->m_flags))
 	{
-		maplocaluser(a, sendq, e);
+		maplocaluser(a, sendq, aliaslevel, e);
 	}
 
 	/*
@@ -543,7 +548,7 @@ recipient(a, sendq, e)
 				a->q_flags |= QBOGUSSHELL;
 			}
 			if (!quoted)
-				forward(a, sendq, e);
+				forward(a, sendq, aliaslevel, e);
 		}
 	}
 	if (!bitset(QDONTSEND, a->q_flags))
@@ -814,6 +819,8 @@ writable(filename, ctladdr, flags)
 **			the important things.
 **		sendq -- a pointer to the head of the send queue
 **			to put these addresses in.
+**		aliaslevel -- the alias nesting depth.
+**		e -- the current envelope.
 **
 **	Returns:
 **		open error status
@@ -844,11 +851,12 @@ static int	includetimeout();
 #endif
 
 int
-include(fname, forwarding, ctladdr, sendq, e)
+include(fname, forwarding, ctladdr, sendq, aliaslevel, e)
 	char *fname;
 	bool forwarding;
 	ADDRESS *ctladdr;
 	ADDRESS **sendq;
+	int aliaslevel;
 	ENVELOPE *e;
 {
 	register FILE *fp = NULL;
@@ -1091,9 +1099,7 @@ resetuid:
 				oldto, buf);
 #endif
 
-		AliasLevel++;
-		sendto(buf, 1, ctladdr, 0);
-		AliasLevel--;
+		nincludes += sendtolist(buf, ctladdr, sendq, aliaslevel + 1, e);
 	}
 
 	if (ferror(fp) && tTd(27, 3))
