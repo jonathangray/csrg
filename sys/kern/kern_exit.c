@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)kern_exit.c	7.3 (Berkeley) 02/23/87
+ *	@(#)kern_exit.c	7.4 (Berkeley) 06/20/87
  */
 
 #include "../machine/reg.h"
