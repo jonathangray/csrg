@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	8.12 (Berkeley) 04/11/94
+ *	@(#)vfs_subr.c	8.13 (Berkeley) 04/18/94
  */
 
 /*
@@ -606,7 +606,19 @@ vget(vp, lockflag)
 	int lockflag;
 {
 
-	if (vp->v_flag & VXLOCK) {
+	/*
+	 * If the vnode is in the process of being cleaned out for
+	 * another use, we wait for the cleaning to finish and then
+	 * return failure. Cleaning is determined either by checking
+	 * that the VXLOCK flag is set, or that the use count is
+	 * zero with the back pointer set to show that it has been
+	 * removed from the free list by getnewvnode. The VXLOCK
+	 * flag may not have been set yet because vclean is blocked in
+	 * the VOP_LOCK call waiting for the VOP_INACTIVE to complete.
+	 */
+	if ((vp->v_flag & VXLOCK) ||
+	    (vp->v_usecount == 0 &&
+	     vp->v_freelist.tqe_prev == (struct vnode **)0xdeadb)) {
 		vp->v_flag |= VXWANT;
 		sleep((caddr_t)vp, PINOD);
 		return (1);
@@ -616,7 +628,6 @@ vget(vp, lockflag)
 		    vp->v_freelist.tqe_prev == (struct vnode **)0xdeadb)
 			panic("vget: not on queue");
 		TAILQ_REMOVE(&vnode_free_list, vp, v_freelist);
-	}
 		vp->v_freelist.tqe_next = (struct vnode *)0xdeadf;
 		vp->v_freelist.tqe_prev = (struct vnode **)0xdeadb;
 	}
