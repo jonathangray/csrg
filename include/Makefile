@@ -1,4 +1,4 @@
-#	@(#)Makefile	8.1 (Berkeley) 06/10/93
+#	@(#)Makefile	5.62 (Berkeley) 06/10/93
 #
 # Doing a make install builds /usr/include
 #
@@ -89,6 +89,6 @@ copies:
 	rm -f ${DESTDIR}/usr/include/machine
 	ln -s ${DESTDIR}/sys/${MACHINE}/include ${DESTDIR}/usr/include/machine
 	rm -f ${DESTDIR}/usr/include/X11
-	ln -s ${DESTDIR}/usr/X11R4/include/X11 ${DESTDIR}/usr/include/X11
+	ln -s ${DESTDIR}/usr/X11/include/X11 ${DESTDIR}/usr/include/X11
 
 .include <bsd.prog.mk>
