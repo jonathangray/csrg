@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pk_subr.c	7.19 (Berkeley) 12/17/91
+ *	@(#)pk_subr.c	7.20 (Berkeley) 02/06/92
  */
 
 #include "param.h"
@@ -963,7 +963,7 @@ register struct pklcd *lcp;
 
 	if (m == 0)
 		return 0;
-	if (m -> m_flags & M_PKTHDR == 0)
+	if ((m -> m_flags & M_PKTHDR) == 0)
 		panic ("pk_fragment");
 	totlen = m -> m_pkthdr.len;
 	m -> m_act = 0;
