@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.118 (Berkeley) 04/09/95
+ *	@(#)sendmail.h	8.119 (Berkeley) 04/09/95
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.118		04/09/95";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.119		04/09/95";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -971,6 +971,7 @@ EXTERN bool	TryNullMXList;	/* if we are the best MX, try host directly */
 EXTERN bool	InChild;	/* true if running in an SMTP subprocess */
 EXTERN bool	DisConnected;	/* running with OutChannel redirected to xf */
 EXTERN bool	ColonOkInAddr;	/* single colon legal in address */
+EXTERN bool	NoMXforCanon;	/* don't use MX records when canonifying */
 EXTERN char	SpaceSub;	/* substitution for <lwsp> */
 EXTERN int	PrivacyFlags;	/* privacy flags */
 EXTERN char	*ConfFile;	/* location of configuration file [conf.c] */
