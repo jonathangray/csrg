@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.117 (Berkeley) 08/21/94
+ *	@(#)conf.h	8.118 (Berkeley) 08/27/94
  */
 
 /*
@@ -968,7 +968,7 @@ extern int	syslog(int, char *, ...);
 #ifdef BSD
 # define HASGETDTABLESIZE 1	/* has getdtablesize(2) call */
 # define HASSETREUID	1	/* has setreuid(2) call */
-# define HASINITGROUPS	1	/* has initgroups(2) call */
+# define HASINITGROUPS	1	/* has initgroups(3) call */
 # ifndef HASSETRLIMIT
 #  define HASSETRLIMIT	1	/* has setrlimit(2) call */
 # endif
@@ -984,6 +984,10 @@ extern int	syslog(int, char *, ...);
 #ifdef __svr4__
 # define SYSTEM5	1
 # define HASSETREUID	1	/* has seteuid(2) call & working saved uids */
+# define HASINITGROUPS	1	/* has initgroups(3) call */
+# ifndef HASSETRLIMIT
+#  define HASSETRLIMIT	1	/* has setrlimit(2) call */
+# endif
 # ifndef HASGETUSERSHELL
 #  define HASGETUSERSHELL 0	/* does not have getusershell(3) call */
 # endif
