@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)procfs_vfsops.c	8.2 (Berkeley) 01/06/94
+ *	@(#)procfs_vfsops.c	8.3 (Berkeley) 01/17/94
  *
  * From:
  *	$Id: procfs_vfsops.c,v 3.1 1993/12/15 09:40:17 jsp Exp $
@@ -70,7 +70,6 @@ procfs_mount(mp, path, data, ndp, p)
 	struct proc *p;
 {
 	u_int size;
-	int error;
 
 	if (UIO_MX & (UIO_MX-1)) {
 		log(LOG_ERR, "procfs: invalid directory entry size");
