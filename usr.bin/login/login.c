@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)login.c	5.71 (Berkeley) 06/27/91";
+static char sccsid[] = "@(#)login.c	5.72 (Berkeley) 06/28/91";
 #endif /* not lint */
 
 /*
@@ -417,6 +417,7 @@ main(argc, argv)
 	if (term[0] == '\0')
 		strncpy(term, stypeof(tty), sizeof(term));
 	(void)setenv("TERM", term, 0);
+	(void)setenv("LOGNAME", pwd->pw_name, 1);
 	(void)setenv("USER", pwd->pw_name, 1);
 	(void)setenv("PATH", _PATH_DEFPATH, 0);
 #ifdef KERBEROS
