@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)user.h	8.1 (Berkeley) 06/02/93
+ *	@(#)user.h	8.2 (Berkeley) 09/23/93
  */
 
 #include <machine/pcb.h>
@@ -70,9 +70,9 @@ struct	user {
 };
 
 /*
- * Redefinitions to make the debuggers happy for now...
- * This subterfuge brought to you by coredump() and procxmt().
- * These fields are *only* valid at those times!
+ * Redefinitions to make the debuggers happy for now...  This subterfuge
+ * brought to you by coredump() and trace_req().  These fields are *only*
+ * valid at those times!
  */
 #define	U_ar0	u_kproc.kp_proc.p_md.md_regs /* copy of curproc->p_md.md_regs */
 #define	U_tsize	u_kproc.kp_eproc.e_vm.vm_tsize
