@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)0.t	8.1 (Berkeley) 06/08/93
+.\"	@(#)0.t	6.6 (Berkeley) 07/05/93
 .\"
 .bd S B 3
 .de UX
@@ -44,6 +44,9 @@
 .el is a Trademark of Bell Laboratories.
 .FE
 .nr GA 1\}
+..
+.de BR
+\fB\\$1\fP\\$2
 ..
 .TL
 Building 4.4BSD Kernels with Config
