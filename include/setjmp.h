@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)setjmp.h	5.8 (Berkeley) 06/24/92
+ *	@(#)setjmp.h	5.8 (Berkeley) 06/27/92
  */
 
 #ifndef _SETJMP_H_
@@ -46,6 +46,10 @@
 
 #if defined(mips) || defined(__mips__)
 #define _JBLEN	83
+#endif
+
+#if defined(sparc) || defined(__sparc__)
+#define _JBLEN	10
 #endif
 
 #if defined(tahoe) || defined(__tahoe__)
