@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	6.6 (Berkeley) 01/13/93
+ *	@(#)sendmail.h	6.7 (Berkeley) 01/17/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	6.6		01/13/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	6.7		01/17/93";
 # endif lint
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -273,6 +273,7 @@ struct envelope
 	short		e_class;	/* msg class (priority, junk, etc.) */
 	short		e_flags;	/* flags, see below */
 	short		e_hopcount;	/* number of times processed */
+	short		e_nsent;	/* number of sends since checkpoint */
 	int		(*e_puthdr)();	/* function to put header of message */
 	int		(*e_putbody)();	/* function to put body of message */
 	struct envelope	*e_parent;	/* the message this one encloses */
