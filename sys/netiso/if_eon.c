@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_eon.c	7.13 (Berkeley) 05/06/91
+ *	@(#)if_eon.c	7.14 (Berkeley) 05/09/91
  */
 
 /***********************************************************
@@ -314,7 +314,8 @@ register struct sockaddr *gate;
 	el->el_flags |= RTF_UP;
 	eoniphdr(&el->el_ei, ipaddrloc, &el->el_iproute, EON_NORMAL_ADDR, 0);
 	if (el->el_iproute.ro_rt)
-		rt->rt_rmx.rmx_mtu = el->el_iproute.ro_rt - sizeof(el->el_ei);
+		rt->rt_rmx.rmx_mtu = el->el_iproute.ro_rt->rt_rmx_mtu
+							- sizeof(el->el_ei);
 }
 
 /*
