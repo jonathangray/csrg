@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.162 (Berkeley) 05/19/95
+ *	@(#)conf.h	8.163 (Berkeley) 05/22/95
  */
 
 /*
@@ -209,6 +209,9 @@ extern int	syslog(int, char *, ...);
 # define HASINITGROUPS	1	/* has initgroups(3) call */
 # define HASUNAME	1	/* use System V uname(2) system call */
 # define HASGETUSERSHELL 0	/* does not have getusershell(3) call */
+# ifndef IP_SRCROUTE
+#  define IP_SRCROUTE	0	/* Something is broken with getsockopt() */
+# endif
 # define FORK		fork	/* no vfork primitive available */
 # define GIDSET_T	gid_t
 # define SFS_TYPE	SFS_STATFS	/* use <sys/statfs.h> statfs() impl */
@@ -725,6 +728,9 @@ typedef short		pid_t;
 # endif
 # ifndef IDENTPROTO
 #  define IDENTPROTO	0	/* TCP/IP implementation is broken */
+# endif
+# ifndef IP_SRCROUTE
+#  define IP_SRCROUTE	0	/* Something is broken with getsockopt() */
 # endif
 #endif
 
@@ -1415,6 +1421,10 @@ extern int	errno;
 
 #ifndef IDENTPROTO
 # define IDENTPROTO	1	/* use IDENT proto (RFC 1413) */
+#endif
+
+#ifndef IP_SRCROUTE
+# define IP_SRCROUTE	1	/* Detect IP source routing */
 #endif
 
 #ifndef HASGETUSERSHELL
