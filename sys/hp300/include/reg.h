@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: reg.h 1.1 90/07/09$
  *
- *	@(#)reg.h	8.2 (Berkeley) 01/03/94
+ *	@(#)reg.h	8.3 (Berkeley) 01/27/94
  */
 
 /*
@@ -79,6 +79,13 @@ struct reg {
         int     r_regs[16];	/* numbered as above */
 	int	r_pc;
 	int	r_sr;
+};
+
+/*
+ * Register set accessible via /proc/$pid/fpreg
+ */
+struct fpreg {
+	int	fpr_xxx;	/* not implemented */
 };
 
 
