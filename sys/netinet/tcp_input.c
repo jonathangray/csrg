@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_input.c	8.5 (Berkeley) 04/10/94
+ *	@(#)tcp_input.c	8.6 (Berkeley) 08/05/94
  */
 
 #ifndef TUBA_INCLUDE
@@ -216,7 +216,7 @@ tcp_input(m, iphlen)
 {
 	register struct tcpiphdr *ti;
 	register struct inpcb *inp;
-	caddr_t optp = NULL;
+	u_char *optp = NULL;
 	int optlen;
 	int len, tlen, off;
 	register struct tcpcb *tp = 0;
@@ -281,7 +281,7 @@ tcp_input(m, iphlen)
 			ti = mtod(m, struct tcpiphdr *);
 		}
 		optlen = off - sizeof (struct tcphdr);
-		optp = mtod(m, caddr_t) + sizeof (struct tcpiphdr);
+		optp = mtod(m, u_char *) + sizeof (struct tcpiphdr);
 		/* 
 		 * Do quick retrieval of timestamp options ("options
 		 * prediction?").  If timestamp is the only option and it's
@@ -547,7 +547,7 @@ findpcb:
 		 * packet with M_BCAST not set.
 		 */
 		if (m->m_flags & (M_BCAST|M_MCAST) ||
-		    IN_MULTICAST(ti->ti_dst.s_addr))
+		    IN_MULTICAST(ntohl(ti->ti_dst.s_addr)))
 			goto drop;
 		am = m_get(M_DONTWAIT, MT_SONAME);	/* XXX */
 		if (am == NULL)
@@ -1309,7 +1309,7 @@ dropwithreset:
 	 * Don't bother to respond if destination was broadcast/multicast.
 	 */
 	if ((tiflags & TH_RST) || m->m_flags & (M_BCAST|M_MCAST) ||
-	    IN_MULTICAST(ti->ti_dst.s_addr))
+	    IN_MULTICAST(ntohl(ti->ti_dst.s_addr)))
 		goto drop;
 	if (tiflags & TH_ACK)
 		tcp_respond(tp, ti, m, (tcp_seq)0, ti->ti_ack, TH_RST);
