@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	7.76 (Berkeley) 05/15/92
+ *	@(#)nfs_vnops.c	7.77 (Berkeley) 05/20/92
  */
 
 /*
