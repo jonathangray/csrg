@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pax.h	8.1 (Berkeley) 05/31/93
+ *	@(#)pax.h	8.2 (Berkeley) 04/18/94
  */
 
 /*
@@ -162,10 +162,11 @@ typedef struct {
  */
 typedef struct pattern {
 	char		*pstr;		/* pattern to match, user supplied */
+	char		*pend;		/* end of a prefix match */
 	int		plen;		/* length of pstr */
 	int		flgs;		/* processing/state flags */
-#define MTCH		0x1		/* this pattern has been matched */
-#define DIR_MTCH	0x2		/* this pattern matched a directory */
+#define MTCH		0x1		/* pattern has been matched */
+#define DIR_MTCH	0x2		/* pattern matched a directory */
 	struct pattern	*fow;		/* next pattern */
 } PATTERN;
 
