@@ -29,7 +29,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mbuf.h	7.15 (Berkeley) 02/05/92
+ *	@(#)mbuf.h	7.16 (Berkeley) 05/11/92
  */
 
 #ifndef M_WAITOK
@@ -60,7 +60,7 @@
 #define mtod(m,t)	((t)((m)->m_data))
 #define	dtom(x)		((struct mbuf *)((int)(x) & ~(MSIZE-1)))
 #define	mtocl(x)	(((u_int)(x) - (u_int)mbutl) >> MCLSHIFT)
-#define	cltom(x)	((caddr_t)((u_int)mbutl + ((u_int)(x) >> MCLSHIFT)))
+#define	cltom(x)	((caddr_t)((u_int)mbutl + ((u_int)(x) << MCLSHIFT)))
 
 /* header at beginning of each mbuf: */
 struct m_hdr {
