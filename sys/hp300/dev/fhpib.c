@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fhpib.c	7.3 (Berkeley) 12/16/90
+ *	@(#)fhpib.c	7.4 (Berkeley) 06/05/92
  */
 
 /*
@@ -42,7 +42,7 @@
 #include "sys/param.h"
 #include "sys/systm.h"
 #include "sys/buf.h"
-#include "device.h"
+#include "hp/dev/device.h"
 #include "fhpibreg.h"
 #include "hpibvar.h"
 #include "dmavar.h"
@@ -64,11 +64,13 @@ int	fhpibdebug = 0;
 int	dopriodma = 0;	/* use high priority DMA */
 int	doworddma = 1;	/* non-zero if we should attempt word dma */
 int	doppollint = 1;	/* use ppoll interrupts instead of watchdog */
+int	fhpibppolldelay = 50;
 
 long	fhpibbadint[2] = { 0 };
 long	fhpibtransfer[NHPIB] = { 0 };
 long	fhpibnondma[NHPIB] = { 0 };
 long	fhpibworddma[NHPIB] = { 0 };
+long	fhpibppollfail[NHPIB] = { 0 };
 #endif
 
 int	fhpibcmd[NHPIB];
@@ -421,9 +423,16 @@ fhpibintr(unit)
 		if ((fhpibdebug & FDB_PPOLL) && unit == fhpibdebugunit)
 			printf("fhpibintr: got PPOLL status %x\n", stat0);
 		if ((stat0 & (0x80 >> dq->dq_slave)) == 0) {
-			printf("fhpibintr: PPOLL: unit %d slave %d stat %x\n",
-			       unit, dq->dq_slave, stat0);
-			return(1);
+			/*
+			 * XXX give it another shot (68040)
+			 */
+			fhpibppollfail[unit]++;
+			DELAY(fhpibppolldelay);
+			stat0 = fhpibppoll(unit);
+			if ((stat0 & (0x80 >> dq->dq_slave)) == 0 &&
+			    (fhpibdebug & FDB_PPOLL) && unit == fhpibdebugunit)
+				printf("fhpibintr: PPOLL: unit %d slave %d stat %x\n",
+				       unit, dq->dq_slave, stat0);
 		}
 #endif
 		hs->sc_flags &= ~HPIBF_PPOLL;
