@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: machparam.h 1.16 92/12/20$
  *
- *	@(#)param.h	8.2 (Berkeley) 03/29/95
+ *	@(#)param.h	8.3 (Berkeley) 05/11/95
  */
 
 /*
