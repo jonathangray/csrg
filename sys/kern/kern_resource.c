@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_resource.c	7.19 (Berkeley) 07/08/92
+ *	@(#)kern_resource.c	7.20 (Berkeley) 07/08/92
  */
 
 #include "param.h"
