@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1985, 1988 Regents of the University of California.
+ * Copyright (c) 1983, 1988 Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)ns.c	5.14 (Berkeley) 05/27/92";
+static char sccsid[] = "@(#)ns.c	5.15 (Berkeley) 07/06/92";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -69,6 +69,7 @@ struct	sppcb sppcb;
 struct	socket sockb;
 
 static char *ns_prpr __P((struct ns_addr *));
+static void ns_erputil __P((int, int));
 
 static	int first = 1;
 
