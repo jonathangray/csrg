@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vfsops.c	7.33 (Berkeley) 11/05/91
+ *	@(#)nfs_vfsops.c	7.34 (Berkeley) 12/14/91
  */
 
 #include "param.h"
@@ -119,8 +119,8 @@ nfs_statfs(mp, sbp, p)
 	nfsm_disect(sfp, struct nfsv2_statfs *, NFSX_STATFS);
 	sbp->f_type = MOUNT_NFS;
 	sbp->f_flags = nmp->nm_flag;
-	sbp->f_bsize = fxdr_unsigned(long, sfp->sf_tsize);
-	sbp->f_fsize = fxdr_unsigned(long, sfp->sf_bsize);
+	sbp->f_iosize = fxdr_unsigned(long, sfp->sf_tsize);
+	sbp->f_bsize = fxdr_unsigned(long, sfp->sf_bsize);
 	sbp->f_blocks = fxdr_unsigned(long, sfp->sf_blocks);
 	sbp->f_bfree = fxdr_unsigned(long, sfp->sf_bfree);
 	sbp->f_bavail = fxdr_unsigned(long, sfp->sf_bavail);
