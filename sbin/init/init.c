@@ -50,12 +50,13 @@ static char sccsid[] = "@(#)init.c	6.8 (Berkeley) 03/02/92";
 #include <errno.h>
 #include <fcntl.h>
 #include <signal.h>
-#include <stdlib.h>
-#include <string.h>
 #include <syslog.h>
 #include <time.h>
 #include <ttyent.h>
 #include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #ifdef __STDC__
 #include <stdarg.h>
@@ -164,11 +165,18 @@ main(argc, argv)
 	struct sigaction sa;
 	sigset_t mask;
 
-	/*
-	 * Silently dispose of random users running this program.
-	 */
-	if (getuid() != 0)
-		return 1;
+
+	/* Dispose of random users. */
+	if (getuid() != 0) {
+		(void)fprintf(stderr, "init: %s\n", strerror(EPERM));
+		exit (1);
+	}
+
+	/* System V users like to reexec init. */
+	if (getpid() != 1) {
+		(void)fprintf(stderr, "init: already running\n");
+		exit (1);
+	}
 
 	/*
 	 * Note that this does NOT open a file...
