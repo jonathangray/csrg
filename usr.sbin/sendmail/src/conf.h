@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.14 (Berkeley) 07/22/93
+ *	@(#)conf.h	8.15 (Berkeley) 07/22/93
  */
 
 /*
@@ -357,6 +357,19 @@
 # ifndef EX_CONFIG
 # define EX_CONFIG	78	/* configuration error */
 # endif
+
+/*
+**  These are used in a few cases where we need some special
+**  error codes, but where the system doesn't provide something
+**  reasonable.  They are printed in errstring.
+*/
+
+#ifndef E_PSEUDOBASE
+# define E_PSEUDOBASE	256
+#endif
+
+#define EOPENTIMEOUT	(E_PSEUDOBASE + 0)	/* timeout on open */
+#define E_DNSBASE	(E_PSEUDOBASE + 20)	/* base for DNS h_errno */
 
 /* type of arbitrary pointer */
 #ifndef ARBPTR_T
