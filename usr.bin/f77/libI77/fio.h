@@ -5,11 +5,9 @@
  * This module is believed to contain source code proprietary to AT&T.
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
+ *
+ *	@(#)fio.h	5.3 (Berkeley) 11/13/91
  */
-
-#ifndef lint
-static char sccsid[] = "@(#)fio.h	5.2 (Berkeley) 04/12/91";
-#endif /* not lint */
 
 /*
  * f77 file i/o common definitions
