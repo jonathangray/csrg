@@ -8,7 +8,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)pigs.c	5.10 (Berkeley) 07/23/92";
+static char sccsid[] = "@(#)pigs.c	5.11 (Berkeley) 07/24/92";
 #endif /* not lint */
 
 /*
@@ -109,7 +109,7 @@ showpigs()
 	wmove(wnd, y, 0); wclrtobot(wnd);
 }
 
-static struct nlist nlst[] = {
+static struct nlist nl[] = {
 #define X_FIRST		0
 #define X_CPTIME	0
 	{ "_cp_time" },
@@ -126,12 +126,12 @@ initpigs()
 {
 	fixpt_t ccpu;
 
-	if (nlst[X_FIRST].n_type == 0) {
-		if (kvm_nlist(kd, nlst)) {
-			nlisterr(nlst);
+	if (nl[X_FIRST].n_type == 0) {
+		if (kvm_nlist(kd, nl)) {
+			nlisterr(nl);
 		        return(0);
 		}
-		if (nlst[X_FIRST].n_type == 0) {
+		if (nl[X_FIRST].n_type == 0) {
 			error("namelist failed");
 			return(0);
 		}
@@ -156,7 +156,7 @@ fetchpigs()
 	double t;
 	static int lastnproc = 0;
 
-	if (nlst[X_FIRST].n_type == 0)
+	if (nl[X_FIRST].n_type == 0)
 		return;
 	if ((kpp = 
 	    kvm_getprocs(kd, KINFO_PROC_ALL, 0, &nproc)) == NULL) {
