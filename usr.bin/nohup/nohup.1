@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)nohup.1	6.4 (Berkeley) 06/11/90
+.\"     @(#)nohup.1	6.5 (Berkeley) 07/24/90
 .\"
 .Dd 
 .Dt NOHUP 1
@@ -61,6 +61,8 @@ as the standard output.
 exits 1 if an error occurs, otherwise the exit status is that of
 .Ar command  .
 .Sh ENVIRONMENT
+The following variable is utilized by
+.Nm nohup .
 .Tw Fl
 .Tp Ev HOME
 If the output file
