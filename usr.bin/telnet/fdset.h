@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fdset.h	1.5 (Berkeley) 06/01/90
+ *	@(#)fdset.h	5.1 (Berkeley) 09/14/90
  */
 
 /*
