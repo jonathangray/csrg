@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vfsops.c	7.62 (Berkeley) 02/04/92
+ *	@(#)ffs_vfsops.c	7.63 (Berkeley) 02/15/92
  */
 
 #include <sys/param.h>
@@ -252,6 +252,7 @@ ffs_mountfs(devvp, mp, p)
 		goto out;
 	}
 	ump = malloc(sizeof *ump, M_UFSMNT, M_WAITOK);
+	bzero((caddr_t)ump, sizeof *ump);
 	ump->um_fs = malloc((u_long)fs->fs_sbsize, M_UFSMNT,
 	    M_WAITOK);
 	bcopy((caddr_t)bp->b_un.b_addr, (caddr_t)ump->um_fs,
