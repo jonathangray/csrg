@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)defs.h	5.4 (Berkeley) 06/01/90
+ *	@(#)defs.h	5.5 (Berkeley) 01/20/91
  */
 
 #include <assert.h>
@@ -41,11 +41,11 @@
 #include <stdio.h>
 
 
-/*  machine dependent definitions			*/
-/*  the following definitions are for the VAX		*/
+/*  machine-dependent definitions			*/
+/*  the following definitions are for the Tahoe		*/
 /*  they might have to be changed for other machines	*/
 
-/*  MAXCHAR is the largest character value		*/
+/*  MAXCHAR is the largest unsigned character value	*/
 /*  MAXSHORT is the largest value of a C short		*/
 /*  MINSHORT is the most negative value of a C short	*/
 /*  MAXTABLE is the maximum table size			*/
@@ -62,8 +62,8 @@
 #define MAXTABLE	32500
 #define BITS_PER_WORD	32
 #define	WORDSIZE(n)	(((n)+(BITS_PER_WORD-1))/BITS_PER_WORD)
-#define	BIT(r, n)	((((r)[(n) >> 5]) >> ((n) & 31)) & 1)
-#define	SETBIT(r, n)	((r)[(n) >> 5] |= (1 << ((n) & 31)))
+#define	BIT(r, n)	((((r)[(n)>>5])>>((n)&31))&1)
+#define	SETBIT(r, n)	((r)[(n)>>5]|=((unsigned)1<<((n)&31)))
 
 
 /*  character names  */
@@ -83,6 +83,7 @@
 
 /* defines for constructing filenames */
 
+#define CODE_SUFFIX	".code.c"
 #define	DEFINES_SUFFIX	".tab.h"
 #define	OUTPUT_SUFFIX	".tab.c"
 #define	VERBOSE_SUFFIX	".output"
@@ -118,7 +119,6 @@
 
 #define SHIFT 1
 #define REDUCE 2
-#define ERROR 3
 
 
 /*  character macros  */
@@ -136,6 +136,7 @@
 
 /*  storage allocation macros  */
 
+#define CALLOC(k,n)	(calloc((unsigned)(k),(unsigned)(n)))
 #define	FREE(x)		(free((char*)(x)))
 #define MALLOC(n)	(malloc((unsigned)(n)))
 #define	NEW(t)		((t*)allocate(sizeof(t)))
@@ -217,6 +218,7 @@ struct action
 
 extern char dflag;
 extern char lflag;
+extern char rflag;
 extern char tflag;
 extern char vflag;
 
@@ -227,11 +229,13 @@ extern int lineno;
 extern int outline;
 
 extern char *banner[];
+extern char *tables[];
 extern char *header[];
 extern char *body[];
 extern char *trailer[];
 
 extern char *action_file_name;
+extern char *code_file_name;
 extern char *defines_file_name;
 extern char *input_file_name;
 extern char *output_file_name;
@@ -240,6 +244,7 @@ extern char *union_file_name;
 extern char *verbose_file_name;
 
 extern FILE *action_file;
+extern FILE *code_file;
 extern FILE *defines_file;
 extern FILE *input_file;
 extern FILE *output_file;
