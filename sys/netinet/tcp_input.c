@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_input.c	7.26 (Berkeley) 01/14/92
+ *	@(#)tcp_input.c	7.27 (Berkeley) 02/15/92
  */
 
 #include "param.h"
