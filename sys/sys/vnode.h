@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode.h	7.46 (Berkeley) 02/03/92
+ *	@(#)vnode.h	7.47 (Berkeley) 02/04/92
  */
 
 #ifndef KERNEL
@@ -296,6 +296,16 @@ struct vnodeops {
 #define	VNOVAL	(-1)
 
 #ifdef KERNEL
+/*
+ * Convert between vnode types and inode formats (since POSIX.1
+ * defines mode word of stat structure in terms of inode formats).
+ */
+extern enum vtype	iftovt_tab[];
+extern int		vttoif_tab[];
+#define IFTOVT(mode)	(iftovt_tab[((mode) & IFMT) >> 12])
+#define VTTOIF(indx)	(vttoif_tab[(int)(indx)])
+#define MAKEIMODE(indx, mode)	(int)(VTTOIF(indx) | (mode))
+
 /*
  * public vnode manipulation functions
  */
