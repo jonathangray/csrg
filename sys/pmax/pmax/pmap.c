@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.c	7.9 (Berkeley) 05/28/92
+ *	@(#)pmap.c	7.10 (Berkeley) 07/27/92
  */
 
 /*
@@ -1477,7 +1477,7 @@ pmap_alloc_tlbpid(p)
 		 * Have to find a tlbpid to recycle.
 		 * There is probably a better way to do this.
 		 */
-		for (q = allproc; q != NULL; q = q->p_nxt) {
+		for (q = (struct proc *)allproc; q != NULL; q = q->p_nxt) {
 			q_pmap = &q->p_vmspace->vm_pmap;
 			if ((id = q_pmap->pm_tlbpid) < 0)
 				continue;
