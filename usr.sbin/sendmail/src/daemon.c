@@ -39,9 +39,9 @@
 
 #ifndef lint
 #ifdef DAEMON
-static char sccsid[] = "@(#)daemon.c	6.12 (Berkeley) 03/02/93 (with daemon mode)";
+static char sccsid[] = "@(#)daemon.c	6.13 (Berkeley) 03/03/93 (with daemon mode)";
 #else
-static char sccsid[] = "@(#)daemon.c	6.12 (Berkeley) 03/02/93 (without daemon mode)";
+static char sccsid[] = "@(#)daemon.c	6.13 (Berkeley) 03/03/93 (without daemon mode)";
 #endif
 #endif /* not lint */
 
@@ -108,6 +108,7 @@ getrequests()
 	register struct servent *sp;
 	int on = 1;
 	bool refusingconnections = TRUE;
+	FILE *pidf;
 	struct sockaddr_in srvraddr;
 	extern void reapchild();
 
@@ -160,6 +161,15 @@ getrequests()
 	}
 
 	(void) signal(SIGCHLD, reapchild);
+
+	/* write the pid to the log file for posterity */
+	pidf = fopen(PidFile, "w");
+	if (pidf != NULL)
+	{
+		fprintf(pidf, "%d\n", getpid());
+		fclose(pidf);
+	}
+
 
 	if (tTd(15, 1))
 		printf("getrequests: %d\n", DaemonSocket);
