@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sysctl.c	7.35 (Berkeley) 04/27/93
+ *	@(#)kern_sysctl.c	7.36 (Berkeley) 04/27/93
  */
 
 /*
@@ -46,15 +46,12 @@
 #include <sys/proc.h>
 #include <sys/file.h>
 #include <sys/vnode.h>
-#include <sys/sysctl.h>
 #include <sys/unistd.h>
 #include <sys/buf.h>
 #include <sys/ioctl.h>
 #include <sys/tty.h>
-
 #include <vm/vm.h>
-
-#include <sys/kinfo_proc.h>
+#include <sys/sysctl.h>
 
 sysctlfn kern_sysctl;
 sysctlfn hw_sysctl;
