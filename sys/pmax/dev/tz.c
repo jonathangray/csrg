@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tz.c	7.9 (Berkeley) 04/13/93
+ *	@(#)tz.c	8.1 (Berkeley) 06/10/93
  *
  * from: $Header: /sprite/src/kernel/dev/RCS/devSCSITape.c,
  *	v 8.14 89/07/31 17:26:13 mendel Exp $ SPRITE (Berkeley)
