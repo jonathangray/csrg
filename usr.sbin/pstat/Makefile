@@ -1,6 +1,7 @@
-#	@(#)Makefile	5.4 (Berkeley) 01/14/91
+#	@(#)Makefile	5.4 (Berkeley) 06/26/91
 
 PROG=	pstat
+CFLAGS+= -I/sys
 SRCS=	pstat.c devname.c
 .PATH:	${.CURDIR}/../../bin/ps
 MAN8=	pstat.0
