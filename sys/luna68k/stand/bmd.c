@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)bmd.c	7.1 (Berkeley) 11/17/92
+ *	@(#)bmd.c	7.2 (Berkeley) 12/13/92
  */
 /*
 
@@ -44,8 +44,8 @@
  */
 
 
-#include "param.h"
-#include "systm.h"
+#include <sys/param.h>
+#include <sys/systm.h>
 
 extern u_short bmdfont[][20];
 
