@@ -31,7 +31,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)yyfix.sh	5.1 (Berkeley) 05/12/90
+#	@(#)yyfix.sh	5.2 (Berkeley) 05/12/90
 #
 OLDYACC="yyexca yyact yypact yypgo yyr1 yyr2 yychk yydef"
 NEWYACC="yylhs yylen yydefred yydgoto yysindex yyrindex yygindex \
@@ -43,6 +43,12 @@ shift
 
 if [ $# -eq 0 ] ; then
 	if grep yylhs y.tab.c > /dev/null ; then
+		if grep yyname y.tab.c > /dev/null ; then
+			NEWYACC="$NEWYACC yyname"
+		fi
+		if grep yyrule y.tab.c > /dev/null ; then
+			NEWYACC="$NEWYACC yyrule"
+		fi
 		set $NEWYACC
 	else
 		set $OLDYACC
