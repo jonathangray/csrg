@@ -36,7 +36,7 @@
 # include <pwd.h>
 
 #ifndef lint
-static char sccsid[] = "@(#)alias.c	8.25 (Berkeley) 04/14/94";
+static char sccsid[] = "@(#)alias.c	8.26 (Berkeley) 05/29/94";
 #endif /* not lint */
 
 
@@ -479,7 +479,7 @@ rebuildaliases(map, automatic)
 		}
 #endif /* LOG */
 		map->map_mflags |= MF_OPEN|MF_WRITABLE;
-		readaliases(map, af, automatic);
+		readaliases(map, af, !automatic, TRUE);
 	}
 	else
 	{
@@ -510,7 +510,9 @@ rebuildaliases(map, automatic)
 **	Parameters:
 **		map -- the alias database descriptor.
 **		af -- file to read the aliases from.
-**		automatic -- set if this was an automatic rebuild.
+**		announcestats -- anounce statistics regarding number of
+**			aliases, longest alias, etc.
+**		logstats -- lot the same info.
 **
 **	Returns:
 **		none.
@@ -520,10 +522,11 @@ rebuildaliases(map, automatic)
 **		Optionally, builds the .dir & .pag files.
 */
 
-readaliases(map, af, automatic)
+readaliases(map, af, announcestats, logstats)
 	register MAP *map;
 	FILE *af;
-	int automatic;
+	bool announcestats;
+	bool logstats;
 {
 	register char *p;
 	char *lhs;
@@ -721,11 +724,11 @@ readaliases(map, af, automatic)
 
 	CurEnv->e_to = NULL;
 	FileName = NULL;
-	if (Verbose || !automatic)
+	if (Verbose || announcestats)
 		message("%s: %d aliases, longest %d bytes, %d bytes total",
 			map->map_file, naliases, longest, bytes);
 # ifdef LOG
-	if (LogLevel > 7)
+	if (LogLevel > 7 && logstats)
 		syslog(LOG_INFO, "%s: %d aliases, longest %d bytes, %d bytes total",
 			map->map_file, naliases, longest, bytes);
 # endif /* LOG */
