@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_fork.c	7.20 (Berkeley) 07/27/90
+ *	@(#)kern_fork.c	7.21 (Berkeley) 08/24/90
  */
 
 #include "param.h"
@@ -46,7 +46,6 @@
 #include "file.h"
 #include "acct.h"
 #include "ktrace.h"
-#include "../ufs/quota.h"
 
 #include "machine/reg.h"
 #include "machine/pte.h"
