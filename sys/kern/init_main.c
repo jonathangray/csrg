@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)init_main.c	7.57 (Berkeley) 12/01/92
+ *	@(#)init_main.c	7.58 (Berkeley) 04/17/93
  */
 
 #include <sys/param.h>
@@ -46,6 +46,7 @@
 #include <sys/conf.h>
 #include <sys/buf.h>
 #include <sys/clist.h>
+#include <sys/device.h>
 #include <sys/protosw.h>
 #include <sys/reboot.h>
 #include <sys/user.h>
@@ -98,7 +99,9 @@ main()
 	register int i;
 	register struct proc *p;
 	register struct filedesc0 *fdp;
+	register struct pdevinit *pdev;
 	int s, rval[2];
+	extern struct pdevinit pdevinit[];
 	extern void roundrobin __P((void *));
 	extern void schedcpu __P((void *));
 
@@ -196,41 +199,29 @@ main()
 
 	rqinit();
 
-	/*
-	 * configure virtual memory system,
-	 * set vm rlimits
-	 */
+	/* Configure virtual memory system, set vm rlimits. */
 	vm_init_limits(p);
 
-	/*
-	 * Initialize the file systems.
-	 */
+	/* Initialize the file systems. */
 	vfsinit();
 
-	/*
-	 * Start real time and statistics clocks.
-	 */
+	/* Start real time and statistics clocks. */
 	initclocks();
 
-	/*
-	 * Initialize tables, protocols, and set up well-known inodes.
-	 */
+	/* Initialize tables. */
 	mbinit();
 	cinit();
 #ifdef SYSVSHM
 	shminit();
 #endif
-#include "sl.h"
-#if NSL > 0
-	slattach();			/* XXX */
-#endif
-#include "loop.h"
-#if NLOOP > 0
-	loattach();			/* XXX */
-#endif
+
+	/* Attach pseudo-devices. */
+	for (pdev = pdevinit; pdev->pdev_attach != NULL; pdev++)
+		(*pdev->pdev_attach)(pdev->pdev_count);
+
 	/*
-	 * Block reception of incoming packets
-	 * until protocols have been initialized.
+	 * Initialize protocols.  Block reception of incoming packets
+	 * until everything is ready.
 	 */
 	s = splimp();
 	ifinit();
