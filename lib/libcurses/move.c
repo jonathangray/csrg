@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)move.c	5.11 (Berkeley) 01/11/93";
+static char sccsid[] = "@(#)move.c	5.12 (Berkeley) 04/13/93";
 #endif	/* not lint */
 
 #include <curses.h>
@@ -55,6 +55,7 @@ wmove(win, y, x)
 	if (x >= win->maxx || y >= win->maxy)
 		return (ERR);
 	win->curx = x;
+	win->lines[win->cury]->flags &= ~__ISPASTEOL;
 	win->cury = y;
 	win->lines[y]->flags &= ~__ISPASTEOL;
 	return (OK);
