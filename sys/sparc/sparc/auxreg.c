@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)auxreg.c	7.3 (Berkeley) 10/11/92
+ *	@(#)auxreg.c	7.4 (Berkeley) 04/20/93
  *
  * from: $Header: auxreg.c,v 1.7 92/06/17 05:21:54 torek Exp $ (LBL)
  */
