@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)mount_cd9660.c	8.4 (Berkeley) 03/27/94
+ *      @(#)mount_cd9660.c	8.5 (Berkeley) 05/06/94
  */
 
 #ifndef lint
@@ -45,7 +45,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)mount_cd9660.c	8.4 (Berkeley) 03/27/94";
+static char sccsid[] = "@(#)mount_cd9660.c	8.5 (Berkeley) 05/06/94";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -75,9 +75,8 @@ main(argc, argv)
 {
 	struct iso_args args;
 	int ch, mntflags, opts;
-	char *dev, *dir, *options;
+	char *dev, *dir;
 
-	options = NULL;
 	mntflags = opts = 0;
 	while ((ch = getopt(argc, argv, "ego:r")) != EOF)
 		switch (ch) {
@@ -88,7 +87,7 @@ main(argc, argv)
 			opts |= ISOFSMNT_GENS;
 			break;
 		case 'o':
-			getmntopts(options, mopts, &mntflags);
+			getmntopts(optarg, mopts, &mntflags);
 			break;
 		case 'r':
 			opts |= ISOFSMNT_NORRIP;
