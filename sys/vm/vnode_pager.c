@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode_pager.c	7.5 (Berkeley) 04/20/91
+ *	@(#)vnode_pager.c	7.6 (Berkeley) 07/25/91
  */
 
 /*
@@ -55,11 +55,7 @@
 #include "uio.h"
 #include "mount.h"
 
-#include "vm_param.h"
-#include "lock.h"
-#include "queue.h"
-#include "vm_prot.h"
-#include "vm_object.h"
+#include "vm.h"
 #include "vm_page.h"
 #include "vnode_pager.h"
 
