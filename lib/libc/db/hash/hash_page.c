@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)hash_page.c	5.8 (Berkeley) 02/22/91";
+static char sccsid[] = "@(#)hash_page.c	5.9 (Berkeley) 02/22/91";
 #endif /* LIBC_SCCS and not lint */
 
 /******************************************************************************
@@ -54,12 +54,14 @@ ROUTINES:
 ******************************************************************************/
 
 #include <sys/param.h>
-#include <sys/file.h>
+#include <fcntl.h>
 #include <signal.h>
 #include <assert.h>
 #include <errno.h>
 #include <db.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include "hash.h"
 #include "page.h"
