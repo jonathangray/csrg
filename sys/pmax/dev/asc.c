@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)asc.c	7.9 (Berkeley) 12/20/92
+ *	@(#)asc.c	7.10 (Berkeley) 03/08/93
  */
 
 /* 
@@ -270,7 +270,7 @@ script_t asc_scripts[] = {
 		asc_last_dma_in, ASC_CMD_I_COMPLETE,
 		&asc_scripts[SCRIPT_GET_STATUS]},
 
-	/* continue data in after a chuck is finished */
+	/* continue data in after a chunk is finished */
 	{SCRIPT_MATCH(ASC_INT_BS, ASC_PHASE_DATAI),			/*  2 */
 		asc_dma_in, ASC_CMD_XFER_INFO | ASC_CMD_DMA,
 		&asc_scripts[SCRIPT_DATA_IN + 1]},
@@ -283,7 +283,7 @@ script_t asc_scripts[] = {
 		asc_last_dma_out, ASC_CMD_I_COMPLETE,
 		&asc_scripts[SCRIPT_GET_STATUS]},
 
-	/* continue data out after a chuck is finished */
+	/* continue data out after a chunk is finished */
 	{SCRIPT_MATCH(ASC_INT_BS, ASC_PHASE_DATAO),			/*  5 */
 		asc_dma_out, ASC_CMD_XFER_INFO | ASC_CMD_DMA,
 		&asc_scripts[SCRIPT_DATA_OUT + 1]},
@@ -867,7 +867,6 @@ again:
 					state->dmalen, len, fifo); /* XXX */
 			regs->asc_cmd = ASC_CMD_FLUSH;
 			readback(regs->asc_cmd);
-			MachEmptyWriteBuffer();
 			DELAY(2);
 		}
 		if (len) {
@@ -1231,7 +1230,6 @@ asc_last_dma_in(asc, status, ss, ir)
 		/* device must be trying to send more than we expect */
 		regs->asc_cmd = ASC_CMD_FLUSH;
 		readback(regs->asc_cmd);
-		MachEmptyWriteBuffer();
 	}
 	state->flags &= ~DMA_IN_PROGRESS;
 	len = state->dmalen - len;
@@ -1380,7 +1378,6 @@ asc_last_dma_out(asc, status, ss, ir)
 		len += fifo;
 		regs->asc_cmd = ASC_CMD_FLUSH;
 		readback(regs->asc_cmd);
-		MachEmptyWriteBuffer();
 	}
 	state->flags &= ~DMA_IN_PROGRESS;
 	len = state->dmalen - len;
@@ -1597,7 +1594,6 @@ asc_msg_in(asc, status, ss, ir)
 			if (!(state->flags & TRY_SYNC)) {
 				regs->asc_cmd = ASC_CMD_SET_ATN;
 				readback(regs->asc_cmd);
-				MachEmptyWriteBuffer();
 
 				if (state->sync_period < asc->min_period)
 					state->sync_period =
@@ -1696,7 +1692,6 @@ asc_msg_in(asc, status, ss, ir)
 		state->msg_out = SCSI_MESSAGE_REJECT;
 		regs->asc_cmd = ASC_CMD_SET_ATN;
 		readback(regs->asc_cmd);
-		MachEmptyWriteBuffer();
 	}
 
 done:
@@ -1861,10 +1856,8 @@ asc_DumpLog(str)
 
 	printf("asc: %s: cmd %x bn %d cnt %d\n", str, asc_debug_cmd,
 		asc_debug_bn, asc_debug_sz);
-	lp = asc_logp + 1;
-	if (lp > &asc_log[NLOG])
-		lp = asc_log;
-	while (lp != asc_logp) {
+	lp = asc_logp;
+	do {
 		status = lp->status;
 		printf("asc%d tgt %d status %x ss %x ir %x cond %d:%x msg %x\n",
 			status >> 24,
@@ -1877,7 +1870,7 @@ asc_DumpLog(str)
 			lp->msg);
 		if (++lp >= &asc_log[NLOG])
 			lp = asc_log;
-	}
+	} while (lp != asc_logp);
 }
 #endif
 
