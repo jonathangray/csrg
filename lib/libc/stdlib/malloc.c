@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)malloc.c	5.10 (Berkeley) 02/21/91";
+static char sccsid[] = "@(#)malloc.c	5.11 (Berkeley) 02/23/91";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -47,8 +47,14 @@ static char sccsid[] = "@(#)malloc.c	5.10 (Berkeley) 02/21/91";
  */
 
 #include <sys/types.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 #define	NULL 0
+
+static void morecore();
+static int findbucket();
 
 /*
  * The overhead on a block is at least 4 bytes.  When free, this space
@@ -121,9 +127,9 @@ botch(s)
 #define	ASSERT(p)
 #endif
 
-char *
+void *
 malloc(nbytes)
-	unsigned nbytes;
+	size_t nbytes;
 {
   	register union overhead *op;
   	register int bucket, n;
@@ -206,7 +212,7 @@ malloc(nbytes)
 /*
  * Allocate more memory to the indicated bucket.
  */
-static
+static void
 morecore(bucket)
 	int bucket;
 {
@@ -248,8 +254,9 @@ morecore(bucket)
   	}
 }
 
+void
 free(cp)
-	char *cp;
+	void *cp;
 {   
   	register int size;
 	register union overhead *op;
@@ -289,10 +296,10 @@ free(cp)
  */
 int realloc_srchlen = 4;	/* 4 should be plenty, -1 =>'s whole list */
 
-char *
+void *
 realloc(cp, nbytes)
-	char *cp; 
-	unsigned nbytes;
+	void *cp; 
+	size_t nbytes;
 {   
   	register u_int onb;
 	register int i;
