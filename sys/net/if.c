@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if.c	7.23 (Berkeley) 02/17/93
+ *	@(#)if.c	7.24 (Berkeley) 02/25/93
  */
 
 #include <sys/param.h>
@@ -516,7 +516,6 @@ ifioctl(so, cmd, data, p)
 		ifp->if_metric = ifr->ifr_metric;
 		break;
 
-#ifdef MULTICAST
 	case SIOCADDMULTI:
 	case SIOCDELMULTI:
 		if (error = suser(p->p_ucred, &p->p_acflag))
@@ -524,7 +523,6 @@ ifioctl(so, cmd, data, p)
 		if (ifp->if_ioctl == NULL)
 			return (EOPNOTSUPP);
 		return ((*ifp->if_ioctl)(ifp, cmd, data));
-#endif
 
 	default:
 		if (so->so_proto == 0)
