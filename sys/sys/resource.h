@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)resource.h	8.3 (Berkeley) 07/10/94
+ *	@(#)resource.h	8.4 (Berkeley) 01/09/95
  */
 
 #ifndef _SYS_RESOURCE_H_
@@ -104,7 +104,7 @@ struct rlimit {
 /* Load average structure. */
 struct loadavg {
 	fixpt_t	ldavg[3];
-	int32_t fscale;
+	long	fscale;
 };
 
 #ifdef KERNEL
