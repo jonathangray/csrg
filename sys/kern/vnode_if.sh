@@ -1,8 +1,9 @@
 #!/bin/sh -
-#
-# Copyright (c) 1992, 1993, 1994
-#	The Regents of the University of California.  All rights reserved.
-#
+copyright='
+/*
+ * Copyright (c) 1992, 1993, 1994
+ *	The Regents of the University of California.  All rights reserved.
+ *
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
@@ -30,10 +31,11 @@
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
-#
-# from: $NetBSD: vnode_if.sh,v 1.7 1994/08/25 03:04:28 cgd Exp $
-#
-SCRIPT_ID='@(#)vnode_if.sh	8.5 (Berkeley) 10/09/94'
+ *
+ * from: NetBSD: vnode_if.sh,v 1.7 1994/08/25 03:04:28 cgd Exp $
+ */
+'
+SCRIPT_ID='@(#)vnode_if.sh	8.6 (Berkeley) 02/14/95'
 
 # Script to produce VFS front-end sugar.
 #
