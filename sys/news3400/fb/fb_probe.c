@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 1992 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1992, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Sony Corp. and Kazumasa Utashiro of Software Research Associates, Inc.
