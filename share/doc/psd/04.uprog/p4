@@ -2,7 +2,7 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)p4	8.1 (Berkeley) 06/08/93
+.\"	@(#)p4	8.2 (Berkeley) 06/01/94
 .\"
 .NH
 LOW-LEVEL I/O
@@ -83,6 +83,7 @@ so if a program reads file descriptor 0
 and writes file descriptors 1 and 2,
 it can do terminal I/O
 without worrying about opening the files.
+.ne 1i
 .PP
 If I/O is redirected 
 to and from files with
