@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_sl.c	8.5 (Berkeley) 01/12/94
+ *	@(#)if_sl.c	8.6 (Berkeley) 02/01/94
  */
 
 /*
@@ -99,6 +99,7 @@ Huh? Slip without inet?
 
 #include <net/slcompress.h>
 #include <net/if_slvar.h>
+#include <net/slip.h>
 
 #if NBPFILTER > 0
 #include <sys/time.h>
