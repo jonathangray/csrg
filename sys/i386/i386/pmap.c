@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.c	7.7 (Berkeley)	05/12/91
+ *	@(#)pmap.c	7.7 (Berkeley)	5/12/91
  */
 
 /*
@@ -121,7 +121,7 @@ struct {
 } remove_stats;
 
 int debugmap = 0;
-int pmapdebug = 0 /* 0xffff */;
+int pmapdebug = 0;
 #define PDB_FOLLOW	0x0001
 #define PDB_INIT	0x0002
 #define PDB_ENTER	0x0004
@@ -196,6 +196,8 @@ struct pte	*msgbufmap;
 struct msgbuf	*msgbufp;
 #endif
 
+void pmap_activate __P((pmap_t, struct pcb *));
+
 /*
  *	Bootstrap the system enough to run with virtual memory.
  *	Map the kernel's code and data, and allocate the system page table.
@@ -222,7 +224,10 @@ pmap_bootstrap(firstaddr, loadaddr)
 	extern vm_offset_t maxmem, physmem;
 extern int IdlePTD;
 
-firstaddr = 0x100000;	/*XXX basemem completely fucked (again) */
+#if	defined(ODYSSEUS) || defined(ARGO) || defined(CIRCE)
+firstaddr=0x100000;	/* for some reason, basemem screws up on this machine */
+#endif
+printf("ps %x pe %x ", firstaddr, maxmem <<PG_SHIFT);
 	avail_start = firstaddr;
 	avail_end = maxmem << PG_SHIFT;
 
@@ -290,6 +295,49 @@ firstaddr = 0x100000;	/*XXX basemem completely fucked (again) */
 	/**(int *)PTD = 0;
 	load_cr3(rcr3());*/
 
+}
+
+pmap_isvalidphys(addr) {
+	if (addr < 0xa0000) return (1);
+	if (addr >= 0x100000) return (1);
+	return(0);
+}
+
+/*
+ * Bootstrap memory allocator. This function allows for early dynamic
+ * memory allocation until the virtual memory system has been bootstrapped.
+ * After that point, either kmem_alloc or malloc should be used. This
+ * function works by stealing pages from the (to be) managed page pool,
+ * stealing virtual address space, then mapping the pages and zeroing them.
+ *
+ * It should be used from pmap_bootstrap till vm_page_startup, afterwards
+ * it cannot be used, and will generate a panic if tried. Note that this
+ * memory will never be freed, and in essence it is wired down.
+ */
+void *
+pmap_bootstrap_alloc(size) {
+	vm_offset_t val;
+	int i;
+	extern boolean_t vm_page_startup_initialized;
+	
+	if (vm_page_startup_initialized)
+		panic("pmap_bootstrap_alloc: called after startup initialized");
+	size = round_page(size);
+	val = virtual_avail;
+
+	/* deal with "hole incursion" */
+	for (i = 0; i < size; i += PAGE_SIZE) {
+
+		while (!pmap_isvalidphys(avail_start))
+				avail_start += PAGE_SIZE;
+		
+		virtual_avail = pmap_map(virtual_avail, avail_start,
+			avail_start + PAGE_SIZE, VM_PROT_READ|VM_PROT_WRITE);
+		avail_start += PAGE_SIZE;
+	}
+
+	blkclr ((caddr_t) val, size);
+	return ((void *) val);
 }
 
 /*
@@ -443,7 +491,7 @@ pmap_pinit(pmap)
 
 	/* install self-referential address mapping entry */
 	*(int *)(pmap->pm_pdir+PTDPTDI) =
-		(int)pmap_extract(kernel_pmap, pmap->pm_pdir) | PG_V | PG_URKW;
+		(int)pmap_extract(kernel_pmap, (vm_offset_t)pmap->pm_pdir) | PG_V | PG_URKW;
 
 	pmap->pm_count = 1;
 	simple_lock_init(&pmap->pm_lock);
@@ -508,7 +556,7 @@ pmap_reference(pmap)
 {
 #ifdef DEBUG
 	if (pmapdebug & PDB_FOLLOW)
-		printf("pmap_reference(%x)", pmap);
+		pg("pmap_reference(%x)", pmap);
 #endif
 	if (pmap != NULL) {
 		simple_lock(&pmap->pm_lock);
@@ -540,7 +588,9 @@ pmap_remove(pmap, sva, eva)
 	pt_entry_t opte;
 
 	if (pmapdebug & (PDB_FOLLOW|PDB_REMOVE|PDB_PROTECT))
-		pg("pmap_remove(%x, %x, %x)", pmap, sva, eva);
+		printf("pmap_remove(%x, %x, %x)", pmap, sva, eva);
+	if (eva >= USRSTACK && eva <= UPT_MAX_ADDRESS)
+		nullop();
 #endif
 
 	if (pmap == NULL)
@@ -747,8 +797,6 @@ pmap_protect(pmap, sva, eva, prot)
 	if (prot & VM_PROT_WRITE)
 		return;
 
-	pte = pmap_pte(pmap, sva);
-	if(!pte) return;
 	for (va = sva; va < eva; va += PAGE_SIZE) {
 		/*
 		 * Page table page is not allocated.
@@ -759,20 +807,17 @@ pmap_protect(pmap, sva, eva, prot)
 			/* XXX: avoid address wrap around */
 			if (va >= i386_trunc_pdr((vm_offset_t)-1))
 				break;
-			va = i386_round_pdr(va + PAGE_SIZE) - PAGE_SIZE;
-			pte = pmap_pte(pmap, va);
-			pte += i386pagesperpage;
+			va = i386_round_pdr(va + PAGE_SIZE);
 			continue;
-		}
-		if(!pte) return;
+		} else	pte = pmap_pte(pmap, va);
+
 		/*
 		 * Page not valid.  Again, skip it.
 		 * Should we do this?  Or set protection anyway?
 		 */
-		if (!pmap_pte_v(pte)) {
-			pte += i386pagesperpage;
+		if (!pmap_pte_v(pte))
 			continue;
-		}
+
 		ix = 0;
 		i386prot = pte_prot(pmap, prot);
 		if(va < UPT_MAX_ADDRESS)
@@ -783,6 +828,7 @@ pmap_protect(pmap, sva, eva, prot)
 			/*TBIS(va + ix * I386_PAGE_SIZE);*/
 		} while (++ix != i386pagesperpage);
 	}
+out:
 	if (pmap == &curproc->p_vmspace->vm_pmap)
 		pmap_activate(pmap, (struct pcb *)curproc->p_addr);
 }
@@ -817,6 +863,7 @@ pmap_enter(pmap, va, pa, prot, wired)
 	if (pmapdebug & (PDB_FOLLOW|PDB_ENTER))
 		printf("pmap_enter(%x, %x, %x, %x, %x)",
 		       pmap, va, pa, prot, wired);
+	if(!pmap_isvalidphys(pa)) panic("invalid phys");
 #endif
 	if (pmap == NULL)
 		return;
@@ -1253,6 +1300,7 @@ pmap_kernel()
  *	bzero to clear its contents, one machine dependent page
  *	at a time.
  */
+void
 pmap_zero_page(phys)
 	register vm_offset_t	phys;
 {
@@ -1275,6 +1323,7 @@ pmap_zero_page(phys)
  *	bcopy to copy the page, one machine dependent page at a
  *	time.
  */
+void
 pmap_copy_page(src, dst)
 	register vm_offset_t	src, dst;
 {
@@ -1307,6 +1356,7 @@ pmap_copy_page(src, dst)
  *		will specify that these pages are to be wired
  *		down (or not) as appropriate.
  */
+void
 pmap_pageable(pmap, sva, eva, pageable)
 	pmap_t		pmap;
 	vm_offset_t	sva, eva;
@@ -1449,7 +1499,6 @@ pmap_phys_address(ppn)
  * Miscellaneous support routines follow
  */
 
-static
 i386_protection_init()
 {
 	register int *kp, prot;
@@ -1517,7 +1566,6 @@ pmap_testbit(pa, bit)
 	return(FALSE);
 }
 
-static
 pmap_changebit(pa, bit, setem)
 	register vm_offset_t pa;
 	int bit;
