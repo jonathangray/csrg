@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	7.101 (Berkeley) 04/17/93
+ *	@(#)ffs_vnops.c	7.101 (Berkeley) 04/18/93
  */
 
 #include <sys/param.h>
@@ -206,10 +206,12 @@ struct vnodeopv_desc ffs_fifoop_opv_desc =
 
 /*
  * Enabling cluster read/write operations.
- * Default is off until we trust them.
  */
-int doclusterread = 0;
-int doclusterwrite = 0;
+#include <sys/sysctl.h>
+int doclusterread = 1;
+struct ctldebug debug11 = { "doclusterread", &doclusterread };
+int doclusterwrite = 1;
+struct ctldebug debug12 = { "doclusterwrite", &doclusterwrite };
 
 /*
  * Vnode op for reading.
