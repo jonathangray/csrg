@@ -32,8 +32,8 @@ divert(-1)
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-VERSIONID(`@(#)version.m4	6.5 (Berkeley) 02/15/93')
+VERSIONID(`@(#)version.m4	6.6 (Berkeley) 02/16/93')
 #
 divert(0)
 # Configuration version number
-DZ6.5
+DZ6.6
