@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	7.44 (Berkeley) 06/28/90
+ *	@(#)nfs_vnops.c	7.45 (Berkeley) 07/02/90
  */
 
 /*
@@ -1579,7 +1579,7 @@ nfs_doio(bp)
 	int error;
 	struct uio uio;
 	struct iovec io;
-#if !defined(hp300)
+#if !defined(hp300) && !defined(i386)
 	register struct pte *pte, *ppte;
 	register caddr_t vaddr;
 	int npf, npf2;
@@ -1607,7 +1607,7 @@ nfs_doio(bp)
 		cr->cr_uid = rp->p_uid;
 		cr->cr_gid = 0;		/* Anything ?? */
 		cr->cr_ngroups = 1;
-#if defined(hp300)
+#if defined(hp300) || defined(i386)
 		/* mapping was already done by vmapbuf */
 		io.iov_base = bp->b_un.b_addr;
 #else
@@ -1681,7 +1681,7 @@ nfs_doio(bp)
 		 * Finally, release pte's used by physical i/o
 		 */
 		crfree(cr);
-#if !defined(hp300)
+#if !defined(hp300) && !defined(i386)
 		rmfree(nfsmap, (long)npf2, (long)++reg);
 		if (nfsmap_want) {
 			nfsmap_want = 0;
