@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.65 (Berkeley) 01/14/92
+ *	@(#)vfs_subr.c	7.66 (Berkeley) 01/22/92
  */
 
 /*
@@ -673,6 +673,8 @@ vget(vp)
 	return (0);
 }
 
+int bug_refs = 0;
+
 /*
  * Vnode reference, just increment the count
  */
@@ -681,6 +683,12 @@ void vref(vp)
 {
 
 	vp->v_usecount++;
+	if (vp->v_type!=VBLK && curproc) {   /* NEEDSWORK: debugging */
+		curproc->p_spare[2]++;
+	};
+	if (bug_refs) {
+		vprint ("vref: ");
+	};
 }
 
 /*
@@ -707,6 +715,12 @@ void vrele(vp)
 		panic("vrele: null vp");
 #endif
 	vp->v_usecount--;
+	if (vp->v_type!=VBLK && curproc) {   /* NEEDSWORK: debugging */
+		curproc->p_spare[2]--;
+	};
+	if (bug_refs) {
+		vprint ("vref: ");
+	};
 	if (vp->v_usecount > 0)
 		return;
 #ifdef DIAGNOSTIC
