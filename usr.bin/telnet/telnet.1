@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)telnet.1	8.1 (Berkeley) 06/06/93
+.\"	@(#)telnet.1	8.2 (Berkeley) 12/30/93
 .\"
 .Dd 
 .Dt TELNET 1
@@ -636,7 +636,7 @@ the terminal's
 .Ic suspend
 character.
 .It Ic tracefile
-Thi is the file to which the output, caused by
+This is the file to which the output, caused by
 .Ic netdata
 or
 .Ic option
@@ -663,7 +663,7 @@ character.
 The
 .Ic slc
 command (Set Local Characters) is used to set
-or change the state of the the special
+or change the state of the special
 characters when the 
 .Dv TELNET LINEMODE
 option has
@@ -695,7 +695,7 @@ connection was established.
 .It Ic check
 Verify the current settings for the current special characters.
 The remote side is requested to send all the current special
-character settings, and if there are any discrepencies with
+character settings, and if there are any discrepancies with
 the local side, the local side will switch to the remote value.
 .Ic Ic \&?
 Prints out help information for the
@@ -933,7 +933,6 @@ uses the
 .Ev SHELL
 and
 .Ev TERM
-environent variables.
 .Sh FILES
 .Bl -tag -width ~/.telnetrc -compact
 .It Pa ~/.telnetrc
