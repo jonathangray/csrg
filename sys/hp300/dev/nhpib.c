@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nhpib.c	8.1 (Berkeley) 06/10/93
+ *	@(#)nhpib.c	8.2 (Berkeley) 01/12/94
  */
 
 /*
@@ -70,6 +70,7 @@ nhpibtype(hc)
 }
 
 nhpibreset(unit)
+	int unit;
 {
 	register struct hpib_softc *hs = &hpib_softc[unit];
 	register struct nhpibdevice *hd;
@@ -106,6 +107,7 @@ nhpibifc(hd)
 }
 
 nhpibsend(unit, slave, sec, addr, origcnt)
+	int unit, slave, sec, origcnt;
 	register char *addr;
 {
 	register struct hpib_softc *hs = &hpib_softc[unit];
@@ -157,6 +159,7 @@ senderror:
 }
 
 nhpibrecv(unit, slave, sec, addr, origcnt)
+	int unit, slave, sec, origcnt;
 	register char *addr;
 {
 	register struct hpib_softc *hs = &hpib_softc[unit];
@@ -201,6 +204,7 @@ recvbyteserror:
 
 nhpibgo(unit, slave, sec, addr, count, rw)
 	register int unit, slave;
+	int sec, count, rw;
 	char *addr;
 {
 	register struct hpib_softc *hs = &hpib_softc[unit];
@@ -323,6 +327,7 @@ nhpibppoll(unit)
 
 nhpibwait(hd, x)
 	register struct nhpibdevice *hd;
+	int x;
 {
 	register int timo = hpibtimeout;
 
