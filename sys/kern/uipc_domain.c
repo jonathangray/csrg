@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_domain.c	7.14 (Berkeley) 03/04/93
+ *	@(#)uipc_domain.c	7.15 (Berkeley) 04/17/93
  */
 
 #include <sys/param.h>
@@ -153,7 +153,7 @@ net_sysctl(name, namelen, oldp, oldlenp, newp, newlen, p)
 	 * next two components are protocol family and protocol number,
 	 * then at least one addition component.
 	 */
-	if (namelen <= 3)
+	if (namelen < 3)
 		return (EISDIR);		/* overloaded */
 	family = name[0];
 	protocol = name[1];
