@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	7.95 (Berkeley) 06/19/92
+ *	@(#)ufs_vnops.c	7.96 (Berkeley) 06/20/92
  */
 
 #include <sys/param.h>
@@ -58,8 +58,8 @@
 #include <ufs/ufs/ufsmount.h>
 #include <ufs/ufs/ufs_extern.h>
 
-int ufs_chmod __P((struct vnode *, int, struct ucred *, struct proc *));
-int ufs_chown
+static int ufs_chmod __P((struct vnode *, int, struct ucred *, struct proc *));
+static int ufs_chown
 	__P((struct vnode *, uid_t, gid_t, struct ucred *, struct proc *));
 
 #ifdef _NOQUAD
