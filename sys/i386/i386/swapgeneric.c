@@ -21,9 +21,10 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)swapgeneric.c	5.2 (Berkeley) 04/24/90
+ *	@(#)swapgeneric.c	5.3 (Berkeley) 06/23/90
  */
 
+/*	swapgeneric.c	1.5	86/11/25	*/
 
 #include "../machine/pte.h"
 
@@ -37,12 +38,12 @@
 /*
  * Generic configuration;  all in one
  */
-dev_t	rootdev = 0;
-dev_t	argdev = 1;
-dev_t	dumpdev = 1;
+dev_t	rootdev = makedev(0,0);
+dev_t	argdev = makedev(0,1);
+dev_t	dumpdev = makedev(0,1);
 int	nswap;
 struct	swdevt swdevt[] = {
-	{ 1,	0,	4*4096 },
+	{ 1,	0,	0 },
 	{ 0,	1,	0 },
 };
 long	dumplo;
@@ -55,7 +56,7 @@ struct	genericconf {
 	char	*gc_name;
 	dev_t	gc_root;
 } genericconf[] = {
-	{ (caddr_t)&wddriver,	"wd",	makedev(1, 0),	},
+	{ (caddr_t)&wddriver,	"wd",	makedev(0, 0),	},
 	{ 0 },
 };
 
