@@ -6,11 +6,11 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)bmap.c	7.3 (Berkeley) 10/11/92
+ *	@(#)bmap.c	7.4 (Berkeley) 05/24/93
  */
 
 #include <sys/param.h>
-#include <stand/saio.h>
+#include <stand.att/saio.h>
 
 #define	NBUFS	4
 static char	b[NBUFS][MAXBSIZE];
