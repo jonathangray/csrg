@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_vfsops.c	8.18 (Berkeley) 05/10/95
+ *	@(#)union_vfsops.c	8.19 (Berkeley) 05/14/95
  */
 
 /*
@@ -344,6 +344,7 @@ union_root(mp, vpp)
 	struct mount *mp;
 	struct vnode **vpp;
 {
+	struct proc *p = curproc;	/* XXX */
 	struct union_mount *um = MOUNTTOUNIONMOUNT(mp);
 	int error;
 	int loselock;
@@ -356,7 +357,7 @@ union_root(mp, vpp)
 	     VOP_ISLOCKED(um->um_uppervp)) {
 		loselock = 1;
 	} else {
-		VOP_LOCK(um->um_uppervp);
+		vn_lock(um->um_uppervp, LK_EXCLUSIVE | LK_RETRY, p);
 		loselock = 0;
 	}
 	if (um->um_lowervp)
@@ -371,7 +372,7 @@ union_root(mp, vpp)
 
 	if (error) {
 		if (!loselock)
-			VOP_UNLOCK(um->um_uppervp);
+			VOP_UNLOCK(um->um_uppervp, 0, p);
 		vrele(um->um_uppervp);
 		if (um->um_lowervp)
 			vrele(um->um_lowervp);
