@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.98 (Berkeley) 04/28/93
+ *	@(#)vfs_subr.c	7.99 (Berkeley) 04/28/93
  */
 
 /*
@@ -988,9 +988,9 @@ vfinddev(dev, type, vpp)
 		if (dev != vp->v_rdev || type != vp->v_type)
 			continue;
 		*vpp = vp;
-		return (0);
+		return (1);
 	}
-	return (1);
+	return (0);
 }
 
 /*
