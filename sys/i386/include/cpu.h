@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cpu.h	5.4 (Berkeley) 05/09/91
+ *	@(#)cpu.h	5.5 (Berkeley) 02/05/92
  */
 
 /*
@@ -59,6 +59,8 @@
 #define	NEED_STRLEN		/* need strlen function */
 
 #define	cpu_exec(p)	/* nothing */
+#define cpu_setstack(p, ap) \
+	(p)->p_md.md_regs[SP] = ap
 
 /*
  * Arguments to hardclock, softclock and gatherstats
