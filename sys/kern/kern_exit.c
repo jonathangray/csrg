@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_exit.c	8.4 (Berkeley) 12/13/93
+ *	@(#)kern_exit.c	8.5 (Berkeley) 01/04/94
  */
 
 #include <sys/param.h>
@@ -94,7 +94,6 @@ exit1(p, rv)
 	register struct proc *q, *nq;
 	register struct proc **pp;
 	register struct vmspace *vm;
-	int s;
 
 	if (p->p_pid == 1)
 		panic("init died (signal %d, exit %d)",
