@@ -1,6 +1,6 @@
 /*-
- * Copyright (c) 1992 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1992, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)tty.c	5.18 (Berkeley) 06/07/93";
+static char sccsid[] = "@(#)tty.c	8.1 (Berkeley) 06/07/93";
 #endif /* not lint */
 
 #include <sys/ioctl.h>
