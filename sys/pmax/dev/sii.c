@@ -33,10 +33,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sii.c	7.2 (Berkeley) 02/29/92
+ *	@(#)sii.c	7.3 (Berkeley) 02/29/92
  *
  * from: $Header: /sprite/src/kernel/dev/ds3100.md/RCS/devSII.c,
- *	v 9.2 89/09/14 13:37:41 jhh Exp $ SPRITE (DECWRL)"; */
+ *	v 9.2 89/09/14 13:37:41 jhh Exp $ SPRITE (DECWRL)";
  */
 
 #include "sii.h"
