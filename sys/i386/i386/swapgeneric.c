@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)swapgeneric.c	8.1 (Berkeley) 06/11/93
+ *	@(#)swapgeneric.c	5.7 (Berkeley) 06/16/93
  */
 
 #include <machine/pte.h>
@@ -53,7 +53,7 @@ dev_t	dumpdev = makedev(0,1);
 int	nswap;
 struct	swdevt swdevt[] = {
 	{ 1,	0,	0 },
-	{ 0,	1,	0 },
+	{ NODEV,	1,	0 },
 };
 long	dumplo;
 int	dmmin, dmmax, dmtext;
