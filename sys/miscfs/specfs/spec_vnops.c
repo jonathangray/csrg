@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)spec_vnops.c	8.6 (Berkeley) 04/09/94
+ *	@(#)spec_vnops.c	8.7 (Berkeley) 08/10/94
  */
 
 #include <sys/param.h>
@@ -71,6 +71,7 @@ struct vnodeopv_entry_desc spec_vnodeop_entries[] = {
 	{ &vop_setattr_desc, spec_setattr },		/* setattr */
 	{ &vop_read_desc, spec_read },			/* read */
 	{ &vop_write_desc, spec_write },		/* write */
+	{ &vop_lease_desc, spec_lease_check },		/* lease */
 	{ &vop_ioctl_desc, spec_ioctl },		/* ioctl */
 	{ &vop_select_desc, spec_select },		/* select */
 	{ &vop_mmap_desc, spec_mmap },			/* mmap */
