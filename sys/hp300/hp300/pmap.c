@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.c	8.4 (Berkeley) 01/12/94
+ *	@(#)pmap.c	8.5 (Berkeley) 03/21/94
  */
 
 /*
@@ -262,7 +262,7 @@ st_entry_t	*Segtabzero, *Segtabzeropa;
 vm_size_t	Sysptsize = VM_KERNEL_PT_PAGES;
 
 struct pmap	kernel_pmap_store;
-vm_map_t	pt_map;
+vm_map_t	st_map, pt_map;
 
 vm_offset_t    	avail_start;	/* PA of first available physical page */
 vm_offset_t	avail_end;	/* PA of last available physical page */
@@ -445,6 +445,12 @@ bogons:
 		printf("pmap_init: KPT: %d pages from %x to %x\n",
 		       atop(s), addr, addr + s);
 #endif
+
+	/*
+	 * Allocate the segment table map
+	 */
+	s = maxproc * HP_STSIZE;
+	st_map = kmem_suballoc(kernel_map, &addr, &addr2, s, TRUE);
 
 	/*
 	 * Slightly modified version of kmem_suballoc() to get page table
@@ -630,7 +636,8 @@ pmap_release(pmap)
 		kmem_free_wakeup(pt_map, (vm_offset_t)pmap->pm_ptab,
 				 HP_MAX_PTSIZE);
 	if (pmap->pm_stab != Segtabzero)
-		kmem_free(kernel_map, (vm_offset_t)pmap->pm_stab, HP_STSIZE);
+		kmem_free_wakeup(st_map, (vm_offset_t)pmap->pm_stab,
+				 HP_STSIZE);
 }
 
 /*
@@ -2009,9 +2016,9 @@ pmap_remove_mapping(pmap, va, pte, flags)
 					printf("remove: free stab %x\n",
 					       ptpmap->pm_stab);
 #endif
-				kmem_free(kernel_map,
-					  (vm_offset_t)ptpmap->pm_stab,
-					  HP_STSIZE);
+				kmem_free_wakeup(st_map,
+						 (vm_offset_t)ptpmap->pm_stab,
+						 HP_STSIZE);
 				ptpmap->pm_stab = Segtabzero;
 				ptpmap->pm_stpa = Segtabzeropa;
 #if defined(HP380)
@@ -2244,14 +2251,14 @@ pmap_enter_ptpage(pmap, va)
 #endif
 	/*
 	 * Allocate a segment table if necessary.  Note that it is allocated
-	 * from kernel_map and not pt_map.  This keeps user page tables
+	 * from a private map and not pt_map.  This keeps user page tables
 	 * aligned on segment boundaries in the kernel address space.
 	 * The segment table is wired down.  It will be freed whenever the
 	 * reference count drops to zero.
 	 */
 	if (pmap->pm_stab == Segtabzero) {
 		pmap->pm_stab = (st_entry_t *)
-			kmem_alloc(kernel_map, HP_STSIZE);
+			kmem_alloc(st_map, HP_STSIZE);
 		pmap->pm_stpa = (st_entry_t *)
 			pmap_extract(kernel_pmap, (vm_offset_t)pmap->pm_stab);
 #if defined(HP380)
