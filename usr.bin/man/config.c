@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)config.c	5.3 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)config.c	5.4 (Berkeley) 06/28/90";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -45,10 +45,9 @@ static char sccsid[] = "@(#)config.c	5.3 (Berkeley) 06/01/90";
 
 #define	MAXLINE		1024
 
-extern char *progname;
+extern char *progname, *pathbuf, **arorder;
 
 static FILE *cfp;
-static char *buf;
 
 /*
  * getpath --
@@ -61,9 +60,8 @@ getpath(sects)
 {
 	register char **av, *p;
 	size_t len;
-	char **ar, line[MAXLINE], **getorder();
+	char line[MAXLINE];
 
-	ar = getorder();
 	openconfig();
 	while (fgets(line, sizeof(line), cfp)) {
 		if (!index(line, '\n')) {
@@ -82,16 +80,15 @@ getpath(sects)
 		while (p = strtok((char *)NULL, " \t\n")) {
 			len = strlen(p);
 			if (p[len - 1] == '/')
-				for (av = ar; *av; ++av)
-					cadd(p, len, *av);
+				for (av = arorder; *av; ++av)
+                			cadd(p, len, *av);
 			else
 				cadd(p, len, (char *)NULL);
 		}
 	}
-	return(buf);
+	return(pathbuf);
 }
 
-static
 cadd(add1, len1, add2)
 char *add1, *add2;
 register size_t len1;
@@ -102,11 +99,11 @@ register size_t len1;
 
 	len2 = add2 ? strlen(add2) : 0;
 	if (!bp || bp + len1 + len2 + 2 >= endp) {
-		if (!(buf = realloc(buf, buflen += 1024)))
+		if (!(pathbuf = realloc(pathbuf, buflen += 1024)))
 			enomem();
 		if (!bp)
-			bp = buf;
-		endp = buf + buflen;
+			bp = pathbuf;
+		endp = pathbuf + buflen;
 	}
 	bcopy(add1, bp, len1);
 	bp += len1;
@@ -170,7 +167,7 @@ getdb()
 	return(ar);
 }
 
-static char **
+char **
 getorder()
 {
 	register char *p;
