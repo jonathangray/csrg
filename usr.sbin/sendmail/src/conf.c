@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.138 (Berkeley) 03/05/95";
+static char sccsid[] = "@(#)conf.c	8.89.1.3 (Berkeley) 03/07/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -2759,6 +2759,8 @@ strtol(nptr, endptr, base)
 */
 
 #if defined(SOLARIS) && SOLARIS < 204
+
+extern int	h_errno;
 
 extern int	h_errno;
 
