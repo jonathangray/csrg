@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)conf.c	8.3 (Berkeley) 11/21/94
+ *      @(#)conf.c	8.4 (Berkeley) 01/03/95
  */
 
 #include <sys/param.h>
@@ -78,17 +78,17 @@ int	ttselect	__P((dev_t, int, struct proc *));
 #define	bdev_ldisk_init(c,n) { \
 	dev_init(c,n,open), dev_init(c,n,close), \
 	dev_init(c,n,strategy), dev_init(c,n,ioctl), \
-	dev_init(c,n,dump), dev_size_init(c,n), 0 }
+	dev_init(c,n,dump), dev_size_init(c,n), D_DISK }
 
 #define	bdev_tape_init(c,n) { \
 	dev_init(c,n,open), dev_init(c,n,close), \
 	dev_init(c,n,strategy), dev_init(c,n,ioctl), \
-	dev_init(c,n,dump), 0, B_TAPE }
+	dev_init(c,n,dump), 0, D_TAPE }
 
 #define	bdev_swap_init() { \
 	(dev_type_open((*))) enodev, (dev_type_close((*))) enodev, \
 	swstrategy, (dev_type_ioctl((*))) enodev, \
-	(dev_type_dump((*))) enodev, 0, 0 }
+	(dev_type_dump((*))) enodev, 0 }
 
 #define	bdev_notdef()	bdev_tape_init(0,no)
 bdev_decl(no);	/* dummy declarations */
@@ -142,14 +142,14 @@ int	nblkdev = sizeof (bdevsw) / sizeof (bdevsw[0]);
 	dev_init(c,n,open), (dev_type_close((*))) nullop, dev_init(c,n,read), \
 	dev_init(c,n,write), dev_init(c,n,ioctl), (dev_type_stop((*))) enodev, \
 	(dev_type_reset((*))) nullop, 0, seltrue, (dev_type_map((*))) enodev, \
-	dev_init(c,n,strategy) }
+	dev_init(c,n,strategy), D_DISK }
 
 /* open, close, read, write, ioctl, strategy */
 #define	cdev_ldisk_init(c,n) { \
 	dev_init(c,n,open), dev_init(c,n,close), dev_init(c,n,read), \
 	dev_init(c,n,write), dev_init(c,n,ioctl), (dev_type_stop((*))) enodev, \
 	(dev_type_reset((*))) nullop, 0, seltrue, (dev_type_map((*))) enodev, \
-	dev_init(c,n,strategy) }
+	dev_init(c,n,strategy), D_TAPE }
 
 /* open, close, read, write, ioctl, strategy */
 #define	cdev_tape_init(c,n) { \
@@ -163,7 +163,7 @@ int	nblkdev = sizeof (bdevsw) / sizeof (bdevsw[0]);
 	dev_init(c,n,open), dev_init(c,n,close), dev_init(c,n,read), \
 	dev_init(c,n,write), dev_init(c,n,ioctl), dev_init(c,n,stop), \
 	(dev_type_reset((*))) nullop, dev_tty_init(c,n), ttselect, \
-	(dev_type_map((*))) enodev, 0 }
+	(dev_type_map((*))) enodev, 0, D_TTY }
 
 #define	cdev_notdef() { \
 	(dev_type_open((*))) enodev, (dev_type_close((*))) enodev, \
@@ -180,7 +180,7 @@ cdev_decl(cn);
 	dev_init(c,n,open), dev_init(c,n,close), dev_init(c,n,read), \
 	dev_init(c,n,write), dev_init(c,n,ioctl), (dev_type_stop((*))) nullop, \
 	(dev_type_reset((*))) nullop, 0, dev_init(c,n,select), \
-	(dev_type_map((*))) enodev, 0 }
+	(dev_type_map((*))) enodev, 0, D_TTY }
 
 cdev_decl(ctty);
 /* open, read, write, ioctl, select -- XXX should be a tty */
@@ -188,7 +188,7 @@ cdev_decl(ctty);
 	dev_init(c,n,open), (dev_type_close((*))) nullop, dev_init(c,n,read), \
 	dev_init(c,n,write), dev_init(c,n,ioctl), (dev_type_stop((*))) nullop, \
 	(dev_type_reset((*))) nullop, 0, dev_init(c,n,select), \
-	(dev_type_map((*))) enodev, 0 }
+	(dev_type_map((*))) enodev, 0, D_TTY }
 
 dev_type_read(mmrw);
 dev_type_map(mmmap);
@@ -218,7 +218,7 @@ cdev_decl(ptc);
 	dev_init(c,n,open), dev_init(c,n,close), dev_init(c,n,read), \
 	dev_init(c,n,write), dev_init(c,n,ioctl), (dev_type_stop((*))) nullop, \
 	(dev_type_reset((*))) nullop, dev_tty_init(c,n), dev_init(c,n,select), \
-	(dev_type_map((*))) enodev, 0 }
+	(dev_type_map((*))) enodev, 0, D_TTY }
 
 cdev_decl(log);
 /* open, close, read, ioctl, select -- XXX should be a generic device */
@@ -247,7 +247,7 @@ cdev_decl(ppi);
 /* open, close, read, write, ioctl -- XXX should be a generic device */
 #define	cdev_ppi_init(c,n) { \
 	dev_init(c,n,open), dev_init(c,n,close), dev_init(c,n,read), \
-	dev_init(c,n,write), dev_init(c,n,ioctl), (dev_type_stop((*))) enodev, \
+	dev_init(c,n,write), dev_init(c,n,ioctl), (dev_type_stop((*))) nullop, \
 	(dev_type_reset((*))) nullop, 0, (dev_type_select((*))) enodev, \
 	(dev_type_map((*))) enodev, 0 }
 
@@ -261,7 +261,7 @@ cdev_decl(ite);
 	dev_init(c,n,open), dev_init(c,n,close), dev_init(c,n,read), \
 	dev_init(c,n,write), dev_init(c,n,ioctl), (dev_type_stop((*))) enodev, \
 	(dev_type_reset((*))) nullop, dev_tty_init(c,n), ttselect, \
-	(dev_type_map((*))) enodev, 0 }
+	(dev_type_map((*))) enodev, 0, D_TTY }
 
 /* XXX shouldn't this be optional? */
 cdev_decl(hil);
@@ -283,7 +283,7 @@ cdev_decl(vn);
 	dev_init(c,n,open), (dev_type_close((*))) nullop, dev_init(c,n,read), \
 	dev_init(c,n,write), dev_init(c,n,ioctl), (dev_type_stop((*))) enodev, \
 	(dev_type_reset((*))) nullop, 0, seltrue, (dev_type_map((*))) enodev, \
-	0 }
+	(dev_type_strategy((*))) nullop, D_DISK }
 
 dev_type_open(fdopen);
 /* open */
@@ -362,60 +362,6 @@ iszerodev(dev)
 {
 
 	return (major(dev) == 2 && minor(dev) == 12);
-}
-
-/*
- * Routine to determine if a device is a tty.
- *
- * A minimal stub routine can always return 0.
- */
-istty(dev)
-	dev_t dev;
-{
-
-	switch (major(dev)) {
-	case 0:
-	case 1:
-	case 4:
-	case 5:
-	case 12:
-	case 13:
-	case 15:
-		return (1);
-	default:
-		return (0);
-	}
-}
-
-/*
- * Routine to determine if a device is a disk.
- *
- * A minimal stub routine can always return 0.
- */
-isdisk(dev, type)
-	dev_t dev;
-	int type;
-{
-
-	switch (major(dev)) {
-	case 2:
-	case 4:
-	case 5:
-	case 6:
-		if (type == VBLK)
-			return (1);
-		return (0);
-	case 8:
-	case 9:
-	case 17:
-	case 19:
-		if (type == VCHR)
-			return (1);
-		/* fall through */
-	default:
-		return (0);
-	}
-	/* NOTREACHED */
 }
 
 #define MAXDEV	21
