@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	5.43 (Berkeley) 10/03/91";
+static char sccsid[] = "@(#)deliver.c	5.44 (Berkeley) 10/05/91";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -393,7 +393,8 @@ deliver(e, firstto)
 	if (ctladdr == NULL)
 		ctladdr = &e->e_from;
 #ifdef NAMED_BIND
-	_res.options &= ~(RES_DEFNAMES | RES_DNSRCH);		/* XXX */
+	if (ConfigLevel < 2)
+		_res.options &= ~(RES_DEFNAMES | RES_DNSRCH);	/* XXX */
 #endif
 #ifdef SMTP
 	if (clever)
@@ -455,7 +456,8 @@ deliver(e, firstto)
 		rcode = sendoff(e, m, pv, ctladdr);
 	}
 #ifdef NAMED_BIND
-	_res.options |= RES_DEFNAMES | RES_DNSRCH;	/* XXX */
+	if (ConfigLevel < 2)
+		_res.options |= RES_DEFNAMES | RES_DNSRCH;	/* XXX */
 #endif
 
 	/*
