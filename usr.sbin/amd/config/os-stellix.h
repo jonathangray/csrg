@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 1989 Jan-Simon Pendry
  * Copyright (c) 1989 Imperial College of Science, Technology & Medicine
- * Copyright (c) 1989 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1989, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Jan-Simon Pendry at Imperial College, London.
@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)os-stellix.h	5.2 (Berkeley) 07/21/92
+ *	@(#)os-stellix.h	8.1 (Berkeley) 06/06/93
  *
  * Amd (automounter) definitions for Stellix.
  * From Stephen C. Pope <scp@acl.lanl.gov>
