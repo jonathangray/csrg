@@ -14,7 +14,7 @@
 # IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
 # WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #
-#	@(#)termcap.src	5.75 (Berkeley) 04/27/90
+#	@(#)termcap.src	5.76 (Berkeley) 04/27/90
 #
 #	Termcap source file
 #	John Kunze, Berkeley
