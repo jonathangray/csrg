@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_cache.c	7.13 (Berkeley) 07/22/92
+ *	@(#)vfs_cache.c	7.14 (Berkeley) 07/25/92
  */
 
 #include "param.h"
@@ -211,10 +211,14 @@ cache_enter(dvp, vp, cnp)
 		else
 			nchtail = ncp->nc_prev;
 		*ncp->nc_prev = ncq;
-		/* remove from old hash chain */
-		if (ncq = ncp->nc_forw)
-			ncq->nc_back = ncp->nc_back;
-		*ncp->nc_back = ncq;
+		/* remove from old hash chain, if on one */
+		if (ncp->nc_back) {
+			if (ncq = ncp->nc_forw)
+				ncq->nc_back = ncp->nc_back;
+			*ncp->nc_back = ncq;
+			ncp->nc_forw = NULL;
+			ncp->nc_back = NULL;
+		}
 	} else
 		return;
 	/* grab the vnode we just found */
@@ -294,12 +298,14 @@ cache_purgevfs(mp)
 		/* free the resources we had */
 		ncp->nc_vp = NULL;
 		ncp->nc_dvp = NULL;
-		/* remove entry from its hash chain */
-		if (nxtcp = ncp->nc_forw)
-			nxtcp->nc_back = ncp->nc_back;
-		*ncp->nc_back = nxtcp;
-		ncp->nc_forw = NULL;
-		ncp->nc_back = NULL;
+		/* remove from old hash chain, if on one */
+		if (ncp->nc_back) {
+			if (nxtcp = ncp->nc_forw)
+				nxtcp->nc_back = ncp->nc_back;
+			*ncp->nc_back = nxtcp;
+			ncp->nc_forw = NULL;
+			ncp->nc_back = NULL;
+		}
 		/* delete this entry from LRU chain */
 		if (nxtcp = ncp->nc_nxt)
 			nxtcp->nc_prev = ncp->nc_prev;
