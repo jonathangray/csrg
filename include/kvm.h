@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kvm.h	5.4 (Berkeley) 04/23/91
+ *	@(#)kvm.h	5.5 (Berkeley) 04/23/91
  */
 
 #ifndef _KVM_H_
@@ -53,7 +53,7 @@ struct user	*kvm_getu __P((const struct proc *));
 struct proc	*kvm_nextproc __P((void));
 int		 kvm_nlist __P((struct nlist *));
 int		 kvm_openfiles __P((const char *, const char *, const char *));
-int		 kvm_read __P((void *, void *, int));
+int		 kvm_read __P((off_t, void *, int));
 __END_DECLS
 
 #endif /* !_KVM_H_ */
