@@ -34,7 +34,7 @@ divert(-1)
 #
 
 include(`../m4/cf.m4')
-VERSIONID(`@(#)ucbvax.mc	6.3 (Berkeley) 03/06/93')
+VERSIONID(`@(#)ucbvax.mc	6.4 (Berkeley) 03/06/93')
 OSTYPE(bsd4.3)
 DOMAIN(cs.hidden)
 FEATURE(use_cw_file)
