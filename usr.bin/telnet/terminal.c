@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1988 Regents of the University of California.
+ * Copyright (c) 1988, 1990 Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)terminal.c	1.21 (Berkeley) 06/28/90";
+static char sccsid[] = "@(#)terminal.c	5.1 (Berkeley) 09/14/90";
 #endif /* not lint */
 
 #include <arpa/telnet.h>
@@ -49,7 +49,7 @@ char	ttyobuf[2*BUFSIZ], ttyibuf[BUFSIZ];
 int termdata;			/* Debugging flag */
 
 #ifdef	USE_TERMIO
-# ifndef VFLUSHO
+# ifndef VDISCARD
 cc_t termFlushChar;
 # endif
 # ifndef VLNEXT
@@ -76,8 +76,12 @@ cc_t termForw1Char;
 # ifndef VEOL2
 cc_t termForw2Char;
 # endif
+# ifndef VSTATUS
+cc_t termAytChar;
+# endif
 #else
 cc_t termForw2Char;
+cc_t termAytChar;
 #endif
 
 /*
