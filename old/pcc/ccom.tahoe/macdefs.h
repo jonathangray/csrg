@@ -1,4 +1,4 @@
-/*	macdefs.h	1.6	88/04/24	*/
+/*	macdefs.h	1.7	88/05/31	*/
 
 #ifndef _MACDEFS_
 #define _MACDEFS_
