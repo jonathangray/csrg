@@ -41,7 +41,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)test.c	8.1 (Berkeley) 05/31/93";
+static char sccsid[] = "@(#)test.c	8.2 (Berkeley) 04/01/94";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -95,7 +95,7 @@ struct filestat {
 static int	expr_is_false __P((struct value *));
 static void	expr_operator __P((int, struct value *, struct filestat *));
 static void	get_int __P((char *, long *));
-static int	lookup_op __P((char *, char *const *));
+static int	lookup_op __P((char *, const char *const *));
 static void	overflow __P((void));
 static int	posix_binary_op __P((char **));
 static int	posix_unary_op __P((char **));
@@ -300,6 +300,7 @@ static int
 expr_is_false(val)
 	struct value *val;
 {
+
 	if (val->type == STRING) {
 		if (val->u.string[0] == '\0')
 			return (1);
@@ -451,11 +452,11 @@ filebit:	if (fs->stat.st_mode & i && fs->rcode >= 0)
 
 static int
 lookup_op(name, table)
-	char   *name;
-	char   *const * table;
+	char *name;
+	const char *const * table;
 {
-	register char *const * tp;
-	register char const *p;
+	const char *const * tp;
+	const char *p;
 	char c;
 
 	c = name[1];
@@ -547,11 +548,13 @@ get_int(v, lp)
 static void
 syntax()
 {
+
 	err(2, "syntax error");
 }
 
 static void
 overflow()
 {
+
 	err(2, "expression is too complex");
 }
