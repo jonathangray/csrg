@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fdesc_vnops.c	1.4 (Berkeley) 07/12/92
+ *	@(#)fdesc_vnops.c	1.5 (Berkeley) 07/12/92
  *
  * $Id: fdesc_vnops.c,v 1.7 1992/05/30 10:05:34 jsp Exp jsp $
  */
@@ -58,14 +58,18 @@
 #include <sys/namei.h>
 #include <sys/buf.h>
 #include <sys/dirent.h>
-#include <fdesc/fdesc.h>
+#include <miscfs/fdesc/fdesc.h>
 
 /*
  * vp is the current namei directory
  * ndp is the name to locate in that directory...
  */
-fdesc_lookup (ap)
-	struct vop_lookup_args *ap;
+fdesc_lookup(ap)
+	struct vop_lookup_args /* {
+		struct vnode * a_dvp;
+		struct vnode ** a_vpp;
+		struct componentname * a_cnp;
+	} */ *ap;
 {
 	struct vnode **vpp = ap->a_vpp;
 	struct vnode *dvp = ap->a_dvp;
@@ -137,8 +141,13 @@ bad:;
 	return (error);
 }
 
-fdesc_open (ap)
-	struct vop_open_args *ap;
+fdesc_open(ap)
+	struct vop_open_args /* {
+		struct vnode *a_vp;
+		int  a_mode;
+		struct ucred *a_cred;
+		struct proc *a_p;
+	} */ *ap;
 {
 	struct vnode *vp = ap->a_vp;
 
@@ -206,8 +215,13 @@ fdesc_attr(fd, vap, cred, p)
 	return (error);
 }
 
-fdesc_getattr (ap)
-	struct vop_getattr_args *ap;
+fdesc_getattr(ap)
+	struct vop_getattr_args /* {
+		struct vnode *a_vp;
+		struct vattr *a_vap;
+		struct ucred *a_cred;
+		struct proc *a_p;
+	} */ *ap;
 {
 	struct vnode *vp = ap->a_vp;
 	struct vattr *vap = ap->a_vap;
@@ -248,8 +262,13 @@ fdesc_getattr (ap)
 	return (error);
 }
 
-fdesc_setattr (ap)
-	struct vop_setattr_args *ap;
+fdesc_setattr(ap)
+	struct vop_setattr_args /* {
+		struct vnode *a_vp;
+		struct vattr *a_vap;
+		struct ucred *a_cred;
+		struct proc *a_p;
+	} */ *ap;
 {
 	struct filedesc *fdp = ap->a_p->p_fd;
 	struct file *fp;
@@ -296,8 +315,12 @@ fdesc_setattr (ap)
 	return (error);
 }
 
-fdesc_readdir (ap)
-	struct vop_readdir_args *ap;
+fdesc_readdir(ap)
+	struct vop_readdir_args /* {
+		struct vnode *a_vp;
+		struct uio *a_uio;
+		struct ucred *a_cred;
+	} */ *ap;
 {
 	struct uio *uio = ap->a_uio;
 	struct filedesc *fdp;
@@ -355,8 +378,10 @@ fdesc_readdir (ap)
 	return (error);
 }
 
-fdesc_inactive (ap)
-	struct vop_inactive_args *ap;
+fdesc_inactive(ap)
+	struct vop_inactive_args /* {
+		struct vnode *a_vp;
+	} */ *ap;
 {
 	struct vnode *vp = ap->a_vp;
 
@@ -371,8 +396,10 @@ fdesc_inactive (ap)
 	return (0);
 }
 
-fdesc_reclaim (ap)
-	struct  vop_reclaim_args *ap;
+fdesc_reclaim(ap)
+	struct vop_reclaim_args /* {
+		struct vnode *a_vp;
+	} */ *ap;
 {
 	struct vnode *vp = ap->a_vp;
 	printf("fdesc_reclaim(%x)\n", vp);
@@ -387,18 +414,26 @@ fdesc_reclaim (ap)
  * Print out the contents of a /dev/fd vnode.
  */
 /* ARGSUSED */
-fdesc_print (ap)
-	struct vop_print_args *ap;
+fdesc_print(ap)
+	struct vop_print_args /* {
+		struct vnode *a_vp;
+	} */ *ap;
 {
+
 	printf("tag VT_NON, fdesc vnode\n");
+	return (0);
 }
 
 /*void*/
-fdesc_vfree (ap)
-	struct vop_vfree_args *ap;
+fdesc_vfree(ap)
+	struct vop_vfree_args /* {
+		struct vnode *a_pvp;
+		ino_t a_ino;
+		int a_mode;
+	} */ *ap;
 {
 
-	return;
+	return (0);
 }
 
 /*
@@ -406,6 +441,7 @@ fdesc_vfree (ap)
  */
 fdesc_enotsupp()
 {
+
 	return (EOPNOTSUPP);
 }
 
@@ -414,6 +450,7 @@ fdesc_enotsupp()
  */
 fdesc_badop()
 {
+
 	panic("fdesc: bad op");
 	/* NOTREACHED */
 }
@@ -423,6 +460,7 @@ fdesc_badop()
  */
 fdesc_nullop()
 {
+
 	return (0);
 }
 
@@ -442,23 +480,26 @@ fdesc_nullop()
 #define fdesc_rename ((int (*) __P((struct  vop_rename_args *)))fdesc_enotsupp)
 #define fdesc_mkdir ((int (*) __P((struct  vop_mkdir_args *)))fdesc_enotsupp)
 #define fdesc_rmdir ((int (*) __P((struct  vop_rmdir_args *)))fdesc_enotsupp)
-#define fdesc_symlink ((int (*) __P((struct  vop_symlink_args *)))fdesc_enotsupp)
-#define fdesc_readlink ((int (*) __P((struct  vop_readlink_args *)))fdesc_enotsupp)
+#define fdesc_symlink ((int (*) __P((struct vop_symlink_args *)))fdesc_enotsupp)
+#define fdesc_readlink
+	((int (*) __P((struct  vop_readlink_args *)))fdesc_enotsupp)
 #define fdesc_abortop ((int (*) __P((struct  vop_abortop_args *)))nullop)
 #define fdesc_lock ((int (*) __P((struct  vop_lock_args *)))nullop)
 #define fdesc_unlock ((int (*) __P((struct  vop_unlock_args *)))nullop)
 #define fdesc_bmap ((int (*) __P((struct  vop_bmap_args *)))fdesc_badop)
 #define fdesc_strategy ((int (*) __P((struct  vop_strategy_args *)))fdesc_badop)
 #define fdesc_islocked ((int (*) __P((struct  vop_islocked_args *)))nullop)
-#define fdesc_advlock ((int (*) __P((struct  vop_advlock_args *)))fdesc_enotsupp)
-#define fdesc_blkatoff ((int (*) __P((struct  vop_blkatoff_args *)))fdesc_enotsupp)
+#define fdesc_advlock ((int (*) __P((struct vop_advlock_args *)))fdesc_enotsupp)
+#define fdesc_blkatoff
+	((int (*) __P((struct  vop_blkatoff_args *)))fdesc_enotsupp)
 #define fdesc_vget ((int (*) __P((struct  vop_vget_args *)))fdesc_enotsupp)
 #define fdesc_valloc ((int(*) __P(( \
 		struct vnode *pvp, \
 		int mode, \
 		struct ucred *cred, \
 		struct vnode **vpp))) fdesc_enotsupp)
-#define fdesc_truncate ((int (*) __P((struct  vop_truncate_args *)))fdesc_enotsupp)
+#define fdesc_truncate
+	((int (*) __P((struct  vop_truncate_args *)))fdesc_enotsupp)
 #define fdesc_update ((int (*) __P((struct  vop_update_args *)))fdesc_enotsupp)
 #define fdesc_bwrite ((int (*) __P((struct  vop_bwrite_args *)))fdesc_enotsupp)
 
@@ -468,20 +509,20 @@ struct vnodeopv_entry_desc fdesc_vnodeop_entries[] = {
 	{ &vop_lookup_desc, fdesc_lookup },	/* lookup */
 	{ &vop_create_desc, fdesc_create },	/* create */
 	{ &vop_mknod_desc, fdesc_mknod },	/* mknod */
-	{ &vop_open_desc, fdesc_open },	/* open */
+	{ &vop_open_desc, fdesc_open },		/* open */
 	{ &vop_close_desc, fdesc_close },	/* close */
 	{ &vop_access_desc, fdesc_access },	/* access */
 	{ &vop_getattr_desc, fdesc_getattr },	/* getattr */
 	{ &vop_setattr_desc, fdesc_setattr },	/* setattr */
-	{ &vop_read_desc, fdesc_read },	/* read */
+	{ &vop_read_desc, fdesc_read },		/* read */
 	{ &vop_write_desc, fdesc_write },	/* write */
 	{ &vop_ioctl_desc, fdesc_ioctl },	/* ioctl */
 	{ &vop_select_desc, fdesc_select },	/* select */
-	{ &vop_mmap_desc, fdesc_mmap },	/* mmap */
+	{ &vop_mmap_desc, fdesc_mmap },		/* mmap */
 	{ &vop_fsync_desc, fdesc_fsync },	/* fsync */
-	{ &vop_seek_desc, fdesc_seek },	/* seek */
+	{ &vop_seek_desc, fdesc_seek },		/* seek */
 	{ &vop_remove_desc, fdesc_remove },	/* remove */
-	{ &vop_link_desc, fdesc_link },	/* link */
+	{ &vop_link_desc, fdesc_link },		/* link */
 	{ &vop_rename_desc, fdesc_rename },	/* rename */
 	{ &vop_mkdir_desc, fdesc_mkdir },	/* mkdir */
 	{ &vop_rmdir_desc, fdesc_rmdir },	/* rmdir */
@@ -491,9 +532,9 @@ struct vnodeopv_entry_desc fdesc_vnodeop_entries[] = {
 	{ &vop_abortop_desc, fdesc_abortop },	/* abortop */
 	{ &vop_inactive_desc, fdesc_inactive },	/* inactive */
 	{ &vop_reclaim_desc, fdesc_reclaim },	/* reclaim */
-	{ &vop_lock_desc, fdesc_lock },	/* lock */
+	{ &vop_lock_desc, fdesc_lock },		/* lock */
 	{ &vop_unlock_desc, fdesc_unlock },	/* unlock */
-	{ &vop_bmap_desc, fdesc_bmap },	/* bmap */
+	{ &vop_bmap_desc, fdesc_bmap },		/* bmap */
 	{ &vop_strategy_desc, fdesc_strategy },	/* strategy */
 	{ &vop_print_desc, fdesc_print },	/* print */
 	{ &vop_islocked_desc, fdesc_islocked },	/* islocked */
