@@ -6,7 +6,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)res_send.c	6.14 (Berkeley) 07/02/86";
+static char sccsid[] = "@(#)res_send.c	6.15 (Berkeley) 10/30/86";
 #endif LIBC_SCCS and not lint
 
 /*
