@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)raster_op.c	7.1 (Berkeley) 07/13/92
+ *	@(#)raster_op.c	7.2 (Berkeley) 10/11/92
  *
  * from: $Header: raster_op.c,v 1.22 92/06/17 08:14:44 torek Exp $
  */
@@ -56,12 +56,8 @@
  *       8-bits no-src
  */
 
-#ifdef KERNEL
-#include "sys/types.h"
-#else
 #include <sys/types.h>
-#endif
-#include "raster.h"
+#include <sparc/rcons/raster.h>
 
 /* CONFIGURE: To save on executable size, you can configure out the seldom-used
 ** logical operations.  With this variable set, the only operations implemented
