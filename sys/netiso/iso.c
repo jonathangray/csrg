@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)iso.c	7.21 (Berkeley) 11/25/92
+ *	@(#)iso.c	7.22 (Berkeley) 03/09/93
  */
 
 /***********************************************************
@@ -399,9 +399,9 @@ caddr_t			buf;		/* RESULT: network portion of address here */
 
 	bcopy((caddr_t)isoa, buf, len);
 	IFDEBUG(D_ROUTE)
-		printf("in_netof: isoa ");
+		printf("iso_netof: isoa ");
 		dump_buf(isoa, len);
-		printf("in_netof: net ");
+		printf("iso_netof: net ");
 		dump_buf(buf, len);
 	ENDDEBUG
 	return len;
