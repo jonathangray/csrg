@@ -30,9 +30,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	6.2 (Berkeley) 02/20/93
+ *	@(#)pathnames.h	6.3 (Berkeley) 02/21/93
  */
 
 #define	_PATH_SENDMAILCF	"/etc/sendmail.cf"
 #define	_PATH_SENDMAILFC	"/etc/sendmail.fc"
+#ifdef BSD4_4
+#define _PATH_SENDMAILPID	"/var/run/sendmail.pid"
+#else
 #define _PATH_SENDMAILPID	"/etc/sendmail.pid"
+#endif
