@@ -1,4 +1,4 @@
-static char *sccsid = "@(#)cmp.c	4.4 (Berkeley) 03/12/87";
+static char *sccsid = "@(#)cmp.c	4.5 (Berkeley) 11/18/87";
 
 #include <sys/param.h>
 #include <sys/file.h>
