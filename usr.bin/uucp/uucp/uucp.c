@@ -1,6 +1,21 @@
+/*-
+ * Copyright (c) 1988 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ */
+
 #ifndef lint
-static char sccsid[] = "@(#)uucp.c	5.8	(Berkeley) 4/24/88";
-#endif
+char copyright[] =
+"@(#) Copyright (c) 1988 The Regents of the University of California.\n\
+ All rights reserved.\n";
+#endif /* not lint */
+
+#ifndef lint
+static char sccsid[] = "@(#)uucp.c	5.10 (Berkeley) 04/24/91";
+#endif /* not lint */
 
 #include "uucp.h"
 #include <sys/stat.h>
