@@ -33,11 +33,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)genassym.c	5.14 (Berkeley) 11/07/91
+ *	@(#)genassym.c	5.15 (Berkeley) 07/14/92
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)genassym.c	5.14 (Berkeley) 11/07/91";
+static char sccsid[] = "@(#)genassym.c	5.15 (Berkeley) 07/14/92";
 #endif /* not lint */
 
 #define KERNEL
@@ -95,6 +95,7 @@ main()
 	printf("#define\tNBPG %d\n", NBPG);
 	printf("#define\tNPTEPG %d\n", NPTEPG);
 	printf("#define\tPGSHIFT %d\n", PGSHIFT);
+	printf("#define\tPDRSHIFT %d\n", PDRSHIFT);
 	printf("#define\tSYSPTSIZE %d\n", SYSPTSIZE);
 	printf("#define\tUSRPTSIZE %d\n", USRPTSIZE);
 	printf("#define\tUSRIOSIZE %d\n", USRIOSIZE);
