@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fts.h	5.7 (Berkeley) 06/09/90
+ *	@(#)fts.h	5.8 (Berkeley) 07/01/90
  */
 
 typedef struct fts {
@@ -87,7 +87,7 @@ typedef struct ftsent {
 } FTSENT;
 
 #if __STDC__ || c_plusplus
-extern FTS *ftsopen(const char **, int, int (*)(const FTSENT *, const FTSENT *);
+extern FTS *ftsopen(const char **, int, int (*)(const FTSENT *, const FTSENT *));
 extern FTSENT *ftsread(FTS *);
 extern FTSENT *ftschildren(FTS *);
 extern int ftsset(FTS *, FTSENT *, int);
