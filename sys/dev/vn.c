@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * from: Utah $Hdr: vn.c 1.1 91/04/30$
+ * from: Utah $Hdr: fd.c 1.3 89/12/03$
  *
- *	@(#)vn.c	7.10 (Berkeley) 05/14/92
+ *	@(#)vn.c	7.11 (Berkeley) 06/05/92
  */
 
 /*
@@ -139,7 +139,7 @@ vnstrategy(bp)
 	register int bn, bsize, resid;
 	register caddr_t addr;
 	int sz, flags;
-	extern int vniodone();
+	extern void vniodone();
 
 #ifdef DEBUG
 	if (vndebug & VDB_FOLLOW)
@@ -237,6 +237,7 @@ vnstart(unit)
 	VOP_STRATEGY(bp);
 }
 
+void
 vniodone(bp)
 	register struct buf *bp;
 {
