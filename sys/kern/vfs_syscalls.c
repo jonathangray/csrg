@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	7.74 (Berkeley) 06/21/91
+ *	@(#)vfs_syscalls.c	7.75 (Berkeley) 01/14/92
  */
 
 #include "param.h"
@@ -127,7 +127,6 @@ mount(p, uap, retval)
 		M_MOUNT, M_WAITOK);
 	mp->mnt_op = vfssw[uap->type];
 	mp->mnt_flag = 0;
-	mp->mnt_exroot = 0;
 	mp->mnt_mounth = NULLVP;
 	if (error = vfs_lock(mp)) {
 		free((caddr_t)mp, M_MOUNT);
@@ -715,6 +714,7 @@ mknod(p, uap, retval)
 	vattr.va_rdev = uap->dev;
 out:
 	if (!error) {
+		LEASE_CHECK(ndp->ni_dvp, p, p->p_ucred, LEASE_WRITE);
 		error = VOP_MKNOD(ndp, &vattr, p->p_ucred, p);
 	} else {
 		VOP_ABORTOP(ndp);
@@ -766,6 +766,7 @@ mkfifo(p, uap, retval)
 	VATTR_NULL(&vattr);
 	vattr.va_type = VFIFO;
 	vattr.va_mode = (uap->fmode & 07777) &~ p->p_fd->fd_cmask;
+	LEASE_CHECK(ndp->ni_dvp, p, p->p_ucred, LEASE_WRITE);
 	return (VOP_MKNOD(ndp, &vattr, p->p_ucred, p));
 #endif /* FIFO */
 }
@@ -811,6 +812,8 @@ link(p, uap, retval)
 		error = EXDEV;
 out:
 	if (!error) {
+		LEASE_CHECK(xp, p, p->p_ucred, LEASE_WRITE);
+		LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
 		error = VOP_LINK(vp, ndp, p);
 	} else {
 		VOP_ABORTOP(ndp);
@@ -865,6 +868,7 @@ symlink(p, uap, retval)
 	}
 	VATTR_NULL(&vattr);
 	vattr.va_mode = 0777 &~ p->p_fd->fd_cmask;
+	LEASE_CHECK(ndp->ni_dvp, p, p->p_ucred, LEASE_WRITE);
 	error = VOP_SYMLINK(ndp, &vattr, target, p);
 out:
 	FREE(target, M_NAMEI);
@@ -907,6 +911,8 @@ unlink(p, uap, retval)
 	(void) vnode_pager_uncache(vp);
 out:
 	if (!error) {
+		LEASE_CHECK(ndp->ni_dvp, p, p->p_ucred, LEASE_WRITE);
+		LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
 		error = VOP_REMOVE(ndp, p);
 	} else {
 		VOP_ABORTOP(ndp);
@@ -1158,6 +1164,7 @@ chflags(p, uap, retval)
 	}
 	VATTR_NULL(&vattr);
 	vattr.va_flags = uap->flags;
+	LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
 	error = VOP_SETATTR(vp, &vattr, p->p_ucred, p);
 out:
 	vput(vp);
@@ -1191,6 +1198,7 @@ fchflags(p, uap, retval)
 	}
 	VATTR_NULL(&vattr);
 	vattr.va_flags = uap->flags;
+	LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
 	error = VOP_SETATTR(vp, &vattr, p->p_ucred, p);
 out:
 	VOP_UNLOCK(vp);
@@ -1228,6 +1236,7 @@ chmod(p, uap, retval)
 	}
 	VATTR_NULL(&vattr);
 	vattr.va_mode = uap->fmode & 07777;
+	LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
 	error = VOP_SETATTR(vp, &vattr, p->p_ucred, p);
 out:
 	vput(vp);
@@ -1261,6 +1270,7 @@ fchmod(p, uap, retval)
 	}
 	VATTR_NULL(&vattr);
 	vattr.va_mode = uap->fmode & 07777;
+	LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
 	error = VOP_SETATTR(vp, &vattr, p->p_ucred, p);
 out:
 	VOP_UNLOCK(vp);
@@ -1300,6 +1310,7 @@ chown(p, uap, retval)
 	VATTR_NULL(&vattr);
 	vattr.va_uid = uap->uid;
 	vattr.va_gid = uap->gid;
+	LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
 	error = VOP_SETATTR(vp, &vattr, p->p_ucred, p);
 out:
 	vput(vp);
@@ -1335,6 +1346,7 @@ fchown(p, uap, retval)
 	VATTR_NULL(&vattr);
 	vattr.va_uid = uap->uid;
 	vattr.va_gid = uap->gid;
+	LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
 	error = VOP_SETATTR(vp, &vattr, p->p_ucred, p);
 out:
 	VOP_UNLOCK(vp);
@@ -1376,6 +1388,7 @@ utimes(p, uap, retval)
 	VATTR_NULL(&vattr);
 	vattr.va_atime = tv[0];
 	vattr.va_mtime = tv[1];
+	LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
 	error = VOP_SETATTR(vp, &vattr, p->p_ucred, p);
 out:
 	vput(vp);
@@ -1416,6 +1429,7 @@ truncate(p, uap, retval)
 		goto out;
 	VATTR_NULL(&vattr);
 	vattr.va_size = uap->length;
+	LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
 	error = VOP_SETATTR(vp, &vattr, p->p_ucred, p);
 out:
 	vput(vp);
@@ -1453,6 +1467,7 @@ ftruncate(p, uap, retval)
 		goto out;
 	VATTR_NULL(&vattr);
 	vattr.va_size = uap->length;
+	LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
 	error = VOP_SETATTR(vp, &vattr, fp->f_cred, p);
 out:
 	VOP_UNLOCK(vp);
@@ -1549,6 +1564,11 @@ rename(p, uap, retval)
 		error = -1;
 out:
 	if (!error) {
+		LEASE_CHECK(tdvp, p, p->p_ucred, LEASE_WRITE);
+		if (fromnd.ni_dvp != tdvp)
+			LEASE_CHECK(fromnd.ni_dvp, p, p->p_ucred, LEASE_WRITE);
+		if (tvp)
+			LEASE_CHECK(tvp, p, p->p_ucred, LEASE_WRITE);
 		error = VOP_RENAME(&fromnd, &tond, p);
 	} else {
 		VOP_ABORTOP(&tond);
@@ -1611,6 +1631,7 @@ mkdir(p, uap, retval)
 	VATTR_NULL(&vattr);
 	vattr.va_type = VDIR;
 	vattr.va_mode = (uap->dmode & 0777) &~ p->p_fd->fd_cmask;
+	LEASE_CHECK(ndp->ni_dvp, p, p->p_ucred, LEASE_WRITE);
 	error = VOP_MKDIR(ndp, &vattr, p);
 	if (!error)
 		vput(ndp->ni_vp);
@@ -1658,6 +1679,8 @@ rmdir(p, uap, retval)
 		error = EBUSY;
 out:
 	if (!error) {
+		LEASE_CHECK(ndp->ni_dvp, p, p->p_ucred, LEASE_WRITE);
+		LEASE_CHECK(vp, p, p->p_ucred, LEASE_WRITE);
 		error = VOP_RMDIR(ndp, p);
 	} else {
 		VOP_ABORTOP(ndp);
