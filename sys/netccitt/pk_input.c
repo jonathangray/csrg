@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pk_input.c	7.9 (Berkeley) 03/12/91
+ *	@(#)pk_input.c	7.10 (Berkeley) 05/03/91
  */
 
 #include "param.h"
