@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.h	7.7 (Berkeley) 05/09/93
+ *	@(#)pmap.h	7.8 (Berkeley) 06/02/93
  */
 
 #ifndef	_PMAP_MACHINE_
@@ -96,6 +96,7 @@ typedef struct pmap {
 extern	char *pmap_attributes;		/* reference and modify bits */
 extern	struct pmap kernel_pmap_store;
 #define kernel_pmap (&kernel_pmap_store)
+#define	pmap_wired_count(pmap) 	((pmap)->pm_stats.wired_count)
 #endif	/* KERNEL */
 
 #endif	/* _PMAP_MACHINE_ */
