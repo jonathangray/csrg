@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fdreg.h	7.1 (Berkeley) 05/09/91
+ *	@(#)fdreg.h	7.2 (Berkeley) 10/11/92
  */
 
 /*
@@ -38,7 +38,7 @@
  */
 
 /* uses NEC765 controller */
-#include "../i386/isa/ic/nec765.h"
+#include <i386/isa/ic/nec765.h>
 
 /* registers */
 #define	fdout	2	/* Digital Output Register (W) */
