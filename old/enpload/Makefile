@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.6 (Berkeley) 05/11/90
+#	@(#)Makefile	5.7 (Berkeley) 01/14/91
 
 PROG=	enpload
 MAN8=	enpload.0
