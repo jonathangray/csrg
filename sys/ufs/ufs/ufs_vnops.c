@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	7.77 (Berkeley) 02/06/92
+ *	@(#)ufs_vnops.c	7.78 (Berkeley) 02/15/92
  */
 
 #include <sys/param.h>
@@ -1824,21 +1824,3 @@ bad:
 	ufs_iput(ip);
 	return (error);
 }
-
-
-#if defined(JOHNH) && 0
-/*
- * A hack to get the kernel to compile.
- */
-int
-hang_addrlist()
-{
-    return 0;
-}
-int
-free_addrlist()
-{
-    return 0;
-}
-#endif
-
