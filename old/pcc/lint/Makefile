@@ -1,5 +1,5 @@
 #
-#	@(#)Makefile	1.11	(Berkeley)	03/14/86
+#	@(#)Makefile	1.12	(Berkeley)	03/20/86
 #
 M=/usr/src/lib/mip
 P=/usr/src/lib/pcc
