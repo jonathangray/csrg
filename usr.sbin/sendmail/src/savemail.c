@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)savemail.c	6.1 (Berkeley) 12/21/92";
+static char sccsid[] = "@(#)savemail.c	6.2 (Berkeley) 01/09/93";
 #endif /* not lint */
 
 # include <sys/types.h>
@@ -89,11 +89,6 @@ savemail(e)
 
 	if (bitset(EF_RESPONSE, e->e_flags))
 		return;
-	if (e->e_class < 0)
-	{
-		message(Arpa_Info, "Dumping junk mail");
-		return;
-	}
 	ForceMail = TRUE;
 	e->e_flags &= ~EF_FATALERRS;
 
@@ -254,7 +249,7 @@ savemail(e)
 			}
 			if (returntosender(e->e_message != NULL ? e->e_message :
 					   "Unable to deliver mail",
-					   q, TRUE, e) == 0)
+					   q, (e->e_class >= 0), e) == 0)
 			{
 				state = ESM_DONE;
 				break;
@@ -318,6 +313,12 @@ savemail(e)
 			**  Log the mail in /usr/tmp/dead.letter.
 			*/
 
+			if (e->e_class < 0)
+			{
+				state = ESM_DONE;
+				break;
+			}
+
 			fp = dfopen("/usr/tmp/dead.letter", "a");
 			if (fp == NULL)
 			{
@@ -341,13 +342,8 @@ savemail(e)
 			/* fall through ... */
 
 		  case ESM_PANIC:
-			syserr("savemail: HELP!!!!");
-# ifdef LOG
-			if (LogLevel >= 1)
-				syslog(LOG_ALERT, "savemail: HELP!!!!");
-# endif /* LOG */
-
 			/* leave the locked queue & transcript files around */
+			syserr("savemail: cannot save rejected email anywhere");
 			exit(EX_SOFTWARE);
 		}
 	}
