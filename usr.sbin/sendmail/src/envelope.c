@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)envelope.c	8.21 (Berkeley) 12/04/93";
+static char sccsid[] = "@(#)envelope.c	8.22 (Berkeley) 12/10/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -218,6 +218,7 @@ dropenvelope(e)
 
 		(void) sendtolist(e->e_receiptto, NULLADDR, &rlist, e);
 		(void) returntosender("Return receipt", rlist, FALSE, e);
+		e->e_flags &= ~EF_SENDRECEIPT;
 	}
 
 	/*
