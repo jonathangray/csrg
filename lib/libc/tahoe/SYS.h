@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)SYS.h	5.6 (Berkeley) 06/01/90
+ *	@(#)SYS.h	5.7 (Berkeley) 04/28/91
  */
 
 #include <sys/syscall.h>
@@ -41,8 +41,9 @@
 #else
 #define	ENTRY(x)	.globl _/**/x; .align 2; _/**/x: .word 0
 #endif PROF
-#define	SYSCALL(x)	err: jmp cerror; ENTRY(x); kcall $SYS_/**/x; jcs err
-#define	PSEUDO(x,y)	ENTRY(x); kcall $SYS_/**/y
+#define	SYSCALL(x)	err: jmp cerror; ENTRY(x); kcall $SYS_/**/x; jcs err; \
+			ret
+#define	PSEUDO(x,y)	ENTRY(x); kcall $SYS_/**/y; ret
 #define	CALL(x,y)	calls $x, _/**/y
 
 #define	ASMSTR		.asciz
