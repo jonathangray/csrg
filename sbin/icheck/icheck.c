@@ -14,7 +14,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)icheck.c	5.10 (Berkeley) 05/28/92";
+static char sccsid[] = "@(#)icheck.c	5.11 (Berkeley) 02/15/93";
 #endif /* not lint */
 
 /*
@@ -29,6 +29,7 @@ static char sccsid[] = "@(#)icheck.c	5.10 (Berkeley) 05/28/92";
 #include <ufs/ufs/dinode.h>
 #include <ufs/ffs/fs.h>
 #ifndef STANDALONE
+#include <unistd.h>
 #include <stdio.h>
 #endif
 
@@ -475,9 +476,9 @@ bread(bno, buf, cnt)
 {
 	register i;
 
-	lseek(fi, bno * dev_bsize, 0);
+	lseek(fi, (off_t)bno * dev_bsize, SEEK_SET);
 	if ((i = read(fi, buf, cnt)) != cnt) {
-		for(i=0; i<sblock.fs_bsize; i++)
+		for (i = 0; i < sblock.fs_bsize; i++)
 			buf[i] = 0;
 		return (1);
 	}
