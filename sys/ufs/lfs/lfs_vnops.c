@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vnops.c	7.52 (Berkeley) 02/03/91
+ *	@(#)lfs_vnops.c	7.53 (Berkeley) 02/21/91
  */
 
 #include "param.h"
@@ -1811,7 +1811,7 @@ ufs_advlock(vp, id, op, fl, flags)
 	if (fl->l_len == 0)
 		end = -1;
 	else
-		end = start + fl->l_len;
+		end = start + fl->l_len - 1;
 	/*
 	 * Create the lockf structure
 	 */
@@ -1921,7 +1921,7 @@ ufs_setlock(lock)
 		 * Add our lock to the blocked
 		 * list and sleep until we're free.
 		 */
-#ifdef	LOCKF_DEBUG
+#ifdef LOCKF_DEBUG
 		if (lockf_debug & 4)
 			lf_print("ufs_advlock: blocking on", block);
 #endif /* LOCKF_DEBUG */
@@ -1940,11 +1940,13 @@ ufs_setlock(lock)
 	 * downgrade or upgrade any overlapping locks this
 	 * process already owns.
 	 */
-#ifdef	LOCKF_DEBUG
-	if (lockf_debug & 4)
-		lf_print("ufs_advlock: got the lock", lock);
-#endif /* LOCKF_DEBUG */
 	lf_addlock(lock);
+#ifdef LOCKF_DEBUG
+	if (lockf_debug & 4) {
+		lf_print("ufs_advlock: got the lock", lock);
+		lf_printlist(lock);
+	}
+#endif /* LOCKF_DEBUG */
 	return (0);
 }
 
@@ -1958,7 +1960,7 @@ ufs_advunlock(lock)
 
 	if (lock->lf_inode->i_lockf == (struct lockf *)0)
 		return (0);
-#ifdef	LOCKF_DEBUG
+#ifdef LOCKF_DEBUG
 	if (lockf_debug & 4)
 		lf_print("ufs_advunlock", lock);
 #endif /* LOCKF_DEBUG */
@@ -1967,6 +1969,9 @@ ufs_advunlock(lock)
 	 * and remove it (or shrink it), then wakeup anyone we can.
 	 */
 	blocklist = lf_remove(lock);
+#ifdef LOCKF_DEBUG
+	lf_printlist(lock);
+#endif /* LOCKF_DEBUG */
 	FREE(lock, M_LOCKF);
 	lf_wakelock(blocklist);
 	return (0);
@@ -1982,7 +1987,7 @@ ufs_advgetlock(lock, fl)
 	register struct lockf *block;
 	off_t start, end;
 
-#ifdef	LOCKF_DEBUG
+#ifdef LOCKF_DEBUG
 	if (lockf_debug & 4)
 		lf_print("ufs_advgetlock", lock);
 #endif /* LOCKF_DEBUG */
@@ -1994,7 +1999,7 @@ ufs_advgetlock(lock, fl)
 		if (block->lf_end == -1)
 			fl->l_len = 0;
 		else
-			fl->l_len = block->lf_end - block->lf_start;
+			fl->l_len = block->lf_end - block->lf_start + 1;
 		if (block->lf_flags & F_POSIX)
 			fl->l_pid = ((struct proc *)(block->lf_id))->p_pid;
 		else
