@@ -1,5 +1,5 @@
 /*
- * $Id: amd.c,v 5.2 90/06/23 22:19:18 jsp Rel $
+ * $Id: amd.c,v 5.2.1.4 91/03/17 17:48:40 jsp Alpha $
  *
  * Copyright (c) 1989 Jan-Simon Pendry
  * Copyright (c) 1989 Imperial College of Science, Technology & Medicine
@@ -37,7 +37,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)amd.c	5.1 (Berkeley) 06/29/90
+ *	@(#)amd.c	5.2 (Berkeley) 03/17/91
  */
 
 /*
@@ -46,7 +46,6 @@
 
 #include "am.h"
 #include <sys/signal.h>
-#include <netdb.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <setjmp.h>
@@ -54,20 +53,23 @@
 char pid_fsname[16 + MAXHOSTNAMELEN];	/* "kiska.southseas.nz:(pid%d)" */
 char *progname;				/* "amd" */
 #ifdef HAS_HOST
+#ifdef HOST_EXEC
 char *host_helper;
+#endif /* HOST_EXEC */
 #endif /* HAS_HOST */
 char *auto_dir = "/a";
 char *hostdomain = "unknown.domain";
-char hostname[MAXHOSTNAMELEN];		/* Hostname */
+char hostname[MAXHOSTNAMELEN] = "localhost"; /* Hostname */
 char hostd[2*MAXHOSTNAMELEN];		/* Host+domain */
 char *op_sys = OS_REP;			/* Name of current op_sys */
 char *arch = ARCH_REP;			/* Name of current architecture */
 char *endian = ARCH_ENDIAN;		/* Big or Little endian */
+char *wire;
 int foreground = 1;			/* This is the top-level server */
 int mypid;				/* Current process id */
 int immediate_abort;			/* Should close-down unmounts be retried */
 struct in_addr myipaddr;		/* (An) IP address of this host */
-serv_state amd_state = Start;
+serv_state amd_state;
 struct amd_stats amd_stats;		/* Server statistics */
 time_t do_mapc_reload = 0;		/* mapc_reload() call required? */
 jmp_buf select_intr;
@@ -84,7 +86,7 @@ int sig;
 {
 #ifdef SYS5_SIGNALS
 	signal(sig, sigterm);
-#endif * SYS5_SIGNALS */
+#endif /* SYS5_SIGNALS */
 
 	switch (sig) {
 	case SIGINT:
@@ -107,12 +109,13 @@ int sig;
  * Hook for cache reload.
  * When a SIGHUP arrives it schedules a call to mapc_reload
  */
+/*ARGSUSED*/
 static void sighup(sig)
 int sig;
 {
 #ifdef SYS5_SIGNALS
 	signal(sig, sighup);
-#endif /* SUS5_SIGNALS */
+#endif /* SYS5_SIGNALS */
 
 #ifdef DEBUG
 	if (sig != SIGHUP)
@@ -125,6 +128,7 @@ int sig;
 		do_mapc_reload = 0;
 }
 
+/*ARGSUSED*/
 static void parent_exit(sig)
 int sig;
 {
@@ -133,7 +137,10 @@ int sig;
 
 static int daemon_mode(P_void)
 {
-	int bgpid = background();
+	int bgpid;
+
+	signal(SIGQUIT, parent_exit);
+	bgpid = background();
 
 	if (bgpid != 0) {
 		if (print_pid) {
@@ -144,23 +151,27 @@ static int daemon_mode(P_void)
 		 * Now wait for the automount points to
 		 * complete.
 		 */
-		signal(SIGQUIT, parent_exit);
 		for (;;)
 			pause();
 	}
+
+	signal(SIGQUIT, SIG_DFL);
 
 	/*
 	 * Pretend we are in the foreground again
 	 */
 	foreground = 1;
+
 #ifdef TIOCNOTTY
 	{
 		int t = open("/dev/tty", O_RDWR);
 		if (t < 0) {
 			if (errno != ENXIO)	/* not an error if already no controlling tty */
 				plog(XLOG_WARNING, "Could not open controlling tty: %m");
-		} else if (ioctl(t, TIOCNOTTY, 0) < 0) {
-			plog(XLOG_WARNING, "Could not disassociate tty (TIOCNOTTY): %m");
+		} else {
+			if (ioctl(t, TIOCNOTTY, 0) < 0 && errno != ENOTTY)
+				plog(XLOG_WARNING, "Could not disassociate tty (TIOCNOTTY): %m");
+			(void) close(t);
 		}
 	}
 #else
@@ -174,7 +185,6 @@ main(argc, argv)
 int argc;
 char *argv[];
 {
-	struct hostent *hp, *gethostbyname();
 	char *domdot;
 	int ppid = 0;
 	int error;
@@ -189,6 +199,27 @@ char *argv[];
 	 * Set processing status.
 	 */
 	amd_state = Start;
+
+	/*
+	 * Determine program name
+	 */
+	if (argv[0]) {
+		progname = strrchr(argv[0], '/');
+		if (progname && progname[1])
+			progname++;
+		else
+			progname = argv[0];
+	}
+
+	if (!progname)
+		progname = "amd";
+
+	/*
+	 * Initialise process id.  This is kept
+	 * cached since it is used for generating
+	 * and using file handles.
+	 */
+	mypid = getpid();
 
 	/*
 	 * Get local machine name
@@ -241,29 +272,15 @@ char *argv[];
 	(void) signal(SIGCHLD, sigchld);
 
 	/*
-	 * Initialise process id.  This is kept
-	 * cached since it is used for generating
-	 * and using file handles.
-	 */
-	mypid = getpid();
-
-#ifdef notdef
-/*
- * XXX - Doing this plugs most of a memory leak in
- * gethostbyname on SunOS 4.  I see no good reason
- * why the host database needs to grab 1.5K of
- * private data space...  However, for the moment,
- * I will take its word that it is a _good thing_
- * (jsp)
- */
-	(void) sethostent(0);
-#endif /* notdef */
-
-	/*
 	 * Fix-up any umask problems.  Most systems default
 	 * to 002 which is not too convenient for our purposes
 	 */
 	orig_umask = umask(0);
+
+	/*
+	 * Figure out primary network name
+	 */
+	wire = getwire();
 
 	/*
 	 * Determine command-line arguments
@@ -272,18 +289,12 @@ char *argv[];
 
 	/*
 	 * Get our own IP address so that we
-	 * can mount the automounter.  There
-	 * is probably a better way of doing
-	 * this, but messing about with SIOCGIFCONF
-	 * seems to be heading towards the non-portable
-	 * arena.
+	 * can mount the automounter.
 	 */
-	hp = gethostbyname(hostname);
-	if (!hp || hp->h_addrtype != AF_INET) {
-		plog(XLOG_FATAL, "Can't determine IP address of this host (%s)", hostname);
-		going_down(1);
+	{ struct sockaddr_in sin;
+	  get_myaddress(&sin);
+	  myipaddr.s_addr = sin.sin_addr.s_addr;
 	}
-	myipaddr = *(struct in_addr *) hp->h_addr;
 
 	/*
 	 * Now check we are root.
