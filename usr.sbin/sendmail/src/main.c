@@ -6,7 +6,7 @@
 # include <log.h>
 # endif LOG
 
-static char	SccsId[] = "@(#)main.c	1.11	10/18/80";
+static char	SccsId[] = "@(#)main.c	1.12	10/27/80";
 
 /*
 **  DELIVERMAIL -- Deliver mail to a set of destinations
