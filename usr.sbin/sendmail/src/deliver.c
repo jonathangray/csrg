@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	6.79 (Berkeley) 05/27/93";
+static char sccsid[] = "@(#)deliver.c	6.80 (Berkeley) 06/03/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -77,6 +77,13 @@ sendall(e, mode)
 #ifdef LOCKF
 	struct flock lfd;
 #endif
+
+	if (bitset(EF_FATALERRS, e->e_flags))
+	{
+		/* this will get a return message -- so don't send it */
+		e->e_flags |= EF_CLRQUEUE;
+		return;
+	}
 
 	/* determine actual delivery mode */
 	if (mode == SM_DEFAULT)
