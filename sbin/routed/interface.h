@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)interface.h	5.6 (Berkeley) 06/01/90
+ *	@(#)interface.h	5.7 (Berkeley) 08/14/92
  */
 
 /*
@@ -79,10 +79,10 @@ struct interface {
 #define	IFF_LOOPBACK	0x8		/* software loopback net */
 #define	IFF_POINTOPOINT	0x10		/* interface is point-to-point link */
 
-#define	IFF_SUBNET	0x1000		/* interface on subnetted network */
-#define	IFF_PASSIVE	0x2000		/* can't tell if up/down */
-#define	IFF_INTERFACE	0x4000		/* hardware interface */
-#define	IFF_REMOTE	0x8000		/* interface isn't on this machine */
+#define	IFF_SUBNET	0x100000	/* interface on subnetted network */
+#define	IFF_PASSIVE	0x200000	/* can't tell if up/down */
+#define	IFF_INTERFACE	0x400000	/* hardware interface */
+#define	IFF_REMOTE	0x800000	/* interface isn't on this machine */
 
 struct	interface *if_ifwithaddr();
 struct	interface *if_ifwithdstaddr();
