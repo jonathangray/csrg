@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.67 (Berkeley) 11/04/94
+ *	@(#)sendmail.h	8.68 (Berkeley) 11/05/94
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.67		11/04/94";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.68		11/05/94";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
