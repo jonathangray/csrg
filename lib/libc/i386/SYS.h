@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)SYS.h	5.4 (Berkeley) 04/28/91
+ *	@(#)SYS.h	5.5 (Berkeley) 05/07/91
  */
 
 #include <syscall.h>
@@ -45,7 +45,8 @@
 #else
 #define	ENTRY(x)	.globl _/**/x; .text; .align 2; _/**/x: 
 #endif PROF
-#define	SYSCALL(x)	2: jmp cerror; ENTRY(x); lea SYS_/**/x,%eax; LCALL(7,0); jb 2b; ret
+#define	SYSCALL(x)	2: jmp cerror; ENTRY(x); lea SYS_/**/x,%eax; LCALL(7,0); jb 2b
+#define	RSYSCALL(x)	SYSCALL(x); ret
 #define	PSEUDO(x,y)	ENTRY(x); lea SYS_/**/y, %eax; ; LCALL(7,0); ret
 #define	CALL(x,y)	call _/**/y; addl $4*x,%esp
 /* gas fucks up offset -- although we don't currently need it, do for BCS */
