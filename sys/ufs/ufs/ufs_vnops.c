@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	7.93 (Berkeley) 06/02/92
+ *	@(#)ufs_vnops.c	7.94 (Berkeley) 06/18/92
  */
 
 #include <sys/param.h>
@@ -577,7 +577,6 @@ ufs_link(ap)
 			vrele(vp);
 		else
 			vput(vp);
-		vrele(tdvp);
 		return (EXDEV);
 	}
 
