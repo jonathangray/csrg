@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sysctl.c	7.22 (Berkeley) 06/02/92
+ *	@(#)kern_sysctl.c	7.23 (Berkeley) 07/07/92
  */
 
 #include "param.h"
@@ -153,7 +153,7 @@ kinfo_doproc(op, where, acopysize, arg, aneeded)
 	struct eproc eproc;
 	int error = 0;
 
-	p = allproc;
+	p = (struct proc *)allproc;
 	doingzomb = 0;
 again:
 	for (; p != NULL; p = p->p_nxt) {
