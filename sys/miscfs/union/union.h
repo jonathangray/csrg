@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union.h	8.4 (Berkeley) 05/07/94
+ *	@(#)union.h	8.5 (Berkeley) 05/17/94
  */
 
 struct union_args {
@@ -95,8 +95,10 @@ extern int union_allocvp __P((struct vnode **, struct mount *,
 				struct vnode *, struct vnode *,
 				struct componentname *, struct vnode *,
 				struct vnode *));
-extern int union_copyfile __P((struct proc *, struct ucred *,
-				struct vnode *, struct vnode *));
+extern int union_copyfile __P((struct vnode *, struct vnode *,
+					struct ucred *, struct proc *));
+extern int union_copyup __P((struct union_node *, int, struct ucred *,
+				struct proc *));
 extern int union_mkshadow __P((struct union_mount *, struct vnode *,
 				struct componentname *, struct vnode **));
 extern int union_vn_create __P((struct vnode **, struct union_node *,
