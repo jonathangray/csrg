@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)os-utek.h	5.3 (Berkeley) 05/12/91
+ *	@(#)os-utek.h	5.4 (Berkeley) 02/09/92
  *
- * $Id: os-utek.h,v 5.2.1.1 91/05/07 22:20:06 jsp Alpha $
+ * $Id: os-utek.h,v 5.2.2.1 1992/02/09 15:10:56 jsp beta $
  *
  * Utek 4.0  definitions for Amd (automounter)
  *	from Bill Trost <trost%reed@cse.ogi.edu>
