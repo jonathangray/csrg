@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)udp.h	7.4 (Berkeley) 06/28/90
+ *	@(#)udp.h	7.5 (Berkeley) 06/04/93
  */
 
 /*
