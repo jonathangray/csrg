@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)curses.h	5.29 (Berkeley) 02/18/93
+ *	@(#)curses.h	5.30 (Berkeley) 02/18/93
  */
 
 #ifndef _CURSES_H_
@@ -293,6 +293,7 @@ int	 vwprintw __P((WINDOW *, const char *, _BSD_VA_LIST_));
 /* Private function prototypes. */
 void	 __TRACE __P((const char *, ...));
 void	 __cputchar __P((int));
+u_int	 __hash __P((char *, int));
 void	 __id_subwins __P((WINDOW *));
 void	 __set_subwin __P((WINDOW *, WINDOW *));
 void	 __startwin __P((void));
@@ -302,6 +303,7 @@ int	 __touchline __P((WINDOW *, int, int, int, int));
 int	 __touchwin __P((WINDOW *));
 char	*__tscroll __P((const char *, int));
 int	 __waddbytes __P((WINDOW *, const char *, int, int));
+int	 __waddch __P((WINDOW *, __LDATA *));
 
 /* Private #defines. */
 #define	min(a,b)	(a < b ? a : b)
