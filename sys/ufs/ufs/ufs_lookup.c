@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lookup.c	8.8 (Berkeley) 07/28/94
+ *	@(#)ufs_lookup.c	8.9 (Berkeley) 08/11/94
  */
 
 #include <sys/param.h>
