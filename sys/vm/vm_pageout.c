@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_pageout.c	7.8 (Berkeley) 09/21/92
+ *	@(#)vm_pageout.c	7.9 (Berkeley) 10/01/92
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -136,7 +136,7 @@ vm_pageout_scan()
 		if (free >= cnt.v_free_target)
 			break;
 
-		if (m->clean) {
+		if (m->flags & PG_CLEAN) {
 			next = (vm_page_t) queue_next(&m->pageq);
 			if (pmap_is_referenced(VM_PAGE_TO_PHYS(m))) {
 				vm_page_activate(m);
@@ -170,7 +170,7 @@ vm_pageout_scan()
 			 *	cleaning operation.
 			 */
 
-			if (m->laundry) {
+			if (m->flags & PG_LAUNDRY) {
 				/*
 				 *	Clean the page and remove it from the
 				 *	laundry.
@@ -203,7 +203,7 @@ vm_pageout_scan()
 
 				pmap_page_protect(VM_PAGE_TO_PHYS(m),
 						  VM_PROT_NONE);
-				m->busy = TRUE;
+				m->flags |= PG_BUSY;
 				cnt.v_pageouts++;
 
 				/*
@@ -253,7 +253,7 @@ vm_pageout_scan()
 				switch (pageout_status) {
 				case VM_PAGER_OK:
 				case VM_PAGER_PEND:
-					m->laundry = FALSE;
+					m->flags &= ~PG_LAUNDRY;
 					break;
 				case VM_PAGER_BAD:
 					/*
@@ -262,8 +262,8 @@ vm_pageout_scan()
 					 * changes by pretending it worked.
 					 * XXX dubious, what should we do?
 					 */
-					m->laundry = FALSE;
-					m->clean = TRUE;
+					m->flags &= ~PG_LAUNDRY;
+					m->flags |= PG_CLEAN;
 					pmap_clear_modify(VM_PAGE_TO_PHYS(m));
 					break;
 				case VM_PAGER_FAIL:
@@ -288,7 +288,7 @@ vm_pageout_scan()
 				 * object collapse.
 				 */
 				if (pageout_status != VM_PAGER_PEND) {
-					m->busy = FALSE;
+					m->flags &= ~PG_BUSY;
 					PAGE_WAKEUP(m);
 					object->paging_in_progress--;
 				}
