@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	6.8 (Berkeley) 01/13/93";
+static char sccsid[] = "@(#)deliver.c	6.9 (Berkeley) 01/18/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -520,7 +520,10 @@ deliver(e, firstto)
 		if (rcode != EX_OK)
 			markfailure(e, to, rcode);
 		else
+		{
 			to->q_flags |= QSENT;
+			e->e_nsent++;
+		}
 	}
 
 	/*
@@ -1456,7 +1459,6 @@ sendall(e, mode)
 	register ADDRESS *q;
 	bool oldverbose;
 	int pid;
-	int nsent;
 # ifdef LOCKF
 	struct flock lfd;
 # endif
@@ -1490,7 +1492,8 @@ sendall(e, mode)
 	{
 		errno = 0;
 		syserr("sendall: too many hops %d (%d max): from %s, to %s",
-			e->e_hopcount, MaxHopCount, e->e_from.q_paddr, e->e_to);
+			e->e_hopcount, MaxHopCount, e->e_from.q_paddr,
+			e->e_sendqueue->q_paddr);
 		return;
 	}
 
@@ -1591,7 +1594,7 @@ sendall(e, mode)
 	**  Run through the list and send everything.
 	*/
 
-	nsent = 0;
+	e->e_nsent = 0;
 	for (q = e->e_sendqueue; q != NULL; q = q->q_next)
 	{
 		if (mode == SM_VERIFY)
@@ -1607,14 +1610,13 @@ sendall(e, mode)
 			**  Checkpoint the send list every few addresses
 			*/
 
-			if (nsent >= CheckpointInterval)
+			if (e->e_nsent >= CheckpointInterval)
 			{
 				queueup(e, TRUE, FALSE);
-				nsent = 0;
+				e->e_nsent = 0;
 			}
 # endif /* QUEUE */
-			if (deliver(e, q) == EX_OK)
-				nsent++;
+			(void) deliver(e, q);
 		}
 	}
 	Verbose = oldverbose;
