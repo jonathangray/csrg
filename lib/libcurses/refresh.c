@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)refresh.c	8.5 (Berkeley) 08/10/94";
+static char sccsid[] = "@(#)refresh.c	8.6 (Berkeley) 08/10/94";
 #endif /* not lint */
 
 #include <string.h>
@@ -71,8 +71,8 @@ wrefresh(win)
 		for (wy = 0; wy < win->maxy; wy++) {
 			wlp = win->lines[wy];
 			if (wlp->flags & __ISDIRTY)
-				wlp->hash =
-				   __hash((char *) wlp->line, win->maxx * __LDATASIZE);
+				wlp->hash = __hash((char *)wlp->line,
+				    win->maxx * __LDATASIZE);
 		}
 
 	if (win->flags & __CLEAROK || curscr->flags & __CLEAROK || curwin) {
@@ -296,8 +296,9 @@ makech(win, wy)
 		while ((force || memcmp(nsp, csp, sizeof(__LDATA)) != 0)
 		    && wx <= lch) {
 
-			if (ce != NULL && win->maxx + win->begx ==
-			    curscr->maxx && wx >= nlsp && nsp->ch == ' ') {
+			if (ce != NULL &&
+			    win->maxx + win->begx == curscr->maxx &&
+			    wx >= nlsp && nsp->ch == ' ' && nsp->attr == 0) {
 				/* Check for clear to end-of-line. */
 				cep = &curscr->lines[wy]->line[win->maxx - 1];
 				while (cep->ch == ' ' && cep->attr == 0)
@@ -311,9 +312,10 @@ makech(win, wy)
 				if ((clsp - nlsp >= strlen(CE)
 				    && clsp < win->maxx * __LDATASIZE) ||
 				    wy == win->maxy - 1) {
-#ifdef DEBUG
-					__CTRACE("makech: using CE\n");
-#endif
+					if (curscr->flags & __WSTANDOUT) {
+						tputs(SE, 0, __cputchar);
+						curscr->flags &= ~__WSTANDOUT;
+					}
 					tputs(CE, 0, __cputchar);
 					lx = wx + win->begx;
 					while (wx++ <= clsp) {
@@ -405,6 +407,12 @@ makech(win, wy)
 #ifdef DEBUG
 		__CTRACE("makech: 3: wx = %d, lx = %d\n", wx, lx);
 #endif
+	}
+
+	/* Don't leave the screen in standout mode. */
+	if (curscr->flags & __WSTANDOUT) {
+		tputs(SE, 0, __cputchar);
+		curscr->flags &= ~__WSTANDOUT;
 	}
 	return (OK);
 }
