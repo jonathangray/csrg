@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)esis.c	7.23 (Berkeley) 04/06/93
+ *	@(#)esis.c	7.24 (Berkeley) 06/04/93
  */
 
 /***********************************************************
@@ -133,7 +133,7 @@ esis_init()
 	int	esis_input(), isis_input();
 #ifdef	ISO_X25ESIS
 	int	x25esis_input();
-#endif	ISO_X25ESIS
+#endif	/* ISO_X25ESIS */
 
 	esis_pcb.rcb_next = esis_pcb.rcb_prev = &esis_pcb;
 	llinfo_llc.lc_next = llinfo_llc.lc_prev = &llinfo_llc;
@@ -145,7 +145,7 @@ esis_init()
 	clnl_protox[ISO10589_ISIS].clnl_input = isis_input;
 #ifdef	ISO_X25ESIS
 	clnl_protox[ISO9542X25_ESIS].clnl_input = x25esis_input;
-#endif	ISO_X25ESIS
+#endif	/* ISO_X25ESIS */
 }
 
 /*
@@ -1060,4 +1060,4 @@ struct sockaddr_iso		*siso;		/* address of ifp */
 		}
 }
 
-#endif	ISO
+#endif	/* ISO */
