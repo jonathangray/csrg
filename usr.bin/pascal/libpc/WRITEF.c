@@ -1,6 +1,6 @@
 /* Copyright (c) 1979 Regents of the University of California */
 
-static char sccsid[] = "@(#)WRITEF.c 1.2 03/07/81";
+static char sccsid[] = "@(#)WRITEF.c 1.3 03/10/81";
 
 #include "h00vars.h"
 #include "h01errs.h"
