@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)genassym.c	7.3 (Berkeley) 10/11/92
+ *	@(#)genassym.c	7.4 (Berkeley) 04/20/93
  *
  * from: $Header: genassym.c,v 1.12 92/06/28 10:13:01 mccanne $ (LBL)
  */
