@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_usrreq.c	7.17 (Berkeley) 06/27/91
+ *	@(#)tp_usrreq.c	7.18 (Berkeley) 07/18/91
  */
 
 /***********************************************************
@@ -461,18 +461,18 @@ tp_usrreq(so, req, m, nam, controlp)
 		break;
 
 	case PRU_BIND:
-		error =  (tpcb->tp_nlproto->nlp_pcbbind)(so->so_pcb, nam);
+		error =  (tpcb->tp_nlproto->nlp_pcbbind)(tpcb->tp_npcb, nam);
 		if (error == 0) {
-			(tpcb->tp_nlproto->nlp_getsufx)(so->so_pcb, &tpcb->tp_lsuffixlen,
+			(tpcb->tp_nlproto->nlp_getsufx)(tpcb->tp_npcb, &tpcb->tp_lsuffixlen,
 				tpcb->tp_lsuffix, TP_LOCAL);
 		}
 		break;
 
 	case PRU_LISTEN:
 		if (tpcb->tp_lsuffixlen == 0) {
-			if (error = (tpcb->tp_nlproto->nlp_pcbbind)(so->so_pcb, MNULL))
+			if (error = (tpcb->tp_nlproto->nlp_pcbbind)(tpcb->tp_npcb, MNULL))
 				break;
-			(tpcb->tp_nlproto->nlp_getsufx)(so->so_pcb, &tpcb->tp_lsuffixlen,
+			(tpcb->tp_nlproto->nlp_getsufx)(tpcb->tp_npcb, &tpcb->tp_lsuffixlen,
 				tpcb->tp_lsuffix, TP_LOCAL);
 		}
 		if (tpcb->tp_next == 0) {
@@ -504,13 +504,13 @@ tp_usrreq(so, req, m, nam, controlp)
 				tpcb->tp_class);
 		ENDDEBUG
 		if (tpcb->tp_lsuffixlen == 0) {
-			if (error = (tpcb->tp_nlproto->nlp_pcbbind)(so->so_pcb, MNULL)) {
+			if (error = (tpcb->tp_nlproto->nlp_pcbbind)(tpcb->tp_npcb, MNULL)) {
 				IFDEBUG(D_CONN)
 					printf("pcbbind returns error 0x%x\n", error);
 				ENDDEBUG
 				break;
 			}
-			(tpcb->tp_nlproto->nlp_getsufx)(so->so_pcb, &tpcb->tp_lsuffixlen,
+			(tpcb->tp_nlproto->nlp_getsufx)(tpcb->tp_npcb, &tpcb->tp_lsuffixlen,
 				tpcb->tp_lsuffix, TP_LOCAL);
 		}
 
@@ -529,16 +529,16 @@ tp_usrreq(so, req, m, nam, controlp)
 		ENDDEBUG
 		if (tpcb->tp_fsuffixlen ==  0) {
 			/* didn't set peer extended suffix */
-			(tpcb->tp_nlproto->nlp_getsufx)(so->so_pcb, &tpcb->tp_fsuffixlen,
+			(tpcb->tp_nlproto->nlp_getsufx)(tpcb->tp_npcb, &tpcb->tp_fsuffixlen,
 				tpcb->tp_fsuffix, TP_FOREIGN);
 		}
-		(void) (tpcb->tp_nlproto->nlp_mtu)(so, so->so_pcb,
+		(void) (tpcb->tp_nlproto->nlp_mtu)(so, tpcb->tp_npcb,
 					&tpcb->tp_l_tpdusize, &tpcb->tp_tpdusize, 0);
 		if (tpcb->tp_state == TP_CLOSED) {
 			soisconnecting(so);  
 			error = DoEvent(T_CONN_req);
 		} else {
-			(tpcb->tp_nlproto->nlp_pcbdisc)(so->so_pcb);
+			(tpcb->tp_nlproto->nlp_pcbdisc)(tpcb->tp_npcb);
 			error = EISCONN;
 		}
 		IFPERF(tpcb)
@@ -553,7 +553,7 @@ tp_usrreq(so, req, m, nam, controlp)
 		break;
 
 	case PRU_ACCEPT: 
-		(tpcb->tp_nlproto->nlp_getnetaddr)(so->so_pcb, nam, TP_FOREIGN);
+		(tpcb->tp_nlproto->nlp_getnetaddr)(tpcb->tp_npcb, nam, TP_FOREIGN);
 		IFDEBUG(D_REQUEST)
 			printf("ACCEPT PEERADDDR:");
 			dump_buf(mtod(nam, char *), nam->m_len);
@@ -747,11 +747,11 @@ tp_usrreq(so, req, m, nam, controlp)
 		break;
 
 	case PRU_SOCKADDR:
-		(tpcb->tp_nlproto->nlp_getnetaddr)(so->so_pcb, nam, TP_LOCAL);
+		(tpcb->tp_nlproto->nlp_getnetaddr)(tpcb->tp_npcb, nam, TP_LOCAL);
 		break;
 
 	case PRU_PEERADDR:
-		(tpcb->tp_nlproto->nlp_getnetaddr)(so->so_pcb, nam, TP_FOREIGN);
+		(tpcb->tp_nlproto->nlp_getnetaddr)(tpcb->tp_npcb, nam, TP_FOREIGN);
 		break;
 
 	case PRU_CONTROL:
