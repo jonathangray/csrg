@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)lpd.c	5.15 (Berkeley) 07/21/92";
+static char sccsid[] = "@(#)lpd.c	5.16 (Berkeley) 8/6/92";
 #endif /* not lint */
 
 /*
@@ -72,18 +72,23 @@ static char sccsid[] = "@(#)lpd.c	5.15 (Berkeley) 07/21/92";
 
 #include <sys/param.h>
 #include <sys/wait.h>
-
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <sys/stat.h>
 #include <netinet/in.h>
-#include <netdb.h>
 
+#include <netdb.h>
+#include <unistd.h>
 #include <syslog.h>
 #include <signal.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <dirent.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include "lp.h"
 #include "lp.local.h"
 #include "pathnames.h"
@@ -103,11 +108,13 @@ main(argc, argv)
 	int argc;
 	char **argv;
 {
-	int f, funix, finet, options = 0, defreadfds, fromlen;
+	int f, funix, finet, options, fromlen;
+	fd_set defreadfds;
 	struct sockaddr_un un, fromunix;
 	struct sockaddr_in sin, frominet;
 	int omask, lfd;
 
+	options = 0;
 	gethostname(host, sizeof(host));
 	name = argv[0];
 
@@ -179,7 +186,8 @@ main(argc, argv)
 		exit(1);
 	}
 	sigsetmask(omask);
-	defreadfds = 1 << funix;
+	FD_ZERO(&defreadfds);
+	FD_SET(funix, &defreadfds);
 	listen(funix, 5);
 	finet = socket(AF_INET, SOCK_STREAM, 0);
 	if (finet >= 0) {
@@ -201,26 +209,28 @@ main(argc, argv)
 			syslog(LOG_ERR, "bind: %m");
 			mcleanup(0);
 		}
-		defreadfds |= 1 << finet;
+		FD_SET(finet, &defreadfds);	
 		listen(finet, 5);
 	}
 	/*
 	 * Main loop: accept, do a request, continue.
 	 */
 	for (;;) {
-		int domain, nfds, s, readfds = defreadfds;
+		int domain, nfds, s;
+		fd_set readfds;
 
+		FD_COPY(&defreadfds, &readfds);
 		nfds = select(20, &readfds, 0, 0, 0);
 		if (nfds <= 0) {
 			if (nfds < 0 && errno != EINTR)
 				syslog(LOG_WARNING, "select: %m");
 			continue;
 		}
-		if (readfds & (1 << funix)) {
+		if (FD_ISSET(funix, &readfds)) {
 			domain = AF_UNIX, fromlen = sizeof(fromunix);
 			s = accept(funix,
 			    (struct sockaddr *)&fromunix, &fromlen);
-		} else if (readfds & (1 << finet)) {
+		} else /* if (FD_ISSET(finet, &readfds)) */  {
 			domain = AF_INET, fromlen = sizeof(frominet);
 			s = accept(finet,
 			    (struct sockaddr *)&frominet, &fromlen);
@@ -403,16 +413,15 @@ doit()
 static void
 startup()
 {
-	char buf[BUFSIZ];
+	char *buf;
 	register char *cp;
 	int pid;
-
-	printer = buf;
 
 	/*
 	 * Restart the daemons.
 	 */
-	while (getprent(buf) > 0) {
+	while (cgetnext(&buf, printcapdb) > 0) {
+		printer = buf;
 		for (cp = buf; *cp; cp++)
 			if (*cp == '|' || *cp == ':') {
 				*cp = '\0';
@@ -423,7 +432,7 @@ startup()
 			mcleanup(0);
 		}
 		if (!pid) {
-			endprent();
+			cgetclose();
 			printjob();
 		}
 	}
@@ -440,7 +449,6 @@ chkhost(f)
 {
 	register struct hostent *hp;
 	register FILE *hostf;
-	register char *cp, *sp;
 	int first = 1;
 	extern char *inet_ntoa();
 
