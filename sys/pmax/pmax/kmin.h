@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kmin.h	7.1 (Berkeley) 11/15/92
+ *	@(#)kmin.h	7.2 (Berkeley) 03/23/93
  */
 
 /* 
@@ -142,8 +142,8 @@
 /* Pseudo-TCslots */
 #define	KMIN_SCSI_SLOT		3
 #define	KMIN_LANCE_SLOT		4
-#define	KMIN_SCC0_SLOT		5
-#define	KMIN_SCC1_SLOT		6
+#define	KMIN_SCC1_SLOT		5
+#define	KMIN_SCC0_SLOT		6
 #define	KMIN_ASIC_SLOT		7
 
 /*
