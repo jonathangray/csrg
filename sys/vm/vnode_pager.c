@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode_pager.c	7.8 (Berkeley) 05/04/92
+ *	@(#)vnode_pager.c	7.9 (Berkeley) 05/13/92
  */
 
 /*
@@ -309,7 +309,7 @@ vnode_pager_haspage(pager, offset)
  * Note: this routine may be invoked as a result of a pager put
  * operation (possibly at object termination time), so we must be careful.
  */
-static void
+void
 vnode_pager_setsize(vp, nsize)
 	struct vnode *vp;
 	u_long nsize;
@@ -361,7 +361,7 @@ vnode_pager_setsize(vp, nsize)
 	vm_object_deallocate(object);
 }
 
-static void
+void
 vnode_pager_umount(mp)
 	register struct mount *mp;
 {
@@ -388,7 +388,7 @@ vnode_pager_umount(mp)
  * Note: this routine may be invoked as a result of a pager put
  * operation (possibly at object termination time), so we must be careful.
  */
-static boolean_t
+boolean_t
 vnode_pager_uncache(vp)
 	register struct vnode *vp;
 {
