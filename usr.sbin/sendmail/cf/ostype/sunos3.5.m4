@@ -1,8 +1,8 @@
 divert(-1)
 #
 # Copyright (c) 1983 Eric P. Allman
-# Copyright (c) 1988 The Regents of the University of California.
-# All rights reserved.
+# Copyright (c) 1988, 1993
+#	The Regents of the University of California.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -34,4 +34,4 @@ divert(-1)
 #
 
 divert(0)
-VERSIONID(`@(#)sunos3.5.m4	6.1 (Berkeley) 12/21/92')
+VERSIONID(`@(#)sunos3.5.m4	8.1 (Berkeley) 06/07/93')
