@@ -70,6 +70,14 @@ another:
 		options |= SO_DEBUG;
 		goto another;
 	}
+	/*
+	 * Ignore the -e flag to allow aliases with rlogin
+	 * to work
+	 */
+	if (!strncmp(*argv, "-e", 2)) {
+		argv++, argc--;
+		goto another;
+	}
 	if (host == 0)
 		goto usage;
 	if (argv[0] == 0) {
