@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_alloc.c	8.4 (Berkeley) 01/04/94
+ *	@(#)lfs_alloc.c	8.5 (Berkeley) 03/21/95
  */
 
 #include <sys/param.h>
@@ -68,7 +68,7 @@ lfs_valloc(ap)
 	struct ifile *ifp;
 	struct inode *ip;
 	struct vnode *vp;
-	daddr_t blkno;
+	ufs_daddr_t blkno;
 	ino_t new_ino;
 	u_long i, max;
 	int error;
@@ -209,7 +209,7 @@ lfs_vfree(ap)
 	struct ifile *ifp;
 	struct inode *ip;
 	struct lfs *fs;
-	daddr_t old_iaddr;
+	ufs_daddr_t old_iaddr;
 	ino_t ino;
 
 	/* Get the inode number and file system. */
