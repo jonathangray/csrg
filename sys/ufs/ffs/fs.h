@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fs.h	8.6 (Berkeley) 04/19/94
+ *	@(#)fs.h	8.7 (Berkeley) 04/19/94
  */
 
 /*
@@ -235,7 +235,7 @@ struct fs {
 	quad_t	fs_qfmask;		/* ~fs_fmask - for use with quad size */
 	long	fs_state;		/* validate fs_clean field */
 	long	fs_postblformat;	/* format of positional layout tables */
-	long	fs_nrpos;		/* number of rotaional positions */
+	long	fs_nrpos;		/* number of rotational positions */
 	long	fs_postbloff;		/* (short) rotation block list head */
 	long	fs_rotbloff;		/* (u_char) blocks for each rotation */
 	long	fs_magic;		/* magic number */
