@@ -23,7 +23,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)fd.c	5.3 (Berkeley) 11/18/90
+ *	@(#)fd.c	5.4 (Berkeley) 01/08/91
  */
 
 /****************************************************************************/
