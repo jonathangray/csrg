@@ -9,7 +9,7 @@
  * software without specific prior written permission. This software
  * is provided ``as is'' without express or implied warranty.
  *
- *      @(#)ns_error.h	7.2 (Berkeley) 01/20/88
+ *      @(#)ns_error.h	7.3 (Berkeley) 01/28/88
  */
 
 /*
