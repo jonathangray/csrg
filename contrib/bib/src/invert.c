@@ -1,5 +1,5 @@
 #ifndef lint
-static char sccsid[] = "@(#)invert.c	2.2	09/23/83";
+static char sccsid[] = "@(#)invert.c	2.2	10/06/83";
 #endif not lint
 
 /*  input:  records of lines, separated by blank lines
