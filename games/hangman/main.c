@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.3 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)main.c	5.4 (Berkeley) 02/28/91";
 #endif /* not lint */
 
 # include	"hangman.h"
@@ -48,6 +48,8 @@ static char sccsid[] = "@(#)main.c	5.3 (Berkeley) 06/01/90";
  */
 main()
 {
+	void die();
+
 	initscr();
 	signal(SIGINT, die);
 	setup();
@@ -63,6 +65,7 @@ main()
  * die:
  *	Die properly.
  */
+void
 die()
 {
 	mvcur(0, COLS - 1, LINES - 1, 0);
