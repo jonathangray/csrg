@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	5.1 (Berkeley) 05/02/90
+ *	@(#)pathnames.h	5.2 (Berkeley) 06/18/91
  */
 
 #define	_PATH_LOG		"/var/games/larn/llog12.0"
