@@ -30,16 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mathimpl.h	5.3 (Berkeley) 10/09/90
+ *	@(#)mathimpl.h	5.4 (Berkeley) 03/05/91
  */
 
+#include <sys/cdefs.h>
 #include <math.h>
-
-#ifdef __STDC__
-#define const const
-#else
-#define const /**/
-#endif
 
 #if defined(vax)||defined(tahoe)
 
