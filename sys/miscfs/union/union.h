@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union.h	1.2 (Berkeley) 02/01/94
+ *	@(#)union.h	1.3 (Berkeley) 02/01/94
  */
 
 struct union_args {
@@ -85,7 +85,7 @@ extern int union_node_create __P((struct mount *mp, struct vnode *target, struct
 #define	VTOUNION(vp) ((struct union_node *)(vp)->v_data)
 #define	UNIONTOV(un) ((un)->un_vnode)
 #define	LOWERVP(vp) (VTOUNION(vp)->un_lowervp)
-#define	UPPERVP(vp) (VTOUNION(vp)->un_lowervp)
+#define	UPPERVP(vp) (VTOUNION(vp)->un_uppervp)
 #define OTHERVP(vp) (UPPERVP(vp) ? UPPERVP(vp) : LOWERVP(vp))
 
 extern int (**union_vnodeop_p)();
