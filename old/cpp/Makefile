@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.2 (Berkeley) 05/12/90
+#	@(#)Makefile	5.3 (Berkeley) 02/01/91
 
 PROG=	cpp
 CFLAGS+=-Dunix=1 -DFLEXNAMES -I${.CURDIR}
