@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)asc.c	7.6 (Berkeley) 10/11/92
+ *	@(#)asc.c	7.7 (Berkeley) 10/24/92
  */
 
 /* 
@@ -122,9 +122,6 @@
 
 #include <sys/param.h>
 #include <sys/systm.h>
-#include <sys/dkstat.h>
-#include <sys/buf.h>
-#include <sys/conf.h>
 #include <sys/errno.h>
 
 #include <pmax/dev/device.h>
