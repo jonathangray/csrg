@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mfs_vnops.c	7.25 (Berkeley) 11/05/91
+ *	@(#)mfs_vnops.c	7.26 (Berkeley) 12/16/91
  */
 
 #include <sys/param.h>
@@ -41,6 +41,7 @@
 #include <sys/buf.h>
 #include <sys/map.h>
 #include <sys/vnode.h>
+#include <sys/malloc.h>
 
 #include <machine/vmparam.h>
 #include <machine/mtpr.h>
@@ -341,6 +342,19 @@ mfs_inactive(vp, p)
 
 	if (VTOMFS(vp)->mfs_buflist != (struct buf *)(-1))
 		panic("mfs_inactive: not inactive");
+	return (0);
+}
+
+/*
+ * Reclaim a memory filesystem devvp so that it can be reused.
+ */
+int
+mfs_reclaim(vp)
+	register struct vnode *vp;
+{
+
+	FREE(vp->v_data, M_MFSNODE);
+	vp->v_data = NULL;
 	return (0);
 }
 
