@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fifo_vnops.c	7.10 (Berkeley) 02/15/92
+ *	@(#)fifo_vnops.c	7.11 (Berkeley) 04/09/92
  */
 
 #include "param.h"
@@ -157,6 +157,7 @@ fifo_open(vp, mode, cred, p)
 			vp->v_fifoinfo = NULL;
 			return (error);
 		}
+		fip->fi_readers = fip->fi_writers = 0;
 		wso->so_state |= SS_CANTRCVMORE;
 		rso->so_state |= SS_CANTSENDMORE;
 	}
@@ -170,10 +171,14 @@ fifo_open(vp, mode, cred, p)
 		}
 		if (mode & O_NONBLOCK)
 			return (0);
-		while (fip->fi_writers == 0)
-			if (error = tsleep((caddr_t)&fip->fi_readers, PSOCK,
-			    openstr, 0))
+		while (fip->fi_writers == 0) {
+			VOP_UNLOCK(vp);
+			error = tsleep((caddr_t)&fip->fi_readers, PSOCK,
+				openstr, 0);
+			VOP_LOCK(vp);
+			if (error)
 				break;
+		}
 	} else {
 		fip->fi_writers++;
 		if (fip->fi_readers == 0 && (mode & O_NONBLOCK)) {
@@ -184,10 +189,14 @@ fifo_open(vp, mode, cred, p)
 				if (fip->fi_readers > 0)
 					wakeup((caddr_t)&fip->fi_readers);
 			}
-			while (fip->fi_readers == 0)
-				if (error = tsleep((caddr_t)&fip->fi_writers,
-				    PSOCK, openstr, 0))
+			while (fip->fi_readers == 0) {
+				VOP_UNLOCK(vp);
+				error = tsleep((caddr_t)&fip->fi_writers,
+					PSOCK, openstr, 0);
+				VOP_LOCK(vp);
+				if (error)
 					break;
+			}
 		}
 	}
 	if (error)
