@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)wwiomux.c	3.26 (Berkeley) 08/12/90";
+static char sccsid[] = "@(#)wwiomux.c	3.27 (Berkeley) 11/10/92";
 #endif /* not lint */
 
 #include "ww.h"
@@ -75,11 +75,15 @@ wwiomux()
 		}
 
 		FD_ZERO(&imask);
+		n = -1;
 		for (w = wwhead.ww_forw; w != &wwhead; w = w->ww_forw) {
 			if (w->ww_pty < 0)
 				continue;
-			if (w->ww_obq < w->ww_obe)
+			if (w->ww_obq < w->ww_obe) {
+				if (w->ww_pty > n)
+					n = w->ww_pty;
 				FD_SET(w->ww_pty, &imask);
+			}
 			if (w->ww_obq > w->ww_obp && !w->ww_stopped)
 				noblock = 1;
 		}
@@ -113,7 +117,7 @@ wwiomux()
 			tv.tv_usec = 10000;
 		}
 		wwnselect++;
-		n = select(wwdtablesize, &imask, (fd_set *)0, (fd_set *)0, &tv);
+		n = select(n + 1, &imask, (fd_set *)0, (fd_set *)0, &tv);
 		wwsetjmp = 0;
 		noblock = 0;
 
