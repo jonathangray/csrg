@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)disklabel.h	7.15 (Berkeley) 02/05/91
+ *	@(#)disklabel.h	7.16 (Berkeley) 04/28/91
  */
 
 /*
@@ -46,8 +46,18 @@
  * to leave room for a bootstrap, etc.
  */
 
+/* XXX these should be defined per controller (or drive) elsewhere, not here! */
+#ifdef i386
+#define LABELSECTOR	1			/* sector containing label */
+#define LABELOFFSET	0			/* offset of label in sector */
+#define	MAXPARTITIONS	32
+#endif
+
+#ifdef	LABELSECTOR
 #define LABELSECTOR	0			/* sector containing label */
 #define LABELOFFSET	64			/* offset of label in sector */
+#endif
+
 #define DISKMAGIC	((u_long) 0x82564557)	/* The disk magic number */
 #ifndef MAXPARTITIONS
 #define	MAXPARTITIONS	8
