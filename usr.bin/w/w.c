@@ -1,5 +1,5 @@
 #ifndef lint
-static char *sccsid = "@(#)w.c	4.14 (Berkeley) 01/23/85";
+static char *sccsid = "@(#)w.c	4.15 (Berkeley) 05/11/85";
 #endif
 /*
  * w - print system status (who and what)
