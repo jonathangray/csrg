@@ -34,7 +34,7 @@ divert(-1)
 #
 divert(0)
 
-VERSIONID(`@(#)proto.m4	8.5 (Berkeley) 07/20/93')
+VERSIONID(`@(#)proto.m4	8.6 (Berkeley) 07/21/93')
 
 MAILER(local)dnl
 
@@ -525,6 +525,9 @@ R$* < @ [ $+ ] > $*	$#smtp $@ [$2] $: $1 @ [$2] $3	still numeric: send',
 R$* < @ > $*		$@ $>_SET_97_ $1			user@ => user
 R< @ $=w . > : $*	$@ $>_SET_97_ $2			@here:... -> ...
 R$* $=O $* < @ $=w . >	$@ $>_SET_97_ $1 $2 $3			...@here -> ...
+
+# handle local hacks
+R$*			$: $>_SET_98_ $1
 ifdef(`MAILER_TABLE',
 `
 # try mailer table lookup
@@ -542,9 +545,6 @@ R$+ < $+ @ $+ >		$#relay $@ $3 $: $1 $2		yep ....
 R$+ < $+ @ >		$#local $: $1			nope, local address',
 `R$+ < $+ @ $+ >		$#local $: $1			yep ....
 R$+ < $+ @ >		$#local $: @ $1			nope, local address')')
-
-# handle local hacks
-R$*			$: $>_SET_98_ $1
 undivert(4)dnl
 
 ifdef(`_NO_UUCP_', `dnl',
@@ -580,7 +580,7 @@ R$*<@$*.UUCP>$*		$#smtp $@ $Y $: @ $Y : $1 @ $2.UUCP $3	uucp mail',
 R< @ $+ .UUCP > : $+	$#uucp $@ $1 $: $2		@host.UUCP:...
 R$+ < @ $+ .UUCP >	$#uucp $@ $2 $: $1		user@host.UUCP',
 	`dnl')')
-ifdef(`_MAILER_USENET_', `
+ifdef(`_MAILER_usenet_', `
 # addresses sent to net.group.USENET will get forwarded to a newsgroup
 R$+ . USENET		$# usenet $: $1',
 	`dnl')
