@@ -6,7 +6,7 @@
 # include <syslog.h>
 # endif LOG
 
-static char	SccsId[] = "@(#)main.c	3.39	09/16/81";
+static char	SccsId[] = "@(#)main.c	3.40	09/24/81";
 
 /*
 **  SENDMAIL -- Post mail to a set of destinations.
@@ -389,6 +389,7 @@ main(argc, argv)
 
 	readcf(ConfFile, safecf);
 
+# ifndef V6
 	p = getenv("HOME");
 	if (p != NULL)
 	{
@@ -399,6 +400,7 @@ main(argc, argv)
 		if (access(cfbuf, 2) == 0)
 			readcf(cfbuf, FALSE);
 	}
+# endif V6
 
 	initaliases(AliasFile, aliasinit);
 # ifdef DBM
