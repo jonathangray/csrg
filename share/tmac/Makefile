@@ -1,4 +1,4 @@
-#	@(#)Makefile	6.15 (Berkeley) 07/14/92
+#	@(#)Makefile	8.1 (Berkeley) 06/08/93
 
 # Missing: tmac.a tmac.an.old tmac.cp tmac.r
 
