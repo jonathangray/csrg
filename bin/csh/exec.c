@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)exec.c	8.2 (Berkeley) 03/22/95";
+static char sccsid[] = "@(#)exec.c	8.3 (Berkeley) 05/23/95";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -656,7 +656,7 @@ tellmewhat(lex)
     register struct biltins *bptr;
     register struct wordent *sp = lex->next;
     bool    aliased = 0;
-    Char   *s0, *s1, *s2;
+    Char   *s0, *s1, *s2, *cmd;
     Char    qc;
 
     if (adrof1(sp->word, &aliases)) {
@@ -703,6 +703,8 @@ tellmewhat(lex)
 	}
     }
 
+    sp->word = cmd = globone(sp->word, G_IGNORE);
+
     if ((i = iscommand(strip(sp->word))) != 0) {
 	register Char **pv;
 	register struct varent *v;
@@ -717,10 +719,15 @@ tellmewhat(lex)
 	while (--i)
 	    pv++;
 	if (pv[0][0] == 0 || eq(pv[0], STRdot)) {
-	    sp->word = Strspl(STRdotsl, sp->word);
-	    prlex(cshout, lex);
-	    xfree((ptr_t) sp->word);
+	    if (!slash) {
+		sp->word = Strspl(STRdotsl, sp->word);
+		prlex(cshout, lex);
+		xfree((ptr_t) sp->word);
+	    }
+	    else
+		prlex(cshout, lex);
 	    sp->word = s0;	/* we save and then restore this */
+	    xfree((ptr_t) cmd);
 	    return;
 	}
 	s1 = Strspl(*pv, STRslash);
@@ -735,4 +742,5 @@ tellmewhat(lex)
 	(void) fprintf(csherr, "%s: Command not found.\n", vis_str(sp->word));
     }
     sp->word = s0;		/* we save and then restore this */
+    xfree((ptr_t) cmd);
 }
