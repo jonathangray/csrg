@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: cpu.h 1.16 91/03/25$
  *
- *	@(#)cpu.h	7.7 (Berkeley) 06/27/91
+ *	@(#)cpu.h	7.8 (Berkeley) 02/05/92
  */
 
 /*
@@ -62,6 +62,8 @@
 
 #define	cpu_exec(p)	/* nothing */
 #define	cpu_wait(p)	/* nothing */
+#define cpu_setstack(p, ap) \
+	(p)->p_md.md_regs[SP] = ap
 
 /*
  * Arguments to hardclock, softclock and gatherstats
