@@ -35,12 +35,8 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)trap.c	5.1 (Berkeley) 03/07/91";
+static char sccsid[] = "@(#)trap.c	5.2 (Berkeley) 04/12/91";
 #endif /* not lint */
-
-/*
- * Routines for dealing with signals.
- */
 
 #include "shell.h"
 #include "main.h"
@@ -75,8 +71,7 @@ extern char nullstr[1];		/* null string */
 char *trap[MAXSIG+1];		/* trap handler commands */
 MKINIT char sigmode[MAXSIG];	/* current value of signal */
 char gotsig[MAXSIG];		/* indicates specified signal received */
-int pendingsigs;		/* indicates some signal received */
-
+int pendingsigs;			/* indicates some signal received */
 
 /*
  * The trap builtin.
@@ -164,9 +159,16 @@ setsignal(signo) {
 			if (iflag)
 				action = S_CATCH;
 			break;
-#ifndef DEBUG
 		case SIGQUIT:
+#ifdef DEBUG
+			{
+			extern int debug;
+
+			if (debug)
+				break;
+			}
 #endif
+			/* FALLTHROUGH */
 		case SIGTERM:
 			if (iflag)
 				action = S_IGN;
@@ -197,14 +199,13 @@ setsignal(signo) {
 	if (*t == S_HARD_IGN || *t == action)
 		return 0;
 	switch (action) {
-		case S_DFL:	   sigact = SIG_DFL;		break;
-		case S_CATCH:	   sigact = onsig;		break;
-		case S_IGN:	   sigact = SIG_IGN;		break;
+		case S_DFL:	sigact = SIG_DFL;	break;
+		case S_CATCH:  	sigact = onsig;		break;
+		case S_IGN:	sigact = SIG_IGN;	break;
 	}
 	*t = action;
 	return (int)signal(signo, sigact);
 }
-
 
 
 /*
@@ -262,6 +263,7 @@ onsig(signo) {
 void
 dotrap() {
 	int i;
+	int savestatus;
 
 	for (;;) {
 		for (i = 1 ; ; i++) {
@@ -271,7 +273,9 @@ dotrap() {
 				goto done;
 		}
 		gotsig[i - 1] = 0;
+		savestatus=exitstatus;
 		evalstring(trap[i]);
+		exitstatus=savestatus;
 	}
 done:
 	pendingsigs = 0;
