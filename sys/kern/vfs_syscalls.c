@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	7.94 (Berkeley) 07/11/92
+ *	@(#)vfs_syscalls.c	7.95 (Berkeley) 07/12/92
  */
 
 #include "param.h"
@@ -1889,17 +1889,21 @@ ogetdirentries(p, uap, retval)
 			for (dp = (struct dirent *)dirbuf; dp < edp; ) {
 #				if (BYTE_ORDER == LITTLE_ENDIAN)
 					/*
-					 * The expected dp->d_namlen field
-					 * is in our dp->d_type.
+					 * The expected low byte of
+					 * dp->d_namlen is our dp->d_type.
+					 * The high MBZ byte of dp->d_namlen
+					 * is our dp->d_namlen.
 					 */
-					dp->d_namlen = dp->d_type;
+					dp->d_type = dp->d_namlen;
+					dp->d_namlen = 0;
+#				else
+					/*
+					 * The dp->d_type is the high byte
+					 * of the expected dp->d_namlen,
+					 * so must be zero'ed.
+					 */
+					dp->d_type = 0;
 #				endif
-				/*
-				 * The dp->d_type is the high byte
-				 * of the expected dp->d_namlen,
-				 * so must be zero'ed.
-				 */
-				dp->d_type = 0;
 				if (dp->d_reclen > 0) {
 					dp = (struct dirent *)
 					    ((char *)dp + dp->d_reclen);
