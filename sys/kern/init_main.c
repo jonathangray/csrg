@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)init_main.c	7.52 (Berkeley) 07/19/92
+ *	@(#)init_main.c	7.53 (Berkeley) 07/19/92
  */
 
 #include "param.h"
@@ -46,7 +46,6 @@
 #include "conf.h"
 #include "buf.h"
 #include "clist.h"
-#include "malloc.h"
 #include "protosw.h"
 #include "reboot.h"
 #include "user.h"
@@ -187,6 +186,13 @@ main()
 	 */
 	p->p_stats = &p->p_addr->u_stats;
 	p->p_sigacts = &p->p_addr->u_sigacts;
+
+	/*
+	 * Initialize per uid information structure and charge
+	 * root for one process.
+	 */
+	usrinfoinit();
+	(void)chgproccnt(0, 1);
 
 	rqinit();
 
