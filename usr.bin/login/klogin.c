@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)klogin.c	5.10 (Berkeley) 06/29/92";
+static char sccsid[] = "@(#)klogin.c	5.11 (Berkeley) 07/12/92";
 #endif /* not lint */
 
 #ifdef KERBEROS
@@ -70,6 +70,7 @@ klogin(pw, instance, localhost, password)
 	unsigned long faddr;
 	char realm[REALM_SZ], savehost[MAXHOSTNAMELEN];
 	char tkt_location[MAXPATHLEN];
+	char *krb_get_phost();
 
 	/*
 	 * Root logins don't use Kerberos.
