@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.c	7.5 (Berkeley) 05/11/92
+ *	@(#)pmap.c	7.6 (Berkeley) 05/11/92
  */
 
 /*
