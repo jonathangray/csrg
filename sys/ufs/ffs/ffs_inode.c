@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_inode.c	7.47 (Berkeley) 04/21/92
+ *	@(#)ffs_inode.c	7.48 (Berkeley) 04/21/92
  */
 
 #include <sys/param.h>
@@ -229,10 +229,11 @@ ffs_update(vp, ta, tm, waitfor)
  *
  * NB: triple indirect blocks are untested.
  */
-ffs_truncate(ovp, length, flags)
+ffs_truncate(ovp, length, flags, cred)
 	register struct vnode *ovp;
 	off_t length;
 	int flags;
+	struct ucred *cred;
 {
 	register daddr_t lastblock;
 	register struct inode *oip;
@@ -286,7 +287,7 @@ ffs_truncate(ovp, length, flags)
 		if (error = getinoquota(oip))
 			return (error);
 #endif
-		if (error = ffs_balloc(oip, lbn, offset, &bp, aflags))
+		if (error = ffs_balloc(oip, lbn, offset, cred, &bp, aflags))
 			return (error);
 		oip->i_size = length;
 		size = blksize(fs, oip, lbn);
