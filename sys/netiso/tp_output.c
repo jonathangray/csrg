@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_output.c	7.17 (Berkeley) 10/11/92
+ *	@(#)tp_output.c	7.18 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -611,7 +611,7 @@ tp_ctloutput(cmd, so, level, optname, mp)
 #else
 		error = EOPNOTSUPP;
 		goto done;
-#endif TP_PERF_MEAS
+#endif /* TP_PERF_MEAS */
 		
 	case TPOPT_CDDATA_CLEAR: 
 		if (cmd == PRCO_GETOPT) {
@@ -676,9 +676,9 @@ tp_ctloutput(cmd, so, level, optname, mp)
 		}
 		if( tpcb->tp_perf_on ) 
 			error = tp_setup_perf(tpcb);
-#else  TP_PERF_MEAS
+#else  /* TP_PERF_MEAS */
 		error = EOPNOTSUPP;
-#endif TP_PERF_MEAS
+#endif /* TP_PERF_MEAS */
 		break;
 
 	default:
