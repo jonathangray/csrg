@@ -6,6 +6,11 @@
  * at Lawrence Berkeley Laboratory under DARPA contract BG 91-66 and
  * contributed to Berkeley.
  *
+ * All advertising materials mentioning features or use of this software
+ * must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Lawrence Berkeley Laboratories.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -34,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sun_disklabel.h	7.1 (Berkeley) 07/13/92
+ *	@(#)sun_disklabel.h	7.2 (Berkeley) 07/21/92
  *
  * from: $Header: sun_disklabel.h,v 1.4 92/06/17 07:04:13 torek Exp $
  */
