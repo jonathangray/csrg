@@ -11,7 +11,7 @@ char *copyright =
 #endif not lint
 
 #ifndef lint
-static char *sccsid = "@(#)ex.c	7.6 (Berkeley) 03/09/87";
+static char *sccsid = "@(#)ex.c	7.6.1.1 (Berkeley) 08/08/88";
 #endif not lint
 
 #include "ex.h"
