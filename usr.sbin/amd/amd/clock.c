@@ -1,5 +1,5 @@
 /*
- * $Id: clock.c,v 5.2 90/06/23 22:19:21 jsp Rel $
+ * $Id: clock.c,v 5.2.1.4 91/03/03 20:41:36 jsp Alpha $
  *
  * Copyright (c) 1989 Jan-Simon Pendry
  * Copyright (c) 1989 Imperial College of Science, Technology & Medicine
@@ -37,7 +37,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)clock.c	5.1 (Berkeley) 06/29/90
+ *	@(#)clock.c	5.2 (Berkeley) 03/17/91
  */
 
 /*
@@ -47,8 +47,8 @@
  * See usual references.
  *
  * Use of a heap-based mechanism was rejected:
- * 1.  more complext implementation needed.
- * 2.  not obvious that a list is too slow for amd.
+ * 1.  more complex implementation needed.
+ * 2.  not obvious that a list is too slow for Amd.
  */
 
 #include "am.h"
@@ -74,11 +74,12 @@ time_t next_softclock;			/* Time of next call to softclock() */
 #define	CALLOUT_FREE_SLOP	10
 
 /*
- * Assumption: valid id's are non-zero.
+ * Global assumption: valid id's are non-zero.
  */
 #define	CID_ALLOC()	(++callout_id)
 #define	CID_UNDEF	(0)
 
+static callout *alloc_callout(P_void);
 static callout *alloc_callout()
 {
 	callout *cp = free_callouts;
@@ -90,6 +91,7 @@ static callout *alloc_callout()
 	return ALLOC(callout);
 }
 
+static void free_callout P((callout *cp));
 static void free_callout(cp)
 callout *cp;
 {
@@ -107,6 +109,7 @@ callout *cp;
  *
  * (*fn)(closure) will be called at clocktime() + secs
  */
+int timeout P((unsigned int secs, void (*fn)(), voidp closure));
 int timeout(secs, fn, closure)
 unsigned int secs;
 void (*fn)();
@@ -149,6 +152,7 @@ voidp closure;
 /*
  * De-schedule a callout
  */
+void untimeout P((int id));
 void untimeout(id)
 int id;
 {
@@ -163,8 +167,31 @@ int id;
 }
 
 /*
+ * Reschedule after clock changed
+ */
+void reschedule_timeouts P((time_t now, time_t then));
+void reschedule_timeouts(now, then)
+time_t now;
+time_t then;
+{
+	callout *cp;
+
+	for (cp = callouts.c_next; cp; cp = cp->c_next) {
+		if (cp->c_time >= now && cp->c_time <= then) {
+			plog(XLOG_WARNING, "job %d rescheduled to run immediately", cp->c_id);
+#ifdef DEBUG
+			dlog("rescheduling job %d back %d seconds",
+				cp->c_id, cp->c_time - now);
+#endif
+			next_softclock = cp->c_time = now;
+		}
+	}
+}
+
+/*
  * Clock handler
  */
+int softclock(P_void);
 int softclock()
 {
 	time_t now;
@@ -172,7 +199,7 @@ int softclock()
 
 	do {
 		if (task_notify_todo)
-			task_notify();
+			do_task_notify();
 
 		now = clocktime();
 
