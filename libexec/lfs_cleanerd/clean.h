@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)clean.h	5.3 (Berkeley) 08/26/92
+ *	@(#)clean.h	5.4 (Berkeley) 08/28/92
  */
 
 /*
@@ -64,7 +64,7 @@
 #define	IDLE_LIM	0.90
 
 #define	MIN_SEGS(lfsp)		(3)
-#define	NUM_TO_CLEAN(fsp)	(5)
+#define	NUM_TO_CLEAN(fsp)	(1)
 
 #define MAXLOADS	3
 #define	ONE_MIN		0
