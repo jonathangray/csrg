@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sys_generic.c	8.5 (Berkeley) 01/21/94
+ *	@(#)sys_generic.c	8.6 (Berkeley) 06/04/94
  */
 
 #include <sys/param.h>
