@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)doc-nroff	5.4 (Berkeley) 05/01/91
+.\"     @(#)doc-nroff	5.5 (Berkeley) 07/01/91
 .\"
 .\" tmac.mdoc-nroff
 .\"     %beginstrip%
@@ -65,6 +65,7 @@
 .ds rA \fR
 .ds rT \fI
 .ds sH \fB
+.ds sP
 .ds sY \fB
 .ds sX \fI
 .ds tF \fR
@@ -195,6 +196,7 @@
 .       nr nT 0
 .       nr nY 0
 .       nr aN 0
+.       nr oT 0
 .       if "\\$1"SEE" .nr nA 1
 .       if "\\$1"FILES" .nr nF 1
 .       if "\\$1"STANDARDS" .nr nT 1
