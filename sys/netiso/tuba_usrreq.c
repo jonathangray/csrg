@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tuba_usrreq.c	7.7 (Berkeley) 11/20/92
+ *	@(#)tuba_usrreq.c	7.8 (Berkeley) 11/25/92
  */
 
 #include <sys/param.h>
@@ -174,7 +174,7 @@ tuba_usrreq(so, req, m, nam, control)
 			break;
 		bcopy(TSEL(siso), &inp->inp_lport, 2);
 		if (siso->siso_nlen &&
-		    !(inp->inp_laddr.s_addr = tuba_lookup(&siso->siso_addr, M_WAITOK)))
+		    !(inp->inp_laddr.s_addr = tuba_lookup(siso, M_WAITOK)))
 			error = ENOBUFS;
 		break;
 
@@ -207,7 +207,7 @@ tuba_usrreq(so, req, m, nam, control)
 		else
 			panic("tuba_usrreq: connect");
 		siso = mtod(nam, struct sockaddr_iso *);
-		if (!(inp->inp_faddr.s_addr = tuba_lookup(&siso->siso_addr, M_WAITOK))) {
+		if (!(inp->inp_faddr.s_addr = tuba_lookup(siso, M_WAITOK))) {
 		unconnect:
 			iso_pcbdisconnect(isop);
 			error = ENOBUFS;
@@ -216,7 +216,7 @@ tuba_usrreq(so, req, m, nam, control)
 		bcopy(TSEL(isop->isop_faddr), &inp->inp_fport, 2);
 		if (inp->inp_laddr.s_addr == 0 &&
 		     (inp->inp_laddr.s_addr = 
-			    tuba_lookup(&isop->isop_laddr->siso_addr, M_WAITOK)) == 0)
+			    tuba_lookup(isop->isop_laddr, M_WAITOK)) == 0)
 			goto unconnect;
 		if ((tp->t_template = tcp_template(tp)) == 0)
 			goto unconnect;
@@ -308,5 +308,5 @@ tuba_ctloutput(op, so, level, optname, mp)
 	int clnp_ctloutput(), tcp_ctloutput();
 
 	return ((level != IPPROTO_TCP ? clnp_ctloutput : tcp_ctloutput)
-		(clnp_ctloutput(op, so, level, optname, mp)));
+			(op, so, level, optname, mp));
 }
