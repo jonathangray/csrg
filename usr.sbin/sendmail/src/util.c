@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)util.c	5.28 (Berkeley) 07/14/92";
+static char sccsid[] = "@(#)util.c	5.29 (Berkeley) 07/19/92";
 #endif /* not lint */
 
 # include <stdio.h>
@@ -429,7 +429,7 @@ fullname(pw, buf)
 bool
 safefile(fn, uid, mode)
 	char *fn;
-	int uid;
+	uid_t uid;
 	int mode;
 {
 	struct stat stbuf;
