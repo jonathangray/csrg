@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)savemail.c	8.14 (Berkeley) 10/15/93";
+static char sccsid[] = "@(#)savemail.c	8.15 (Berkeley) 10/17/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -95,8 +95,6 @@ savemail(e)
 		/* can't return a message with no id */
 		return;
 	}
-
-	e->e_flags &= ~EF_FATALERRS;
 
 	/*
 	**  In the unhappy event we don't know who to return the mail
@@ -600,7 +598,7 @@ errbody(fp, m, e)
 	for (q = e->e_parent->e_sendqueue; q != NULL; q = q->q_next)
 		if (bitset(QBADADDR, q->q_flags))
 			break;
-	if (q == NULL)
+	if (q == NULL && !bitset(EF_FATALERRS, e->e_parent->e_flags))
 	{
 		putline("    **********************************************",
 			fp, m);
