@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_malloc.c	7.25 (Berkeley) 05/08/91
+ *	@(#)kern_malloc.c	7.25.1.1 (Berkeley) 05/19/91
  */
 
 #include "param.h"
@@ -68,8 +68,11 @@ malloc(size, type, flags)
 #ifdef KMEMSTATS
 	register struct kmemstats *ksp = &kmemstats[type];
 
+#ifdef DIAGNOSTIC
 	if (((unsigned long)type) > M_LAST)
 		panic("malloc - bogus type");
+	if (type == M_NAMEI)
+		curproc->p_spare[0]++;
 
 	indx = BUCKETINDX(size);
 	kbp = &bucket[indx];
@@ -215,6 +218,8 @@ free(addr, type)
 #endif /* DIAGNOSTIC */
 	size = 1 << kup->ku_indx;
 #ifdef DIAGNOSTIC
+	if (type == M_NAMEI)
+		curproc->p_spare[0]--;
 	if (size > NBPG * CLSIZE)
 		alloc = addrmask[BUCKETINDX(NBPG * CLSIZE)];
 	else
