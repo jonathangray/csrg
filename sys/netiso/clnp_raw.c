@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)clnp_raw.c	7.8 (Berkeley) 05/06/91
+ *	@(#)clnp_raw.c	7.9 (Berkeley) 02/06/92
  */
 
 /***********************************************************
@@ -142,7 +142,7 @@ struct socket	*so;	/* socket to send from */
 	int						error;		/* return value of function */
 	int						flags;		/* flags for clnp_output */
 
-	if (0 == m0->m_flags & M_PKTHDR)
+	if (0 == (m0->m_flags & M_PKTHDR))
 		return (EINVAL);
 	/*
 	 *	Set up src address. If user has bound socket to an address, use it.
