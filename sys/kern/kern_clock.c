@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_clock.c	7.24 (Berkeley) 07/16/92
+ *	@(#)kern_clock.c	7.25 (Berkeley) 09/21/92
  */
 
 #include "param.h"
@@ -98,7 +98,8 @@ int	adjtimedelta;
 int	stathz;
 int	profhz;
 int	profprocs;
-static int psratio, psdiv, pscnt;	/* prof => stat divider */
+static int psdiv, pscnt;	/* prof => stat divider */
+int	psratio;		/* ratio: prot / stat */
 
 volatile struct	timeval time;
 volatile struct	timeval mono_time;
