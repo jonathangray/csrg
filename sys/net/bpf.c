@@ -1,38 +1,48 @@
-/*
- * Copyright (c) 1990 The Regents of the University of California.
+/*-
+ * Copyright (c) 1991 The Regents of the University of California.
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that: (1) source code distributions
- * retain the above copyright notice and this paragraph in its entirety, (2)
- * distributions including binary code include the above copyright notice and
- * this paragraph in its entirety in the documentation or other materials
- * provided with the distribution, and (3) all advertising materials mentioning
- * features or use of this software display the following acknowledgement:
- * ``This product includes software developed by the University of California,
- * Lawrence Berkeley Laboratory and its contributors.'' Neither the name of
- * the University nor the names of its contributors may be used to endorse
- * or promote products derived from this software without specific prior
- * written permission.
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
  * This code is derived from the Stanford/CMU enet packet filter,
- * (net/enet.c) distributed in 4.3BSD Unix.
+ * (net/enet.c) distributed as part of 4.3BSD, and code contributed
+ * to Berkeley by Steven McCanne of Lawrence Berkeley Laboratory.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ *
+ *	@(#)bpf.c	7.1 (Berkeley) 05/07/91
+ *
+ * static char rcsid[] =
+ * "$Header: bpf.c,v 1.23 91/01/30 18:22:13 mccanne Exp $";
  */
-#ifndef lint
-static char rcsid[] =
-    "$Header: bpf.c,v 1.23 91/01/30 18:22:13 mccanne Exp $";
-#endif
 
 #include "bpfilter.h"
 
 #if (NBPFILTER > 0)
-
-#ifndef __GNUC__
-#define inline
-#endif
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -909,34 +919,7 @@ bpf_mtap(arg, m)
 	struct bpf_d *d;
 	u_int pktlen, slen;
 	struct mbuf *m0;
-#ifdef notdef
-	u_char *cp;
-	int nbytes;
-	static u_char buf[BPF_MIN_SNAPLEN];
 
-	if (m->m_len >= BPF_MIN_SNAPLEN) {
-		slen = m->m_len;
-		cp = mtod(m, u_char *);
-	} 
-	else {
-		nbytes = BPF_MIN_SNAPLEN;
-		cp = buf;
-		m0 = m;
-		while (m0 && nbytes > 0) {		
-			slen = MIN(m0->m_len, nbytes);
-			bcopy(mtod(m0, char *), (char *)cp, slen);
-			cp += slen;
-			nbytes -= slen;
-			m0 = m0->m_next;
-		}
-		if (nbytes > 0)
-			/* Packet too small? */
-			return;
-
-		slen = BPF_MIN_SNAPLEN;
-		cp = buf;
-	}
-#endif
 	pktlen = 0;
 	m0 = m;
 	while (m0) {
