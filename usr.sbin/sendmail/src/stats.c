@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)stats.c	8.4 (Berkeley) 04/21/95";
+static char sccsid[] = "@(#)stats.c	8.5 (Berkeley) 05/28/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -49,6 +49,7 @@ bool	GotStats = FALSE;	/* set when we have stats to merge */
 **  MARKSTATS -- mark statistics
 */
 
+void
 markstats(e, to)
 	register ENVELOPE *e;
 	register ADDRESS *to;
@@ -82,6 +83,7 @@ markstats(e, to)
 **		merges the Stat structure with the sfile file.
 */
 
+void
 poststats(sfile)
 	char *sfile;
 {
