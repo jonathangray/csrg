@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_log.c	8.1 (Berkeley) 06/10/93
+ *	@(#)subr_log.c	8.2 (Berkeley) 01/09/95
  */
 
 /*
@@ -187,7 +187,7 @@ logwakeup()
 /*ARGSUSED*/
 logioctl(dev, com, data, flag, p)
 	dev_t dev;
-	int com;
+	u_long com;
 	caddr_t data;
 	int flag;
 	struct proc *p;
