@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stat.h	8.9 (Berkeley) 08/17/94
+ *	@(#)stat.h	8.10 (Berkeley) 01/09/95
  */
 
 #ifndef _SYS_STAT_H_
@@ -75,12 +75,12 @@ struct stat {
 	struct	timespec st_mtimespec;	/* time of last data modification */
 	struct	timespec st_ctimespec;	/* time of last file status change */
 	off_t	  st_size;		/* file size, in bytes */
-	quad_t	  st_blocks;		/* blocks allocated for file */
+	int64_t	  st_blocks;		/* blocks allocated for file */
 	u_int32_t st_blksize;		/* optimal blocksize for I/O */
 	u_int32_t st_flags;		/* user defined flags for file */
 	u_int32_t st_gen;		/* file generation number */
 	int32_t	  st_lspare;
-	quad_t	  st_qspare[2];
+	int64_t	  st_qspare[2];
 };
 #define st_atime st_atimespec.ts_sec
 #define st_mtime st_mtimespec.ts_sec
