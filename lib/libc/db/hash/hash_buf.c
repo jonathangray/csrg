@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)hash_buf.c	5.9 (Berkeley) 09/08/91";
+static char sccsid[] = "@(#)hash_buf.c	5.10 (Berkeley) 09/29/92";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -173,7 +173,8 @@ newbuf(addr, prev_bp)
 		bp = malloc(sizeof(struct _bufhead));
 		if (!bp || !(bp->page = malloc(hashp->BSIZE)))
 			return (NULL);
-		hashp->nbufs--;
+		if (hashp->nbufs)
+			hashp->nbufs--;
 	} else {
 		/* Kick someone out */
 		BUF_REMOVE(bp);
