@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pk_timer.c	7.3 (Berkeley) 08/30/90
+ *	@(#)pk_timer.c	7.4 (Berkeley) 01/09/91
  */
 
 #include "param.h"
@@ -90,7 +90,7 @@ pk_timer ()
 				case SENT_CALL: 
 					if (--lcp -> lcd_timer == 0) {
 						lcp -> lcd_so -> so_error = ETIMEDOUT;
-						pk_clear (lcp);
+						pk_clear (lcp, 49, 1);
 					}
 					break;
 
@@ -99,7 +99,7 @@ pk_timer ()
 						lcns_jammed++;
 					else
 						if (--lcp -> lcd_timer == 0)
-							pk_clear (lcp);
+							pk_clear (lcp, 50, 1);
 					break;
 
 				case DATA_TRANSFER:	/* lcn active */
