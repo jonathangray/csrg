@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	6.44 (Berkeley) 03/29/93";
+static char sccsid[] = "@(#)conf.c	6.45 (Berkeley) 04/18/93";
 #endif /* not lint */
 
 # include <sys/ioctl.h>
@@ -821,6 +821,11 @@ shouldqueue(pri, ctime)
 bool
 refuseconnections()
 {
+#ifdef XLA
+	if (!xla_smtp_ok())
+		return TRUE;
+#endif
+
 	/* this is probably too simplistic */
 	return (CurrentLA >= RefuseLA);
 }
