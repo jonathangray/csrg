@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)mci.c	8.14 (Berkeley) 05/15/94";
+static char sccsid[] = "@(#)mci.c	8.15 (Berkeley) 08/17/94";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -359,7 +359,7 @@ mci_dump(mci, logit)
 		sprintf(p, "NULL");
 		goto printit;
 	}
-	sprintf(p, "flags=%o, errno=%d, herrno=%d, exitstat=%d, state=%d, pid=%d,%s",
+	sprintf(p, "flags=%x, errno=%d, herrno=%d, exitstat=%d, state=%d, pid=%d,%s",
 		mci->mci_flags, mci->mci_errno, mci->mci_herrno,
 		mci->mci_exitstat, mci->mci_state, mci->mci_pid, sep);
 	p += strlen(p);
