@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)ping.c	5.10 (Berkeley) 05/26/92";
+static char sccsid[] = "@(#)ping.c	5.11 (Berkeley) 02/20/93";
 #endif /* not lint */
 
 /*
@@ -965,7 +965,9 @@ fill(bp, patp)
 	    &pat[13], &pat[14], &pat[15]);
 
 	if (ii > 0)
-		for (kk = 0; kk <= MAXPACKET - (8 + ii); kk += ii)
+		for (kk = 0;
+		    kk <= MAXPACKET - (8 + sizeof(struct timeval) + ii);
+		    kk += ii)
 			for (jj = 0; jj < ii; ++jj)
 				bp[jj + kk] = pat[jj];
 	if (!(options & F_QUIET)) {
