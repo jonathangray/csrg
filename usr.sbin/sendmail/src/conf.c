@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.29 (Berkeley) 08/26/93";
+static char sccsid[] = "@(#)conf.c	8.30 (Berkeley) 08/30/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1593,7 +1593,8 @@ lockfile(fd, filename, ext, type)
 	}
 
 	if (!bitset(LOCK_NB, type) || (errno != EACCES && errno != EAGAIN))
-		syserr("cannot lockf(%s%s, %o)", filename, ext, type);
+		syserr("cannot lockf(%s%s, fd=%d, type=%o)",
+			filename, ext, fd, type);
 # else
 	if (ext == NULL)
 		ext = "";
@@ -1612,7 +1613,8 @@ lockfile(fd, filename, ext, type)
 		printf("(%s) ", errstring(errno));
 
 	if (!bitset(LOCK_NB, type) || errno != EWOULDBLOCK)
-		syserr("cannot flock(%s%s, %o)", filename, ext, type);
+		syserr("cannot flock(%s%s, fd=%d, type=%o)",
+			filename, ext, fd, type);
 # endif
 	if (tTd(55, 60))
 		printf("FAIL\n");
