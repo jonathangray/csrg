@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)clock.c	8.3 (Berkeley) 07/19/93";
+static char sccsid[] = "@(#)clock.c	8.4 (Berkeley) 07/21/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -246,7 +246,11 @@ tick()
 static bool	SleepDone;
 static int	endsleep();
 
-unsigned int
+#ifndef SLEEP_T
+# define SLEEP_T	unsigned int
+#endif
+
+SLEEP_T
 sleep(intvl)
 	unsigned int intvl;
 {
