@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_inherit.h	7.3 (Berkeley) 05/04/92
+ *	@(#)vm_inherit.h	7.4 (Berkeley) 05/24/93
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -80,4 +80,4 @@
 
 #define VM_INHERIT_DEFAULT	VM_INHERIT_COPY
 
-#endif	_VM_INHERIT_
+#endif /* _VM_INHERIT_ */
