@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)systm.h	7.19 (Berkeley) 02/05/92
+ *	@(#)systm.h	7.20 (Berkeley) 03/01/92
  */
 
 extern const char *panicstr;	/* panic message */
@@ -64,9 +64,6 @@ extern struct sysent {		/* system call table */
 } sysent[];
 
 extern int boothowto;		/* reboot flags, from console subsystem */
-#ifdef	KADB
-extern char *bootesym;		/* end of symbol info from boot */
-#endif
 
 /* casts to keep lint happy */
 #define	insque(q,p)	_insque((caddr_t)q,(caddr_t)p)
