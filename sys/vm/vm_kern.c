@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_kern.c	7.10 (Berkeley) 10/01/92
+ *	@(#)vm_kern.c	7.11 (Berkeley) 05/24/93
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -91,7 +91,7 @@ vm_offset_t kmem_alloc_pageable(map, size)
 #if	0
 	if (map != kernel_map)
 		panic("kmem_alloc_pageable: not called with kernel_map");
-#endif	0
+#endif
 
 	size = round_page(size);
 
