@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_serv.c	7.48 (Berkeley) 02/25/92
+ *	@(#)nfs_serv.c	7.49 (Berkeley) 03/13/92
  */
 
 /*
@@ -980,7 +980,7 @@ out:
 	if (!error) {
 		nqsrv_getl(vp, NQL_WRITE);
 		nqsrv_getl(xp, NQL_WRITE);
-		error = VOP_LINK(vp, nd.ni_dvp, &nd.ni_cnd);
+		error = VOP_LINK(nd.ni_dvp, vp, &nd.ni_cnd);
 	} else {
 		VOP_ABORTOP(nd.ni_dvp, &nd.ni_cnd);
 		if (nd.ni_dvp == nd.ni_vp)
