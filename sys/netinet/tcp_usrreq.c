@@ -14,7 +14,7 @@
  * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *	@(#)tcp_usrreq.c	7.7.1.3 (Berkeley) 02/15/89
+ *	@(#)tcp_usrreq.c	7.12 (Berkeley) 04/08/89
  */
 
 #include "param.h"
@@ -212,6 +212,7 @@ tcp_usrreq(so, req, m, nam, rights)
 
 		nam->m_len = sizeof (struct sockaddr_in);
 		sin->sin_family = AF_INET;
+		sin->sin_len = sizeof(*sin);
 		sin->sin_port = inp->inp_fport;
 		sin->sin_addr = inp->inp_faddr;
 		break;
