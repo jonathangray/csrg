@@ -36,7 +36,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)kvm.c	5.30 (Berkeley) 05/26/92";
+static char sccsid[] = "@(#)kvm.c	5.31 (Berkeley) 05/28/92";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -53,6 +53,7 @@ static char sccsid[] = "@(#)kvm.c	5.30 (Berkeley) 05/26/92";
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <ctype.h>
 
 #include <vm/vm.h>	/* ??? kinfo_proc currently includes this*/
