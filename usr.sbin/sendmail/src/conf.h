@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.23 (Berkeley) 08/19/93
+ *	@(#)conf.h	8.24 (Berkeley) 08/20/93
  */
 
 /*
@@ -169,9 +169,6 @@
 #  ifndef _PATH_SENDMAILCF
 #   define _PATH_SENDMAILCF	"/etc/mail/sendmail.cf"
 #  endif
-#  ifndef _PATH_SENDMAILFC
-#   define _PATH_SENDMAILFC	"/etc/mail/sendmail.fc"
-#  endif
 #  ifndef _PATH_SENDMAILPID
 #   define _PATH_SENDMAILPID	"/etc/mail/sendmail.pid"
 #  endif
@@ -233,9 +230,6 @@ typedef int		pid_t;
 # ifndef _PATH_SENDMAILCF
 #  define _PATH_SENDMAILCF	"/etc/sendmail/sendmail.cf"
 # endif
-# ifndef _PATH_SENDMAILFC
-#  define _PATH_SENDMAILFC	"/etc/sendmail/sendmail.fc"
-# endif
 # ifndef _PATH_SENDMAILPID
 #  define _PATH_SENDMAILPID	"/etc/sendmail/sendmail.pid"
 # endif
@@ -271,9 +265,6 @@ typedef int		pid_t;
 # endif
 # ifndef _PATH_SENDMAILCF
 #  define _PATH_SENDMAILCF	"/usr/lib/sendmail.cf"
-# endif
-# ifndef _PATH_SENDMAILFC
-#  define _PATH_SENDMAILFC	"/usr/lib/sendmail.fc"
 # endif
 #endif
 
