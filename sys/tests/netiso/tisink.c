@@ -31,11 +31,11 @@
  * SUCH DAMAGE.
  */
 #ifndef lint
-static char sccsid[] = "@(#)tisink.c	7.4 (Berkeley) 04/25/91";
+static char sccsid[] = "@(#)tisink.c	7.5 (Berkeley) 04/25/91";
 #endif /* not lint */
 
 /*
- * This is a test program to be a sink for TP4 connections.
+ * This is a test program to be a sink for ISO packets.
  */
 #include <sys/param.h>
 #include <sys/uio.h>
@@ -66,7 +66,7 @@ struct  sockaddr_iso *siso = &laddr;
 char **xenvp;
 
 long size, count = 10, forkp, confp, echop, mynamep, verbose = 1, playtag = 0;
-long records, intercept = 0, isode_mode;
+long records, intercept = 0, isode_mode = 0, dgramp = 0;
 
 char buf[2048];
 char your_it[] = "You're it!";
@@ -80,7 +80,7 @@ char *envp[];
 {
 	register char **av = argv;
 	register char *cp;
-	struct iso_addr iso_addr();
+	struct iso_addr *iso_addr();
 
 	xenvp = envp;
 	while(--argc > 0) {
@@ -91,7 +91,7 @@ char *envp[];
 			argc--;
 		} else if (strcmp(*av,"host")==0) {
 			av++;
-			laddr.siso_addr = iso_addr(*av);
+			laddr.siso_addr = *iso_addr(*av);
 			argc--;
 		} else if (strcmp(*av,"count")==0) {
 			av++;
@@ -150,16 +150,22 @@ struct msghdr msghdr = {
 
 tisink()
 {
-	int x, s, pid, on = 1, loop = 0, n;
+	int x, s, pid, on = 1, loop = 0, n, ns;
 	extern int errno;
+	int socktype = (dgramp ? SOCK_DGRAM : SOCK_SEQPACKET);
+	int addrlen = sizeof(faddr);
 
-	try(socket, (AF_ISO, SOCK_SEQPACKET, 0),"");
+	try(socket, (AF_ISO, socktype, 0),"");
 
 	s = x;
 
 	try(bind, (s, (struct sockaddr *) siso, siso->siso_len), "");
 
 	/*try(setsockopt, (s, SOL_SOCKET, SO_DEBUG, &on, sizeof (on)), ""); */
+	if (dgramp) {
+		ns  =  s;
+		goto dgram1;
+	}
 
 	try(listen, (s, 5), "");
 	if (intercept) {
@@ -167,8 +173,7 @@ tisink()
 		(s, SOL_TRANSPORT, TPOPT_INTERCEPT, &on, sizeof(on)), "");
 	}
 	for(;;) {
-		int child, ns;
-		int addrlen = sizeof(faddr);
+		int child;
 		char childname[50];
 
 		try (accept, (s, &faddr, &addrlen), "");
@@ -180,7 +185,7 @@ tisink()
 			dumpit("connected as:", &faddr, addrlen);
 		}
 		loop++;
-		if (loop > 3) myexit(0);
+		if(loop > 3) myexit(0);
 		if (forkp) {
 			try(fork, (), "");
 		} else
@@ -196,7 +201,7 @@ tisink()
 			cbuf.cm.cmhdr.cmsg_level = SOL_TRANSPORT;
 			cbuf.cm.cmhdr.cmsg_type = TPOPT_CFRM_DATA;
 			n = sendmsg(ns, &msghdr, 0);
-			if (n <= 0) {
+			if (n < 0) {
 				printf("confirm: errno is %d\n", errno);
 				fflush(stdout);
 				perror("Confirm error");
@@ -215,16 +220,19 @@ tisink()
 		    } else
 #endif
 		    for (;;) {
+		    dgram1:
 			msghdr.msg_iovlen = 1;
 			msghdr.msg_controllen = sizeof(control);
+			msghdr.msg_namelen = (dgramp ? (sizeof name) : 0);
 			iov->iov_len = sizeof(readbuf);
 			n = recvmsg(ns, &msghdr, 0);
 			flags = msghdr.msg_flags;
 			count++;
 			dbprintf("recvmsg from child %d got %d ctl %d flags %x\n",
-				    getpid(), n, (cn = msghdr.msg_controllen),
-					flags);
+				getpid(), n, (cn = msghdr.msg_controllen), flags);
 			fflush(stdout);
+			if (dgramp && msghdr.msg_namelen && verbose)
+				dumpit("from:\n", name, msghdr.msg_namelen);
 			if (cn && verbose)
 				dumpit("control data:\n", control, cn);
 			if (n < 0) {
