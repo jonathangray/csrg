@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 1992 Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1992, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Ralph Campbell.
@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fp.s	7.6 (Berkeley) 02/05/93
+ *	@(#)fp.s	8.1 (Berkeley) 06/10/93
  */
 
 /*
