@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	6.20 (Berkeley) 02/21/93";
+static char sccsid[] = "@(#)conf.c	6.21 (Berkeley) 02/21/93";
 #endif /* not lint */
 
 # include <sys/ioctl.h>
@@ -142,7 +142,7 @@ struct prival PrivacyValues[] =
 {
 	"public",		PRIV_PUBLIC,
 	"needmailhelo",		PRIV_NEEDMAILHELO,
-	"needexpnnelo",		PRIV_NEEDEXPNHELO,
+	"needexpnhelo",		PRIV_NEEDEXPNHELO,
 	"needvrfyhelo",		PRIV_NEEDVRFYHELO,
 	"noexpn",		PRIV_NOEXPN,
 	"novrfy",		PRIV_NOVRFY,
