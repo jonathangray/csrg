@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pk_subr.c	7.10 (Berkeley) 03/12/91
+ *	@(#)pk_subr.c	7.11 (Berkeley) 04/30/91
  */
 
 #include "param.h"
@@ -805,7 +805,7 @@ register struct x25_packet *xp;
 		break;
 
 	case X25_DIAGNOSTIC:
-		type = DIAGNOSTIC;
+		type = DIAG_TYPE;
 		break;
 
 	default: 
