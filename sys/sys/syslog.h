@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)syslog.h	7.5 (Berkeley) 11/15/86
+ *	@(#)syslog.h	7.6 (Berkeley) 11/24/86
  */
 
 /*
