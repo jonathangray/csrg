@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	7.65 (Berkeley) 03/17/91
+ *	@(#)vfs_syscalls.c	7.66 (Berkeley) 03/31/91
  */
 
 #include "param.h"
@@ -308,6 +308,7 @@ sync(p, uap, retval)
 		} else
 			mp = mp->mnt_next;
 	} while (mp != rootfs);
+	return (0);
 }
 
 /*
@@ -606,7 +607,7 @@ open(p, uap, retval)
 		}
 		if (error == ERESTART)
 			error = EINTR;
-		OFILE(fdp, indx) = NULL;
+		fdp->fd_ofiles[indx] = NULL;
 		return (error);
 	}
 	fp->f_flag = fmode & FMASK;
@@ -924,7 +925,7 @@ lseek(p, uap, retval)
 	int error;
 
 	if ((unsigned)uap->fdes >= fdp->fd_nfiles ||
-	    (fp = OFILE(fdp, uap->fdes)) == NULL)
+	    (fp = fdp->fd_ofiles[uap->fdes]) == NULL)
 		return (EBADF);
 	if (fp->f_type != DTYPE_VNODE)
 		return (ESPIPE);
@@ -1761,7 +1762,7 @@ getvnode(fdp, fdes, fpp)
 	struct file *fp;
 
 	if ((unsigned)fdes >= fdp->fd_nfiles ||
-	    (fp = OFILE(fdp, fdes)) == NULL)
+	    (fp = fdp->fd_ofiles[fdes]) == NULL)
 		return (EBADF);
 	if (fp->f_type != DTYPE_VNODE)
 		return (EINVAL);
