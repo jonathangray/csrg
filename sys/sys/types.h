@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)types.h	7.26 (Berkeley) 04/30/93
+ *	@(#)types.h	7.27 (Berkeley) 05/02/93
  */
 
 #ifndef _TYPES_H_
@@ -65,6 +65,18 @@ typedef	short		pid_t;		/* process id */
 typedef	long		segsz_t;	/* segment size */
 typedef	long		swblk_t;	/* swap offset */
 typedef	unsigned long	uid_t;		/* user id */
+
+/*
+ * This belongs in unistd.h, but is placed here to ensure that programs
+ * casting the second parameter of lseek to off_t will get the correct
+ * version of lseek.
+ */
+#ifndef KERNEL
+#define	 lseek __lseek
+__BEGIN_DECLS
+off_t	 lseek __P((int, off_t, int));
+__END_DECLS
+#endif
 
 #ifndef _POSIX_SOURCE
 #define	major(x)	((int)(((u_int)(x) >> 8)&0xff))	/* major number */
