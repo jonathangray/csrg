@@ -34,12 +34,12 @@
  * SUCH DAMAGE.
  */
 
-#ifndef lint
-static char sccsid[] = "@(#)parse.c	5.1 (Berkeley) 06/22/92";
-#endif /* not lint */
+#if !defined(lint) && !defined(SCCSID)
+static char sccsid[] = "@(#)parse.c	5.2 (Berkeley) 07/03/92";
+#endif /* not lint && not SCCSID */
 
 /*
- * el.parse.c: parse an editline extended command
+ * parse.c: parse an editline extended command
  *
  * commands are:
  *
@@ -102,7 +102,7 @@ el_parse(el, argc, argv)
 
     if (*ptr == ':') {
 	*ptr = '\0';
-	if (strcmp(ptr, el->el_prog) != 0)
+	if (el_match(el->el_prog, ptr))
 	    return 0;
     }
     else
@@ -190,7 +190,7 @@ parse__escape(ptr)
 	    break;
 	}
     }
-    else if (*p == '^') {
+    else if (*p == '^' && isalpha((unsigned char) *p)) {
 	p++;
 	c = (*p == '?') ? '\177' : (*p & 0237);
     }
