@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fdesc_vfsops.c	8.5 (Berkeley) 02/22/95
+ *	@(#)fdesc_vfsops.c	8.5 (Berkeley) 02/23/95
  *
  * $Id: fdesc_vfsops.c,v 1.9 1993/04/06 15:28:33 jsp Exp $
  */
@@ -142,7 +142,7 @@ fdesc_unmount(mp, mntflags, p)
 	/*
 	 * And blow it away for future re-use
 	 */
-	vgone(rootvp);
+	VOP_REVOKE(rootvp, 0);
 	/*
 	 * Finally, throw away the fdescmount structure
 	 */
