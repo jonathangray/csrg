@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sysctl.c	7.23 (Berkeley) 07/07/92
+ *	@(#)kern_sysctl.c	7.24 (Berkeley) 07/10/92
  */
 
 #include "param.h"
@@ -50,15 +50,16 @@ extern int kinfo_doproc(), kinfo_rtable(), kinfo_vnode(), kinfo_file();
 extern int kinfo_meter(), kinfo_loadavg(), kinfo_clockrate();
 struct kinfo_lock kinfo_lock;
 
+struct getkerninfo_args {
+	int	op;
+	char	*where;
+	int	*size;
+	int	arg;
+};
 /* ARGSUSED */
 getkerninfo(p, uap, retval)
 	struct proc *p;
-	register struct args {
-		int	op;
-		char	*where;
-		int	*size;
-		int	arg;
-	} *uap;
+	register struct getkerninfo_args *uap;
 	int *retval;
 {
 	int bufsize;		/* max size of users buffer */
