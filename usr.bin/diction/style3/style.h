@@ -1,4 +1,11 @@
-/*	style.h	4.3	83/08/11	*/
+/*-
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ *
+ *	@(#)style.h	4.4 (Berkeley) 04/17/91
+ */
+
 extern int part;
 extern int style;
 extern int topic;
