@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: hil.c 1.33 89/12/22$
  *
- *	@(#)hil.c	7.9 (Berkeley) 06/28/91
+ *	@(#)hil.c	7.10 (Berkeley) 02/15/92
  */
 
 #include "sys/param.h"
@@ -189,10 +189,10 @@ hilopen(dev, flags, mode, p)
 }
 
 /* ARGSUSED */
-hilclose(dev, flags)
+hilclose(dev, flags, mode, p)
 	dev_t dev;
+	struct proc *p;
 {
-	struct proc *p = curproc;		/* XXX */
   	register struct hilloop *hilp = &hil0;	/* XXX */
 	register struct hilloopdev *dptr;
 	register int i;
@@ -208,7 +208,7 @@ hilclose(dev, flags)
 	if (device && (dptr->hd_flags & HIL_PSEUDO))
 		return (0);
 
-	if ((p->p_flag & SHPUX) == 0) {
+	if (p && (p->p_flag & SHPUX) == 0) {
 		/*
 		 * If this is the loop device,
 		 * free up all queues belonging to this process.
