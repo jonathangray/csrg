@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fs.h	7.10 (Berkeley) 06/28/90
+ *	@(#)fs.h	7.11 (Berkeley) 10/24/90
  */
 
 /*
@@ -445,7 +445,3 @@ struct	ocg {
  * NINDIR is the number of indirects in a file system block.
  */
 #define	NINDIR(fs)	((fs)->fs_nindir)
-
-#ifdef KERNEL
-struct	fs *getfs();
-#endif
