@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)umap_vfsops.c	1.2 (Berkeley) 07/11/92
+ *	@(#)umap_vfsops.c	7.1 (Berkeley) 07/12/92
  *
  * @(#)null_vfsops.c       1.5 (Berkeley) 7/10/92
  */
@@ -242,7 +242,7 @@ umapfs_unmount(mp, mntflags, p)
 	 * ever get anything cached at this level at the
 	 * moment, but who knows...
 	 */
-#if 0
+#ifdef notyet
 	mntflushbuf(mp, 0); 
 	if (mntinvalbuf(mp, 1))
 		return (EBUSY);
