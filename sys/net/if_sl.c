@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_sl.c	7.30 (Berkeley) 10/11/92
+ *	@(#)if_sl.c	7.31 (Berkeley) 02/25/93
  */
 
 /*
@@ -182,12 +182,8 @@ slattach()
 		sc->sc_if.if_next = NULL;
 		sc->sc_if.if_unit = i++;
 		sc->sc_if.if_mtu = SLMTU;
-#ifdef MULTICAST
 		sc->sc_if.if_flags =
 		    IFF_POINTOPOINT | SC_AUTOCOMP | IFF_MULTICAST;
-#else
-		sc->sc_if.if_flags = IFF_POINTOPOINT | SC_AUTOCOMP;
-#endif
 		sc->sc_if.if_type = IFT_SLIP;
 		sc->sc_if.if_ioctl = slioctl;
 		sc->sc_if.if_output = sloutput;
@@ -693,9 +689,7 @@ slioctl(ifp, cmd, data)
 	caddr_t data;
 {
 	register struct ifaddr *ifa = (struct ifaddr *)data;
-#ifdef MULTICAST
 	register struct ifreq *ifr;
-#endif
 	register int s = splimp(), error = 0;
 
 	switch (cmd) {
@@ -712,7 +706,6 @@ slioctl(ifp, cmd, data)
 			error = EAFNOSUPPORT;
 		break;
 
-#ifdef MULTICAST
 	case SIOCADDMULTI:
 	case SIOCDELMULTI:
 		ifr = (struct ifreq *)data;
@@ -740,4 +733,3 @@ slioctl(ifp, cmd, data)
 	splx(s);
 	return (error);
 }
-#endif
