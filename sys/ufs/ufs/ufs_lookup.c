@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lookup.c	7.24 (Berkeley) 01/10/91
+ *	@(#)ufs_lookup.c	7.25 (Berkeley) 02/21/91
  */
 
 #include "param.h"
@@ -110,7 +110,7 @@ ufs_lookup(vdp, ndp)
 	dp = VTOI(vdp);
 	fs = dp->i_fs;
 	lockparent = ndp->ni_nameiop & LOCKPARENT;
-	flag = ndp->ni_nameiop & OPFLAG;
+	flag = ndp->ni_nameiop & OPMASK;
 	wantparent = ndp->ni_nameiop & (LOCKPARENT|WANTPARENT);
 
 	/*
