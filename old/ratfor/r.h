@@ -4,7 +4,7 @@ Original BTL Ratfor System for 4.2
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)r.h	1.3 (Berkeley) 04/16/91
+ *	@(#)r.h	8.1 (Berkeley) 06/06/93
  */
 
 #include <stdio.h>
