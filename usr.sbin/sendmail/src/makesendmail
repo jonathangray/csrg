@@ -32,7 +32,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#       @(#)makesendmail	8.10 (Berkeley) 12/11/94
+#       @(#)makesendmail	8.11 (Berkeley) 12/14/94
 #
 
 #
@@ -69,7 +69,7 @@ then
 	in
 	  5.3*)		os=Altos;;
 	esac
-esac
+fi
 
 if [ -r /unix -a -r /usr/lib/libseq.a -a -r /lib/cpp ]
 then
