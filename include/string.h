@@ -30,12 +30,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)string.h	5.9 (Berkeley) 02/24/91
+ *	@(#)string.h	5.10 (Berkeley) 03/09/91
  */
 
 #ifndef _STRING_H_
 #define	_STRING_H_
-#include <machine/types.h>
+#include <machine/ansi.h>
 
 #ifdef	_SIZE_T_
 typedef	_SIZE_T_	size_t;
