@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	6.9 (Berkeley) 01/20/93";
+static char sccsid[] = "@(#)parseaddr.c	6.10 (Berkeley) 01/26/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1747,6 +1747,8 @@ printaddr(a, follow)
 	bool follow;
 {
 	bool first = TRUE;
+	register MAILER *m;
+	MAILER pseudomailer;
 
 	static int indent;
 	register int i;
@@ -1758,6 +1760,16 @@ printaddr(a, follow)
 			printf("\t");
 		printf("%x=", a);
 		(void) fflush(stdout);
+
+		/* find the mailer -- carefully */
+		m = a->q_mailer;
+		if (m == NULL)
+		{
+			m = &pseudomailer;
+			m->m_mno = -1;
+			m->m_name = "NULL";
+		}
+
 		for (i = indent; i > 0; i--)
 			printf("\t");
 		printf("\tnext=%x, flags=%o, rmailer %d, alias=%x, sibling=%x, child=%x\n",
@@ -2018,6 +2030,11 @@ maplocaluser(a, sendq, e)
 
 	/* mark old address as dead; insert new address */
 	a->q_flags |= QDONTSEND;
+	if (tTd(29, 5))
+	{
+		printf("maplocaluser: QDONTSEND ");
+		printaddr(a, FALSE);
+	}
 	a1->q_alias = a;
 	allocaddr(a1, 1, NULL);
 	(void) recipient(a1, sendq, e);
