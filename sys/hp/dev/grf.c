@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: grf.c 1.36 93/08/13$
  *
- *	@(#)grf.c	8.2 (Berkeley) 09/09/93
+ *	@(#)grf.c	8.3 (Berkeley) 01/12/94
  */
 
 /*
@@ -93,6 +93,7 @@ int grfdebug = 0;
 /*ARGSUSED*/
 grfopen(dev, flags)
 	dev_t dev;
+	int flags;
 {
 	int unit = GRFUNIT(dev);
 	register struct grf_softc *gp = &grf_softc[unit];
@@ -132,6 +133,7 @@ grfopen(dev, flags)
 /*ARGSUSED*/
 grfclose(dev, flags)
 	dev_t dev;
+	int flags;
 {
 	register struct grf_softc *gp = &grf_softc[GRFUNIT(dev)];
 
@@ -146,6 +148,7 @@ grfclose(dev, flags)
 /*ARGSUSED*/
 grfioctl(dev, cmd, data, flag, p)
 	dev_t dev;
+	int cmd, flag;
 	caddr_t data;
 	struct proc *p;
 {
@@ -190,6 +193,7 @@ grfioctl(dev, cmd, data, flag, p)
 /*ARGSUSED*/
 grfselect(dev, rw)
 	dev_t dev;
+	int rw;
 {
 	if (rw == FREAD)
 		return(0);
@@ -199,6 +203,7 @@ grfselect(dev, rw)
 /*ARGSUSED*/
 grfmap(dev, off, prot)
 	dev_t dev;
+	int off, prot;
 {
 	return(grfaddr(&grf_softc[GRFUNIT(dev)], off));
 }
@@ -263,6 +268,7 @@ grfaddr(gp, off)
 /*ARGSUSED*/
 hpuxgrfioctl(dev, cmd, data, flag, p)
 	dev_t dev;
+	int cmd, flag;
 	caddr_t data;
 	struct proc *p;
 {
