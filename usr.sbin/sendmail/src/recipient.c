@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recipient.c	6.32.1.1 (Berkeley) 03/30/93";
+static char sccsid[] = "@(#)recipient.c	6.33 (Berkeley) 03/30/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -730,6 +730,7 @@ include(fname, forwarding, ctladdr, sendq, e)
 	{
 		/* don't do any more now */
 		ctladdr->q_flags |= QVERIFIED;
+		e->e_nrcpts++;
 		xfclose(fp, "include", fname);
 		return 0;
 	}
