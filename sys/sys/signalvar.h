@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)signalvar.h	8.4 (Berkeley) 05/03/94
+ *	@(#)signalvar.h	8.5 (Berkeley) 01/09/95
  */
 
 #ifndef	_SYS_SIGNALVAR_H_		/* tmp for user.h */
@@ -54,8 +54,8 @@ struct	sigacts {
 	int	ps_flags;		/* signal flags, below */
 	struct	sigaltstack ps_sigstk;	/* sp & on stack state variable */
 	int	ps_sig;			/* for core dump/debugger XXX */
-	int	ps_code;		/* for core dump/debugger XXX */
-	int	ps_addr;		/* for core dump/debugger XXX */
+	long	ps_code;		/* for core dump/debugger XXX */
+	long	ps_addr;		/* for core dump/debugger XXX */
 	sigset_t ps_usertramp;		/* SunOS compat; libc sigtramp XXX */
 };
 
@@ -157,11 +157,11 @@ void	pgsignal __P((struct pgrp *pgrp, int sig, int checkctty));
 void	postsig __P((int sig));
 void	psignal __P((struct proc *p, int sig));
 void	siginit __P((struct proc *p));
-void	trapsignal __P((struct proc *p, int sig, unsigned code));
+void	trapsignal __P((struct proc *p, int sig, u_long code));
 
 /*
  * Machine-dependent functions:
  */
-void	sendsig __P((sig_t action, int sig, int returnmask, unsigned code));
+void	sendsig __P((sig_t action, int sig, int returnmask, u_long code));
 #endif	/* KERNEL */
 #endif	/* !_SYS_SIGNALVAR_H_ */
