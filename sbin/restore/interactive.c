@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)interactive.c	5.13 (Berkeley) 08/09/92";
+static char sccsid[] = "@(#)interactive.c	5.14 (Berkeley) 10/05/92";
 #endif /* not lint */
 
 #include "restore.h"
@@ -541,7 +541,7 @@ expand(as, rflg, ap)
 		} while (*rs++);
 		sindex = ap->last - ap->head;
 		while ((dp = rst_readdir(dirp)) != NULL && dp->d_ino != 0) {
-			if (!dflag && BIT(dp->d_ino, dumpmap) == 0)
+			if (!dflag && TSTINO(dp->d_ino, dumpmap) == 0)
 				continue;
 			if ((*dp->d_name == '.' && *cs != '.'))
 				continue;
@@ -691,7 +691,7 @@ printlist(name, ino, basename)
 		while (dp = rst_readdir(dirp)) {
 			if (dp == NULL || dp->d_ino == 0)
 				break;
-			if (!dflag && BIT(dp->d_ino, dumpmap) == 0)
+			if (!dflag && TSTINO(dp->d_ino, dumpmap) == 0)
 				continue;
 			if (vflag == 0 &&
 			    (strcmp(dp->d_name, ".") == 0 ||
@@ -835,7 +835,7 @@ fmtentry(fp)
 		(void) sprintf(fmtres, "%*d ", precision, fp->fnum);
 	}
 	dp = &fmtres[strlen(fmtres)];
-	if (dflag && BIT(fp->fnum, dumpmap) == 0)
+	if (dflag && TSTINO(fp->fnum, dumpmap) == 0)
 		*dp++ = '^';
 	else if ((fp->fflags & NEW) != 0)
 		*dp++ = '*';
