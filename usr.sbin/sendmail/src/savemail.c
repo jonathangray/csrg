@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)savemail.c	8.23 (Berkeley) 12/13/93";
+static char sccsid[] = "@(#)savemail.c	8.24 (Berkeley) 12/18/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -68,6 +68,10 @@ static char sccsid[] = "@(#)savemail.c	8.23 (Berkeley) 12/13/93";
 # define ESM_USRTMP	5	/* save in /usr/tmp/dead.letter */
 # define ESM_PANIC	6	/* leave the locked queue/transcript files */
 # define ESM_DONE	7	/* the message is successfully delivered */
+
+# ifndef _PATH_VARTMP
+#  define _PATH_VARTMP	"/usr/tmp/"
+# endif
 
 
 savemail(e)
@@ -374,7 +378,8 @@ savemail(e)
 				break;
 			}
 
-			strcpy(buf, "/usr/tmp/dead.letter");
+			strcpy(buf, _PATH_VARTMP);
+			strcat(buf, "dead.letter");
 			if (!writable(buf, NULLADDR, SFF_NOSLINK))
 			{
 				state = ESM_PANIC;
