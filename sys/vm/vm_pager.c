@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_pager.c	8.4 (Berkeley) 12/30/93
+ *	@(#)vm_pager.c	8.5 (Berkeley) 01/04/94
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -149,7 +149,6 @@ vm_pager_allocate(type, handle, size, prot, off)
 	vm_prot_t prot;
 	vm_offset_t off;
 {
-	vm_pager_t pager;
 	struct pagerops *ops;
 
 	ops = (type == PG_DFLT) ? dfltpagerops : pagertab[type];
