@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ns.c	7.11 (Berkeley) 02/21/92
+ *	@(#)ns.c	7.12 (Berkeley) 05/08/92
  */
 
 #include "param.h"
@@ -331,7 +331,7 @@ ns_ifinit(ifp, ia, sns, scrub)
 	if (ifp->if_flags & IFF_POINTOPOINT)
 		rtinit(&(ia->ia_ifa), (int)RTM_ADD, RTF_HOST|RTF_UP);
 	else {
-		ia->ia_broadaddr.sns_addr.x_net = ia->ia_net;
+		ia->ia_broadaddr.sns_addr.x_net = ia->ia_addr.sns_addr.x_net;
 		rtinit(&(ia->ia_ifa), (int)RTM_ADD, RTF_UP);
 	}
 	ia->ia_flags |= IFA_ROUTE;
@@ -357,10 +357,10 @@ ns_iaonnetof(dst)
 				compare = &satons_addr(ia->ia_dstaddr);
 				if (ns_hosteq(*dst, *compare))
 					return (ia);
-				if (ns_neteqnn(net, ia->ia_net))
+				if (ns_neteqnn(net, ia->ia_addr.sns_addr.x_net))
 					ia_maybe = ia;
 			} else {
-				if (ns_neteqnn(net, ia->ia_net))
+				if (ns_neteqnn(net, ia->ia_addr.sns_addr.x_net))
 					return (ia);
 			}
 		}
