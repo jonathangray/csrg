@@ -1,6 +1,6 @@
 /* Copyright (c) 1979 Regents of the University of California */
 
-static char sccsid[] = "@(#)IOSYNC.c 1.2 01/24/81";
+static char sccsid[] = "@(#)IOSYNC.c 1.3 01/24/81";
 
 #include "h00vars.h"
 #include "h01errs.h"
