@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)hash.c	8.3 (Berkeley) 09/07/93";
+static char sccsid[] = "@(#)hash.c	8.4 (Berkeley) 10/12/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -153,7 +153,9 @@ __hash_open(file, flags, mode, info, dflags)
 		/* Verify file type, versions and hash function */
 		if (hashp->MAGIC != HASHMAGIC)
 			RETURN_ERROR(EFTYPE, error1);
-		if (hashp->VERSION != HASHVERSION)
+#define	OLDHASHVERSION	1
+		if (hashp->VERSION != HASHVERSION &&
+		    hashp->VERSION != OLDHASHVERSION)
 			RETURN_ERROR(EFTYPE, error1);
 		if (hashp->hash(CHARKEY, sizeof(CHARKEY)) != hashp->H_CHARKEY)
 			RETURN_ERROR(EFTYPE, error1);
