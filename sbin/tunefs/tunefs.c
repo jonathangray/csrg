@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)tunefs.c	5.15 (Berkeley) 09/07/92";
+static char sccsid[] = "@(#)tunefs.c	5.16 (Berkeley) 02/15/93";
 #endif /* not lint */
 
 /*
@@ -49,6 +49,7 @@ static char sccsid[] = "@(#)tunefs.c	5.15 (Berkeley) 09/07/92";
 
 #include <ufs/ffs/fs.h>
 
+#include <unistd.h>
 #include <errno.h>
 #include <fstab.h>
 #include <stdio.h>
@@ -249,7 +250,7 @@ bwrite(blk, buf, size)
 	daddr_t blk;
 	register size;
 {
-	if (lseek(fi, blk * dev_bsize, 0) < 0) {
+	if (lseek(fi, (off_t)blk * dev_bsize, SEEK_SET) < 0) {
 		perror("FS SEEK");
 		exit(6);
 	}
@@ -265,7 +266,7 @@ bread(bno, buf, cnt)
 {
 	register i;
 
-	if (lseek(fi, bno * dev_bsize, 0) < 0)
+	if (lseek(fi, (off_t)bno * dev_bsize, SEEK_SET) < 0)
 		return(1);
 	if ((i = read(fi, buf, cnt)) != cnt) {
 		for(i=0; i<sblock.fs_bsize; i++)
