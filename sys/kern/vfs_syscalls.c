@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	8.12 (Berkeley) 03/28/94
+ *	@(#)vfs_syscalls.c	8.13 (Berkeley) 04/15/94
  */
 
 #include <sys/param.h>
@@ -1761,7 +1761,8 @@ out:
 	FREE(tond.ni_cnd.cn_pnbuf, M_NAMEI);
 out1:
 	p->p_spare[1]--;
-	vrele(fromnd.ni_startdir);
+	if (fromnd.ni_startdir)
+		vrele(fromnd.ni_startdir);
 	FREE(fromnd.ni_cnd.cn_pnbuf, M_NAMEI);
 	CHECKREFS("rename");
 	if (error == -1)
