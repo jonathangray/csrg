@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lofs_subr.c	1.2 (Berkeley) 6/18/92
+ *	@(#)umap_subr.c	7.1 (Berkeley) 07/12/92
  *
  * $Id: lofs_subr.c,v 1.11 1992/05/30 10:05:43 jsp Exp jsp $
  */
@@ -47,7 +47,7 @@
 #include <sys/mount.h>
 #include <sys/namei.h>
 #include <sys/malloc.h>
-#include <umapfs/umap.h>
+#include <miscfs/umapfs/umap.h>
 
 #define LOG2_SIZEVNODE 7		/* log2(sizeof struct vnode) */
 #define	NUMAPNODECACHE 16
@@ -92,6 +92,7 @@ static struct umap_node_cache *
 umap_node_hash(targetvp)
 struct vnode *targetvp;
 {
+
 	return (&umap_node_cache[UMAP_NHASH(targetvp)]);
 }
 
@@ -121,7 +122,8 @@ umap_node_find(mp, targetvp)
 
  loop:
 	for (a = hd->ac_forw; a != (struct umap_node *) hd; a = a->umap_forw) {
-		if (a->umap_lowervp == targetvp && a->umap_vnode->v_mount == mp) {
+		if (a->umap_lowervp == targetvp &&
+		    a->umap_vnode->v_mount == mp) {
 			vp = UMAPTOV(a);
 			/*
 			 * We need vget for the VXLOCK
@@ -131,7 +133,7 @@ umap_node_find(mp, targetvp)
 			if (vget_nolock(vp)) {
 				printf ("null_node_find: vget failed.\n");
 				goto loop;
-			};
+			}
 			return (vp);
 		}
 	}
@@ -163,7 +165,8 @@ umap_node_alloc(mp, lowervp, vpp)
 		return (error);	/* XXX: VT_UMAP above */
 	vp = *vpp;
 
-	MALLOC(xp, struct umap_node *, sizeof(struct umap_node), M_TEMP, M_WAITOK);
+	MALLOC(xp, struct umap_node *, sizeof(struct umap_node),
+	    M_TEMP, M_WAITOK);
 	vp->v_type = lowervp->v_type;
 	xp->umap_vnode = vp;
 	vp->v_data = xp;
@@ -178,12 +181,12 @@ umap_node_alloc(mp, lowervp, vpp)
 		vp->v_type = VBAD;	/* node is discarded */
 		vp->v_usecount = 0;	/* XXX */
 		*vpp = othervp;
-		return 0;
-	};
+		return (0);
+	}
 	VREF(lowervp);   /* Extra VREF will be vrele'd in umap_node_create */
 	hd = umap_node_hash(lowervp);
 	insque(xp, hd);
-	return 0;
+	return (0);
 }
 
 
@@ -221,7 +224,7 @@ umap_node_create(mp, targetvp, newvpp)
 		 * Make new vnode reference the umap_node.
 		 */
 		if (error = umap_node_alloc(mp, targetvp, &aliasvp))
-			return error;
+			return (error);
 
 		/*
 		 * aliasvp is already VREF'd by getnewvnode()
@@ -238,6 +241,7 @@ umap_node_create(mp, targetvp, newvpp)
 	*newvpp = aliasvp;
 	return (0);
 }
+
 #ifdef UMAPFS_DIAGNOSTIC
 int umap_checkvp_barrier = 1;
 struct vnode *
@@ -256,7 +260,7 @@ umap_checkvp(vp, fil, lno)
 		printf ("umap_checkvp: on non-umap-node\n");
 		while (umap_checkvp_barrier) /*WAIT*/ ;
 		panic("umap_checkvp");
-	};
+	}
 #endif
 	if (a->umap_lowervp == NULL) {
 		/* Should never happen */
@@ -278,14 +282,14 @@ umap_checkvp(vp, fil, lno)
 		/* wait for debugger */
 		while (umap_checkvp_barrier) /*WAIT*/ ;
 		panic ("umap with unref'ed lowervp");
-	};
+	}
 #if 0
 	printf("umap %x/%d -> %x/%d [%s, %d]\n",
 	        a->umap_vnode, a->umap_vnode->v_usecount,
 		a->umap_lowervp, a->umap_lowervp->v_usecount,
 		fil, lno);
 #endif
-	return a->umap_lowervp;
+	return (a->umap_lowervp);
 }
 #endif
 
@@ -384,4 +388,3 @@ umap_reverse_findid(id,map,nentries)
 		return (-1);
 
 }
-
