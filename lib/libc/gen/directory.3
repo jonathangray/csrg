@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)directory.3	6.8 (Berkeley) 01/16/93
+.\"     @(#)directory.3	6.9 (Berkeley) 05/15/93
 .\"
 .Dd 
 .Dt DIRECTORY 3
@@ -48,7 +48,7 @@
 .Fd #include <dirent.h>
 .Ft DIR *
 .Fn opendir "const char *filename"
-.Ft struct direct
+.Ft struct dirent *
 .Fn readdir "DIR *dirp"
 .Ft long
 .Fn telldir "const DIR *dirp"
