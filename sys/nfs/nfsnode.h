@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsnode.h	8.6 (Berkeley) 08/18/94
+ *	@(#)nfsnode.h	8.7 (Berkeley) 02/23/95
  */
 
 /*
@@ -131,6 +131,7 @@ int	nfsfifo_write __P((struct vop_write_args *));
 #endif
 #define nfs_ioctl ((int (*) __P((struct  vop_ioctl_args *)))enoioctl)
 #define nfs_select ((int (*) __P((struct  vop_select_args *)))seltrue)
+#define	nfs_revoke vop_revoke
 int	nfs_mmap __P((struct vop_mmap_args *));
 int	nfs_fsync __P((struct vop_fsync_args *));
 #define nfs_seek ((int (*) __P((struct  vop_seek_args *)))nullop)
