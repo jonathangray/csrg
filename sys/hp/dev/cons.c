@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: cons.c 1.7 92/01/21$
  *
- *	@(#)cons.c	8.2 (Berkeley) 01/12/94
+ *	@(#)cons.c	8.3 (Berkeley) 01/09/95
  */
 
 #include <sys/param.h>
@@ -127,8 +127,9 @@ cnwrite(dev, uio, flag)
  
 cnioctl(dev, cmd, data, flag, p)
 	dev_t dev;
-	int cmd, flag;
+	u_long cmd;
 	caddr_t data;
+	int flag;
 	struct proc *p;
 {
 	int error;
