@@ -1,5 +1,5 @@
-/*-
- * Copyright (c) 1990-1991 The Regents of the University of California.
+/*
+ * Copyright (c) 1990, 1991 Regents of the University of California.
  * All rights reserved.
  *
  * This code is derived from the Stanford/CMU enet packet filter,
@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)bpf.c	7.5 (Berkeley) 7/15/91
+ *      @(#)bpf.c	7.7 (Berkeley) 10/29/91
  *
  * static char rcsid[] =
  * "$Header: bpf.c,v 1.33 91/10/27 21:21:58 mccanne Exp $";
