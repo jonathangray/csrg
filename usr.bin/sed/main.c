@@ -42,7 +42,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.2 (Berkeley) 08/24/92";
+static char sccsid[] = "@(#)main.c	5.3 (Berkeley) 08/24/92";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -89,7 +89,6 @@ struct s_flist {
  */
 static struct s_flist *files, **fl_nextp = &files;
 
-int compile_errors;		/* Compile error count. */
 int aflag, eflag, nflag;
 
 /*
@@ -143,8 +142,6 @@ main(argc, argv)
 	}
 
 	compile();
-	if (compile_errors)
-		exit(1);
 
 	/* Continue with first and start second usage */
 	if (*argv)
