@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	8.1 (Berkeley) 06/02/93
+ *	@(#)extern.h	8.2 (Berkeley) 04/02/94
  */
 
 struct kinfo;
@@ -38,6 +38,9 @@ struct nlist;
 struct var;
 struct varent;
 
+extern fixpt_t ccpu;
+extern int eval, fscale, mempages, nlistread, rawcpu;
+extern int sumrusage, termwidth, totwidth;
 extern VAR var[];
 extern VARENT *vhead;
 
