@@ -6,6 +6,11 @@
  * at Lawrence Berkeley Laboratory under DARPA contract BG 91-66 and
  * contributed to Berkeley.
  *
+ * All advertising materials mentioning features or use of this software
+ * must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Lawrence Berkeley Laboratories.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -34,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sun_misc.c	7.2 (Berkeley) 07/13/92
+ *	@(#)sun_misc.c	7.3 (Berkeley) 07/21/92
  *
  * from: $Header: sun_misc.c,v 1.12 92/07/12 13:26:10 torek Exp $
  */
