@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	6.1 (Berkeley) 12/21/92
+ *	@(#)sendmail.h	6.2 (Berkeley) 12/30/92
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	6.1		12/21/92";
+static char SmailSccsId[] =	"@(#)sendmail.h	6.2		12/30/92";
 # endif lint
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -241,6 +241,8 @@ extern struct hdrinfo	HdrInfo[];
 # define H_TRACE	00200	/* this field contains trace information */
 # define H_FROM		00400	/* this is a from-type field */
 # define H_VALID	01000	/* this field has a validated value */
+# define H_RECEIPTTO	02000	/* this field has return receipt info */
+# define H_ERRORSTO	04000	/* this field has error address info */
 /*
 **  Envelope structure.
 **	This structure defines the message itself.  There is usually
