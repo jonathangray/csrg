@@ -1,4 +1,4 @@
-#	@(#)Makefile	8.1 (Berkeley) 05/31/93
+#	@(#)Makefile	5.6 (Berkeley) 07/19/93
 
 PROG=	rcp
 SRCS=	rcp.c
@@ -8,6 +8,7 @@ SRCS=	rcp.c
 #LDADD=	-lkrb -ldes
 BINOWN=	root
 BINMODE=4555
+INSTALLFLAGS=-fschg
 .PATH:	${.CURDIR}/../../usr.bin/rlogin
 
 .include <bsd.prog.mk>
