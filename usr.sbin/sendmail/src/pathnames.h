@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	5.1 (Berkeley) 04/19/90
+ *	@(#)pathnames.h	6.1 (Berkeley) 12/21/92
  */
 
 #define	_PATH_SENDMAILCF	"/etc/sendmail.cf";
