@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsmount.h	7.10 (Berkeley) 06/25/92
+ *	@(#)nfsmount.h	7.11 (Berkeley) 07/06/92
  */
 
 /*
@@ -117,7 +117,10 @@ int	nfs_sync __P((
 int	nfs_fhtovp __P((
 		struct mount *mp,
 		struct fid *fhp,
-		struct vnode **vpp));
+		struct mbuf *nam,
+		struct vnode **vpp,
+		int *exflagsp,
+		struct ucred **credanonp));
 int	nfs_vptofh __P((
 		struct vnode *vp,
 		struct fid *fhp));
