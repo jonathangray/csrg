@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)curses.h	5.24 (Berkeley) 01/11/93
+ *	@(#)curses.h	5.25 (Berkeley) 01/24/93
  */
 
 #ifndef _CURSES_H_
@@ -59,12 +59,12 @@
 #define	_putchar(c)	__cputchar(c)
 
 /* Old-style terminal modes access. */
-#define	baudrate()	(cfgetospeed(&origtermio))
+#define	baudrate()	(cfgetospeed(&__orig_termios))
 #define	crmode()	cbreak()
-#define	erasechar()	(origtermio.c_cc[VERASE])
-#define	killchar()	(origtermio.c_cc[VKILL])
+#define	erasechar()	(__orig_termios.c_cc[VERASE])
+#define	killchar()	(__orig_termios.c_cc[VKILL])
 #define	nocrmode()	nocbreak()
-#define	ospeed		(cfgetospeed(&origtermio))
+#define	ospeed		(cfgetospeed(&__orig_termios))
 #endif /* _CURSES_PRIVATE */
 
 extern char	 GT;			/* Gtty indicates tabs. */
@@ -152,7 +152,7 @@ typedef struct __window {		/* Window structure. */
 extern WINDOW	*curscr;		/* Current screen. */
 extern WINDOW	*stdscr;		/* Standard screen. */
 
-extern struct termios origtermio;	/* Original terminal modes. */
+extern struct termios __orig_termios;	/* Original terminal modes. */
 
 extern int	 COLS;			/* Columns on the screen. */
 extern int	 LINES;			/* Lines on the screen. */
@@ -261,7 +261,6 @@ int	 suspendwin __P((void));
 int	 touchline __P((WINDOW *, int, int, int));
 int	 touchoverlap __P((WINDOW *, WINDOW *));
 int	 touchwin __P((WINDOW *));
-void	 tstp __P((int));
 int 	 vwprintw __P((WINDOW *, const char *, _BSD_VA_LIST_));
 int      vwscanw __P((WINDOW *, const char *, _BSD_VA_LIST_));
 int	 waddbytes __P((WINDOW *, char *, int));
@@ -287,10 +286,12 @@ int	 vwprintw __P((WINDOW *, const char *, _BSD_VA_LIST_));
 
 #ifdef _CURSES_PRIVATE
 /* Private function prototypes. */
-void	 __cputchar __P((int));
 void	 __TRACE __P((const char *, ...));
+void	 __cputchar __P((int));
 void	 __id_subwins __P((WINDOW *));
 void	 __set_subwin __P((WINDOW *, WINDOW *));
+void	 __startwin __P((void));
+void	 __stop_signal_handler __P((int));
 void	 __swflags __P((WINDOW *));
 int	 __touchline __P((WINDOW *, int, int, int, int));
 int	 __touchwin __P((WINDOW *));
