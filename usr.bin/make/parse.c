@@ -37,7 +37,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parse.c	8.3 (Berkeley) 03/19/94";
+static char sccsid[] = "@(#)parse.c	8.4 (Berkeley) 05/23/94";
 #endif /* not lint */
 
 /*-
@@ -2181,7 +2181,7 @@ test_char:
 		break;
 	    case '#':
 		if (!ignComment) {
-		    if (compatMake || (lastc != '\\')) {
+		    if (compatMake && (lastc != '\\')) {
 			/*
 			 * If the character is a hash mark and it isn't escaped
 			 * (or we're being compatible), the thing is a comment.
