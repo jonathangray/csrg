@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kn01.h	7.1 (Berkeley) 11/15/92
+ *	@(#)kn01.h	7.2 (Berkeley) 05/09/93
  */
 
 /* 
@@ -195,4 +195,4 @@
 #define KN01_ERR_ADDRESS	0x07ffffff	/* phys address mask ? */
 
 
-#endif	MIPS_KN01_H
+#endif	/* MIPS_KN01_H */
