@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1980 The Regents of the University of California.
+ * Copyright (c) 1980 Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)termcap.c	5.7 (Berkeley) 8/6/92";
+static char sccsid[] = "@(#)termcap.c	5.9 (Berkeley) 09/14/92";
 #endif /* not lint */
 
 #define	PBUFSIZ		512	/* max length of filename path */
