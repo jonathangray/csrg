@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sd.c	7.1 (Berkeley) 06/15/92
+ *	@(#)sd.c	7.2 (Berkeley) 07/13/92
  */
 
 /*
@@ -456,7 +456,7 @@ sdintr(unit, stat)
 	}
 
 	if (bp->b_flags & B_READ) {
-		sd_iostat[unit].imin = MIN(dq->dq_imin, sd_iostat[unit].imin);
+		sd_iostat[unit].imin = min(dq->dq_imin, sd_iostat[unit].imin);
 		if (dq->dq_imax > sd_iostat[unit].imax) {
 			sd_iostat[unit].imax = dq->dq_imax;
 #ifdef SD_IOSTAT
@@ -465,7 +465,7 @@ sdintr(unit, stat)
 #endif
 		}
 	} else {
-		sd_iostat[unit].omin = MIN(dq->dq_omin, sd_iostat[unit].omin);
+		sd_iostat[unit].omin = min(dq->dq_omin, sd_iostat[unit].omin);
 		if (dq->dq_omax > sd_iostat[unit].omax) {
 			sd_iostat[unit].omax = dq->dq_omax;
 #ifdef SD_IOSTAT
