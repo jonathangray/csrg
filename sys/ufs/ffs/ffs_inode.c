@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_inode.c	7.42 (Berkeley) 11/05/91
+ *	@(#)ffs_inode.c	7.43 (Berkeley) 11/08/91
  */
 
 #include <sys/param.h>
@@ -73,7 +73,6 @@ ffs_vget(mntp, ino, vpp)
 	ino_t ino;
 	struct vnode **vpp;
 {
-	extern struct vnodeops ffs_vnodeops, ffs_specops, ffs_fifoops;
 	register struct fs *fs;
 	register struct inode *ip;
 	struct ufsmount *ump;
@@ -143,7 +142,7 @@ ffs_vget(mntp, ino, vpp)
 	 * Initialize the vnode from the inode, check for aliases.  In all
 	 * cases re-init ip, the underlying vnode/inode may have changed.
 	 */
-	if (error = ufs_vinit(mntp, &ffs_specops, &ffs_fifoops, &vp)) {
+	if (error = ufs_vinit(mntp, &ffs_specops, FFS_FIFOOPS, &vp)) {
 		ufs_iput(ip);
 		*vpp = NULL;
 		return (error);
