@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)df.c	5.35 (Berkeley) 05/06/93";
+static char sccsid[] = "@(#)df.c	5.36 (Berkeley) 06/02/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -93,7 +93,6 @@ struct typetab {
 long	addtype __P((long, char *));
 long	regetmntinfo __P((struct statfs **, long, long));
 int	 bread __P((off_t, void *, int));
-char	*getbsize __P((int *, long *));
 char	*getmntpt __P((char *));
 void	 prtstat __P((struct statfs *, int));
 void	 ufs_df __P((char *, int));
