@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.64 (Berkeley) 01/15/94";
+static char sccsid[] = "@(#)conf.c	8.65 (Berkeley) 01/22/94";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1528,7 +1528,7 @@ freespace(dir, bsize)
 #  else
 	struct statfs fs;
 #   define FSBLOCKSIZE	fs.f_bsize
-#   if defined(_SCO_unix_) || defined(IRIX)
+#   if defined(_SCO_unix_) || defined(IRIX) || defined(apollo)
 #    define f_bavail f_bfree
 #   endif
 #  endif
@@ -2007,7 +2007,7 @@ ni_propval(directory, propname)
 	char *directory;
 	char *propname;
 {
-	char *propval;
+	char *propval = NULL;
 	int i;
 	void *ni = NULL;
 	void *lastni = NULL;
