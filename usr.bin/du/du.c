@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)du.c	5.14 (Berkeley) 03/01/92";
+static char sccsid[] = "@(#)du.c	5.15 (Berkeley) 03/09/92";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -53,7 +53,7 @@ static char sccsid[] = "@(#)du.c	5.14 (Berkeley) 03/01/92";
 #include <string.h>
 #include <stdlib.h>
 
-char	*getbsize __P((char *, int *, int *));
+char	*getbsize __P((char *, int *, long *));
 int	 linkchk __P((FTSENT *));
 void	 usage __P((void));
 
@@ -64,7 +64,8 @@ main(argc, argv)
 	register FTS *fts;
 	register FTSENT *p;
 	register int listdirs, listfiles;
-	int aflag, blocksize, ch, ftsoptions, notused, sflag;
+	long blocksize;
+	int aflag, ch, ftsoptions, notused, sflag;
 	char **save;
 
 	ftsoptions = FTS_PHYSICAL;
