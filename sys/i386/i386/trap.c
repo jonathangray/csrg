@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)trap.c	7.9 (Berkeley) 03/23/92
+ *	@(#)trap.c	7.10 (Berkeley) 05/11/92
  */
 
 /*
@@ -148,7 +148,8 @@ copyfault:
 		goto out;
 
 	case T_DNA|T_USER:
-#ifdef	NPX
+#include "npx.h"
+#if NNPX > 0
 		/* if a transparent fault (due to context switch "late") */
 		if (npxdna()) return;
 #endif
