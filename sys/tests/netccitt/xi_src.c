@@ -31,11 +31,11 @@
  * SUCH DAMAGE.
  */
 #ifndef lint
-static char sccsid[] = "@(#)xi_src.c	7.2 (Berkeley) 11/13/90";
+static char sccsid[] = "@(#)xi_src.c	7.3 (Berkeley) 04/29/91";
 #endif /* not lint */
 
 /*
- * This is a test program to be a source for TP4 connections.
+ * This is a test program to be a source for X.25 connections.
  */
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -97,10 +97,10 @@ char *argv[];
 			sscanf(*av,"%ld",&size);
 		}
 	}
-	tisrc();
+	xisrc();
 }
 
-tisrc() {
+xisrc() {
 	int x, s, pid, on = 1, flags = 8, n;
 
 	try(socket, (AF_CCITT, type, 0),"");
@@ -214,7 +214,12 @@ int *flags;
 {
 	int factor = 1, x = 0;
 	char workbuf[10240];
+	static repeatcount, repeatsize;
 
+	if (repeatcount > 0) {
+		repeatcount--;
+		return;
+	}
 	*flags = 0;
 	*datasize = 0;
 	datasize = &iov->iov_len;
@@ -239,6 +244,11 @@ int *flags;
 			if (factor <= 0) factor = 1;
 			if (x == EOF)
 				break;
+		} else if (strcmp(workbuf, "repeat") == 0) {
+			x = scanf("%d", &repeatcount);
+			if (repeatcount <= 0) repeatcount = 1;
+			if (x == EOF)
+				break;
 		} else {
 			int len = strlen(workbuf);
 			localsize = 1;
@@ -251,7 +261,7 @@ int *flags;
 			*datasize = localsize;
 			if (datasize != &iov->iov_len) {
 				*datasize += sizeof(cm.cm.cmhdr);
-				cm.cm.cmhdr.cmsg_len = *datasize;
+				repeatsize = cm.cm.cmhdr.cmsg_len = *datasize;
 			}
 			break;
 		}
