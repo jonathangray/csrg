@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)rlogin.c	5.38 (Berkeley) 03/04/93";
+static char sccsid[] = "@(#)rlogin.c	5.39 (Berkeley) 03/04/93";
 #endif /* not lint */
 
 /*
@@ -811,7 +811,6 @@ warning(fmt, va_alist)
 #else
 	va_start(ap);
 #endif
-	fmt = va_arg(ap, char *);
 	vfprintf(stderr, fmt, ap);
 	va_end(ap);
 	(void)fprintf(stderr, ".\n");
