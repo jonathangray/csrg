@@ -3,14 +3,14 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	7.20 (Berkeley) 09/14/87
+#	@(#)Makefile	7.21 (Berkeley) 10/07/87
 #
 #
 # Copyright (c) 1980 Regents of the University of California.
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	7.20 (Berkeley) 09/14/87
+#	@(#)Makefile	7.21 (Berkeley) 10/07/87
 #
 #
 # Copyright (c) 1980 Regents of the University of California.
