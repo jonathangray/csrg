@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	5.24 (Berkeley) 01/05/92
+ *	@(#)conf.h	5.25 (Berkeley) 05/29/92
  */
 
 /*
@@ -82,6 +82,7 @@
 # define SETPROCTITLE	1	/* munge argv to display current status */
 # define NAMED_BIND	1	/* use Berkeley Internet Domain Server */
 # define USERDB		1	/* look in user database */
+# define MATCHGECOS	1	/* match user names from gecos field */
 
 # ifdef SYSTEM5
 # define LOCKF		1	/* use System V lockf instead of flock */
