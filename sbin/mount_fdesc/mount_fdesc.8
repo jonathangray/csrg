@@ -34,7 +34,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)mount_fdesc.8	5.1 (Berkeley) 07/05/92
+.\"	@(#)mount_fdesc.8	5.2 (Berkeley) 07/05/92
 .\"
 .\"
 .Dd 
@@ -45,7 +45,9 @@
 .Nd mount the /dev/fd file system
 .Sh SYNOPSIS
 .Nm mount_fdesc
-.Pa /dev/fd /dev/fd
+.Op Fl F Ar fsoptions
+.Pa /dev/fd
+.Pa mount_point
 .Sh DESCRIPTION
 The
 .Nm mount_fdesc
