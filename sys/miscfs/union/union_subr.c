@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_subr.c	8.16 (Berkeley) 12/10/94
+ *	@(#)union_subr.c	8.17 (Berkeley) 03/11/95
  */
 
 #include <sys/param.h>
@@ -654,7 +654,7 @@ union_copyup(un, docopy, cred, p)
 		if (error == 0) {
 			error = union_copyfile(lvp, uvp, cred, p);
 			VOP_UNLOCK(lvp);
-			(void) VOP_CLOSE(lvp, FREAD);
+			(void) VOP_CLOSE(lvp, FREAD, cred, p);
 		}
 #ifdef UNION_DIAGNOSTIC
 		if (error == 0)
@@ -680,7 +680,7 @@ union_copyup(un, docopy, cred, p)
 		int i;
 
 		for (i = 0; i < un->un_openl; i++) {
-			(void) VOP_CLOSE(lvp, FREAD);
+			(void) VOP_CLOSE(lvp, FREAD, cred, p);
 			(void) VOP_OPEN(uvp, FREAD, cred, p);
 		}
 		un->un_openl = 0;
@@ -939,7 +939,7 @@ union_vn_close(vp, fmode, cred, p)
 
 	if (fmode & FWRITE)
 		--vp->v_writecount;
-	return (VOP_CLOSE(vp, fmode));
+	return (VOP_CLOSE(vp, fmode, cred, p));
 }
 
 void
