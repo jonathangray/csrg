@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fifo_vnops.c	7.14 (Berkeley) 05/15/92
+ *	@(#)fifo_vnops.c	7.15 (Berkeley) 06/04/92
  */
 
 #include "param.h"
@@ -130,6 +130,7 @@ fifo_open (ap)
 	USES_VOP_CLOSE;
 	USES_VOP_LOCK;
 	USES_VOP_UNLOCK;
+	register struct vnode *vp = ap->a_vp;
 	register struct fifoinfo *fip;
 	struct socket *rso, *wso;
 	int error;
@@ -137,19 +138,19 @@ fifo_open (ap)
 
 	if ((ap->a_mode & (FREAD|FWRITE)) == (FREAD|FWRITE))
 		return (EINVAL);
-	if ((fip = ap->a_vp->v_fifoinfo) == NULL) {
+	if ((fip = vp->v_fifoinfo) == NULL) {
 		MALLOC(fip, struct fifoinfo *, sizeof(*fip), M_VNODE, M_WAITOK);
-		ap->a_vp->v_fifoinfo = fip;
+		vp->v_fifoinfo = fip;
 		if (error = socreate(AF_UNIX, &rso, SOCK_STREAM, 0)) {
 			free(fip, M_VNODE);
-			ap->a_vp->v_fifoinfo = NULL;
+			vp->v_fifoinfo = NULL;
 			return (error);
 		}
 		fip->fi_readsock = rso;
 		if (error = socreate(AF_UNIX, &wso, SOCK_STREAM, 0)) {
 			(void)soclose(rso);
 			free(fip, M_VNODE);
-			ap->a_vp->v_fifoinfo = NULL;
+			vp->v_fifoinfo = NULL;
 			return (error);
 		}
 		fip->fi_writesock = wso;
@@ -157,7 +158,7 @@ fifo_open (ap)
 			(void)soclose(wso);
 			(void)soclose(rso);
 			free(fip, M_VNODE);
-			ap->a_vp->v_fifoinfo = NULL;
+			vp->v_fifoinfo = NULL;
 			return (error);
 		}
 		fip->fi_readers = fip->fi_writers = 0;
@@ -175,10 +176,10 @@ fifo_open (ap)
 		if (ap->a_mode & O_NONBLOCK)
 			return (0);
 		while (fip->fi_writers == 0) {
-			VOP_UNLOCK(ap->a_vp);
+			VOP_UNLOCK(vp);
 			error = tsleep((caddr_t)&fip->fi_readers, PSOCK,
 				openstr, 0);
-			VOP_LOCK(ap->a_vp);
+			VOP_LOCK(vp);
 			if (error)
 				break;
 		}
@@ -193,17 +194,17 @@ fifo_open (ap)
 					wakeup((caddr_t)&fip->fi_readers);
 			}
 			while (fip->fi_readers == 0) {
-				VOP_UNLOCK(ap->a_vp);
+				VOP_UNLOCK(vp);
 				error = tsleep((caddr_t)&fip->fi_writers,
 					PSOCK, openstr, 0);
-				VOP_LOCK(ap->a_vp);
+				VOP_LOCK(vp);
 				if (error)
 					break;
 			}
 		}
 	}
 	if (error)
-		VOP_CLOSE(ap->a_vp, ap->a_mode, ap->a_cred, ap->a_p);
+		VOP_CLOSE(vp, ap->a_mode, ap->a_cred, ap->a_p);
 	return (error);
 }
 
@@ -216,26 +217,27 @@ fifo_read (ap)
 {
 	USES_VOP_LOCK;
 	USES_VOP_UNLOCK;
+	register struct uio *uio = ap->a_uio;
 	register struct socket *rso = ap->a_vp->v_fifoinfo->fi_readsock;
 	int error, startresid;
 
 #ifdef DIAGNOSTIC
-	if (ap->a_uio->uio_rw != UIO_READ)
+	if (uio->uio_rw != UIO_READ)
 		panic("fifo_read mode");
 #endif
-	if (ap->a_uio->uio_resid == 0)
+	if (uio->uio_resid == 0)
 		return (0);
 	if (ap->a_ioflag & IO_NDELAY)
 		rso->so_state |= SS_NBIO;
-	startresid = ap->a_uio->uio_resid;
+	startresid = uio->uio_resid;
 	VOP_UNLOCK(ap->a_vp);
-	error = soreceive(rso, (struct mbuf **)0, ap->a_uio, (int *)0,
+	error = soreceive(rso, (struct mbuf **)0, uio, (int *)0,
 		(struct mbuf **)0, (struct mbuf **)0);
 	VOP_LOCK(ap->a_vp);
 	/*
 	 * Clear EOF indication after first such return.
 	 */
-	if (ap->a_uio->uio_resid == startresid)
+	if (uio->uio_resid == startresid)
 		rso->so_state &= ~SS_CANTRCVMORE;
 	if (ap->a_ioflag & IO_NDELAY)
 		rso->so_state &= ~SS_NBIO;
@@ -341,7 +343,8 @@ fifo_unlock (ap)
 fifo_close (ap)
 	struct vop_close_args *ap;
 {
-	register struct fifoinfo *fip = ap->a_vp->v_fifoinfo;
+	register struct vnode *vp = ap->a_vp;
+	register struct fifoinfo *fip = vp->v_fifoinfo;
 	int error1, error2;
 
 	if (ap->a_fflag & FWRITE) {
@@ -353,12 +356,12 @@ fifo_close (ap)
 		if (fip->fi_readers == 0)
 			socantsendmore(fip->fi_writesock);
 	}
-	if (ap->a_vp->v_usecount > 1)
+	if (vp->v_usecount > 1)
 		return (0);
 	error1 = soclose(fip->fi_readsock);
 	error2 = soclose(fip->fi_writesock);
 	FREE(fip, M_VNODE);
-	ap->a_vp->v_fifoinfo = NULL;
+	vp->v_fifoinfo = NULL;
 	if (error1)
 		return (error1);
 	return (error2);
