@@ -32,7 +32,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)sed.test	5.4 (Berkeley) 08/26/92
+#	@(#)sed.test	5.5 (Berkeley) 08/28/92
 #
 
 # sed Regression Tests
@@ -43,7 +43,7 @@
 
 main()
 {
-	BASE=/usr/bin/sed
+	BASE=/usr/old/bin/sed
 	BASELOG=sed.out
 	TEST=../obj/sed
 	TESTLOG=nsed.out
