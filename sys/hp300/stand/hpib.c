@@ -30,13 +30,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hpib.c	7.3 (Berkeley) 12/16/90
+ *	@(#)hpib.c	7.4 (Berkeley) 05/05/91
  */
 
 /*
  * HPIB driver
  */
-#include "sys/reboot.h"
+#include <sys/param.h>
+#include <sys/reboot.h>
 #include "../dev/device.h"
 #include "hpibvar.h"
 
@@ -169,12 +170,12 @@ hpibgo(unit, sec, addr, count, flag)
 	slave = hpibslave(unit);
 	unit = hpibunit(unit);
 	if (hpib_softc[unit].sc_type == HPIBC)
-		if (flag == READ)
+		if (flag == F_READ)
 			fhpibrecv(unit, slave, sec, addr, count);
 		else
 			fhpibsend(unit, slave, sec, addr, count);
 	else
-		if (flag == READ)
+		if (flag == F_READ)
 			nhpibrecv(unit, slave, sec, addr, count);
 		else
 			nhpibsend(unit, slave, sec, addr, count);
