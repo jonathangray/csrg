@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)collect.c	8.14 (Berkeley) 04/18/94";
+static char sccsid[] = "@(#)collect.c	8.15 (Berkeley) 05/29/94";
 #endif /* not lint */
 
 # include <errno.h>
@@ -69,9 +69,10 @@ maketemp(from)
 {
 	register FILE *tf;
 	bool ignrdot = smtpmode ? FALSE : IgnrDot;
-	char buf[MAXLINE], buf2[MAXLINE];
+	time_t dbto = smtpmode ? TimeOuts.to_datablock : 0;
 	register char *workbuf, *freebuf;
 	bool inputerr = FALSE;
+	char buf[MAXLINE], buf2[MAXLINE];
 	extern char *hvalue();
 	extern bool isheader(), flusheol();
 	extern char *index();
@@ -100,23 +101,23 @@ maketemp(from)
 		message("354 Enter mail, end with \".\" on a line by itself");
 
 	/* set global timer to monitor progress */
-	sfgetset(TimeOuts.to_datablock);
+	sfgetset(dbto);
 
 	/*
 	**  Try to read a UNIX-style From line
 	*/
 
-	if (sfgets(buf, MAXLINE, InChannel, TimeOuts.to_datablock,
+	if (sfgets(buf, MAXLINE, InChannel, dbto,
 			"initial message read") == NULL)
 		goto readerr;
 	fixcrlf(buf, FALSE);
 # ifndef NOTUNIX
 	if (!SaveFrom && strncmp(buf, "From ", 5) == 0)
 	{
-		if (!flusheol(buf, InChannel))
+		if (!flusheol(buf, InChannel, dbto))
 			goto readerr;
 		eatfrom(buf, e);
-		if (sfgets(buf, MAXLINE, InChannel, TimeOuts.to_datablock,
+		if (sfgets(buf, MAXLINE, InChannel, dbto,
 				"message header read") == NULL)
 			goto readerr;
 		fixcrlf(buf, FALSE);
@@ -147,7 +148,7 @@ maketemp(from)
 		}
 
 		/* if the line is too long, throw the rest away */
-		if (!flusheol(workbuf, InChannel))
+		if (!flusheol(workbuf, InChannel, dbto))
 			goto readerr;
 
 		/* it's okay to toss '\n' now (flusheol() needed it) */
@@ -164,7 +165,7 @@ maketemp(from)
 			int clen;
 
 			if (sfgets(freebuf, MAXLINE, InChannel,
-					TimeOuts.to_datablock,
+					dbto,
 					"message header read") == NULL)
 			{
 				freebuf[0] = '\0';
@@ -175,7 +176,7 @@ maketemp(from)
 			if (*freebuf != ' ' && *freebuf != '\t')
 				break;
 
-			if (!flusheol(freebuf, InChannel))
+			if (!flusheol(freebuf, InChannel, dbto))
 				goto readerr;
 
 			fixcrlf(freebuf, TRUE);
@@ -244,7 +245,7 @@ maketemp(from)
 	if (*workbuf == '\0')
 	{
 		/* throw away a blank line */
-		if (sfgets(buf, MAXLINE, InChannel, TimeOuts.to_datablock,
+		if (sfgets(buf, MAXLINE, InChannel, dbto,
 				"message separator read") == NULL)
 			goto readerr;
 	}
@@ -280,7 +281,7 @@ maketemp(from)
 		fputs("\n", tf);
 		if (ferror(tf))
 			tferror(tf, e);
-		if (sfgets(buf, MAXLINE, InChannel, TimeOuts.to_datablock,
+		if (sfgets(buf, MAXLINE, InChannel, dbto,
 				"message body read") == NULL)
 			goto readerr;
 	}
@@ -415,9 +416,10 @@ readerr:
 */
 
 bool
-flusheol(buf, fp)
+flusheol(buf, fp, dbto)
 	char *buf;
 	FILE *fp;
+	time_t dbto;
 {
 	register char *p = buf;
 	char junkbuf[MAXLINE];
@@ -426,7 +428,7 @@ flusheol(buf, fp)
 	{
 		CollectErrorMessage = "553 header line too long";
 		CollectErrno = 0;
-		if (sfgets(junkbuf, MAXLINE, fp, TimeOuts.to_datablock,
+		if (sfgets(junkbuf, MAXLINE, fp, dbto,
 				"long line flush") == NULL)
 			return (FALSE);
 		p = junkbuf;
