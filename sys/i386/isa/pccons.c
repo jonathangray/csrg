@@ -33,26 +33,27 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pccons.c	5.14 (Berkeley) 05/20/92
+ *	@(#)pccons.c	5.15 (Berkeley) 10/11/92
  */
 
 /*
  * code to work keyboard & display for PC-style console
  */
-#include "param.h"
-#include "conf.h"
-#include "ioctl.h"
-#include "proc.h"
-#include "user.h"
-#include "tty.h"
-#include "uio.h"
-#include "i386/isa/isa_device.h"
-#include "callout.h"
-#include "systm.h"
-#include "kernel.h"
-#include "syslog.h"
-#include "i386/isa/icu.h"
-#include "i386/i386/cons.h"
+#include <sys/param.h>
+#include <sys/conf.h>
+#include <sys/ioctl.h>
+#include <sys/proc.h>
+#include <sys/user.h>
+#include <sys/tty.h>
+#include <sys/uio.h>
+#include <sys/callout.h>
+#include <sys/systm.h>
+#include <sys/kernel.h>
+#include <sys/syslog.h>
+
+#include <i386/isa/isa_device.h>
+#include <i386/isa/icu.h>
+#include <i386/i386/cons.h>
 
 struct	tty pccons;
 
@@ -831,8 +832,8 @@ getchar()
 	/*}*/
 }
 
-#include "machine/dbg.h"
-#include "machine/stdarg.h"
+#include <machine/dbg.h>
+#include <machine/stdarg.h>
 static nrow;
 
 void
