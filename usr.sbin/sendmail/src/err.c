@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)err.c	5.16 (Berkeley) 11/16/92";
+static char sccsid[] = "@(#)err.c	5.17 (Berkeley) 12/20/92";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -363,7 +363,7 @@ errstring(errno)
 {
 	extern char *sys_errlist[];
 	extern int sys_nerr;
-	static char buf[100];
+	static char buf[MAXLINE];
 # ifdef SMTP
 	extern char *SmtpPhase;
 # endif /* SMTP */
