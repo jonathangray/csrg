@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.3 (Berkeley) 05/11/90
+#	@(#)Makefile	5.4 (Berkeley) 01/14/91
 
 PROG=	repquota
 MAN8=	repquota.0
