@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.3 (Berkeley) 07/13/93";
+static char sccsid[] = "@(#)main.c	8.4 (Berkeley) 07/16/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -55,7 +55,7 @@ static char sccsid[] = "@(#)main.c	8.3 (Berkeley) 07/13/93";
 
 # ifdef lint
 char	edata, end;
-# endif lint
+# endif /* lint */
 
 /*
 **  SENDMAIL -- Post mail to a set of destinations.
@@ -566,7 +566,7 @@ main(argc, argv, envp)
 				break;
 			}
 #ifdef HASSETVBUF
-			setvbuf(TrafficLogFile, NULL, _IOLBF, BUFSIZ);
+			setvbuf(TrafficLogFile, NULL, _IOLBF, 0);
 #else
 			setlinebuf(TrafficLogFile);
 #endif
@@ -922,7 +922,7 @@ main(argc, argv, envp)
 				exit(0);
 
 			/* disconnect from our controlling tty */
-			disconnect(TRUE, CurEnv);
+			disconnect(2, CurEnv);
 		}
 
 		dtype[0] = '\0';
@@ -998,6 +998,7 @@ main(argc, argv, envp)
 
 	if (*av == NULL && !GrabTo)
 	{
+		CurEnv->e_flags |= EF_GLOBALERRS;
 		usrerr("Recipient names must be specified");
 
 		/* collect body for UUCP return */
@@ -1027,7 +1028,10 @@ main(argc, argv, envp)
 
 	CurEnv->e_to = NULL;
 	if (OpMode != MD_VERIFY || GrabTo)
+	{
+		CurEnv->e_flags |= EF_GLOBALERRS;
 		collect(FALSE, FALSE, CurEnv);
+	}
 	errno = 0;
 
 	/* collect statistics */
@@ -1378,11 +1382,13 @@ thaw(freezefile, binfile)
 **  DISCONNECT -- remove our connection with any foreground process
 **
 **	Parameters:
-**		fulldrop -- if set, we should also drop the controlling
-**			TTY if possible -- this should only be done when
-**			setting up the daemon since otherwise UUCP can
-**			leave us trying to open a dialin, and we will
-**			wait for the carrier.
+**		droplev -- how "deeply" we should drop the line.
+**			0 -- ignore signals, mail back errors, make sure
+**			     output goes to stdout.
+**			1 -- also, make stdout go to transcript.
+**			2 -- also, disconnect from controlling terminal
+**			     (only for daemon mode).
+**		e -- the current envelope.
 **
 **	Returns:
 **		none
@@ -1392,8 +1398,8 @@ thaw(freezefile, binfile)
 **		the controlling tty.
 */
 
-disconnect(fulldrop, e)
-	bool fulldrop;
+disconnect(droplev, e)
+	int droplev;
 	register ENVELOPE *e;
 {
 	int fd;
@@ -1431,18 +1437,21 @@ disconnect(fulldrop, e)
 		(void) fclose(OutChannel);
 		OutChannel = stdout;
 	}
-	if (e->e_xfp == NULL)
-		fd = open("/dev/null", O_WRONLY, 0666);
-	else
-		fd = fileno(e->e_xfp);
-	(void) fflush(stdout);
-	dup2(fd, STDOUT_FILENO);
-	dup2(fd, STDERR_FILENO);
-	if (e->e_xfp == NULL)
-		close(fd);
+	if (droplev > 0)
+	{
+		if (e->e_xfp == NULL)
+			fd = open("/dev/null", O_WRONLY, 0666);
+		else
+			fd = fileno(e->e_xfp);
+		(void) fflush(stdout);
+		dup2(fd, STDOUT_FILENO);
+		dup2(fd, STDERR_FILENO);
+		if (e->e_xfp == NULL)
+			close(fd);
+	}
 
 	/* drop our controlling TTY completely if possible */
-	if (fulldrop)
+	if (droplev > 1)
 	{
 		(void) setsid();
 #ifdef TIOCNOTTY
