@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_serv.c	7.49 (Berkeley) 03/13/92
+ *	@(#)nfs_serv.c	7.50 (Berkeley) 05/04/92
  */
 
 /*
@@ -54,24 +54,26 @@
  *	a reply.
  */
 
-#include "param.h"
-#include "proc.h"
-#include "file.h"
-#include "namei.h"
-#include "vnode.h"
-#include "mount.h"
-#include "mbuf.h"
-#include "dirent.h"
+#include <sys/param.h>
+#include <sys/proc.h>
+#include <sys/file.h>
+#include <sys/namei.h>
+#include <sys/vnode.h>
+#include <sys/mount.h>
+#include <sys/mbuf.h>
+#include <sys/dirent.h>
 
-#include "ufs/ufs/quota.h"	/* XXX - for ufid */
-#include "ufs/ufs/inode.h"	/* XXX - for ufid */
+#include <vm/vm.h>
 
-#include "nfsv2.h"
-#include "rpcv2.h"
-#include "nfs.h"
-#include "xdr_subs.h"
-#include "nfsm_subs.h"
-#include "nqnfs.h"
+#include <ufs/ufs/quota.h>	/* XXX - for ufid */
+#include <ufs/ufs/inode.h>	/* XXX - for ufid */
+
+#include <nfs/nfsv2.h>
+#include <nfs/rpcv2.h>
+#include <nfs/nfs.h>
+#include <nfs/xdr_subs.h>
+#include <nfs/nfsm_subs.h>
+#include <nfs/nqnfs.h>
 
 /* Defs */
 #define	TRUE	1
