@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fdesc_vfsops.c	8.7 (Berkeley) 04/03/95
+ *	@(#)fdesc_vfsops.c	8.8 (Berkeley) 05/10/95
  *
  * $Id: fdesc_vfsops.c,v 1.9 1993/04/06 15:28:33 jsp Exp $
  */
@@ -115,15 +115,10 @@ fdesc_unmount(mp, mntflags, p)
 {
 	int error;
 	int flags = 0;
-	extern int doforce;
 	struct vnode *rootvp = VFSTOFDESC(mp)->f_root;
 
-	if (mntflags & MNT_FORCE) {
-		/* fdesc can never be rootfs so don't check for it */
-		if (!doforce)
-			return (EINVAL);
+	if (mntflags & MNT_FORCE)
 		flags |= FORCECLOSE;
-	}
 
 	/*
 	 * Clear out buffer cache.  I don't think we
