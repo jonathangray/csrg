@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.16 (Berkeley) 07/24/93
+ *	@(#)conf.h	8.17 (Berkeley) 07/26/93
  */
 
 /*
@@ -41,6 +41,7 @@
 # include <sys/param.h>
 # include <sys/stat.h>
 # include <fcntl.h>
+# include <signal.h>
 
 /**********************************************************************
 **  Table sizes, etc....
@@ -115,7 +116,8 @@
 
 # ifdef __hpux
 # define SYSTEM5	1	/* include all the System V defines */
-# define HASSETREUID	1	/* have setreuid(2) call */
+# define HASINITGROUPS	1	/* has initgroups(3) call */
+# define HASSETREUID	1	/* has setreuid(2) call */
 # define setreuid(r, e)		setresuid(r, e, -1)	
 # define LA_TYPE	LA_FLOAT
 # define _PATH_UNIX	"/hp-ux"
@@ -127,7 +129,7 @@
 */
 
 # ifdef _AIX3
-# define LOCKF		1	/* use System V lockf instead of flock */
+# define HASINITGROUPS	1	/* has initgroups(3) call */
 # define FORK		fork	/* no vfork primitive available */
 # endif
 
@@ -138,7 +140,8 @@
 */
 
 # ifdef IRIX
-# define HASSETREUID	1	/* have setreuid(2) call */
+# define HASSETREUID	1	/* has setreuid(2) call */
+# define HASINITGROUPS	1	/* has initgroups(3) call */
 # define FORK		fork	/* no vfork primitive available */
 # define setpgrp	BSDsetpgrp
 # define GIDSET_T	gid_t
@@ -152,7 +155,8 @@
 #if defined(sun) && !defined(BSD)
 
 # define LA_TYPE	LA_INT
-# define HASSETREUID	1	/* have setreuid(2) call */
+# define HASSETREUID	1	/* has setreuid(2) call */
+# define HASINITGROUPS	1	/* has initgroups(3) call */
 
 # ifdef SOLARIS
 			/* Solaris 2.x (a.k.a. SunOS 5.x) */
@@ -168,6 +172,7 @@
 # else
 			/* SunOS 4.1.x */
 #  define HASSTATFS	1	/* has the statfs(2) syscall */
+/* #  define HASFLOCK	1	/* has flock(2) call */
 #  include <vfork.h>
 
 # endif
@@ -179,9 +184,11 @@
 
 #ifdef ultrix
 # define HASSTATFS	1	/* has the statfs(2) syscall */
-# define HASSETREUID	1	/* have setreuid(2) call */
+# define HASSETREUID	1	/* has setreuid(2) call */
 # define HASSETENV	1	/* has setenv(3) call */
 # define HASUNSETENV	1	/* has unsetenv(3) call */
+# define HASINITGROUPS	1	/* has initgroups(3) call */
+/* # define HASFLOCK	1	/* has flock(2) call */
 # define LA_TYPE	LA_INT
 # define LA_AVENRUN	"avenrun"
 # undef IDENTPROTO
@@ -194,7 +201,9 @@
 #ifdef __osf__
 # define HASSETENV	1	/* has setenv(3) call */
 # define HASUNSETENV	1	/* has unsetenv(3) call */
-# define HASSETREUID	1	/* have setreuid(2) call */
+# define HASSETREUID	1	/* has setreuid(2) call */
+# define HASINITGROUPS	1	/* has initgroups(3) call */
+/* # define HASFLOCK	1	/* has flock(2) call */
 # define LA_TYPE	LA_INT
 # define LA_AVENRUN	"avenrun"
 #endif
@@ -204,8 +213,11 @@
 */
 
 #ifdef __NeXT__
+# define HASINITGROUPS	1	/* has initgroups(3) call */
+# define HASFLOCK	1	/* has flock(2) call */
 # define sleep		sleepX
 # define LA_TYPE	LA_ZERO
+typedef int		pid_t;
 #endif
 
 /*
@@ -245,6 +257,7 @@
 
 #ifdef _SCO_unix_
 # define SYSTEM5	1	/* include all the System V defines */
+# define SYS5SIGNALS	1	/* SysV signal semantics -- reset on each sig */
 # define HASSTATFS	1	/* has the statfs(2) syscall */
 # define FORK		fork
 # define MAXPATHLEN	PATHSIZE
@@ -258,10 +271,8 @@
 #ifdef _CONVEX_SOURCE
 # define BSD		1	/* include all the BSD defines */
 # define HASUNAME	1	/* use System V uname(2) system call */
-# define LOCKF		1	/* use System V locking instead of flock */
 # define HASSTATFS	1	/* has the statfs(2) syscall */
 # define HASSETSID	1	/* has POSIX setsid(2) call */
-# define HASINITGROUPS	1	/* has initgroups(2) call */
 # define NEEDGETOPT	1	/* need replacement for getopt(3) */
 # define LA_TYPE	LA_FLOAT
 # undef IDENTPROTO
@@ -276,6 +287,7 @@
 #ifdef RISCOS
 # define HASSETENV	1	/* has setenv(3) call */
 # define HASUNSETENV	1	/* has unsetenv(3) call */
+/* # define HASFLOCK	1	/* has flock(2) call */
 # define LA_TYPE	LA_INT
 # define LA_AVENRUN	"avenrun"
 # define _PATH_UNIX	"/unix"
@@ -293,8 +305,10 @@
 #ifdef BSD
 # define HASSETENV	1	/* has setenv(3) call */
 # define HASUNSETENV	1	/* has unsetenv(3) call */
-# define HASGETDTABLESIZE 1	/* we have getdtablesize(2) call */
-# define HASSETREUID	1	/* have setreuid(2) call */
+# define HASGETDTABLESIZE 1	/* has getdtablesize(2) call */
+# define HASSETREUID	1	/* has setreuid(2) call */
+# define HASINITGROUPS	1	/* has initgroups(2) call */
+# define HASFLOCK	1	/* has flock(2) call */
 # ifndef LA_TYPE
 #  define LA_TYPE	LA_SUBR
 # endif
@@ -302,7 +316,6 @@
 
 /* general System V defines */
 # ifdef SYSTEM5
-# define LOCKF		1	/* use System V locking instead of flock */
 # define HASUNAME	1	/* use System V uname(2) system call */
 # define HASUSTAT	1	/* use System V ustat(2) syscall */
 # ifndef LA_TYPE
@@ -448,16 +461,17 @@ struct utsname
 #define STDERR_FILENO	2
 #endif
 
-#ifdef LOCKF
-#define LOCK_SH		0x01	/* shared lock */
-#define LOCK_EX		0x02	/* exclusive lock */
-#define LOCK_NB		0x04	/* non-blocking lock */
-#define LOCK_UN		0x08	/* unlock */
-
-#else
-
+#ifdef HASFLOCK
 # include <sys/file.h>
+#else
+# define LOCK_SH	0x01	/* shared lock */
+# define LOCK_EX	0x02	/* exclusive lock */
+# define LOCK_NB	0x04	/* non-blocking lock */
+# define LOCK_UN	0x08	/* unlock */
+#endif
 
+#ifndef SIG_ERR
+# define SIG_ERR	((void (*)()) -1)
 #endif
 
 /*
