@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 1982, 1986, 1990 Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1982, 1986, 1990, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Robert Elz at The University of Melbourne.
@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_quota.c	7.17 (Berkeley) 07/22/92
+ *	@(#)ufs_quota.c	8.1 (Berkeley) 06/11/93
  */
 #include <sys/param.h>
 #include <sys/kernel.h>
