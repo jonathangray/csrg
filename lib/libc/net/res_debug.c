@@ -5,7 +5,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)res_debug.c	5.19 (Berkeley) 06/30/87";
+static char sccsid[] = "@(#)res_debug.c	5.20 (Berkeley) 07/27/87";
 #endif LIBC_SCCS and not lint
 
 #if defined(lint) && !defined(DEBUG)
@@ -85,9 +85,9 @@ fp_query(msg,file)
 	hp = (HEADER *)msg;
 	cp = msg + sizeof(HEADER);
 	fprintf(file,"HEADER:\n");
-	fprintf(file,"\topcode = %s", _opcodes[hp->opcode]);
+	fprintf(file,"\topcode = %s", _res_opcodes[hp->opcode]);
 	fprintf(file,", id = %d", ntohs(hp->id));
-	fprintf(file,", rcode = %s\n", _rcodes[hp->rcode]);
+	fprintf(file,", rcode = %s\n", _res_resultcodes[hp->rcode]);
 	fprintf(file,"\theader flags: ");
 	if (hp->qr)
 		fprintf(file," qr");
