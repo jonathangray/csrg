@@ -33,17 +33,17 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)swapgeneric.c	5.5 (Berkeley) 05/09/91
+ *	@(#)swapgeneric.c	5.6 (Berkeley) 10/11/92
  */
 
-#include "machine/pte.h"
+#include <machine/pte.h>
 
-#include "sys/param.h"
-#include "sys/conf.h"
-#include "sys/buf.h"
-#include "sys/vm.h"
-#include "sys/systm.h"
-#include "sys/reboot.h"
+#include <sys/param.h>
+#include <sys/conf.h>
+#include <sys/buf.h>
+#include <sys/vm.h>
+#include <sys/systm.h>
+#include <sys/reboot.h>
 
 /*
  * Generic configuration;  all in one
