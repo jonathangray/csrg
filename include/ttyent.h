@@ -30,8 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ttyent.h	5.6 (Berkeley) 02/05/91
+ *	@(#)ttyent.h	5.7 (Berkeley) 04/03/91
  */
+
+#ifndef	_TTYENT_H_
+#define	_TTYENT_H_
 
 #define	_PATH_TTYS	"/etc/ttys"
 
@@ -59,3 +62,5 @@ struct ttyent *getttynam __P((const char *));
 int setttyent __P((void));
 int endttyent __P((void));
 __END_DECLS
+
+#endif /* !_TTYENT_H_ */
