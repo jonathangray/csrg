@@ -15,15 +15,13 @@ char copyright[] =
 #endif not lint
 
 #ifndef lint
-static char	SccsId[] = "@(#)main.c	5.1 (Berkeley) 06/07/85";
+static char	SccsId[] = "@(#)main.c	5.2 (Berkeley) 06/07/85";
 #endif not lint
 
 # define  _DEFINE
 # include <signal.h>
 # include <sgtty.h>
 # include "sendmail.h"
-
-SCCSID(@(#)main.c	5.1		06/07/85);
 
 /*
 **  SENDMAIL -- Post mail to a set of destinations.
