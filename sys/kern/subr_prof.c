@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_prof.c	8.2 (Berkeley) 09/21/93
+ *	@(#)subr_prof.c	8.3 (Berkeley) 09/23/93
  */
 
 #include <sys/param.h>
@@ -237,8 +237,8 @@ addupc_task(p, pc, ticks)
 	register u_int i;
 	u_short v;
 
-	/* testing SPROFIL may be unnecessary, but is certainly safe */
-	if ((p->p_flag & SPROFIL) == 0 || ticks == 0)
+	/* Testing P_PROFIL may be unnecessary, but is certainly safe. */
+	if ((p->p_flag & P_PROFIL) == 0 || ticks == 0)
 		return;
 
 	prof = &p->p_stats->p_prof;
