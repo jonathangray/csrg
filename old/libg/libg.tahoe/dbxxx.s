@@ -4,7 +4,7 @@
 # specifies the terms and conditions for redistribution.
 #
 #ifndef lint
-_sccsid:.asciz	"@(#)dbxxx.s	5.2 (Berkeley) 07/12/85"
+_sccsid:.asciz	"@(#)dbxxx.s	5.3 (Berkeley) 01/26/86"
 #endif not lint
 
 	.data
