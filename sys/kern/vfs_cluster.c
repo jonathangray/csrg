@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_cluster.c	7.32 (Berkeley) 01/28/91
+ *	@(#)vfs_cluster.c	7.33 (Berkeley) 03/04/91
  */
 
 #include "param.h"
@@ -535,6 +535,7 @@ loop:
 		crfree(cred);
 	}
 	bp->b_flags = B_BUSY;
+	bp->b_dirtyoff = bp->b_dirtyend = 0;
 	return (bp);
 }
 
