@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.2 (Berkeley) 08/27/92
+#	@(#)Makefile	8.1 (Berkeley) 05/31/93
 
 PROG=	quiz
 MAN6=	quiz.0
