@@ -1,28 +1,64 @@
-.\" Copyright (c) 1983 Regents of the University of California.
-.\" All rights reserved.  The Berkeley software License Agreement
-.\" specifies the terms and conditions for redistribution.
+.\" Copyright (c) 1983, 1990 The Regents of the University of California.
+.\" All rights reserved.
 .\"
-.\"	@(#)gcore.1	6.1 (Berkeley) 04/29/85
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
 .\"
-.TH GCORE 1 ""
-.UC 5
-.SH NAME
-gcore \- get core images of running processes
-.SH SYNOPSIS
-.B gcore
-process-id ...
-.SH DESCRIPTION
-.I Gcore
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"     @(#)gcore.1	6.2 (Berkeley) 06/24/90
+.\"
+.Dd 
+.Dt GCORE 1
+.Os BSD 4.2
+.Sh NAME
+.Nm gcore
+.Nd get core images of running processes
+.Sh SYNOPSIS
+.Nm gcore
+.Ar process\-id ...
+.Sh DESCRIPTION
+.Nm Gcore
 creates a core image of each specified process,
 suitable for use with
-.IR adb (1)
+.Xr adb  1
 or
-.IR dbx (1).
-.SH FILES
-core.<process-id>	core images
-.SH BUGS
+.Xr dbx  1  .
+.Sh FILES
+.Dw core.<process-id>
+.Di L
+.Dp Pa core.<process-id>
+core images
+.Dp
+.Sh HISTORY
+.Nm Gcore
+appeared in 4.2 BSD.
+.Sh BUGS
 Paging activity that occurs while
-.I gcore
+.Nm gcore
 is running may cause the program
 to become confused.
 For best results,
