@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_trace.h	7.6 (Berkeley) 10/02/91
+ *	@(#)tp_trace.h	7.7 (Berkeley) 10/11/92
  */
 
 /***********************************************************
@@ -89,13 +89,13 @@ SOFTWARE.
 #define TPPTdriver	14
 #define TPPTtpduout	15
 
-#include "../netiso/tp_pcb.h"
+#include <netiso/tp_pcb.h>
 
 /* this #if is to avoid lint */
 
 #if  defined(TP_TRACEFILE)||!defined(KERNEL)
 
-#include "../netiso/tp_tpdu.h"
+#include <netiso/tp_tpdu.h>
 
 #define TPTRACE_STRLEN 50
 
