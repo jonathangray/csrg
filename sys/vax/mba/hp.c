@@ -1,4 +1,4 @@
-/*	hp.c	6.5	84/08/29	*/
+/*	hp.c	6.6	84/08/29	*/
 
 #ifdef HPDEBUG
 int	hpdebug;
