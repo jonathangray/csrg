@@ -30,12 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * All recipients should regard themselves as participants in an ongoing
- * research project and hence should feel obligated to report their
- * experiences (good or bad) with these elementary function codes, using
- * the sendbug(8) program, to the authors.
- *
- *	@(#)math.h	5.6 (Berkeley) 04/02/91
+ *	@(#)math.h	5.7 (Berkeley) 04/02/91
  */
 
 #ifndef	_MATH_H_
