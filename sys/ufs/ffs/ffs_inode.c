@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_inode.c	8.7 (Berkeley) 06/15/94
+ *	@(#)ffs_inode.c	8.8 (Berkeley) 10/19/94
  */
 
 #include <sys/param.h>
@@ -161,9 +161,10 @@ ffs_truncate(ap)
 	int aflags, error, allerror;
 	off_t osize;
 
-	if (length < 0)
-		return (EINVAL);
 	oip = VTOI(ovp);
+	fs = oip->i_fs;
+	if (length < 0 || length > fs->fs_maxfilesize)
+		return (EINVAL);
 	tv = time;
 	if (ovp->v_type == VLNK &&
 	    oip->i_size < ovp->v_mount->mnt_maxsymlinklen) {
@@ -185,7 +186,6 @@ ffs_truncate(ap)
 		return (error);
 #endif
 	vnode_pager_setsize(ovp, (u_long)length);
-	fs = oip->i_fs;
 	osize = oip->i_size;
 	/*
 	 * Lengthen the size of the file. We must ensure that the
