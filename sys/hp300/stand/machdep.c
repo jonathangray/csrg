@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: machdep.c 1.6 88/05/24$
  *
- *	@(#)machdep.c	7.3 (Berkeley) 05/05/91
+ *	@(#)machdep.c	7.4 (Berkeley) 05/05/91
  */
 
 #include "sys/param.h"
@@ -95,11 +95,6 @@ trap(fp)
 	       fp->aregs[0], fp->aregs[1], fp->aregs[2], fp->aregs[3], 
 	       fp->aregs[4], fp->aregs[5], fp->aregs[6], fp->aregs[7]);
 	intrap = 0;
-}
-
-nodev()
-{
-	return(0);
 }
 
 #ifdef ROMPRF
