@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dir.h	5.4 (Berkeley) 06/04/91
+ *	@(#)dir.h	5.5 (Berkeley) 07/19/91
  */
 
 /*
