@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)curses.h	5.31 (Berkeley) 02/24/93
+ *	@(#)curses.h	5.32 (Berkeley) 05/07/93
  */
 
 #ifndef _CURSES_H_
@@ -289,10 +289,11 @@ char	*wstandend __P((WINDOW *));
 char	*wstandout __P((WINDOW *));
 int	 vwprintw __P((WINDOW *, const char *, _BSD_VA_LIST_));
 
+void	 __cputchar __P((int));		/* Public: backward compatibility */
+
 #ifdef _CURSES_PRIVATE
 /* Private function prototypes. */
 void	 __TRACE __P((const char *, ...));
-void	 __cputchar __P((int));
 u_int	 __hash __P((char *, int));
 void	 __id_subwins __P((WINDOW *));
 void	 __set_subwin __P((WINDOW *, WINDOW *));
