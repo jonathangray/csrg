@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kvm.h	5.7 (Berkeley) 04/01/92
+ *	@(#)kvm.h	5.8 (Berkeley) 05/26/92
  */
 
 #ifndef _KVM_H_
@@ -47,19 +47,19 @@ __BEGIN_DECLS
 
 typedef struct __kvm kvm_t;
 
-kvm_t	*kvm_open __P((const char *, const char *, const char *, int,
-		       const char *));
-kvm_t	*kvm_openfiles __P((const char *, const char *, const char *, int,
-			    char *));
-int	 kvm_close __P((kvm_t *));
-int	 kvm_read __P((kvm_t *, unsigned long, char *, unsigned int));
-int	 kvm_write __P((kvm_t *, unsigned long, const char *, unsigned int));
-int	 kvm_nlist __P((kvm_t *, struct nlist *));
-char	*kvm_geterr __P((kvm_t *));
-
-struct kinfo_proc *kvm_getprocs __P((kvm_t *, int, int, int *));
+int	  kvm_close __P((kvm_t *));
 char	**kvm_getargv __P((kvm_t *, const struct kinfo_proc *, int));
 char	**kvm_getenvv __P((kvm_t *, const struct kinfo_proc *, int));
+char	 *kvm_geterr __P((kvm_t *));
+struct kinfo_proc *
+	  kvm_getprocs __P((kvm_t *, int, int, int *));
+int	  kvm_nlist __P((kvm_t *, struct nlist *));
+kvm_t	 *kvm_open
+	    __P((const char *, const char *, const char *, int, const char *));
+kvm_t	 *kvm_openfiles
+	    __P((const char *, const char *, const char *, int, char *));
+int	  kvm_read __P((kvm_t *, unsigned long, void *, unsigned int));
+int	  kvm_write __P((kvm_t *, unsigned long, const void *, unsigned int));
 
 __END_DECLS
 
