@@ -30,10 +30,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	5.3 (Berkeley) 06/01/90
+ *	@(#)pathnames.h	5.4 (Berkeley) 02/10/91
  */
 
 #include <paths.h>
 
 #undef _PATH_TMP
-#define	_PATH_TMP	"/tmp/passwd.XXXXXX"
+#define	_PATH_TMP	"/tmp/chpass.XXXXXX"
