@@ -30,10 +30,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)select.h	7.1 (Berkeley) 02/17/92
+ *	@(#)select.h	7.2 (Berkeley) 02/17/92
  */
 
-#ifdef KERNEL
 /*
  * Used to maintain information about processes that wish to be
  * notified when I/O becomes possible.
@@ -46,5 +45,3 @@ struct selinfo {
 
 void	selrecord __P((struct proc *selector, struct selinfo *));
 void	selwakeup __P((struct selinfo *));
-
-#endif	/* KERNEL */
