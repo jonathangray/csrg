@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)jobs.c	5.4 (Berkeley) 07/15/92";
+static char sccsid[] = "@(#)jobs.c	5.4 (Berkeley) 7/15/92";
 #endif /* not lint */
 
 #include "shell.h"
@@ -83,7 +83,6 @@ STATIC void freejob(struct job *);
 STATIC int procrunning(int);
 STATIC int dowait(int, struct job *);
 STATIC int waitproc(int, int *);
-STATIC char *commandtext(union node *);
 #else
 STATIC void restartjob();
 STATIC struct job *getjob();
@@ -91,7 +90,6 @@ STATIC void freejob();
 STATIC int procrunning();
 STATIC int dowait();
 STATIC int waitproc();
-STATIC char *commandtext();
 #endif
 
 
@@ -860,15 +858,16 @@ stoppedjobs()
 STATIC char *cmdnextc;
 STATIC int cmdnleft;
 STATIC void cmdtxt(), cmdputs();
+#define MAXCMDTEXT	200
 
-STATIC char *
+char *
 commandtext(n)
 	union node *n;
 	{
 	char *name;
 
-	cmdnextc = name = ckmalloc(50);
-	cmdnleft = 50 - 4;
+	cmdnextc = name = ckmalloc(MAXCMDTEXT);
+	cmdnleft = MAXCMDTEXT - 4;
 	cmdtxt(n);
 	*cmdnextc = '\0';
 	return name;
