@@ -15,22 +15,22 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)sys_process.c	7.2 (Berkeley) 07/21/92
+ *	@(#)sys_process.c	7.3 (Berkeley) 10/11/92
  */
 
-#include "sys/param.h"
-#include "sys/proc.h"
-#include "sys/vnode.h"
-#include "sys/buf.h"
-#include "sys/malloc.h"
-#include "sys/ptrace.h"
-#include "sys/user.h"
+#include <sys/param.h>
+#include <sys/proc.h>
+#include <sys/vnode.h>
+#include <sys/buf.h>
+#include <sys/malloc.h>
+#include <sys/ptrace.h>
+#include <sys/user.h>
 
-#include "vm/vm.h"
-#include "vm/vm_page.h"
+#include <vm/vm.h>
+#include <vm/vm_page.h>
 
-#include "machine/psl.h"
-#include "machine/reg.h"
+#include <machine/psl.h>
+#include <machine/reg.h>
 
 /*
  * Priority for tracing
