@@ -1,4 +1,4 @@
-/*	@(#)sinh.c	4.1	12/25/82	*/
+/*	@(#)sinh.c	4.2	05/23/85	*/
 
 /*
 	sinh(arg) returns the hyperbolic sine of its floating-
