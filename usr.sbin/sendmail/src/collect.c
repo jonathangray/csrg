@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)collect.c	5.13 (Berkeley) 11/04/92";
+static char sccsid[] = "@(#)collect.c	5.14 (Berkeley) 11/14/92";
 #endif /* not lint */
 
 # include <errno.h>
@@ -110,7 +110,7 @@ maketemp(from)
 			goto readerr;
 		fixcrlf(buf, FALSE);
 	}
-# endif NOTUNIX
+# endif /* NOTUNIX */
 
 	/*
 	**  Copy InChannel to temp file & do message editing.
@@ -320,7 +320,7 @@ flusheol(buf, fp)
 	char junkbuf[MAXLINE], *sfgets();
 	register char *p = buf;
 
-	while (index(p, '\n') == NULL) {
+	while (strchr(p, '\n') == NULL) {
 		if (sfgets(junkbuf,MAXLINE,fp) == NULL)
 			return(FALSE);
 		p = junkbuf;
@@ -438,4 +438,4 @@ eatfrom(fm, e)
 	}
 }
 
-# endif NOTUNIX
+# endif /* NOTUNIX */
