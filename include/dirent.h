@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dirent.h	5.19 (Berkeley) 02/06/92
+ *	@(#)dirent.h	8.1 (Berkeley) 06/02/93
  */
 
 #ifndef _DIRENT_H_
