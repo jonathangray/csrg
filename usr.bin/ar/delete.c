@@ -35,17 +35,18 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)delete.c	5.4 (Berkeley) 03/11/91";
+static char sccsid[] = "@(#)delete.c	5.5 (Berkeley) 03/11/91";
 #endif /* not lint */
 
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <dirent.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <ar.h>
 #include "archive.h"
+#include "extern.h"
 #include "pathnames.h"
 
 extern CHDR chdr;			/* converted header */
@@ -61,7 +62,7 @@ delete(argv)
 {
 	CF cf;
 	off_t size;
-	int afd, eval, tfd;
+	int afd, tfd;
 	char *file;
 
 	afd = open_archive(O_RDWR);
@@ -70,7 +71,7 @@ delete(argv)
 	/* Read and write to an archive; pad on both. */
 	SETCF(afd, archive, tfd, tname, RPAD|WPAD);
 	while (get_header(afd)) {
-		if ((file = *argv) && files(argv)) {
+		if (*argv && (file = files(argv))) {
 			if (options & AR_V)
 				(void)printf("d - %s\n", file);
 			skipobj(afd);
@@ -78,8 +79,6 @@ delete(argv)
 		}
 		put_object(&cf, (struct stat *)NULL);
 	}
-	eval = 0;
-	ORPHANS;
 
 	size = lseek(tfd, (off_t)0, SEEK_CUR);
 	(void)lseek(tfd, (off_t)0, SEEK_SET);
@@ -89,5 +88,10 @@ delete(argv)
 	(void)close(tfd);
 	(void)ftruncate(afd, size + SARMAG);
 	close_archive(afd);
-	return(eval);
+
+	if (*argv) {
+		orphans(argv);
+		return(1);
+	}
+	return(0);
 }	
