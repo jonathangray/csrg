@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)types.h	7.3 (Berkeley) 06/23/90
+ *	@(#)types.h	7.4 (Berkeley) 06/25/90
  */
 
 #ifndef	_MACHTYPES_H_
@@ -54,11 +54,12 @@
 #define	_VA_LIST_	char *			/* va_list */
 #define	_WCHAR_T_	unsigned short		/* wchar_t */
 
-#ifndef _ANSI_SOURCE
-typedef	struct	_physadr { short r[1]; } *physadr;
-typedef	struct	label_t	{
-	int	val[15];	/* consistent with HP-UX */
+#if !defined(_ANSI_SOURCE) && !defined(_POSIX_SOURCE)
+typedef struct _physadr {
+	short r[1];
+} *physadr;
+typedef struct label_t {		/* consistent with HP-UX */
+	int val[15];
 } label_t;
 #endif
-
 #endif	/* _MACHTYPES_H_ */
