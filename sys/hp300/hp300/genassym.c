@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)genassym.c	7.9 (Berkeley) 08/29/91
+ *	@(#)genassym.c	7.10 (Berkeley) 06/05/92
  */
 
 #define KERNEL
@@ -116,6 +116,8 @@ main()
 	printf("#define\tT_FPERR %d\n", T_FPERR);
 	printf("#define\tT_ASTFLT %d\n", T_ASTFLT);
 	printf("#define\tT_TRAP15 %d\n", T_TRAP15);
+	printf("#define\tT_FPEMULI %d\n", T_FPEMULI);
+	printf("#define\tT_FPEMULD %d\n", T_FPEMULD);
 	printf("#define\tPSL_S %d\n", PSL_S);
 	printf("#define\tPSL_IPL7 %d\n", PSL_IPL7);
 	printf("#define\tPSL_LOWIPL %d\n", PSL_LOWIPL);
@@ -167,7 +169,6 @@ main()
 	printf("#define\tPCB_USTP %d\n", &pcb->pcb_ustp);
 	printf("#define\tPCB_USP %d\n", &pcb->pcb_usp);
 	printf("#define\tPCB_REGS %d\n", pcb->pcb_regs);
-	printf("#define\tPCB_CMAP2 %d\n", &pcb->pcb_cmap2);
 	printf("#define\tPCB_ONFAULT %d\n", &pcb->pcb_onfault);
 	printf("#define\tPCB_FPCTX %d\n", &pcb->pcb_fpregs);
 	printf("#define\tSIZEOF_PCB %d\n", sizeof(struct pcb));
