@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)envelope.c	8.11 (Berkeley) 09/04/93";
+static char sccsid[] = "@(#)envelope.c	8.12 (Berkeley) 10/16/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -488,6 +488,10 @@ openxscript(e)
 			syserr("!Can't open /dev/null");
 	}
 	e->e_xfp = fdopen(fd, "w");
+	if (e->e_xfp == NULL)
+	{
+		syserr("!Can't create transcript stream %s", p);
+	}
 }
 /*
 **  CLOSEXSCRIPT -- close the transcript file.
