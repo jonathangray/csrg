@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_ihash.c	7.3 (Berkeley) 12/16/91
+ *	@(#)ufs_ihash.c	7.4 (Berkeley) 03/11/92
  */
 
 #include <sys/param.h>
@@ -70,7 +70,7 @@ ufs_ihashinit()
 	ihashtbl = (union ihash *)malloc((u_long)ihashsize,
 	    M_UFSMNT, M_WAITOK);
 	for (ihash = 1; ihash <= ihashsize / sizeof *ihp; ihash <<= 1)
-		/* void */;
+		continue;
 	ihash = (ihash >> 1) - 1;
 	for (ihp = &ihashtbl[ihash]; ihp >= ihashtbl; ihp--) {
 		ihp->ih_head[0] = ihp;
