@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)brk.2	8.3 (Berkeley) 04/20/94
+.\"     @(#)brk.2	8.4 (Berkeley) 05/01/95
 .\"
 .Dd 
 .Dt BRK 2
@@ -96,7 +96,7 @@ beyond the
 value returned from a call to
 .Xr getrlimit ,
 e.g.
-.Dq qetext + rlp\(->rlim_max.
+.Dq etext + rlp\(->rlim_max.
 (see
 .Xr end 3
 for the definition of
