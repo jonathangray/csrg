@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_socket.c	7.31 (Berkeley) 11/19/91
+ *	@(#)uipc_socket.c	7.32 (Berkeley) 02/13/92
  */
 
 #include "param.h"
@@ -54,6 +54,7 @@
  */
 /*ARGSUSED*/
 socreate(dom, aso, type, proto)
+	int dom;
 	struct socket **aso;
 	register int type;
 	int proto;
