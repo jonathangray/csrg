@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hd_input.c	7.4 (Berkeley) 08/30/90
+ *	@(#)hd_input.c	7.5 (Berkeley) 10/04/90
  */
 
 #include "param.h"
@@ -67,12 +67,13 @@ hdintr ()
 	register struct hdcb *hdp;
 	register struct ifnet *ifp;
 	register int s;
+	extern struct ifqueue pkintrq;
 	static struct ifnet *lastifp;
 	static struct hdcb *lasthdp;
 
 	for (;;) {
 		s = splimp ();
-		IF_DEQUEUEIF(&hdintrq, m, ifp);
+		IF_DEQUEUE (&hdintrq, m);
 		splx (s);
 		if (m == 0)
 			break;
@@ -82,6 +83,9 @@ hdintr ()
 			m_freem (m);
 			continue;
 		}
+		if ((m->m_flags & M_PKTHDR) == 0)
+			panic("hdintr");
+		ifp = m->m_pkthdr.rcvif;
 
 		/*
 		 * look up the appropriate hdlc control block
@@ -107,6 +111,8 @@ hdintr ()
 		if (process_rxframe (hdp, m) == FALSE)
 			m_freem (m);
 	}
+	if (pkintrq.ifq_len)
+		pkintr ();
 }
 
 process_rxframe (hdp, fbuf)
@@ -507,6 +513,10 @@ int frametype;
 			hdp->hd_retxcnt = 0;
 			hdp->hd_condition &= ~TIMER_RECOVERY_CONDITION;
 
+			if (frametype == RR && hdp->hd_lastrxnr == hdp->hd_vs
+				&& hdp->hd_timer == 0 && hdp->hd_txq.head == 0)
+				hd_writeinternal(hdp, RR, pf);
+			else
 			/* If any iframes have been queued because of the
 			   timer condition, transmit then now. */
 			if (hdp->hd_condition & REMOTE_RNR_CONDITION) {
