@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dir.h	7.2 (Berkeley) 06/28/90
+ *	@(#)dir.h	7.3 (Berkeley) 02/05/91
  */
 
 /*
@@ -38,7 +38,8 @@
  * and is provided solely (and temporarily) for backward compatibility.
  */
 
-#ifndef _DIRENT_
+#ifndef _DIR_H_
+#define	_DIR_H_
 
 #include <dirent.h>
 
@@ -57,4 +58,4 @@
 #define DIRSIZ(dp) \
     ((sizeof (struct direct) - (MAXNAMLEN+1)) + (((dp)->d_namlen+1 + 3) &~ 3))
 
-#endif /* _DIRENT_ */
+#endif /* !_DIR_H_ */
