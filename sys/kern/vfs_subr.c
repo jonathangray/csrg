@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.94 (Berkeley) 02/04/93
+ *	@(#)vfs_subr.c	7.95 (Berkeley) 03/04/93
  */
 
 /*
@@ -1086,7 +1086,7 @@ int kinfo_vgetfailed;
 /* ARGSUSED */
 sysctl_vnode(where, sizep)
 	char *where;
-	int *sizep;
+	size_t *sizep;
 {
 	register struct mount *mp = rootfs;
 	struct mount *omp;
