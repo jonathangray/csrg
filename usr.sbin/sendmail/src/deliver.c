@@ -33,13 +33,13 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	8.77 (Berkeley) 03/07/94";
+static char sccsid[] = "@(#)deliver.c	8.78 (Berkeley) 03/11/94";
 #endif /* not lint */
 
 #include "sendmail.h"
 #include <netdb.h>
 #include <errno.h>
-#ifdef NAMED_BIND
+#if NAMED_BIND
 #include <arpa/nameser.h>
 #include <resolv.h>
 
@@ -621,7 +621,7 @@ deliver(e, firstto)
 	if (!ForceMail && bitset(QDONTSEND|QPSEUDO, to->q_flags))
 		return (0);
 
-#ifdef NAMED_BIND
+#if NAMED_BIND
 	/* unless interactive, try twice, over a minute */
 	if (OpMode == MD_DAEMON || OpMode == MD_SMTP)
 	{
@@ -937,7 +937,7 @@ deliver(e, firstto)
 	    bitset(QGOODUID, e->e_from.q_flags))
 		ctladdr = &e->e_from;
 
-#ifdef NAMED_BIND
+#if NAMED_BIND
 	if (ConfigLevel < 2)
 		_res.options &= ~(RES_DEFNAMES | RES_DNSRCH);	/* XXX */
 #endif
@@ -1065,7 +1065,7 @@ tryhost:
 				bitnset(M_SECURE_PORT, m->m_flags));
 			mci->mci_exitstat = i;
 			mci->mci_errno = errno;
-#ifdef NAMED_BIND
+#if NAMED_BIND
 			mci->mci_herrno = h_errno;
 #endif
 			if (i == EX_OK)
@@ -1371,7 +1371,7 @@ tryhost:
 		/* couldn't open the mailer */
 		rcode = mci->mci_exitstat;
 		errno = mci->mci_errno;
-#ifdef NAMED_BIND
+#if NAMED_BIND
 		h_errno = mci->mci_herrno;
 #endif
 		if (rcode == EX_OK)
@@ -1464,7 +1464,7 @@ tryhost:
 		goto give_up;
 	}
 #endif /* SMTP */
-#ifdef NAMED_BIND
+#if NAMED_BIND
 	if (ConfigLevel < 2)
 		_res.options |= RES_DEFNAMES | RES_DNSRCH;	/* XXX */
 #endif
@@ -1694,7 +1694,7 @@ giveresponse(stat, m, mci, ctladdr, e)
 	else if (stat == EX_TEMPFAIL)
 	{
 		(void) strcpy(buf, SysExMsg[i] + 1);
-#ifdef NAMED_BIND
+#if NAMED_BIND
 		if (h_errno == TRY_AGAIN)
 			statmsg = errstring(h_errno+E_DNSBASE);
 		else
@@ -1718,7 +1718,7 @@ giveresponse(stat, m, mci, ctladdr, e)
 		}
 		statmsg = buf;
 	}
-#ifdef NAMED_BIND
+#if NAMED_BIND
 	else if (stat == EX_NOHOST && h_errno != 0)
 	{
 		statmsg = errstring(h_errno + E_DNSBASE);
@@ -1777,7 +1777,7 @@ giveresponse(stat, m, mci, ctladdr, e)
 		e->e_message = newstr(&statmsg[4]);
 	}
 	errno = 0;
-#ifdef NAMED_BIND
+#if NAMED_BIND
 	h_errno = 0;
 #endif
 }
@@ -2303,7 +2303,7 @@ hostsignature(m, host, e)
 	register STAB *s;
 	int i;
 	int len;
-#ifdef NAMED_BIND
+#if NAMED_BIND
 	int nmx;
 	auto int rcode;
 	char *hp;
@@ -2335,7 +2335,7 @@ hostsignature(m, host, e)
 	**  Not already there -- create a signature.
 	*/
 
-#ifdef NAMED_BIND
+#if NAMED_BIND
 	if (ConfigLevel < 2)
 	{
 		oldoptions = _res.options;
@@ -2358,7 +2358,7 @@ hostsignature(m, host, e)
 			mci = mci_get(hp, m);
 			mci->mci_exitstat = rcode;
 			mci->mci_errno = errno;
-#ifdef NAMED_BIND
+#if NAMED_BIND
 			mci->mci_herrno = h_errno;
 #endif
 
