@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tuba_subr.c	7.7 (Berkeley) 11/05/92
+ *	@(#)tuba_subr.c	7.8 (Berkeley) 11/08/92
  */
 
 #include <sys/param.h>
@@ -68,11 +68,11 @@
 #include <netiso/tuba_table.h>
 
 static	struct	sockaddr_iso null_siso = { sizeof(null_siso), AF_ISO, };
-extern	int	tuba_table_size;
+extern	int	tuba_table_size, tcp_keepidle, tcp_keepintvl, tcp_maxidle;
 extern	int	tcppcbcachemiss, tcppredack, tcppreddat, tcprexmtthresh;
 extern	struct	tcpiphdr tcp_saveti;
-struct	inpcb	*tuba_last_inpcb;
 struct	inpcb	tuba_inpcb;
+struct	inpcb	*tuba_last_inpcb = &tuba_inpcb;
 struct	isopcb	tuba_isopcb;
 /*
  * Tuba initialization
@@ -96,15 +96,13 @@ static void
 tuba_getaddr(error, sum, siso, index)
 	int *error;
 	register u_long *sum;
-	struct sockaddr_iso *siso;
+	struct sockaddr_iso **siso;
 	u_long index;
 {
 	register struct tuba_cache *tc;
 	if (index <= tuba_table_size && (tc = tuba_table[index])) {
-		if (siso) {
-			*siso = null_siso;
-			siso->siso_addr = tc->tc_addr;
-		}
+		if (siso)
+			*siso = &tc->tc_siso;
 		REDUCE(*sum, *sum + tc->tc_sum_out);
 	} else
 		*error = 1;
@@ -123,17 +121,17 @@ tuba_output(m, tp)
 		isop = &tuba_isopcb;
 		n = mtod(m, struct tcpiphdr *);
 		i = sum = 0;
-		tuba_getaddr(&i, &sum, tuba_isopcb.isop_faddr,
+		tuba_getaddr(&i, &sum, &tuba_isopcb.isop_faddr,
 				n->ti_dst.s_addr);
-		tuba_getaddr(&i, &sum, tuba_isopcb.isop_laddr,
+		tuba_getaddr(&i, &sum, &tuba_isopcb.isop_laddr,
 				n->ti_src.s_addr);
 		goto adjust;
 	}
 	if (n->ti_sum == 0) {
 		i = sum = 0;
-		tuba_getaddr(&i, &sum, (struct sockaddr_iso *)0,
+		tuba_getaddr(&i, &sum, (struct sockaddr_iso **)0,
 				n->ti_dst.s_addr);
-		tuba_getaddr(&i, &sum, (struct sockaddr_iso *)0,
+		tuba_getaddr(&i, &sum, (struct sockaddr_iso **)0,
 				n->ti_src.s_addr);
 		n->ti_sum = sum;
 		n = mtod(m, struct tcpiphdr *);
@@ -147,9 +145,9 @@ tuba_output(m, tp)
 	m->m_len -= sizeof (struct ip);
 	m->m_pkthdr.len -= sizeof (struct ip);
 	m->m_data += sizeof (struct ip);
-	return (clnp_output(m, isop, m->m_pkthdr.len, 0));
+	i = clnp_output(m, isop, m->m_pkthdr.len, 0);
+	return (i);
 }
-
 
 tuba_refcnt(isop, delta)
 	struct isopcb *isop;
@@ -199,8 +197,7 @@ tuba_pcbconnect(inp, nam)
 
 	inp->inp_faddr.s_addr = index;
 	inp->inp_fport = sin->sin_port;
-	*siso = null_siso;
-	siso->siso_addr = tc->tc_addr;
+	*siso = tc->tc_siso;
 	siso->siso_tlen = sizeof(inp->inp_fport);
 	bcopy((caddr_t)&inp->inp_fport, TSEL(siso), sizeof(inp->inp_fport));
 	nam->m_len = sizeof(*siso);
@@ -222,7 +219,6 @@ tuba_tcpinput(m, src, dst, clnp_len, ce_bit)
 	struct sockaddr_iso *src, *dst;
 	int clnp_len, ce_bit;
 {
-	int s = splnet();
 	unsigned long sum, lindex, findex;
 	register struct tcpiphdr *ti;
 	register struct inpcb *inp;
@@ -299,6 +295,7 @@ tuba_tcpinput(m, src, dst, clnp_len, ce_bit)
 		      mtod(m0, caddr_t) + sizeof(struct ip),
 		      sizeof(struct tcphdr));
 		m->m_data += sizeof(struct tcpiphdr);
+		m->m_len -= sizeof(struct tcpiphdr);
 		m0->m_next = m;
 		m0->m_pkthdr = m->m_pkthdr;
 		m0->m_flags = m->m_flags & M_COPYFLAGS;
@@ -327,3 +324,7 @@ tuba_tcpinput(m, src, dst, clnp_len, ce_bit)
 
 #include <netinet/tcp_input.c>
 }
+
+#define tcp_slowtimo	tuba_slowtimo
+#define tcp_fasttimo	tuba_fasttimo
+#include <netinet/tcp_timer.c>
