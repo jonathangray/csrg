@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ww.h	3.62 (Berkeley) 08/12/90
+ *	@(#)ww.h	3.63 (Berkeley) 03/02/91
  */
 
 #ifdef OLD_TTY
@@ -250,7 +250,7 @@ int wwnselect, wwnselecte, wwnselectz;
 #define wwupdate()	wwupdate1(0, wwnrow);
 
 	/* things for handling input */
-int wwrint();		/* interrupt handler */
+void wwrint();		/* interrupt handler */
 struct ww *wwcurwin;	/* window to copy input into */
 char *wwib;		/* input (keyboard) buffer */
 char *wwibe;		/* wwib + sizeof buffer */
