@@ -9,7 +9,7 @@
  * All advertising materials mentioning features or use of this software
  * must display the following acknowledgement:
  *	This product includes software developed by the University of
- *	California, Lawrence Berkeley Laboratories.
+ *	California, Lawrence Berkeley Laboratory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -41,7 +41,7 @@
  *
  *	@(#)autoconf.h	7.3 (Berkeley) 04/20/93
  *
- * from: $Header: autoconf.h,v 1.8 92/06/24 08:55:42 torek Exp $ (LBL)
+ * from: $Header: autoconf.h,v 1.10 92/11/26 02:04:32 torek Exp $ (LBL)
  */
 
 /*
@@ -69,6 +69,7 @@ struct romaux {
 		int	int_vec;		/* vector (always 0?) */
 	} ra_intr[RA_MAXINTR];
 	int	ra_nintr;		/* number of interrupt info elements */
+	struct	bootpath *ra_bp;	/* used for locating boot device */
 };
 
 /*
@@ -128,3 +129,11 @@ int	makememarr(struct memarr *, int max, int which);
 
 /* Pass a string to the FORTH interpreter.  May fail silently. */
 void	rominterpret __P((char *));
+
+/* Openprom V2 style boot path */
+struct bootpath {
+	char	name[8];		/* name of this node */
+	int	val[2];			/* up to two optional values */
+};
+
+struct device *bootdv;			/* found during autoconfiguration */
