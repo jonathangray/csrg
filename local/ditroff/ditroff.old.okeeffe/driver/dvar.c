@@ -1,4 +1,4 @@
-/*	dvar.c	1.11	84/03/14
+/*	dvar.c	1.12	84/05/24
  *
  * Varian driver for the new troff
  *
@@ -80,7 +80,7 @@ x ..\n	device control functions:
 #define  vmot(n)	vgoto(vpos + n)
 
 
-char	SccsId[]= "dvar.c	1.11	84/03/14";
+char	SccsId[]= "dvar.c	1.12	84/05/24";
 
 int	output	= 0;	/* do we do output at all? */
 int	nolist	= 0;	/* output page list if > 0 */
