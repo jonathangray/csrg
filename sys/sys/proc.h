@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)proc.h	7.33 (Berkeley) 02/28/92
+ *	@(#)proc.h	7.34 (Berkeley) 05/31/92
  */
 
 #ifndef _PROC_H_
@@ -146,7 +146,7 @@ struct	proc {
 	struct	mdproc p_md;	/* any machine-dependent fields */
 
 	u_short	p_xstat;	/* Exit status for wait; also stop signal */
-	u_short	p_dupfd;	/* sideways return value from fdopen XXX */
+	short	p_dupfd;	/* sideways return value from fdopen XXX */
 	u_short	p_acflag;	/* accounting flags */
 /*	short	p_space2; */
 	struct	rusage *p_ru;	/* exit information XXX */
