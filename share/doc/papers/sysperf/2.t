@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)2.t	1.3 (Berkeley) 10/14/90
+.\"	@(#)2.t	5.1 (Berkeley) 04/17/91
 .\"
 .ds RH Observation techniques
 .NH
