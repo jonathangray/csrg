@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)udp_usrreq.c	7.31 (Berkeley) 04/26/93
+ *	@(#)udp_usrreq.c	7.32 (Berkeley) 05/27/93
  */
 
 #include <sys/param.h>
@@ -321,7 +321,7 @@ udp_saveopt(p, size, type)
 	if ((m = m_get(M_DONTWAIT, MT_CONTROL)) == NULL)
 		return ((struct mbuf *) NULL);
 	cp = (struct cmsghdr *) mtod(m, struct cmsghdr *);
-	bcopy(p, (caddr_t)(cp + 1), size);
+	bcopy(p, CMSG_DATA(cp), size);
 	size += sizeof(*cp);
 	m->m_len = size;
 	cp->cmsg_len = size;
