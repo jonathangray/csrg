@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_synch.c	8.6 (Berkeley) 01/21/94
+ *	@(#)kern_synch.c	8.7 (Berkeley) 08/22/94
  */
 
 #include <sys/param.h>
@@ -167,7 +167,7 @@ schedcpu(arg)
 	register unsigned int newcpu;
 
 	wakeup((caddr_t)&lbolt);
-	for (p = (struct proc *)allproc; p != NULL; p = p->p_next) {
+	for (p = allproc.lh_first; p != 0; p = p->p_list.le_next) {
 		/*
 		 * Increment time in/out of memory and sleep time
 		 * (if sleeping).  We ignore overflow; with 16-bit int's
