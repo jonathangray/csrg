@@ -2,7 +2,7 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)ssc	8.1 (Berkeley) 06/08/93
+.\"	@(#)ssc	6.3 (Berkeley) 08/02/93
 .\"
 .SH
 Appendix C: An Advanced Example
@@ -107,7 +107,7 @@ If the lexical analyzer detects an error,
 it responds by returning a token that
 is illegal in the grammar, provoking a syntax error
 in the parser, and thence error recovery.
-.DS L
+.LD
 
 %{
 
