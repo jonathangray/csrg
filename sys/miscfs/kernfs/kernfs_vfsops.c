@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kernfs_vfsops.c	8.6 (Berkeley) 02/23/95
+ *	@(#)kernfs_vfsops.c	8.7 (Berkeley) 03/29/95
  */
 
 /*
@@ -55,9 +55,11 @@
 
 dev_t rrootdev = NODEV;
 
-kernfs_init()
+kernfs_init(vfsp)
+	struct vfsconf *vfsp;
 {
 
+	return (0);
 }
 
 void
@@ -122,7 +124,7 @@ kernfs_mount(mp, path, data, ndp, p)
 	fmp->kf_root = rvp;
 	mp->mnt_flag |= MNT_LOCAL;
 	mp->mnt_data = (qaddr_t) fmp;
-	getnewfsid(mp, MOUNT_KERNFS);
+	vfs_getnewfsid(mp);
 
 	(void) copyinstr(path, mp->mnt_stat.f_mntonname, MNAMELEN - 1, &size);
 	bzero(mp->mnt_stat.f_mntonname + size, MNAMELEN - size);
@@ -217,16 +219,6 @@ kernfs_root(mp, vpp)
 	return (0);
 }
 
-kernfs_quotactl(mp, cmd, uid, arg, p)
-	struct mount *mp;
-	int cmd;
-	uid_t uid;
-	caddr_t arg;
-	struct proc *p;
-{
-	return (EOPNOTSUPP);
-}
-
 kernfs_statfs(mp, sbp, p)
 	struct mount *mp;
 	struct statfs *sbp;
@@ -236,7 +228,6 @@ kernfs_statfs(mp, sbp, p)
 	printf("kernfs_statfs(mp = %x)\n", mp);
 #endif
 
-	sbp->f_type = MOUNT_KERNFS;
 	sbp->f_flags = 0;
 	sbp->f_bsize = DEV_BSIZE;
 	sbp->f_iosize = DEV_BSIZE;
@@ -246,48 +237,12 @@ kernfs_statfs(mp, sbp, p)
 	sbp->f_files = 0;
 	sbp->f_ffree = 0;
 	if (sbp != &mp->mnt_stat) {
+		sbp->f_type = mp->mnt_vfc->vfc_typenum;
 		bcopy(&mp->mnt_stat.f_fsid, &sbp->f_fsid, sizeof(sbp->f_fsid));
 		bcopy(mp->mnt_stat.f_mntonname, sbp->f_mntonname, MNAMELEN);
 		bcopy(mp->mnt_stat.f_mntfromname, sbp->f_mntfromname, MNAMELEN);
 	}
 	return (0);
-}
-
-kernfs_sync(mp, waitfor)
-	struct mount *mp;
-	int waitfor;
-{
-	return (0);
-}
-
-/*
- * Kernfs flat namespace lookup.
- * Currently unsupported.
- */
-kernfs_vget(mp, ino, vpp)
-	struct mount *mp;
-	ino_t ino;
-	struct vnode **vpp;
-{
-
-	return (EOPNOTSUPP);
-}
-
-
-kernfs_fhtovp(mp, fhp, setgen, vpp)
-	struct mount *mp;
-	struct fid *fhp;
-	int setgen;
-	struct vnode **vpp;
-{
-	return (EOPNOTSUPP);
-}
-
-kernfs_vptofh(vp, fhp)
-	struct vnode *vp;
-	struct fid *fhp;
-{
-	return (EOPNOTSUPP);
 }
 
 struct vfsops kernfs_vfsops = {
@@ -302,4 +257,5 @@ struct vfsops kernfs_vfsops = {
 	kernfs_fhtovp,
 	kernfs_vptofh,
 	kernfs_init,
+	kernfs_sysctl,
 };
