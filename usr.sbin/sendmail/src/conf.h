@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.108 (Berkeley) 06/17/94
+ *	@(#)conf.h	8.109 (Berkeley) 06/19/94
  */
 
 /*
@@ -268,8 +268,14 @@ extern char		*getenv();
 /*
 **  DG/UX
 **
-**	Tested on 5.4.2
+**	Tested on 5.4.2 and 5.4.3.  Use DGUX_5_4_2 to get the
+**	older support.
+**	5.4.3 changes from Mark T. Robinson <mtr@ornl.gov>.
 */
+
+#ifdef DGUX_5_4_2
+# define DGUX		1
+#endif
 
 #ifdef	DGUX
 # define SYSTEM5	1
@@ -289,8 +295,10 @@ extern char		*getenv();
 # include <netinet/in.h>
 # include <arpa/inet.h>
 
-# define inet_addr	dgux_inet_addr
+# ifdef DGUX_5_4_2
+#  define inet_addr	dgux_inet_addr
 extern long	dgux_inet_addr();
+# endif
 #endif
 
 
