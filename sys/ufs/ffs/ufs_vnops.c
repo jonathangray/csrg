@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	7.53 (Berkeley) 02/21/91
+ *	@(#)ufs_vnops.c	7.54 (Berkeley) 02/21/91
  */
 
 #include "param.h"
@@ -988,7 +988,8 @@ ufs_rename(fndp, tndp)
 		VOP_UNLOCK(fndp->ni_vp);
 		if (error)
 			goto bad;
-		tndp->ni_nameiop = RENAME | LOCKPARENT | LOCKLEAF | NOCACHE;
+		tndp->ni_nameiop &= ~(MODMASK | OPMASK);
+		tndp->ni_nameiop |= RENAME | LOCKPARENT | LOCKLEAF | NOCACHE;
 		do {
 			dp = VTOI(tndp->ni_dvp);
 			if (xp != NULL)
@@ -1108,7 +1109,8 @@ ufs_rename(fndp, tndp)
 	/*
 	 * 3) Unlink the source.
 	 */
-	fndp->ni_nameiop = DELETE | LOCKPARENT | LOCKLEAF;
+	fndp->ni_nameiop &= ~(MODMASK | OPMASK);
+	fndp->ni_nameiop |= DELETE | LOCKPARENT | LOCKLEAF;
 	(void)namei(fndp);
 	if (fndp->ni_vp != NULL) {
 		xp = VTOI(fndp->ni_vp);
@@ -1289,7 +1291,8 @@ ufs_mkdir(ndp, vap)
 	error = direnter(ip, ndp);
 	dp = NULL;
 	if (error) {
-		ndp->ni_nameiop = LOOKUP | NOCACHE;
+		ndp->ni_nameiop &= ~(MODMASK | OPMASK);
+		ndp->ni_nameiop |= LOOKUP | NOCACHE;
 		error = namei(ndp);
 		if (!error) {
 			dp = VTOI(ndp->ni_vp);
