@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)types.h	7.6 (Berkeley) 07/14/92
+ *	@(#)types.h	7.7 (Berkeley) 04/29/93
  */
 
 #ifndef	_MACHTYPES_H_
@@ -44,17 +44,13 @@ typedef struct label_t {
 	int val[14];
 } label_t;
 
-#ifdef	__GNUC__
-typedef	char			s1byte_t;	/* Basic data types. */
-typedef	unsigned char		u1byte_t;
-typedef	short			s2byte_t;
-typedef	unsigned short		u2byte_t;
-typedef	long			s4byte_t;
-typedef	unsigned long		u4byte_t;
-typedef	long long		s8byte_t;
-typedef	unsigned long long	u8byte_t;
-typedef	float			f4byte_t;
-typedef	double			f8byte_t;
-#endif
+typedef	char			   int8;	/* Basic integral types. */
+typedef	unsigned char		 u_int8;
+typedef	short			  int16;
+typedef	unsigned short		u_int16;
+typedef	int			  int32;
+typedef	unsigned int		u_int32;
+typedef	long long		  int64;
+typedef	unsigned long long	u_int64;
 
 #endif	/* _MACHTYPES_H_ */
