@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_ihash.c	8.6 (Berkeley) 05/14/95
+ *	@(#)ufs_ihash.c	8.7 (Berkeley) 05/17/95
  */
 
 #include <sys/param.h>
@@ -123,12 +123,13 @@ ufs_ihashins(ip)
 	struct proc *p = curproc;		/* XXX */
 	struct ihashhead *ipp;
 
+	/* lock the inode, then put it on the appropriate hash list */
+	lockmgr(&ip->i_lock, LK_EXCLUSIVE, (struct simplelock *)0, p);
+
 	simple_lock(&ufs_ihash_slock);
 	ipp = INOHASH(ip->i_dev, ip->i_number);
 	LIST_INSERT_HEAD(ipp, ip, i_hash);
 	simple_unlock(&ufs_ihash_slock);
-
-	lockmgr(&ip->i_lock, LK_EXCLUSIVE, (struct simplelock *)0, p);
 }
 
 /*
