@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)network.c	5.1 (Berkeley) 09/14/90";
+static char sccsid[] = "@(#)network.c	5.2 (Berkeley) 03/01/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -49,13 +49,14 @@ static char sccsid[] = "@(#)network.c	5.1 (Berkeley) 09/14/90";
 #include "externs.h"
 #include "fdset.h"
 
-Ring	netoring, netiring;
-char	netobuf[2*BUFSIZ], netibuf[BUFSIZ];
+Ring		netoring, netiring;
+unsigned char	netobuf[2*BUFSIZ], netibuf[BUFSIZ];
 
 /*
  * Initialize internal network data structures.
  */
 
+    void
 init_network()
 {
     if (ring_init(&netoring, netobuf, sizeof netobuf) != 1) {
@@ -73,7 +74,7 @@ init_network()
  * Telnet "synch" processing).
  */
 
-int
+    int
 stilloob()
 {
     static struct timeval timeout = { 0 };
@@ -105,7 +106,7 @@ stilloob()
  *	Sets "neturg" to the current location.
  */
 
-void
+    void
 setneturg()
 {
     ring_mark(&netoring);
@@ -122,11 +123,15 @@ setneturg()
  */
 
 
-int
+    int
 netflush()
 {
     register int n, n1;
 
+#if	defined(ENCRYPT)
+    if (encrypt_output)
+	ring_encrypt(&netoring, encrypt_output);
+#endif
     if ((n1 = n = ring_full_consecutive(&netoring)) > 0) {
 	if (!ring_at_mark(&netoring)) {
 	    n = send(net, netoring.consume, n, 0);	/* normal write */
