@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_inherit.h	7.2 (Berkeley) 04/21/91
+ *	@(#)vm_inherit.h	7.3 (Berkeley) 05/04/92
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -68,14 +68,6 @@
 
 #ifndef	_VM_INHERIT_
 #define	_VM_INHERIT_
-
-/*
- *	Types defined:
- *
- *	vm_inherit_t	inheritance codes.
- */
-
-typedef int		vm_inherit_t;	/* might want to change this */
 
 /*
  *	Enumeration of valid values for vm_inherit_t.
