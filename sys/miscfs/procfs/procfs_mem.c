@@ -4,7 +4,7 @@
  * All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
- * Jan-Simon Pendry.
+ * Jan-Simon Pendry and Sean Eric Fagan.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)procfs_mem.c	8.1 (Berkeley) 01/05/94
+ *	@(#)procfs_mem.c	8.2 (Berkeley) 01/17/94
  *
  * From:
  *	$Id: procfs_mem.c,v 3.2 1993/12/15 09:40:17 jsp Exp $
