@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)rz.c	8.1 (Berkeley) 07/29/93
+ *	@(#)rz.c	8.2 (Berkeley) 07/03/94
  */
 
 /*
@@ -302,7 +302,7 @@ rzprobe(sd)
 	printf("rz%d at %s%d drive %d slave %d", sd->sd_unit,
 		sd->sd_cdriver->d_name, sd->sd_ctlr, sd->sd_drive,
 		sd->sd_slave);
-	if (inqbuf.version > 1 || i < 36)
+	if (inqbuf.version > 2 || i < 36)
 		printf(" type 0x%x, qual 0x%x, ver %d",
 			inqbuf.type, inqbuf.qualifier, inqbuf.version);
 	else {
