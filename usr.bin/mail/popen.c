@@ -5,7 +5,7 @@
 #define	RDR	0
 #define	WTR	1
 static	int	popen_pid[20];
-static	char	*sccsid = "@(#)popen.c	1.6 06/12/83";
+static	char	*sccsid = "@(#)popen.c	1.7 08/11/83";
 
 #ifdef VMUNIX
 #define	mask(s)	(1<<((s)-1))
