@@ -30,10 +30,8 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	5.2 (Berkeley) 06/24/90
+ *	@(#)pathnames.h	5.3 (Berkeley) 01/17/91
  */
-
 #include <paths.h>
 
-#undef _PATH_TMP
-#define _PATH_TMP	"/tmp/maXXXXX"
+#define _PATH_LOCTMP	"/tmp/local.XXXXXX"
