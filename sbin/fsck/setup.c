@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)setup.c	5.42 (Berkeley) 11/15/92";
+static char sccsid[] = "@(#)setup.c	5.43 (Berkeley) 06/04/93";
 #endif /* not lint */
 
 #define DKTYPENAMES
@@ -392,7 +392,7 @@ badsb(listerr, s)
 	if (!listerr)
 		return;
 	if (preen)
-		printf("%s: ", devname);
+		printf("%s: ", cdevname);
 	pfatal("BAD SUPER BLOCK: %s\n", s);
 }
 
