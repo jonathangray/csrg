@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)3.t	6.10 (Berkeley) 07/09/93
+.\"	@(#)3.t	6.11 (Berkeley) 07/09/93
 .\"
 .ds lq ``
 .ds rq ''
@@ -207,7 +207,7 @@ l c l.
 .DS
 \(dg\|Files that can be used from \*(Ps without change.
 \(dd\|Files that need local modifications merged into \*(4B files.
-*\|Files that require special work to merge and are discussed in section 3.3.
+*\|Files that require special work to merge and are discussed in section 3.4.
 .DE
 .NH 2
 Installing \*(4B
@@ -712,6 +712,7 @@ SRC=/oldroot/usr
 cd $SRC; tar cf - msgs preserve | (cd /var && tar xpf -)
 .DE
 .DS
+.ft CW
 # copy $SRC/spool to /var
 cd $SRC/spool
 tar cf - at mail rwho | (cd /var && tar xpf -)
@@ -719,6 +720,7 @@ tar cf - ftp mqueue news secretmail uucp uucppublic | \e
 	(cd /var/spool && tar xpf -)
 .DE
 .DS
+.ft CW
 # everything else in spool is probably a printer area
 mkdir .save
 mv at ftp mail mqueue rwho secretmail uucp uucppublic .save
@@ -727,6 +729,7 @@ mv .save/* .
 rmdir .save
 .DE
 .DS
+.ft CW
 cd /var/spool/mqueue
 mv syslog.7 /var/log/maillog.7
 mv syslog.6 /var/log/maillog.6
@@ -739,6 +742,7 @@ mv syslog.0 /var/log/maillog.0
 mv syslog /var/log/maillog
 .DE
 .DS
+.ft CW
 # move $SRC/adm to /var
 cd $SRC/adm
 tar cf - . | (cd /var/account && tar  xpf -)
@@ -1128,17 +1132,17 @@ can lower it.
 Security levels are defined as follows:
 .IP \-1
 Permanently insecure mode \- always run system in level 0 mode.
-.IP " 0"
+.IP "  0"
 Insecure mode \- immutable and append-only flags may be turned off.
 All devices may be read or written subject to their permissions.
-.IP " 1"
+.IP "  1"
 Secure mode \- immutable and append-only flags may not be cleared;
 disks for mounted filesystems,
 .Pn /dev/mem ,
 and
 .Pn /dev/kmem
 are read-only.
-.IP " 2"
+.IP "  2"
 Highly secure mode \- same as secure mode, plus disks are always
 read-only whether mounted or not.
 This level precludes tampering with filesystems by unmounting them,
