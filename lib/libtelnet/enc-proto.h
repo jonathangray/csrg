@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)enc-proto.h	5.1 (Berkeley) 02/28/91
+ *	@(#)enc-proto.h	5.2 (Berkeley) 03/22/91
  */
 
 /*
@@ -64,7 +64,8 @@
 void encrypt_init P((char *, int));
 Encryptions *findencryption P((int));
 void encrypt_send_supprt P((void));
-void encrypt_auto P((void));
+void encrypt_auto P((int));
+void decrypt_auto P((int));
 void encrypt_is P((unsigned char *, int));
 void encrypt_reply P((unsigned char *, int));
 void encrypt_start_input P((int));
@@ -77,6 +78,7 @@ void encrypt_send_request_end P((void));
 void encrypt_send_end P((void));
 void encrypt_wait P((void));
 void encrypt_send_support P((void));
+void encrypt_send_keyid P((int, unsigned char *, int, int));
 int net_write P((unsigned char *, int));
 
 #ifdef	TELENTD
@@ -86,14 +88,25 @@ int encrypt_cmd P((int, char **));
 void encrypt_display P((void));
 #endif
 
-void krbdes_encrypt P((unsigned char *, int));
-int krbdes_decrypt P((int));
-int krbdes_is P((unsigned char *, int));
-int krbdes_reply P((unsigned char *, int));
-void krbdes_init P((int));
-int krbdes_start P((int, int));
-void krbdes_session P((Session_Key *, int));
-void krbdes_printsub P((unsigned char *, int, unsigned char *, int));
+void cfb64_encrypt P((unsigned char *, int));
+int cfb64_decrypt P((int));
+void cfb64_init P((int));
+int cfb64_start P((int, int));
+int cfb64_is P((unsigned char *, int));
+int cfb64_reply P((unsigned char *, int));
+void cfb64_session P((Session_Key *, int));
+int cfb64_keyid P((int, unsigned char *, int *));
+void cfb64_printsub P((unsigned char *, int, unsigned char *, int));
+
+void ofb64_encrypt P((unsigned char *, int));
+int ofb64_decrypt P((int));
+void ofb64_init P((int));
+int ofb64_start P((int, int));
+int ofb64_is P((unsigned char *, int));
+int ofb64_reply P((unsigned char *, int));
+void ofb64_session P((Session_Key *, int));
+int ofb64_keyid P((int, unsigned char *, int *));
+void ofb64_printsub P((unsigned char *, int, unsigned char *, int));
 
 int  des_new_random_key P((Block));
 void des_set_random_generator_seed P((Block));
