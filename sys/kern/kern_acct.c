@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_acct.c	7.24 (Berkeley) 07/08/92
+ *	@(#)kern_acct.c	7.25 (Berkeley) 07/10/92
  */
 
 #include "param.h"
@@ -49,11 +49,12 @@ struct	vnode *savacctp;
  * accounting is resumed.
  */
 /* ARGSUSED */
+struct sysacct_args {
+	char	*fname;
+};
 sysacct(p, uap, retval)
 	struct proc *p;
-	struct args {
-		char	*fname;
-	} *uap;
+	struct sysacct_args *uap;
 	int *retval;
 {
 	register struct vnode *vp;
