@@ -90,7 +90,7 @@ expr:	ARITH_LPAREN expr ARITH_RPAREN = { $$ = $2; }
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)arith.y	8.2 (Berkeley) 04/27/95";
+static char sccsid[] = "@(#)arith.y	8.3 (Berkeley) 05/04/95";
 #endif /* not lint */
 
 #include "shell.h"
@@ -100,6 +100,7 @@ static char sccsid[] = "@(#)arith.y	8.2 (Berkeley) 04/27/95";
 
 char *arith_buf, *arith_startbuf;
 
+int
 arith(s)
 	char *s; 
 {
@@ -115,10 +116,10 @@ arith(s)
 	return (result);
 }
 
+void
 yyerror(s)
 	char *s;
 {
-	extern yytext, yylval;
 
 	yyerrok;
 	yyclearin;
@@ -129,7 +130,9 @@ yyerror(s)
 /*
  *  The exp(1) builtin.
  */
+int
 expcmd(argc, argv)
+	int argc;
 	char **argv;
 {
 	char *p;
