@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsm_subs.h	7.16 (Berkeley) 06/16/93
+ *	@(#)nfsm_subs.h	7.17 (Berkeley) 06/16/93
  */
 
 /*
@@ -212,7 +212,7 @@ extern struct mbuf *nfsm_reqh();
 		}
 
 #define nfsm_srvmtofh(f) \
-		nfsm_dissecton(tl, u_long *, NFSX_FH); \
+		nfsm_dissect(tl, u_long *, NFSX_FH); \
 		bcopy((caddr_t)tl, (caddr_t)f, NFSX_FH)
 
 #define	nfsm_clget \
