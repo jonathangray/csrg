@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	7.66 (Berkeley) 01/22/92
+ *	@(#)nfs_vnops.c	7.67 (Berkeley) 02/04/92
  */
 
 /*
@@ -431,8 +431,7 @@ nfs_setattr(vp, vap, cred, procp)
  * If not found, unlock the directory nfsnode and do the rpc
  */
 int
-nfs_lookup(dvp, vpp, cnp)   /* converted to CN */
-/* old: nfs_lookup(vp, ndp, procp) */
+nfs_lookup(dvp, vpp, cnp)
 	struct vnode *dvp;
 	struct vnode **vpp;
 	struct componentname *cnp;
@@ -803,8 +802,7 @@ nfsmout:
  */
 /* ARGSUSED */
 int
-nfs_mknod(dvp, vpp, cnp, vap)   /* converted to CN.   */
-/* old: nfs_mknod(ndp, vap, cred, procp) */
+nfs_mknod(dvp, vpp, cnp, vap)
 	struct vnode *dvp;
 	struct vnode **vpp;
 	struct componentname *cnp;
@@ -855,8 +853,7 @@ nfs_mknod(dvp, vpp, cnp, vap)   /* converted to CN.   */
  * nfs file create call
  */
 int
-nfs_create(dvp, vpp, cnp, vap)   /* converted to CN.   */
-/* old: nfs_create(ndp, vap, procp) */
+nfs_create(dvp, vpp, cnp, vap)
 	struct vnode *dvp;
 	struct vnode **vpp;
 	struct componentname *cnp;
@@ -904,8 +901,7 @@ nfs_create(dvp, vpp, cnp, vap)   /* converted to CN.   */
  *	  do the remove rpc
  */
 int
-nfs_remove(dvp, vp, cnp)   /* converted to CN.   */
-/* old: ufs_remove(ndp, p) */
+nfs_remove(dvp, vp, cnp)
 	struct vnode *dvp, *vp;
 	struct componentname *cnp;
 {
@@ -919,7 +915,7 @@ nfs_remove(dvp, vp, cnp)   /* converted to CN.   */
 
 	if (vp->v_usecount > 1) {
 		if (!np->n_sillyrename)
-			error = nfs_sillyrename(dvp, vp, cnp);   /* NEEDSWORK */
+			error = nfs_sillyrename(dvp, vp, cnp);
 	} else {
 		/*
 		 * Purge the name cache so that the chance of a lookup for
@@ -990,8 +986,7 @@ nfs_removeit(sp, procp)
  */
 int
 nfs_rename(fdvp, fvp, fcnp,
-	   tdvp, tvp, tcnp)   /* converted to CN.   */
-/* old: nfs_rename(sndp, tndp, procp) */
+	   tdvp, tvp, tcnp)
 	struct vnode *fdvp, *fvp;
 	struct componentname *fcnp;
 	struct vnode *tdvp, *tvp;
@@ -1072,8 +1067,7 @@ nfs_renameit(sdvp, scnp, sp)
  * nfs hard link create call
  */
 int
-nfs_link(vp, tdvp, cnp)   /* converted to CN.   */
-/* old: nfs_link(vp, ndp, procp) */
+nfs_link(vp, tdvp, cnp)
 	register struct vnode *vp;   /* source vnode */
 	struct vnode *tdvp;
 	struct componentname *cnp;
@@ -1110,8 +1104,7 @@ nfs_link(vp, tdvp, cnp)   /* converted to CN.   */
  */
 /* start here */
 int
-nfs_symlink(dvp, vpp, cnp, vap, nm)   /* converted to CN.   */
-/* old: nfs_symlink(ndp, vap, nm, procp) */
+nfs_symlink(dvp, vpp, cnp, vap, nm)
 	struct vnode *dvp;
 	struct vnode **vpp;
 	struct componentname *cnp;
@@ -1148,9 +1141,6 @@ nfs_symlink(dvp, vpp, cnp, vap, nm)   /* converted to CN.   */
 	/*
 	 * Kludge: Map EEXIST => 0 assuming that it is a reply to a retry.
 	 */
-	/*
-	 * NEEDSWORK: what about *vpp?
-	 */
 	if (error == EEXIST)
 		error = 0;
 	return (error);
@@ -1160,8 +1150,7 @@ nfs_symlink(dvp, vpp, cnp, vap, nm)   /* converted to CN.   */
  * nfs make dir call
  */
 int
-nfs_mkdir(dvp, vpp, cnp, vap)   /* converted to CN.   */
-/* old: nfs_mkdir(ndp, vap, procp) */
+nfs_mkdir(dvp, vpp, cnp, vap)
 	struct vnode *dvp;
 	struct vnode **vpp;
 	struct componentname *cnp;
@@ -1225,8 +1214,7 @@ nfs_mkdir(dvp, vpp, cnp, vap)   /* converted to CN.   */
  * nfs remove directory call
  */
 int
-nfs_rmdir(dvp, vp, cnp)   /* converted to CN.   */
-/* old: nfs_rmdir(ndp, procp) */
+nfs_rmdir(dvp, vp, cnp)
 	struct vnode *dvp, *vp;
 	struct componentname *cnp;
 {
@@ -1477,6 +1465,7 @@ nfs_readdirlookrpc(vp, uiop, cred)
 	caddr_t bpos, dpos, cp2;
 	struct mbuf *mreq, *mrep, *md, *mb, *mb2;
 	struct nameidata nami, *ndp = &nami;
+	struct componentname *cnp = &ndp->ni_cnd;
 	off_t off, endoff;
 	time_t reqtime, ltime;
 	struct nfsmount *nmp;
@@ -1555,8 +1544,8 @@ nfs_readdirlookrpc(vp, uiop, cred)
 				uiop->uio_resid -= DIRHDSIZ;
 				uiop->uio_iov->iov_base += DIRHDSIZ;
 				uiop->uio_iov->iov_len -= DIRHDSIZ;
-				ndp->ni_ptr = uiop->uio_iov->iov_base;
-				ndp->ni_namelen = len;
+				cnp->cn_nameptr = uiop->uio_iov->iov_base;
+				cnp->cn_namelen = len;
 				ndp->ni_vp = newvp;
 				nfsm_mtouio(uiop, len);
 				cp = uiop->uio_iov->iov_base;
@@ -1566,9 +1555,9 @@ nfs_readdirlookrpc(vp, uiop, cred)
 				uiop->uio_iov->iov_base += tlen;
 				uiop->uio_iov->iov_len -= tlen;
 				uiop->uio_resid -= tlen;
-				ndp->ni_hash = 0;
-				for (cp = ndp->ni_ptr, i = 1; i <= len; i++, cp++)
-					ndp->ni_hash += (unsigned char)*cp * i;
+				cnp->cn_hash = 0;
+				for (cp = cnp->cn_nameptr, i = 1; i <= len; i++, cp++)
+					cnp->cn_hash += (unsigned char)*cp * i;
 				if (ltime > time.tv_sec) {
 					if (np->n_tnext) {
 						if (np->n_tnext == (struct nfsnode *)nmp)
@@ -1602,7 +1591,7 @@ nfs_readdirlookrpc(vp, uiop, cred)
 						nmp->nm_tprev = np;
 					else
 						np->n_tnext->n_tprev = np;
-					cache_enter(ndp);
+					cache_enter(ndp->ni_dvp, ndp->ni_vp, cnp);
 				}
 			} else {
 				nfsm_adv(nfsm_rndup(len));
@@ -1666,8 +1655,7 @@ static char hextoasc[] = "0123456789abcdef";
  * nfs_rename() completes, but...
  */
 int
-nfs_sillyrename(dvp, vp, cnp)   /* NEEDSWORK */
-/* old: nfs_sillyrename(ndp, p) */
+nfs_sillyrename(dvp, vp, cnp)
 	struct vnode *dvp, *vp;
 	struct componentname *cnp;
 {
