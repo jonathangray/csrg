@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)in.c	7.27 (Berkeley) 01/08/93
+ *	@(#)in.c	7.28 (Berkeley) 02/04/93
  */
 
 #include <sys/param.h>
@@ -630,7 +630,7 @@ in_addmulti(ap, ifp)
 	struct ifreq ifr;
 	struct in_ifaddr *ia;
 	int s = splnet();
-int error;
+	int error;
 
 	/*
 	 * See if address already in list.
@@ -663,8 +663,6 @@ int error;
 			return (NULL);
 		}
 		inm->inm_ia = ia;
-		inm->inm_next = ia->ia_multiaddrs;
-		ia->ia_multiaddrs = inm;
 		/*
 		 * Ask the network driver to update its multicast reception
 		 * filter appropriately for the new address.
@@ -682,6 +680,8 @@ int error;
 			splx(s);
 			return (NULL);
 		}
+		inm->inm_next = ia->ia_multiaddrs;
+		ia->ia_multiaddrs = inm;
 		/*
 		 * Let IGMP know that we have joined a new IP multicast group.
 		 */
