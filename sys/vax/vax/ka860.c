@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ka860.c	7.3 (Berkeley) 06/28/90
+ *	@(#)ka860.c	7.4 (Berkeley) 12/16/90
  */
 
 #if VAX8600
@@ -39,10 +39,10 @@
  * VAX 8600 specific routines.
  */
 
-#include "param.h"
+#include "sys/param.h"
 
-#include "cpu.h"
-#include "mtpr.h"
+#include "../include/cpu.h"
+#include "../include/mtpr.h"
 
 /*
  * 8600 memory register (MERG) bit definitions
