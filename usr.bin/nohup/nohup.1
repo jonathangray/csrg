@@ -32,11 +32,11 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)nohup.1	6.7 (Berkeley) 06/27/91
+.\"	@(#)nohup.1	6.8 (Berkeley) 07/27/91
 .\"
-.Vx
 .Dd 
 .Dt NOHUP 1
+.Os
 .Sh NAME
 .Nm nohup
 .Nd invoke a command immune to hangups
@@ -51,8 +51,11 @@ utility invokes
 .Ar command
 with
 its arguments
-and at this time sets the signal SIGHUP
-to be ignored. The signal SIGQUIT may also be set
+and at this time sets the signal
+.Dv SIGHUP
+to be ignored. The signal
+.Dv SIGQUIT
+may also be set
 to be ignored.
 If the standard output is a terminal, the standard output is
 appended to the file
@@ -67,8 +70,8 @@ exits 1 if an error occurs, otherwise the exit status is that of
 .Sh ENVIRONMENT
 The following variable is utilized by
 .Nm nohup .
-.Tw Fl
-.Tp Ev HOME
+.Bl -tag -width flag
+.It Ev HOME
 If the output file
 .Pa nohup.out
 cannot be created in the current directory, the
@@ -76,8 +79,12 @@ cannot be created in the current directory, the
 utility uses the directory named by
 .Ev HOME
 to create the file.
-.Tp
+.El
 .Sh SEE ALSO
 .Xr signal 3
 .Sh STANDARDS
-The nohup function is expected to be POSIX 1003.2 compatible.
+The
+.Nm nohup
+command is expected to be
+.St -p1003.2
+compatible.
