@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)newwin.c	5.12 (Berkeley) 11/12/92";
+static char sccsid[] = "@(#)newwin.c	5.13 (Berkeley) 02/02/93";
 #endif	/* not lint */
 
 #include <curses.h>
@@ -41,7 +41,6 @@ static char sccsid[] = "@(#)newwin.c	5.12 (Berkeley) 11/12/92";
 #undef	nl		/* Don't need it here, and it interferes. */
 
 static WINDOW 	*__makenew __P((int, int, int, int, int));
-static void	 __swflags __P((WINDOW *));
 
 void	 __set_subwin __P((WINDOW *, WINDOW *));
 
