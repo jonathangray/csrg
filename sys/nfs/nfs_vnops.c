@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	7.107 (Berkeley) 05/25/93
+ *	@(#)nfs_vnops.c	7.108 (Berkeley) 05/25/93
  */
 
 /*
@@ -479,7 +479,7 @@ nfs_setattr(ap)
 	register struct vnode *vp = ap->a_vp;
 	register struct nfsnode *np = VTONFS(vp);
 	register struct vattr *vap = ap->a_vap;
-	u_quad_t frev;
+	u_quad_t frev, tsize;
 
 	if (vap->va_size != VNOVAL || vap->va_mtime.ts_sec != VNOVAL ||
 		vap->va_atime.ts_sec != VNOVAL) {
@@ -494,6 +494,7 @@ nfs_setattr(ap)
 			    if (error)
 				return (error);
 			}
+			tsize = np->n_size;
 			np->n_size = np->n_vattr.va_size = vap->va_size;
 			vnode_pager_setsize(vp, (u_long)np->n_size);
 		} else if ((np->n_flag & NMODIFIED) &&
@@ -539,6 +540,10 @@ nfs_setattr(ap)
 			np->n_brev = frev;
 	}
 	nfsm_reqdone;
+	if (error) {
+		np->n_size = np->n_vattr.va_size = tsize;
+		vnode_pager_setsize(vp, (u_long)np->n_size);
+	}
 	return (error);
 }
 
