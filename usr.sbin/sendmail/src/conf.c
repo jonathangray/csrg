@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.41 (Berkeley) 10/15/93";
+static char sccsid[] = "@(#)conf.c	8.42 (Berkeley) 10/21/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -992,6 +992,7 @@ setproctitle(fmt, va_alist)
 void
 reapchild()
 {
+	int olderrno = errno;
 # ifdef HASWAITPID
 	auto int status;
 	int count;
@@ -1023,6 +1024,7 @@ reapchild()
 # ifdef SYS5SIGNALS
 	(void) setsignal(SIGCHLD, reapchild);
 # endif
+	errno = olderrno;
 }
 /*
 **  UNSETENV -- remove a variable from the environment
