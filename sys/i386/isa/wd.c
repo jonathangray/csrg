@@ -21,7 +21,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)wd.c	5.5 (Berkeley) 11/08/90
+ *	@(#)wd.c	5.6 (Berkeley) 11/08/90
  */
 
 #include "wd.h"
@@ -40,7 +40,7 @@
 #include "vm.h"
 #include "uio.h"
 #include "machine/pte.h"
-#include "machine/device.h"
+#include "machine/isa/device.h"
 #include "atio.h"
 #include "icu.h"
 #include "wdreg.h"
@@ -126,18 +126,19 @@ struct	buf	rwdbuf[NWD] = {0};	/* buffers for raw IO */
 long	wdxfer[NWD] = {0};		/* count of transfers */
 int	writeprotected[NWD] = { 0 };
 int	wdprobe(), wdattach(), wdintr();
-struct	driver wddriver = {
+struct	isa_driver wddriver = {
 	wdprobe, wdattach, "wd",
 };
 #include "dbg.h"
 
+static wdc;
 /*
  * Probe routine
  */
 wdprobe(dvp)
-	struct device *dvp;
+	struct isa_device *dvp;
 {
-	register wdc = dvp->ioa;
+wdc = dvp->id_iobase;
 
 #ifdef lint
 	wdintr(0);
@@ -155,12 +156,13 @@ wdprobe(dvp)
  * attach each drive if possible.
  */
 wdattach(dvp)
-	struct device *dvp;
+	struct isa_device *dvp;
 {
-	int unit = dvp->unit;
+	int unit = dvp->id_unit;
 
-	INTREN((IRQ14|4));
-	outb(0x3f6,8);
+	outb(wdc+wd_ctlr,12);
+	DELAY(1000);
+	outb(wdc+wd_ctlr,8);
 }
 
 /* Read/write routine for a buffer.  Finds the proper unit, range checks
@@ -265,7 +267,6 @@ static wd_sebyse;
 wdstart()
 {
 	register struct disk *du;	/* disk unit for IO */
-	register wdc = IO_WD0; /*XXX*/
 	register struct buf *bp;
 	struct buf *dp;
 	register struct bt_bad *bt_ptr;
@@ -415,7 +416,6 @@ unsigned char wd_errstat;
 wdintr()
 {
 	register struct	disk *du;
-	register wdc = IO_WD0; /*XXX*/
 	register struct buf *bp, *dp;
 	int status;
 	char partch ;
@@ -444,8 +444,6 @@ static wd_haderror;
 	}
 	if (status & (WDCS_ERR | WDCS_ECCCOR)) {
 		wd_errstat = inb(wdc+wd_error);		/* save error status */
-outb(wdc+wd_command, WDCC_RESTORE);
-while (inb(wdc+wd_status)&WDCS_BUSY);
 #ifdef	WDDEBUG
 		printf("status %x error %x\n", status, wd_errstat);
 #endif
@@ -658,7 +656,6 @@ wdcontrol(bp)
 	register struct buf *bp;
 {
 	register struct disk *du;
-	register wdc = IO_WD0; /*XXX*/
 	register unit;
 	unsigned char  stat;
 	int s, cnt;
@@ -674,6 +671,16 @@ wdcontrol(bp)
 		dprintf(DDSK,"wd%d: recal ", unit);
 #endif
 		s = splbio();		/* not called from intr level ... */
+
+#ifdef notdef
+		/* some compaq controllers require this ... */
+		outb(wdc+wd_sdh, WDSD_IBM | (unit << 4) 
+			+ du->dk_dd.dk_ntracks-1);
+		outb(wdc+wd_seccnt, du->dk_dd.dk_nsectors);
+		outb(wdc+wd_command, 0x91);
+		while ((stat = inb(wdc+wd_status)) & WDCS_BUSY) nulldev();
+#endif
+
 		outb(wdc+wd_sdh, WDSD_IBM | (unit << 4));
 		wdtab.b_active = 1;
 		outb(wdc+wd_command, WDCC_RESTORE | WD_STEP);
@@ -702,7 +709,7 @@ retry:
 #ifdef	WDDEBUG
 		dprintf(DDSK,"rdlabel ");
 #endif
-cyloffset=0;
+if( cyloffset < 0 || cyloffset > 2048) cyloffset=0;
 		/*
 		 * Read in sector 0 to get the pack label and geometry.
 		 */
@@ -741,6 +748,19 @@ cyloffset=0;
 			printf("wd%d: bad disk label\n", du->dk_unit);
 			du->dk_state = OPENRAW;
 		}
+
+		s = splbio();		/* not called from intr level ... */
+		while ((stat = inb(wdc+wd_status)) & WDCS_BUSY) nulldev();
+		outb(wdc+wd_sdh, WDSD_IBM | (unit << 4) 
+			+ du->dk_dd.dk_ntracks-1);
+		outb(wdc+wd_cyl_lo, du->dk_dd.dk_ncylinders);
+		outb(wdc+wd_cyl_hi, du->dk_dd.dk_ncylinders>>8);
+		outb(wdc+wd_seccnt, du->dk_dd.dk_nsectors);
+		outb(wdc+wd_command, 0x91);
+		while ((stat = inb(wdc+wd_status)) & WDCS_BUSY) nulldev();
+		outb(wdc+wd_seccnt, 0);
+		splx(s);
+
 		if (du->dk_state == RDLABEL)
 			du->dk_state = RDBADTBL;
 		/*
