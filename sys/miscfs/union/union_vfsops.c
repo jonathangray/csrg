@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_vfsops.c	1.9 (Berkeley) 02/08/94
+ *	@(#)union_vfsops.c	2.1 (Berkeley) 02/10/94
  */
 
 /*
@@ -335,6 +335,7 @@ union_root(mp, vpp)
 	 * Return locked reference to root.
 	 */
 	VREF(um->um_uppervp);
+	VOP_LOCK(um->um_uppervp);
 	if (um->um_lowervp)
 		VREF(um->um_lowervp);
 	error = union_allocvp(vpp, mp,
