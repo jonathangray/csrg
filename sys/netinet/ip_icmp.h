@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ip_icmp.h	7.6 (Berkeley) 01/08/93
+ *	@(#)ip_icmp.h	7.7 (Berkeley) 05/31/93
  */
 
 /*
@@ -150,3 +150,7 @@ struct icmp {
 	(type) == ICMP_TSTAMP || (type) == ICMP_TSTAMPREPLY || \
 	(type) == ICMP_IREQ || (type) == ICMP_IREQREPLY || \
 	(type) == ICMP_MASKREQ || (type) == ICMP_MASKREPLY)
+
+#ifdef KERNEL
+void	icmp_error __P((struct mbuf *, int, int, n_long, struct ifnet *));
+#endif
