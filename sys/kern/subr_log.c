@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_log.c	7.15 (Berkeley) 07/07/92
+ *	@(#)subr_log.c	7.16 (Berkeley) 07/12/92
  */
 
 /*
@@ -128,7 +128,7 @@ logread(dev, uio, flag)
 		l = mbp->msg_bufx - mbp->msg_bufr;
 		if (l < 0)
 			l = MSG_BSIZE - mbp->msg_bufr;
-		l = MIN(l, uio->uio_resid);
+		l = min(l, uio->uio_resid);
 		if (l == 0)
 			break;
 		error = uiomove((caddr_t)&mbp->msg_bufc[mbp->msg_bufr],
