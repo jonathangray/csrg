@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	8.1 (Berkeley) 06/06/93
+ *	@(#)extern.h	8.2 (Berkeley) 04/01/94
  */
 
 #include <sys/cdefs.h>
@@ -38,7 +38,7 @@
 void	 brace_subst __P((char *, char **, char *, int));
 void	*emalloc __P((unsigned int));
 PLAN	*find_create __P((char ***));
-void	 find_execute __P((PLAN *, char **));
+int	 find_execute __P((PLAN *, char **));
 PLAN	*find_formplan __P((char **));
 PLAN	*not_squish __P((PLAN *));
 OPTION	*option __P((char *));
