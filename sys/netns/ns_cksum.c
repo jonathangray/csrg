@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ns_cksum.c	7.6 (Berkeley) 12/16/90
+ *	@(#)ns_cksum.c	7.7 (Berkeley) 04/29/91
  */
 
 #include "sys/param.h"
@@ -74,7 +74,11 @@ ns_cksum(m, len)
 			 * There is a byte left from the last segment;
 			 * ones-complement add it into the checksum.
 			 */
-			sum  += *(u_char *)w; /* Big-Endian, else << 8 */
+#if BYTE_ORDER == BIG_ENDIAN
+			sum  += *(u_char *)w;
+#else
+			sum  += *(u_char *)w << 8;
+#endif
 			sum += sum;
 			w = (u_short *)(1 + (char *)w);
 			mlen = m->m_len - 1;
@@ -123,9 +127,15 @@ ns_cksum(m, len)
 		}
 		goto commoncase;
 uuuuglyy:
-/* Big-Endian; else reverse ww and vv */
+#if BYTE_ORDER == BIG_ENDIAN
 #define ww(n) (((u_char *)w)[n + n + 1])
 #define vv(n) (((u_char *)w)[n + n])
+#else
+#if BYTE_ORDER == LITTLE_ENDIAN
+#define vv(n) (((u_char *)w)[n + n + 1])
+#define ww(n) (((u_char *)w)[n + n])
+#endif
+#endif
 		sum2 = 0;
 #ifndef TINY
 		while ((mlen -= 32) >= 0) {
@@ -171,7 +181,11 @@ uuuuglyy:
 		sum += (sum2 << 8);
 commoncase:
 		if (mlen == -1) {
-			sum += *(u_char *)w << 8; /* Big-Endian, else no << 8 */
+#if BYTE_ORDER == BIG_ENDIAN
+			sum += *(u_char *)w << 8;
+#else
+			sum += *(u_char *)w;
+#endif
 		}
 		FOLD(sum);
 	}
