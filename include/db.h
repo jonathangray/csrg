@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)db.h	5.13 (Berkeley) 09/08/91
+ *	@(#)db.h	5.14 (Berkeley) 09/08/91
  */
 
 #ifndef _DB_H_
@@ -100,7 +100,7 @@ typedef struct {
 } BTREEINFO;
 
 #define	HASHMAGIC	0x061561
-#define	HASHVERSION	1
+#define	HASHVERSION	2
 
 /* Structure used to pass parameters to the hashing routines. */
 typedef struct {
