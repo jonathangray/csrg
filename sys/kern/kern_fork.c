@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_fork.c	8.3 (Berkeley) 09/23/93
+ *	@(#)kern_fork.c	8.4 (Berkeley) 12/13/93
  */
 
 #include <sys/param.h>
@@ -209,6 +209,11 @@ again:
 	bcopy(p1->p_cred, p2->p_cred, sizeof(*p2->p_cred));
 	p2->p_cred->p_refcnt = 1;
 	crhold(p1->p_ucred);
+
+	/* bump references to the text vnode (for procfs) */
+	p2->p_textvp = p1->p_textvp;
+	if (p2->p_textvp)
+		VREF(p2->p_textvp);
 
 	p2->p_fd = fdcopy(p1);
 	/*
