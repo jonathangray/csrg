@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cd9660_vnops.c	8.14 (Berkeley) 12/05/94
+ *	@(#)cd9660_vnops.c	8.15 (Berkeley) 12/05/94
  */
 
 #include <sys/param.h>
@@ -706,6 +706,7 @@ cd9660_readlink(ap)
 	ISODIR	*dirp;
 	ISOMNT	*imp;
 	struct	buf *bp;
+	struct	uio *uio;
 	u_short	symlen;
 	int	error;
 	char	*symname;
@@ -713,6 +714,7 @@ cd9660_readlink(ap)
 
 	ip  = VTOI(ap->a_vp);
 	imp = ip->i_mnt;
+	uio = ap->a_uio;
 
 	if (imp->iso_ftype != ISO_FTYPE_RRIP)
 		return (EINVAL);
