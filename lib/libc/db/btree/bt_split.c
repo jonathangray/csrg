@@ -35,16 +35,18 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)bt_split.c	5.7 (Berkeley) 10/09/92";
+static char sccsid[] = "@(#)bt_split.c	5.8 (Berkeley) 11/13/92";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
+
 #define	__DBINTERFACE_PRIVATE
 #include <db.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "btree.h"
 
 static int	 bt_preserve __P((BTREE *, pgno_t));
@@ -174,7 +176,8 @@ __bt_split(t, h, key, data, flags, nbytes, skip)
 				b.size = bi->ksize;
 				b.data = bi->bytes;
 				goto prefix;
-			}
+			} else
+				nksize = 0;
 			break;
 		case P_BLEAF:
 			bl = GETBLEAF(rchild, 0);
@@ -205,6 +208,8 @@ prefix:				nksize = t->bt_pfx(&a, &b);
 		case P_RLEAF:
 			nbytes = NRINTERNAL;
 			break;
+		default:
+			abort();
 		}
 
 		/* Split the parent page if necessary or shift the indices. */
@@ -262,6 +267,8 @@ prefix:				nksize = t->bt_pfx(&a, &b);
 			((RINTERNAL *)dest)->nrecs = NEXTINDEX(lchild);
 			((RINTERNAL *)dest)->pgno = lchild->pgno;
 			break;
+		default:
+			abort();
 		}
 
 		/* Unpin the held pages. */
@@ -546,6 +553,8 @@ bt_broot(t, h, l, r)
 		bcopy(bi, dest, nbytes);
 		((BINTERNAL *)dest)->pgno = r->pgno;
 		break;
+	default:
+		abort();
 	}
 	h->lower = BTDATAOFF + 2 * sizeof(index_t);
 
@@ -621,6 +630,8 @@ bt_psplit(t, h, l, r, pskip)
 			nbytes = NRLEAF(rl);
 			isbigkey = 0;
 			break;
+		default:
+			abort();
 		}
 		++nxt;
 		l->linp[off] = l->upper -= nbytes;
@@ -698,6 +709,8 @@ bt_psplit(t, h, l, r, pskip)
 			src = rl = GETRLEAF(h, nxt);
 			nbytes = NRLEAF(rl);
 			break;
+		default:
+			abort();
 		}
 		++nxt;
 		r->linp[off] = r->upper -= nbytes;
