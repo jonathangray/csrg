@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: uipc_shm.c 1.9 89/08/14$
  *
- *	@(#)sysv_shm.c	7.6 (Berkeley) 06/07/90
+ *	@(#)sysv_shm.c	7.7 (Berkeley) 06/22/90
  */
 
 /*
@@ -176,7 +176,7 @@ shmget(p, uap, retval)
 		/* XXX: probably not the right thing to do */
 		if (shp->shm_perm.mode & SHM_DEST)
 			return (EBUSY);
-		if (error = ipcaccess(cred, &shp->shm_perm, uap->shmflg&0777))
+		if (error = ipcaccess(&shp->shm_perm, uap->shmflg&0777, cred))
 			return (error);
 		if (uap->size && uap->size > shp->shm_segsz)
 			return (EINVAL);
@@ -184,6 +184,7 @@ shmget(p, uap, retval)
 			return (EEXIST);
 	}
 	*retval = shp->shm_perm.seq * SHMMMNI + rval;
+	return (0);
 }
 
 /*
@@ -209,7 +210,7 @@ shmctl(p, uap, retval)
 	shp = &shmsegs[uap->shmid % SHMMMNI];
 	switch (uap->cmd) {
 	case IPC_STAT:
-		if (error = ipcaccess(cred, &shp->shm_perm, IPC_R))
+		if (error = ipcaccess(&shp->shm_perm, IPC_R, cred))
 			return (error);
 		return (copyout((caddr_t)shp, uap->buf, sizeof(*shp)));
 
@@ -271,15 +272,15 @@ shmat(p, uap, retval)
 	register int size;
 	struct mapmem *mp;
 	caddr_t uva;
-	int error, error1, prot, shmmapin();
+	int error, prot, shmmapin();
 
 	if (error = shmvalid(uap->shmid))
 		return (error);
 	shp = &shmsegs[uap->shmid % SHMMMNI];
 	if (shp->shm_handle == NULL)
 		panic("shmat NULL handle");
-	if (error = ipcaccess(u.u_cred, &shp->shm_perm,
-		      (uap->shmflg&SHM_RDONLY) ? IPC_R : IPC_R|IPC_W))
+	if (error = ipcaccess(&shp->shm_perm,
+			(uap->shmflg&SHM_RDONLY) ? IPC_R : IPC_R|IPC_W, u.u_cred))
 		return (error);
 	uva = uap->shmaddr;
 	if (uva && ((int)uva & (SHMLBA-1))) {
@@ -310,8 +311,7 @@ shmat(p, uap, retval)
 	if (error)
 		return (error);
 	if (error = mmmapin(p, mp, shmmapin)) {
-		if (error1 = mmfree(p, mp))
-			return (error1);
+		(void) mmfree(p, mp);
 		return (error);
 	}
 	/*
@@ -321,6 +321,7 @@ shmat(p, uap, retval)
 	shp->shm_atime = time.tv_sec;
 	shp->shm_nattch++;
 	*retval = (int) uva;
+	return (0);
 }
 
 /*
@@ -370,10 +371,10 @@ shmfork(mp, ischild)
 /*
  * Detach from shared memory segment on exit (or exec)
  */
-shmexit(p, mp)
-	struct proc *p;
+shmexit(mp)
 	struct mapmem *mp;
 {
+	struct proc *p = u.u_procp;		/* XXX */
 
 	return (shmufree(p, mp));
 }
