@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: rd.c 1.38 90/10/12$
  *
- *	@(#)rd.c	7.9 (Berkeley) 05/07/91
+ *	@(#)rd.c	7.10 (Berkeley) 08/28/91
  */
 
 /*
@@ -59,7 +59,6 @@
 
 #include "vm/vm_param.h"
 #include "vm/lock.h"
-#include "vm/vm_statistics.h"
 #include "vm/pmap.h"
 #include "vm/vm_prot.h"
 
