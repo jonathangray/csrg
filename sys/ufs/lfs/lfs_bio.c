@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_bio.c	7.7 (Berkeley) 04/08/92
+ *	@(#)lfs_bio.c	7.8 (Berkeley) 04/08/92
  */
 
 #include <sys/param.h>
@@ -58,7 +58,7 @@ int	locked_queue_count;		/* XXX Count of locked-down buffers. */
 
 int
 lfs_bwrite(bp)
-	register BUF *bp;
+	register struct buf *bp;
 {
 	int s;
 #ifdef VERBOSE
