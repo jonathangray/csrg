@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)mtree.c	5.7 (Berkeley) 05/25/90";
+static char sccsid[] = "@(#)mtree.c	5.8 (Berkeley) 05/25/90";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -116,7 +116,6 @@ main(argc, argv)
 	exit(exitval);
 }
 
-static
 usage()
 {
 	(void)fprintf(stderr,
