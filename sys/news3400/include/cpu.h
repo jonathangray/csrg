@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cpu.h	8.2 (Berkeley) 01/21/94
+ *	@(#)cpu.h	8.3 (Berkeley) 05/17/95
  */
 
 #ifndef _CPU_H_
@@ -57,6 +57,7 @@
 #define	cpu_wait(p)		/* nothing */
 #define cpu_setstack(p, ap)	(p)->p_md.md_regs[SP] = ap
 #define cpu_set_init_frame(p, fp) (p)->p_md.md_regs = fp
+#define	BACKTRACE(p)		/* not implemented */
 
 /*
  * Arguments to hardclock and gatherstats encapsulate the previous
