@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)types.h	7.4 (Berkeley) 06/25/90
+ *	@(#)types.h	7.5 (Berkeley) 12/05/90
  */
 
 #ifndef	_MACHTYPES_H_
@@ -61,5 +61,7 @@ typedef struct _physadr {
 typedef struct label_t {		/* consistent with HP-UX */
 	int val[15];
 } label_t;
+typedef	u_long	vm_offset_t;
+typedef	u_long	vm_size_t;
 #endif
 #endif	/* _MACHTYPES_H_ */
