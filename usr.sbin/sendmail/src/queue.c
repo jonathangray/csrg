@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef QUEUE
-static char sccsid[] = "@(#)queue.c	8.51 (Berkeley) 11/04/94 (with queueing)";
+static char sccsid[] = "@(#)queue.c	8.52 (Berkeley) 11/11/94 (with queueing)";
 #else
-static char sccsid[] = "@(#)queue.c	8.51 (Berkeley) 11/04/94 (without queueing)";
+static char sccsid[] = "@(#)queue.c	8.52 (Berkeley) 11/11/94 (without queueing)";
 #endif
 #endif /* not lint */
 
@@ -508,6 +508,8 @@ runqueue(forkflag)
 	bool forkflag;
 {
 	register ENVELOPE *e;
+	int njobs;
+	int sequenceno = 0;
 	extern ENVELOPE BlankEnvelope;
 
 	/*
@@ -600,7 +602,7 @@ runqueue(forkflag)
 	*/
 
 	/* order the existing work requests */
-	(void) orderq(FALSE);
+	njobs = orderq(FALSE);
 
 	/* process them once at a time */
 	while (WorkQ != NULL)
@@ -613,16 +615,21 @@ runqueue(forkflag)
 		**  Ignore jobs that are too expensive for the moment.
 		*/
 
+		sequenceno++;
 		if (shouldqueue(w->w_pri, w->w_ctime))
 		{
 			if (Verbose)
-				printf("\nSkipping %s\n", w->w_name + 2);
+				printf("\nSkipping %s (sequence %d of %d)\n",
+					w->w_name + 2, sequenceno, njobs);
 		}
 		else
 		{
 			pid_t pid;
 			extern pid_t dowork();
 
+			if (Verbose)
+				printf("\nRunning %s (sequence %d of %d)\n",
+					w->w_name + 2, sequenceno, njobs);
 			pid = dowork(w->w_name + 2, ForkQueueRuns, FALSE, e);
 			errno = 0;
 			if (pid != 0)
@@ -1296,8 +1303,6 @@ readqf(e)
 	LineNumber = 0;
 	e->e_flags |= EF_GLOBALERRS;
 	OpMode = MD_DELIVER;
-	if (Verbose)
-		printf("\nRunning %s\n", e->e_id);
 	ctladdr = NULL;
 	e->e_dfino = -1;
 	while ((bp = fgetfolded(buf, sizeof buf, qfp)) != NULL)
