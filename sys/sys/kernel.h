@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kernel.h	7.9 (Berkeley) 07/08/92
+ *	@(#)kernel.h	7.10 (Berkeley) 04/27/93
  */
 
 /* Global variables for the kernel. */
@@ -54,14 +54,9 @@ extern int stathz;			/* statistics clock's frequency */
 extern int profhz;			/* profiling clock's frequency */
 extern int lbolt;			/* once a second sleep address */
 
-struct loadavg {
-	fixpt_t ldavg[3];
-	long fscale;
-};
-extern struct loadavg averunnable;
 #if defined(COMPAT_43) && (defined(vax) || defined(tahoe))
 double	avenrun[3];
-#endif /* COMPAT_43 */
+#endif
 
 #ifdef GPROF
 extern int profiling;
