@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dca.c	7.13 (Berkeley) 02/05/92
+ *	@(#)dca.c	7.14 (Berkeley) 02/05/92
  */
 
 #include "dca.h"
@@ -426,9 +426,12 @@ dcamint(unit, dca)
 	}
 }
 
-dcaioctl(dev, cmd, data, flag)
+dcaioctl(dev, cmd, data, flag, p)
 	dev_t dev;
+	int cmd;
 	caddr_t data;
+	int flag;
+	struct proc *p;
 {
 	register struct tty *tp;
 	register int unit = UNIT(dev);
@@ -436,7 +439,7 @@ dcaioctl(dev, cmd, data, flag)
 	register int error;
  
 	tp = &dca_tty[unit];
-	error = (*linesw[tp->t_line].l_ioctl)(tp, cmd, data, flag);
+	error = (*linesw[tp->t_line].l_ioctl)(tp, cmd, data, flag, p);
 	if (error >= 0)
 		return (error);
 	error = ttioctl(tp, cmd, data, flag);
