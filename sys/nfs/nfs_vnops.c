@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	7.94 (Berkeley) 10/02/92
+ *	@(#)nfs_vnops.c	7.95 (Berkeley) 10/07/92
  */
 
 /*
@@ -1965,6 +1965,7 @@ nfs_bmap(ap)
 		daddr_t  a_bn;
 		struct vnode **a_vpp;
 		daddr_t *a_bnp;
+		int *a_runp;
 	} */ *ap;
 {
 	register struct vnode *vp = ap->a_vp;
