@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)tdel.c	5.2 (Berkeley) 03/12/91";
+static char sccsid[] = "@(#)tdel.c	5.2 (Berkeley) 3/12/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -109,7 +109,7 @@ char **argv;
 			fgets(wp2, 8192, fp) &&
 			i++ < MAXWORDS) {
 		    key.size = strlen(wp1);
-		    stat = (dbp->delete)(dbp, &key);
+		    stat = (dbp->del)(dbp, &key, 0);
 		    if (stat) {
 			fprintf ( stderr, "Error retrieving %s\n", key.data );
 			exit(1);
