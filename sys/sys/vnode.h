@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode.h	7.57 (Berkeley) 07/12/92
+ *	@(#)vnode.h	7.58 (Berkeley) 07/23/92
  */
 
 #ifndef KERNEL
@@ -331,7 +331,7 @@ struct vop_generic_args {
 /*
  * Finally, include the default set of vnode operations.
  */
-#include <sys/vnode_if.h>
+#include <vnode_if.h>
 
 /*
  * Public vnode manipulation functions.
@@ -367,6 +367,7 @@ int 	vn_rdwr __P((enum uio_rw rw, struct vnode *vp, caddr_t base,
 	    struct ucred *cred, int *aresid, struct proc *p));
 int	vn_read __P((struct file *fp, struct uio *uio, struct ucred *cred));
 int	vn_select __P((struct file *fp, int which, struct proc *p));
+int	vn_stat __P((struct vnode *vp, struct stat *sb, struct proc *p));
 int	vn_write __P((struct file *fp, struct uio *uio, struct ucred *cred));
 struct vnode *
 	checkalias __P((struct vnode *vp, dev_t nvp_rdev, struct mount *mp));
