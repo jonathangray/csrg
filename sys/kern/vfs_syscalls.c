@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	7.78.1.1 (Berkeley) 02/04/92
+ *	@(#)vfs_syscalls.c	7.79 (Berkeley) 03/01/92
  */
 
 #include "param.h"
@@ -492,7 +492,7 @@ chdir(p, uap, retval)
 	struct nameidata nd;
 
 	NDINIT(&nd, LOOKUP, FOLLOW | LOCKLEAF, UIO_USERSPACE, uap->fname, p);
-	if (error = chdirec(&nd))
+	if (error = chdirec(&nd, p))
 		return (error);
 	vrele(fdp->fd_cdir);
 	fdp->fd_cdir = nd.ni_vp;
@@ -517,7 +517,7 @@ chroot(p, uap, retval)
 	if (error = suser(p->p_ucred, &p->p_acflag))
 		return (error);
 	NDINIT(&nd, LOOKUP, FOLLOW | LOCKLEAF, UIO_USERSPACE, uap->fname, p);
-	if (error = chdirec(&nd))
+	if (error = chdirec(&nd, p))
 		return (error);
 	if (fdp->fd_rdir != NULL)
 		vrele(fdp->fd_rdir);
