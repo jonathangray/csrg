@@ -35,7 +35,7 @@
  */
 
 #if defined(SYSLIBC_SCCS) && !defined(lint)
-	.asciz "@(#)sigreturn.s	5.1 (Berkeley) 04/23/90"
+	.asciz "@(#)sigreturn.s	5.2 (Berkeley) 12/17/90"
 #endif /* SYSLIBC_SCCS and not lint */
 
 #include "SYS.h"
@@ -46,8 +46,8 @@
 #ifdef PROF
 #undef ENTRY
 #define	ENTRY(x) \
-	.globl _/**/x; .align 4; _/**/x:  pusha ; \
-	.data; 1:; .long 0; .text; movl $1b,%eax; call mcount; popa
+	.globl _/**/x; .align 2; _/**/x:  pusha ; \
+	.data; 1:; .long 0; .text; movl $1b,%eax; call mcount; popa ; nop
 #endif /* PROF */
 
 SYSCALL(sigreturn)
