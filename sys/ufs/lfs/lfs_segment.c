@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_segment.c	7.29 (Berkeley) 08/21/92
+ *	@(#)lfs_segment.c	7.30 (Berkeley) 08/25/92
  */
 
 #include <sys/param.h>
@@ -80,7 +80,7 @@ int	 lfs_match_tindir __P((struct lfs *, struct buf *));
 void	 lfs_newseg __P((struct lfs *));
 void	 lfs_shellsort __P((struct buf **, daddr_t *, register int));
 void	 lfs_supercallback __P((struct buf *));
-void	 lfs_updatemeta __P((struct segment *, struct vnode *));
+void	 lfs_updatemeta __P((struct segment *));
 void	 lfs_writefile __P((struct lfs *, struct segment *, struct vnode *));
 int	 lfs_writeinode __P((struct lfs *, struct segment *, struct inode *));
 int	 lfs_writeseg __P((struct lfs *, struct segment *));
@@ -118,6 +118,7 @@ lfs_vflush(vp)
 	sp->bpp = malloc(((LFS_SUMMARY_SIZE - sizeof(SEGSUM)) /
 	    sizeof(daddr_t) + 1) * sizeof(struct buf *), M_SEGMENT, M_WAITOK);
 	sp->seg_flags = SEGM_CKP;
+	sp->vp = NULL;
 
 	/*
 	 * Keep a cumulative count of the outstanding I/O operations.  If the
@@ -254,6 +255,7 @@ lfs_segwrite(mp, do_ckp)
 	sp->bpp = malloc(((LFS_SUMMARY_SIZE - sizeof(SEGSUM)) /
 	    sizeof(daddr_t) + 1) * sizeof(struct buf *), M_SEGMENT, M_WAITOK);
 	sp->seg_flags = do_ckp ? SEGM_CKP : 0;
+	sp->vp = NULL;
 	lfs_initseg(fs, sp);
 
 	/*
@@ -503,12 +505,16 @@ lfs_gatherblock(sp, bp, sptr)
 	 * If full, finish this segment.  We may be doing I/O, so
 	 * release and reacquire the splbio().
 	 */
+#ifdef DIAGNOSTIC
+	if (sp->vp == NULL)
+		panic ("lfs_gatherblock: Null vp in segment");
+#endif
 	fs = sp->fs;
 	if (sp->sum_bytes_left < sizeof(daddr_t) ||
 	    sp->seg_bytes_left < fs->lfs_bsize) {
 		if (sptr)
 			splx(*sptr);
-		lfs_updatemeta(sp, bp->b_vp);
+		lfs_updatemeta(sp);
 
 		/* Add the current file to the segment summary. */
 		++((SEGSUM *)(sp->segsum))->ss_nfinfo;
@@ -518,7 +524,7 @@ lfs_gatherblock(sp, bp, sptr)
 		lfs_initseg(fs, sp);
 
 		sp->fip->fi_version = version;
-		sp->fip->fi_ino = VTOI(bp->b_vp)->i_number;
+		sp->fip->fi_ino = VTOI(sp->vp)->i_number;
 
 		sp->sum_bytes_left -= 
 		    sizeof(struct finfo) - sizeof(daddr_t);
@@ -548,6 +554,7 @@ lfs_gather(fs, sp, vp, match)
 	struct buf *bp;
 	int s;
 
+	sp->vp = vp;
 	s = splbio();
 loop:	for (bp = vp->v_dirtyblkhd; bp; bp = bp->b_blockf) {
 		if (bp->b_flags & B_BUSY || !match(fs, bp) ||
@@ -563,7 +570,8 @@ loop:	for (bp = vp->v_dirtyblkhd; bp; bp = bp->b_blockf) {
 			goto loop;
 	}
 	splx(s);
-	lfs_updatemeta(sp, vp);
+	lfs_updatemeta(sp);
+	sp->vp = NULL;
 }
 
 
@@ -572,20 +580,21 @@ loop:	for (bp = vp->v_dirtyblkhd; bp; bp = bp->b_blockf) {
  * array.
  */
 void
-lfs_updatemeta(sp, vp)
+lfs_updatemeta(sp)
 	struct segment *sp;
-	struct vnode *vp;
 {
 	SEGUSE *sup;
 	struct buf *bp;
 	struct lfs *fs;
+	struct vnode *vp;
 	INDIR a[NIADDR], *ap;
 	struct inode *ip;
 	daddr_t daddr, lbn, off;
 	int db_per_fsb, error, i, nblocks, num;
 
+	vp = sp->vp;
 	nblocks = &sp->fip->fi_blocks[sp->fip->fi_nblocks] - sp->start_lbp;
-	if (nblocks == 0) 
+	if (vp == NULL || nblocks == 0) 
 		return;
 
 	/* Sort the blocks. */
@@ -985,7 +994,7 @@ lfs_newbuf(vp, daddr, size)
 	bp->b_error = 0;
 	bp->b_resid = 0;
 	bp->b_iodone = lfs_callback;
-	bp->b_flags |= B_CALL | B_NOCACHE;
+	bp->b_flags |= B_BUSY | B_CALL | B_NOCACHE;
 	return (bp);
 }
 
