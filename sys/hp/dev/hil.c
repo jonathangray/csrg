@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: hil.c 1.33 89/12/22$
  *
- *	@(#)hil.c	7.2 (Berkeley) 05/25/90
+ *	@(#)hil.c	7.3 (Berkeley) 06/20/90
  */
 
 #include "param.h"
@@ -120,13 +120,14 @@ hilinit()
 hilopen(dev, flags)
 	dev_t dev;
 {
+	struct proc *p = u.u_procp;		/* XXX */
   	register struct hilloop *hilp = &hil0;	/* XXX */
 	register struct hilloopdev *dptr;
 	u_char device = HILUNIT(dev);
 
 #ifdef DEBUG
 	if (hildebug & HDB_FOLLOW)
-		printf("hilopen(%d): device %x\n", u.u_procp->p_pid, device);
+		printf("hilopen(%d): device %x\n", p->p_pid, device);
 #endif
 	
 	if ((hilp->hl_device[HILLOOPDEV].hd_flags & HIL_ALIVE) == 0)
@@ -150,7 +151,7 @@ hilopen(dev, flags)
 	 * 3.	BSD processes default to shared queue interface.
 	 *	Multiple processes can open the device.
 	 */
-	if (u.u_procp->p_flag & SHPUX) {
+	if (p->p_flag & SHPUX) {
 		if (dptr->hd_flags & (HIL_READIN|HIL_QUEUEIN))
 			return(EBUSY);
 		dptr->hd_flags |= HIL_READIN;
@@ -189,6 +190,7 @@ hilopen(dev, flags)
 hilclose(dev, flags)
 	dev_t dev;
 {
+	struct proc *p = u.u_procp;		/* XXX */
   	register struct hilloop *hilp = &hil0;	/* XXX */
 	register struct hilloopdev *dptr;
 	register int i;
@@ -197,27 +199,27 @@ hilclose(dev, flags)
 
 #ifdef DEBUG
 	if (hildebug & HDB_FOLLOW)
-		printf("hilclose(%d): device %x\n", u.u_procp->p_pid, device);
+		printf("hilclose(%d): device %x\n", p->p_pid, device);
 #endif
 
 	dptr = &hilp->hl_device[device];
 	if (device && (dptr->hd_flags & HIL_PSEUDO))
 		return (0);
 
-	if ((u.u_procp->p_flag & SHPUX) == 0) {
+	if ((p->p_flag & SHPUX) == 0) {
 		/*
 		 * If this is the loop device,
 		 * free up all queues belonging to this process.
 		 */
 		if (device == 0) {
 			for (i = 0; i < NHILQ; i++)
-				if (hilp->hl_queue[i].hq_procp == u.u_procp)
+				if (hilp->hl_queue[i].hq_procp == p)
 					(void) hilqfree(i);
 		} else {
 			mask = ~hildevmask(device);
 			(void) splhil();
 			for (i = 0; i < NHILQ; i++)
-				if (hilp->hl_queue[i].hq_procp == u.u_procp) {
+				if (hilp->hl_queue[i].hq_procp == p) {
 					dptr->hd_qmask &= ~hilqmask(i);
 					hilp->hl_queue[i].hq_devmask &= mask;
 				}
@@ -320,6 +322,7 @@ hilioctl(dev, cmd, data, flag)
 	dev_t dev;
 	caddr_t data;
 {
+	struct proc *p = u.u_procp;		/* XXX */
 	register struct hilloop *hilp = &hil0;	/* XXX */
 	char device = HILUNIT(dev);
 	struct hilloopdev *dptr;
@@ -330,7 +333,7 @@ hilioctl(dev, cmd, data, flag)
 #ifdef DEBUG
 	if (hildebug & HDB_FOLLOW)
 		printf("hilioctl(%d): dev %x cmd %x\n",
-		       u.u_procp->p_pid, device, cmd);
+		       p->p_pid, device, cmd);
 #endif
 
 	dptr = &hilp->hl_device[device];
@@ -368,7 +371,7 @@ hilioctl(dev, cmd, data, flag)
 	}
 
 #ifdef HPUXCOMPAT
-	if (u.u_procp->p_flag & SHPUX)
+	if (p->p_flag & SHPUX)
 		return(hpuxhilioctl(dev, cmd, data, flag));
 #endif
 
@@ -616,6 +619,7 @@ hilmap(dev, off, prot)
 	dev_t dev;
 	register int off;
 {
+	struct proc *p = u.u_procp;		/* XXX */
 #ifdef MMAP
 	register struct hilloop *hilp = &hil0;	/* XXX */
 	register struct hiliqueue *qp;
@@ -631,7 +635,7 @@ hilmap(dev, off, prot)
 	 * Queue must belong to calling process.
 	 */
 	qp = &hilp->hl_queue[off / sizeof(HILQ)];
-	if (qp->hq_procp != u.u_procp)
+	if (qp->hq_procp != p)
 		return(-1);
 
 	off %= sizeof(HILQ);
@@ -643,6 +647,7 @@ hilmap(dev, off, prot)
 hilselect(dev, rw)
 	dev_t dev;
 {
+	struct proc *p = u.u_procp;		/* XXX */
 	register struct hilloop *hilp = &hil0;	/* XXX */
 	register struct hilloopdev *dptr;
 	register struct hiliqueue *qp;
@@ -668,7 +673,7 @@ hilselect(dev, rw)
 		    dptr->hd_selr->p_wchan == (caddr_t)&selwait)
 			dptr->hd_flags |= HIL_SELCOLL;
 		else
-			dptr->hd_selr = u.u_procp;
+			dptr->hd_selr = p;
 		splx(s);
 		return (0);
 	}
@@ -695,7 +700,7 @@ hilselect(dev, rw)
 	 */
 	s = splhil();
 	for (qp = hilp->hl_queue; qp < &hilp->hl_queue[NHILQ]; qp++)
-		if (qp->hq_procp == u.u_procp && (mask & qp->hq_devmask) &&
+		if (qp->hq_procp == p && (mask & qp->hq_devmask) &&
 		    qp->hq_eventqueue->hil_evqueue.head !=
 		    qp->hq_eventqueue->hil_evqueue.tail) {
 			splx(s);
@@ -705,7 +710,7 @@ hilselect(dev, rw)
 	if (dptr->hd_selr && dptr->hd_selr->p_wchan == (caddr_t)&selwait)
 		dptr->hd_flags |= HIL_SELCOLL;
 	else
-		dptr->hd_selr = u.u_procp;
+		dptr->hd_selr = p;
 	splx(s);
 	return (0);
 }
@@ -974,6 +979,7 @@ hpuxhilevent(hilp, dptr)
 hilqalloc(qip)
 	struct hilqinfo *qip;
 {
+	struct proc *p = u.u_procp;		/* XXX */
 #ifdef MAPMEM
 	register struct hilloop *hilp = &hil0;	/* XXX */
 	register HILQ *hq;
@@ -984,7 +990,7 @@ hilqalloc(qip)
 #ifdef DEBUG
 	if (hildebug & HDB_FOLLOW)
 		printf("hilqalloc(%d): addr %x\n",
-		       u.u_procp->p_pid, qip->addr);
+		       p->p_pid, qip->addr);
 #endif
 	/*
 	 * Find a free queue
@@ -1010,20 +1016,19 @@ hilqalloc(qip)
 	/*
 	 * Map queue into user address space as instructed
 	 */
-	mp = mmalloc(qnum, &qip->addr, sizeof(HILQ), MM_RW|MM_CI, &hilqops);
-	if (mp == MMNIL) {
+	if (u.u_error = mmalloc(p, qnum, &qip->addr, sizeof(HILQ), MM_RW|MM_CI, &hilqops, &mp)) {
 		cifree((caddr_t)hq, sizeof(HILQ));
 		hilp->hl_queue[qnum].hq_eventqueue = NULL;
 		return(u.u_error);
 	}
 	qip->qid = qnum;
-	if (!mmmapin(mp, hilqmapin)) {
-		mmfree(mp);
+	if (!mmmapin(p, mp, hilqmapin)) {
+		mmfree(p, mp);
 		cifree((caddr_t)hq, sizeof(HILQ));
 		hilp->hl_queue[qnum].hq_eventqueue = NULL;
 		return(u.u_error);
 	}
-	hilp->hl_queue[qnum].hq_procp = u.u_procp;
+	hilp->hl_queue[qnum].hq_procp = p;
 	hilp->hl_queue[qnum].hq_devmask = 0;
 	return(0);
 #else
@@ -1034,6 +1039,7 @@ hilqalloc(qip)
 hilqfree(qnum)
 	register int qnum;
 {
+	struct proc *p = u.u_procp;		/* XXX */
 #ifdef MAPMEM
 	register struct hilloop *hilp = &hil0;	/* XXX */
 	register struct mapmem *mp;
@@ -1041,9 +1047,9 @@ hilqfree(qnum)
 #ifdef DEBUG
 	if (hildebug & HDB_FOLLOW)
 		printf("hilqfree(%d): qnum %d\n",
-		       u.u_procp->p_pid, qnum);
+		       p->p_pid, qnum);
 #endif
-	if (qnum >= NHILQ || hilp->hl_queue[qnum].hq_procp != u.u_procp)
+	if (qnum >= NHILQ || hilp->hl_queue[qnum].hq_procp != p)
 		return(EINVAL);
 	for (mp = u.u_mmap; mp; mp = mp->mm_next)
 		if (qnum == mp->mm_id && mp->mm_ops == &hilqops) {
@@ -1060,6 +1066,7 @@ hilqfree(qnum)
 hilqmap(qnum, device)
 	register int qnum, device;
 {
+	struct proc *p = u.u_procp;		/* XXX */
 	register struct hilloop *hilp = &hil0;	/* XXX */
 	register struct hilloopdev *dptr = &hilp->hl_device[device];
 	int s;
@@ -1067,9 +1074,9 @@ hilqmap(qnum, device)
 #ifdef DEBUG
 	if (hildebug & HDB_FOLLOW)
 		printf("hilqmap(%d): qnum %d device %x\n",
-		       u.u_procp->p_pid, qnum, device);
+		       p->p_pid, qnum, device);
 #endif
-	if (qnum >= NHILQ || hilp->hl_queue[qnum].hq_procp != u.u_procp)
+	if (qnum >= NHILQ || hilp->hl_queue[qnum].hq_procp != p)
 		return(EINVAL);
 	if ((dptr->hd_flags & HIL_QUEUEIN) == 0)
 		return(EINVAL);
@@ -1085,7 +1092,7 @@ hilqmap(qnum, device)
 #ifdef DEBUG
 	if (hildebug & HDB_MASK)
 		printf("hilqmap(%d): devmask %x qmask %x\n",
-		       u.u_procp->p_pid, hilp->hl_queue[qnum].hq_devmask,
+		       p->p_pid, hilp->hl_queue[qnum].hq_devmask,
 		       dptr->hd_qmask);
 #endif
 	return(0);
@@ -1094,16 +1101,17 @@ hilqmap(qnum, device)
 hilqunmap(qnum, device)
 	register int qnum, device;
 {
+	struct proc *p = u.u_procp;		/* XXX */
 	register struct hilloop *hilp = &hil0;	/* XXX */
 	int s;
 
 #ifdef DEBUG
 	if (hildebug & HDB_FOLLOW)
 		printf("hilqunmap(%d): qnum %d device %x\n",
-		       u.u_procp->p_pid, qnum, device);
+		       p->p_pid, qnum, device);
 #endif
 
-	if (qnum >= NHILQ || hilp->hl_queue[qnum].hq_procp != u.u_procp)
+	if (qnum >= NHILQ || hilp->hl_queue[qnum].hq_procp != p)
 		return(EINVAL);
 
 	hilp->hl_queue[qnum].hq_devmask &= ~hildevmask(device);
@@ -1113,7 +1121,7 @@ hilqunmap(qnum, device)
 #ifdef DEBUG
 	if (hildebug & HDB_MASK)
 		printf("hilqunmap(%d): devmask %x qmask %x\n",
-		       u.u_procp->p_pid, hilp->hl_queue[qnum].hq_devmask,
+		       p->p_pid, hilp->hl_queue[qnum].hq_devmask,
 		       hilp->hl_device[device].hd_qmask);
 #endif
 	return(0);
@@ -1138,14 +1146,15 @@ hilqmapin(mp, off)
 hilqfork(mp, ischild)
 	struct mapmem *mp;
 {
+	struct proc *p = u.u_procp;		/* XXX */
 #ifdef DEBUG
 	if (hildebug & HDB_MMAP)
-		printf("hilqfork(%d): %s qnum %d\n", u.u_procp->p_pid,
+		printf("hilqfork(%d): %s qnum %d\n", p->p_pid,
 		       ischild ? "child" : "parent", mp->mm_id);
 #endif
 	if (ischild) {
-		mmmapout(mp);
-		mmfree(mp);
+		mmmapout(p, mp);
+		mmfree(p, mp);
 	}
 }
 
@@ -1177,13 +1186,14 @@ hilqvfork(mp, fup, tup)
 hilqexit(mp)
 	struct mapmem *mp;
 {
+	struct proc *p = u.u_procp;		/* XXX */
 	register struct hilloop *hilp = &hil0;	/* XXX */
 	register int mask, i;
 	int s;
 
 #ifdef DEBUG
 	if (hildebug & HDB_MMAP)
-		printf("hilqexit(%d): qnum %d\n", u.u_procp->p_pid, mp->mm_id);
+		printf("hilqexit(%d): qnum %d\n", p->p_pid, mp->mm_id);
 #endif
 	/*
 	 * Atomically take all devices off the queue
@@ -1200,7 +1210,7 @@ hilqexit(mp)
 	cifree((caddr_t)hilp->hl_queue[i].hq_eventqueue, sizeof(HILQ));
 	hilp->hl_queue[i].hq_eventqueue = NULL;
 	hilp->hl_queue[i].hq_procp = NULL;
-	mmfree(mp);
+	mmfree(p, mp);
 }
 #endif
 
