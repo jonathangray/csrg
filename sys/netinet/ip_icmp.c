@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ip_icmp.c	7.23 (Berkeley) 05/31/93
+ *	@(#)ip_icmp.c	7.24 (Berkeley) 06/04/93
  */
 
 #include <sys/param.h>
@@ -42,8 +42,8 @@
 #include <sys/time.h>
 #include <sys/kernel.h>
 
-#include <net/route.h>
 #include <net/if.h>
+#include <net/route.h>
 
 #include <netinet/in.h>
 #include <netinet/in_systm.h>
@@ -169,11 +169,11 @@ static struct sockaddr_in icmpsrc = { sizeof (struct sockaddr_in), AF_INET };
 static struct sockaddr_in icmpdst = { sizeof (struct sockaddr_in), AF_INET };
 static struct sockaddr_in icmpgw = { sizeof (struct sockaddr_in), AF_INET };
 struct sockaddr_in icmpmask = { 8, 0 };
-struct in_ifaddr *ifptoia();
 
 /*
  * Process a received ICMP message.
  */
+void
 icmp_input(m, hlen)
 	register struct mbuf *m;
 	int hlen;
@@ -183,7 +183,8 @@ icmp_input(m, hlen)
 	int icmplen = ip->ip_len;
 	register int i;
 	struct in_ifaddr *ia;
-	int (*ctlfunc)(), code;
+	void (*ctlfunc) __P((int, struct sockaddr *, struct ip *));
+	int code;
 	extern u_char ip_protox[];
 
 	/*
@@ -295,7 +296,7 @@ icmp_input(m, hlen)
 		icmpsrc.sin_addr = icp->icmp_ip.ip_dst;
 		if (ctlfunc = inetsw[ip_protox[icp->icmp_ip.ip_p]].pr_ctlinput)
 			(*ctlfunc)(code, (struct sockaddr *)&icmpsrc,
-			    (caddr_t) &icp->icmp_ip);
+			    &icp->icmp_ip);
 		break;
 
 	badcode:
@@ -410,6 +411,7 @@ freeit:
 /*
  * Reflect the ip packet back to the source
  */
+void
 icmp_reflect(m)
 	struct mbuf *m;
 {
@@ -539,6 +541,7 @@ done:
  * Send an icmp packet back to the ip level,
  * after supplying a checksum.
  */
+void
 icmp_send(m, opts)
 	register struct mbuf *m;
 	struct mbuf *opts;
@@ -559,7 +562,7 @@ icmp_send(m, opts)
 	if (icmpprintfs)
 		printf("icmp_send dst %x src %x\n", ip->ip_dst, ip->ip_src);
 #endif
-	(void) ip_output(m, opts, (struct route *)0, 0);
+	(void) ip_output(m, opts, NULL, 0, NULL);
 }
 
 n_time
@@ -573,6 +576,7 @@ iptime()
 	return (htonl(t));
 }
 
+int
 icmp_sysctl(name, namelen, oldp, oldlenp, newp, newlen)
 	int *name;
 	u_int namelen;
