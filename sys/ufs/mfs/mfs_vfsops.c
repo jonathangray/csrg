@@ -30,10 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mfs_vfsops.c	7.23 (Berkeley) 03/22/92
+ *	@(#)mfs_vfsops.c	7.24 (Berkeley) 04/19/92
  */
 
 #include <sys/param.h>
+#include <sys/systm.h>
 #include <sys/time.h>
 #include <sys/kernel.h>
 #include <sys/proc.h>
@@ -56,6 +57,8 @@
 
 caddr_t	mfs_rootbase;	/* address of mini-root in kernel virtual memory */
 u_long	mfs_rootsize;	/* size of mini-root in bytes */
+
+static	int mfs_minor;	/* used for building internal dev_t */
 
 extern struct vnodeops mfs_vnodeops;
 
@@ -80,7 +83,7 @@ struct vfsops mfs_vfsops = {
  *
  * Name is updated by mount(8) after booting.
  */
-#define ROOTNAME	"root_device"
+#define ROOTNAME	"mfs_root"
 
 mfs_mountroot()
 {
@@ -100,6 +103,7 @@ mfs_mountroot()
 	mfsp = malloc(sizeof *mfsp, M_MFSNODE, M_WAITOK);
 	rootvp->v_data = mfsp;
 	rootvp->v_op = &mfs_vnodeops;
+	rootvp->v_tag = VT_MFS;
 	mfsp->mfs_baseoff = mfs_rootbase;
 	mfsp->mfs_size = mfs_rootsize;
 	mfsp->mfs_vnode = rootvp;
@@ -152,6 +156,7 @@ mfs_initminiroot(base)
 	mountroot = mfs_mountroot;
 	mfs_rootbase = base;
 	mfs_rootsize = fs->fs_fsize * fs->fs_size;
+	rootdev = makedev(255, mfs_minor++);
 	return (mfs_rootsize);
 }
 
@@ -174,7 +179,6 @@ mfs_mount(mp, path, data, ndp, p)
 	struct ufsmount *ump;
 	register struct fs *fs;
 	register struct mfsnode *mfsp;
-	static int mfs_minor;
 	u_int size;
 	int error;
 
