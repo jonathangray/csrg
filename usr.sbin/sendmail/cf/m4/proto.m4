@@ -34,7 +34,7 @@ divert(-1)
 #
 divert(0)
 
-VERSIONID(`@(#)proto.m4	6.28 (Berkeley) 03/25/93')
+VERSIONID(`@(#)proto.m4	6.29 (Berkeley) 03/29/93')
 
 MAILER(local)dnl
 
@@ -481,7 +481,7 @@ R$* $=O $* < @ $j . >	$@ $>7 $1 $2 $3			...@here -> ...
 ifdef(`MAILER_TABLE',
 `
 # try mailer table lookup
-R$* < @ $+ > $*		$: $1 < @ $(mailertable $2 $) $3
+R$* < @ $+ > $*		$: $1 < @ $(mailertable $2 $) > $3
 R$* < @ $-:$+ > $*	$# $2 $@ $3 $: $1 < @ $3 > $4	found a match',
 `dnl')
 
