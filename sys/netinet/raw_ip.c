@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)raw_ip.c	8.3 (Berkeley) 01/12/95
+ *	@(#)raw_ip.c	8.4 (Berkeley) 02/09/95
  */
 
 #include <sys/param.h>
@@ -101,8 +101,9 @@ rip_input(m)
 		if (last) {
 			struct mbuf *n;
 			if (n = m_copy(m, 0, (int)M_COPYALL)) {
-				if (sbappendaddr(&last->so_rcv, &ripsrc,
-				    n, (struct mbuf *)0) == 0)
+				if (sbappendaddr(&last->so_rcv,
+				    (struct sockaddr *)&ripsrc, n,
+				    (struct mbuf *)0) == 0)
 					/* should notify about lost packet */
 					m_freem(n);
 				else
@@ -112,7 +113,7 @@ rip_input(m)
 		last = inp->inp_socket;
 	}
 	if (last) {
-		if (sbappendaddr(&last->so_rcv, &ripsrc,
+		if (sbappendaddr(&last->so_rcv, (struct sockaddr *)&ripsrc,
 		    m, (struct mbuf *)0) == 0)
 			m_freem(m);
 		else
