@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)print.c	5.29 (Berkeley) 01/30/92";
+static char sccsid[] = "@(#)print.c	5.30 (Berkeley) 02/04/92";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -47,6 +47,7 @@ static char sccsid[] = "@(#)print.c	5.29 (Berkeley) 01/30/92";
 #include <pwd.h>
 #include <utmp.h>
 #include <tzfile.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include "ls.h"
 #include "extern.h"
@@ -150,7 +151,8 @@ printcol(dlist, entries, btotal, maxlen)
 	 */
 	if (entries > lastentries) {
 		lastentries = entries;
-		if ((array = (FTSENT **) realloc(array, entries * sizeof(FTSENT *))) == NULL) {
+		if ((array =
+		    realloc(array, entries * sizeof(FTSENT *))) == NULL) {
 			err(0, "%s", strerror(errno));
 			printscol(dlist, entries, btotal, maxlen);
 		}
