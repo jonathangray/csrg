@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)iso_snpac.c	7.13 (Berkeley) 05/06/91
+ *	@(#)iso_snpac.c	7.14 (Berkeley) 06/27/91
  */
 
 /***********************************************************
