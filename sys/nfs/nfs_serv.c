@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_serv.c	8.2 (Berkeley) 01/04/94
+ *	@(#)nfs_serv.c	8.3 (Berkeley) 01/12/94
  */
 
 /*
@@ -906,7 +906,7 @@ nfsrv_rename(nfsd, mrep, md, dpos, cred, nam, mrq)
 	register u_long *tl;
 	register long t1;
 	caddr_t bpos;
-	int error = 0, rdonly, cache, len, len2;
+	int error = 0, cache, len, len2;
 	char *cp2;
 	struct mbuf *mb, *mreq;
 	struct nameidata fromnd, tond;
@@ -1113,7 +1113,7 @@ nfsrv_symlink(nfsd, mrep, md, dpos, cred, nam, mrq)
 	caddr_t bpos;
 	struct uio io;
 	struct iovec iv;
-	int error = 0, rdonly, cache, len, len2;
+	int error = 0, cache, len, len2;
 	char *pathcp, *cp2;
 	struct mbuf *mb, *mreq;
 	nfsv2fh_t nfh;
