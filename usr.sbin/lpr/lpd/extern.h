@@ -30,8 +30,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.1 (Berkeley) 07/21/92
+ *	@(#)extern.h	5.2 (Berkeley) 7/30/92
  */
 
+#include <sys/cdefs.h>
+
+__BEGIN_DECLS
 void       printjob __P((void));
-int        recvjob __P((void));
+void       recvjob __P((void));
+___END_DECLS
