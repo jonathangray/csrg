@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mfs_vnops.c	7.19 (Berkeley) 12/05/90
+ *	@(#)mfs_vnops.c	7.20 (Berkeley) 02/01/91
  */
 
 #include "param.h"
@@ -99,6 +99,7 @@ struct vnodeops mfs_vnodeops = {
 	mfs_strategy,		/* strategy */
 	mfs_print,		/* print */
 	mfs_nullop,		/* islocked */
+	mfs_badop,		/* advlock */
 };
 
 /*
