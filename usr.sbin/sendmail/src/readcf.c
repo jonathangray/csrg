@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	6.28 (Berkeley) 04/26/93";
+static char sccsid[] = "@(#)readcf.c	6.29 (Berkeley) 04/26/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1041,7 +1041,13 @@ setoption(opt, val, sticky)
 			SpaceSub = ' ';
 		break;
 
-	  case 'b':		/* minimum number of blocks free on queue fs */
+	  case 'b':		/* min blocks free on queue fs/max msg size */
+		p = strchr(val, '/');
+		if (p != NULL)
+		{
+			*p++ = '\0';
+			MaxMessageSize = atol(p);
+		}
 		MinBlocksFree = atol(val);
 		break;
 
