@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)ns.c	5.15 (Berkeley) 07/06/92";
+static char sccsid[] = "@(#)ns.c	5.16 (Berkeley) 07/07/92";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -82,7 +82,7 @@ static	int first = 1;
 
 void
 nsprotopr(off, name)
-	off_t off;
+	u_long off;
 	char *name;
 {
 	struct nspcb cb;
@@ -98,10 +98,10 @@ nsprotopr(off, name)
 	if (nspcb.nsp_next == (struct nspcb *)off)
 		return;
 	for (;nspcb.nsp_next != (struct nspcb *)off; prev = next) {
-		off_t ppcb;
+		u_long ppcb;
 
 		next = nspcb.nsp_next;
-		kread((off_t)next, (char *)&nspcb, sizeof (nspcb));
+		kread((u_long)next, (char *)&nspcb, sizeof (nspcb));
 		if (nspcb.nsp_prev != prev) {
 			printf("???\n");
 			break;
@@ -109,9 +109,9 @@ nsprotopr(off, name)
 		if (!aflag && ns_nullhost(nspcb.nsp_faddr) ) {
 			continue;
 		}
-		kread((off_t)nspcb.nsp_socket,
+		kread((u_long)nspcb.nsp_socket,
 				(char *)&sockb, sizeof (sockb));
-		ppcb = (off_t) nspcb.nsp_pcb;
+		ppcb = (u_long) nspcb.nsp_pcb;
 		if (ppcb) {
 			if (isspp) {
 				kread(ppcb, (char *)&sppcb, sizeof (sppcb));
@@ -157,7 +157,7 @@ nsprotopr(off, name)
  */
 void
 spp_stats(off, name)
-	off_t off;
+	u_long off;
 	char *name;
 {
 	struct spp_istat spp_istat;
@@ -235,7 +235,7 @@ spp_stats(off, name)
  */
 void
 idp_stats(off, name)
-	off_t off;
+	u_long off;
 	char *name;
 {
 	struct idpstat idpstat;
@@ -271,7 +271,7 @@ static	struct {
 /*ARGSUSED*/
 void
 nserr_stats(off, name)
-	off_t off;
+	u_long off;
 	char *name;
 {
 	struct ns_errstat ns_errstat;
