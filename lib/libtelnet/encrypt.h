@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)encrypt.h	5.2 (Berkeley) 03/22/91
+ *	@(#)encrypt.h	5.3 (Berkeley) 12/18/92
  */
 
 /*
@@ -53,8 +53,8 @@
  * or implied warranty.
  */
 
-#ifndef	__ENCRYPT__
-#define	__ENCRYPT__
+#ifndef	__ENCRYPTION__
+#define	__ENCRYPTION__
 
 #define	DIR_DECRYPT		1
 #define	DIR_ENCRYPT		2
