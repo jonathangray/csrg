@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)scanw.c	5.5 (Berkeley) 01/21/91";
+static char sccsid[] = "@(#)scanw.c	5.6 (Berkeley) 03/12/91";
 #endif /* not lint */
 
 /*
@@ -41,6 +41,7 @@ static char sccsid[] = "@(#)scanw.c	5.5 (Berkeley) 01/21/91";
  */
 
 # include	"curses.ext"
+# include	"stdarg.h"
 
 /*
  *	This routine implements a scanf on the standard screen.
@@ -90,11 +91,11 @@ reg int	n; {
  *	This routine actually executes the scanf from the window.
  *	SHOULD IMPLEMENT VSSCANF
  */
-_sscans(win, fmt, args)
+_sscans(win, fmt)
 WINDOW	*win;
-char	*fmt;
-int	*args; {
+char	*fmt; {
 
+	va_list ap;
 	int	ret;
 	FILE	*f;
 	struct	strinfo s;
@@ -108,7 +109,9 @@ int	*args; {
 	}
 	s.addr = buf;
 	s.len = strlen(buf);
-	ret = __svfscanf(f, fmt, args);
+	va_start(ap, fmt);
+	ret = __svfscanf(f, fmt, ap);
+	va_end(ap);
 	(void) fclose(f);
 	return ret;
 }
