@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)open.c	7.7 (Berkeley) 07/07/93
+ *	@(#)open.c	7.8 (Berkeley) 07/07/93
  */
 
 #include <sys/param.h>
@@ -218,7 +218,6 @@ getunit(cp)
 /*
  * XXX more stdio-avoidance.
  */
-static
 atoi(cp)
 	char *cp;
 {
