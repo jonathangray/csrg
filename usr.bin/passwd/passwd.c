@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)passwd.c	5.3 (Berkeley) 02/12/91";
+static char sccsid[] = "@(#)passwd.c	5.4 (Berkeley) 03/14/91";
 #endif /* not lint */
 
 #include <stdio.h>
@@ -62,6 +62,10 @@ main(argc, argv)
 		case 'l':		/* change local password file */
 			use_kerberos = 0;
 			break;
+#else
+	while ((ch = getopt(argc, argv, "")) != EOF)
+		switch (ch) {
+#endif
 		default:
 		case '?':
 			usage();
@@ -70,7 +74,6 @@ main(argc, argv)
 
 	argc -= optind;
 	argv += optind;
-#endif
 
 	uname = getlogin();
 
