@@ -2,7 +2,7 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)tt11	8.1 (Berkeley) 06/08/93
+.\"	@(#)tt11	8.2 (Berkeley) 06/01/94
 .\"
 .NH
 Macros with arguments
@@ -181,6 +181,7 @@ macro which had a
 .P1
 ^tl 'left'center'right'
 .P2
+.ne 1i
 We could make these into parameters by using instead
 .P1
 ^tl '\e\e*(LT'\e\e*(CT'\e\e*(RT'
