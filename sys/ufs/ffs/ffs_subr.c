@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_subr.c	8.1 (Berkeley) 06/11/93
+ *	@(#)ffs_subr.c	8.2 (Berkeley) 09/21/93
  */
 
 #include <sys/param.h>
@@ -75,7 +75,7 @@ ffs_blkatoff(ap)
 		return (error);
 	}
 	if (ap->a_res)
-		*ap->a_res = bp->b_un.b_addr + blkoff(fs, ap->a_offset);
+		*ap->a_res = (char *)bp->b_data + blkoff(fs, ap->a_offset);
 	*ap->a_bpp = bp;
 	return (0);
 }
