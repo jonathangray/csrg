@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	5.15 (Berkeley) 06/26/92
+ *	@(#)pathnames.h	5.16 (Berkeley) 12/17/92
  */
 
 #include <paths.h>
@@ -38,6 +38,5 @@
 #define	_PATH_EX	"/usr/bin/ex"
 #define	_PATH_HELP	"/usr/share/misc/mail.help"
 #define	_PATH_TILDE	"/usr/share/misc/mail.tildehelp"
-#define	_PATH_MAIL_LOG	"/var/log/maillog"
 #define	_PATH_MASTER_RC	"/etc/mail.rc"
 #define	_PATH_MORE	"/usr/bin/more"
