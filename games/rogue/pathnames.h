@@ -30,9 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	5.1 (Berkeley) 06/01/90
+ *	@(#)pathnames.h	5.2 (Berkeley) 07/29/92
  */
 
 #define	_PATH_SCOREFILE	"/var/games/rogue.scores"
-#define	_PATH_LOCKFILE	"/var/games/rogue.lock"
-
