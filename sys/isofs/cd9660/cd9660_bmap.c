@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cd9660_bmap.c	8.2 (Berkeley) 01/22/94
+ *	@(#)cd9660_bmap.c	8.3 (Berkeley) 01/23/94
  */
 
 #include <sys/param.h>
@@ -46,7 +46,7 @@
 #include <sys/mount.h>
 
 #include <isofs/cd9660/iso.h>
-#include <isofs/cd9660/isofs_node.h>
+#include <isofs/cd9660/cd9660_node.h>
 
 /*
  * Bmap converts a the logical block number of a file to its physical block
@@ -54,7 +54,7 @@
  * number to index into the data block (extent) for the file.
  */
 int
-isofs_bmap(ap)
+cd9660_bmap(ap)
 	struct vop_bmap_args /* {
 		struct vnode *a_vp;
 		daddr_t  a_bn;
