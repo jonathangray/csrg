@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)portal_vnops.c	8.3 (Berkeley) 01/04/94
+ *	@(#)portal_vnops.c	8.4 (Berkeley) 01/04/94
  *
  * $Id: portal_vnops.c,v 1.4 1992/05/30 10:05:24 jsp Exp jsp $
  */
@@ -515,10 +515,8 @@ portal_getattr(ap)
 {
 	struct vnode *vp = ap->a_vp;
 	struct vattr *vap = ap->a_vap;
-	unsigned fd;
-	int error;
 
-	bzero((caddr_t) vap, sizeof(*vap));
+	bzero(vap, sizeof(*vap));
 	vattr_null(vap);
 	vap->va_uid = 0;
 	vap->va_gid = 0;
