@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	8.10 (Berkeley) 08/10/94
+ *	@(#)ffs_vnops.c	8.11 (Berkeley) 01/02/95
  */
 
 #include <sys/param.h>
@@ -305,7 +305,8 @@ ffs_reclaim(ap)
 
 	if (error = ufs_reclaim(vp))
 		return (error);
-	FREE(vp->v_data, M_FFSNODE);
+	FREE(vp->v_data, VFSTOUFS(vp->v_mount)->um_devvp->v_tag == VT_MFS ?
+	    M_MFSNODE : M_FFSNODE);
 	vp->v_data = NULL;
 	return (0);
 }
