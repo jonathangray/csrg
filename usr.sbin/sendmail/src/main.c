@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.35 (Berkeley) 11/08/93";
+static char sccsid[] = "@(#)main.c	8.36 (Berkeley) 11/12/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -256,12 +256,15 @@ main(argc, argv, envp)
 
 #if defined(__osf__) || defined(_AIX3)
 # define OPTIONS	"B:b:C:cd:e:F:f:h:Iimno:p:q:r:sTtvX:x"
-#else
-# if defined(ultrix)
-#  define OPTIONS	"B:b:C:cd:e:F:f:h:IiM:mno:p:q:r:sTtvX:"
-# else
-#  define OPTIONS	"B:b:C:cd:e:F:f:h:Iimno:p:q:r:sTtvX:"
-# endif
+#endif
+#if defined(ultrix)
+# define OPTIONS	"B:b:C:cd:e:F:f:h:IiM:mno:p:q:r:sTtvX:"
+#endif
+#if defined(NeXT)
+# define OPTIONS	"B:b:C:cd:e:F:f:h:IimnOo:p:q:r:sTtvX:"
+#endif
+#ifndef OPTIONS
+# define OPTIONS	"B:b:C:cd:e:F:f:h:Iimno:p:q:r:sTtvX:"
 #endif
 	while ((j = getopt(argc, argv, OPTIONS)) != EOF)
 	{
@@ -589,6 +592,10 @@ main(argc, argv, envp)
 
 # if defined(__osf__) || defined(_AIX3)
 		  case 'x':	/* random flag that OSF/1 & AIX mailx passes */
+			break;
+# endif
+# if defined(NeXT)
+		  case 'O':	/* random flag that NeXT Mail.app passes */
 			break;
 # endif
 
