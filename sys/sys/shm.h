@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)shm.h	8.1 (Berkeley) 06/02/93
+ *	@(#)shm.h	8.2 (Berkeley) 09/21/93
  */
 
 /*
