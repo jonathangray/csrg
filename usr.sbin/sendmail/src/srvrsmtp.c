@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	8.20 (Berkeley) 12/02/93 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	8.21 (Berkeley) 12/10/93 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	8.20 (Berkeley) 12/02/93 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	8.21 (Berkeley) 12/10/93 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -206,9 +206,9 @@ smtp(e)
 			fprintf(e->e_xfp, "<<< %s\n", inp);
 
 		if (e->e_id == NULL)
-			setproctitle("%s: %s", CurSmtpClient, inp);
+			setproctitle("%s: %.80s", CurSmtpClient, inp);
 		else
-			setproctitle("%s %s: %s", e->e_id, CurSmtpClient, inp);
+			setproctitle("%s %s: %.80s", e->e_id, CurSmtpClient, inp);
 
 		/* break off command */
 		for (p = inp; isascii(*p) && isspace(*p); p++)
@@ -305,7 +305,7 @@ smtp(e)
 			define('s', sendinghost, e);
 			initsys(e);
 			nrcpts = 0;
-			setproctitle("%s %s: %s", e->e_id, CurSmtpClient, inp);
+			setproctitle("%s %s: %.80s", e->e_id, CurSmtpClient, inp);
 
 			/* child -- go do the processing */
 			p = skipword(p, "from");
