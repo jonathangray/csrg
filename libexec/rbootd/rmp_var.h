@@ -38,7 +38,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)rmp_var.h	5.1 (Berkeley) 07/23/92
+ *	@(#)rmp_var.h	8.1 (Berkeley) 06/04/93
  *
  * Utah $Hdr: rmp_var.h 3.1 92/07/06$
  * Author: Jeff Forys, University of Utah CSS
