@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fs.h	8.11 (Berkeley) 12/13/94
+ *	@(#)fs.h	8.12 (Berkeley) 01/02/95
  */
 
 /*
@@ -238,8 +238,8 @@ struct fs {
 	int32_t	 fs_maxsymlinklen;	/* max length of an internal symlink */
 	int32_t	 fs_inodefmt;		/* format of on-disk inodes */
 	u_int64_t fs_maxfilesize;	/* maximum representable file size */
-	int64_t	 fs_qbmask;		/* ~fs_bmask - for use with quad size */
-	int64_t	 fs_qfmask;		/* ~fs_fmask - for use with quad size */
+	int64_t	 fs_qbmask;		/* ~fs_bmask for use with 64-bit size */
+	int64_t	 fs_qfmask;		/* ~fs_fmask for use with 64-bit size */
 	int32_t	 fs_state;		/* validate fs_clean field */
 	int32_t	 fs_postblformat;	/* format of positional layout tables */
 	int32_t	 fs_nrpos;		/* number of rotational positions */
