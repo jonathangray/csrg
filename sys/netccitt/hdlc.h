@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hdlc.h	7.2 (Berkeley) 05/11/90
+ *	@(#)hdlc.h	7.3 (Berkeley) 05/25/90
  */
 
 typedef char    bool;
