@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_inode.c	8.5 (Berkeley) 06/15/94
+ *	@(#)ufs_inode.c	8.6 (Berkeley) 06/16/94
  */
 
 #include <sys/param.h>
@@ -139,14 +139,12 @@ ufs_inactive(ap)
  * Reclaim an inode so that it can be used for other purposes.
  */
 int
-ufs_reclaim(ap)
-	struct vop_reclaim_args /* {
-		struct vnode *a_vp;
-	} */ *ap;
+ufs_reclaim(vp)
+	register struct vnode *vp;
 {
-	register struct vnode *vp = ap->a_vp;
 	register struct inode *ip;
-	int i, type;
+	int i;
+	extern int prtactive;
 
 	if (prtactive && vp->v_usecount != 0)
 		vprint("ufs_reclaim: pushing active", vp);
@@ -171,20 +169,5 @@ ufs_reclaim(ap)
 		}
 	}
 #endif
-	switch (vp->v_mount->mnt_stat.f_type) {
-	case MOUNT_UFS:
-		type = M_FFSNODE;
-		break;
-	case MOUNT_MFS:
-		type = M_MFSNODE;
-		break;
-	case MOUNT_LFS:
-		type = M_LFSNODE;
-		break;
-	default:
-		panic("ufs_reclaim: not ufs file");
-	}
-	FREE(vp->v_data, type);
-	vp->v_data = NULL;
 	return (0);
 }
