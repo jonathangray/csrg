@@ -1,4 +1,4 @@
-/*
+/*-
  * Copyright (c) 1989 The Regents of the University of California.
  * All rights reserved.
  *
@@ -35,7 +35,13 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.9 (Berkeley) 11/20/91";
+char copyright[] =
+"@(#) Copyright (c) 1989 The Regents of the University of California.\n\
+ All rights reserved.\n";
+#endif /* not lint */
+
+#ifndef lint
+static char sccsid[] = "@(#)main.c	5.11 (Berkeley) 06/29/92";
 #endif /* not lint */
 
 /*
@@ -139,8 +145,8 @@ extern int getopt();
 
 int
 main(argc,argv)
-int argc;
-char *argv[];
+	int argc;
+	char *argv[];
 {
 	register int c;
 	register int n;
@@ -186,21 +192,20 @@ char *argv[];
 		fp = 0; 		/* frame pointer initialized */
 		infile[0] = stdin;	/* default input (naturally) */
 		macro();
-	}
-        else
-                while (argc--) {
-                        if ((ifp = fopen(*argv, "r")) == NULL)
-                                oops("%s: %s", *argv, strerror(errno));
-                        else {
-				sp = -1;
-				fp = 0; 
-				infile[0] = ifp;
-				macro();
-				(void) fclose(ifp);
-			}
-                        argv++;
+	} else
+		for (; argc--; ++argv) {
+			p = *argv;
+			if (p[0] == '-' && p[1] == '\0')
+				ifp = stdin;
+			else if ((ifp = fopen(p, "r")) == NULL)
+				oops("%s: %s", p, strerror(errno));
+			sp = -1;
+			fp = 0; 
+			infile[0] = ifp;
+			macro();
+			if (ifp != stdin)
+				(void)fclose(ifp);
 		}
-
 
 	if (*m4wraps) { 		/* anything for rundown ??   */
 		ilevel = 0;		/* in case m4wrap includes.. */
