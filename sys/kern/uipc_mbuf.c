@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)uipc_mbuf.c	7.4 (Berkeley) 11/23/87
+ *	@(#)uipc_mbuf.c	7.4.1.1 (Berkeley) 11/24/87
  */
 
 #include "../machine/pte.h"
