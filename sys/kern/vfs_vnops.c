@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_vnops.c	7.28 (Berkeley) 03/19/91
+ *	@(#)vfs_vnops.c	7.29 (Berkeley) 04/16/91
  */
 
 #include "param.h"
@@ -41,11 +41,11 @@
 #include "buf.h"
 #include "proc.h"
 #include "mount.h"
+#include "namei.h"
 #include "vnode.h"
 #include "ioctl.h"
 #include "tty.h"
 
-int	vn_read(), vn_write(), vn_ioctl(), vn_select(), vn_close();
 struct 	fileops vnops =
 	{ vn_read, vn_write, vn_ioctl, vn_select, vn_close };
 
@@ -74,7 +74,7 @@ vn_open(ndp, p, fmode, cmode)
 			VATTR_NULL(vap);
 			vap->va_type = VREG;
 			vap->va_mode = cmode;
-			if (error = VOP_CREATE(ndp, vap))
+			if (error = VOP_CREATE(ndp, vap, p))
 				return (error);
 			fmode &= ~FTRUNC;
 			vp = ndp->ni_vp;
@@ -103,7 +103,7 @@ vn_open(ndp, p, fmode, cmode)
 	}
 	if ((fmode & FCREAT) == 0) {
 		if (fmode & FREAD) {
-			if (error = VOP_ACCESS(vp, VREAD, cred))
+			if (error = VOP_ACCESS(vp, VREAD, cred, p))
 				goto bad;
 		}
 		if (fmode & (FWRITE|FTRUNC)) {
@@ -112,18 +112,18 @@ vn_open(ndp, p, fmode, cmode)
 				goto bad;
 			}
 			if ((error = vn_writechk(vp)) ||
-			    (error = VOP_ACCESS(vp, VWRITE, cred)))
+			    (error = VOP_ACCESS(vp, VWRITE, cred, p)))
 				goto bad;
 		}
 	}
 	if (fmode & FTRUNC) {
 		VATTR_NULL(vap);
 		vap->va_size = 0;
-		if (error = VOP_SETATTR(vp, vap, cred))
+		if (error = VOP_SETATTR(vp, vap, cred, p))
 			goto bad;
 	}
 	VOP_UNLOCK(vp);
-	error = VOP_OPEN(vp, fmode, cred);
+	error = VOP_OPEN(vp, fmode, cred, p);
 	if (error)
 		vrele(vp);
 	return (error);
@@ -166,7 +166,7 @@ vn_writechk(vp)
 /*
  * Vnode version of rdwri() for calls on file systems.
  */
-vn_rdwr(rw, vp, base, len, offset, segflg, ioflg, cred, aresid)
+vn_rdwr(rw, vp, base, len, offset, segflg, ioflg, cred, aresid, p)
 	enum uio_rw rw;
 	struct vnode *vp;
 	caddr_t base;
@@ -176,6 +176,7 @@ vn_rdwr(rw, vp, base, len, offset, segflg, ioflg, cred, aresid)
 	int ioflg;
 	struct ucred *cred;
 	int *aresid;
+	struct proc *p;
 {
 	struct uio auio;
 	struct iovec aiov;
@@ -191,6 +192,7 @@ vn_rdwr(rw, vp, base, len, offset, segflg, ioflg, cred, aresid)
 	auio.uio_offset = offset;
 	auio.uio_segflg = segflg;
 	auio.uio_rw = rw;
+	auio.uio_procp = p;
 	if (rw == UIO_READ)
 		error = VOP_READ(vp, &auio, ioflg, cred);
 	else
@@ -249,18 +251,18 @@ vn_write(fp, uio, cred)
 /*
  * Get stat info for a vnode.
  */
-vn_stat(vp, sb)
+vn_stat(vp, sb, p)
 	struct vnode *vp;
 	register struct stat *sb;
+	struct proc *p;
 {
 	struct vattr vattr;
-	struct proc *p = curproc;		/* XXX */
 	register struct vattr *vap;
 	int error;
 	u_short mode;
 
 	vap = &vattr;
-	error = VOP_GETATTR(vp, vap, p->p_ucred);
+	error = VOP_GETATTR(vp, vap, p->p_ucred, p);
 	if (error)
 		return (error);
 	/*
@@ -316,13 +318,13 @@ vn_stat(vp, sb)
 /*
  * Vnode ioctl call
  */
-vn_ioctl(fp, com, data)
+vn_ioctl(fp, com, data, p)
 	struct file *fp;
 	int com;
 	caddr_t data;
+	struct proc *p;
 {
 	register struct vnode *vp = ((struct vnode *)fp->f_data);
-	struct proc *p = curproc;		/* XXX */
 	struct vattr vattr;
 	int error;
 
@@ -331,7 +333,7 @@ vn_ioctl(fp, com, data)
 	case VREG:
 	case VDIR:
 		if (com == FIONREAD) {
-			if (error = VOP_GETATTR(vp, &vattr, p->p_ucred))
+			if (error = VOP_GETATTR(vp, &vattr, p->p_ucred, p))
 				return (error);
 			*(off_t *)data = vattr.va_size - fp->f_offset;
 			return (0);
@@ -346,7 +348,7 @@ vn_ioctl(fp, com, data)
 	case VFIFO:
 	case VCHR:
 	case VBLK:
-		error = VOP_IOCTL(vp, com, data, fp->f_flag, p->p_ucred);
+		error = VOP_IOCTL(vp, com, data, fp->f_flag, p->p_ucred, p);
 		if (error == 0 && com == TIOCSCTTY) {
 			p->p_session->s_ttyvp = vp;
 			VREF(vp);
@@ -358,21 +360,22 @@ vn_ioctl(fp, com, data)
 /*
  * Vnode select call
  */
-vn_select(fp, which)
+vn_select(fp, which, p)
 	struct file *fp;
 	int which;
+	struct proc *p;
 {
-	struct proc *p = curproc;		/* XXX */
 
 	return (VOP_SELECT(((struct vnode *)fp->f_data), which, fp->f_flag,
-		p->p_ucred));
+		p->p_ucred, p));
 }
 
 /*
  * Vnode close call
  */
-vn_close(fp)
+vn_close(fp, p)
 	register struct file *fp;
+	struct proc *p;
 {
 	struct vnode *vp = ((struct vnode *)fp->f_data);
 	int error;
@@ -383,7 +386,7 @@ vn_close(fp)
 	 * will prevent close.
 	 */
 	fp->f_data = (caddr_t) 0;
-	error = VOP_CLOSE(vp, fp->f_flag, fp->f_cred);
+	error = VOP_CLOSE(vp, fp->f_flag, fp->f_cred, p);
 	vrele(vp);
 	return (error);
 }
