@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty.h	7.9 (Berkeley) 05/09/91
+ *	@(#)tty.h	7.10 (Berkeley) 06/26/91
  */
 
 #include <sys/termios.h>
@@ -114,7 +114,7 @@ extern	struct ttychars ttydefaults;
 #define	TS_ASLEEP	0x000040	/* wakeup when output done */
 #define	TS_XCLUDE	0x000080	/* exclusive-use flag against open */
 #define	TS_TTSTOP	0x000100	/* output stopped by ctl-s */
-#define	TS_HUPCLS	0x000200	/* hang up upon last close */
+/* was	TS_HUPCLS	0x000200 	 * hang up upon last close */
 #define	TS_TBLOCK	0x000400	/* tandem queue blocked */
 #define	TS_RCOLL	0x000800	/* collision in read select */
 #define	TS_WCOLL	0x001000	/* collision in write select */
