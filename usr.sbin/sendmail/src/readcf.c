@@ -9,7 +9,7 @@
 */
 
 #ifndef lint
-static char	SccsId[] = "@(#)readcf.c	5.2 (Berkeley) 06/07/85";
+static char	SccsId[] = "@(#)readcf.c	5.3 (Berkeley) 06/08/85";
 #endif not lint
 
 # include "sendmail.h"
@@ -90,7 +90,7 @@ readcf(cfname)
 			if (p[1] == '$')
 			{
 				/* actual dollar sign.... */
-				strcpy(p, p + 1);
+				(void) strcpy(p, p + 1);
 				continue;
 			}
 
