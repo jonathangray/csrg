@@ -36,9 +36,9 @@
 
 #ifndef lint
 #if NAMED_BIND
-static char sccsid[] = "@(#)domain.c	8.42 (Berkeley) 06/10/95 (with name server)";
+static char sccsid[] = "@(#)domain.c	8.43 (Berkeley) 06/10/95 (with name server)";
 #else
-static char sccsid[] = "@(#)domain.c	8.42 (Berkeley) 06/10/95 (without name server)";
+static char sccsid[] = "@(#)domain.c	8.43 (Berkeley) 06/10/95 (without name server)";
 #endif
 #endif /* not lint */
 
@@ -646,6 +646,13 @@ cnameloop:
 				continue;
 
 			  case T_CNAME:
+				if (DontExpandCnames)
+				{
+					/* got CNAME -- guaranteed canonical */
+					amatch = TRUE;
+					break;
+				}
+
 				if (loopcnt++ > MAXCNAMEDEPTH)
 				{
 					/*XXX should notify postmaster XXX*/
