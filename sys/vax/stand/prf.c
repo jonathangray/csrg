@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)prf.c	6.3 (Berkeley) 07/17/85
+ *	@(#)prf.c	6.4 (Berkeley) 03/08/86
  */
 
 #include "../h/param.h"
