@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)leave.1	8.2 (Berkeley) 04/18/94
+.\"	@(#)leave.1	8.3 (Berkeley) 04/28/95
 .\"
 .Dd 
 .Dt LEAVE 1
@@ -91,7 +91,7 @@ or
 .Pp
 Leave ignores interrupts, quits, and terminates.
 To get rid of it you should either log off or use
-.Ql kill \-9
+.Ql kill \-s KILL
 giving its process id.
 .Sh SEE ALSO
 .Xr calendar 1
