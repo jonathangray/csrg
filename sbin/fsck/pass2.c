@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)pass2.c	8.8 (Berkeley) 04/27/95";
+static char sccsid[] = "@(#)pass2.c	8.9 (Berkeley) 04/28/95";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -119,7 +119,7 @@ pass2()
 	/*
 	 * Check the integrity of each directory.
 	 */
-	bzero((char *)&curino, sizeof(struct inodesc));
+	memset(&curino, 0, sizeof(struct inodesc));
 	curino.id_type = DATA;
 	curino.id_func = pass2check;
 	dp = &dino;
@@ -151,11 +151,10 @@ pass2()
 				dp = &dino;
 			}
 		}
-		bzero((char *)&dino, sizeof(struct dinode));
+		memset(&dino, 0, sizeof(struct dinode));
 		dino.di_mode = IFDIR;
 		dp->di_size = inp->i_isize;
-		bcopy((char *)&inp->i_blks[0], (char *)&dp->di_db[0],
-			(size_t)inp->i_numblks);
+		memmove(&dp->di_db[0], &inp->i_blks[0], (size_t)inp->i_numblks);
 		curino.id_number = inp->i_number;
 		curino.id_parent = inp->i_parent;
 		(void)ckinode(dp, &curino);
@@ -263,17 +262,17 @@ pass2check(idesc)
 		pfatal("CANNOT FIX, INSUFFICIENT SPACE TO ADD '.'\n");
 	} else if (dirp->d_reclen < 2 * entrysize) {
 		proto.d_reclen = dirp->d_reclen;
-		bcopy((char *)&proto, (char *)dirp, (size_t)entrysize);
+		memmove(dirp, &proto, (size_t)entrysize);
 		if (reply("FIX") == 1)
 			ret |= ALTERED;
 	} else {
 		n = dirp->d_reclen - entrysize;
 		proto.d_reclen = entrysize;
-		bcopy((char *)&proto, (char *)dirp, (size_t)entrysize);
+		memmove(dirp, &proto, (size_t)entrysize);
 		idesc->id_entryno++;
 		lncntp[dirp->d_ino]--;
 		dirp = (struct direct *)((char *)(dirp) + entrysize);
-		bzero((char *)dirp, (size_t)n);
+		memset(dirp, 0, (size_t)n);
 		dirp->d_reclen = n;
 		if (reply("FIX") == 1)
 			ret |= ALTERED;
@@ -308,7 +307,7 @@ chk1:
 		idesc->id_entryno++;
 		lncntp[dirp->d_ino]--;
 		dirp = (struct direct *)((char *)(dirp) + n);
-		bzero((char *)dirp, (size_t)proto.d_reclen);
+		memset(dirp, 0, (size_t)proto.d_reclen);
 		dirp->d_reclen = proto.d_reclen;
 	}
 	if (dirp->d_ino != 0 && strcmp(dirp->d_name, "..") == 0) {
@@ -337,7 +336,7 @@ chk1:
 		inp->i_dotdot = inp->i_parent;
 		fileerror(inp->i_parent, idesc->id_number, "MISSING '..'");
 		proto.d_reclen = dirp->d_reclen;
-		bcopy((char *)&proto, (char *)dirp, (size_t)entrysize);
+		memmove(dirp, &proto, (size_t)entrysize);
 		if (reply("FIX") == 1)
 			ret |= ALTERED;
 	}
