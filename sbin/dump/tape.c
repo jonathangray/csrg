@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)tape.c	5.24 (Berkeley) 07/02/92";
+static char sccsid[] = "@(#)tape.c	5.25 (Berkeley) 07/16/92";
 #endif /* not lint */
 
 #ifdef sunos
@@ -199,7 +199,8 @@ dumpblock(blkno, size)
 int	nogripe = 0;
 
 void
-tperror()
+tperror(signo)
+	int signo;
 {
 
 	if (pipeout) {
@@ -210,7 +211,7 @@ tperror()
 	msg("write error %d blocks into volume %d\n", blocksthisvol, tapeno);
 	broadcast("DUMP WRITE ERROR!\n");
 	if (!query("Do you want to restart?"))
-		dumpabort();
+		dumpabort(0);
 	msg("Closing this volume.  Prepare to restart with new media;\n");
 	msg("this dump volume will be rewritten.\n");
 	killall();
@@ -220,7 +221,8 @@ tperror()
 }
 
 void
-sigpipe()
+sigpipe(signo)
+	int signo;
 {
 
 	quit("Broken pipe\n");
@@ -253,7 +255,7 @@ flushtape()
 		if (atomic(read, slp->fd, (char *)&got, sizeof got)
 		    != sizeof got) {
 			perror("  DUMP: error reading command pipe in master");
-			dumpabort();
+			dumpabort(0);
 		}
 		slp->sent = 0;
 
@@ -271,7 +273,7 @@ flushtape()
 					    (char *)&got, sizeof got)
 					    != sizeof got) {
 						perror("  DUMP: error reading command pipe in master");
-						dumpabort();
+						dumpabort(0);
 					}
 					slaves[i].sent = 0;
 				}
@@ -325,7 +327,7 @@ trewind()
 			if (atomic(read, slaves[f].fd, (char *)&got, sizeof got)
 			    != sizeof got) {
 				perror("  DUMP: error reading command pipe in master");
-				dumpabort();
+				dumpabort(0);
 			}
 			slaves[f].sent = 0;
 			if (got != writesize) {
@@ -371,7 +373,7 @@ close_rewind()
 	}
 	while (!query("Is the new volume mounted and ready to go?"))
 		if (query("Do you want to abort?")) {
-			dumpabort();
+			dumpabort(0);
 			/*NOTREACHED*/
 		}
 }
@@ -457,7 +459,7 @@ rollforward()
 		size = (char *)ntb - (char *)q;
 		if (atomic(write, slp->fd, (char *)q, size) != size) {
 			perror("  DUMP: error writing command pipe");
-			dumpabort();
+			dumpabort(0);
 		}
 		slp->sent = 1;
 #ifdef ROLLDEBUG
@@ -509,7 +511,7 @@ rollforward()
 		if (atomic(read, slp->fd, (char *)&got, sizeof got)
 		    != sizeof got) {
 			perror("  DUMP: error reading command pipe in master");
-			dumpabort();
+			dumpabort(0);
 		}
 		slp->sent = 0;
 
@@ -638,7 +640,7 @@ startnewtape(top)
 		    {
 			msg("Cannot open output \"%s\".\n", tape);
 			if (!query("Do you want to retry the open?"))
-				dumpabort();
+				dumpabort(0);
 		}
 
 		enslave();  /* Share open tape file descriptor with slaves */
@@ -665,7 +667,8 @@ startnewtape(top)
 }
 
 void
-dumpabort()
+dumpabort(signo)
+	int signo;
 {
 
 	if (master != 0 && master != getpid())
@@ -693,7 +696,8 @@ Exit(status)
  * proceed - handler for SIGUSR2, used to synchronize IO between the slaves.
  */
 void
-proceed()
+proceed(signo)
+	int signo;
 {
 
 	if (ready)
