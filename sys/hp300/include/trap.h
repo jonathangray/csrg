@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * from: Utah $Hdr: trap.h 1.1 90/07/09$
+ * from: Utah $Hdr: trap.h 1.7 91/03/25$
  *
- *	@(#)trap.h	7.5 (Berkeley) 05/09/91
+ *	@(#)trap.h	7.6 (Berkeley) 06/05/92
  */
 
 /*
@@ -59,6 +59,8 @@
 #define T_COPERR	12
 #define T_ASTFLT	13
 #define T_TRAP15	15
+#define T_FPEMULI	16
+#define T_FPEMULD	17
 
 #define	T_USER		0x80		/* user-mode flag or'ed with type */
 
