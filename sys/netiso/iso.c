@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)iso.c	7.14 (Berkeley) 06/27/91
+ *	@(#)iso.c	7.15 (Berkeley) 07/30/91
  */
 
 /***********************************************************
@@ -106,14 +106,10 @@ int ether_output(), llc_rtrequest();
  *
  * NOTES:			
  */
-struct radix_node_head *iso_rnhead;
 iso_init()
 {
-	static iso_init_done;
-
-	if (iso_init_done == 0) {
-		iso_init_done++;
-		rn_inithead(&iso_rnhead, 48, AF_ISO);
+	if (rt_tables[AF_ISO] == 0) {
+		rn_inithead(rt_tables + AF_ISO, 48);
 	}
 }
 
