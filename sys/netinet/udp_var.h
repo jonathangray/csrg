@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)udp_var.h	7.11 (Berkeley) 05/03/93
+ *	@(#)udp_var.h	7.12 (Berkeley) 06/04/93
  */
 
 /*
@@ -80,4 +80,13 @@ struct	udpstat {
 #ifdef KERNEL
 struct	inpcb udb;
 struct	udpstat udpstat;
+
+void	 udp_ctlinput __P((int, struct sockaddr *, struct ip *));
+void	 udp_init __P((void));
+void	 udp_input __P((struct mbuf *, int));
+int	 udp_output __P((struct inpcb *,
+	    struct mbuf *, struct mbuf *, struct mbuf *));
+int	 udp_sysctl __P((int *, u_int, void *, size_t *, void *, size_t));
+int	 udp_usrreq __P((struct socket *,
+	    int, struct mbuf *, struct mbuf *, struct mbuf *));
 #endif
