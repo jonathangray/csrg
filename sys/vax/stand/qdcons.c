@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)qdcons.c	7.4 (Berkeley) 06/28/90
+ *	@(#)qdcons.c	7.5 (Berkeley) 12/16/90
  */
 
 /*
@@ -75,13 +75,13 @@
 *
 ************************************************************************/
 
-#include "../sys/types.h"
-#include "../vax/cpu.h"
+#include "sys/types.h"
+#include "../include/cpu.h"
 #define KERNEL
-#include "../vaxuba/qdioctl.h"
-#include "../vaxuba/qevent.h"
-#include "../vaxuba/qduser.h"
-#include "../vaxuba/qdreg.h"
+#include "../uba/qdioctl.h"
+#include "../uba/qevent.h"
+#include "../uba/qduser.h"
+#include "../uba/qdreg.h"
 #undef KERNEL
 
 /*-----------------------------------------------------------------------
