@@ -1,4 +1,7 @@
-SCCSID = "@(#)Makefile 1.10 10/06/80"
+SCCSID = "@(#)Makefile 1.11 10/19/80"
+WHOAMI = pc
+INSTALLNAME = pc0
+VERSION = 2.0
 
 MKSTR = /usr/ucb/mkstr
 EYACC = /usr/ucb/eyacc
