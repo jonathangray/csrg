@@ -7,7 +7,7 @@
 #
 #	NCR 3000 support from Kevin Darcy <kevin@tech.mis.cfc.com>.
 #
-#	@(#)Makefile.NCR3000	8.4 (Berkeley) 04/10/95
+#	@(#)Makefile.NCR3000	8.5 (Berkeley) 05/23/95
 #
 
 # use O=-O (usual) or O=-g (debugging)
