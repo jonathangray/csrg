@@ -1,6 +1,10 @@
 /*-
- * Copyright (c) 1991 The Regents of the University of California.
+ * Copyright (c) 1991 Keith Muller.
+ * Copyright (c) 1993 The Regents of the University of California.
  * All rights reserved.
+ *
+ * This code is derived from software contributed to Berkeley by
+ * Keith Muller of the University of California, San Diego.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,13 +36,14 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)egetopt.c	5.1 (Berkeley) 04/30/93";
+static char sccsid[] = "@(#)egetopt.c	5.2 (Berkeley) 04/30/93";
 #endif /* not lint */
 
-#include <stdio.h>
 #include <ctype.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "extern.h"
 
 /*
@@ -61,16 +66,11 @@ char	*eoptarg;		/* argument associated with option */
 #define	BADCH	(int)'?'
 #define	EMSG	""
 
-#if __STDC__
-int
-egetopt(int nargc, char * const *nargv, const char *ostr)
-#else
 int
 egetopt(nargc, nargv, ostr)
 	int nargc;
-	char **nargv;
-	char *ostr;
-#endif
+	char * const *nargv;
+	const char *ostr;
 {
 	static char *place = EMSG;	/* option letter processing */
 	register char *oli;		/* option letter list index */
@@ -90,7 +90,7 @@ egetopt(nargc, nargv, ostr)
 		if ((eoptind >= nargc) ||
 		    ((*(place = nargv[eoptind]) != '-') && (*place != '+'))) {
 			place = EMSG;
-			return(EOF);
+			return (EOF);
 		}
 
 		delim = (int)*place;
@@ -100,7 +100,7 @@ egetopt(nargc, nargv, ostr)
 			 */
 			++eoptind;
 			place = EMSG;
-			return(EOF);
+			return (EOF);
 		}
 	}
 
@@ -108,14 +108,14 @@ egetopt(nargc, nargv, ostr)
 	 * check option letter
 	 */
 	if ((eoptopt = (int)*place++) == (int)':' || (eoptopt == (int)'?') ||
-	    !(oli = index(ostr, eoptopt))) {
+	    !(oli = strchr(ostr, eoptopt))) {
 		/*
 		 * if the user didn't specify '-' as an option,
 		 * assume it means EOF when by itself.
 		 */
 		if ((eoptopt == (int)'-') && !*place)
-			return(EOF);
-		if (index(ostr, '#') && (isdigit(eoptopt) ||
+			return (EOF);
+		if (strchr(ostr, '#') && (isdigit(eoptopt) ||
 		    (((eoptopt == (int)'-') || (eoptopt == (int)'+')) &&
 		      isdigit(*place)))) {
 			/*
@@ -135,20 +135,20 @@ egetopt(nargc, nargv, ostr)
 				savec = *p;
 				*place = '\0';
 			}
-			return(delim);
+			return (delim);
 		}
 
 		if (!*place)
 			++eoptind;
 		if (eopterr) {
-			if (!(p = rindex(*nargv, '/')))
+			if (!(p = strrchr(*nargv, '/')))
 				p = *nargv;
 			else
 				++p;
 			(void)fprintf(stderr, "%s: illegal option -- %c\n",
 			    p, eoptopt);
 		}
-		return(BADCH);
+		return (BADCH);
 	}
 	if (delim == (int)'+') {
 		/*
@@ -157,7 +157,7 @@ egetopt(nargc, nargv, ostr)
 		if (!*place)
 			++eoptind;
 		if (eopterr) {
-			if (!(p = rindex(*nargv, '/')))
+			if (!(p = strrchr(*nargv, '/')))
 				p = *nargv;
 			else
 				++p;
@@ -165,7 +165,7 @@ egetopt(nargc, nargv, ostr)
 				"%s: illegal '+' delimiter with option -- %c\n",
 				p, eoptopt);
 		}
-		return(BADCH);
+		return (BADCH);
 	}
 	++oli;
 	if ((*oli != ':') && (*oli != '?')) {
@@ -175,7 +175,7 @@ egetopt(nargc, nargv, ostr)
 		eoptarg = NULL;
 		if (!*place)
 			++eoptind;
-		return(eoptopt);
+		return (eoptopt);
 	}
 
 	if (*place) {
@@ -194,7 +194,7 @@ egetopt(nargc, nargv, ostr)
 		 */
 		place = EMSG;
 		if (eopterr) {
-			if (!(p = rindex(*nargv, '/')))
+			if (!(p = strrchr(*nargv, '/')))
 				p = *nargv;
 			else
 				++p;
@@ -202,7 +202,7 @@ egetopt(nargc, nargv, ostr)
 			    "%s: option requires an argument -- %c\n", p,
 			    eoptopt);
 		}
-		return(BADCH);
+		return (BADCH);
 	} else {
 		/*
 		 * arg has white space
@@ -211,5 +211,5 @@ egetopt(nargc, nargv, ostr)
 	}
 	place = EMSG;
 	++eoptind;
-	return(eoptopt);
+	return (eoptopt);
 }
