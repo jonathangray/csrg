@@ -3,7 +3,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)disktab	4.9 (Berkeley) 10/28/85
+#	@(#)disktab	4.10 (Berkeley) 05/16/86
 #
 # Disk geometry and partition layout tables. 
 # Key:
