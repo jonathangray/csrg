@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)cmds.c	5.8 (Berkeley) 07/21/92";
+static char sccsid[] = "@(#)cmds.c	5.10 (Berkeley) 8/31/92";
 #endif /* not lint */
 
 /*
@@ -60,19 +60,18 @@ static char sccsid[] = "@(#)cmds.c	5.8 (Berkeley) 07/21/92";
 
 static void	abortpr __P((int));
 static void	cleanpr __P((void));
-static int	doselect __P((struct dirent *));
-static void	upstat __P((char *));
-static int	sortq __P((const void *, const void *));
-static void	unlinkf __P((char *));
-static int	doarg __P((char *));
-static int	touch __P((struct queue *));
-static void	stoppr __P((void));
-static void	prstat __P((void));
-static void	startpr __P((int));
-static void	putmsg __P((int, char **));
 static void	disablepr __P((void));
+static int	doarg __P((char *));
+static int	doselect __P((struct dirent *));
 static void	enablepr __P((void));
-
+static void	prstat __P((void));
+static void	putmsg __P((int, char **));
+static int	sortq __P((const void *, const void *));
+static void	startpr __P((int));
+static void	stoppr __P((void));
+static int	touch __P((struct queue *));
+static void	unlinkf __P((char *));
+static void	upstat __P((char *));
 
 /*
  * kill an existing daemon and disable printing.
@@ -92,9 +91,9 @@ doabort(argc, argv)
 	}
 	if (argc == 2 && !strcmp(argv[1], "all")) {
 		printer = prbuf;
-		while (getprent(line) > 0) {
+		while (cgetnext(&bp, printcapdb) > 0) {
 			cp1 = prbuf;
-			cp2 = line;
+			cp2 = bp;
 			while ((c = *cp2++) && c != '|' && c != ':')
 				*cp1++ = c;
 			*cp1 = '\0';
@@ -104,13 +103,14 @@ doabort(argc, argv)
 	}
 	while (--argc) {
 		printer = *++argv;
-		if ((status = pgetent(line, printer)) < 0) {
+		if ((status = cgetent(&bp, printcapdb, printer)) == -2) {
 			printf("cannot open printer description file\n");
 			continue;
-		} else if (status == 0) {
+		} else if (status == -1) {
 			printf("unknown printer %s\n", printer);
 			continue;
-		}
+		} else if (status == -3)
+			fatal("potential reference loop detected in printcap file");
 		abortpr(1);
 	}
 }
@@ -123,10 +123,9 @@ abortpr(dis)
 	struct stat stbuf;
 	int pid, fd;
 
-	bp = pbuf;
-	if ((SD = pgetstr("sd", &bp)) == NULL)
+	if (cgetstr(bp, "sd", &SD) == -1)
 		SD = _PATH_DEFSPOOL;
-	if ((LO = pgetstr("lo", &bp)) == NULL)
+	if (cgetstr(bp, "lo", &LO) == -1)
 		LO = DEFLOCK;
 	(void) sprintf(line, "%s/%s", SD, LO);
 	printf("%s:\n", printer);
@@ -186,8 +185,7 @@ upstat(msg)
 	register int fd;
 	char statfile[BUFSIZ];
 
-	bp = pbuf;
-	if ((ST = pgetstr("st", &bp)) == NULL)
+	if (cgetstr(bp, "st", &ST) == -1)
 		ST = DEFSTAT;
 	(void) sprintf(statfile, "%s/%s", SD, ST);
 	umask(0);
@@ -222,9 +220,9 @@ clean(argc, argv)
 	}
 	if (argc == 2 && !strcmp(argv[1], "all")) {
 		printer = prbuf;
-		while (getprent(line) > 0) {
+		while (cgetnext(&bp, printcapdb) > 0) {
 			cp1 = prbuf;
-			cp2 = line;
+			cp2 = bp;
 			while ((c = *cp2++) && c != '|' && c != ':')
 				*cp1++ = c;
 			*cp1 = '\0';
@@ -234,13 +232,15 @@ clean(argc, argv)
 	}
 	while (--argc) {
 		printer = *++argv;
-		if ((status = pgetent(line, printer)) < 0) {
+		if ((status = cgetent(&bp, printcapdb, printer)) == -2) {
 			printf("cannot open printer description file\n");
 			continue;
-		} else if (status == 0) {
+		} else if (status == -1) {
 			printf("unknown printer %s\n", printer);
 			continue;
-		}
+		} else if (status == -3)
+			fatal("potential reference loop detected in printcap file");
+
 		cleanpr();
 	}
 }
@@ -293,8 +293,7 @@ cleanpr()
 	struct dirent **queue;
 	int nitems;
 
-	bp = pbuf;
-	if ((SD = pgetstr("sd", &bp)) == NULL)
+	if (cgetstr(bp, "sd", &SD) == -1)
 		SD = _PATH_DEFSPOOL;
 	printf("%s:\n", printer);
 
@@ -365,9 +364,9 @@ enable(argc, argv)
 	}
 	if (argc == 2 && !strcmp(argv[1], "all")) {
 		printer = prbuf;
-		while (getprent(line) > 0) {
+		while (cgetnext(&bp, printcapdb) > 0) {
 			cp1 = prbuf;
-			cp2 = line;
+			cp2 = bp;
 			while ((c = *cp2++) && c != '|' && c != ':')
 				*cp1++ = c;
 			*cp1 = '\0';
@@ -377,13 +376,15 @@ enable(argc, argv)
 	}
 	while (--argc) {
 		printer = *++argv;
-		if ((status = pgetent(line, printer)) < 0) {
+		if ((status = cgetent(&bp, printcapdb, printer)) == -2) {
 			printf("cannot open printer description file\n");
 			continue;
-		} else if (status == 0) {
+		} else if (status == -1) {
 			printf("unknown printer %s\n", printer);
 			continue;
-		}
+		} else if (status == -3)
+			fatal("potential reference loop detected in printcap file");
+
 		enablepr();
 	}
 }
@@ -393,10 +394,9 @@ enablepr()
 {
 	struct stat stbuf;
 
-	bp = pbuf;
-	if ((SD = pgetstr("sd", &bp)) == NULL)
+	if (cgetstr(bp, "sd", &SD) == -1)
 		SD = _PATH_DEFSPOOL;
-	if ((LO = pgetstr("lo", &bp)) == NULL)
+	if (cgetstr(bp, "lo", &LO) == -1)
 		LO = DEFLOCK;
 	(void) sprintf(line, "%s/%s", SD, LO);
 	printf("%s:\n", printer);
@@ -430,9 +430,9 @@ disable(argc, argv)
 	}
 	if (argc == 2 && !strcmp(argv[1], "all")) {
 		printer = prbuf;
-		while (getprent(line) > 0) {
+		while (cgetnext(&bp, printcapdb) > 0) {
 			cp1 = prbuf;
-			cp2 = line;
+			cp2 = bp;
 			while ((c = *cp2++) && c != '|' && c != ':')
 				*cp1++ = c;
 			*cp1 = '\0';
@@ -442,13 +442,15 @@ disable(argc, argv)
 	}
 	while (--argc) {
 		printer = *++argv;
-		if ((status = pgetent(line, printer)) < 0) {
+		if ((status = cgetent(&bp, printcapdb, printer)) == -2) {
 			printf("cannot open printer description file\n");
 			continue;
-		} else if (status == 0) {
+		} else if (status == -1) {
 			printf("unknown printer %s\n", printer);
 			continue;
-		}
+		} else if (status == -3)
+			fatal("potential reference loop detected in printcap file");
+
 		disablepr();
 	}
 }
@@ -459,10 +461,9 @@ disablepr()
 	register int fd;
 	struct stat stbuf;
 
-	bp = pbuf;
-	if ((SD = pgetstr("sd", &bp)) == NULL)
+	if (cgetstr(bp, "sd", &SD) == -1)
 		SD = _PATH_DEFSPOOL;
-	if ((LO = pgetstr("lo", &bp)) == NULL)
+	if (cgetstr(bp, "lo", &LO) == -1)
 		LO = DEFLOCK;
 	(void) sprintf(line, "%s/%s", SD, LO);
 	printf("%s:\n", printer);
@@ -505,9 +506,9 @@ down(argc, argv)
 	}
 	if (!strcmp(argv[1], "all")) {
 		printer = prbuf;
-		while (getprent(line) > 0) {
+		while (cgetnext(&bp, printcapdb) > 0) {
 			cp1 = prbuf;
-			cp2 = line;
+			cp2 = bp;
 			while ((c = *cp2++) && c != '|' && c != ':')
 				*cp1++ = c;
 			*cp1 = '\0';
@@ -516,13 +517,15 @@ down(argc, argv)
 		return;
 	}
 	printer = argv[1];
-	if ((status = pgetent(line, printer)) < 0) {
+	if ((status = cgetent(&bp, printcapdb, printer)) == -2) {
 		printf("cannot open printer description file\n");
 		return;
-	} else if (status == 0) {
+	} else if (status == -1) {
 		printf("unknown printer %s\n", printer);
 		return;
-	}
+	} else if (status == -3)
+			fatal("potential reference loop detected in printcap file");
+
 	putmsg(argc - 2, argv + 2);
 }
 
@@ -536,12 +539,11 @@ putmsg(argc, argv)
 	char buf[1024];
 	struct stat stbuf;
 
-	bp = pbuf;
-	if ((SD = pgetstr("sd", &bp)) == NULL)
+	if (cgetstr(bp, "sd", &SD) == -1)
 		SD = _PATH_DEFSPOOL;
-	if ((LO = pgetstr("lo", &bp)) == NULL)
+	if (cgetstr(bp, "lo", &LO) == -1)
 		LO = DEFLOCK;
-	if ((ST = pgetstr("st", &bp)) == NULL)
+	if (cgetstr(bp, "st", &ST) == -1)
 		ST = DEFSTAT;
 	printf("%s:\n", printer);
 	/*
@@ -621,9 +623,9 @@ restart(argc, argv)
 	}
 	if (argc == 2 && !strcmp(argv[1], "all")) {
 		printer = prbuf;
-		while (getprent(line) > 0) {
+		while (cgetnext(&bp, printcapdb) > 0) {
 			cp1 = prbuf;
-			cp2 = line;
+			cp2 = bp;
 			while ((c = *cp2++) && c != '|' && c != ':')
 				*cp1++ = c;
 			*cp1 = '\0';
@@ -634,13 +636,15 @@ restart(argc, argv)
 	}
 	while (--argc) {
 		printer = *++argv;
-		if ((status = pgetent(line, printer)) < 0) {
+		if ((status = cgetent(&bp, printcapdb, printer)) == -2) {
 			printf("cannot open printer description file\n");
 			continue;
-		} else if (status == 0) {
+		} else if (status == -1) {
 			printf("unknown printer %s\n", printer);
 			continue;
-		}
+		} else if (status == -3)
+			fatal("potential reference loop detected in printcap file");
+
 		abortpr(0);
 		startpr(0);
 	}
@@ -664,9 +668,9 @@ start(argc, argv)
 	}
 	if (argc == 2 && !strcmp(argv[1], "all")) {
 		printer = prbuf;
-		while (getprent(line) > 0) {
+		while (cgetnext(&bp, printcapdb) > 0) {
 			cp1 = prbuf;
-			cp2 = line;
+			cp2 = bp;
 			while ((c = *cp2++) && c != '|' && c != ':')
 				*cp1++ = c;
 			*cp1 = '\0';
@@ -676,13 +680,15 @@ start(argc, argv)
 	}
 	while (--argc) {
 		printer = *++argv;
-		if ((status = pgetent(line, printer)) < 0) {
+		if ((status = cgetent(&bp, printcapdb, printer)) == -2) {
 			printf("cannot open printer description file\n");
 			continue;
-		} else if (status == 0) {
+		} else if (status == -1) {
 			printf("unknown printer %s\n", printer);
 			continue;
-		}
+		} else if (status == -3)
+			fatal("potential reference loop detected in printcap file");
+
 		startpr(1);
 	}
 }
@@ -693,10 +699,9 @@ startpr(enable)
 {
 	struct stat stbuf;
 
-	bp = pbuf;
-	if ((SD = pgetstr("sd", &bp)) == NULL)
+	if (cgetstr(bp, "sd", &SD) == -1)
 		SD = _PATH_DEFSPOOL;
-	if ((LO = pgetstr("lo", &bp)) == NULL)
+	if (cgetstr(bp, "lo", &LO) == -1)
 		LO = DEFLOCK;
 	(void) sprintf(line, "%s/%s", SD, LO);
 	printf("%s:\n", printer);
@@ -730,9 +735,9 @@ status(argc, argv)
 
 	if (argc == 1) {
 		printer = prbuf;
-		while (getprent(line) > 0) {
+		while (cgetnext(&bp, printcapdb) > 0) {
 			cp1 = prbuf;
-			cp2 = line;
+			cp2 = bp;
 			while ((c = *cp2++) && c != '|' && c != ':')
 				*cp1++ = c;
 			*cp1 = '\0';
@@ -742,13 +747,15 @@ status(argc, argv)
 	}
 	while (--argc) {
 		printer = *++argv;
-		if ((status = pgetent(line, printer)) < 0) {
+		if ((status = cgetent(&bp, printcapdb, printer)) == -2) {
 			printf("cannot open printer description file\n");
 			continue;
-		} else if (status == 0) {
+		} else if (status == -1) {
 			printf("unknown printer %s\n", printer);
 			continue;
-		}
+		} else if (status == -3)
+			fatal("potential reference loop detected in printcap file");
+
 		prstat();
 	}
 }
@@ -764,12 +771,11 @@ prstat()
 	register struct dirent *dp;
 	DIR *dirp;
 
-	bp = pbuf;
-	if ((SD = pgetstr("sd", &bp)) == NULL)
+	if (cgetstr(bp, "sd", &SD) == -1)
 		SD = _PATH_DEFSPOOL;
-	if ((LO = pgetstr("lo", &bp)) == NULL)
+	if (cgetstr(bp, "lo", &LO) == -1)
 		LO = DEFLOCK;
-	if ((ST = pgetstr("st", &bp)) == NULL)
+	if (cgetstr(bp, "st", &ST) == -1)
 		ST = DEFSTAT;
 	printf("%s:\n", printer);
 	(void) sprintf(line, "%s/%s", SD, LO);
@@ -835,9 +841,9 @@ stop(argc, argv)
 	}
 	if (argc == 2 && !strcmp(argv[1], "all")) {
 		printer = prbuf;
-		while (getprent(line) > 0) {
+		while (cgetnext(&bp, printcapdb) > 0) {
 			cp1 = prbuf;
-			cp2 = line;
+			cp2 = bp;
 			while ((c = *cp2++) && c != '|' && c != ':')
 				*cp1++ = c;
 			*cp1 = '\0';
@@ -847,13 +853,15 @@ stop(argc, argv)
 	}
 	while (--argc) {
 		printer = *++argv;
-		if ((status = pgetent(line, printer)) < 0) {
+		if ((status = cgetent(&bp, printcapdb, printer)) == -2) {
 			printf("cannot open printer description file\n");
 			continue;
-		} else if (status == 0) {
+		} else if (status == -1) {
 			printf("unknown printer %s\n", printer);
 			continue;
-		}
+		} else if (status == -3)
+			fatal("potential reference loop detected in printcap file");
+
 		stoppr();
 	}
 }
@@ -864,10 +872,9 @@ stoppr()
 	register int fd;
 	struct stat stbuf;
 
-	bp = pbuf;
-	if ((SD = pgetstr("sd", &bp)) == NULL)
+	if (cgetstr(bp, "sd", &SD) == -1)
 		SD = _PATH_DEFSPOOL;
-	if ((LO = pgetstr("lo", &bp)) == NULL)
+	if (cgetstr(bp, "lo", &LO) == -1)
 		LO = DEFLOCK;
 	(void) sprintf(line, "%s/%s", SD, LO);
 	printf("%s:\n", printer);
@@ -917,18 +924,19 @@ topq(argc, argv)
 
 	--argc;
 	printer = *++argv;
-	status = pgetent(line, printer);
-	if (status < 0) {
+	status = cgetent(&bp, printcapdb, printer);
+	if (status == -2) {
 		printf("cannot open printer description file\n");
 		return;
-	} else if (status == 0) {
+	} else if (status == -1) {
 		printf("%s: unknown printer\n", printer);
 		return;
-	}
-	bp = pbuf;
-	if ((SD = pgetstr("sd", &bp)) == NULL)
+	} else if (status == -3)
+		fatal("potential reference loop detected in printcap file");
+
+	if (cgetstr(bp, "sd", &SD) == -1)
 		SD = _PATH_DEFSPOOL;
-	if ((LO = pgetstr("lo", &bp)) == NULL)
+	if (cgetstr(bp, "lo", &LO) == -1)
 		LO = DEFLOCK;
 	printf("%s:\n", printer);
 
@@ -1066,9 +1074,9 @@ up(argc, argv)
 	}
 	if (argc == 2 && !strcmp(argv[1], "all")) {
 		printer = prbuf;
-		while (getprent(line) > 0) {
+		while (cgetnext(&bp, printcapdb) > 0) {
 			cp1 = prbuf;
-			cp2 = line;
+			cp2 = bp;
 			while ((c = *cp2++) && c != '|' && c != ':')
 				*cp1++ = c;
 			*cp1 = '\0';
@@ -1078,13 +1086,15 @@ up(argc, argv)
 	}
 	while (--argc) {
 		printer = *++argv;
-		if ((status = pgetent(line, printer)) < 0) {
+		if ((status = cgetent(&bp, printcapdb, printer)) == -2) {
 			printf("cannot open printer description file\n");
 			continue;
-		} else if (status == 0) {
+		} else if (status == -1) {
 			printf("unknown printer %s\n", printer);
 			continue;
-		}
+		} else if (status == -3)
+			fatal("potential reference loop detected in printcap file");
+
 		startpr(2);
 	}
 }
