@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stdlib.h	5.6 (Berkeley) 02/13/91
+ *	@(#)stdlib.h	5.7 (Berkeley) 02/18/91
  */
 
 #ifndef _STDLIB_H_
@@ -92,6 +92,13 @@ unsigned long
 	 strtoul __P((const char *_nptr, char **_endptr, int _base));
 int	 system __P((const char *_string));
 
+/* these are currently just stubs */
+int	mblen __P((const char *_s, size_t _n));
+size_t	mbstowcs __P((wchar_t *_pwcs, const char *_s, size_t _n));
+int	wctomb __P((char *_s, wchar_t _wchar));
+int	mbtowc __P((wchar_t *_pwc, const char *_s, size_t _n));
+size_t	wcstombs __P((char *_s, const wchar_t *_pwcs, size_t _n));
+
 #ifndef _ANSI_SOURCE
 void	 cfree __P((void *_ptr));
 int	putenv __P((const char *_string));
@@ -99,12 +106,7 @@ int	setenv __P((const char *_string, const char *_value, int _overwrite));
 #endif
 
 #ifdef NOT_YET_IMPLEMENTED
-int	mblen __P((const char *_s, size_t _n));
-size_t	mbstowcs __P((wchar_t *_pwcs, const char *_s, size_t _n));
-int	wctomb __P((char *_s, wchar_t _wchar));
-int	mbtowc __P((wchar_t *_pwc, const char *_s, size_t _n));
 double	strtod __P((const char *_nptr, char **_endptr));
-size_t	wcstombs __P((char *_s, const wchar_t *_pwcs, size_t _n));
 #endif
 __END_DECLS
 
