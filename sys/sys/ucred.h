@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ucred.h	7.4 (Berkeley) 06/28/90
+ *	@(#)ucred.h	7.5 (Berkeley) 02/05/91
  */
 
-#ifndef _UCRED_
-#define	_UCRED_
+#ifndef _UCRED_H_
+#define	_UCRED_H_
 
 /*
  * Credentials.
@@ -54,4 +54,5 @@ struct ucred *crget();
 struct ucred *crcopy();
 struct ucred *crdup();
 #endif KERNEL
-#endif _UCRED_
+
+#endif /* !_UCRED_H_ */
