@@ -35,15 +35,18 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)line_number.c	5.2 (Berkeley) 01/23/93";
+static char sccsid[] = "@(#)line_number.c	5.3 (Berkeley) 02/28/93";
 #endif /* not lint */
 
 #include <sys/types.h>
 
-#include <db.h>
 #include <regex.h>
 #include <setjmp.h>
 #include <stdio.h>
+
+#ifdef DBI
+#include <db.h>
+#endif
 
 #include "ed.h"
 #include "extern.h"
@@ -64,8 +67,6 @@ line_number(line_addr)
 		return (0);
 
 	for (;;) {
-		if (sigint_flag)
-			SIGINT_ACTION;
 		if (line_addr == l_temp1)
 			break;
 		l_temp1 = l_temp1->below;
