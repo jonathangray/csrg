@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lockf.c	7.4 (Berkeley) 05/15/91
+ *	@(#)ufs_lockf.c	7.5 (Berkeley) 05/25/91
  */
 
 #include "param.h"
@@ -632,7 +632,7 @@ lf_print(tag, lock)
 	register struct lockf *lock;
 {
 	
-	printf("%s: lock 0x%X for ", tag, lock);
+	printf("%s: lock 0x%lx for ", tag, lock);
 	if (lock->lf_flags & F_POSIX)
 		printf("proc %d", ((struct proc *)(lock->lf_id))->p_pid);
 	else
@@ -662,7 +662,7 @@ lf_printlist(tag, lock)
 		major(lock->lf_inode->i_dev),
 		minor(lock->lf_inode->i_dev));
 	for (lf = lock->lf_inode->i_lockf; lf; lf = lf->lf_next) {
-		printf("\tlock 0x%X for ", lf);
+		printf("\tlock 0x%lx for ", lf);
 		if (lf->lf_flags & F_POSIX)
 			printf("proc %d", ((struct proc *)(lf->lf_id))->p_pid);
 		else
