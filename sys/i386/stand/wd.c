@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)wd.c	7.2 (Berkeley) 04/28/91
+ *	@(#)wd.c	7.3 (Berkeley) 05/04/91
  */
 
 /*  device driver for winchester disk  */
@@ -170,7 +170,7 @@ wdio(func, unit, blknm, addr)
 #else
 	dd = &wdsizes[unit];
 #endif
-        if (func == WRITE)
+        if (func == F_WRITE)
                 opcode = WDCC_WRITE;
         else
                 opcode = WDCC_READ;
@@ -406,7 +406,7 @@ retry:
 	i = 0;
 	do {
 		int blknm = dd->d_secperunit - dd->d_nsectors + i;
-		errcnt = wdio(READ, unit, blknm, buf);
+		errcnt = wdio(F_READ, unit, blknm, buf);
 	} while (errcnt && (i += 2) < 10 && i < dd->d_nsectors);
 	db = (struct dkbad *)(buf);
 #define DKBAD_MAGIC 0x4321
