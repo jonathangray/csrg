@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_segment.c	7.32 (Berkeley) 08/27/92
+ *	@(#)lfs_segment.c	7.33 (Berkeley) 08/28/92
  */
 
 #include <sys/param.h>
@@ -300,6 +300,7 @@ lfs_segwrite(mp, do_ckp)
 		}
 
 	if (do_ckp || fs->lfs_doifile) {
+redo:
 		vp = fs->lfs_ivnode;
 		while (vget(vp));
 		ip = VTOI(vp);
@@ -307,13 +308,10 @@ lfs_segwrite(mp, do_ckp)
 			lfs_writefile(fs, sp, vp);
 		(void)lfs_writeinode(fs, sp, ip);
 		vput(vp);
-		/*
-		 * This should never happen because we just guaranteed
-		 * that all the segment usage table blocks are dirty, so
-		 * no new ones should get written.
-		 */
-		if (lfs_writeseg(fs, sp) && do_ckp)
-			panic("lfs_segwrite: created dirty blocks on ckp");
+		if (lfs_writeseg(fs, sp) && do_ckp) {
+			lfs_initseg(fs, sp);
+			goto redo;
+		}
 	} else
 		(void) lfs_writeseg(fs, sp);
 
@@ -815,7 +813,6 @@ lfs_writeseg(fs, sp)
 	ssp->ss_sumsum =
 	    cksum(&ssp->ss_datasum, LFS_SUMMARY_SIZE - sizeof(ssp->ss_sumsum));
 	free(datap, M_SEGMENT);
-
 	/* Update the segment usage information. */
 	LFS_SEGENTRY(sup, fs, sp->seg_number, bp);
 	ninos = (ssp->ss_ninos + INOPB(fs) - 1) / INOPB(fs);
