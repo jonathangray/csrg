@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)unistd.h	5.6 (Berkeley) 02/24/91
+ *	@(#)unistd.h	5.7 (Berkeley) 02/26/91
  */
 
 #include <sys/cdefs.h>
@@ -75,7 +75,7 @@ char		*getcwd __P((char *, size_t));
 gid_t		 getegid __P((void));
 uid_t		 geteuid __P((void));
 gid_t		 getgid __P((void));
-int		 getgroups __P((int, gid_t *));
+int		 getgroups __P((int, int *));		/* XXX (gid_t *) */
 char		*getlogin __P((void));
 pid_t		 getpgrp __P((void));
 pid_t		 getpid __P((void));
