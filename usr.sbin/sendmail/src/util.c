@@ -8,7 +8,7 @@
 # include "sendmail.h"
 # include "conf.h"
 
-SCCSID(@(#)util.c	3.44		04/17/83);
+SCCSID(@(#)util.c	4.1		07/25/83);
 
 /*
 **  STRIPQUOTES -- Strip quotes & quote bits from a string.
