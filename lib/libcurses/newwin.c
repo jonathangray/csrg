@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)newwin.c	5.14 (Berkeley) 02/02/93";
+static char sccsid[] = "@(#)newwin.c	5.15 (Berkeley) 03/02/93";
 #endif	/* not lint */
 
 #include <curses.h>
@@ -78,7 +78,7 @@ newwin(nl, nc, by, bx)
 			sp->ch = ' ';
 			sp->attr = 0;
 		}
-		lp->hash = __hash(lp->line, nc * __LDATASIZE);
+		lp->hash = __hash((char *) lp->line, nc * __LDATASIZE);
 	}
 	return (win);
 }
