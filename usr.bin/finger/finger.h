@@ -30,11 +30,8 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)finger.h	5.5 (Berkeley) 06/01/90
+ *	@(#)finger.h	5.6 (Berkeley) 07/27/91
  */
-
-#include <pwd.h>
-#include <utmp.h>
 
 /*
  * All unique persons are linked in a list headed by "head" and linkd
@@ -71,12 +68,4 @@ typedef struct where {
 #define	HSIZE	(1 << 8)		/* hash table size */
 #define	HMASK	(HSIZE - 1)		/* hash code mask */
 
-PERSON *htab[HSIZE];			/* the buckets */
-PERSON *phead, *ptail;			/* the linked list of all people */
-
-int entries;				/* number of people */
-
-PERSON *enter_person(), *find_person(), *palloc();
-WHERE *walloc();
-
-extern char tbuf[1024];			/* temp buffer for anybody */
+#include "extern.h"
