@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)route.c	7.21 (Berkeley) 05/04/91
+ *	@(#)route.c	7.22 (Berkeley) 06/25/91
  */
 #include "param.h"
 #include "systm.h"
