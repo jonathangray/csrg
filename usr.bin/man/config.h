@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)config.h	8.1 (Berkeley) 10/13/93
+ *	@(#)config.h	8.2 (Berkeley) 10/13/93
  */
 
 typedef struct _entry {
@@ -43,6 +43,6 @@ typedef struct _entry {
 extern struct queue_entry head;
 
 ENTRY	*addlist __P((char *));
-void	 config __P((void));
+void	 config __P((char *));
 void	 debug __P((char *));
 ENTRY	*getlist __P((char *));
