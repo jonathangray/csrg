@@ -1,4 +1,4 @@
-SCCSID = "@(#)Makefile 1.4 01/15/81"
+SCCSID = "@(#)Makefile 1.5 01/16/81"
 CFLAGS = -O
 LIB = ${DESTDIR}/usr/lib
 LD= ld
