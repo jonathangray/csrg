@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stdlib.h	5.16 (Berkeley) 11/08/91
+ *	@(#)stdlib.h	5.16 (Berkeley) 12/06/91
  */
 
 #ifndef _STDLIB_H_
@@ -109,7 +109,7 @@ int	 setenv __P((const char *, const char *, int));
 
 #if !defined(_ANSI_SOURCE) && !defined(_POSIX_SOURCE)
 extern char *optarg;			/* getopt(3) external variables */
-extern int opterr, optind;
+extern int opterr, optind, optopt;
 int	 getopt __P((int, char * const *, const char *));
 
 extern char *suboptarg;			/* getsubopt(3) external variable */
