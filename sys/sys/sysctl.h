@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sysctl.h	7.10 (Berkeley) 08/28/91
+ *	@(#)sysctl.h	7.11 (Berkeley) 02/18/92
  */
 
 /*
@@ -58,6 +58,7 @@
 #define KINFO_RT		(1<<8)
 #define KINFO_RT_DUMP	(KINFO_RT|1)	/* dump; may limit to a.f. */
 #define KINFO_RT_FLAGS	(KINFO_RT|2)	/* by flags, e.g. RESOLVING */
+#define KINFO_RT_IFLIST (KINFO_RT|3)	/* survey interface list */
 
 /*
  * vnodes
