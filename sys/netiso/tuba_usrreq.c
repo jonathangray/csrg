@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tuba_usrreq.c	7.8 (Berkeley) 11/25/92
+ *	@(#)tuba_usrreq.c	7.9 (Berkeley) 03/25/93
  */
 
 #include <sys/param.h>
@@ -278,13 +278,13 @@ tuba_usrreq(so, req, m, nam, control)
 
 	case PRU_SOCKADDR:
 		if (isop->isop_laddr)
-			bcopy((caddr_t)isop->isop_laddr, mtod(m, caddr_t),
+			bcopy((caddr_t)isop->isop_laddr, mtod(nam, caddr_t),
 				nam->m_len = isop->isop_laddr->siso_len);
 		break;
 
 	case PRU_PEERADDR:
 		if (isop->isop_faddr)
-			bcopy((caddr_t)isop->isop_faddr, mtod(m, caddr_t),
+			bcopy((caddr_t)isop->isop_faddr, mtod(nam, caddr_t),
 				nam->m_len = isop->isop_faddr->siso_len);
 		break;
 
