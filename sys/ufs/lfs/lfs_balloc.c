@@ -30,9 +30,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_balloc.c	7.15 (Berkeley) 09/25/91
+ *	@(#)lfs_balloc.c	7.16 (Berkeley) 10/02/91
  */
 
+#ifdef LOGFS
 #include "param.h"
 #include "systm.h"
 #include "buf.h"
@@ -138,7 +139,7 @@ printf("lfs_bmap: block number %d, inode %d\n", bn, ip->i_number);
 			bp->b_blkno = daddr;
 			bp->b_flags |= B_READ;
 			bp->b_dev = devvp->v_rdev;
-			(*(devvp->v_op->vop_strategy))(bp);
+			(devvp->v_op->vop_strategy)(bp);
 			curproc->p_stats->p_ru.ru_inblock++;	/* XXX */
 			if (error = biowait(bp)) {
 				brelse(bp);
@@ -156,3 +157,4 @@ printf("lfs_bmap: block number %d, inode %d\n", bn, ip->i_number);
 	*bnp = daddr;
 	return (0);
 }
+#endif /* LOGFS */
