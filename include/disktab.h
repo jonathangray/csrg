@@ -30,8 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)disktab.h	5.4 (Berkeley) 06/01/90
+ *	@(#)disktab.h	5.5 (Berkeley) 04/03/91
  */
+
+#ifndef	_DISKTAB_H_
+#define	_DISKTAB_H_
 
 /*
  * Disk description table, see disktab(5)
@@ -56,3 +59,5 @@ struct	disktab {
 };
 
 struct	disktab *getdiskbyname();
+
+#endif /* !_DISKTAB_H_ */
