@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.100 (Berkeley) 04/12/94
+ *	@(#)conf.h	8.101 (Berkeley) 04/12/94
  */
 
 /*
@@ -509,6 +509,7 @@ extern int		errno;
 #ifdef _SCO_unix_4_2
 # define _SCO_unix_
 # define HASSETREUID	1	/* has setreuid(2) call */
+# define NEEDFSYNC	1	/* needs the fsync(2) call stub */
 # define _PATH_UNIX	"/unix"
 # ifndef _PATH_SENDMAILCF
 #  define _PATH_SENDMAILCF	"/usr/lib/sendmail.cf"
