@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)function.c	8.3 (Berkeley) 01/23/94";
+static char sccsid[] = "@(#)function.c	8.4 (Berkeley) 02/21/94";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -664,7 +664,7 @@ f_nogroup(plan, entry)
 {
 	char *group_from_gid();
 
-	return (group_from_gid(entry->fts_statp->st_gid, 1) ? 1 : 0);
+	return (group_from_gid(entry->fts_statp->st_gid, 1) ? 0 : 1);
 }
  
 PLAN *
@@ -688,7 +688,7 @@ f_nouser(plan, entry)
 {
 	char *user_from_uid();
 
-	return (user_from_uid(entry->fts_statp->st_uid, 1) ? 1 : 0);
+	return (user_from_uid(entry->fts_statp->st_uid, 1) ? 0 : 1);
 }
  
 PLAN *
