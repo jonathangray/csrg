@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_clock.c	7.28 (Berkeley) 11/16/92
+ *	@(#)kern_clock.c	7.29 (Berkeley) 02/04/93
  */
 
 #include <sys/param.h>
@@ -484,35 +484,18 @@ statclock(frame)
 /*
  * Return information about system clocks.
  */
-/* ARGSUSED */
-kinfo_clockrate(op, where, acopysize, arg, aneeded)
-	int op;
+sysctl_clockrate(where, sizep)
 	register char *where;
-	int *acopysize, arg, *aneeded;
+	int *sizep;
 {
-	int buflen, error;
-	struct clockinfo clockinfo;
+	struct clockinfo clkinfo;
 
-	*aneeded = sizeof(clockinfo);
-	if (where == NULL)
-		return (0);
 	/*
-	 * Check for enough buffering.
+	 * Construct clockinfo structure.
 	 */
-	buflen = *acopysize;
-	if (buflen < sizeof(clockinfo)) {
-		*acopysize = 0;
-		return (0);
-	}
-	/*
-	 * Copyout clockinfo structure.
-	 */
-	clockinfo.hz = hz;
-	clockinfo.tick = tick;
-	clockinfo.profhz = profhz;
-	clockinfo.stathz = stathz ? stathz : hz;
-	if (error = copyout((caddr_t)&clockinfo, where, sizeof(clockinfo)))
-		return (error);
-	*acopysize = sizeof(clockinfo);
-	return (0);
+	clkinfo.hz = hz;
+	clkinfo.tick = tick;
+	clkinfo.profhz = profhz;
+	clkinfo.stathz = stathz ? stathz : hz;
+	return (sysctl_rdstruct(where, sizep, NULL, &clkinfo, sizeof(clkinfo)));
 }
