@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)doc	5.8 (Berkeley) 08/05/91
+.\"     @(#)doc	5.9 (Berkeley) 08/06/91
 .\"
 .\" .mdoc-parse - attempt to parse troff request arguments
 .\"     %beginstrip%
@@ -2580,8 +2580,7 @@
 .		\}
 .\" .	\}
 .	if \\n(fC>1 \{\
-.		as b1 \&\f\\n(cF\s\\n(cZ,\\*(S\\n(aP\\*(fA\\*(A\\n(aP\fP\s0
-.\" .		as b1 \&\\,\\*(S\\n(aP\fP\s0\\*(fA\\*(A\\n(aP\fP\s0
+.		as b1 \&\f\\n(cF\s\\n(cZ\|,\\*(fA\\*(S\\n(aP\\*(A\\n(aP\fP\s0
 .	\}
 .	if \\n(fC==1 \{\
 .		as b1 \&\|\\*(fA\\*(A\\n(aP\fP\s0
