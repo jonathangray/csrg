@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	7.46 (Berkeley) 10/19/90
+ *	@(#)ffs_vnops.c	7.47 (Berkeley) 12/05/90
  */
 
 #include "param.h"
@@ -497,7 +497,7 @@ chmod1(vp, mode, cred)
 	ip->i_mode |= mode & 07777;
 	ip->i_flag |= ICHG;
 	if ((vp->v_flag & VTEXT) && (ip->i_mode & ISVTX) == 0)
-		xrele(vp);
+		(void) vnode_pager_uncache(vp);
 	return (0);
 }
 
@@ -679,8 +679,8 @@ ufs_write(vp, uio, ioflag, cred)
 	struct buf *bp;
 	daddr_t lbn, bn;
 	u_long osize;
-	int i, n, on, flags;
-	int count, size, resid, error = 0;
+	int n, on, flags;
+	int size, resid, error = 0;
 
 	if (uio->uio_rw != UIO_WRITE)
 		panic("ufs_write mode");
@@ -731,12 +731,12 @@ ufs_write(vp, uio, ioflag, cred)
 		if (error = balloc(ip, lbn, (int)(on + n), &bp, flags))
 			break;
 		bn = bp->b_blkno;
-		if (uio->uio_offset + n > ip->i_size)
+		if (uio->uio_offset + n > ip->i_size) {
 			ip->i_size = uio->uio_offset + n;
+			vnode_pager_setsize(vp, ip->i_size);
+		}
 		size = blksize(fs, ip, lbn);
-		count = howmany(size, CLBYTES);
-		for (i = 0; i < count; i++)
-			munhash(ip->i_devvp, bn + i * CLBYTES / DEV_BSIZE);
+		(void) vnode_pager_uncache(vp);
 		n = MIN(n, size - bp->b_resid);
 		error = uiomove(bp->b_un.b_addr + on, n, uio);
 		if (ioflag & IO_SYNC)
