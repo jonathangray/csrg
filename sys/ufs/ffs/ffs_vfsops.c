@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vfsops.c	7.77 (Berkeley) 09/14/92
+ *	@(#)ffs_vfsops.c	7.78 (Berkeley) 09/22/92
  */
 
 #include <sys/param.h>
@@ -96,6 +96,12 @@ ffs_mountroot()
 	struct ufsmount *ump;
 	u_int size;
 	int error;
+	
+	/*
+	 * Get vnodes for swapdev and rootdev.
+	 */
+	if (bdevvp(swapdev, &swapdev_vp) || bdevvp(rootdev, &rootvp))
+		panic("ffs_mountroot: can't setup bdevvp's");
 
 	mp = malloc((u_long)sizeof(struct mount), M_MOUNT, M_WAITOK);
 	bzero((char *)mp, (u_long)sizeof(struct mount));
