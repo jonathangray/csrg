@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	8.35 (Berkeley) 05/10/95
+ *	@(#)vfs_syscalls.c	8.36 (Berkeley) 05/10/95
  */
 
 #include <sys/param.h>
@@ -391,7 +391,8 @@ dounmount(mp, flags, p)
 	mp->mnt_flag &=~ MNT_ASYNC;
 	vnode_pager_umount(mp);	/* release cached vnodes */
 	cache_purgevfs(mp);	/* remove cache entries for this file sys */
-	if ((error = VFS_SYNC(mp, MNT_WAIT, p->p_ucred, p)) == 0 ||
+	if (((mp->mnt_flag & MNT_RDONLY) ||
+	     (error = VFS_SYNC(mp, MNT_WAIT, p->p_ucred, p)) == 0) ||
 	    (flags & MNT_FORCE))
 		error = VFS_UNMOUNT(mp, flags, p);
 	mp->mnt_flag &= ~MNT_UNMOUNT;
