@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	8.2 (Berkeley) 08/10/93
+ *	@(#)nfs_vnops.c	8.3 (Berkeley) 12/30/93
  */
 
 /*
@@ -234,8 +234,6 @@ extern u_long nfs_prog, nfs_vers, nfs_true, nfs_false;
 extern char nfsiobuf[MAXPHYS+NBPG];
 struct proc *nfs_iodwant[NFS_MAXASYNCDAEMON];
 int nfs_numasync = 0;
-/* Queue head for nfsiod's */
-struct queue_entry nfs_bufq;
 #define	DIRHDSIZ	(sizeof (struct dirent) - (MAXNAMLEN + 1))
 
 /*
@@ -603,7 +601,7 @@ nfs_lookup(ap)
 			VREF(vdp);
 			error = 0;
 		} else
-			error = vget(vdp);
+			error = vget(vdp, 1);
 		if (!error) {
 			if (vpid == vdp->v_id) {
 			   if (nmp->nm_flag & NFSMNT_NQNFS) {
@@ -2114,8 +2112,8 @@ nfs_fsync(ap)
 		slpflag = PCATCH;
 loop:
 	s = splbio();
-	for (bp = vp->v_dirtyblkhd.le_next; bp; bp = nbp) {
-		nbp = bp->b_vnbufs.qe_next;
+	for (bp = vp->v_dirtyblkhd.lh_first; bp; bp = nbp) {
+		nbp = bp->b_vnbufs.le_next;
 		if (bp->b_flags & B_BUSY) {
 			if (ap->a_waitfor != MNT_WAIT)
 				continue;
@@ -2157,7 +2155,7 @@ loop:
 			    }
 			}
 		}
-		if (vp->v_dirtyblkhd.le_next) {
+		if (vp->v_dirtyblkhd.lh_first) {
 #ifdef DIAGNOSTIC
 			vprint("nfs_fsync: dirty", vp);
 #endif
