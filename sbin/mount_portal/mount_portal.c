@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mount_portal.c	1.1 (Berkeley) 07/09/92
+ *	@(#)mount_portal.c	5.1 (Berkeley) 07/13/92
  *
  * $Id: portald.c,v 1.3 1992/05/27 07:09:27 jsp Exp jsp $
  */
