@@ -33,15 +33,14 @@
  */
 
 #include <errno.h>
-#include <signal.h>
 #include "sendmail.h"
 # include <sys/mx.h>
 
 #ifndef lint
 #ifdef DAEMON
-static char sccsid[] = "@(#)daemon.c	8.4 (Berkeley) 07/18/93 (with daemon mode)";
+static char sccsid[] = "@(#)daemon.c	8.5 (Berkeley) 07/26/93 (with daemon mode)";
 #else
-static char sccsid[] = "@(#)daemon.c	8.4 (Berkeley) 07/18/93 (without daemon mode)";
+static char sccsid[] = "@(#)daemon.c	8.5 (Berkeley) 07/26/93 (without daemon mode)";
 #endif
 #endif /* not lint */
 
@@ -190,7 +189,7 @@ getrequests()
 		goto severe;
 	}
 
-	(void) signal(SIGCHLD, reapchild);
+	(void) setsignal(SIGCHLD, reapchild);
 
 	/* write the pid to the log file for posterity */
 	pidf = fopen(PidFile, "w");
