@@ -1,9 +1,4 @@
-/* $Id: os-pyrOSx.h,v 5.2.1.1 90/10/21 22:31:02 jsp Exp $ */
-
 /*
- * Pyramid OSx definitions for Amd (automounter)
- *		from Stefan Petri <petri@tubsibr.UUCP>
- *
  * Copyright (c) 1990 Jan-Simon Pendry
  * Copyright (c) 1990 Imperial College of Science, Technology & Medicine
  * Copyright (c) 1990 The Regents of the University of California.
@@ -40,7 +35,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)os-pyrOSx.h	5.2 (Berkeley) 03/17/91
+ *	@(#)os-pyrOSx.h	5.3 (Berkeley) 05/12/91
+ *
+ * $Id: os-pyrOSx.h,v 5.2.1.2 91/05/07 22:19:53 jsp Alpha $
+ *
+ * Pyramid OSx definitions for Amd (automounter)
+ *		from Stefan Petri <petri@tubsibr.UUCP>
  */
 
 /*
