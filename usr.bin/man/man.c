@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)man.c	8.6 (Berkeley) 01/02/94";
+static char sccsid[] = "@(#)man.c	8.7 (Berkeley) 01/02/94";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -304,7 +304,7 @@ main(argc, argv)
 	if (f_cat) {
 		found = 0;
 		for (ap = pg.gl_pathv; *ap != NULL; ++ap) {
-			if (*ap == '\0')
+			if (**ap == '\0')
 				continue;
 			cat(*ap);
 			if (!f_all) {
@@ -327,7 +327,7 @@ main(argc, argv)
 	if (f_how) {
 		found = 0;
 		for (ap = pg.gl_pathv; *ap != NULL; ++ap) {
-			if (*ap == '\0')
+			if (**ap == '\0')
 				continue;
 			how(*ap);
 			if (!f_all) {
@@ -350,7 +350,7 @@ main(argc, argv)
 	}
 	if (f_where) {
 		for (ap = pg.gl_pathv; *ap != NULL; ++ap) {
-			if (*ap == '\0')
+			if (**ap == '\0')
 				continue;
 			(void)printf("%s\n", *ap);
 		}
@@ -462,7 +462,8 @@ manual(page, list, pg)
 			continue;
 
 		/* Find out if it's really a man page. */
-		for (cnt = 1; cnt <= pg->gl_matchc; ++cnt) {
+		for (cnt = pg->gl_pathc - pg->gl_matchc;
+		    cnt < pg->gl_pathc; ++cnt) {
 
 			/*
 			 * Try the _suffix key words first.
@@ -473,8 +474,8 @@ manual(page, list, pg)
 			 * We just test for .0 first, it's fast and probably
 			 * going to hit.
 			 */
-			if (!fnmatch("*.0",
-			    pg->gl_pathv[pg->gl_pathc - cnt], 0))
+			(void)snprintf(buf, sizeof(buf), "*/%s.0", page);
+			if (!fnmatch(buf, pg->gl_pathv[cnt], 0))
 				goto easy;
 
 			sufp = getlist("_suffix");
@@ -483,9 +484,8 @@ manual(page, list, pg)
 			for (found = 0;
 			    sufp != NULL; sufp = sufp->list.qe_next) {
 				(void)snprintf(buf,
-				     sizeof(buf), "*%s", sufp->s);
-				if (!fnmatch(buf,
-				    pg->gl_pathv[pg->gl_pathc - cnt], 0)) {
+				     sizeof(buf), "*/%s%s", page, sufp->s);
+				if (!fnmatch(buf, pg->gl_pathv[cnt], 0)) {
 					found = 1;
 					break;
 				}
@@ -509,15 +509,12 @@ easy:				anyfound = 1;
 					continue;
 				*p = '\0';
 				(void)snprintf(buf,
-				     sizeof(buf), "*%s", sufp->s);
-				if (!fnmatch(buf,
-				    pg->gl_pathv[pg->gl_pathc - cnt], 0)) {
+				     sizeof(buf), "*/%s%s", page, sufp->s);
+				if (!fnmatch(buf, pg->gl_pathv[cnt], 0)) {
 					if (!f_where) {
 						build_page(p + 1,
-						    pg->gl_pathv[pg->gl_pathc -
-						    cnt]);
-						pg->gl_pathv[pg->gl_pathc -
-						    cnt] = "";
+						    pg->gl_pathv[cnt]);
+						pg->gl_pathv[cnt] = "";
 					}
 					*p = ' ';
 					found = 1;
@@ -533,7 +530,7 @@ easy:				anyfound = 1;
 			}
 
 			/* It's not a man page, forget about it. */
-			pg->gl_pathv[pg->gl_pathc - cnt] = "";
+			pg->gl_pathv[cnt] = "";
 		}
 
 		if (anyfound && !f_all)
