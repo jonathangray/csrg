@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)wait.h	7.15 (Berkeley) 02/23/91
+ *	@(#)wait.h	7.16 (Berkeley) 02/23/91
  */
 
 /*
@@ -143,6 +143,8 @@ union wait {
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
+struct rusage;	/* forward declaration */
+
 pid_t	wait __P((int *));
 pid_t	waitpid __P((pid_t, int *, int));
 #ifndef _POSIX_SOURCE
