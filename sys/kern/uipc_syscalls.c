@@ -28,7 +28,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_syscalls.c	7.19 (Berkeley) 06/28/90
+ *	@(#)uipc_syscalls.c	7.20 (Berkeley) 06/30/90
  */
 
 #include "param.h"
@@ -525,9 +525,9 @@ sendit(s, mp, flags, retsize)
 	if (mp->msg_control) {
 		if (mp->msg_controllen < sizeof(struct cmsghdr)
 #ifdef COMPAT_43
-		    && mp->msg_flags != MSG_COMPAT)
+		    && mp->msg_flags != MSG_COMPAT
 #endif
-		{
+		) {
 			error = EINVAL;
 			goto bad;
 		}
