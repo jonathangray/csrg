@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.125 (Berkeley) 12/10/94
+ *	@(#)conf.h	8.126 (Berkeley) 12/11/94
  */
 
 /*
@@ -350,8 +350,8 @@ extern long	dgux_inet_addr();
 /*
 **  OSF/1 for Intel Paragon.
 **
-**	Contributed by Jeff A. Earickson <jeff@ithaca.ccs.ornl.gov>
-**	of Oak Ridge National Lab.
+**	Contributed by Jeff A. Earickson <jeff@ssd.intel.com>
+**	of Intel Scalable Systems Divison.
 */
 
 #ifdef __PARAGON__
