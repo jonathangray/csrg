@@ -5,7 +5,7 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)bc.1	8.1 (Berkeley) 06/06/93
+.\"	@(#)bc.1	6.9 (Berkeley) 06/29/93
 .\"
 .Dd 
 .Dt BC 1
@@ -36,9 +36,8 @@ is actually a preprocessor for
 .Ar \&dc 1 ,
 which it invokes automatically, unless the
 .Fl c
-compile only.
-option is present.
-In this case the
+compile only option is present.
+Here, the
 .Ar \&dc
 input is sent to the standard output instead.
 .El 
@@ -139,7 +138,7 @@ and a simple variable simultaneously.
 All variables are global to the program.
 `Auto' variables are pushed down during function calls.
 When using arrays as function arguments
-or defining them as automatic variables
+or defining them as automatic variables,
 empty square brackets must follow the array name.
 .Pp
 For example
@@ -171,7 +170,7 @@ the first ten integers.
 .\" /usr/lib/lib.b	mathematical library
 .Bl -tag -width xxxxx -compact
 .It Xr \&dc 1
-Desk calculator Proper.
+Desk calculator proper.
 .El
 .Sh SEE ALSO
 .Xr \&dc 1
@@ -186,7 +185,7 @@ The
 command appeared in
 .At v6 .
 .Sh BUGS
-No &&, \(or\\(or, or ! operators.
+No &&, ||, or ! operators.
 .Pp
 .Ql For
 statement must have all three E's.
