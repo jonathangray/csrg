@@ -1,6 +1,6 @@
 .\"
-.\" Copyright (c) 1990 The Regents of the University of California.
-.\" All rights reserved.
+.\" Copyright (c) 1990, 1993
+.\"	The Regents of the University of California.  All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
@@ -30,7 +30,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)tmac.s	8.1 (Berkeley) 06/08/93
+.\"	@(#)tmac.s	1.3 (Berkeley) 06/08/93
 .\"
 .\" If groff, use groff -ms, else use local -ms (w/ditroff, troff, nroff)
 .ie \n(.g \{\
