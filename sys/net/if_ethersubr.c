@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_ethersubr.c	7.11 (Berkeley) 11/20/90
+ *	@(#)if_ethersubr.c	7.12 (Berkeley) 01/11/91
  */
 
 #include "param.h"
@@ -54,8 +54,8 @@
 #ifdef INET
 #include "../netinet/in.h"
 #include "../netinet/in_var.h"
-#include "../netinet/if_ether.h"
 #endif
+#include "../netinet/if_ether.h"
 
 #ifdef NS
 #include "../netns/ns.h"
