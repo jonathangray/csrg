@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_exec.c	7.58 (Berkeley) 06/04/92
+ *	@(#)kern_exec.c	7.59 (Berkeley) 06/04/92
  */
 
 #include "param.h"
@@ -39,7 +39,7 @@
 
 #ifdef HPUXCOMPAT
 #include "user.h"			/* for pcb */
-#include "hp300/hpux/hpux_exec.h"
+#include "hp/hpux/hpux_exec.h"
 #endif
 
 #ifdef COPY_SIGCODE
