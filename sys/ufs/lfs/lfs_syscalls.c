@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_syscalls.c	7.23 (Berkeley) 09/03/92
+ *	@(#)lfs_syscalls.c	7.24 (Berkeley) 10/01/92
  */
 
 #include <sys/param.h>
@@ -131,11 +131,11 @@ lfs_markv(p, uap, retval)
 					(FINFO *) (&sp->fip->fi_blocks[sp->fip->fi_nblocks]);
 				}
 				sp->start_lbp = &sp->fip->fi_blocks[0];
-				sp->fip->fi_version = blkp->bi_version;
-				sp->fip->fi_nblocks = 0;
-				sp->fip->fi_ino = blkp->bi_inode;
 				sp->vp = NULL;
 			}
+			sp->fip->fi_version = blkp->bi_version;
+			sp->fip->fi_nblocks = 0;
+			sp->fip->fi_ino = blkp->bi_inode;
 			lastino = blkp->bi_inode;
 			if (blkp->bi_inode == LFS_IFILE_INUM)
 				v_daddr = fs->lfs_idaddr;
@@ -148,8 +148,8 @@ lfs_markv(p, uap, retval)
 				continue;
 			/* Get the vnode/inode. */
 			if (lfs_fastvget(mntp, blkp->bi_inode, v_daddr, &vp,
-			    blkp->bi_lbn == LFS_UNUSED_LBN ? NULL :
-			    blkp->bi_bp)) {
+			    blkp->bi_lbn == LFS_UNUSED_LBN ? 
+			    blkp->bi_bp : NULL)) {
 #ifdef DIAGNOSTIC
 				printf("lfs_markv: VFS_VGET failed (%d)\n",
 				    blkp->bi_inode);
@@ -310,7 +310,14 @@ lfs_segclean(p, uap, retval)
 
 	fs = VFSTOUFS(mntp)->um_lfs;
 
+	if (datosn(fs, fs->lfs_curseg) == uap->segment)
+		return (EBUSY);
+
 	LFS_SEGENTRY(sup, fs, uap->segment, bp);
+	if (sup->su_flags & SEGUSE_ACTIVE) {
+		brelse(bp);
+		return(EBUSY);
+	}
 	fs->lfs_avail += fsbtodb(fs, fs->lfs_ssize) - 1;
 	fs->lfs_bfree += (sup->su_nsums * LFS_SUMMARY_SIZE / DEV_BSIZE) +
 	    sup->su_ninos * btodb(fs->lfs_bsize);
@@ -411,6 +418,10 @@ lfs_fastvget(mp, ino, daddr, vpp, dinp)
 	dev = ump->um_dev;
 	if ((*vpp = ufs_ihashget(dev, ino)) != NULL) {
 		ip = VTOI(*vpp);
+		if (!(ip->i_flag & IMOD)) {
+			++ump->um_lfs->lfs_uinodes;
+			ip->i_flag |= IMOD;
+		}
 		ip->i_flag |= IMOD;
 		return (0);
 	}
