@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_map.h	8.3 (Berkeley) 03/15/94
+ *	@(#)vm_map.h	8.4 (Berkeley) 04/12/95
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -159,13 +159,15 @@ typedef struct {
  *		Perform locking on the data portion of a map.
  */
 
+extern struct proc *curproc;	/* XXX */
+
 #define	vm_map_lock(map) { \
-	lock_write(&(map)->lock); \
+	lockmgr(&(map)->lock, LK_EXCLUSIVE, curproc); \
 	(map)->timestamp++; \
 }
-#define	vm_map_unlock(map)	lock_write_done(&(map)->lock)
-#define	vm_map_lock_read(map)	lock_read(&(map)->lock)
-#define	vm_map_unlock_read(map)	lock_read_done(&(map)->lock)
+#define	vm_map_unlock(map)	lockmgr(&(map)->lock, LK_RELEASE, curproc)
+#define	vm_map_lock_read(map)	lockmgr(&(map)->lock, LK_SHARED, curproc)
+#define	vm_map_unlock_read(map)	lockmgr(&(map)->lock, LK_RELEASE, curproc)
 
 /*
  *	Functions implemented as macros
