@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: hpux_compat.c 1.42 92/01/20$
  *
- *	@(#)hpux_compat.c	7.22 (Berkeley) 06/19/92
+ *	@(#)hpux_compat.c	7.23 (Berkeley) 07/03/92
  */
 
 /*
@@ -1249,7 +1249,6 @@ hpuxgetaccess(p, uap, retval)
 	} *uap;
 	int *retval;
 {
-	USES_VOP_ACCESS;
 	int lgroups[NGROUPS];
 	int error = 0;
 	register struct ucred *cred;
@@ -1686,7 +1685,6 @@ ohpuxutime(p, uap, retval)
 	} *uap;
 	int *retval;
 {
-	USES_VOP_SETATTR;
 	register struct vnode *vp;
 	struct vattr vattr;
 	time_t tv[2];
@@ -1774,7 +1772,6 @@ ohpuxstat1(vp, ub)
 	register struct vnode *vp;
 	struct ohpuxstat *ub;
 {
-	USES_VOP_GETATTR;
 	struct ohpuxstat ds;
 	struct vattr vattr;
 	register int error;
