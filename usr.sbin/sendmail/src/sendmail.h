@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	6.48 (Berkeley) 04/19/93
+ *	@(#)sendmail.h	6.49 (Berkeley) 04/26/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	6.48		04/19/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	6.49		04/26/93";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -442,6 +442,8 @@ MCI
 	short		mci_errno;	/* error number on last connection */
 	short		mci_exitstat;	/* exit status from last connection */
 	short		mci_state;	/* SMTP state */
+	short		mci_options;	/* ESMTP options */
+	long		mci_maxsize;	/* max size this server will accept */
 	FILE		*mci_in;	/* input side of connection */
 	FILE		*mci_out;	/* output side of connection */
 	int		mci_pid;	/* process id of subordinate proc */
@@ -465,6 +467,10 @@ MCI
 #define MCIS_QUITING	4		/* running quit protocol */
 #define MCIS_SSD	5		/* service shutting down */
 #define MCIS_ERROR	6		/* I/O error on connection */
+
+/* options bits */
+#define MCIO_EXPN	0x0001		/* EXPN command supported */
+#define MCIO_SIZE	0x0002		/* SIZE option supported */
 /*
 **  Mapping functions
 **
@@ -756,20 +762,21 @@ EXTERN long	WkRecipFact;	/* multiplier for # of recipients -> priority */
 EXTERN long	WkTimeFact;	/* priority offset each time this job is run */
 EXTERN char	*PostMasterCopy;	/* address to get errs cc's */
 EXTERN int	CheckpointInterval;	/* queue file checkpoint interval */
-EXTERN char	*UdbSpec;	/* user database source spec [udbexpand.c] */
-EXTERN int	MaxHopCount;	/* number of hops until we give an error */
-EXTERN int	ConfigLevel;	/* config file level -- what does .cf expect? */
-EXTERN char	*TimeZoneSpec;	/* override time zone specification */
-EXTERN bool	MatchGecos;	/* look for user names in gecos field */
+EXTERN char	*UdbSpec;		/* user database source spec */
+EXTERN int	MaxHopCount;		/* max # of hops until bounce */
+EXTERN int	ConfigLevel;		/* config file level */
+EXTERN char	*TimeZoneSpec;		/* override time zone specification */
+EXTERN bool	MatchGecos;		/* look for user names in gecos field */
 EXTERN bool	DontPruneRoutes;	/* don't prune source routes */
-EXTERN int	MaxMciCache;	/* maximum entries in MCI cache */
+EXTERN int	MaxMciCache;		/* maximum entries in MCI cache */
 EXTERN time_t	MciCacheTimeout;	/* maximum idle time on connections */
-EXTERN char	*ForwardPath;	/* path to search for .forward files */
-EXTERN long	MinBlocksFree;	/* minimum number of blocks free on queue fs */
+EXTERN char	*ForwardPath;		/* path to search for .forward files */
+EXTERN long	MinBlocksFree;		/* min # of blocks free on queue fs */
 EXTERN char	*QueueLimitRecipient;	/* limit queue runs to this recipient */
 EXTERN char	*QueueLimitSender;	/* limit queue runs to this sender */
 EXTERN char	*QueueLimitId;		/* limit queue runs to this id */
-EXTERN char	*FallBackMX;	/* fall back MX host */
+EXTERN char	*FallBackMX;		/* fall back MX host */
+EXTERN long	MaxMessageSize;		/* advertised max size we will accept */
 
 
 /*
