@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	7.97 (Berkeley) 11/13/92
+ *	@(#)ffs_vnops.c	7.98 (Berkeley) 12/09/92
  */
 
 #include <sys/param.h>
@@ -252,13 +252,10 @@ ffs_read(ap)
 		if (diff < n)
 			n = diff;
 		size = blksize(fs, ip, lbn);
-		rablock = lbn + 1;
-		if (vp->v_lastr + 1 == lbn &&
-		    lblktosize(fs, rablock) < ip->i_size) {
-			rasize = blksize(fs, ip, rablock);
-			error = breadn(vp, lbn, size, &rablock,
-				&rasize, 1, NOCRED, &bp);
-		} else
+		if (lblktosize(fs, (lbn + 1)) <= ip->i_size)
+			error = cluster_read(vp, ip->i_size, lbn, size,
+			    NOCRED, &bp);
+		else
 			error = bread(vp, lbn, size, NOCRED, &bp);
 		vp->v_lastr = lbn;
 		n = min(n, size - bp->b_resid);
@@ -362,8 +359,7 @@ ffs_write(ap)
 		if (ioflag & IO_SYNC)
 			(void) bwrite(bp);
 		else if (n + on == fs->fs_bsize) {
-			bp->b_flags |= B_AGE;
-			bawrite(bp);
+			cluster_write(bp, ip->i_size);
 		} else
 			bdwrite(bp);
 		ip->i_flag |= IUPD|ICHG;
@@ -443,3 +439,4 @@ loop:
 	tv = time;
 	return (VOP_UPDATE(ap->a_vp, &tv, &tv, ap->a_waitfor == MNT_WAIT));
 }
+
