@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tuba_table.h	7.4 (Berkeley) 11/05/92
+ *	@(#)tuba_table.h	7.5 (Berkeley) 11/05/92
  */
 
 struct tuba_cache {
@@ -42,7 +42,8 @@ struct tuba_cache {
 	int	tc_index;
 	u_short	tc_sum_in;			/* for inbound cksum */
 	u_short	tc_sum_out;			/* for outbound cksum */
-	struct	iso_addr tc_addr;
+	struct	iso_addr tc_addr;		/* so you can respond */
+	char	tc_EID[7];			/* what counts for lookups */
 };
 
 #define ADDCARRY(x)  (x >= 65535 ? x -= 65535 : x)
