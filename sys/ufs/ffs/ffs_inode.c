@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_inode.c	7.52 (Berkeley) 05/15/92
+ *	@(#)ffs_inode.c	7.53 (Berkeley) 06/04/92
  */
 
 #include <sys/param.h>
@@ -244,6 +244,7 @@ ffs_truncate (ap)
 	struct vop_truncate_args *ap;
 {
 	USES_VOP_UPDATE;
+	register struct vnode *ovp = ap->a_vp;
 	register daddr_t lastblock;
 	register struct inode *oip;
 	daddr_t bn, lbn, lastiblock[NIADDR];
@@ -257,11 +258,11 @@ ffs_truncate (ap)
 	struct inode tip;
 	off_t osize;
 
-	vnode_pager_setsize(ap->a_vp, (u_long)ap->a_length);
-	oip = VTOI(ap->a_vp);
+	vnode_pager_setsize(ovp, (u_long)ap->a_length);
+	oip = VTOI(ovp);
 	if (oip->i_size <= ap->a_length) {
 		oip->i_flag |= ICHG|IUPD;
-		error = VOP_UPDATE(ap->a_vp, &time, &time, 1);
+		error = VOP_UPDATE(ovp, &time, &time, 1);
 		return (error);
 	}
 	/*
@@ -300,7 +301,7 @@ ffs_truncate (ap)
 			return (error);
 		oip->i_size = ap->a_length;
 		size = blksize(fs, oip, lbn);
-		(void) vnode_pager_uncache(ap->a_vp);
+		(void) vnode_pager_uncache(ovp);
 		bzero(bp->b_un.b_addr + offset, (unsigned)(size - offset));
 		allocbuf(bp, size);
 		if (ap->a_flags & IO_SYNC)
@@ -324,8 +325,8 @@ ffs_truncate (ap)
 	for (i = NDADDR - 1; i > lastblock; i--)
 		oip->i_db[i] = 0;
 	oip->i_flag |= ICHG|IUPD;
-	vinvalbuf(ap->a_vp, (ap->a_length > 0));
-	allerror = VOP_UPDATE(ap->a_vp, &time, &time, MNT_WAIT);
+	vinvalbuf(ovp, (ap->a_length > 0));
+	allerror = VOP_UPDATE(ovp, &time, &time, MNT_WAIT);
 
 	/*
 	 * Indirect blocks first.
