@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)raw_hy.c	7.3 (Berkeley) 06/28/90
+ *	@(#)raw_hy.c	7.4 (Berkeley) 12/16/90
  */
 
 /*
@@ -50,20 +50,20 @@
 #include "hy.h"
 #if NHY > 0
 
-#include "param.h"
-#include "mbuf.h"
-#include "socket.h"
-#include "protosw.h"
-#include "socketvar.h"
-#include "errno.h"
+#include "sys/param.h"
+#include "sys/mbuf.h"
+#include "sys/socket.h"
+#include "sys/protosw.h"
+#include "sys/socketvar.h"
+#include "sys/errno.h"
 
-#include "../net/if.h"
-#include "../net/route.h"
-#include "../net/raw_cb.h"
+#include "net/if.h"
+#include "net/route.h"
+#include "net/raw_cb.h"
 
-#include "../netinet/in.h"
-#include "../netinet/in_systm.h"
-#include "../netinet/in_var.h"
+#include "netinet/in.h"
+#include "netinet/in_systm.h"
+#include "netinet/in_var.h"
 #include "if_hy.h"
 
 /*
