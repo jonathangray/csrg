@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vfsops.c	7.79 (Berkeley) 07/20/92
+ *	@(#)lfs_vfsops.c	7.80 (Berkeley) 07/22/92
  */
 
 #include <sys/param.h>
@@ -243,8 +243,8 @@ lfs_mountfs(devvp, mp, p)
 
 	/* Allocate the mount structure, copy the superblock into it. */
 	ump = (struct ufsmount *)malloc(sizeof *ump, M_UFSMNT, M_WAITOK);
-	ump->um_lfs = malloc(sizeof(struct lfs), M_UFSMNT, M_WAITOK);
-	bcopy(bp->b_un.b_addr, ump->um_lfs, sizeof(struct lfs));
+	fs = ump->um_lfs = malloc(sizeof(struct lfs), M_UFSMNT, M_WAITOK);
+	bcopy(bp->b_un.b_addr, fs, sizeof(struct lfs));
 	if (sizeof(struct lfs) < LFS_SBPAD)			/* XXX why? */
 		bp->b_flags |= B_INVAL;
 	brelse(bp);
@@ -253,13 +253,13 @@ lfs_mountfs(devvp, mp, p)
 	/* Set up the I/O information */
 	fs->lfs_iocount = 0;
 
-	/* Set up the ifile flags */
+	/* Set up the ifile and lock aflags */
 	fs->lfs_doifile = 0;
 	fs->lfs_writer = 0;
 	fs->lfs_dirops = 0;
+	fs->lfs_seglock = 0;
 
 	/* Set the file system readonly/modify bits. */
-	fs = ump->um_lfs;
 	fs->lfs_ronly = ronly;
 	if (ronly == 0)
 		fs->lfs_fmod = 1;
@@ -313,7 +313,7 @@ lfs_unmount(mp, mntflags, p)
 {
 	extern int doforce;
 	register struct ufsmount *ump;
-	register struct lfs *fs;				/* LFS */
+	register struct lfs *fs;
 	int i, error, flags, ronly;
 
 #ifdef VERBOSE
@@ -347,6 +347,7 @@ lfs_unmount(mp, mntflags, p)
 	vrele(fs->lfs_ivnode);
 	if (error = vflush(mp, fs->lfs_ivnode, flags))
 		return (error);
+	fs->lfs_clean = 1;
 	if (error = VFS_SYNC(mp, 1, p->p_ucred, p))
 		return (error);
 	if (fs->lfs_ivnode->v_dirtyblkhd)
