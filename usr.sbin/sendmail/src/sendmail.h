@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	6.70 (Berkeley) 05/28/93
+ *	@(#)sendmail.h	6.71 (Berkeley) 06/03/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	6.70		05/28/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	6.71		06/03/93";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -802,6 +802,7 @@ EXTERN bool	QuickAbort;	/*  .... but only if we want a quick abort */
 EXTERN bool	LogUsrErrs;	/* syslog user errors (e.g., SMTP RCPT cmd) */
 EXTERN bool	SendMIMEErrors;	/* send error messages in MIME format */
 EXTERN bool	MatchGecos;	/* look for user names in gecos field */
+EXTERN bool	UseErrorsTo;	/* use Errors-To: header (back compat) */
 EXTERN char	SpaceSub;	/* substitution for <lwsp> */
 EXTERN int	PrivacyFlags;	/* privacy flags */
 extern char	*ConfFile;	/* location of configuration file [conf.c] */
