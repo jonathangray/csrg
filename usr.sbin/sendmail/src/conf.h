@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	5.22 (Berkeley) 12/13/91
+ *	@(#)conf.h	5.23 (Berkeley) 01/04/92
  */
 
 /*
@@ -56,6 +56,7 @@
 # define MAXUSERENVIRON	40		/* max # of items in user environ */
 # define QUEUESIZE	600		/* max # of jobs per queue run */
 # define MAXMXHOSTS	10		/* max # of MX records */
+# define SMTPLINELIM	990		/* maximum SMTP line length */
 
 /*
 **  Compilation options.
