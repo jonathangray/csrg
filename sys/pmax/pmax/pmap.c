@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.c	7.12 (Berkeley) 10/24/92
+ *	@(#)pmap.c	7.13 (Berkeley) 04/05/93
  */
 
 /*
@@ -944,9 +944,7 @@ pmap_enter(pmap, va, pa, prot, wired)
 #ifdef DEBUG
 		enter_stats.unmanaged++;
 #endif
-		printf("pmap_enter: UNMANAGED ADDRESS va %x pa %x\n",
-			va, pa); /* XXX */
-		npte = (prot & VM_PROT_WRITE) ? PG_M : PG_RO;
+		npte = (prot & VM_PROT_WRITE) ? (PG_M | PG_N) : (PG_RO | PG_N);
 	}
 
 	/*
@@ -1435,7 +1433,6 @@ pmap_phys_address(ppn)
 	if (pmapdebug & PDB_FOLLOW)
 		printf("pmap_phys_address(%x)\n", ppn);
 #endif
-	panic("pmap_phys_address"); /* XXX */
 	return (pmax_ptob(ppn));
 }
 
