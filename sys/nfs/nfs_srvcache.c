@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_srvcache.c	7.17 (Berkeley) 09/16/92
+ *	@(#)nfs_srvcache.c	7.18 (Berkeley) 09/30/92
  */
 
 /*
@@ -101,6 +101,7 @@ int nonidempotent[NFS_NPROCS] = {
 	FALSE,
 	FALSE,
 	FALSE,
+	FALSE,
 };
 
 /* True iff the rpc reply is an nfs status ONLY! */
@@ -127,6 +128,7 @@ static int repliesstatus[NFS_NPROCS] = {
 	FALSE,
 	FALSE,
 	FALSE,
+	TRUE,
 };
 
 /*
@@ -169,7 +171,7 @@ nfsrv_getcache(nam, nd, repp)
 loop:
 	for (rp = *rpp; rp; rp = rp->rc_forw) {
 	    if (nd->nd_retxid == rp->rc_xid && nd->nd_procnum == rp->rc_proc &&
-		netaddr_match(NETFAMILY(rp), &rp->rc_haddr, (union nethostaddr *)0, nam)) {
+		netaddr_match(NETFAMILY(rp), &rp->rc_haddr, nam)) {
 			if ((rp->rc_flag & RC_LOCKED) != 0) {
 				rp->rc_flag |= RC_WANTED;
 				(void) tsleep((caddr_t)rp, PZERO-1, "nfsrc", 0);
@@ -297,7 +299,7 @@ nfsrv_updatecache(nam, nd, repvalid, repmbuf)
 loop:
 	for (rp = rheadhtbl[NFSRCHASH(nd->nd_retxid)]; rp; rp = rp->rc_forw) {
 	    if (nd->nd_retxid == rp->rc_xid && nd->nd_procnum == rp->rc_proc &&
-		netaddr_match(NETFAMILY(rp), &rp->rc_haddr, (union nethostaddr *)0, nam)) {
+		netaddr_match(NETFAMILY(rp), &rp->rc_haddr, nam)) {
 			if ((rp->rc_flag & RC_LOCKED) != 0) {
 				rp->rc_flag |= RC_WANTED;
 				(void) tsleep((caddr_t)rp, PZERO-1, "nfsrc", 0);
