@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	7.59 (Berkeley) 09/18/90
+ *	@(#)vfs_syscalls.c	7.60 (Berkeley) 12/05/90
  */
 
 #include "param.h"
@@ -257,7 +257,7 @@ dounmount(mp, flags)
 	if (error = vfs_lock(mp))
 		return (error);
 
-	xumount(mp);		/* remove unused sticky files from text table */
+	vnode_pager_umount(mp);	/* release cached vnodes */
 	cache_purgevfs(mp);	/* remove cache entries for this file sys */
 	if ((error = VFS_SYNC(mp, MNT_WAIT)) == 0 || (flags & MNT_FORCE))
 		error = VFS_UNMOUNT(mp, flags);
@@ -855,8 +855,7 @@ unlink(p, uap, retval)
 		error = EBUSY;
 		goto out;
 	}
-	if (vp->v_flag & VTEXT)
-		xrele(vp);	/* try once to free text */
+	(void) vnode_pager_uncache(vp);
 out:
 	if (!error) {
 		error = VOP_REMOVE(ndp);
