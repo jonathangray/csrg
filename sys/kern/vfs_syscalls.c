@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	7.96 (Berkeley) 07/20/92
+ *	@(#)vfs_syscalls.c	7.97 (Berkeley) 09/24/92
  */
 
 #include "param.h"
@@ -1875,9 +1875,10 @@ ogetdirentries(p, uap, retval)
 	VOP_LOCK(vp);
 	loff = auio.uio_offset = fp->f_offset;
 #	if (BYTE_ORDER != LITTLE_ENDIAN)
-		if (vp->v_mount->mnt_maxsymlinklen <= 0)
+		if (vp->v_mount->mnt_maxsymlinklen <= 0) {
 			error = VOP_READDIR(vp, &auio, fp->f_cred);
-		else
+			fp->f_offset = auio.uio_offset;
+		} else
 #	endif
 	{
 		kuio = auio;
@@ -1887,6 +1888,7 @@ ogetdirentries(p, uap, retval)
 		MALLOC(dirbuf, caddr_t, uap->count, M_TEMP, M_WAITOK);
 		kiov.iov_base = dirbuf;
 		error = VOP_READDIR(vp, &kuio, fp->f_cred);
+		fp->f_offset = kuio.uio_offset;
 		if (error == 0) {
 			readcnt = uap->count - kuio.uio_resid;
 			edp = (struct dirent *)&dirbuf[readcnt];
@@ -1921,7 +1923,6 @@ ogetdirentries(p, uap, retval)
 		}
 		FREE(dirbuf, M_TEMP);
 	}
-	fp->f_offset = auio.uio_offset;
 	VOP_UNLOCK(vp);
 	if (error)
 		return (error);
