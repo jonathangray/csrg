@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)trace.h	7.6 (Berkeley) 05/05/91
+ *	@(#)trace.h	7.7 (Berkeley) 10/22/92
  */
 
 /*
@@ -101,14 +101,16 @@
 
 #ifdef KERNEL
 #ifdef TRACE
-char	traceflags[TR_NFLAGS];
 struct	proc *traceproc;
-int	tracebuf[TRCSIZ];
-unsigned tracex;
-int	tracewhich;
+int	tracewhich, tracebuf[TRCSIZ];
+u_int	tracex;
+char	traceflags[TR_NFLAGS];
 #define	pack(v,b)	(((v)->v_mount->mnt_stat.f_fsid.val[0])<<16)|(b)
-#define	trace(a,b,c)	if (traceflags[a]) trace1(a,b,c)
+#define	trace(a,b,c) {							\
+	if (traceflags[a])						\
+		trace1(a,b,c);						\
+}
 #else
-#define	trace(a,b,c)	;
+#define	trace(a,b,c)
 #endif
 #endif
