@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_vnops.c	7.42 (Berkeley) 06/25/92
+ *	@(#)vfs_vnops.c	7.43 (Berkeley) 07/03/92
  */
 
 #include "param.h"
@@ -58,11 +58,6 @@ vn_open(ndp, fmode, cmode)
 	register struct nameidata *ndp;
 	int fmode, cmode;
 {
-	USES_VOP_ABORTOP;
-	USES_VOP_ACCESS;
-	USES_VOP_CREATE;
-	USES_VOP_OPEN;
-	USES_VOP_SETATTR;
 	register struct vnode *vp;
 	register struct proc *p = ndp->ni_cnd.cn_proc;
 	register struct ucred *cred = p->p_ucred;
@@ -183,7 +178,6 @@ vn_close(vp, flags, cred, p)
 	struct ucred *cred;
 	struct proc *p;
 {
-	USES_VOP_CLOSE;
 	int error;
 
 	if (flags & FWRITE)
@@ -208,10 +202,6 @@ vn_rdwr(rw, vp, base, len, offset, segflg, ioflg, cred, aresid, p)
 	int *aresid;
 	struct proc *p;
 {
-	USES_VOP_LOCK;
-	USES_VOP_READ;
-	USES_VOP_UNLOCK;
-	USES_VOP_WRITE;
 	struct uio auio;
 	struct iovec aiov;
 	int error;
@@ -252,9 +242,6 @@ vn_read(fp, uio, cred)
 	struct uio *uio;
 	struct ucred *cred;
 {
-	USES_VOP_LOCK;
-	USES_VOP_READ;
-	USES_VOP_UNLOCK;
 	register struct vnode *vp = (struct vnode *)fp->f_data;
 	int count, error;
 
@@ -277,9 +264,6 @@ vn_write(fp, uio, cred)
 	struct uio *uio;
 	struct ucred *cred;
 {
-	USES_VOP_LOCK;
-	USES_VOP_UNLOCK;
-	USES_VOP_WRITE;
 	register struct vnode *vp = (struct vnode *)fp->f_data;
 	int count, error, ioflag = 0;
 
@@ -308,7 +292,6 @@ vn_stat(vp, sb, p)
 	register struct stat *sb;
 	struct proc *p;
 {
-	USES_VOP_GETATTR;
 	struct vattr vattr;
 	register struct vattr *vap;
 	int error;
@@ -374,8 +357,6 @@ vn_ioctl(fp, com, data, p)
 	caddr_t data;
 	struct proc *p;
 {
-	USES_VOP_GETATTR;
-	USES_VOP_IOCTL;
 	register struct vnode *vp = ((struct vnode *)fp->f_data);
 	struct vattr vattr;
 	int error;
@@ -417,7 +398,6 @@ vn_select(fp, which, p)
 	int which;
 	struct proc *p;
 {
-	USES_VOP_SELECT;
 
 	return (VOP_SELECT(((struct vnode *)fp->f_data), which, fp->f_flag,
 		fp->f_cred, p));
@@ -446,7 +426,6 @@ vn_fhtovp(fhp, lockflag, vpp)
 	int lockflag;
 	struct vnode **vpp;
 {
-	USES_VOP_UNLOCK;
 	register struct mount *mp;
 
 	if ((mp = getvfs(&fhp->fh_fsid)) == NULL)
