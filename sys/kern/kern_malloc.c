@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_malloc.c	7.37 (Berkeley) 12/11/92
+ *	@(#)kern_malloc.c	7.38 (Berkeley) 01/21/93
  */
 
 #include <sys/param.h>
