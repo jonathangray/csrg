@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)route.h	7.13 (Berkeley) 04/25/91
+ *	@(#)route.h	7.14 (Berkeley) 06/18/91
  */
 
 /*
@@ -98,7 +98,7 @@ struct rtentry {
 	struct	sockaddr *rt_genmask;	/* for generation of cloned routes */
 	caddr_t	rt_llinfo;		/* pointer to link level info cache */
 	struct	rt_metrics rt_rmx;	/* metrics used by rx'ing protocols */
-	short	rt_idle;		/* easy to tell llayer still live */
+	struct	rtentry *rt_gwroute;	/* implied entry for gatewayed routes */
 };
 
 /*
