@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	8.61 (Berkeley) 01/08/94";
+static char sccsid[] = "@(#)deliver.c	8.62 (Berkeley) 01/12/94";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1901,7 +1901,7 @@ logdelivery(m, mci, stat, ctladdr, e)
 
 #  else		/* we have a very short log buffer size */
 
-	l = SYSLOG_BUFSIZE - 40;
+	l = SYSLOG_BUFSIZE - 80;
 	p = e->e_to;
 	while (strlen(p) >= l)
 	{
@@ -1930,11 +1930,15 @@ logdelivery(m, mci, stat, ctladdr, e)
 		}
 		syslog(LOG_INFO, "%s: %s", e->e_id, buf);
 	}
-	syslog(LOG_INFO, "%s: delay=%s",
-		e->e_id, pintvl(curtime() - e->e_ctime, TRUE));
+	bp = buf;
+	sprintf(bp, "delay=%s", pintvl(curtime() - e->e_ctime, TRUE));
+	bp += strlen(bp);
 
 	if (m != NULL)
-		syslog(LOG_INFO, "%s: mailer=%s", e->e_id, m->m_name);
+	{
+		sprintf(bp, ", mailer=%s", m->m_name);
+		bp += strlen(bp);
+	}
 
 	if (mci != NULL && mci->mci_host != NULL)
 	{
@@ -1942,22 +1946,22 @@ logdelivery(m, mci, stat, ctladdr, e)
 		extern SOCKADDR CurHostAddr;
 # endif
 
-		(void) strcpy(buf, mci->mci_host);
+		sprintf(bp, ", relay=%s", mci->mci_host);
 
 # ifdef DAEMON
-		(void) strcat(buf, " (");
-		(void) strcat(buf, anynet_ntoa(&CurHostAddr));
-		(void) strcat(buf, ")");
+		(void) strcat(bp, " (");
+		(void) strcat(bp, anynet_ntoa(&CurHostAddr));
+		(void) strcat(bp, ")");
 # endif
-		syslog(LOG_INFO, "%s: relay=%s", e->e_id, buf);
 	}
 	else
 	{
 		char *p = macvalue('h', e);
 
 		if (p != NULL && p[0] != '\0')
-			syslog(LOG_INFO, "%s: relay=%s", e->e_id, p);
+			sprintf(bp, ", relay=%s", p);
 	}
+	syslog(LOG_INFO, "%s: %s", e->e_id, buf);
 
 	syslog(LOG_INFO, "%s: stat=%s", e->e_id, shortenstring(stat, 63));
 #  endif /* short log buffer */
