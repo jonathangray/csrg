@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)remcap.c	5.6 (Berkeley) 8/6/92";
+static char sccsid[] = "@(#)remcap.c	5.7 (Berkeley) 10/24/92";
 #endif /* not lint */
 
 /*
@@ -43,6 +43,7 @@ static char sccsid[] = "@(#)remcap.c	5.6 (Berkeley) 8/6/92";
 #include <sys/types.h>
 #include <fcntl.h>
 #include <ctype.h>
+#include <stdlib.h>
 #include "pathnames.h"
 
 #ifndef BUFSIZ
@@ -78,10 +79,9 @@ char	*RM;
 
 static	char *tbuf;
 static	int hopcount;	/* detect infinite loops in termcap, init 0 */
-char	*tskip();
+static	char *tskip();
 char	*tgetstr();
-char	*tdecode();
-char	*getenv();
+static	char *tdecode();
 static	char *remotefile;
 
 /*
