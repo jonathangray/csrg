@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)asc.c	8.2 (Berkeley) 01/04/94
+ *	@(#)asc.c	8.3 (Berkeley) 07/03/94
  */
 
 /* 
@@ -902,6 +902,7 @@ again:
 			/* save number of bytes still to be sent or received */
 			state->dmaresid = len;
 			state->flags &= ~DMA_IN_PROGRESS;
+			ASC_TC_PUT(regs, 0);
 #ifdef DEBUG
 			if (asc_logp == asc_log)
 				asc_log[NLOG - 1].resid = len;
@@ -932,9 +933,11 @@ again:
 			else
 				state->script = asc->script;
 		} else if (state->flags & DMA_IN) {
-			if (len)
-				printf("asc_intr: 1: len %d (fifo %d)\n", len,
-					fifo); /* XXX */
+			if (len) {
+				printf("asc_intr: 1: bn %d len %d (fifo %d)\n",
+					asc_debug_bn, len, fifo); /* XXX */
+				goto abort;
+			}
 			/* setup state to resume to */
 			if (state->flags & DMA_IN_PROGRESS) {
 				len = state->dmalen;
@@ -952,9 +955,11 @@ again:
 				state->script =
 				    &asc_scripts[SCRIPT_RESUME_NO_DATA];
 		} else if (state->flags & DMA_OUT) {
-			if (len)
+			if (len) {
 				printf("asc_intr: 2: len %d (fifo %d)\n", len,
 					fifo); /* XXX */
+				goto abort;
+			}
 			/*
 			 * If this is the last chunk, the next expected
 			 * state is to get status.
@@ -1109,7 +1114,7 @@ abort:
 #if 0
 	panic("asc_intr");
 #else
-	for (;;);
+	boot(4); /* XXX */
 #endif
 }
 
@@ -1260,6 +1265,12 @@ asc_dma_in(asc, status, ss, ir)
 
 	/* setup to start reading the next chunk */
 	len = state->buflen;
+#ifdef DEBUG
+	if (asc_logp == asc_log)
+		asc_log[NLOG - 1].resid = len;
+	else
+		asc_logp[-1].resid = len;
+#endif
 	if (len > state->dmaBufSize)
 		len = state->dmaBufSize;
 	state->dmalen = len;
@@ -1325,6 +1336,12 @@ asc_resume_in(asc, status, ss, ir)
 
 	/* setup to start reading the next chunk */
 	len = state->buflen;
+#ifdef DEBUG
+	if (asc_logp == asc_log)
+		asc_log[NLOG - 1].resid = len;
+	else
+		asc_logp[-1].resid = len;
+#endif
 	if (len > state->dmaBufSize)
 		len = state->dmaBufSize;
 	state->dmalen = len;
@@ -1365,6 +1382,12 @@ asc_resume_dma_in(asc, status, ss, ir)
 			state->dmalen, len, off); /* XXX */
 		regs->asc_res_fifo = state->dmaBufAddr[off];
 	}
+#ifdef DEBUG
+	if (asc_logp == asc_log)
+		asc_log[NLOG - 1].resid = len;
+	else
+		asc_logp[-1].resid = len;
+#endif
 	(*asc->dma_start)(asc, state, state->dmaBufAddr + off, ASCDMA_READ);
 	ASC_TC_PUT(regs, len);
 #ifdef DEBUG
@@ -1409,6 +1432,12 @@ asc_dma_out(asc, status, ss, ir)
 
 	/* setup for this chunk */
 	len = state->buflen;
+#ifdef DEBUG
+	if (asc_logp == asc_log)
+		asc_log[NLOG - 1].resid = len;
+	else
+		asc_logp[-1].resid = len;
+#endif
 	if (len > state->dmaBufSize)
 		len = state->dmaBufSize;
 	state->dmalen = len;
@@ -1473,6 +1502,12 @@ asc_resume_out(asc, status, ss, ir)
 
 	/* setup for this chunk */
 	len = state->buflen;
+#ifdef DEBUG
+	if (asc_logp == asc_log)
+		asc_log[NLOG - 1].resid = len;
+	else
+		asc_logp[-1].resid = len;
+#endif
 	if (len > state->dmaBufSize)
 		len = state->dmaBufSize;
 	state->dmalen = len;
@@ -1516,6 +1551,12 @@ asc_resume_dma_out(asc, status, ss, ir)
 		off++;
 		len--;
 	}
+#ifdef DEBUG
+	if (asc_logp == asc_log)
+		asc_log[NLOG - 1].resid = len;
+	else
+		asc_logp[-1].resid = len;
+#endif
 	(*asc->dma_start)(asc, state, state->dmaBufAddr + off, ASCDMA_WRITE);
 	ASC_TC_PUT(regs, len);
 #ifdef DEBUG
