@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hangman.h	5.5 (Berkeley) 02/28/91
+ *	@(#)hangman.h	5.6 (Berkeley) 02/03/93
  */
 
 # include	<curses.h>
@@ -77,5 +77,3 @@ extern FILE	*Dict;
 extern off_t	Dict_size;
 
 void	die();
-
-off_t	abs();
