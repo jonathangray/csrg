@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.42 (Berkeley) 10/21/93
+ *	@(#)conf.h	8.43 (Berkeley) 10/28/93
  */
 
 /*
@@ -390,6 +390,7 @@ typedef int		pid_t;
 # ifndef LA_TYPE
 #  define LA_TYPE	LA_FLOAT
 # endif
+# include <sys/sysmacros.h>
 #endif
 
 
