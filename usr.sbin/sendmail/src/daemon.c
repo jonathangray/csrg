@@ -15,12 +15,10 @@
 
 # ifndef DAEMON
 # ifndef lint
-static char	SccsId[] = "@(#)daemon.c	5.8 (Berkeley) 09/17/85	(w/o daemon mode)";
+static char	SccsId[] = "@(#)daemon.c	5.4.1.1 (Berkeley) 09/19/85	(w/o daemon mode)";
 # endif not lint
 # else
 
-# include <sys/socket.h>
-# include <netinet/in.h>
 # include <netdb.h>
 # include <sys/signal.h>
 # include <sys/wait.h>
@@ -28,7 +26,7 @@ static char	SccsId[] = "@(#)daemon.c	5.8 (Berkeley) 09/17/85	(w/o daemon mode)";
 # include <sys/resource.h>
 
 # ifndef lint
-static char	SccsId[] = "@(#)daemon.c	5.8 (Berkeley) 09/17/85 (with daemon mode)";
+static char	SccsId[] = "@(#)daemon.c	5.4.1.1 (Berkeley) 09/19/85 (with daemon mode)";
 # endif not lint
 
 /*
