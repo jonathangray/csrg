@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.29 (Berkeley) 09/02/93
+ *	@(#)conf.h	8.30 (Berkeley) 09/05/93
  */
 
 /*
@@ -435,11 +435,12 @@ typedef int		pid_t;
 # define GIDSET_T	int
 #endif
 
-/*
+
+/**********************************************************************
 **  Remaining definitions should never have to be changed.  They are
 **  primarily to provide back compatibility for older systems -- for
 **  example, it includes some POSIX compatibility definitions
-*/
+**********************************************************************/
 
 /* System 5 compatibility */
 #ifndef S_ISREG
