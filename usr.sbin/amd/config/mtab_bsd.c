@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mtab_bsd.c	5.4 (Berkeley) 02/09/92
+ *	@(#)mtab_bsd.c	5.5 (Berkeley) 11/12/92
  *
  * $Id: mtab_bsd.c,v 5.2.2.1 1992/02/09 15:10:13 jsp beta $
  *
@@ -102,6 +102,11 @@ char *fs;
 		 */
 		mpp = &(*mpp)->mnext;
 	}
+
+	/*
+	 * Terminate the list
+	 */
+	*mpp = 0;
 
 	return mhp;
 }
