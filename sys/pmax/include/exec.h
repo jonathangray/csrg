@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)exec.h	7.1 (Berkeley) 03/18/92
+ *	@(#)exec.h	7.2 (Berkeley) 09/13/92
  */
 
 /*
@@ -73,7 +73,7 @@
 	    __N_TXTOFF_ROUND(ex)) & ~__N_TXTOFF_ROUND(ex))
 
 /* Data segment offset. */
-#define N_DATAOFF(ex) \
+#define N_DATOFF(ex) \
 	(N_TXTOFF(ex) + (ex).ex_aout.codeSize)
 
 /* Symbol table offset. */
