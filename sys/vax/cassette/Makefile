@@ -3,7 +3,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	4.8 (Berkeley) 06/08/85
+#	@(#)Makefile	6.3 (Berkeley) 06/08/85
 #
 # Make a 750/730 tu58 cassette
 # 
