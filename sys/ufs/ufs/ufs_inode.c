@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_inode.c	8.6 (Berkeley) 06/16/94
+ *	@(#)ufs_inode.c	8.7 (Berkeley) 07/22/94
  */
 
 #include <sys/param.h>
@@ -57,16 +57,11 @@ int	prtactive = 0;		/* 1 => print out reclaim of active vnodes */
 int
 ufs_init()
 {
-	static int first = 1;
+	static int done;
 
-	if (!first)
+	if (done)
 		return (0);
-	first = 0;
-
-#ifdef DIAGNOSTIC
-	if ((sizeof(struct inode) - 1) & sizeof(struct inode))
-		printf("ufs_init: bad size %d\n", sizeof(struct inode));
-#endif
+	done = 1;
 	ufs_ihashinit();
 #ifdef QUOTA
 	dqinit();
