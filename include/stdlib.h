@@ -30,21 +30,21 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stdlib.h	5.17 (Berkeley) 03/02/92
+ *	@(#)stdlib.h	5.18 (Berkeley) 06/22/92
  */
 
 #ifndef _STDLIB_H_
 #define _STDLIB_H_
 #include <sys/types.h>
 
-#ifdef	_SIZE_T_
-typedef	_SIZE_T_	size_t;
-#undef	_SIZE_T_
+#ifdef	_BSD_SIZE_T_
+typedef	_BSD_SIZE_T_	size_t;
+#undef	_BSD_SIZE_T_
 #endif
 
-#ifdef	_WCHAR_T_
-typedef	_WCHAR_T_	wchar_t;
-#undef	_WCHAR_T_
+#ifdef	_BSD_WCHAR_T_
+typedef	_BSD_WCHAR_T_	wchar_t;
+#undef	_BSD_WCHAR_T_
 #endif
 
 typedef struct {
