@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sysctl.c	8.2 (Berkeley) 09/23/93
+ *	@(#)kern_sysctl.c	8.3 (Berkeley) 01/06/94
  */
 
 /*
@@ -667,7 +667,11 @@ fill_eproc(p, ep)
 	} else {
 		register struct vmspace *vm = p->p_vmspace;
 
+#ifdef pmap_resident_count
+		ep->e_vm.vm_rssize = pmap_resident_count(&vm->vm_pmap); /*XXX*/
+#else
 		ep->e_vm.vm_rssize = vm->vm_rssize;
+#endif
 		ep->e_vm.vm_tsize = vm->vm_tsize;
 		ep->e_vm.vm_dsize = vm->vm_dsize;
 		ep->e_vm.vm_ssize = vm->vm_ssize;
