@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)authenc.c	5.2 (Berkeley) 12/18/92";
+static char sccsid[] = "@(#)authenc.c	5.3 (Berkeley) 05/20/93";
 #endif /* not lint */
 
 #if	defined(ENCRYPTION) || defined(AUTHENTICATION)
