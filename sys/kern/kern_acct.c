@@ -11,7 +11,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_acct.c	8.3 (Berkeley) 01/21/94
+ *	@(#)kern_acct.c	8.4 (Berkeley) 06/02/94
  */
 
 #include <sys/param.h>
@@ -100,7 +100,9 @@ acct(p, uap, retval)
 
 /*
  * Periodically check the file system to see if accounting
- * should be turned on or off.
+ * should be turned on or off. Beware the case where the vnode
+ * has been vgone()'d out from underneath us, e.g. when the file
+ * system containing the accounting file has been forcibly unmounted.
  */
 /* ARGSUSED */
 void
@@ -110,6 +112,11 @@ acctwatch(a)
 	struct statfs sb;
 
 	if (savacctp) {
+		if (savacctp->v_type == VBAD) {
+			(void) vn_close(savacctp, FWRITE, NOCRED, NULL);
+			savacctp = NULL;
+			return;
+		}
 		(void)VFS_STATFS(savacctp->v_mount, &sb, (struct proc *)0);
 		if (sb.f_bavail > acctresume * sb.f_blocks / 100) {
 			acctp = savacctp;
@@ -119,6 +126,11 @@ acctwatch(a)
 	} else {
 		if (acctp == NULL)
 			return;
+		if (acctp->v_type == VBAD) {
+			(void) vn_close(acctp, FWRITE, NOCRED, NULL);
+			acctp = NULL;
+			return;
+		}
 		(void)VFS_STATFS(acctp->v_mount, &sb, (struct proc *)0);
 		if (sb.f_bavail <= acctsuspend * sb.f_blocks / 100) {
 			savacctp = acctp;
@@ -145,6 +157,11 @@ acct_process(p)
 
 	if ((vp = acctp) == NULL)
 		return (0);
+	if (vp->v_type == VBAD) {
+		(void) vn_close(vp, FWRITE, NOCRED, NULL);
+		acctp = NULL;
+		return (0);
+	}
 	bcopy(p->p_comm, ap->ac_comm, sizeof(ap->ac_comm));
 	ru = &p->p_stats->p_ru;
 	calcru(p, &ut, &st, NULL);
