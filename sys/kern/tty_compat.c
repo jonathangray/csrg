@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty_compat.c	7.13 (Berkeley) 03/09/92
+ *	@(#)tty_compat.c	7.14 (Berkeley) 04/19/92
  */
 
 /* 
@@ -46,7 +46,6 @@
 #include "termios.h"
 #include "file.h"
 #include "conf.h"
-#include "dkstat.h"
 #include "kernel.h"
 #include "syslog.h"
 
