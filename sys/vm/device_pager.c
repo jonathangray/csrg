@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)device_pager.c	7.1 (Berkeley) 12/05/90
+ *	@(#)device_pager.c	7.2 (Berkeley) 04/20/91
  */
 
 /*
@@ -46,18 +46,14 @@
 #if NDEVPAGER > 0
 
 #include "param.h"
-#include "queue.h"
 #include "conf.h"
 #include "mman.h"
 #include "malloc.h"
-#include "uio.h"
 
-#include "../vm/vm_param.h"
-#include "../vm/vm_map.h"
-#include "../vm/vm_pager.h"
-#include "../vm/vm_page.h"
-#include "../vm/vm_kern.h"
-#include "../vm/device_pager.h"
+#include "vm.h"
+#include "vm_page.h"
+#include "vm_kern.h"
+#include "device_pager.h"
 
 queue_head_t	dev_pager_list;	/* list of managed devices */
 
@@ -92,7 +88,7 @@ dev_pager_alloc(handle, size, prot)
 	register vm_page_t page;
 	register dev_pager_t devp;
 	register int npages, off;
-	extern int nulldev(), nodev();
+	extern int nullop(), enodev();
 
 
 #ifdef DEBUG
@@ -109,15 +105,15 @@ dev_pager_alloc(handle, size, prot)
 	 * Look it up, creating as necessary
 	 */
 	pager = vm_pager_lookup(&dev_pager_list, handle);
-	if (pager == VM_PAGER_NULL) {
+	if (pager == NULL) {
 		/*
 		 * Validation.  Make sure this device can be mapped
 		 * and that range to map is acceptible to device.
 		 */
 		dev = (dev_t)handle;
 		mapfunc = cdevsw[major(dev)].d_mmap;
-		if (!mapfunc || mapfunc == nodev || mapfunc == nulldev)
-			return(VM_PAGER_NULL);
+		if (!mapfunc || mapfunc == enodev || mapfunc == nullop)
+			return(NULL);
 		nprot = 0;
 		if (prot & VM_PROT_READ)
 			nprot |= PROT_READ;
@@ -128,17 +124,17 @@ dev_pager_alloc(handle, size, prot)
 		npages = atop(round_page(size));
 		for (off = 0; npages--; off += PAGE_SIZE)
 			if ((*mapfunc)(dev, off, nprot) == -1)
-				return(VM_PAGER_NULL);
+				return(NULL);
 		/*
 		 * Allocate and initialize pager structs
 		 */
 		pager = (vm_pager_t)malloc(sizeof *pager, M_VMPAGER, M_WAITOK);
-		if (pager == VM_PAGER_NULL)
-			return(VM_PAGER_NULL);
+		if (pager == NULL)
+			return(NULL);
 		devp = (dev_pager_t)malloc(sizeof *devp, M_VMPGDATA, M_WAITOK);
-		if (devp == DEV_PAGER_NULL) {
+		if (devp == NULL) {
 			free((caddr_t)pager, M_VMPAGER);
-			return(VM_PAGER_NULL);
+			return(NULL);
 		}
 		devp->devp_dev = dev;
 		devp->devp_npages = atop(round_page(size));
@@ -244,7 +240,7 @@ dev_pager_putpage(pager, m, sync)
 	if (dpagerdebug & DDB_FOLLOW)
 		printf("dev_pager_putpage(%x, %x)\n", pager, m);
 #endif
-	if (pager == VM_PAGER_NULL)
+	if (pager == NULL)
 		return;
 	panic("dev_pager_putpage called");
 }
