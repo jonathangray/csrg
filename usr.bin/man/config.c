@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)config.c	8.1 (Berkeley) 06/06/93";
+static char sccsid[] = "@(#)config.c	5.9 (Berkeley) 06/17/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -66,7 +66,7 @@ getpath(sects)
 
 	openconfig();
 	while (fgets(line, sizeof(line), cfp)) {
-		if (!index(line, '\n')) {
+		if (!strchr(line, '\n')) {
 			(void)fprintf(stderr, "%s: config line too long.\n",
 			    progname);
 			exit(1);
@@ -83,7 +83,7 @@ getpath(sects)
 			len = strlen(p);
 			if (p[len - 1] == '/')
 				for (av = arorder; *av; ++av)
-                			cadd(p, len, *av);
+					cadd(p, len, *av);
 			else
 				cadd(p, len, (char *)NULL);
 		}
@@ -144,7 +144,7 @@ getdb()
 	cnt = -1;
 	openconfig();
 	while (fgets(line, sizeof(line), cfp)) {
-		if (!index(line, '\n')) {
+		if (!strchr(line, '\n')) {
 			(void)fprintf(stderr, "%s: config line too long.\n",
 			    progname);
 			exit(1);
@@ -182,7 +182,7 @@ getorder()
 	cnt = -1;
 	openconfig();
 	while (fgets(line, sizeof(line), cfp)) {
-		if (!index(line, '\n')) {
+		if (!strchr(line, '\n')) {
 			(void)fprintf(stderr, "%s: config line too long.\n",
 			    progname);
 			exit(1);
@@ -216,7 +216,7 @@ getsection(sect)
 
 	openconfig();
 	while (fgets(line, sizeof(line), cfp)) {
-		if (!index(line, '\n')) {
+		if (!strchr(line, '\n')) {
 			(void)fprintf(stderr, "%s: config line too long.\n",
 			    progname);
 			exit(1);
