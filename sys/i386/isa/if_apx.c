@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_apx.c	7.4 (Berkeley) 03/03/92
+ *	@(#)if_apx.c	7.5 (Berkeley) 03/03/92
  */
 
 /*
@@ -132,7 +132,7 @@ apxprobe(id)
 	struct	apc_reg *reg = (struct apc_reg *)id->id_iobase;
 	register struct	apx_softc *apx = apx_softc + unit;
 
-	for (subunit = 0; subunit < 2; subunit++, apx++) {
+	for (subunit = 0; subunit < 2; subunit++) {
 		moffset = subunit ? id->id_msize >> 1 : 0;
 		apx->apx_hmem	= (struct apc_mem *) (id->id_maddr + moffset);
 		apx->apx_dmem	= (struct apc_mem *) (moffset);
@@ -142,18 +142,18 @@ apxprobe(id)
 		apx->apx_csr4	= 0x0210;	/* no byte swapping for PC-AT */
 		apx->apx_modes	= apx_default_modes;
 		apx->apx_if.if_unit = unit++;
-		apxtest(apx);
+		apxtest(apx++);
 	}
 	return 1;
 }
 
 apxattach(id)
-	register struct isa_device *id;
+	struct	isa_device *id;
 {
-	int	unit = id->id_unit << 1;
+	register struct	apx_softc *apx = apx_softc + (id->id_unit << 1);
 
-	apx_ifattach(unit);
-	apx_ifattach(unit + 1);
+	apx_ifattach(&((apx++)->apx_if));
+	apx_ifattach(&(apx->apx_if));
 	return 0;
 }
 /* End bus & endian dependence */
@@ -164,14 +164,12 @@ apxattach(id)
  * to accept packets.
  */
 void
-apx_ifattach(unit)
+apx_ifattach(ifp)
+	register struct ifnet *ifp;
 {
-	register struct ifnet *ifp = &(apx_softc[unit].apx_if);
 	/*
 	 * Initialize ifnet structure
 	 */
-	if (apx_softc[unit].apx_device == 0)
-		return;
 	ifp->if_name	= "apc";
 	ifp->if_mtu	= SGMTU;
 	ifp->if_init	= apxinit;
@@ -268,14 +266,15 @@ apxreset(unit)
 }
 
 apx_uprim(apx, request, ident)
-	int request;
-	char *ident;
 	register struct apx_softc *apx;
+	char *ident;
 {
 	register int timo = 0;
-	int reply = SG_RCSR(apx, 1);
+	int reply;
 
-	if (reply & 0x8040)
+	if ((apx->apx_flags & APXF_CHIPHERE) == 0)
+		return 1;	/* maybe even should panic . . . */
+	if ((reply = SG_RCSR(apx, 1)) & 0x8040)
 		SG_WCSR(apx, 1, 0x8040); /* Magic! */
 	SG_WCSR(apx, 1, request | SG_UAV);
 	do {
@@ -349,7 +348,7 @@ apxstart(ifp)
 		if (++apx->apx_txnum >= SGTBUF)
 			apx->apx_txnum = 0;
 	} while (++apx->apx_txcnt < SGTBUF);
-	apx->apx_txcnt = SGTBUF;
+	apx->apx_txcnt = SGTBUF; /* in case txcnt > SGTBUF by mistake */
 	ifp->if_flags |= IFF_OACTIVE;
 	return (0);
 }
@@ -415,7 +414,7 @@ dx = ++apx->apx_rxnum == SGRBUF ? &apc->apc_rxmd[apx->apx_rxnum = 0] : dx + 1;
 	 * Out of sync with hardware, should never happen?
 	 */
 	if (dx->sgdx_flags & SG_OWN) {
-		apxerror(apx, "out of sync");
+		apxerror(apx, "out of sync", apx->apx_rxnum);
 		return;
 	}
 	/*
@@ -453,18 +452,16 @@ dx = ++apx->apx_rxnum == SGRBUF ? &apc->apc_rxmd[apx->apx_rxnum = 0] : dx + 1;
 
 void
 apxinput(ifp, buffer, len)
-register struct ifnet *ifp;
-caddr_t buffer;
+	register struct ifnet *ifp;
+	caddr_t buffer;
 {
-	register struct ifqueue *inq;
-	struct mbuf *m, *m_devget();
 	extern struct ifqueue hdintrq, ipintrq;
+	register struct ifqueue *inq;
+	register u_char *cp = (u_char *)buffer;
+	struct mbuf *m, *m_devget();
 	int isr;
 
 	ifp->if_ipackets++;
-    {
-	register u_char *cp = (u_char *)buffer;
-
 	if (cp[0] == 0xff && cp[1] == 0x3) {
 		/* This is a UI HDLC Packet, so we'll assume PPP
 		   protocol.  for now, IP only. */
@@ -473,17 +470,17 @@ caddr_t buffer;
 		inq = &ipintrq;
 		isr = NETISR_IP;
 	} else {
+#ifdef CCITT
 		inq = &hdintrq;
 		isr = NETISR_CCITT;
 	}
-    }
-	if (len <= 0)
+	if (len <= 0) {
+#endif
 		return;
-
+	}
 	m = m_devget(buffer, len, 0, ifp, (void (*)())0);
 	if (m == 0)
 		return;
-
 	if(IF_QFULL(inq)) {
 		IF_DROP(inq);
 		m_freem(m);
