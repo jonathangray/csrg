@@ -56,8 +56,11 @@ int	(*signal())();
 struct	sigvec {
 	int	(*sv_handler)();	/* signal handler */
 	int	sv_mask;		/* signal mask to apply */
-	int	sv_onstack;		/* if non-zero, take on signal stack */
+	int	sv_flags;		/* see signal options below */
 };
+#define SV_ONSTACK	0x0001	/* take signal on signal stack */
+#define SV_INTERRUPT	0x0002	/* do not restart system on signal return */
+#define sv_onstack sv_flags	/* isn't compatibility wonderful! */
 
 /*
  * Structure used in sigstack call.
