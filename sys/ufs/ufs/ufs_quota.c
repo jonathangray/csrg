@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_quota.c	7.8 (Berkeley) 04/16/91
+ *	@(#)ufs_quota.c	7.9 (Berkeley) 06/03/91
  */
 #include "param.h"
 #include "kernel.h"
@@ -364,6 +364,7 @@ quotaon(p, mp, type, fname)
 	if (error = vn_open(&nd, p, FREAD|FWRITE, 0))
 		return (error);
 	vp = nd.ni_vp;
+	VOP_UNLOCK(vp);
 	if (vp->v_type != VREG) {
 		vrele(vp);
 		return (EACCES);
