@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.58 (Berkeley) 11/06/92";
+static char sccsid[] = "@(#)main.c	5.59 (Berkeley) 11/14/92";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -107,7 +107,7 @@ ADDRESS		NullAddress =	/* a null address */
 # ifdef SETPROCTITLE
 char		**Argv = NULL;		/* pointer to argument vector */
 char		*LastArgv = NULL;	/* end of argv */
-# endif SETPROCTITLE
+# endif /* SETPROCTITLE */
 
 /*
 **  The file in which to log raw recipient information.
@@ -125,8 +125,8 @@ char		*RcptLogFile = NULL;	/* file name */
 #ifdef DAEMON
 #ifndef SMTP
 ERROR %%%%   Cannot have daemon mode without SMTP   %%%% ERROR
-#endif SMTP
-#endif DAEMON
+#endif /* SMTP */
+#endif /* DAEMON */
 
 #define MAXCONFIGLEVEL	3	/* highest config version level known */
 
@@ -283,7 +283,7 @@ main(argc, argv, envp)
 		LastArgv = envp[i - 1] + strlen(envp[i - 1]);
 	else
 		LastArgv = argv[argc - 1] + strlen(argv[argc - 1]);
-# endif SETPROCTITLE
+# endif /* SETPROCTITLE */
 
 	if (signal(SIGINT, SIG_IGN) != SIG_IGN)
 		(void) signal(SIGINT, intsig);
@@ -344,7 +344,7 @@ main(argc, argv, envp)
 	*/
 
 	av = argv;
-	p = rindex(*av, '/');
+	p = strrchr(*av, '/');
 	if (p++ == NULL)
 		p = *av;
 	if (strcmp(p, "newaliases") == 0)
@@ -371,13 +371,13 @@ main(argc, argv, envp)
 				usrerr("Daemon mode not implemented");
 				ExitStat = EX_USAGE;
 				break;
-# endif DAEMON
+# endif /* DAEMON */
 			  case MD_SMTP:
 # ifndef SMTP
 				usrerr("I don't speak SMTP");
 				ExitStat = EX_USAGE;
 				break;
-# endif SMTP
+# endif /* SMTP */
 			  case MD_DELIVER:
 			  case MD_VERIFY:
 			  case MD_TEST:
@@ -478,10 +478,10 @@ main(argc, argv, envp)
 			FullName = NULL;
 			queuemode = TRUE;
 			QueueIntvl = convtime(&p[2]);
-# else QUEUE
+# else /* QUEUE */
 			usrerr("I don't know about queues");
 			ExitStat = EX_USAGE;
-# endif QUEUE
+# endif /* QUEUE */
 			break;
 
 		  case 't':	/* read recipients from message */
@@ -620,10 +620,10 @@ main(argc, argv, envp)
 		dropenvelope(CurEnv);
 		printqueue();
 		exit(EX_OK);
-#else QUEUE
+#else /* QUEUE */
 		usrerr("No queue to print");
 		finis();
-#endif QUEUE
+#endif /* QUEUE */
 
 	  case MD_INITALIAS:
 		/* initialize alias database */
@@ -748,7 +748,7 @@ main(argc, argv, envp)
 		runqueue(FALSE);
 		finis();
 	}
-# endif QUEUE
+# endif /* QUEUE */
 
 	/*
 	**  If a daemon, wait for a request.
@@ -785,7 +785,7 @@ main(argc, argv, envp)
 				for (;;)
 					pause();
 		}
-# endif QUEUE
+# endif /* QUEUE */
 		dropenvelope(CurEnv);
 
 #ifdef DAEMON
@@ -795,7 +795,7 @@ main(argc, argv, envp)
 		OpMode = MD_SMTP;
 		(void) newenvelope(CurEnv);
 		openxscript(CurEnv);
-#endif DAEMON
+#endif /* DAEMON */
 	}
 	
 # ifdef SMTP
@@ -806,7 +806,7 @@ main(argc, argv, envp)
 
 	if (OpMode == MD_SMTP)
 		smtp(CurEnv);
-# endif SMTP
+# endif /* SMTP */
 
 	/*
 	**  Do basic system initialization and set the sender
@@ -900,7 +900,7 @@ finis()
 # ifdef LOG
 	if (LogLevel > 11)
 		syslog(LOG_DEBUG, "finis, pid=%d", getpid());
-# endif LOG
+# endif /* LOG */
 	if (ExitStat == EX_TEMPFAIL)
 		ExitStat = EX_OK;
 	exit(ExitStat);
@@ -1223,7 +1223,7 @@ disconnect(fulldrop)
 # ifdef LOG
 	if (LogLevel > 11)
 		syslog(LOG_DEBUG, "in background, pid=%d", getpid());
-# endif LOG
+# endif /* LOG */
 
 	errno = 0;
 }
