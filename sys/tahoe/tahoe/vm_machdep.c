@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_machdep.c	7.9 (Berkeley) 12/16/90
+ *	@(#)vm_machdep.c	7.10 (Berkeley) 09/23/93
  */
 
 #include "sys/param.h"
@@ -360,8 +360,8 @@ purge:
 	 * release all keys.
 	 */
 steal:
-	for (p = allproc; p; p = p->p_nxt)
-		if (p->p_ckey != 0 && (p->p_flag & SSYS) == 0) {
+	for (p = allproc; p; p = p->p_next)
+		if (p->p_ckey != 0 && (p->p_flag & P_SYSTEM) == 0) {
 			i = p->p_ckey;
 			if (ckey_cnt[i] == 1 || desparate) {
 				p->p_ckey = 0;
@@ -443,8 +443,8 @@ purge:
 	 * May as well take them all, so we get them
 	 * from all of the idle procs.
 	 */
-	for (p = allproc; p; p = p->p_nxt)
-		if (p->p_dkey != 0 && (p->p_flag & SSYS) == 0) {
+	for (p = allproc; p; p = p->p_next)
+		if (p->p_dkey != 0 && (p->p_flag & P_SYSTEM) == 0) {
 			freekey = p->p_dkey;
 			dkey_cnt[freekey] = 0;
 			p->p_dkey = 0;
