@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)rlogin.c	5.31 (Berkeley) 09/27/90";
+static char sccsid[] = "@(#)rlogin.c	5.32 (Berkeley) 10/21/90";
 #endif /* not lint */
 
 /*
@@ -187,11 +187,13 @@ main(argc, argv)
 		case 'l':
 			user = optarg;
 			break;
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef CRYPT
+#ifdef KERBEROS
 		case 'x':
 			encrypt = 1;
 			des_set_key(cred.session, schedule);
 			break;
+#endif
 #endif
 		case '?':
 		default:
@@ -470,21 +472,25 @@ writer()
 				continue;
 			}
 			if (c != escapechar)
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef CRYPT
+#ifdef KERBEROS
 				if (encrypt)
 					(void)des_write(rem, &escapechar, 1);
 				else
 #endif
+#endif
 					(void)write(rem, &escapechar, 1);
 		}
 
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef CRYPT
+#ifdef KERBEROS
 		if (encrypt) {
 			if (des_write(rem, &c, 1) == 0) {
 				msg("line gone");
 				break;
 			}
 		} else
+#endif
 #endif
 			if (write(rem, &c, 1) == 0) {
 				msg("line gone");
@@ -559,10 +565,12 @@ sendwindow()
 	wp->ws_xpixel = htons(winsize.ws_xpixel);
 	wp->ws_ypixel = htons(winsize.ws_ypixel);
 
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef CRYPT
+#ifdef KERBEROS
 	if(encrypt)
 		(void)des_write(rem, obuf, sizeof(obuf));
 	else
+#endif
 #endif
 		(void)write(rem, obuf, sizeof(obuf));
 }
@@ -701,10 +709,12 @@ reader(omask)
 		rcvcnt = 0;
 		rcvstate = READING;
 
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef CRYPT
+#ifdef KERBEROS
 		if (encrypt)
 			rcvcnt = des_read(rem, rcvbuf, sizeof(rcvbuf));
 		else
+#endif
 #endif
 			rcvcnt = read(rem, rcvbuf, sizeof (rcvbuf));
 		if (rcvcnt == 0)
