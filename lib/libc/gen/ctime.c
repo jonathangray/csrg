@@ -3,7 +3,7 @@
  * All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
- * Arthur Olson.
+ * Arthur David Olson of the National Cancer Institute.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)ctime.c	5.21 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)ctime.c	5.22 (Berkeley) 06/11/90";
 #endif /* LIBC_SCCS and not lint */
 
 /*
