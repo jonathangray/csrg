@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sig.c	7.36 (Berkeley) 09/06/91
+ *	@(#)kern_sig.c	7.37 (Berkeley) 11/19/91
  */
 
 #define	SIGPROP		/* include signal properties table */
@@ -44,7 +44,6 @@
 #include "timeb.h"
 #include "times.h"
 #include "buf.h"
-#include "seg.h"
 #include "acct.h"
 #include "file.h"
 #include "kernel.h"
