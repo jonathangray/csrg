@@ -1,5 +1,12 @@
-/*
- *	@(#)kdbparam.h	7.3 (Berkeley) 06/22/90
+/*-
+ * Copyright (c) 1988 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ *
+ *	@(#)kdbparam.h	7.4 (Berkeley) 05/08/91
  */
 
 #define DBNAME "kdb\n"
