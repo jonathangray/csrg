@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.135 (Berkeley) 06/20/95";
+static char sccsid[] = "@(#)main.c	8.136 (Berkeley) 06/21/95";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -1898,11 +1898,14 @@ testmodeline(line, e)
 		while (*p != '\0')
 		{
 			int stat;
+			int rs = strtorwset(p, NULL, ST_FIND);
 
-			stat = rewrite(pvp, atoi(p), 0, e);
+			if (rs < 0)
+				break;
+			stat = rewrite(pvp, rs, 0, e);
 			if (stat != EX_OK)
-				printf("== Ruleset %s status %d\n",
-					p, stat);
+				printf("== Ruleset %s (%d) status %d\n",
+					p, rs, stat);
 			while (*p != '\0' && *p++ != ',')
 				continue;
 		}
