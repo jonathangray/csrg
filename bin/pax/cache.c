@@ -36,7 +36,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)cache.c	1.1 (Berkeley) 12/17/92";
+static char sccsid[] = "@(#)cache.c	1.2 (Berkeley) 01/15/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -451,7 +451,7 @@ gid_name(name, gid)
 
 	if (!gropn) {
 		setgroupent(1);
-		++pwopn;
+		++gropn;
 	}
 	if (ptr == NULL)
 		ptr = (GIDC *)malloc(sizeof(GIDC));
