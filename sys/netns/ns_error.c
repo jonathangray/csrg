@@ -9,7 +9,7 @@
  * software without specific prior written permission. This software
  * is provided ``as is'' without express or implied warranty.
  *
- *      @(#)ns_error.c	7.4 (Berkeley) 01/27/88
+ *      @(#)ns_error.c	7.4 (Berkeley) 01/28/88
  */
 
 #include "param.h"
