@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	7.106 (Berkeley) 07/25/92
+ *	@(#)ufs_vnops.c	7.107 (Berkeley) 08/10/92
  */
 
 #include <sys/param.h>
@@ -340,8 +340,7 @@ ufs_setattr(ap)
 		if (vap->va_atime.ts_sec != VNOVAL)
 			ip->i_flag |= IACC;
 		if (vap->va_mtime.ts_sec != VNOVAL)
-			ip->i_flag |= IUPD;
-		ip->i_flag |= ICHG;
+			ip->i_flag |= IUPD | ICHG;
 		atimeval.tv_sec = vap->va_atime.ts_sec;
 		atimeval.tv_usec = vap->va_atime.ts_nsec / 1000;
 		mtimeval.tv_sec = vap->va_mtime.ts_sec;
