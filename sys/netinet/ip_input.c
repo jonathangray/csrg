@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ip_input.c	7.25 (Berkeley) 02/12/93
+ *	@(#)ip_input.c	7.26 (Berkeley) 03/12/93
  */
 
 #include <sys/param.h>
