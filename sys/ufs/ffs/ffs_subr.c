@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)ffs_subr.c	7.3.1.1 (Berkeley) 04/02/87
+ *	@(#)ffs_subr.c	7.4 (Berkeley) 04/02/87
  */
 
 #ifdef KERNEL
