@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	8.2 (Berkeley) 12/30/93
+ *	@(#)vfs_subr.c	8.3 (Berkeley) 01/05/94
  */
 
 /*
@@ -245,7 +245,6 @@ getnewvnode(tag, mp, vops, vpp)
 		vp = (struct vnode *)malloc((u_long)sizeof *vp,
 		    M_VNODE, M_WAITOK);
 		bzero((char *)vp, sizeof *vp);
-		vp->v_usecount = 1;
 		numvnodes++;
 	} else {
 		if ((vp = vnode_free_list.tqh_first) == NULL) {
@@ -256,7 +255,8 @@ getnewvnode(tag, mp, vops, vpp)
 		if (vp->v_usecount)
 			panic("free vnode isn't");
 		TAILQ_REMOVE(&vnode_free_list, vp, v_freelist);
-		vp->v_usecount = 1;
+		/* see comment on why 0xdeadb is set at end of vgone (below) */
+		vp->v_freelist.tqe_prev = (struct vnode **)0xdeadb;
 		vp->v_lease = NULL;
 		if (vp->v_type != VBAD)
 			vgone(vp);
@@ -283,6 +283,7 @@ getnewvnode(tag, mp, vops, vpp)
 	vp->v_op = vops;
 	insmntque(vp, mp);
 	*vpp = vp;
+	vp->v_usecount = 1;
 	vp->v_data = 0;
 	return (0);
 }
@@ -931,9 +932,20 @@ void vgone(vp)
 	}
 	/*
 	 * If it is on the freelist and not already at the head,
-	 * move it to the head of the list.
+	 * move it to the head of the list. The test of the back
+	 * pointer and the reference count of zero is because
+	 * it will be removed from the free list by getnewvnode,
+	 * but will not have its reference count incremented until
+	 * after calling vgone. If the reference count were
+	 * incremented first, vgone would (incorrectly) try to
+	 * close the previous instance of the underlying object.
+	 * So, the back pointer is explicitly set to `0xdeadb' in
+	 * getnewvnode after removing it from the freelist to ensure
+	 * that we do not try to move it here.
 	 */
-	if (vp->v_usecount == 0 && vnode_free_list.tqh_first != vp) {
+	if (vp->v_usecount == 0 &&
+	    vp->v_freelist.tqe_prev != (struct vnode **)0xdeadb &&
+	    vnode_free_list.tqh_first != vp) {
 		TAILQ_REMOVE(&vnode_free_list, vp, v_freelist);
 		TAILQ_INSERT_HEAD(&vnode_free_list, vp, v_freelist);
 	}
