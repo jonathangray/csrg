@@ -31,7 +31,7 @@
  * SUCH DAMAGE.
  */
 #ifndef lint
-static char sccsid[] = "@(#)xi_sink.c	7.1 (Berkeley) 10/30/90";
+static char sccsid[] = "@(#)xi_sink.c	7.2 (Berkeley) 11/13/90";
 #endif /* not lint */
 
 /*
@@ -127,7 +127,7 @@ tisink()
 	int x, s, pid, on = 1, loop = 0, n;
 	extern int errno;
 
-	try(socket, (AF_ISO, SOCK_SEQPACKET, 0),"");
+	try(socket, (AF_CCITT, SOCK_STREAM, 0),"");
 
 	s = x;
 
