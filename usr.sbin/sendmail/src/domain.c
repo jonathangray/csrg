@@ -36,9 +36,9 @@
 
 #ifndef lint
 #if NAMED_BIND
-static char sccsid[] = "@(#)domain.c	8.29 (Berkeley) 11/13/94 (with name server)";
+static char sccsid[] = "@(#)domain.c	8.30 (Berkeley) 01/24/95 (with name server)";
 #else
-static char sccsid[] = "@(#)domain.c	8.29 (Berkeley) 11/13/94 (without name server)";
+static char sccsid[] = "@(#)domain.c	8.30 (Berkeley) 01/24/95 (without name server)";
 #endif
 #endif /* not lint */
 
@@ -115,7 +115,6 @@ getmxrr(host, mxhosts, droplocalhost, rcode)
 	u_short pref, localpref, type;
 	char *fallbackMX = FallBackMX;
 	static bool firsttime = TRUE;
-	STAB *st;
 	bool trycanon = FALSE;
 	u_short prefer[MAXMXHOSTS];
 	int weight[MAXMXHOSTS];
@@ -133,9 +132,7 @@ getmxrr(host, mxhosts, droplocalhost, rcode)
 			/* this entry is bogus */
 			fallbackMX = FallBackMX = NULL;
 		}
-		else if (droplocalhost &&
-			 (st = stab(fallbackMX, ST_CLASS, ST_FIND)) != NULL &&
-			 bitnset('w', st->s_class))
+		else if (droplocalhost && wordinclass(fallbackMX, 'w'))
 		{
 			/* don't use fallback for this pass */
 			fallbackMX = NULL;
@@ -232,9 +229,7 @@ getmxrr(host, mxhosts, droplocalhost, rcode)
 				   (RES_UNC_T) bp, buflen)) < 0)
 			break;
 		cp += n;
-		if (droplocalhost &&
-		    (st = stab(bp, ST_CLASS, ST_FIND)) != NULL &&
-		    bitnset('w', st->s_class))
+		if (droplocalhost && wordinclass(bp, 'w'))
 		{
 			if (tTd(8, 3))
 				printf("found localhost (%s) in MX list, pref=%d\n",
