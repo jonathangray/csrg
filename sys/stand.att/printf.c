@@ -30,13 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)printf.c	5.1 (Berkeley) 05/03/91
+ *	@(#)printf.c	5.2 (Berkeley) 05/03/91
  */
 
-#include <sys/param.h>
-
 /*
- * Scaled down version of C Library printf.
+ * Scaled down version of printf(3).
  *
  * Used to print diagnostic information directly on the console tty.  Since
  * it is not interrupt driven, all system activities are suspended.  Printf
