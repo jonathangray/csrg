@@ -5,11 +5,9 @@
  * This module is believed to contain source code proprietary to AT&T.
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
+ *
+ *	@(#)gram.dcl	5.3 (Berkeley) 04/12/91
  */
-
-#ifndef lint
-static char sccsid[] = "@(#)gram.dcl	5.2 (Berkeley) 04/12/91";
-#endif /* not lint */
 
 /*
  * Grammar for declarations, f77 compiler, 4.2 BSD.
