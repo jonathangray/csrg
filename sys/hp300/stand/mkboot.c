@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mkboot.c	7.3 (Berkeley) 06/18/92
+ *	@(#)mkboot.c	7.4 (Berkeley) 10/11/92
  */
 
 #ifndef lint
@@ -43,10 +43,11 @@ char copyright[] =
 static char sccsid[] = "@(#)mkboot.c	7.2 (Berkeley) 12/16/90";
 #endif /* not lint */
 
-#include "sys/param.h"
-#include "sys/exec.h"
-#include "sys/file.h"
-#include "volhdr.h"
+#include <sys/param.h>
+#include <sys/exec.h>
+#include <sys/file.h>
+
+#include <hp300/stand/volhdr.h>
 
 #include <stdio.h>
 #include <ctype.h>
@@ -251,8 +252,8 @@ lifname(str)
 	return(lname);
 }
 
-#include "sys/stat.h"
-#include "/usr/include/time.h"	/* XXX */
+#include <sys/stat.h>
+#include <time.h>	/* XXX */
 
 bcddate(fd, toc)
 	int fd;
