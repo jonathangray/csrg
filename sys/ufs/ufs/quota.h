@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)quota.h	7.8 (Berkeley) 09/27/90
+ *	@(#)quota.h	7.9 (Berkeley) 02/22/91
  */
 
 #ifndef _QUOTA_
@@ -169,5 +169,14 @@ struct	dquot {
 #else
 #define	DQREF(dq)	dqref(dq)
 #endif /* DIAGNOSTIC */
+
+#else
+
+#include <sys/cdefs.h>
+
+__BEGIN_DECLS
+int	quotactl __P((const char *, int, int, void *));
+__END_DECLS
+
 #endif /* KERNEL */
 #endif /* _QUOTA_ */
