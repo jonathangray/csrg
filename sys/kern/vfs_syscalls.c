@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	7.72 (Berkeley) 05/30/91
+ *	@(#)vfs_syscalls.c	7.73 (Berkeley) 06/03/91
  */
 
 #include "param.h"
@@ -595,8 +595,7 @@ open(p, uap, retval)
 	ndp->ni_dirp = uap->fname;
 	p->p_dupfd = -indx - 1;			/* XXX check for fdopen */
 	if (error = vn_open(ndp, p, fmode, cmode)) {
-		crfree(fp->f_cred);
-		fp->f_count--;
+		ffree(fp);
 		if (error == ENODEV &&		/* XXX from fdopen */
 		    p->p_dupfd >= 0 &&
 		    (error = dupfdopen(fdp, indx, p->p_dupfd, fmode)) == 0) {
@@ -623,8 +622,7 @@ open(p, uap, retval)
 		if (error =
 		    VOP_ADVLOCK(ndp->ni_vp, (caddr_t)fp, F_SETLK, &lf, type)) {
 			vput(ndp->ni_vp);
-			crfree(fp->f_cred);
-			fp->f_count--;
+			ffree(fp);
 			fdp->fd_ofiles[indx] = NULL;
 			return (error);
 		}
