@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)headers.c	8.56 (Berkeley) 04/09/95";
+static char sccsid[] = "@(#)headers.c	8.57 (Berkeley) 04/20/95";
 #endif /* not lint */
 
 # include <errno.h>
@@ -77,7 +77,11 @@ chompheader(line, def, hdrp, e)
 	extern ADDRESS *sendto();
 
 	if (tTd(31, 6))
-		printf("chompheader: %s\n", line);
+	{
+		printf("chompheader: ");
+		xputs(line);
+		printf("\n");
+	}
 
 	headeronly = hdrp != NULL;
 	if (!headeronly)
