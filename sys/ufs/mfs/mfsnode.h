@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mfsnode.h	7.8 (Berkeley) 04/21/92
+ *	@(#)mfsnode.h	7.9 (Berkeley) 04/21/92
  */
 
 /*
@@ -189,7 +189,8 @@ struct mfsnode {
 #define mfs_truncate ((int (*) __P(( \
 		struct vnode *vp, \
 		off_t length, \
-		int flags))) mfs_badop)
+		int flags, \
+		struct ucred *cred))) mfs_badop)
 #define mfs_update ((int (*) __P(( \
 		struct vnode *vp, \
 		struct timeval *ta, \
