@@ -33,10 +33,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_bio.c	7.30 (Berkeley) 07/12/92
+ *	@(#)nfs_bio.c	7.31 (Berkeley) 07/12/92
  */
 
 #include <sys/param.h>
+#include <sys/systm.h>
 #include <sys/resourcevar.h>
 #include <sys/proc.h>
 #include <sys/buf.h>
