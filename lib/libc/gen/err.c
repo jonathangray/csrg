@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)err.c	5.1 (Berkeley) 03/04/93";
+static char sccsid[] = "@(#)err.c	5.2 (Berkeley) 03/19/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <err.h>
@@ -79,8 +79,11 @@ verr(eval, fmt, ap)
 
 	sverrno = errno;
 	(void)fprintf(stderr, "%s: ", __progname);
-	(void)vfprintf(stderr, fmt, ap);
-	(void)fprintf(stderr, ": %s\n", strerror(sverrno));
+	if (fmt != NULL) {
+		(void)vfprintf(stderr, fmt, ap);
+		(void)fprintf(stderr, ": ");
+	}
+	(void)fprintf(stderr, "%s\n", strerror(sverrno));
 	exit(eval);
 }
 
@@ -111,7 +114,8 @@ verrx(eval, fmt, ap)
 	va_list ap;
 {
 	(void)fprintf(stderr, "%s: ", __progname);
-	(void)vfprintf(stderr, fmt, ap);
+	if (fmt != NULL)
+		(void)vfprintf(stderr, fmt, ap);
 	(void)fprintf(stderr, "\n");
 	exit(eval);
 }
@@ -145,8 +149,11 @@ vwarn(fmt, ap)
 
 	sverrno = errno;
 	(void)fprintf(stderr, "%s: ", __progname);
-	(void)vfprintf(stderr, fmt, ap);
-	(void)fprintf(stderr, ": %s\n", strerror(sverrno));
+	if (fmt != NULL) {
+		(void)vfprintf(stderr, fmt, ap);
+		(void)fprintf(stderr, ": ");
+	}
+	(void)fprintf(stderr, "%s\n", strerror(sverrno));
 }
 
 void
@@ -175,6 +182,7 @@ vwarnx(fmt, ap)
 	va_list ap;
 {
 	(void)fprintf(stderr, "%s: ", __progname);
-	(void)vfprintf(stderr, fmt, ap);
+	if (fmt != NULL)
+		(void)vfprintf(stderr, fmt, ap);
 	(void)fprintf(stderr, "\n");
 }
