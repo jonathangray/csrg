@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vfsops.c	7.81 (Berkeley) 07/23/92
+ *	@(#)lfs_vfsops.c	7.82 (Berkeley) 08/01/92
  */
 
 #include <sys/param.h>
@@ -316,9 +316,6 @@ lfs_unmount(mp, mntflags, p)
 	register struct lfs *fs;
 	int i, error, flags, ronly;
 
-#ifdef VERBOSE
-	printf("lfs_unmount\n");
-#endif
 	flags = 0;
 	if (mntflags & MNT_FORCE) {
 		if (!doforce || mp == rootfs)
@@ -344,7 +341,6 @@ lfs_unmount(mp, mntflags, p)
 		 */
 	}
 #endif
-	vrele(fs->lfs_ivnode);
 	if (error = vflush(mp, fs->lfs_ivnode, flags))
 		return (error);
 	fs->lfs_clean = 1;
@@ -352,6 +348,7 @@ lfs_unmount(mp, mntflags, p)
 		return (error);
 	if (fs->lfs_ivnode->v_dirtyblkhd)
 		panic("lfs_unmount: still dirty blocks on ifile vnode\n");
+	vrele(fs->lfs_ivnode);
 	vgone(fs->lfs_ivnode);
 
 	ronly = !fs->lfs_ronly;
@@ -400,17 +397,8 @@ lfs_sync(mp, waitfor, cred, p)
 	struct ucred *cred;
 	struct proc *p;
 {
-	extern int crashandburn, syncprt;
+	extern int syncprt;
 	int error;
-
-#ifdef VERBOSE
-	printf("lfs_sync\n");
-#endif
-
-#ifdef DIAGNOSTIC
-	if (crashandburn)
-		return (0);
-#endif
 
 	/* All syncs must be checkpoints until roll-forward is implemented. */
 	error = lfs_segwrite(mp, 1);
@@ -441,9 +429,6 @@ lfs_vget(mp, ino, vpp)
 	dev_t dev;
 	int error;
 
-#ifdef VERBOSE
-	printf("lfs_vget\n");
-#endif
 	ump = VFSTOUFS(mp);
 	dev = ump->um_dev;
 	if ((*vpp = ufs_ihashget(dev, ino)) != NULL)
