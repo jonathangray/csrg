@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sys_generic.c	7.29 (Berkeley) 05/06/91
+ *	@(#)sys_generic.c	7.30 (Berkeley) 05/30/91
  */
 
 #include "param.h"
@@ -413,9 +413,9 @@ ioctl(p, uap, retval)
 
 	case FIONBIO:
 		if (tmp = *(int *)data)
-			fp->f_flag |= FNDELAY;
+			fp->f_flag |= FNONBLOCK;
 		else
-			fp->f_flag &= ~FNDELAY;
+			fp->f_flag &= ~FNONBLOCK;
 		error = (*fp->f_ops->fo_ioctl)(fp, FIONBIO, (caddr_t)&tmp, p);
 		break;
 
