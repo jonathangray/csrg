@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vfsops.c	8.22 (Berkeley) 04/12/95
+ *	@(#)ffs_vfsops.c	8.23 (Berkeley) 05/04/95
  */
 
 #include <sys/param.h>
@@ -295,7 +295,7 @@ ffs_reload(mountp, cred, p)
 	struct fs *fs, *newfs;
 	struct partinfo dpart;
 	int i, blks, size, error;
-	long *lp;
+	int32_t *lp;
 
 	if ((mountp->mnt_flag & MNT_RDONLY) == 0)
 		return (EINVAL);
