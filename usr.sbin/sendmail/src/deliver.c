@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	8.25 (Berkeley) 09/21/93";
+static char sccsid[] = "@(#)deliver.c	8.26 (Berkeley) 09/26/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -647,8 +647,7 @@ deliver(e, firstto)
 	**		This should be on a per-mailer basis.
 	*/
 
-	if (NoConnect && !bitset(EF_QUEUERUN, e->e_flags) &&
-	    bitnset(M_EXPENSIVE, m->m_flags) && !Verbose)
+	if (NoConnect && bitnset(M_EXPENSIVE, m->m_flags) && !Verbose)
 	{
 		for (; to != NULL; to = to->q_next)
 		{
