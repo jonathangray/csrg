@@ -2,7 +2,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	1.17 (Berkeley) 04/25/86
+#	@(#)Makefile	1.18 (Berkeley) 03/18/87
 #
 # make file for pdx
 #
