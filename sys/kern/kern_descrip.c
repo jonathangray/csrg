@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_descrip.c	8.6 (Berkeley) 04/19/94
+ *	@(#)kern_descrip.c	8.7 (Berkeley) 08/22/94
  */
 
 #include <sys/param.h>
@@ -58,8 +58,8 @@
 /*
  * Descriptor management.
  */
-struct file *filehead;	/* head of list of open files */
-int nfiles;		/* actual number of open files */
+struct filelist filehead;	/* head of list of open files */
+int nfiles;			/* actual number of open files */
 
 /*
  * System calls on descriptors.
@@ -571,7 +571,7 @@ falloc(p, resultfp, resultfd)
 	struct file **resultfp;
 	int *resultfd;
 {
-	register struct file *fp, *fq, **fpp;
+	register struct file *fp, *fq;
 	int error, i;
 
 	if (error = fdalloc(p, 0, &i))
@@ -589,16 +589,12 @@ falloc(p, resultfp, resultfd)
 	nfiles++;
 	MALLOC(fp, struct file *, sizeof(struct file), M_FILE, M_WAITOK);
 	bzero(fp, sizeof(struct file));
-	if (fq = p->p_fd->fd_ofiles[0])
-		fpp = &fq->f_filef;
-	else
-		fpp = &filehead;
+	if (fq = p->p_fd->fd_ofiles[0]) {
+		LIST_INSERT_AFTER(fq, fp, f_list);
+	} else {
+		LIST_INSERT_HEAD(&filehead, fp, f_list);
+	}
 	p->p_fd->fd_ofiles[i] = fp;
-	if (fq = *fpp)
-		fq->f_fileb = &fp->f_filef;
-	fp->f_filef = fq;
-	fp->f_fileb = fpp;
-	*fpp = fp;
 	fp->f_count = 1;
 	fp->f_cred = p->p_ucred;
 	crhold(fp->f_cred);
@@ -617,13 +613,9 @@ ffree(fp)
 {
 	register struct file *fq;
 
-	if (fq = fp->f_filef)
-		fq->f_fileb = fp->f_fileb;
-	*fp->f_fileb = fq;
+	LIST_REMOVE(fp, f_list);
 	crfree(fp->f_cred);
 #ifdef DIAGNOSTIC
-	fp->f_filef = NULL;
-	fp->f_fileb = NULL;
 	fp->f_count = 0;
 #endif
 	nfiles--;
