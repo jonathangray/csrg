@@ -30,8 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)assert.h	4.3 (Berkeley) 05/06/90
+ *	@(#)assert.h	4.4 (Berkeley) 04/03/91
  */
+
+#ifndef _ASSERT_H_
+#define	_ASSERT_H_
 
 #ifdef NDEBUG
 #define	assert
@@ -47,3 +50,5 @@
 }
 #define	_assert(expression)	assert(expression)
 #endif
+
+#endif /* !_ASSERT_H_ */
