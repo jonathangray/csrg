@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_node.c	7.39 (Berkeley) 05/15/92
+ *	@(#)nfs_node.c	7.40 (Berkeley) 06/25/92
  */
 
 #include "param.h"
@@ -156,8 +156,8 @@ loop:
 	np->n_sillyrename = (struct sillyrename *)0;
 	np->n_size = 0;
 	if (VFSTONFS(mntp)->nm_flag & NFSMNT_NQNFS) {
-		ZEROQUAD(np->n_brev);
-		ZEROQUAD(np->n_lrev);
+		np->n_brev = 0;
+		np->n_lrev = 0;
 		np->n_expiry = (time_t)0;
 		np->n_tnext = (struct nfsnode *)0;
 	} else
@@ -182,7 +182,7 @@ nfs_inactive (ap)
 		/*
 		 * Remove the silly file that was rename'd earlier
 		 */
-		nfs_removeit(sp, ap->a_p);
+		nfs_removeit(sp);
 		crfree(sp->s_cred);
 		vrele(sp->s_dvp);
 #ifdef SILLYSEPARATE
