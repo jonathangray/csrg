@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef QUEUE
-static char sccsid[] = "@(#)queue.c	8.87 (Berkeley) 06/10/95 (with queueing)";
+static char sccsid[] = "@(#)queue.c	8.88 (Berkeley) 06/16/95 (with queueing)";
 #else
-static char sccsid[] = "@(#)queue.c	8.87 (Berkeley) 06/10/95 (without queueing)";
+static char sccsid[] = "@(#)queue.c	8.88 (Berkeley) 06/16/95 (without queueing)";
 #endif
 #endif /* not lint */
 
@@ -383,7 +383,12 @@ queueup(e, queueall, announce)
 
 	/*
 	**  Clean up.
+	**
+	**	Write a terminator record -- this is to prevent
+	**	scurrilous crackers from appending any data.
 	*/
+
+	fprintf(tfp, ".\n");
 
 	if (fflush(tfp) < 0 || fsync(fileno(tfp)) < 0 || ferror(tfp))
 	{
@@ -1277,6 +1282,7 @@ readqf(e)
 	int qfver = 0;
 	register char *p;
 	char *orcpt = NULL;
+	bool nomore = FALSE;
 	char qf[20];
 	char buf[MAXLINE];
 	extern ADDRESS *setctluser();
@@ -1382,6 +1388,14 @@ readqf(e)
 
 		if (tTd(40, 4))
 			printf("+++++ %s\n", bp);
+		if (nomore)
+		{
+			/* hack attack */
+			syserr("SECURITY ALERT: extra data in qf: %s", bp);
+			fclose(qfp);
+			loseqfile(e, "bogus queue line");
+			return FALSE;
+		}
 		switch (bp[0])
 		{
 		  case 'V':		/* queue file version number */
@@ -1451,6 +1465,14 @@ readqf(e)
 			break;
 
 		  case 'F':		/* flag bits */
+			if (strncmp(bp, "From ", 5) == 0)
+			{
+				/* we are being spoofed! */
+				syserr("SECURITY ALERT: bogus qf line %s", bp);
+				fclose(qfp);
+				loseqfile(e, "bogus queue line");
+				return FALSE;
+			}
 			for (p = &bp[1]; *p != '\0'; p++)
 			{
 				switch (*p)
@@ -1478,7 +1500,8 @@ readqf(e)
 			define(bp[1], newstr(&bp[2]), e);
 			break;
 
-		  case '\0':		/* blank line; ignore */
+		  case '.':		/* terminate file */
+			nomore = TRUE;
 			break;
 
 		  default:
