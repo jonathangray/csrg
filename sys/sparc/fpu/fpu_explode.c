@@ -9,7 +9,7 @@
  * All advertising materials mentioning features or use of this software
  * must display the following acknowledgement:
  *	This product includes software developed by the University of
- *	California, Lawrence Berkeley Laboratories.
+ *	California, Lawrence Berkeley Laboratory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -39,9 +39,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fpu_explode.c	7.3 (Berkeley) 10/11/92
+ *	@(#)fpu_explode.c	7.4 (Berkeley) 04/20/93
  *
- * from: $Header: fpu_explode.c,v 1.2 92/06/17 05:41:32 torek Exp $
+ * from: $Header: fpu_explode.c,v 1.3 92/11/26 01:39:48 torek Exp $
  */
 
 /*
