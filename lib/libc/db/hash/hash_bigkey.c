@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)hash_bigkey.c	5.9 (Berkeley) 02/11/93";
+static char sccsid[] = "@(#)hash_bigkey.c	5.10 (Berkeley) 02/16/93";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -108,7 +108,7 @@ __big_insert(hashp, bufp, key, val)
 	    space = FREESPACE(p) - BIGOVERHEAD) {
 		move_bytes = MIN(space, key_size);
 		off = OFFSET(p) - move_bytes;
-		bcopy(key_data, cp + off, move_bytes);
+		memmove(cp + off, key_data, move_bytes);
 		key_size -= move_bytes;
 		key_data += move_bytes;
 		n = p[0];
@@ -126,7 +126,7 @@ __big_insert(hashp, bufp, key, val)
 				move_bytes = MIN(FREESPACE(p), val_size);
 				off = OFFSET(p) - move_bytes;
 				p[n] = off;
-				bcopy(val_data, cp + off, move_bytes);
+				memmove(cp + off, val_data, move_bytes);
 				val_data += move_bytes;
 				val_size -= move_bytes;
 				p[n - 2] = FULL_KEY_DATA;
@@ -150,7 +150,7 @@ __big_insert(hashp, bufp, key, val)
 		if (space == val_size && val_size == val->size)
 			move_bytes--;
 		off = OFFSET(p) - move_bytes;
-		bcopy(val_data, cp + off, move_bytes);
+		memmove(cp + off, val_data, move_bytes);
 		val_size -= move_bytes;
 		val_data += move_bytes;
 		n = p[0];
@@ -284,7 +284,7 @@ __find_bigpair(hashp, bufp, ndx, key, size)
 	for (bytes = hashp->BSIZE - bp[ndx];
 	    bytes <= size && bp[ndx + 1] == PARTIAL_KEY;
 	    bytes = hashp->BSIZE - bp[ndx]) {
-		if (bcmp(p + bp[ndx], kkey, bytes))
+		if (memcmp(p + bp[ndx], kkey, bytes))
 			return (-2);
 		kkey += bytes;
 		ksize -= bytes;
@@ -296,7 +296,7 @@ __find_bigpair(hashp, bufp, ndx, key, size)
 		ndx = 1;
 	}
 
-	if (bytes != ksize || bcmp(p + bp[ndx], kkey, bytes)) {
+	if (bytes != ksize || memcmp(p + bp[ndx], kkey, bytes)) {
 #ifdef HASH_STATISTICS
 		++hash_collisions;
 #endif
@@ -438,7 +438,7 @@ __big_return(hashp, bufp, ndx, val, set_current)
 		errno = EINVAL;			/* OUT OF BUFFERS */
 		return (-1);
 	}
-	bcopy((save_p->page) + off, hashp->tmp_buf, len);
+	memmove(hashp->tmp_buf, (save_p->page) + off, len);
 	val->data = (u_char *)hashp->tmp_buf;
 	return (0);
 }
@@ -496,7 +496,7 @@ collect_data(hashp, bufp, len, set)
 		errno = EINVAL;			/* Out of buffers. */
 		return (-1);
 	}
-	bcopy((bufp->page) + bp[1], &hashp->tmp_buf[len], mylen);
+	memmove(&hashp->tmp_buf[len], (bufp->page) + bp[1], mylen);
 	return (totlen);
 }
 
@@ -558,7 +558,7 @@ collect_key(hashp, bufp, len, val, set)
 		errno = EINVAL;		/* MIS -- OUT OF BUFFERS */
 		return (-1);
 	}
-	bcopy((bufp->page) + bp[1], &hashp->tmp_key[len], mylen);
+	memmove(&hashp->tmp_key[len], (bufp->page) + bp[1], mylen);
 	return (totlen);
 }
 
