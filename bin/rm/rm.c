@@ -38,14 +38,14 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)rm.c	8.2 (Berkeley) 01/02/94";
+static char sccsid[] = "@(#)rm.c	8.3 (Berkeley) 04/01/94";
 #endif /* not lint */
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/errno.h>
 
 #include <err.h>
+#include <errno.h>
 #include <fts.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -72,7 +72,6 @@ main(argc, argv)
 	int argc;
 	char *argv[];
 {
-	extern int optind;
 	int ch, rflag;
 
 	rflag = 0;
@@ -120,9 +119,9 @@ void
 rmtree(argv)
 	char **argv;
 {
-	register FTS *fts;
-	register FTSENT *p;
-	register int needstat;
+	FTS *fts;
+	FTSENT *p;
+	int needstat;
 
 	/*
 	 * Remove a file hierarchy.  If forcing removal (-f), or interactive
@@ -204,8 +203,8 @@ void
 rmfile(argv)
 	char **argv;
 {
-	register int df;
-	register char *f;
+	int df;
+	char *f;
 	struct stat sb;
 
 	df = dflag;
@@ -242,7 +241,7 @@ check(path, name, sp)
 	char *path, *name;
 	struct stat *sp;
 {
-	register int first, ch;
+	int ch, first;
 	char modep[15];
 
 	/* Check -i first. */
@@ -276,7 +275,7 @@ void
 checkdot(argv)
 	char **argv;
 {
-	register char *p, **t, **save;
+	char *p, **save, **t;
 	int complained;
 
 	complained = 0;
@@ -299,6 +298,7 @@ checkdot(argv)
 void
 usage()
 {
+
 	(void)fprintf(stderr, "usage: rm [-dfiRr] file ...\n");
 	exit(1);
 }
