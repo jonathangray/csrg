@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)ps.c	5.40 (Berkeley) 04/23/91";
+static char sccsid[] = "@(#)ps.c	5.41 (Berkeley) 06/03/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -53,7 +53,6 @@ static char sccsid[] = "@(#)ps.c	5.40 (Berkeley) 04/23/91";
 #include <kvm.h>
 #include <errno.h>
 #include <unistd.h>
-#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -178,7 +177,7 @@ main(argc, argv)
 			break;
 		case 'T':
 			if ((optarg = ttyname(STDIN_FILENO)) == NULL)
-				error("stdin: not a terminal");
+				err("stdin: not a terminal");
 			/* FALLTHROUGH */
 		case 't': {
 			char *ttypath;
@@ -192,13 +191,10 @@ main(argc, argv)
 				    _PATH_TTY, optarg);
 			else
 				ttypath = optarg;
-			if (stat(ttypath, &stbuf) == -1) {
-				(void)fprintf(stderr,
-				    "ps: %s: %s\n", ttypath, strerror(errno));
-				exit(1);
-			}
+			if (stat(ttypath, &stbuf) == -1)
+				err("%s: %s", ttypath, strerror(errno));
 			if (!S_ISCHR(stbuf.st_mode))
-				error("%s: not a terminal", ttypath);
+				err("%s: not a terminal", ttypath);
 			ttydev = stbuf.st_rdev;
 			break;
 		}
@@ -244,7 +240,7 @@ main(argc, argv)
 	}
 #endif
 	if (kvm_openfiles(nlistf, memf, swapf) == -1)
-		error("kvm_openfiles: %s", kvm_geterr());
+		err("kvm_openfiles: %s", kvm_geterr());
 
 	if (!fmt)
 		parsefmt(dfmt);
@@ -272,15 +268,11 @@ main(argc, argv)
 	/*
 	 * select procs
 	 */
-	if ((nentries = kvm_getprocs(what, flag)) == -1) {
-		(void) fprintf(stderr, "ps: %s\n", kvm_geterr());
-		exit(1);
-	}
-	kinfo = (KINFO *)malloc(nentries * sizeof(KINFO));
-	if (kinfo == NULL) {
-		(void)fprintf(stderr, "ps: %s\n", strerror(ENOMEM));
-		exit(1);
-	}
+	if ((nentries = kvm_getprocs(what, flag)) == -1)
+		err("%s", kvm_geterr());
+	kinfo = malloc(nentries * sizeof(KINFO));
+	if (kinfo == NULL)
+		err("%s", strerror(errno));
 	for (nentries = 0; p = kvm_nextproc(); ++nentries) {
 		kinfo[nentries].ki_p = p;
 		kinfo[nentries].ki_e = kvm_geteproc(p);
@@ -347,10 +339,8 @@ saveuser(ki)
 	register struct usave *usp;
 	register struct user *up;
 
-	if ((usp = (struct usave *)calloc(1, sizeof(struct usave))) == NULL) {
-		(void)fprintf(stderr, "ps: %s\n", strerror(errno));
-		exit(1);
-	}
+	if ((usp = calloc(1, sizeof(struct usave))) == NULL)
+		err("%s", strerror(errno));
 	ki->ki_u = usp;
 	up = kvm_getu(ki->ki_p);
 	/*
@@ -415,10 +405,8 @@ kludge_oldps_options(s)
 	char *newopts, *ns, *cp;
 
 	len = strlen(s);
-	if ((newopts = ns = malloc(len + 2)) == NULL) {
-		(void)fprintf(stderr, "ps: %s\n", strerror(errno));
-		exit(1);
-	}
+	if ((newopts = ns = malloc(len + 2)) == NULL)
+		err("%s", strerror(errno));
 	/*
 	 * options begin with '-'
 	 */
@@ -458,27 +446,38 @@ kludge_oldps_options(s)
 	return (newopts);
 }
 
-#ifdef lint
-/* VARARGS1 */
-error(fmt) char *fmt; { (void) fputs(fmt, stderr); exit(1); /* NOTREACHED */ }
+#if __STDC__
+#include <stdarg.h>
 #else
-error(fmt)
+#include <varargs.h>
+#endif
+
+void
+#if __STDC__
+err(const char *fmt, ...)
+#else
+err(fmt, va_alist)
 	char *fmt;
+        va_dcl
+#endif
 {
 	va_list ap;
-
+#if __STDC__
 	va_start(ap, fmt);
-	(void) fprintf(stderr, "ps: ");
-	(void) vfprintf(stderr, fmt, ap);
-	(void) fprintf(stderr, "\n");
-	va_end(ap);
-	exit(1);
-}
+#else
+	va_start(ap);
 #endif
+	(void)fprintf(stderr, "ps: ");
+	(void)vfprintf(stderr, fmt, ap);
+	va_end(ap);
+	(void)fprintf(stderr, "\n");
+	exit(1);
+	/* NOTREACHED */
+}
 
 usage()
 {
 	(void) fprintf(stderr,
-	    "usage:\tps [ -aChjlmrSsTuvwx ] [ -O|o fmt ] [ -p pid ] [ -t tty ] [ system ] [ core ] [ swap ]\n\t ps [ -L ]\n");
+"usage: ps [-aChjlmrSTuvwx] [-O|o fmt] [-p pid] [-t tty]\n\t  [-M core] [-N system] [-W swap]\n       ps [-L]\n");
 	exit(1);
 }
