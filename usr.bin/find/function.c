@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)function.c	5.23 (Berkeley) 07/27/92";
+static char sccsid[] = "@(#)function.c	5.24 (Berkeley) 02/19/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -75,10 +75,9 @@ static PLAN *palloc __P((enum ntype, int (*)()));
  *	Parse a string of the form [+-]# and return the value.
  */
 static long
-find_parsenum(plan, option, str, nosign, endch)
+find_parsenum(plan, option, str, endch)
 	PLAN *plan;
 	char *option, *str, *endch;
-	int nosign;
 {
 	long value;
 	char *endchar;		/* pointer to character ending conversion */
@@ -86,14 +85,10 @@ find_parsenum(plan, option, str, nosign, endch)
 	/* determine comparison from leading + or - */
 	switch(*str) {
 	case '+':
-		if (nosign)
-			err("%s: %s", option, "signed value not permitted");
 		++str;
 		plan->flags = F_GREATER;
 		break;
 	case '-':
-		if (nosign)
-			err("%s: %s", option, "signed value not permitted");
 		++str;
 		plan->flags = F_LESSTHAN;
 		break;
@@ -143,7 +138,7 @@ c_atime(arg)
 	ftsoptions &= ~FTS_NOSTAT;
 
 	new = palloc(N_ATIME, f_atime);
-	new->t_data = find_parsenum(new, "-atime", arg, 0, NULL);
+	new->t_data = find_parsenum(new, "-atime", arg, NULL);
 	return(new);
 }
 /*
@@ -171,7 +166,7 @@ c_ctime(arg)
 	ftsoptions &= ~FTS_NOSTAT;
 
 	new = palloc(N_CTIME, f_ctime);
-	new->t_data = find_parsenum(new, "-ctime", arg, 0, NULL);
+	new->t_data = find_parsenum(new, "-ctime", arg, NULL);
 	return(new);
 }
 
@@ -493,7 +488,7 @@ c_inum(arg)
 	ftsoptions &= ~FTS_NOSTAT;
     
 	new = palloc(N_INUM, f_inum);
-	new->i_data = find_parsenum(new, "-inum", arg, 1, NULL);
+	new->i_data = find_parsenum(new, "-inum", arg, NULL);
 	return(new);
 }
  
@@ -518,7 +513,7 @@ c_links(arg)
 	ftsoptions &= ~FTS_NOSTAT;
     
 	new = palloc(N_LINKS, f_links);
-	new->l_data = (nlink_t)find_parsenum(new, "-links", arg, 1, NULL);
+	new->l_data = (nlink_t)find_parsenum(new, "-links", arg, NULL);
 	return(new);
 }
  
@@ -570,7 +565,7 @@ c_mtime(arg)
 	ftsoptions &= ~FTS_NOSTAT;
 
 	new = palloc(N_MTIME, f_mtime);
-	new->t_data = find_parsenum(new, "-mtime", arg, 0, NULL);
+	new->t_data = find_parsenum(new, "-mtime", arg, NULL);
 	return(new);
 }
 
@@ -823,7 +818,7 @@ c_size(arg)
 
 	new = palloc(N_SIZE, f_size);
 	endch = 'c';
-	new->o_data = find_parsenum(new, "-size", arg, 1, &endch);
+	new->o_data = find_parsenum(new, "-size", arg, &endch);
 	if (endch == 'c')
 		divsize = 0;
 	return(new);
