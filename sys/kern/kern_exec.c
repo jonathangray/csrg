@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_exec.c	7.69 (Berkeley) 12/27/92
+ *	@(#)kern_exec.c	7.70 (Berkeley) 01/14/93
  */
 
 #include <sys/param.h>
@@ -692,10 +692,7 @@ getxfile(p, vp, ep, paged, ssize, uid, gid)
 	}
 	if (error) {
 badmap:
-		printf("pid %d: VM allocation failure\n", p->p_pid);
-		uprintf("sorry, pid %d was killed in exec: VM allocation\n",
-			p->p_pid);
-		psignal(p, SIGKILL);
+		killproc(p, "VM allocation in exec");
 		p->p_flag |= SKEEP;
 		return(error);
 	}
