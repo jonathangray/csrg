@@ -30,15 +30,15 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)boot.c	7.1 (Berkeley) 05/08/90
+ *	@(#)boot.c	7.2 (Berkeley) 12/16/90
  */
 
 #include <a.out.h>
 #include "saio.h"
-#include "../sys/reboot.h"
+#include "sys/reboot.h"
 
 #ifndef INSECURE
-#include "../sys/stat.h"
+#include "sys/stat.h"
 struct stat sb;
 #endif
 
