@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)types.h	7.5 (Berkeley) 03/09/91
+ *	@(#)types.h	7.6 (Berkeley) 07/14/92
  */
 
 #ifndef	_MACHTYPES_H_
@@ -46,5 +46,18 @@ typedef struct label_t {
 
 typedef	u_long	vm_offset_t;
 typedef	u_long	vm_size_t;
+
+#ifdef	__GNUC__
+typedef	char			s1byte_t;	/* Basic data types. */
+typedef	unsigned char		u1byte_t;
+typedef	short			s2byte_t;
+typedef	unsigned short		u2byte_t;
+typedef	long			s4byte_t;
+typedef	unsigned long		u4byte_t;
+typedef	long long		s8byte_t;
+typedef	unsigned long long	u8byte_t;
+typedef	float			f4byte_t;
+typedef	double			f8byte_t;
+#endif
 
 #endif	/* _MACHTYPES_H_ */
