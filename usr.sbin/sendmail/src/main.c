@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	6.53 (Berkeley) 04/04/93";
+static char sccsid[] = "@(#)main.c	6.54 (Berkeley) 04/10/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -844,7 +844,7 @@ main(argc, argv, envp)
 				p = q;
 				while (*p != '\0')
 				{
-					rewrite(pvp, atoi(p));
+					rewrite(pvp, atoi(p), CurEnv);
 					while (*p != '\0' && *p++ != ',')
 						continue;
 				}
@@ -947,9 +947,13 @@ main(argc, argv, envp)
 	**  Do basic system initialization and set the sender
 	*/
 
-# ifndef SYSTEM5
 	/* make sendmail immune from process group signals */
+# ifdef _POSIX_JOB_CONTROL
+	(void) setpgid(0, getpid());
+# else
+# ifndef SYSTEM5
 	(void) setpgrp(0, getpid());
+# endif
 # endif
 
 	initsys(CurEnv);
@@ -1105,9 +1109,12 @@ struct metamac	MetaMacros[] =
 	/* the conditional operations */
 	'?', CONDIF,		'|', CONDELSE,		'.', CONDFI,
 
-	/* and finally the hostname lookup characters */
+	/* the hostname lookup characters */
 	'[', HOSTBEGIN,		']', HOSTEND,
 	'(', LOOKUPBEGIN,	')', LOOKUPEND,
+
+	/* miscellaneous control characters */
+	'&', MACRODEXPAND,
 
 	'\0'
 };
