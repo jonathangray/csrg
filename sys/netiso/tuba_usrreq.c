@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tuba_usrreq.c	7.6 (Berkeley) 11/08/92
+ *	@(#)tuba_usrreq.c	7.7 (Berkeley) 11/20/92
  */
 
 #include <sys/param.h>
@@ -202,6 +202,10 @@ tuba_usrreq(so, req, m, nam, control)
 	/* case PRU_CONNECT: */
 		if (error = iso_pcbconnect(isop, nam))
 			break;
+		if ((siso = isop->isop_laddr) && siso->siso_nlen > 1)
+			siso->siso_data[siso->siso_nlen - 1] = ISOPROTO_TCP;
+		else
+			panic("tuba_usrreq: connect");
 		siso = mtod(nam, struct sockaddr_iso *);
 		if (!(inp->inp_faddr.s_addr = tuba_lookup(&siso->siso_addr, M_WAITOK))) {
 		unconnect:
