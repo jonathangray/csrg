@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_subs.c	7.59 (Berkeley) 07/12/92
+ *	@(#)nfs_subs.c	7.60 (Berkeley) 07/12/92
  */
 
 /*
@@ -235,7 +235,7 @@ nfsm_rpchead(cr, nqnfs, procid, auth_type, auth_len, auth_str, mrest,
 				mb->m_len = 0;
 				bpos = mtod(mb, caddr_t);
 			}
-			i = MIN(siz, M_TRAILINGSPACE(mb));
+			i = min(siz, M_TRAILINGSPACE(mb));
 			bcopy(auth_str, bpos, i);
 			mb->m_len += i;
 			auth_str += i;
