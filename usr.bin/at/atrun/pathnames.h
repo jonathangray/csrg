@@ -30,12 +30,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	5.2 (Berkeley) 06/01/90
+ *	@(#)pathnames.h	5.3 (Berkeley) 06/25/90
  */
 
 #include <paths.h>
 
 #define	_PATH_ATDIR	"/var/at"
 #define	_PATH_LASTFILE	"/var/at/lasttimedone"
-#define	_PATH_MAIL	"/bin/mail"
+#define	_PATH_MAIL	"/usr/libexec/delivermail"
 #define	_PATH_PAST	"/var/at/past"
