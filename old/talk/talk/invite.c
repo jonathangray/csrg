@@ -39,6 +39,7 @@ static char sccsid[] = "@(#)invite.c	5.1 (Berkeley) 6/6/85";
 #include <sys/time.h>
 #include <signal.h>
 #include <setjmp.h>
+#include <unistd.h>
 
 /*
  * There wasn't an invitation waiting, so send a request containing
@@ -56,9 +57,10 @@ int	local_id, remote_id;
 void	re_invite();
 jmp_buf invitebuf;
 
+void
 invite_remote()
 {
-	int nfd, read_mask, template, new_sockt;
+	int new_sockt;
 	struct itimerval itimer;
 	CTL_RESPONSE response;
 
@@ -120,6 +122,7 @@ re_invite()
 /*
  * Transmit the invitation and process the response
  */
+void
 announce_invite()
 {
 	CTL_RESPONSE response;
@@ -160,6 +163,7 @@ announce_invite()
 /*
  * Tell the daemon to remove your invitation
  */
+void
 send_delete()
 {
 
