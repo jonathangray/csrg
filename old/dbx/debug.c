@@ -1,7 +1,7 @@
 
 /* Copyright (c) 1982 Regents of the University of California */
 
-static char sccsid[] = "@(#)debug.c	1.3\t05/18/83";
+static char sccsid[] = "@(#)debug.c	1.3.1.1\t06/23/84";
 
 /*
  *  Debug routines
