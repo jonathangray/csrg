@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.2 (Berkeley) 03/03/92
+ *	@(#)extern.h	5.3 (Berkeley) 03/04/92
  */
 
 #define	WR(p, size) \
