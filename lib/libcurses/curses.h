@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)curses.h	5.20 (Berkeley) 11/12/92
+ *	@(#)curses.h	5.21 (Berkeley) 11/12/92
  */
 
 #ifndef _CURSES_H_
@@ -217,7 +217,7 @@ extern char	 __unctrllen[0x80];	/* Control strings length. */
 #define	leaveok(win, bf)  ((bf) ? (win->flags |= __LEAVEOK) : \
 				  (win->flags &= ~__LEAVEOK))
 #define	getyx(win, y, x)	(y) = win->cury, (x) = win->curx
-#define	winch(win)		(win->lines[win->cury]->line[win->curx]->ch & 0177)
+#define	winch(win)		(win->lines[win->cury]->line[win->curx].ch & 0177)
 
 /* Public function prototypes. */
 void	 __cputchar __P((int));
