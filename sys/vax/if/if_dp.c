@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_dp.c	7.5 (Berkeley) 09/17/90
+ *	@(#)if_dp.c	7.6 (Berkeley) 10/02/90
  */
 
 #include "dp.h"
