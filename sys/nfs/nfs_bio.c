@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_bio.c	8.4 (Berkeley) 12/30/93
+ *	@(#)nfs_bio.c	8.5 (Berkeley) 01/04/94
  */
 
 #include <sys/param.h>
@@ -77,7 +77,7 @@ nfs_bioread(vp, uio, ioflag, cred)
 	struct nfsmount *nmp;
 	daddr_t lbn, bn, rabn;
 	caddr_t baddr;
-	int got_buf, len, nra, error = 0, n, on, not_readin;
+	int got_buf, nra, error = 0, n, on, not_readin;
 
 #ifdef lint
 	ioflag = ioflag;
