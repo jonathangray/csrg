@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	5.3 (Berkeley) 05/31/90
+ *	@(#)pathnames.h	5.4 (Berkeley) 04/26/93
  */
 
-#define	_PATH_SCRIPTS	"/usr/libdata/adb"
+#define	_PATH_SCRIPTS	"/usr/old/libdata/adb"
