@@ -34,12 +34,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mount_null.c	5.1 (Berkeley) 07/09/92
+ *	@(#)mount_null.c	5.2 (Berkeley) 07/11/92
  */
 
 #include <sys/param.h>
 #include <sys/mount.h>
-#include <lofs/lofs.h>
+#include <nullfs/null.h>
 
 #include <errno.h>
 #include <stdio.h>
@@ -54,7 +54,7 @@ main(argc, argv)
 	int argc;
 	char *argv[];
 {
-	struct lofs_args args;
+	struct null_args args;
 	int ch, mntflags;
 
 	mntflags = 0;
@@ -75,8 +75,8 @@ main(argc, argv)
 
 	args.target = argv[0];
 
-	if (mount(MOUNT_LOFS, argv[1], mntflags, &args)) {
-		(void)fprintf(stderr, "mount_lofs: %s\n", strerror(errno));
+	if (mount(MOUNT_NULL, argv[1], mntflags, &args)) {
+		(void)fprintf(stderr, "mount_null: %s\n", strerror(errno));
 		exit(1);
 	}
 	exit(0);
@@ -86,6 +86,6 @@ void
 usage()
 {
 	(void)fprintf(stderr,
-	    "usage: mount_lofs [ -F fsoptions ] target_fs mount_point\n");
+	    "usage: mount_null [ -F fsoptions ] target_fs mount_point\n");
 	exit(1);
 }
