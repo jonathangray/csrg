@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	8.13 (Berkeley) 08/20/93";
+static char sccsid[] = "@(#)deliver.c	8.14 (Berkeley) 08/20/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -106,7 +106,8 @@ sendall(e, mode)
 
 	if (tTd(13, 1))
 	{
-		printf("\nSENDALL: mode %c, e_from ", mode);
+		printf("\n===== SENDALL: mode %c, id %s, e_from ",
+			mode, e->e_id);
 		printaddr(&e->e_from, FALSE);
 		printf("sendqueue:\n");
 		printaddr(e->e_sendqueue, TRUE);
