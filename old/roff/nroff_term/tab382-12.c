@@ -1,4 +1,11 @@
-/*	tab382-12.c	4.1	83/08/05	*/
+/*-
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ *
+ *	@(#)tab382-12.c	4.2 (Berkeley) 04/18/91
+ */
+
 #define INCH 240
 /*
  * DTC 382 12 pitch
