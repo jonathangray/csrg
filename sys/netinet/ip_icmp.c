@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)ip_icmp.c	7.4 (Berkeley) 05/24/87
+ *	@(#)ip_icmp.c	7.5 (Berkeley) 06/04/87
  */
 
 #include "param.h"
