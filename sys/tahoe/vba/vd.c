@@ -9,7 +9,7 @@
  * software without specific prior written permission. This software
  * is provided ``as is'' without express or implied warranty.
  *
- *	@(#)vd.c	1.27 (Berkeley) 05/31/88
+ *	@(#)vd.c	7.1 (Berkeley) 05/31/88
  */
 
 #include "dk.h"
