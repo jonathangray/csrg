@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uio.h	8.1 (Berkeley) 06/02/93
+ *	@(#)uio.h	8.2 (Berkeley) 01/04/94
  */
 
-#ifndef _UIO_H_
-#define	_UIO_H_
+#ifndef _SYS_UIO_H_
+#define	_SYS_UIO_H_
 
 struct iovec {
 	caddr_t	iov_base;
@@ -79,4 +79,4 @@ __END_DECLS
 
 #endif	/* !KERNEL */
 
-#endif /* !_UIO_H_ */
+#endif /* !_SYS_UIO_H_ */
