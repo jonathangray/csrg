@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tt.h	3.27 (Berkeley) 06/06/90
+ *	@(#)tt.h	3.28 (Berkeley) 06/24/92
  */
 
 /*
@@ -62,6 +62,7 @@ struct tt {
 	int (*tt_setmodes)();		/* set display modes */
 	int (*tt_set_token)();		/* define a token */
 	int (*tt_put_token)();		/* refer to a defined token */
+	int (*tt_rint)();		/* input processing */
 
 		/* internal variables */
 	char tt_modes;			/* the current display modes */
