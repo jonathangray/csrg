@@ -2,10 +2,10 @@
 # include "sendmail.h"
 
 # ifndef SMTP
-SCCSID(@(#)srvrsmtp.c	3.39		11/28/82	(no SMTP));
+SCCSID(@(#)srvrsmtp.c	3.40		11/28/82	(no SMTP));
 # else SMTP
 
-SCCSID(@(#)srvrsmtp.c	3.39		11/28/82);
+SCCSID(@(#)srvrsmtp.c	3.40		11/28/82);
 
 /*
 **  SMTP -- run the SMTP protocol.
@@ -105,6 +105,7 @@ smtp()
 			Version, arpadate((char *) NULL));
 	(void) setjmp(TopFrame);
 	QuickAbort = FALSE;
+	HoldErrs = FALSE;
 	for (;;)
 	{
 		/* setup for the read */
@@ -246,10 +247,7 @@ smtp()
 
 			/* issue success if appropriate and reset */
 			if (Errors == 0 || HoldErrs)
-			{
-				HoldErrs = FALSE;
 				message("250", "Ok");
-			}
 			else
 				CurEnv->e_flags &= ~EF_FATALERRS;
 
