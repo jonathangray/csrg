@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)types.h	1.4 (Berkeley) 06/01/90
+ *	@(#)types.h	5.1 (Berkeley) 09/14/90
  */
 
 typedef struct {
