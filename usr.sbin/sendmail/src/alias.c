@@ -39,23 +39,22 @@
 # include "sendmail.h"
 # include <sys/file.h>
 # include <pwd.h>
+# ifdef LOCKF
+# include <fcntl.h>
+# endif
 
 # ifdef NEWDB
 # include <db.h>
 # endif
 
-# ifdef LOCKF
-# include <unistd.h>
-# endif
-
 #ifndef lint
 #ifdef NEWDB
-static char sccsid[] = "@(#)alias.c	5.30 (Berkeley) 12/13/91 (with NEWDB)";
+static char sccsid[] = "@(#)alias.c	5.31 (Berkeley) 12/14/91 (with NEWDB)";
 #else
 #ifdef DBM
-static char sccsid[] = "@(#)alias.c	5.30 (Berkeley) 12/13/91 (with DBM)";
+static char sccsid[] = "@(#)alias.c	5.31 (Berkeley) 12/14/91 (with DBM)";
 #else
-static char sccsid[] = "@(#)alias.c	5.30 (Berkeley) 12/13/91 (without DBM)";
+static char sccsid[] = "@(#)alias.c	5.31 (Berkeley) 12/14/91 (without DBM)";
 #endif
 #endif
 #endif /* not lint */
@@ -397,12 +396,6 @@ initaliases(aliasfile, init)
 **		Optionally, builds the .dir & .pag files.
 */
 
-# ifdef LOCKF
-# define RDLK_MODE	"r+"
-# else
-# define RDLK_MODE	"r"
-# endif
-
 static
 readaliases(aliasfile, init)
 	char *aliasfile;
@@ -420,9 +413,12 @@ readaliases(aliasfile, init)
 # ifdef NEWDB
 	DB *dbp;
 # endif
+# ifdef LOCKF
+	struct flock fld;
+# endif
 	char line[BUFSIZ];
 
-	if ((af = fopen(aliasfile, RDLK_MODE)) == NULL)
+	if ((af = fopen(aliasfile, "r+")) == NULL)
 	{
 		if (tTd(27, 1))
 			printf("Can't open %s\n", aliasfile);
@@ -434,7 +430,9 @@ readaliases(aliasfile, init)
 # if defined(DBM) || defined(NEWDB)
 	/* see if someone else is rebuilding the alias file already */
 # ifdef LOCKF
-	if (lockf(fileno(af), F_TLOCK, 0) < 0)
+	fld.l_type = F_WRLCK;
+	fld.l_whence = fld.l_start = fld.l_len = 0;
+	if (fcntl(fileno(af), F_SETLK, &fld) < 0)
 # else
 	if (flock(fileno(af), LOCK_EX | LOCK_NB) < 0 && errno == EWOULDBLOCK)
 # endif
@@ -445,7 +443,7 @@ readaliases(aliasfile, init)
 		{
 			/* wait for other rebuild to complete */
 # ifdef LOCKF
-			(void) lockf(fileno(af), F_LOCK, 0);
+			(void) fcntl(fileno(af), F_SETLKW, &fld);
 # else
 			(void) flock(fileno(af), LOCK_EX);
 # endif
