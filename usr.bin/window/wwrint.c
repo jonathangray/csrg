@@ -35,10 +35,11 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)wwrint.c	3.11 (Berkeley) 03/02/91";
+static char sccsid[] = "@(#)wwrint.c	3.12 (Berkeley) 06/24/92";
 #endif /* not lint */
 
 #include "ww.h"
+#include "tt.h"
 #include <fcntl.h>
 
 /*
@@ -59,10 +60,12 @@ wwrint()
 	if (wwibp == wwibq)
 		wwibp = wwibq = wwib;
 	wwnread++;
-	(void) fcntl(0, F_SETFL, FNDELAY|wwnewtty.ww_fflags);
+	(void) fcntl(0, F_SETFL, O_NONBLOCK|wwnewtty.ww_fflags);
 	n = read(0, wwibq, wwibe - wwibq);
 	(void) fcntl(0, F_SETFL, wwnewtty.ww_fflags);
 	if (n > 0) {
+		if (tt.tt_rint)
+			n = (*tt.tt_rint)(wwibq, n);
 		wwibq += n;
 		wwnreadc += n;
 		wwsetintr();
