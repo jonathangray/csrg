@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: rd.c 1.30 89/09/17$
  *
- *	@(#)rd.c	7.1 (Berkeley) 05/08/90
+ *	@(#)rd.c	7.2 (Berkeley) 05/15/90
  */
 
 /*
@@ -1016,7 +1016,7 @@ rdprinterr(str, err, tab)
 
 #include "machine/pte.h"
 #include "machine/vmparam.h"
-#include "../h/vmmac.h"
+#include "../sys/vmmac.h"
 
 /*
  * Non-interrupt driven, non-dma dump routine.
