@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)commands.c	1.30 (Berkeley) 06/28/90";
+static char sccsid[] = "@(#)commands.c	1.31 (Berkeley) 07/27/90";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -48,6 +48,7 @@ static char sccsid[] = "@(#)commands.c	1.30 (Berkeley) 06/28/90";
 #include <signal.h>
 #include <netdb.h>
 #include <ctype.h>
+#include <pwd.h>
 #include <varargs.h>
 
 #include <arpa/telnet.h>
@@ -1635,6 +1636,7 @@ env_init()
 		free(ep->value);
 		ep->value = cp;
 	}
+#ifdef notdef
 	/*
 	 * If USER is not defined, but LOGNAME is, then add
 	 * USER with the value from LOGNAME.
@@ -1642,6 +1644,7 @@ env_init()
 	if ((env_find("USER") == NULL) && (ep = env_find("LOGNAME")))
 		env_define("USER", ep->value);
 	env_export("USER");
+#endif
 	env_export("DISPLAY");
 	env_export("PRINTER");
 }
@@ -1946,6 +1949,8 @@ char *name, *proto;
 }
 #endif
 
+extern	int autologin;
+
 int
 tn(argc, argv)
 	int argc;
@@ -2123,8 +2128,22 @@ tn(argc, argv)
 	connected++;
     } while (connected == 0);
     cmdrc(hostp, hostname);
-    if (user)
+    if (autologin && user == NULL) {
+	struct passwd *pw;
+	uid_t uid = getuid();
+
+	user = getlogin();
+	if (user == NULL ||
+	    (pw = getpwnam(user)) && pw->pw_uid != uid)
+		if (pw = getpwuid(uid))
+			user = pw->pw_name;
+		else
+			user = NULL;
+    }
+    if (user) {
 	env_define("USER", user);
+	env_export("USER");
+    }
     (void) call(status, "status", "notmuch", 0);
     if (setjmp(peerdied) == 0)
 	telnet();
