@@ -1,5 +1,6 @@
 /*-
- * Copyright (c) 1982, 1986, 1990 The Regents of the University of California.
+ * Copyright (c)
+ *	1982, 1986, 1990, 1993  The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ioctl.h	8.1 (Berkeley) 06/02/93
+ *	@(#)ioctl.h	7.22 (Berkeley) 06/04/93
  */
 
 #ifndef	_IOCTL_H_
@@ -196,11 +197,6 @@ struct ttysize {
 #define	SIOCSIFMETRIC	_IOW('i',24, struct ifreq)	/* set IF metric */
 #define	SIOCDIFADDR	_IOW('i',25, struct ifreq)	/* delete IF addr */
 #define	SIOCAIFADDR	_IOW('i',26, struct ifaliasreq)	/* add/chg IF alias */
-
-#define	SIOCSARP	_IOW('i', 30, struct arpreq)	/* set arp entry */
-#define	OSIOCGARP	_IOWR('i',31, struct arpreq)	/* get arp entry */
-#define	SIOCGARP	_IOWR('i',38, struct arpreq)	/* get arp entry */
-#define	SIOCDARP	_IOW('i', 32, struct arpreq)	/* delete arp entry */
 
 #define	SIOCADDMULTI	_IOW('i', 49, struct ifreq)	/* add m'cast addr */
 #define	SIOCDELMULTI	_IOW('i', 50, struct ifreq)	/* del m'cast addr */
