@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ls.h	5.10 (Berkeley) 04/08/90
+ *	@(#)ls.h	5.11 (Berkeley) 07/22/90
  */
 
 typedef struct _lsstruct {
@@ -58,6 +58,7 @@ extern int f_group;		/* show group ownership of a file */
 extern int f_inode;		/* print inode */
 extern int f_kblocks;		/* print size in kilobytes */
 extern int f_longform;		/* long listing format */
+extern int f_sectime;		/* print the real time for all files */
 extern int f_singlecol;		/* use single column output */
 extern int f_size;		/* list size in short listing */
 extern int f_statustime;	/* use time of last mode change */
