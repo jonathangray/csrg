@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.36 (Berkeley) 09/22/93";
+static char sccsid[] = "@(#)conf.c	8.37 (Berkeley) 09/22/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -516,10 +516,10 @@ checkcompat(to, e)
 **	This is essentially old BSD "signal(3)".
 */
 
-setsig_t
+sigfunc_t
 setsignal(sig, handler)
 	int sig;
-	setsig_t handler;
+	sigfunc_t handler;
 {
 #if defined(SYS5SIGNALS) || defined(BSD4_3) || defined(_AUX_SOURCE)
 	return signal(sig, handler);
