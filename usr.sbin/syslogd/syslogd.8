@@ -1,26 +1,42 @@
 .\" Copyright (c) 1983, 1986 The Regents of the University of California.
 .\" All rights reserved.
 .\"
-.\" Redistribution and use in source and binary forms are permitted
-.\" provided that the above copyright notice and this paragraph are
-.\" duplicated in all such forms and that any documentation,
-.\" advertising materials, and other materials related to such
-.\" distribution and use acknowledge that the software was developed
-.\" by the University of California, Berkeley.  The name of the
-.\" University may not be used to endorse or promote products derived
-.\" from this software without specific prior written permission.
-.\" THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
-.\" IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
-.\" WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
 .\"
-.\"	@(#)syslogd.8	6.6 (Berkeley) 09/19/88
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"	@(#)syslogd.8	6.7 (Berkeley) 06/24/90
 .\"
 .TH SYSLOGD 8 ""
 .UC 5
 .SH NAME
 syslogd \- log systems messages
 .SH SYNOPSIS
-.B /etc/syslogd
+.B syslogd
 [
 .BI \-f configfile
 ] [
@@ -137,8 +153,8 @@ For example, the configuration file:
 .nf
 .ta 4m +\w'*.alert,auth.warning'u+3
 	kern,mark.debug	/dev/console
-	*.notice;mail.info	/usr/spool/adm/syslog
-	*.crit	/usr/adm/critical
+	*.notice;mail.info	/var/log/maillog
+	*.crit	/var/log/critical
 	kern.err	@ucbarpa
 	*.emerg	*
 	*.alert	eric,kridle
@@ -149,9 +165,9 @@ logs all kernel messages
 and 20 minute marks onto the system console,
 all notice (or higher) level messages and all mail system messages
 except debug messages
-into the file /usr/spool/adm/syslog,
+into the file /var/log/maillog,
 and all critical messages
-into /usr/adm/critical;
+into /var/log/critical;
 kernel messages of error severity or higher are forwarded
 to ucbarpa.
 All users will be informed of any emergency messages,
@@ -174,7 +190,7 @@ Select the number of minutes between mark messages.
 Turn on debugging.
 .PP
 .I Syslogd
-creates the file /etc/syslog.pid, if possible,
+creates the file /var/run/syslog.pid, if possible,
 containing a single line with its process id.
 This can be used to kill or reconfigure
 .I syslogd.
@@ -182,7 +198,7 @@ This can be used to kill or reconfigure
 To bring
 .I syslogd
 down,
-it should be sent a terminate signal (e.g. kill \`cat /etc/syslog.pid\`).
+it should be sent a terminate signal (e.g. kill \`cat /var/run/syslog.pid\`).
 .SH FILES
 .ta \w'/etc/syslog.conf    'u
 .nf
