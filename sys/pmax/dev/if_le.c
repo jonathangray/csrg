@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_le.c	8.2 (Berkeley) 11/16/93
+ *	@(#)if_le.c	8.3 (Berkeley) 07/03/94
  */
 
 #include <le.h>
@@ -104,7 +104,7 @@ struct	driver ledriver = {
 	"le", leprobe, 0, 0, leintr,
 };
 
-int	ledebug = 1;		/* console error messages */
+int	ledebug = 0;		/* console error messages */
 
 /*
  * Ethernet software status per interface.
@@ -290,7 +290,7 @@ lesetladrf(le)
 	/*
 	 * Set up multicast address filter by passing all multicast
 	 * addresses through a crc generator, and then using the high
-	 * order 6 bits as a index into the 64 bit logical address
+	 * order 6 bits as an index into the 64 bit logical address
 	 * filter. The high order two bits select the word, while the
 	 * rest of the bits select the bit within the word.
 	 */
