@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_fork.c	7.23 (Berkeley) 01/10/91
+ *	@(#)kern_fork.c	7.24 (Berkeley) 02/11/91
  */
 
 #include "param.h"
@@ -196,7 +196,9 @@ again:
 	bcopy(rip->p_logname, rpp->p_logname, MAXLOGNAME);
 	rpp->p_uid = rip->p_uid;
 	rpp->p_ruid = rip->p_ruid;
+	rpp->p_svuid = rip->p_svuid;
 	rpp->p_rgid = rip->p_rgid;
+	rpp->p_svgid = rip->p_svgid;
 	rpp->p_pgrp = rip->p_pgrp;
 	rpp->p_pgrpnxt = rip->p_pgrpnxt;
 	rip->p_pgrpnxt = rpp;
