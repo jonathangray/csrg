@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)tty_tty.c	7.10 (Berkeley) 03/17/91
+ *	@(#)tty_tty.c	7.11 (Berkeley) 03/24/91
  */
 
 /*
