@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef QUEUE
-static char sccsid[] = "@(#)queue.c	8.8 (Berkeley) 07/27/93 (with queueing)";
+static char sccsid[] = "@(#)queue.c	8.9 (Berkeley) 07/29/93 (with queueing)";
 #else
-static char sccsid[] = "@(#)queue.c	8.8 (Berkeley) 07/27/93 (without queueing)";
+static char sccsid[] = "@(#)queue.c	8.9 (Berkeley) 07/29/93 (without queueing)";
 #endif
 #endif /* not lint */
 
@@ -163,7 +163,8 @@ queueup(e, queueall, announce)
 		register FILE *dfp;
 		extern putbody();
 
-		e->e_df = newstr(queuename(e, 'd'));
+		e->e_df = queuename(e, 'd');
+		e->e_df = newstr(e->e_df);
 		fd = open(e->e_df, O_WRONLY|O_CREAT, FileMode);
 		if (fd < 0)
 			syserr("!queueup: cannot create %s", e->e_df);
