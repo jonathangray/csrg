@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)compare.c	5.4 (Berkeley) 05/25/90";
+static char sccsid[] = "@(#)compare.c	5.5 (Berkeley) 05/25/90";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -48,7 +48,7 @@ static char sccsid[] = "@(#)compare.c	5.4 (Berkeley) 05/25/90";
 
 compare(name, s, p)
 	char *name;
-	register INFO *s;
+	register NODE *s;
 	register FTSENT *p;
 {
 	extern int exitval, uflag;
@@ -85,10 +85,10 @@ typeerr:		LABEL;
 		}
 		break;
 	}
-	if (s->flags&F_MODE && s->st_mode != (p->fts_statb.st_mode&MBITS)) {
+	if (s->flags & F_MODE && s->st_mode != (p->fts_statb.st_mode & MBITS)) {
 		LABEL;
 		(void)printf("\n\tpermissions (%#o, %#o%s",
-		    s->st_mode, p->fts_statb.st_mode&MBITS, uflag ? "" : ")");
+		    s->st_mode, p->fts_statb.st_mode & MBITS, uflag ? "" : ")");
 		if (uflag)
 			if (chmod(p->fts_accpath, s->st_mode))
 				(void)printf(", not modified: %s)",
@@ -96,7 +96,7 @@ typeerr:		LABEL;
 			else
 				(void)printf(", modified)");
 	}
-	if (s->flags&F_OWNER && s->st_uid != p->fts_statb.st_uid) {
+	if (s->flags & F_OWNER && s->st_uid != p->fts_statb.st_uid) {
 		LABEL;
 		(void)printf("\n\towner (%u, %u%s",
 		    s->st_uid, p->fts_statb.st_uid, uflag ? "" : ")");
@@ -107,7 +107,7 @@ typeerr:		LABEL;
 			else
 				(void)printf(", modified)");
 	}
-	if (s->flags&F_GROUP && s->st_gid != p->fts_statb.st_gid) {
+	if (s->flags & F_GROUP && s->st_gid != p->fts_statb.st_gid) {
 		LABEL;
 		(void)printf("\n\tgroup (%u, %u%s",
 		    s->st_gid, p->fts_statb.st_gid, uflag ? "" : ")");
@@ -118,18 +118,18 @@ typeerr:		LABEL;
 			else
 				(void)printf(", modified)");
 	}
-	if (s->flags&F_NLINK && s->type != F_DIR &&
+	if (s->flags & F_NLINK && s->type != F_DIR &&
 	    s->st_nlink != p->fts_statb.st_nlink) {
 		LABEL;
 		(void)printf("\n\tlink count (%u, %u)",
 		    s->st_nlink, p->fts_statb.st_nlink);
 	}
-	if (s->flags&F_SIZE && s->st_size != p->fts_statb.st_size) {
+	if (s->flags & F_SIZE && s->st_size != p->fts_statb.st_size) {
 		LABEL;
 		(void)printf("\n\tsize (%ld, %ld)",
 		    s->st_size, p->fts_statb.st_size);
 	}
-	if (s->flags&F_SLINK) {
+	if (s->flags & F_SLINK) {
 		char *cp;
 
 		if (strcmp(cp = rlink(name), s->slink)) {
@@ -147,7 +147,7 @@ char *
 inotype(type)
 	mode_t type;
 {
-	switch(type&S_IFMT) {
+	switch(type & S_IFMT) {
 	case S_IFBLK:
 		return("block");
 	case S_IFCHR:
