@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vnops.c	7.60 (Berkeley) 04/16/91
+ *	@(#)lfs_vnops.c	7.61 (Berkeley) 05/08/91
  */
 
 #include "param.h"
@@ -1544,7 +1544,7 @@ ufsfifo_close(vp, fflag, cred, p)
 #endif /* FIFO */
 
 /*
- * Make a new file.
+ * Allocate a new inode.
  */
 maknode(mode, ndp, ipp)
 	int mode;
