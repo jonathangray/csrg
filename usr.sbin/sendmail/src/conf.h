@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.3 (Berkeley) 07/13/93
+ *	@(#)conf.h	8.4 (Berkeley) 07/16/93
  */
 
 /*
@@ -182,6 +182,15 @@
 #ifdef BSD4_4
 # include <sys/cdefs.h>
 # define HASSETEUID	1	/* we have seteuid(2) call */
+# define ERRLIST_PREDEFINED	/* don't declare sys_errlist */
+#endif
+
+/* SCO Unix */
+#ifdef _SCO_unix_
+# define SYSTEM5	1	/* include all the System V defines */
+# define UNSETENV	1	/* need unsetenv(3) support */
+# define FORK		fork
+# define MAXPATHLEN	PATHSIZE
 #endif
 
 /*
@@ -286,8 +295,8 @@ struct utsname
 };
 #endif /* HASUNAME */
 
-#ifndef MAXHOSTNAMELEN
-#define MAXHOSTNAMELEN	256
+#if !defined(MAXHOSTNAMELEN) && !defined(_SCO_unix_)
+# define MAXHOSTNAMELEN	256
 #endif
 
 #if !defined(SIGCHLD) && defined(SIGCLD)
