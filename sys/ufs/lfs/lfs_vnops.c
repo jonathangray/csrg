@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vnops.c	7.75 (Berkeley) 12/31/91
+ *	@(#)lfs_vnops.c	7.76 (Berkeley) 01/14/92
  */
 
 #include <sys/param.h>
@@ -236,8 +236,8 @@ lfs_read(vp, uio, ioflag, cred)
 		rablock = lbn + 1;
 		if (vp->v_lastr + 1 == lbn &&
 		    lblktosize(fs, rablock) < ip->i_size)
-			error = breada(ITOV(ip), lbn, size, rablock,
-				blksize(fs), NOCRED, &bp);
+			error = breadn(ITOV(ip), lbn, size, &rablock,
+				&size, 1, NOCRED, &bp);
 		else
 			error = bread(ITOV(ip), lbn, size, NOCRED, &bp);
 		vp->v_lastr = lbn;
