@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_inode.c	8.3 (Berkeley) 09/21/93
+ *	@(#)lfs_inode.c	8.4 (Berkeley) 09/23/93
  */
 
 #include <sys/param.h>
@@ -92,21 +92,22 @@ lfs_update(ap)
 	if (vp->v_mount->mnt_flag & MNT_RDONLY)
 		return (0);
 	ip = VTOI(vp);
-	if ((ip->i_flag & (IUPDATE | IACCESS | ICHANGE | IMODIFIED)) == 0)
+	if ((ip->i_flag &
+	    (IN_ACCESS | IN_CHANGE | IN_MODIFIED | IN_UPDATE)) == 0)
 		return (0);
-	if (ip->i_flag & IACCESS)
+	if (ip->i_flag & IN_ACCESS)
 		ip->i_atime.ts_sec = ap->a_access->tv_sec;
-	if (ip->i_flag & IUPDATE) {
+	if (ip->i_flag & IN_UPDATE) {
 		ip->i_mtime.ts_sec = ap->a_modify->tv_sec;
 		(ip)->i_modrev++;
 	}
-	if (ip->i_flag & ICHANGE)
+	if (ip->i_flag & IN_CHANGE)
 		ip->i_ctime.ts_sec = time.tv_sec;
-	ip->i_flag &= ~(IUPDATE | IACCESS | ICHANGE);
+	ip->i_flag &= ~(IN_ACCESS | IN_CHANGE | IN_UPDATE);
 
-	if (!(ip->i_flag & IMODIFIED))
+	if (!(ip->i_flag & IN_MODIFIED))
 		++(VFSTOUFS(vp->v_mount)->um_lfs->lfs_uinodes);
-	ip->i_flag |= IMODIFIED;
+	ip->i_flag |= IN_MODIFIED;
 
 	/* If sync, push back the vnode and any dirty blocks it may have. */
 	return (ap->a_waitfor & LFS_SYNC ? lfs_vflush(vp) : 0);
@@ -175,7 +176,7 @@ lfs_truncate(ap)
 #endif
 		bzero((char *)&ip->i_shortlink, (u_int)ip->i_size);
 		ip->i_size = 0;
-		ip->i_flag |= IUPDATE | ICHANGE;
+		ip->i_flag |= IN_CHANGE | IN_UPDATE;
 		return (VOP_UPDATE(vp, &tv, &tv, 0));
 	}
 	vnode_pager_setsize(vp, (u_long)length);
@@ -184,7 +185,7 @@ lfs_truncate(ap)
 
 	/* If length is larger than the file, just update the times. */
 	if (ip->i_size <= length) {
-		ip->i_flag |= IUPDATE | ICHANGE;
+		ip->i_flag |= IN_CHANGE | IN_UPDATE;
 		return (VOP_UPDATE(vp, &tv, &tv, 0));
 	}
 
@@ -309,7 +310,7 @@ lfs_truncate(ap)
 #endif
 	ip->i_blocks -= fsbtodb(fs, blocksreleased);
 	fs->lfs_bfree +=  fsbtodb(fs, blocksreleased);
-	ip->i_flag |= IUPDATE | ICHANGE;
+	ip->i_flag |= IN_CHANGE | IN_UPDATE;
 	/*
 	 * Traverse dirty block list counting number of dirty buffers
 	 * that are being deleted out of the cache, so that the lfs_avail
