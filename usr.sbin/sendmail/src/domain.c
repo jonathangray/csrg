@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef NAMED_BIND
-static char sccsid[] = "@(#)domain.c	5.30 (Berkeley) 10/07/91 (with name server)";
+static char sccsid[] = "@(#)domain.c	5.31 (Berkeley) 11/11/91 (with name server)";
 #else
-static char sccsid[] = "@(#)domain.c	5.30 (Berkeley) 10/07/91 (without name server)";
+static char sccsid[] = "@(#)domain.c	5.31 (Berkeley) 11/11/91 (without name server)";
 #endif
 #endif /* not lint */
 
@@ -212,7 +212,6 @@ getcanonname(host, hbsize)
 	bool rval;
 	int type;
 	char nbuf[PACKETSZ];
-	extern char *__hostalias();
 
 	if (tTd(8, 2))
 		printf("getcanonname(%s)\n", host);
@@ -231,8 +230,6 @@ loop:
 		cp = host;
 		n = -1;
 	}
-	else if (n == 0 && (cp = __hostalias(host)))
-		n = -1;
 
 	/*
 	 * We do at least one level of search if
