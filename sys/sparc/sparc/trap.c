@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)trap.c	8.1 (Berkeley) 06/11/93
+ *	@(#)trap.c	7.6 (Berkeley) 06/16/93
  *
  * from: $Header: trap.c,v 1.34 93/05/28 04:34:50 torek Exp $
  */
@@ -702,8 +702,8 @@ syscall(code, tf, pc, suncompat)
 	 * Any arguments beyond that are in the `argument extension' area
 	 * of the user's stack frame (see <machine/frame.h>).
 	 *
-	 * Check for ``special'' codes that alter this, namely indir and
-	 * __indir.  The latter takes a quad syscall number, so that other
+	 * Check for ``special'' codes that alter this, namely syscall and
+	 * __syscall.  The latter takes a quad syscall number, so that other
 	 * arguments are at their natural alignments.  Adjust the number
 	 * of ``easy'' arguments as appropriate; we will copy the hard
 	 * ones later as needed.
@@ -712,12 +712,12 @@ syscall(code, tf, pc, suncompat)
 	nap = 6;
 	switch (code) {
 
-	case SYS_indir:
+	case SYS_syscall:
 		code = *ap++;
 		nap--;
 		break;
 
-	case SYS___indir:
+	case SYS___syscall:
 #ifdef COMPAT_SUNOS
 		if (suncompat)
 			break;
@@ -728,7 +728,7 @@ syscall(code, tf, pc, suncompat)
 		break;
 
 	}
-	/* Callp currently points to indir, which returns ENOSYS. */
+	/* Callp currently points to syscall, which returns ENOSYS. */
 	if (code < nsys) {
 		callp += code;
 		i = callp->sy_narg;
