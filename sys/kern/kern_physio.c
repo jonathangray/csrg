@@ -1,4 +1,4 @@
-/*	kern_physio.c	3.6	%H%	*/
+/*	kern_physio.c	3.7	06/07/80	*/
 
 #include "../h/param.h"
 #include "../h/systm.h"
