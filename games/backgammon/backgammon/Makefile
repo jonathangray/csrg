@@ -3,7 +3,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	5.8	{Berkeley}	09/04/87
+#	@(#)Makefile	5.9	{Berkeley}	09/19/87
 #
 LIBC=	/lib/libc.a
 LIBS=	-ltermlib
