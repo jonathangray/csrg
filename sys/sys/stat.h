@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stat.h	7.10 (Berkeley) 02/22/91
+ *	@(#)stat.h	7.11 (Berkeley) 03/03/91
  */
 
 struct stat
@@ -121,6 +121,7 @@ int	mkdir __P((const char *, mode_t));
 int	mkfifo __P((const char *, mode_t));
 int	stat __P((const char *, struct stat *));
 #ifndef _POSIX_SOURCE
+int	fchmod __P((int, mode_t));
 int	lstat __P((const char *, struct stat *));
 #endif /* not POSIX */
 __END_DECLS
