@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)radix.c	7.12 (Berkeley) 08/08/91
+ *	@(#)radix.c	7.13 (Berkeley) 01/29/92
  */
 
 /*
@@ -228,6 +228,7 @@ int	rn_saveinfo;
 struct radix_node *
 rn_newpair(v, b, nodes)
 	caddr_t v;
+	int b;
 	struct radix_node nodes[2];
 {
 	register struct radix_node *tt = nodes, *t = tt + 1;
@@ -308,7 +309,8 @@ on1:
 
 struct radix_node *
 rn_addmask(netmask, search, skip)
-caddr_t netmask;
+	caddr_t netmask;
+	int search, skip;
 {
 	register struct radix_node *x;
 	register caddr_t cp, cplim;
@@ -352,8 +354,8 @@ caddr_t netmask;
 
 struct radix_node *
 rn_addroute(v, netmask, head, treenodes)
-struct radix_node *head;
-	caddr_t netmask, v;
+	caddr_t v, netmask;
+	struct radix_node *head;
 	struct radix_node treenodes[2];
 {
 	register int j;
@@ -650,8 +652,8 @@ rn_walk(rn, f, w)
 char rn_zeros[MAXKEYLEN], rn_ones[MAXKEYLEN];
 
 rn_inithead(head, off)
-struct radix_node_head **head;
-int off;
+	struct radix_node_head **head;
+	int off;
 {
 	register struct radix_node_head *rnh;
 	register struct radix_node *t, *tt, *ttt;
