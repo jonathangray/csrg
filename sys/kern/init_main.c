@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)init_main.c	7.37 (Berkeley) 04/04/91
+ *	@(#)init_main.c	7.38 (Berkeley) 05/03/91
  */
 
 #include "param.h"
@@ -72,7 +72,7 @@ struct	proc *curproc = &proc0;
 struct	proc *initproc, *pageproc;
 
 int	cmask = CMASK;
-extern	caddr_t proc0paddr;
+extern	struct user *proc0paddr;
 extern	int (*mountroot)();
 
 /*
@@ -170,8 +170,8 @@ main(firstaddr)
 	 * We continue to place resource usage info
 	 * and signal actions in the user struct so they're pageable.
 	 */
-	p->p_stats = &((struct user *)p->p_addr)->u_stats;
-	p->p_sigacts = &((struct user *)p->p_addr)->u_sigacts;
+	p->p_stats = &p->p_addr->u_stats;
+	p->p_sigacts = &p->p_addr->u_sigacts;
 
 	rqinit();
 
@@ -289,7 +289,7 @@ main(firstaddr)
 			panic("init: couldn't allocate at zero");
 
 		/* need just enough stack to exec from */
-		addr = trunc_page(VM_MAX_ADDRESS - PAGE_SIZE);
+		addr = trunc_page(USRSTACK - PAGE_SIZE);
 		if (vm_allocate(&p->p_vmspace->vm_map, &addr,
 		    PAGE_SIZE, FALSE) != KERN_SUCCESS)
 			panic("vm_allocate init stack");
