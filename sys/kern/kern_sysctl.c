@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sysctl.c	7.18 (Berkeley) 08/28/91
+ *	@(#)kern_sysctl.c	7.19 (Berkeley) 11/16/91
  */
 
 #include "param.h"
@@ -61,13 +61,8 @@ getkerninfo(p, uap, retval)
 	} *uap;
 	int *retval;
 {
-
 	int bufsize;		/* max size of users buffer */
 	int needed, locked, (*server)(), error = 0;
-
-	if (error = copyin((caddr_t)uap->size, (caddr_t)&bufsize,
-	    sizeof (bufsize)))
-		goto done;
 
 	switch (ki_type(uap->op)) {
 
@@ -99,6 +94,9 @@ getkerninfo(p, uap, retval)
 		error = (*server)(uap->op, NULL, NULL, uap->arg, &needed);
 		goto done;
 	}
+	if (error = copyin((caddr_t)uap->size, (caddr_t)&bufsize,
+	    sizeof (bufsize)))
+		goto done;
 	while (kinfo_lock.kl_lock) {
 		kinfo_lock.kl_want++;
 		sleep(&kinfo_lock, PRIBIO+1);
