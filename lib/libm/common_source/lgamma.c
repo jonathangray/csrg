@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)lgamma.c	8.1 (Berkeley) 06/04/93";
+static char sccsid[] = "@(#)lgamma.c	8.2 (Berkeley) 11/30/93";
 #endif /* not lint */
 
 /*
@@ -80,7 +80,6 @@ static int endian;
 #define infnan(x)	0.0
 #endif
 
-extern double log1p(double);
 static double small_lgam(double);
 static double large_lgam(double);
 static double neg_lgam(double);
@@ -139,7 +138,7 @@ int signgam;
 #define pb6	 5.69394463439411649408050664078e-03
 #define pb7	-1.44705562421428915453880392761e-02
 
-double
+__pure double
 lgamma(double x)
 {
 	double r;
