@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)gettytab.h	5.5 (Berkeley) 03/27/91
+ *	@(#)gettytab.h	5.6 (Berkeley) 05/17/93
  */
 
 /*
@@ -134,10 +134,10 @@ struct gettyflags {
 #define DX	gettyflags[20].value
 #define	NP	gettyflags[21].value
 
-int	getent();
-long	getnum();
-int	getflag();
-char	*getstr();
+int	getent __P((char *, char *));
+long	getnum __P((char *));
+int	getflag __P((char *));
+char	*getstr __P((char *, char **));
 
 extern	struct gettyflags gettyflags[];
 extern	struct gettynums gettynums[];
