@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)util.c	8.70 (Berkeley) 05/25/95";
+static char sccsid[] = "@(#)util.c	8.71 (Berkeley) 05/25/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1253,8 +1253,9 @@ fgetfolded(buf, n, f)
 	}
 	if (p == bp)
 		return (NULL);
-	if (*--p == '\n')
-		*p = '\0';
+	if (p[-1] == '\n')
+		p--;
+	*p = '\0';
 	return (bp);
 }
 /*
