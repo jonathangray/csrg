@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)times.h	7.2 (Berkeley) 08/27/90
+ *	@(#)times.h	7.3 (Berkeley) 10/31/90
  */
 
 #include <machine/machtypes.h>
@@ -47,8 +47,10 @@ struct tms {
 	clock_t tms_cstime;	/* System CPU time of terminated child procs */
 };
 
+#ifndef KERNEL
 #if __STDC__ || c_plusplus
 clock_t times(struct tms *);
 #else
 clock_t times();
+#endif
 #endif
