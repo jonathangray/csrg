@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)param.c	7.20 (Berkeley) 06/27/91
+ *	@(#)param.c	7.21 (Berkeley) 11/01/91
  */
 
 #include "sys/param.h"
@@ -42,7 +42,7 @@
 #include "sys/callout.h"
 #include "sys/clist.h"
 #include "sys/mbuf.h"
-#include "ufs/quota.h"
+#include "ufs/ufs/quota.h"
 #include "sys/kernel.h"
 #ifdef SYSVSHM
 #include "machine/vmparam.h"
