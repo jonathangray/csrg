@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)raw_ip.c	7.13 (Berkeley) 04/09/93
+ *	@(#)raw_ip.c	7.14 (Berkeley) 06/04/93
  */
 
 #include <sys/param.h>
@@ -67,6 +67,7 @@ struct inpcb rawinpcb;
 /*
  * Initialize raw connection block q.
  */
+void
 rip_init()
 {
 
@@ -79,6 +80,7 @@ struct	sockaddr_in ripsrc = { sizeof(ripsrc), AF_INET };
  * for raw_input routine, then pass them along with
  * mbuf chain.
  */
+void
 rip_input(m)
 	struct mbuf *m;
 {
@@ -126,6 +128,7 @@ rip_input(m)
  * Generate IP header and pass packet to ip_output.
  * Tack on options user may have setup with control call.
  */
+int
 rip_output(m, so, dst)
 	register struct mbuf *m;
 	struct socket *so;
@@ -167,6 +170,7 @@ rip_output(m, so, dst)
 /*
  * Raw IP socket option processing.
  */
+int
 rip_ctloutput(op, so, level, optname, m)
 	int op;
 	struct socket *so;
@@ -228,6 +232,7 @@ u_long	rip_sendspace = RIPSNDQ;
 u_long	rip_recvspace = RIPRCVQ;
 
 /*ARGSUSED*/
+int
 rip_usrreq(so, req, m, nam, control)
 	register struct socket *so;
 	int req;
@@ -238,7 +243,6 @@ rip_usrreq(so, req, m, nam, control)
 #ifdef MROUTING
 	extern struct socket *ip_mrouter;
 #endif
-
 	switch (req) {
 
 	case PRU_ATTACH:
