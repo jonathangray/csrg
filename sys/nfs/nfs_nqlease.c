@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_nqlease.c	8.6 (Berkeley) 03/30/95
+ *	@(#)nfs_nqlease.c	8.7 (Berkeley) 05/09/95
  */
 
 
@@ -1153,7 +1153,8 @@ nqnfs_lease_updatetime(deltat)
 	 * Search the mount list for all nqnfs mounts and do their timer
 	 * queues.
 	 */
-	for (mp = mountlist.tqh_first; mp != NULL; mp = mp->mnt_list.tqe_next) {
+	for (mp = mountlist.cqh_first; mp != (void *)&mountlist;
+	     mp = mp->mnt_list.cqe_next) {
 		if (mp->mnt_stat.f_type != nfs_mount_type)
 			continue;
 		nmp = VFSTONFS(mp);
