@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)getsubopt.3	5.4 (Berkeley) 07/31/91
+.\"     @(#)getsubopt.3	5.5 (Berkeley) 11/14/91
 .\"
 .Dd 
 .Dt GETSUBOPT 3
@@ -39,6 +39,7 @@
 .Nd get sub options from an argument
 .Sh SYNOPSIS
 .Fd #include <stdio.h>
+.Vt extern char *suboptarg
 .Ft int
 .Fn getsubopt "char **optionp" "char * const *tokens" "char **valuep"
 .Sh DESCRIPTION
