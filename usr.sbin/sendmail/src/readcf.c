@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	8.39 (Berkeley) 10/08/94";
+static char sccsid[] = "@(#)readcf.c	8.40 (Berkeley) 10/15/94";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1168,6 +1168,8 @@ struct optioninfo
 	"MinQueueAge",		O_MQA,		TRUE,
 #define O_MHSA		0x84
 	"MaxHostStatAge",	O_MHSA,		TRUE,
+#define O_DEFCHARSET	0x85
+	"DefaultCharSet",	O_DEFCHARSET,	TRUE,
 
 	NULL,			'\0',		FALSE,
 };
@@ -1706,6 +1708,10 @@ setoption(opt, val, sticky)
 
 	  case O_MHSA:		/* maximum age of cached host status */
 		MaxHostStatAge = convtime(val, 'm');
+		break;
+
+	  case O_DEFCHARSET:	/* default character set for mimefying */
+		DefCharSet = newstr(val);
 		break;
 
 	  default:
