@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mapc.c	5.3 (Berkeley) 05/12/91
+ *	@(#)mapc.c	5.4 (Berkeley) 05/12/91
  *
  * $Id: mapc.c,v 5.2.1.9 91/05/07 22:18:07 jsp Alpha $
  *
@@ -281,10 +281,10 @@ FILE *fp;
 	}
 }
 
-static char *reg_error = "?";
-void regerror P((char *m));
+static const char *reg_error = "?";
+void regerror P((const char *m));
 void regerror(m)
-char *m;
+const char *m;
 {
 	reg_error = m;
 }
