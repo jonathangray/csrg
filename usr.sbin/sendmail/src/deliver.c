@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	8.96 (Berkeley) 08/15/94";
+static char sccsid[] = "@(#)deliver.c	8.97 (Berkeley) 08/27/94";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1311,6 +1311,7 @@ tryhost:
 
 			/*
 			**  Set up the mailer environment
+			**	_FORCE_MAIL_LOCAL_ is DG-UX equiv of -d flag.
 			**	TZ is timezone information.
 			**	SYSTYPE is Apollo software sys type (required).
 			**	ISP is Apollo hardware system type (required).
@@ -1318,6 +1319,7 @@ tryhost:
 
 			i = 0;
 			env[i++] = "AGENT=sendmail";
+			env[i++] = "_FORCE_MAIL_LOCAL_=yes";
 			for (ep = environ; *ep != NULL; ep++)
 			{
 				if (strncmp(*ep, "TZ=", 3) == 0 ||
@@ -1325,7 +1327,7 @@ tryhost:
 				    strncmp(*ep, "SYSTYPE=", 8) == 0)
 					env[i++] = *ep;
 			}
-			env[i++] = NULL;
+			env[i] = NULL;
 
 			/* run disconnected from terminal */
 			(void) setsid();
