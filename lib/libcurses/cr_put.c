@@ -32,10 +32,11 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)cr_put.c	5.6 (Berkeley) 08/23/92";
+static char sccsid[] = "@(#)cr_put.c	5.7 (Berkeley) 08/23/92";
 #endif	/* not lint */
 
 #include <curses.h>
+#include <string.h>
 
 #define	HARDTABS	8
 
@@ -60,6 +61,7 @@ static int outcol, outline, destcol, destline;
 
 WINDOW *_win;
 
+int
 mvcur(ly, lx, y, x)
 	int ly, lx, y, x;
 {
@@ -406,7 +408,7 @@ static int
 tabcol(col, ts)
 	int col, ts;
 {
-	int offset, result;
+	int offset;
 
 	if (col >= COLS) {
 		offset = COLS * (col / COLS);
