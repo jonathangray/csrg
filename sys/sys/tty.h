@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty.h	8.3 (Berkeley) 09/21/93
+ *	@(#)tty.h	8.4 (Berkeley) 09/23/93
  */
 
 #include <sys/termios.h>
@@ -160,7 +160,7 @@ struct speedtab {
 
 /* Is tp controlling terminal for p? */
 #define	isctty(p, tp)							\
-	((p)->p_session == (tp)->t_session && (p)->p_flag & SCTTY)
+	((p)->p_session == (tp)->t_session && (p)->p_flag & P_CONTROLT)
 
 /* Is p in background of tp? */
 #define	isbackground(p, tp)						\
