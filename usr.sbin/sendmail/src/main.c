@@ -7,7 +7,7 @@
 # include <syslog.h>
 # endif LOG
 
-static char	SccsId[] = "@(#)main.c	3.54	11/21/81";
+static char	SccsId[] = "@(#)main.c	3.55	11/22/81";
 
 /*
 **  SENDMAIL -- Post mail to a set of destinations.
@@ -632,10 +632,7 @@ finis()
 	if (Transcript != NULL)
 		(void) unlink(Transcript);
 	if (QueueUp)
-	{
-		if (!QueueRun)
-			queueup(InFileName);
-	}
+		queueup(InFileName);
 	else
 		(void) unlink(InFileName);
 	exit(ExitStat);
