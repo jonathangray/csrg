@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: vm_mmap.c 1.6 91/10/21$
  *
- *	@(#)vm_mmap.c	7.23 (Berkeley) 03/09/93
+ *	@(#)vm_mmap.c	7.24 (Berkeley) 03/27/93
  */
 
 /*
@@ -98,7 +98,7 @@ sstk(p, uap, retval)
 
 struct mmap_args {
 	caddr_t	addr;
-	int	len;
+	size_t	len;
 	int	prot;
 	int	flags;
 	int	fd;
@@ -195,7 +195,7 @@ smmap(p, uap, retval)
 	if (mmapdebug & MDB_FOLLOW)
 		printf("mmap(%d): addr %x len %x pro %x flg %x fd %d pos %x\n",
 		       p->p_pid, uap->addr, uap->len, uap->prot,
-		       flags, uap->fd, uap->pos);
+		       flags, uap->fd, (vm_offset_t)uap->pos);
 #endif
 	/*
 	 * Address (if FIXED) must be page aligned.
@@ -541,7 +541,7 @@ vm_mmap(map, addr, size, prot, maxprot, flags, handle, foff)
 	 */
 	if (flags & MAP_ANON) {
 		rv = vm_allocate_with_pager(map, addr, size, fitit,
-					    pager, (vm_offset_t)foff, TRUE);
+					    pager, foff, TRUE);
 		if (rv != KERN_SUCCESS) {
 			if (handle == NULL)
 				vm_pager_deallocate(pager);
@@ -569,7 +569,7 @@ vm_mmap(map, addr, size, prot, maxprot, flags, handle, foff)
 	 */
 	else if (vp->v_type == VCHR) {
 		rv = vm_allocate_with_pager(map, addr, size, fitit,
-					    pager, (vm_offset_t)foff, FALSE);
+					    pager, foff, FALSE);
 		/*
 		 * Uncache the object and lose the reference gained
 		 * by vm_pager_allocate().  If the call to
@@ -599,7 +599,7 @@ vm_mmap(map, addr, size, prot, maxprot, flags, handle, foff)
 		if (flags & MAP_SHARED) {
 			rv = vm_allocate_with_pager(map, addr, size,
 						    fitit, pager,
-						    (vm_offset_t)foff, FALSE);
+						    foff, FALSE);
 			if (rv != KERN_SUCCESS) {
 				vm_object_deallocate(object);
 				goto out;
@@ -638,7 +638,7 @@ vm_mmap(map, addr, size, prot, maxprot, flags, handle, foff)
 			off = VM_MIN_ADDRESS;
 			rv = vm_allocate_with_pager(tmap, &off, size,
 						    TRUE, pager,
-						    (vm_offset_t)foff, FALSE);
+						    foff, FALSE);
 			if (rv != KERN_SUCCESS) {
 				vm_object_deallocate(object);
 				vm_map_deallocate(tmap);
@@ -685,8 +685,7 @@ vm_mmap(map, addr, size, prot, maxprot, flags, handle, foff)
 			 * sharing map is involved.  So we cheat and write
 			 * protect everything ourselves.
 			 */
-			vm_object_pmap_copy(object, (vm_offset_t)foff,
-					    (vm_offset_t)foff+size);
+			vm_object_pmap_copy(object, foff, foff + size);
 			vm_object_deallocate(object);
 			vm_map_deallocate(tmap);
 			if (rv != KERN_SUCCESS)
