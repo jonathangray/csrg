@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)edquota.c	5.14 (Berkeley) 06/19/90";
+static char sccsid[] = "@(#)edquota.c	5.15 (Berkeley) 09/27/90";
 #endif /* not lint */
 
 /*
@@ -61,6 +61,9 @@ static char sccsid[] = "@(#)edquota.c	5.14 (Berkeley) 06/19/90";
 #include <string.h>
 #include "pathnames.h"
 
+char *qfname = QUOTAFILENAME;
+char *qfextension[] = INITQFNAMES;
+char *quotagroup = QUOTAGROUP;
 char tmpfil[] = _PATH_TMP;
 
 struct quotause {
