@@ -1,4 +1,4 @@
-/* @(#)system.c	4.1 (Berkeley) 12/21/80 */
+/* @(#)system.c	4.2 (Berkeley) 11/14/82 */
 #include	<signal.h>
 
 system(s)
