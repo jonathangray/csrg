@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)align.h	5.2 (Berkeley) 11/12/86
+ *	@(#)align.h	5.3 (Berkeley) 02/17/88
  */
 
     /*
