@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)umask.2	6.2 (Berkeley) 03/10/91
+.\"     @(#)umask.2	6.3 (Berkeley) 04/07/92
 .\"
 .Dd 
 .Dt UMASK 2
@@ -57,12 +57,13 @@ and
 .Xr mkfifo 2 ,
 to turn off corresponding bits
 requested in file mode.
-(see
+(See
 .Xr chmod 2 ) .
 This clearing allows each user to restrict the default access
 to his files.
 .Pp
-The default mask value is 022 (write access for owner only).
+The default mask value is S_IWGRP|S_IWOTH (022, write access for the
+owner only).
 Child processes inherit the mask of the calling process.
 .Sh RETURN VALUES
 The previous value of the file mode mask is returned by the call.
@@ -77,6 +78,5 @@ function is always successful.
 .Sh STANDARDS
 The
 .Fn umask
-function call is expected to
-conform to IEEE Std 1003.1-1988
+function call is expected to conform to IEEE Std 1003.1-1988
 .Pq Dq Tn POSIX .
