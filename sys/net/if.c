@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if.c	7.14 (Berkeley) 04/20/91
+ *	@(#)if.c	7.15 (Berkeley) 01/29/92
  */
 
 #include "param.h"
@@ -92,6 +92,7 @@ static char *sprint_d();
  * Attach an interface to the
  * list of "active" interfaces.
  */
+void
 if_attach(ifp)
 	struct ifnet *ifp;
 {
@@ -309,8 +310,9 @@ ifaof_ifpforaddr(addr, ifp)
  * This should be moved to /sys/net/link.c eventually.
  */
 link_rtrequest(cmd, rt, sa)
-register struct rtentry *rt;
-struct sockaddr *sa;
+	int cmd;
+	register struct rtentry *rt;
+	struct sockaddr *sa;
 {
 	register struct ifaddr *ifa;
 	struct sockaddr *dst;
