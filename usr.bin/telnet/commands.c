@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)commands.c	5.5 (Berkeley) 03/22/91";
+static char sccsid[] = "@(#)commands.c	5.6 (Berkeley) 10/24/92";
 #endif /* not lint */
 
 #if	defined(unix)
@@ -246,7 +246,7 @@ struct sendlist {
 };
 
 
-extern int
+static int
 	send_esc P((void)),
 	send_help P((void)),
 	send_docmd P((char *)),
@@ -603,7 +603,7 @@ togxbinary(val)
 }
 
 
-extern int togglehelp P((void));
+static int togglehelp P((void));
 #if	defined(AUTHENTICATE)
 extern int auth_togdebug P((int));
 #endif
@@ -1465,7 +1465,7 @@ struct slclist {
 	int	arg;
 };
 
-extern void slc_help();
+static void slc_help();
 
 struct slclist SlcList[] = {
     { "export",	"Use local special character definitions",
@@ -1548,7 +1548,8 @@ extern void
 	env_export P((unsigned char *)),
 	env_unexport P((unsigned char *)),
 	env_send P((unsigned char *)),
-	env_list P((void)),
+	env_list P((void));
+static void
 	env_help P((void));
 
 struct envlist EnvList[] = {
@@ -1837,7 +1838,8 @@ struct authlist {
 extern int
 	auth_enable P((int)),
 	auth_disable P((int)),
-	auth_status P((void)),
+	auth_status P((void));
+static int
 	auth_help P((void));
 
 struct authlist AuthList[] = {
@@ -1921,7 +1923,8 @@ extern int
 	EncryptStop P((char *)),
 	EncryptStopInput P((void)),
 	EncryptStopOutput P((void)),
-	EncryptStatus P((void)),
+	EncryptStatus P((void));
+static int
 	EncryptHelp P((void));
 
 struct encryptlist EncryptList[] = {
@@ -2259,9 +2262,6 @@ tn(argc, argv)
 		return 0;
 	    }
 	} else {
-#if	!defined(htons)
-	    u_short htons();
-#endif	/* !defined(htons) */
 	    sin.sin_port = htons(sin.sin_port);
 	}
     } else {
@@ -2388,7 +2388,7 @@ static char
 	envhelp[] =	"change environment variables ('environ ?' for more)",
 	modestring[] = "try to enter line or character mode ('mode ?' for more)";
 
-extern int	help();
+static int	help();
 
 static Command cmdtab[] = {
 	{ "close",	closehelp,	bye,		1 },
