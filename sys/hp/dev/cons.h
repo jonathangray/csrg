@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * from: Utah $Hdr: cons.h 1.4 88/12/03$
+ * from: Utah $Hdr: cons.h 1.1 90/07/09$
  *
- *	@(#)cons.h	7.2 (Berkeley) 05/25/90
+ *	@(#)cons.h	7.3 (Berkeley) 11/02/90
  */
 
 struct consdev {
