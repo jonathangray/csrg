@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ns.c	8.2 (Berkeley) 11/15/93
+ *	@(#)ns.c	8.3 (Berkeley) 01/09/95
  */
 
 #include <sys/param.h>
@@ -59,7 +59,7 @@ extern struct sockaddr_ns ns_netmask, ns_hostmask;
 /* ARGSUSED */
 ns_control(so, cmd, data, ifp)
 	struct socket *so;
-	int cmd;
+	u_long cmd;
 	caddr_t data;
 	register struct ifnet *ifp;
 {
