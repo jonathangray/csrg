@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	8.25 (Berkeley) 05/17/95
+ *	@(#)vfs_subr.c	8.26 (Berkeley) 05/17/95
  */
 
 /*
@@ -224,7 +224,7 @@ vfs_mountroot()
 	int error;
 
 	if (mountroot != NULL)
-		return ((*vfsp->vfc_mountroot)());
+		return ((*mountroot)());
 	for (vfsp = vfsconf; vfsp; vfsp = vfsp->vfc_next) {
 		if (vfsp->vfc_mountroot == NULL)
 			continue;
