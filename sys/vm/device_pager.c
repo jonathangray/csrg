@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)device_pager.c	8.2 (Berkeley) 10/24/93
+ *	@(#)device_pager.c	8.3 (Berkeley) 11/21/93
  */
 
 /*
@@ -286,8 +286,8 @@ dev_pager_getpage(pager, m, sync)
 	vm_object_lock(object);
 	vm_page_lock_queues();
 	vm_page_free(m);
-	vm_page_unlock_queues();
 	vm_page_insert(page, object, offset);
+	vm_page_unlock_queues();
 	PAGE_WAKEUP(m);
 	if (offset + PAGE_SIZE > object->size)
 		object->size = offset + PAGE_SIZE;	/* XXX anal */
