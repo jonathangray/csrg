@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: locore.s 1.47 89/10/08$
  *
- *	@(#)locore.s	7.3 (Berkeley) 06/22/90
+ *	@(#)locore.s	7.4 (Berkeley) 10/19/90
  */
 
 	.text
@@ -1210,7 +1210,7 @@ Lcisflt1:
 	moveq	#EFAULT,d0		| copy fault
 	jra	Lcisdone
 Lcisflt2:
-	moveq	#ENOENT,d0		| ran out of space
+	moveq	#ENAMETOOLONG,d0	| ran out of space
 	jra	Lcisdone	
 
 /*
@@ -1248,7 +1248,7 @@ Lcosflt1:
 	moveq	#EFAULT,d0		| copy fault
 	jra	Lcosdone
 Lcosflt2:
-	moveq	#ENOENT,d0		| ran out of space
+	moveq	#ENAMETOOLONG,d0	| ran out of space
 	jra	Lcosdone	
 
 /*
@@ -1285,7 +1285,7 @@ Lcsflt1:
 	moveq	#EFAULT,d0		| copy fault
 	jra	Lcsdone
 Lcsflt2:
-	moveq	#ENOENT,d0		| ran out of space
+	moveq	#ENAMETOOLONG,d0	| ran out of space
 	jra	Lcsdone	
 
 /* 
