@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ioctl.h	7.15 (Berkeley) 02/15/91
+ *	@(#)ioctl.h	7.16 (Berkeley) 02/22/91
  */
 
 #ifndef	_IOCTL_H_
@@ -218,5 +218,15 @@ struct ttysize {
 #define	OSIOCGARP	_IOWR('i',31, struct arpreq)	/* get arp entry */
 #define	SIOCGARP	_IOWR('i',38, struct arpreq)	/* get arp entry */
 #define	SIOCDARP	_IOW('i', 32, struct arpreq)	/* delete arp entry */
+
+#ifndef KERNEL
+
+#include <sys/cdefs.h>
+
+__BEGIN_DECLS
+int	ioctl __P((int, unsigned long, ...));
+__END_DECLS
+
+#endif /* !KERNEL */
 
 #endif /* !_IOCTL_H_ */
