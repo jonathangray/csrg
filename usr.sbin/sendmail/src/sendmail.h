@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.37 (Berkeley) 12/26/93
+ *	@(#)sendmail.h	8.38 (Berkeley) 01/05/94
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.37		12/26/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.38		01/05/94";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -164,6 +164,7 @@ typedef struct address ADDRESS;
 # define QVERIFIED	000400	/* verified, but not expanded */
 # define QREPORT	001000	/* report this address in return message */
 # define QBOGUSSHELL	002000	/* this entry has an invalid shell listed */
+# define QUNSAFEADDR	004000	/* address aquired through an unsafe path */
 
 # define NULLADDR	((ADDRESS *) NULL)
 # define QPSEUDO	000040	/* only on the list for verification */
