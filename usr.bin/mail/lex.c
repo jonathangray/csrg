@@ -8,7 +8,7 @@
  * Lexical processing of commands.
  */
 
-static char *SccsId = "@(#)lex.c	2.8 03/15/82";
+static char *SccsId = "@(#)lex.c	2.9 03/24/82";
 
 char	*prompt = "& ";
 
