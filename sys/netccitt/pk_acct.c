@@ -35,10 +35,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pk_acct.c	7.3 (Berkeley) 08/30/90
+ *	@(#)pk_acct.c	7.4 (Berkeley) 03/12/91
  */
 
-#include "param.h
+#include "param.h"
 #include "systm.h"
 #include "time.h"
 #include "proc.h"
