@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)utime.h	5.1 (Berkeley) 08/27/90
+ *	@(#)utime.h	5.2 (Berkeley) 02/05/91
  */
 
 struct utimbuf {
@@ -38,8 +38,8 @@ struct utimbuf {
 	time_t modtime;		/* Modification time */
 };
 
-#if __STDC__ || c_plusplus
-int utime(char *, struct utimbuf *);
-#else
-int utime();
-#endif
+#include <sys/cdefs.h>
+
+__BEGIN_DECLS
+int utime __P((char *, struct utimbuf *));
+__END_DECLS
