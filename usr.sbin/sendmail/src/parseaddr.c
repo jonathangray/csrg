@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	8.60 (Berkeley) 03/25/95";
+static char sccsid[] = "@(#)parseaddr.c	8.61 (Berkeley) 03/27/95";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -2010,6 +2010,8 @@ struct qflags	AddressFlags[] =
 	"QPINGONDELAY",		QPINGONDELAY,
 	"QHASNOTIFY",		QHASNOTIFY,
 	"QRELAYED",		QRELAYED,
+	"QEXPLODED",		QEXPLODED,
+	"QTHISPASS",		QTHISPASS,
 	NULL
 };
 
