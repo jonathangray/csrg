@@ -2,6 +2,9 @@
  * Copyright (c) 1988 Regents of the University of California.
  * All rights reserved.
  *
+ * This code is derived from software contributed to Berkeley by
+ * Computer Consoles Inc.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -29,13 +32,10 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- *
- * This code is derived from software contributed to Berkeley by
- * Computer Consoles Inc.
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-	.asciz "@(#)udiv.s	1.5 (Berkeley) 06/01/90"
+	.asciz "@(#)udiv.s	5.1 (Berkeley) 01/30/91"
 #endif /* LIBC_SCCS and not lint */
 
 /*
