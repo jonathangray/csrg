@@ -30,19 +30,16 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_malloc.c	7.22 (Berkeley) 02/04/91
+ *	@(#)kern_malloc.c	7.23 (Berkeley) 04/20/91
  */
 
 #include "param.h"
-#include "cmap.h"
-#include "time.h"
 #include "proc.h"
 #include "map.h"
 #include "kernel.h"
 #include "malloc.h"
-#include "../vm/vm_param.h"
-#include "../vm/vm_map.h"
-#include "../vm/vm_kern.h"
+#include "vm/vm.h"
+#include "vm/vm_kern.h"
 
 struct kmembuckets bucket[MINBUCKET + 16];
 struct kmemstats kmemstats[M_LAST];
