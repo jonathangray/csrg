@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_user.h	7.13 (Berkeley) 10/11/92
+ *	@(#)tp_user.h	7.14 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -159,4 +159,4 @@ struct tp_disc_reason {
  */
 
 
-#endif __TP_USER__
+#endif /* __TP_USER__ */
