@@ -1171,6 +1171,7 @@ hpuxgetaccess(p, uap, retval)
 	} *uap;
 	int *retval;
 {
+	USES_VOP_ACCESS;
 	int lgroups[NGROUPS];
 	int error = 0;
 	register struct ucred *cred;
@@ -1609,6 +1610,7 @@ ohpuxutime(p, uap, retval)
 	} *uap;
 	int *retval;
 {
+	USES_VOP_SETATTR;
 	register struct vnode *vp;
 	struct vattr vattr;
 	time_t tv[2];
@@ -1696,6 +1698,7 @@ ohpuxstat1(vp, ub)
 	register struct vnode *vp;
 	struct ohpuxstat *ub;
 {
+	USES_VOP_GETATTR;
 	struct ohpuxstat ds;
 	struct vattr vattr;
 	register int error;
