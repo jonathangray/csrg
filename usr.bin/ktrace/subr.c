@@ -32,11 +32,17 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)subr.c	1.2 (Berkeley) 06/29/90";
+static char sccsid[] = "@(#)subr.c	5.1 (Berkeley) 01/17/91";
 #endif /* not lint */
 
-#include "ktrace.h"
+#include <sys/param.h>
+#include <sys/file.h>
+#include <sys/user.h>
+#include <sys/proc.h>
 #include <sys/time.h>
+#include <sys/ktrace.h>
+#include <stdio.h>
+#include "ktrace.h"
 
 getpoints(s)
 	char *s;
@@ -68,7 +74,6 @@ getpoints(s)
 timevaladd(t1, t2)
 	struct timeval *t1, *t2;
 {
-
 	t1->tv_sec += t2->tv_sec;
 	t1->tv_usec += t2->tv_usec;
 	timevalfix(t1);
@@ -77,7 +82,6 @@ timevaladd(t1, t2)
 timevalsub(t1, t2)
 	struct timeval *t1, *t2;
 {
-
 	t1->tv_sec -= t2->tv_sec;
 	t1->tv_usec -= t2->tv_usec;
 	timevalfix(t1);
@@ -86,7 +90,6 @@ timevalsub(t1, t2)
 timevalfix(t1)
 	struct timeval *t1;
 {
-
 	if (t1->tv_usec < 0) {
 		t1->tv_sec--;
 		t1->tv_usec += 1000000;
