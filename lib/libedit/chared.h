@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)chared.h	5.2 (Berkeley) 06/22/92
+ *	@(#)chared.h	5.3 (Berkeley) 07/03/92
  */
 
 /*
@@ -65,6 +65,7 @@
 typedef struct c_macro_t {
     int    level;
     char **macro;
+    char  *nline;
 } c_macro_t;
 
 /* 
@@ -126,9 +127,9 @@ typedef struct el_chared_t {
 #define MODE_REPLACE	1
 #define MODE_REPLACE_1	2
 
+#include "common.h"
 #include "vi.h"
 #include "emacs.h"
-#include "common.h"
 #include "search.h"
 #include "fcns.h"
 
