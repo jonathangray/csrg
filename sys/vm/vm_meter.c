@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_meter.c	8.3 (Berkeley) 12/30/93
+ *	@(#)vm_meter.c	8.4 (Berkeley) 01/04/94
  */
 
 #include <sys/param.h>
@@ -48,7 +48,6 @@ int	saferss = SAFERSS;
 void
 vmmeter()
 {
-	register unsigned *cp, *rp, *sp;
 
 	if (time.tv_sec % 5 == 0)
 		loadav(&averunnable);
