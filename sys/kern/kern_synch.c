@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_synch.c	8.2 (Berkeley) 09/05/93
+ *	@(#)kern_synch.c	8.3 (Berkeley) 09/21/93
  */
 
 #include <sys/param.h>
@@ -204,7 +204,7 @@ schedcpu(arg)
 			    (p->p_pri / PPQ) != (p->p_usrpri / PPQ)) {
 				remrq(p);
 				p->p_pri = p->p_usrpri;
-				setrq(p);
+				setrunqueue(p);
 			} else
 				p->p_pri = p->p_usrpri;
 		}
@@ -387,7 +387,7 @@ endtsleep(arg)
 	s = splhigh();
 	if (p->p_wchan) {
 		if (p->p_stat == SSLEEP)
-			setrun(p);
+			setrunnable(p);
 		else
 			unsleep(p);
 		p->p_flag |= STIMO;
@@ -505,13 +505,13 @@ restart:
 			if (qp->sq_tailp == &p->p_link)
 				qp->sq_tailp = q;
 			if (p->p_stat == SSLEEP) {
-				/* OPTIMIZED INLINE EXPANSION OF setrun(p) */
+				/* OPTIMIZED EXPANSION OF setrunnable(p); */
 				if (p->p_slptime > 1)
 					updatepri(p);
 				p->p_slptime = 0;
 				p->p_stat = SRUN;
 				if (p->p_flag & SLOAD)
-					setrq(p);
+					setrunqueue(p);
 				/*
 				 * Since curpriority is a user priority,
 				 * p->p_pri is always better than curpriority.
@@ -604,21 +604,18 @@ rqinit()
  * and awakening the swapper if it isn't in memory.
  */
 void
-setrun(p)
+setrunnable(p)
 	register struct proc *p;
 {
 	register int s;
 
 	s = splhigh();
 	switch (p->p_stat) {
-
 	case 0:
-	case SWAIT:
 	case SRUN:
 	case SZOMB:
 	default:
-		panic("setrun");
-
+		panic("setrunnable");
 	case SSTOP:
 	case SSLEEP:
 		unsleep(p);		/* e.g. when sending signals */
@@ -629,7 +626,7 @@ setrun(p)
 	}
 	p->p_stat = SRUN;
 	if (p->p_flag & SLOAD)
-		setrq(p);
+		setrunqueue(p);
 	splx(s);
 	if (p->p_slptime > 1)
 		updatepri(p);
