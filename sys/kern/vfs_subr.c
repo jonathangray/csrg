@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.90 (Berkeley) 12/09/92
+ *	@(#)vfs_subr.c	7.91 (Berkeley) 12/09/92
  */
 
 /*
@@ -227,6 +227,7 @@ extern void vclean();
 long numvnodes;
 extern struct vattr va_null;
 
+
 /*
  * Return the next vnode from the free list.
  */
@@ -237,6 +238,7 @@ getnewvnode(tag, mp, vops, vpp)
 	struct vnode **vpp;
 {
 	register struct vnode *vp, *vq;
+	int s;
 
 	if ((vfreeh == NULL && numvnodes < 2 * desiredvnodes) ||
 	    numvnodes < desiredvnodes) {
@@ -262,12 +264,23 @@ getnewvnode(tag, mp, vops, vpp)
 		vp->v_lease = NULL;
 		if (vp->v_type != VBAD)
 			vgone(vp);
+#ifdef DIAGNOSTIC
 		if (vp->v_data)
 			panic("cleaned vnode isn't");
+		s = splbio();
+		if (vp->v_numoutput)
+			panic("Clean vnode has pending I/O's");
+		splx(s);
+#endif
 		vp->v_flag = 0;
 		vp->v_lastr = 0;
+		vp->v_lastw = 0;
+		vp->v_lasta = 0;
+		vp->v_cstart = 0;
+		vp->v_clen = 0;
 		vp->v_socket = 0;
 	}
+	vp->v_ralen = 1;
 	vp->v_type = VNON;
 	cache_purge(vp);
 	vp->v_tag = tag;
@@ -277,7 +290,6 @@ getnewvnode(tag, mp, vops, vpp)
 	*vpp = vp;
 	return (0);
 }
-
 /*
  * Move a vnode from one mount queue to another.
  */
@@ -322,6 +334,8 @@ vwakeup(bp)
 	bp->b_dirtyoff = bp->b_dirtyend = 0;
 	if (vp = bp->b_vp) {
 		vp->v_numoutput--;
+		if (vp->v_numoutput < 0)
+			panic("vwakeup: neg numoutput");
 		if ((vp->v_flag & VBWAIT) && vp->v_numoutput <= 0) {
 			if (vp->v_numoutput < 0)
 				panic("vwakeup: neg numoutput");
