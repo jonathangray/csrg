@@ -1,4 +1,4 @@
-/*
+/*-
  * Copyright (c) 1989 Jan-Simon Pendry
  * Copyright (c) 1989 Imperial College of Science, Technology & Medicine
  * Copyright (c) 1989 The Regents of the University of California.
@@ -35,11 +35,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)opts.c	1.3 (Berkeley) 6/26/91
- *
  * $Id: opts.c,v 5.2.2.3 1992/05/31 16:34:13 jsp Exp $
- *
  */
+
+#ifndef lint
+static char sccsid[] = "@(#)opts.c	5.6 (Berkeley) 08/01/92";
+#endif /* not lint */
 
 #include "am.h"
 
