@@ -5,7 +5,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)res_debug.c	6.1 (Berkeley) 10/31/85";
+static char sccsid[] = "@(#)res_debug.c	5.7 (Berkeley) 11/01/85";
 #endif not lint
 
 #if defined(lint) && !defined(DEBUG)
