@@ -30,16 +30,16 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)boot.c	7.5 (Berkeley) 06/18/92
+ *	@(#)boot.c	7.6 (Berkeley) 10/11/92
  */
 
-#include "sys/param.h"
-#include "sys/reboot.h"
+#include <sys/param.h>
+#include <sys/reboot.h>
 #include <a.out.h>
-#include "saio.h"
+#include <stand/saio.h>
 
 #ifndef INSECURE
-#include "sys/stat.h"
+#include <sys/stat.h>
 struct stat sb;
 #endif
 
@@ -59,7 +59,7 @@ extern	int noconsole;
 extern	int howto, bootdev;
 
 #ifdef PRTCPU
-#include "samachdep.h"
+#include <hp300/stand/samachdep.h>
 #endif
 
 main()
