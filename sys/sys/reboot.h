@@ -19,6 +19,7 @@
 #define	RB_HALT		0x08	/* don't reboot, just halt */
 #define	RB_INITNAME	0x10	/* name given for /etc/init */
 #define	RB_DFLTROOT	0x20	/* use compiled-in rootdev */
+#define	RB_KDB		0x40	/* give control to kernel debugger */
 
 #define	RB_PANIC	0	/* reboot due to panic */
 #define	RB_BOOT		1	/* reboot due to boot() */
