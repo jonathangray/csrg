@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	8.9 (Berkeley) 01/28/94
+ *	@(#)vfs_syscalls.c	8.10 (Berkeley) 02/15/94
  */
 
 #include <sys/param.h>
@@ -2005,6 +2005,37 @@ unionread:
 	VOP_UNLOCK(vp);
 	if (error)
 		return (error);
+
+#ifdef UNION
+{
+	extern int (**union_vnodeop_p)();
+	extern struct vnode *union_lowervp __P((struct vnode *));
+
+	if ((uap->count == auio.uio_resid) &&
+	    (vp->v_op == union_vnodeop_p)) {
+		struct vnode *tvp = vp;
+
+		vp = union_lowervp(vp);
+		if (vp != NULLVP) {
+			VOP_LOCK(vp);
+			error = VOP_OPEN(vp, FREAD);
+			VOP_UNLOCK(vp);
+
+			if (error) {
+				vrele(vp);
+				return (error);
+			}
+			fp->f_data = (caddr_t) vp;
+			fp->f_offset = 0;
+			error = vn_close(tvp, FREAD, fp->f_cred, p);
+			if (error)
+				return (error);
+			goto unionread;
+		}
+	}
+}
+#endif
+
 	if ((uap->count == auio.uio_resid) &&
 	    (vp->v_flag & VROOT) &&
 	    (vp->v_mount->mnt_flag & MNT_UNION)) {
