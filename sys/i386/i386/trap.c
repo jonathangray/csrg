@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)trap.c	7.8 (Berkeley) 03/20/92
+ *	@(#)trap.c	7.9 (Berkeley) 03/23/92
  */
 
 /*
@@ -349,7 +349,7 @@ syscall(frame)
 	struct timeval syst;
 	int error, opc;
 	int args[8], rval[2];
-	int code;
+	unsigned int code;
 
 #ifdef lint
 	r0 = 0; r0 = r0; r1 = 0; r1 = r1;
@@ -367,9 +367,9 @@ syscall(frame)
 	 * Reconstruct pc, assuming lcall $X,y is 7 bytes, as it is always.
 	 */
 	opc = frame.sf_eip - 7;
-	callp = ((u_int)code >= nsysent) ? &sysent[63] : &sysent[code];
+	callp = (code >= nsysent) ? &sysent[63] : &sysent[code];
 	if (callp == sysent) {
-		i = fuword(params);
+		code = fuword(params);
 		params += sizeof (int);
 		callp = (code >= nsysent) ? &sysent[63] : &sysent[code];
 	}
