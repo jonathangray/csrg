@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)netdate.c	5.1 (Berkeley) 12/04/90";
+static char sccsid[] = "@(#)netdate.c	5.2 (Berkeley) 02/25/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -43,7 +43,9 @@ static char sccsid[] = "@(#)netdate.c	5.1 (Berkeley) 12/04/90";
 #include <netdb.h>
 #define TSPTYPES
 #include <protocols/timed.h>
+#include <unistd.h>
 #include <stdio.h>
+#include <string.h>
 
 #define	WAITACK		2	/* seconds */
 #define	WAITDATEACK	5	/* seconds */
@@ -111,7 +113,7 @@ netsettime(tval)
 	msg.tsp_time.tv_sec = htonl((u_long)tval);
 	msg.tsp_time.tv_usec = htonl((u_long)0);
 	length = sizeof(struct sockaddr_in);
-	if (connect(s, &dest, length) < 0) {
+	if (connect(s, (struct sockaddr *)&dest, length) < 0) {
 		perror("date: connect");
 		goto bad;
 	}
@@ -141,8 +143,8 @@ loop:
 
 	if (found > 0 && FD_ISSET(s, &ready)) {
 		length = sizeof(struct sockaddr_in);
-		if (recvfrom(s, (char *)&msg, sizeof(struct tsp), 0, &from,
-		    &length) < 0) {
+		if (recvfrom(s, &msg, sizeof(struct tsp), 0,
+		    (struct sockaddr *)&from, &length) < 0) {
 			if (errno != ECONNREFUSED)
 				perror("date: recvfrom");
 			goto bad;
