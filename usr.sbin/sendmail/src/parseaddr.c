@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	8.56 (Berkeley) 03/14/95";
+static char sccsid[] = "@(#)parseaddr.c	8.57 (Berkeley) 03/14/95";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1607,7 +1607,7 @@ buildaddr(tv, a, flags, e)
 	int spaceleft;
 	static MAILER errormailer;
 	static char *errorargv[] = { "ERROR", NULL };
-	static char buf[MAXNAME];
+	static char buf[MAXNAME + 1];
 
 	if (tTd(24, 5))
 	{
@@ -2058,8 +2058,8 @@ remotename(name, m, flags, pstat, e)
 	char *fancy;
 	char *oldg = macvalue('g', e);
 	int rwset;
-	static char buf[MAXNAME];
-	char lbuf[MAXNAME];
+	static char buf[MAXNAME + 1];
+	char lbuf[MAXNAME + 1];
 	char pvpbuf[PSBUFSIZE];
 
 	if (tTd(12, 1))
@@ -2147,9 +2147,9 @@ remotename(name, m, flags, pstat, e)
 
 	/* need to make sure route-addrs have <angle brackets> */
 	if (bitset(RF_CANONICAL, flags) && lbuf[0] == '@')
-		expand("<\201g>", buf, &buf[sizeof buf - 1], e);
+		expand("<\201g>", buf, &buf[sizeof buf], e);
 	else
-		expand(fancy, buf, &buf[sizeof buf - 1], e);
+		expand(fancy, buf, &buf[sizeof buf], e);
 
 	define('g', oldg, e);
 
