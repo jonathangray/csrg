@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.3 (Berkeley) 01/17/91
+#	@(#)Makefile	8.1 (Berkeley) 06/04/93
 
 PROG=	mail.local
 MAN8=	mail.local.0
