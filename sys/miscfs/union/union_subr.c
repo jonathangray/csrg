@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_subr.c	8.4 (Berkeley) 02/17/94
+ *	@(#)union_subr.c	8.5 (Berkeley) 04/24/94
  */
 
 #include <sys/param.h>
@@ -47,6 +47,7 @@
 #include <sys/file.h>
 #include <sys/filedesc.h>
 #include <sys/queue.h>
+#include <sys/mount.h>
 #include <miscfs/union/union.h>
 
 #ifdef DIAGNOSTIC
@@ -226,7 +227,9 @@ union_allocvp(vpp, mp, undvp, dvp, cnp, uppervp, lowervp)
 	struct union_node *un;
 	struct union_node **pp;
 	struct vnode *xlowervp = NULLVP;
+	struct union_mount *um = MOUNTTOUNIONMOUNT(mp);
 	int hash;
+	int vflag;
 	int try;
 
 	if (uppervp == NULLVP && lowervp == NULLVP)
@@ -235,6 +238,17 @@ union_allocvp(vpp, mp, undvp, dvp, cnp, uppervp, lowervp)
 	if (uppervp && lowervp && (uppervp->v_type != lowervp->v_type)) {
 		xlowervp = lowervp;
 		lowervp = NULLVP;
+	}
+
+	/* detect the root vnode (and aliases) */
+	vflag = 0;
+	if ((uppervp == um->um_uppervp) &&
+	    ((lowervp == NULLVP) || lowervp == um->um_lowervp)) {
+		if (lowervp == NULLVP) {
+			lowervp = um->um_lowervp;
+			VREF(lowervp);
+		}
+		vflag = VROOT;
 	}
 
 loop:
@@ -396,6 +410,7 @@ loop:
 	MALLOC((*vpp)->v_data, void *, sizeof(struct union_node),
 		M_TEMP, M_WAITOK);
 
+	(*vpp)->v_flag |= vflag;
 	if (uppervp)
 		(*vpp)->v_type = uppervp->v_type;
 	else
