@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)get_line.c	5.3 (Berkeley) 02/28/93";
+static char sccsid[] = "@(#)get_line.c	5.4 (Berkeley) 04/28/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -128,7 +128,7 @@ get_line(loc, len)
                 text[0] = '\0';
                 return;
         }
-	bcopy(loc, text, len);
+	memmove(text, loc, len);
 #endif
 	text[len] = '\0';
 	sigspecial2 = 0;
