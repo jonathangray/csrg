@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)btree.h	8.2 (Berkeley) 09/07/93
+ *	@(#)btree.h	8.3 (Berkeley) 09/14/93
  */
 
 #include <mpool.h>
@@ -270,6 +270,7 @@ typedef struct _btree {
 
 	DB	*bt_dbp;		/* pointer to enclosing DB */
 
+	EPG	bt_cur;			/* current (pinned) page */
 	PAGE	*bt_pinned;		/* page pinned across calls */
 
 	EPGNO	bt_bcursor;		/* B: btree cursor */
