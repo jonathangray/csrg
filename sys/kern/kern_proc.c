@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_proc.c	8.2 (Berkeley) 09/21/93
+ *	@(#)kern_proc.c	8.3 (Berkeley) 09/23/93
  */
 
 #include <sys/param.h>
@@ -204,7 +204,7 @@ enterpgrp(p, pgid, mksess)
 			sess->s_ttyp = NULL;
 			bcopy(p->p_session->s_login, sess->s_login,
 			    sizeof(sess->s_login));
-			p->p_flag &= ~SCTTY;
+			p->p_flag &= ~P_CONTROLT;
 			pgrp->pg_session = sess;
 #ifdef DIAGNOSTIC
 			if (p != curproc)
