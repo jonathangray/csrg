@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)cmds.c	5.24 (Berkeley) 09/28/90";
+static char sccsid[] = "@(#)cmds.c	5.25 (Berkeley) 03/01/91";
 #endif /* not lint */
 
 /*
@@ -1198,7 +1198,7 @@ shell(argc, argv)
 		exit(1);
 		}
 	if (pid > 0)
-		while (wait(&status) != pid)
+		while (wait((int *)&status) != pid)
 			;
 	(void) signal(SIGINT, old1);
 	(void) signal(SIGQUIT, old2);
