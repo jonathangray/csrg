@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.2 (Berkeley) 07/11/93
+ *	@(#)sendmail.h	8.3 (Berkeley) 07/13/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.2		07/11/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.3		07/13/93";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -159,6 +159,7 @@ typedef struct address ADDRESS;
 # define QNOTREMOTE	000100	/* not an address for remote forwarding */
 # define QSELFREF	000200	/* this address references itself */
 # define QVERIFIED	000400	/* verified, but not expanded */
+# define QREPORT	001000	/* report this address in return message */
 # define QPSEUDO	000040	/* only on the list for verification */
 /*
 **  Mailer definition structure.
