@@ -4,7 +4,7 @@
 # include "sendmail.h"
 # include <sys/file.h>
 
-SCCSID(@(#)main.c	3.155		02/03/83);
+SCCSID(@(#)main.c	3.156		02/03/83);
 
 /*
 **  SENDMAIL -- Post mail to a set of destinations.
@@ -156,7 +156,11 @@ main(argc, argv)
 # endif LOG
 	errno = 0;
 	from = NULL;
+
+	/* initialize some macros, etc. */
 	initmacros();
+
+	/* hostname */
 	av = myhostname(jbuf);
 	if (jbuf[0] != '\0')
 	{
@@ -166,6 +170,12 @@ main(argc, argv)
 	}
 	while (av != NULL && *av != NULL)
 		setclass('w', *av++);
+
+	/* version */
+	define('v', Version, CurEnv);
+
+	/* current time */
+	define('b', arpadate(NULL), CurEnv);
 
 	/*
 	** Crack argv.
