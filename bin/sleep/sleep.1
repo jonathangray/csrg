@@ -32,9 +32,8 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)sleep.1	6.5 (Berkeley) 06/27/91
+.\"	@(#)sleep.1	6.6 (Berkeley) 07/27/91
 .\"
-.Vx
 .Dd 
 .Dt SLEEP 1
 .Os
@@ -52,17 +51,20 @@ suspends execution for a minimum of
 .Ar seconds .
 .Nm Sleep
 is used to schedule the execution of other commands (see
-EXAMPLES below).
+.Sx EXAMPLES
+below).
 .Pp
 The
 .Nm Sleep
 utility exits with one of the following values:
-.Tw Ds
-.Tp Li \&0
-On successful completetion, or if the signal SIGALRM was received.
-.Tp Li \&>\&0
+.Bl -tag -width flag
+.It Li \&0
+On successful completetion, or if the signal
+.Dv SIGALRM
+was received.
+.It Li \&>\&0
 An error occurred.
-.Tp
+.El
 .Sh EXAMPLES
 To schedule the execution of a command for
 .Va x
@@ -78,7 +80,7 @@ utility.)
 To reiteratively run a command (with the
 .Xr csh 1 ) :
 .Pp
-.Ds I
+.Bd -literal -offset indent -compact
 while (1)
 	if (! -r zzz.rawdata) then
 		sleep 300
@@ -90,7 +92,7 @@ while (1)
 		break
 	endif
 end
-.De
+.Ed
 .Pp
 The scenario for a script such as this might be: a program currently
 running is taking longer than expected to process a series of
@@ -107,4 +109,8 @@ awk job.
 .Xr sleep 3 ,
 .Xr at 1
 .Sh STANDARDS
-The sleep function is expected to be POSIX 1003.2 compatible.
+The
+.Nm sleep
+command is expected to be
+.St -p1003.2
+compatible.
