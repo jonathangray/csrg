@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)csh.h	5.22 (Berkeley) 05/15/92
+ *	@(#)csh.h	5.23 (Berkeley) 05/28/92
  */
 
 /*
@@ -132,6 +132,7 @@ Char   *ffile;			/* Name of shell file for $0 */
 char   *seterr;			/* Error message from scanner/parser */
 Char   *shtemp;			/* Temp name for << shell files in /tmp */
 
+#include <sys/types.h>
 #include <sys/time.h>
 #include <sys/resource.h>
 
