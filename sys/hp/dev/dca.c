@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dca.c	8.1 (Berkeley) 06/10/93
+ *	@(#)dca.c	8.2 (Berkeley) 01/12/94
  */
 
 #include "dca.h"
@@ -298,6 +298,7 @@ dcaclose(dev, flag, mode, p)
 dcaread(dev, uio, flag)
 	dev_t dev;
 	struct uio *uio;
+	int flag;
 {
 	int unit = UNIT(dev);
 	register struct tty *tp = &dca_tty[unit];
@@ -317,6 +318,7 @@ dcaread(dev, uio, flag)
 dcawrite(dev, uio, flag)
 	dev_t dev;
 	struct uio *uio;
+	int flag;
 {
 	int unit = UNIT(dev);
 	register struct tty *tp = &dca_tty[unit];
@@ -646,6 +648,7 @@ out:
 /*ARGSUSED*/
 dcastop(tp, flag)
 	register struct tty *tp;
+	int flag;
 {
 	register int s;
 
@@ -809,6 +812,7 @@ dcainit(unit, rate)
 }
 
 dcacngetc(dev)
+	dev_t dev;
 {
 	register struct dcadevice *dca = dca_addr[UNIT(dev)];
 	register u_char stat;
