@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hd_var.h	7.2 (Berkeley) 05/11/90
+ *	@(#)hd_var.h	7.3 (Berkeley) 06/21/90
  */
 
 /*
@@ -71,6 +71,8 @@ struct	hdcb {
 #define KILL_TIMER(hdp)		hdp->hd_timer = 0
 	char	hd_dontcopy;	/* if-driver doesn't free I-frames */
 	struct	ifnet *hd_ifp;	/* device's network visible interface */
+	struct	ifaddr *hd_ifa;	/* device's X.25 network address */
+	int	(*hd_output)();	/* separate entry for HDLC direct output */
 	struct	x25config *hd_xcp;	/* copy of &hdp->hd_if->if_addr */
 
 	/* link statistics */
