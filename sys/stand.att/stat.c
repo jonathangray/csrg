@@ -30,12 +30,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stat.c	7.2 (Berkeley) 10/11/92
+ *	@(#)stat.c	7.3 (Berkeley) 05/24/93
  */
 
 #include <sys/param.h>
 #include <sys/stat.h>
-#include <stand/saio.h>
+#include <stand.att/saio.h>
 
 #ifndef SMALL
 fstat(fd, sb)
