@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.84 (Berkeley) 07/21/92
+ *	@(#)vfs_subr.c	7.85 (Berkeley) 07/25/92
  */
 
 /*
@@ -217,7 +217,6 @@ void vattr_null(vap)
  */
 struct vnode *vfreeh, **vfreet = &vfreeh;
 extern int (**dead_vnodeop_p)();
-extern int (**spec_vnodeop_p)();
 extern void vclean();
 long numvnodes;
 extern struct vattr va_null;
