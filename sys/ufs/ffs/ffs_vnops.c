@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	8.4 (Berkeley) 12/30/93
+ *	@(#)ffs_vnops.c	8.5 (Berkeley) 01/04/94
  */
 
 #include <sys/param.h>
@@ -232,7 +232,6 @@ ffs_fsync(ap)
 	} */ *ap;
 {
 	register struct vnode *vp = ap->a_vp;
-	struct inode *ip = VTOI(vp);
 	register struct buf *bp;
 	struct timeval tv;
 	struct buf *nbp;
