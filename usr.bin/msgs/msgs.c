@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)msgs.c	5.7 (Berkeley) 01/29/91";
+static char sccsid[] = "@(#)msgs.c	5.8 (Berkeley) 02/04/91";
 #endif /* not lint */
 
 /*
@@ -69,15 +69,18 @@ static char sccsid[] = "@(#)msgs.c	5.7 (Berkeley) 01/29/91";
 /* #define UNBUFFERED	/* use unbuffered output */
 
 #include <sys/param.h>
-#include <signal.h>
-#include <string.h>
 #include <sys/dir.h>
 #include <sys/stat.h>
 #include <ctype.h>
+#include <errno.h>
 #include <pwd.h>
-#include <sgtty.h>
 #include <setjmp.h>
+#include <sgtty.h>
+#include <signal.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 #include "pathnames.h"
 
 #define CMODE	0666		/* bounds file creation mode */
@@ -96,6 +99,7 @@ static char sccsid[] = "@(#)msgs.c	5.7 (Berkeley) 01/29/91";
 
 typedef	char	bool;
 
+FILE	*msgsrc;
 FILE	*newmsg;
 char	*sep = "-";
 char	inbuf[BUFSIZ];
@@ -127,18 +131,10 @@ time_t	t;
 time_t	keep;
 struct	sgttyb	otty;
 
-char	*ctime();
-char	*getenv();
 char	*mktemp();
 char	*nxtfld();
 void	onintr();
 void	onsusp();
-off_t	ftell();
-FILE	*popen();
-struct	passwd	*getpwuid();
-time_t	time();
-
-extern	int	errno;
 
 /* option initialization */
 bool	hdrs = NO;
@@ -159,7 +155,7 @@ int argc; char *argv[];
 	int rcback = 0;			/* amount to back off of rcfirst */
 	int firstmsg, nextmsg, lastmsg = 0;
 	int blast = 0;
-	FILE *bounds, *msgsrc;
+	FILE *bounds;
 
 #ifdef UNBUFFERED
 	setbuf(stdout, NULL);
@@ -467,7 +463,6 @@ int argc; char *argv[];
 
 		if (already && !hdrs)
 			putchar('\n');
-		already = YES;
 
 		/*
 		 * Print header
@@ -475,6 +470,7 @@ int argc; char *argv[];
 		if (totty)
 			signal(SIGTSTP, onsusp);
 		(void) setjmp(tstpbuf);
+		already = YES;
 		nlines = 2;
 		if (seenfrom) {
 			printf("Message %d:\nFrom %s %s", msg, from, date);
