@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_bio.c	7.33 (Berkeley) 10/11/92
+ *	@(#)nfs_bio.c	7.34 (Berkeley) 11/01/92
  */
 
 #include <sys/param.h>
@@ -112,10 +112,9 @@ nfs_bioread(vp, uio, ioflag, cred)
 	 */
 	if ((nmp->nm_flag & NFSMNT_NQNFS) == 0 && vp->v_type != VLNK) {
 		if (np->n_flag & NMODIFIED) {
-			np->n_flag &= ~NMODIFIED;
 			if ((nmp->nm_flag & NFSMNT_MYWRITE) == 0 ||
 			     vp->v_type != VREG)
-				vinvalbuf(vp, TRUE, cred, uio->uio_procp);
+				NFS_VINVBUF(np, vp, TRUE, cred, uio->uio_procp);
 			np->n_attrstamp = 0;
 			np->n_direofoffset = 0;
 			if (error = VOP_GETATTR(vp, &vattr, cred, uio->uio_procp))
@@ -126,7 +125,7 @@ nfs_bioread(vp, uio, ioflag, cred)
 				return (error);
 			if (np->n_mtime != vattr.va_mtime.ts_sec) {
 				np->n_direofoffset = 0;
-				vinvalbuf(vp, TRUE, cred, uio->uio_procp);
+				NFS_VINVBUF(np, vp, TRUE, cred, uio->uio_procp);
 				np->n_mtime = vattr.va_mtime.ts_sec;
 			}
 		}
@@ -149,8 +148,7 @@ nfs_bioread(vp, uio, ioflag, cred)
 				np->n_direofoffset = 0;
 				cache_purge(vp);
 			}
-			np->n_flag &= ~NMODIFIED;
-			vinvalbuf(vp, TRUE, cred, uio->uio_procp);
+			NFS_VINVBUF(np, vp, TRUE, cred, uio->uio_procp);
 			np->n_brev = np->n_lrev;
 		}
 	    }
@@ -256,8 +254,7 @@ again:
 					cache_purge(vp);
 				}
 				brelse(bp);
-				np->n_flag &= ~NMODIFIED;
-				vinvalbuf(vp, TRUE, cred, uio->uio_procp);
+				NFS_VINVBUF(np, vp, TRUE, cred, uio->uio_procp);
 				np->n_brev = np->n_lrev;
 				continue;
 			}
@@ -265,8 +262,7 @@ again:
 		    ((np->n_flag & NMODIFIED) && vp->v_type == VDIR)) {
 			np->n_direofoffset = 0;
 			brelse(bp);
-			np->n_flag &= ~NMODIFIED;
-			vinvalbuf(vp, TRUE, cred, uio->uio_procp);
+			NFS_VINVBUF(np, vp, TRUE, cred, uio->uio_procp);
 			np->n_brev = np->n_lrev;
 			continue;
 		}
@@ -328,9 +324,8 @@ nfs_write(ap)
 	}
 	if (ioflag & (IO_APPEND | IO_SYNC)) {
 		if (np->n_flag & NMODIFIED) {
-			np->n_flag &= ~NMODIFIED;
 			np->n_attrstamp = 0;
-			vinvalbuf(vp, TRUE, cred, p);
+			NFS_VINVBUF(np, vp, TRUE, cred, p);
 		}
 		if (ioflag & IO_APPEND) {
 			np->n_attrstamp = 0;
@@ -375,7 +370,7 @@ nfs_write(ap)
 				return (error);
 			if (np->n_lrev != np->n_brev ||
 			    (np->n_flag & NQNFSNONCACHE)) {
-				vinvalbuf(vp, TRUE, cred, p);
+				NFS_VINVBUF(np, vp, TRUE, cred, p);
 				np->n_brev = np->n_lrev;
 			}
 		}
@@ -426,7 +421,7 @@ again:
 			if (np->n_lrev != np->n_brev ||
 			    (np->n_flag & NQNFSNONCACHE)) {
 				brelse(bp);
-				vinvalbuf(vp, TRUE, cred, p);
+				NFS_VINVBUF(np, vp, TRUE, cred, p);
 				np->n_brev = np->n_lrev;
 				goto again;
 			}
