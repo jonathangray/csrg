@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)buf.h	8.4 (Berkeley) 12/13/93
+ *	@(#)buf.h	8.5 (Berkeley) 01/04/94
  */
 
-#ifndef _BUF_H_
-#define	_BUF_H_
+#ifndef _SYS_BUF_H_
+#define	_SYS_BUF_H_
 #include <sys/queue.h>
 
 /*
@@ -168,4 +168,4 @@ struct buf *incore __P((struct vnode *, daddr_t));
 u_int	minphys __P((struct buf *bp));
 __END_DECLS
 #endif
-#endif /* !_BUF_H_ */
+#endif /* !_SYS_BUF_H_ */
