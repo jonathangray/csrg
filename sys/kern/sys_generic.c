@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sys_generic.c	7.25 (Berkeley) 01/10/91
+ *	@(#)sys_generic.c	7.26 (Berkeley) 03/17/91
  */
 
 #include "param.h"
@@ -70,7 +70,7 @@ read(p, uap, retval)
 	struct iovec ktriov;
 #endif
 
-	if (((unsigned)uap->fdes) >= fdp->fd_maxfiles ||
+	if (((unsigned)uap->fdes) >= fdp->fd_nfiles ||
 	    (fp = OFILE(fdp, uap->fdes)) == NULL ||
 	    (fp->f_flag & FREAD) == 0)
 		return (EBADF);
@@ -127,7 +127,7 @@ readv(p, uap, retval)
 	struct iovec *ktriov = NULL;
 #endif
 
-	if (((unsigned)uap->fdes) >= fdp->fd_maxfiles ||
+	if (((unsigned)uap->fdes) >= fdp->fd_nfiles ||
 	    (fp = OFILE(fdp, uap->fdes)) == NULL ||
 	    (fp->f_flag & FREAD) == 0)
 		return (EBADF);
@@ -210,7 +210,7 @@ write(p, uap, retval)
 	struct iovec ktriov;
 #endif
 
-	if (((unsigned)uap->fdes) >= fdp->fd_maxfiles ||
+	if (((unsigned)uap->fdes) >= fdp->fd_nfiles ||
 	    (fp = OFILE(fdp, uap->fdes)) == NULL ||
 	    (fp->f_flag & FWRITE) == 0)
 		return (EBADF);
@@ -270,7 +270,7 @@ writev(p, uap, retval)
 	struct iovec *ktriov = NULL;
 #endif
 
-	if (((unsigned)uap->fdes) >= fdp->fd_maxfiles ||
+	if (((unsigned)uap->fdes) >= fdp->fd_nfiles ||
 	    (fp = OFILE(fdp, uap->fdes)) == NULL ||
 	    (fp->f_flag & FWRITE) == 0)
 		return (EBADF);
@@ -357,7 +357,7 @@ ioctl(p, uap, retval)
 	char stkbuf[STK_PARAMS];
 	caddr_t data = stkbuf;
 
-	if ((unsigned)uap->fdes >= fdp->fd_maxfiles ||
+	if ((unsigned)uap->fdes >= fdp->fd_nfiles ||
 	    (fp = OFILE(fdp, uap->fdes)) == NULL)
 		return (EBADF);
 	if ((fp->f_flag & (FREAD|FWRITE)) == 0)
@@ -422,7 +422,7 @@ ioctl(p, uap, retval)
 		error = fgetown(fp, (int *)data);
 		break;
 	default:
-		error = (*fp->f_ops->fo_ioctl)(fp, com, data);
+		error = (*fp->f_ops->fo_ioctl)(fp, com, data, p);
 		/*
 		 * Copy any data to user, size was
 		 * already set and checked above.
@@ -456,8 +456,8 @@ select(p, uap, retval)
 
 	bzero((caddr_t)ibits, sizeof(ibits));
 	bzero((caddr_t)obits, sizeof(obits));
-	if (uap->nd > p->p_fd->fd_maxfiles)
-		uap->nd = p->p_fd->fd_maxfiles;	/* forgiving; slightly wrong */
+	if (uap->nd > p->p_fd->fd_nfiles)
+		uap->nd = p->p_fd->fd_nfiles;	/* forgiving; slightly wrong */
 	ni = howmany(uap->nd, NFDBITS);
 
 #define	getbits(name, x) \
@@ -488,7 +488,7 @@ select(p, uap, retval)
 retry:
 	ncoll = nselcoll;
 	p->p_flag |= SSEL;
-	error = selscan(p->p_fd, ibits, obits, uap->nd, retval);
+	error = selscan(p, ibits, obits, uap->nd, retval);
 	if (error || *retval)
 		goto done;
 	s = splhigh();
@@ -530,11 +530,12 @@ done:
 	return (error);
 }
 
-selscan(fdp, ibits, obits, nfd, retval)
-	register struct filedesc *fdp;
+selscan(p, ibits, obits, nfd, retval)
+	struct proc *p;
 	fd_set *ibits, *obits;
 	int nfd, *retval;
 {
+	register struct filedesc *fdp = p->p_fd;
 	register int which, i, j;
 	register fd_mask bits;
 	int flag;
@@ -562,7 +563,7 @@ selscan(fdp, ibits, obits, nfd, retval)
 					error = EBADF;
 					break;
 				}
-				if ((*fp->f_ops->fo_select)(fp, flag)) {
+				if ((*fp->f_ops->fo_select)(fp, flag, p)) {
 					FD_SET(i + j, &obits[which]);
 					n++;
 				}
@@ -574,9 +575,10 @@ selscan(fdp, ibits, obits, nfd, retval)
 }
 
 /*ARGSUSED*/
-seltrue(dev, flag)
+seltrue(dev, flag, p)
 	dev_t dev;
 	int flag;
+	struct proc *p;
 {
 
 	return (1);
