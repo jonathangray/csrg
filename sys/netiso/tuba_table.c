@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tuba_table.c	7.10 (Berkeley) 02/12/93
+ *	@(#)tuba_table.c	7.11 (Berkeley) 03/25/93
  */
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -111,7 +111,7 @@ tuba_lookup(siso, wait)
 	tc->tc_siso.siso_len = sizeof(tc->tc_siso);
 	tc->tc_time = time.tv_sec;
 	for (i = sum_a = tc->tc_siso.siso_nlen; --i >= 0; )
-		(i & 1 ? sum_a : sum_b) += tc->tc_siso.siso_data[i];
+		(i & 1 ? sum_a : sum_b) += (u_char)tc->tc_siso.siso_data[i];
 	REDUCE(tc->tc_sum, (sum_a << 8) + sum_b);
 	HTONS(tc->tc_sum);
 	SWAB(tc->tc_ssum, tc->tc_sum);
