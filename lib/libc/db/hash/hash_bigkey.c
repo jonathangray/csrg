@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)hash_bigkey.c	5.8 (Berkeley) 01/17/93";
+static char sccsid[] = "@(#)hash_bigkey.c	5.9 (Berkeley) 02/11/93";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -58,7 +58,6 @@ static char sccsid[] = "@(#)hash_bigkey.c	5.8 (Berkeley) 01/17/93";
 
 #include <sys/param.h>
 
-#include <db.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -68,6 +67,7 @@ static char sccsid[] = "@(#)hash_bigkey.c	5.8 (Berkeley) 01/17/93";
 #include <assert.h>
 #endif
 
+#include <db.h>
 #include "hash.h"
 #include "page.h"
 #include "extern.h"
