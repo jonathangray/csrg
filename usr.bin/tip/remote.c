@@ -1,6 +1,7 @@
 /*
- * Copyright (c) 1983 The Regents of the University of California.
+ * Copyright (c) 1992 The Regents of the University of California.
  * All rights reserved.
+ *
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,13 +33,14 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)remote.c	5.6 (Berkeley) 8/6/92";
+char copyright[] =
+"@(#) Copyright (c) 1992 The Regents of the University of California.\n\
+ All rights reserved.\n";
 #endif /* not lint */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include "pathnames.h"
-#include "tip.h"
+#ifndef lint
+static char sccsid[] = "@(#)remote.c	5.8 (Berkeley) 09/15/92";
+#endif /* not lint */
 
 /*
  * Attributes to be gleened from remote host description
