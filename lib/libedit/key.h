@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)key.h	5.1 (Berkeley) 06/22/92
+ *	@(#)key.h	5.2 (Berkeley) 07/03/92
  */
 
 /*
@@ -73,6 +73,8 @@ protected void		key_clear	__P((EditLine *, el_action_t *,
 					     char *));
 protected int		key_delete	__P((EditLine *, char *));
 protected void		key_print	__P((EditLine *, char *));
+protected void	        key_kprint	__P((EditLine *, char *, 
+					     key_value_t *, int));
 protected char 	       *key__decode_str	__P((char *, char *, char *));
 
 #endif /* _h_el_key */
