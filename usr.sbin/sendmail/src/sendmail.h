@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	6.26 (Berkeley) 03/01/93
+ *	@(#)sendmail.h	6.27 (Berkeley) 03/07/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	6.26		03/01/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	6.27		03/07/93";
 # endif lint
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -768,6 +768,7 @@ extern EVENT	*setevent();
 extern char	*sfgets();
 extern char	*queuename();
 extern time_t	curtime();
+extern bool	transienterror();
 
 /*
 **  HACK to fix bug in C compiler on CCI
