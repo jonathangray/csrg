@@ -30,10 +30,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	5.4 (Berkeley) 04/18/91
+ *	@(#)pathnames.h	5.5 (Berkeley) 04/30/91
  */
 
 #define	_PATH_TMAC		"/usr/share/tmac/tmac."
 #define	_PATH_LOCAL_TMAC	"/usr/local/lib/tmac/tmac."
-#define	_PATH_TERM		"/usr/libdata/term/tab"
+#define	_PATH_TERM		"/usr/old/libdata/term/tab"
 #define	_PATH_TRACCT		"/var/account/tracct"
