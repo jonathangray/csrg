@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_exit.c	8.1 (Berkeley) 06/14/93
+ *	@(#)kern_exit.c	7.55 (Berkeley) 06/14/93
  */
 
 #include <sys/param.h>
@@ -163,7 +163,7 @@ exit1(p, rv)
 	}
 	fixjobc(p, p->p_pgrp, 0);
 	p->p_rlimit[RLIMIT_FSIZE].rlim_cur = RLIM_INFINITY;
-	(void) acct(p);
+	(void)acct_process(p);
 #ifdef KTRACE
 	/* 
 	 * release trace file
