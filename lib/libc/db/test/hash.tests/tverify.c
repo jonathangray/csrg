@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)tverify.c	5.2 (Berkeley) 03/12/91";
+static char sccsid[] = "@(#)tverify.c	5.2 (Berkeley) 3/12/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -90,7 +90,7 @@ char **argv;
 */
 		key.size = strlen(wp1);
 
-		stat = (dbp->get)(dbp, &key, &res);
+		stat = (dbp->get)(dbp, &key, &res,0);
 		if (stat < 0) {
 		    fprintf ( stderr, "Error retrieving %s\n", key.data );
 		    exit(1);
