@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)mci.c	8.8 (Berkeley) 12/01/93";
+static char sccsid[] = "@(#)mci.c	8.9 (Berkeley) 12/01/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -350,7 +350,7 @@ mci_dump(mci, logit)
 		ctime(&mci->mci_lastuse));
 printit:
 	if (logit)
-		syslog(LOG_INFO, "%s", buf);
+		syslog(LOG_DEBUG, "%s", buf);
 	else
 		printf("%s\n", buf);
 }
