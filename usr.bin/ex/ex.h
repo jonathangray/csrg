@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)ex.h	7.13 (Berkeley) 04/17/91
+ *	@(#)ex.h	7.13.1.1 (Berkeley) 12/03/92
  */
 
 #ifdef V6
