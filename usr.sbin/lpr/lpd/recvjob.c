@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recvjob.c	5.14 (Berkeley) 05/02/91";
+static char sccsid[] = "@(#)recvjob.c	5.15 (Berkeley) 05/04/91";
 #endif /* not lint */
 
 /*
@@ -169,7 +169,8 @@ readjob()
 			}
 			(void) strcpy(dfname, cp);
 			if (index(dfname, '/'))
-				frecverr("illegal path name");
+				frecverr("readjob: %s: illegal path name",
+					dfname);
 			(void) readfile(dfname, size);
 			continue;
 		}
@@ -190,9 +191,8 @@ readfile(file, size)
 	int fd, err;
 
 	fd = open(file, O_CREAT|O_EXCL|O_WRONLY, FILMOD);
-		frecverr("illegal path name");
 	if (fd < 0)
-		frecverr("%s: %m", file);
+		frecverr("readfile: %s: illegal path name: %m", file);
 	ack();
 	err = 0;
 	for (i = 0; i < size; i += BUFSIZ) {
