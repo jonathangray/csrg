@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)socketvar.h	7.11 (Berkeley) 06/30/90
+ *	@(#)socketvar.h	7.12 (Berkeley) 11/20/90
  */
 
 /*
@@ -165,7 +165,7 @@ struct socket {
  * Returns error without lock if sleep is interrupted.
  */
 #define sblock(sb) ((sb)->sb_flags & SB_LOCK ? sb_lock(sb) : \
-		((sb)->sb_flags |= SB_LOCK), 0)
+		((sb)->sb_flags |= SB_LOCK, 0))
 
 /* release lock on sockbuf sb */
 #define	sbunlock(sb) { \
