@@ -31,7 +31,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)scanf.3	6.7 (Berkeley) 04/19/91
+.\"     @(#)scanf.3	6.8 (Berkeley) 04/20/91
 .\"
 .Dd 
 .Dt SCANF 3
@@ -186,7 +186,7 @@ The following conversions are available:
 .Bl -tag -width XXXX
 .It Cm %
 Matches a literal `%'.
-That is, `%%' in the format string
+That is, `%\&%' in the format string
 matches a single input `%' character.
 No conversion is done, and assignment does not occur.
 .It Cm d
