@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)ftruncate.c	8.1 (Berkeley) 06/04/93";
+static char sccsid[] = "@(#)ftruncate.c	5.3 (Berkeley) 06/16/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -48,5 +48,5 @@ ftruncate(fd, length)
 	off_t	length;
 {
 
-	return(__indir((quad_t)SYS_ftruncate, fd, 0, length));
+	return(__syscall((quad_t)SYS_ftruncate, fd, 0, length));
 }
