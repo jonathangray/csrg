@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)util.c	8.53 (Berkeley) 02/28/95";
+static char sccsid[] = "@(#)util.c	8.39.1.5 (Berkeley) 03/05/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1604,7 +1604,7 @@ cleanstrcpy(t, f, l)
 {
 #ifdef LOG
 	/* check for newlines and log if necessary */
-	(void) denlstring(f, TRUE);
+	(void) denlstring(f, TRUE, TRUE);
 #endif
 
 	l--;
@@ -1625,6 +1625,7 @@ cleanstrcpy(t, f, l)
 **
 **	Parameters:
 **		s -- the input string
+**		strict -- if set, don't permit continuation lines.
 **		logattacks -- if set, log attempted attacks.
 **
 **	Returns:
@@ -1633,8 +1634,9 @@ cleanstrcpy(t, f, l)
 */
 
 char *
-denlstring(s, logattacks)
+denlstring(s, strict, logattacks)
 	char *s;
+	int strict;
 	int logattacks;
 {
 	register char *p;
@@ -1642,7 +1644,11 @@ denlstring(s, logattacks)
 	static char *bp = NULL;
 	static int bl = 0;
 
-	if (strchr(s, '\n') == NULL)
+	p = s;
+	while ((p = strchr(p, '\n')) != NULL)
+		if (strict || (*++p != ' ' && *p != '\t'))
+			break;
+	if (p == NULL)
 		return s;
 
 	l = strlen(s) + 1;
