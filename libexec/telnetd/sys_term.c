@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)sys_term.c	5.18 (Berkeley) 01/18/93";
+static char sccsid[] = "@(#)sys_term.c	5.19 (Berkeley) 01/19/93";
 #endif /* not lint */
 
 #include "telnetd.h"
@@ -580,7 +580,7 @@ tty_flowmode()
 #ifndef USE_TERMIO
 	return(((termbuf.tc.t_startc) > 0 && (termbuf.tc.t_stopc) > 0) ? 1 : 0);
 #else
-	return(termbuf.c_iflag & IXON ? 1 : 0);
+	return((termbuf.c_iflag & IXON) ? 1 : 0);
 #endif
 }
 
@@ -594,7 +594,7 @@ tty_restartany()
 	return(-1);
 # endif
 #else
-	return(termbuf.c_iflag & IXANY ? 1 : 0);
+	return((termbuf.c_iflag & IXANY) ? 1 : 0);
 #endif
 }
 
