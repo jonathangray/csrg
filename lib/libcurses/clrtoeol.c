@@ -3,7 +3,7 @@
 /*
  *	This routine clears up to the end of line
  *
- * 03/05/81 (Berkeley) @(#)clrtoeol.c	1.2
+ * 05/01/85 (Berkeley) @(#)clrtoeol.c	1.3
  */
 wclrtoeol(win)
 reg WINDOW	*win; {
