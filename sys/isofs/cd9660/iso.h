@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)iso.h	8.5 (Berkeley) 03/30/95
+ *	@(#)iso.h	8.6 (Berkeley) 05/10/95
  */
 
 #define ISODCL(from, to) (to - from + 1)
@@ -146,7 +146,6 @@ struct iso_mnt {
 	int im_bmask;
 	
 	int volume_space_size;
-	char im_fsmnt[50];
 	struct netexport im_export;
 	
 	char root[ISODCL (157, 190)];
