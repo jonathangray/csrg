@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)spec_vnops.c	8.1 (Berkeley) 06/10/93
+ *	@(#)spec_vnops.c	8.2 (Berkeley) 09/21/93
  */
 
 #include <sys/param.h>
@@ -267,7 +267,7 @@ spec_read(ap)
 				brelse(bp);
 				return (error);
 			}
-			error = uiomove(bp->b_un.b_addr + on, n, uio);
+			error = uiomove((char *)bp->b_data + on, n, uio);
 			if (n + on == bsize)
 				bp->b_flags |= B_AGE;
 			brelse(bp);
@@ -345,7 +345,7 @@ spec_write(ap)
 				brelse(bp);
 				return (error);
 			}
-			error = uiomove(bp->b_un.b_addr + on, n, uio);
+			error = uiomove((char *)bp->b_data + on, n, uio);
 			if (n + on == bsize) {
 				bp->b_flags |= B_AGE;
 				bawrite(bp);
