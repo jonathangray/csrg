@@ -30,7 +30,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)op.me	8.35 (Berkeley) 03/21/94
+.\"	@(#)op.me	8.36 (Berkeley) 04/14/94
 .\"
 .\" eqn op.me | pic | troff -me
 .eh 'SMM:08-%''Sendmail Installation and Operation Guide'
@@ -69,7 +69,7 @@ University of California, Berkeley
 Mammoth Project
 eric@CS.Berkeley.EDU
 .sp
-Version 8.35
+Version 8.36
 .sp
 For Sendmail Version 8.6
 .)l
@@ -3835,6 +3835,7 @@ needvrfyhelo	Insist on HELO or EHLO command before VRFY
 novrfy	Disallow VRFY entirely
 restrictmailq	Restrict mailq command
 restrictqrun	Restrict \-q command line flag
+noreceipts	Ignore Return-Receipt-To: header
 goaway	Disallow essentially all SMTP status queries
 authwarnings	Put X-Authentication-Warning: headers in messages
 .)b
@@ -6850,7 +6851,7 @@ A transcript of the current session.
 .\"Eric Allman
 .\"Britton-Lee, Inc.
 .\".sp
-.\"Version 8.35
+.\"Version 8.36
 .\".ce 0
 .bp 2
 .rs
