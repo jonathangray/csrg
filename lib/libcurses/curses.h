@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)curses.h	5.35 (Berkeley) 05/16/93
+ *	@(#)curses.h	5.36 (Berkeley) 05/17/93
  */
 
 #ifndef _CURSES_H_
@@ -289,14 +289,16 @@ char	*wstandend __P((WINDOW *));
 char	*wstandout __P((WINDOW *));
 int	 vwprintw __P((WINDOW *, const char *, _BSD_VA_LIST_));
 
-void	 __cputchar __P((int));		/* Public: backward compatibility */
+/* Private functions that are needed for user programs prototypes. */
+void	 __cputchar __P((int));
+int	 __mvcur __P((int, int, int, int, int));
+int	 __waddbytes __P((WINDOW *, const char *, int, int));
 
+/* Private functions. */
 #ifdef _CURSES_PRIVATE
-/* Private function prototypes. */
 void	 __CTRACE __P((const char *, ...));
 u_int	 __hash __P((char *, int));
 void	 __id_subwins __P((WINDOW *));
-int	 __mvcur __P((int, int, int, int, int));
 void	 __set_subwin __P((WINDOW *, WINDOW *));
 void	 __startwin __P((void));
 void	 __stop_signal_handler __P((int));
@@ -304,7 +306,6 @@ void	 __swflags __P((WINDOW *));
 int	 __touchline __P((WINDOW *, int, int, int, int));
 int	 __touchwin __P((WINDOW *));
 char	*__tscroll __P((const char *, int));
-int	 __waddbytes __P((WINDOW *, const char *, int, int));
 int	 __waddch __P((WINDOW *, __LDATA *));
 
 /* Private #defines. */
