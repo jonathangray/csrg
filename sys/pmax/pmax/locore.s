@@ -48,7 +48,7 @@
  * from: $Header: /sprite/src/kernel/vm/ds3100.md/vmPmaxAsm.s,
  *	v 1.1 89/07/10 14:27:41 nelson Exp $ SPRITE (DECWRL)
  *
- *	@(#)locore.s	7.1 (Berkeley) 01/07/92
+ *	@(#)locore.s	7.2 (Berkeley) 01/07/92
  */
 
 /*
@@ -1765,7 +1765,7 @@ END(spl0)
 LEAF(splsoftclock)
 	.set	noreorder
 	mfc0	v0, MACH_COP_0_STATUS_REG	# read status register
-	li	t0, ~MACH_SOFT_INT_MASK_1	# disable soft clock
+	li	t0, ~MACH_SOFT_INT_MASK_0	# disable soft clock
 	and	t0, t0, v0
 	mtc0	t0, MACH_COP_0_STATUS_REG	# save it
 	j	ra
@@ -1773,10 +1773,21 @@ LEAF(splsoftclock)
 	.set	reorder
 END(splsoftclock)
 
+LEAF(splnet)
+	.set	noreorder
+	mfc0	v0, MACH_COP_0_STATUS_REG	# read status register
+	li	t0, ~(MACH_SOFT_INT_MASK_0 | MACH_SOFT_INT_MASK_1)
+	and	t0, t0, v0
+	mtc0	t0, MACH_COP_0_STATUS_REG	# save it
+	j	ra
+	and	v0, v0, (MACH_INT_MASK | MACH_SR_INT_ENA_CUR)
+	.set	reorder
+END(splnet)
+
 LEAF(splbio)
 	.set	noreorder
 	mfc0	v0, MACH_COP_0_STATUS_REG	# read status register
-	li	t0, ~MACH_INT_MASK_0		# disable SCSI interrupts
+	li	t0, ~(MACH_INT_MASK_0 | MACH_SOFT_INT_MASK_0 | MACH_SOFT_INT_MASK_1)
 	and	t0, t0, v0
 	mtc0	t0, MACH_COP_0_STATUS_REG	# save it
 	j	ra
@@ -1784,15 +1795,10 @@ LEAF(splbio)
 	.set	reorder
 END(splbio)
 
-/*
- * Block interrupts for any device that could allocate memory at interrupt
- * time.
- */
-LEAF(splnet)
-ALEAF(splimp)
+LEAF(splimp)
 	.set	noreorder
 	mfc0	v0, MACH_COP_0_STATUS_REG	# read status register
-	li	t0, ~MACH_INT_MASK_1		# disable network interrupts
+	li	t0, ~(MACH_INT_MASK_1 | MACH_SOFT_INT_MASK_1 | MACH_SOFT_INT_MASK_0)
 	and	t0, t0, v0
 	mtc0	t0, MACH_COP_0_STATUS_REG	# save it
 	j	ra
@@ -1803,7 +1809,7 @@ END(splnet)
 LEAF(spltty)
 	.set	noreorder
 	mfc0	v0, MACH_COP_0_STATUS_REG	# read status register
-	li	t0, ~MACH_INT_MASK_2		# disable tty interrupts
+	li	t0, ~(MACH_INT_MASK_2 | MACH_SOFT_INT_MASK_1 | MACH_SOFT_INT_MASK_0)
 	and	t0, t0, v0
 	mtc0	t0, MACH_COP_0_STATUS_REG	# save it
 	j	ra
@@ -1814,7 +1820,7 @@ END(spltty)
 LEAF(splclock)
 	.set	noreorder
 	mfc0	v0, MACH_COP_0_STATUS_REG	# read status register
-	li	t0, ~MACH_INT_MASK_3		# disable clock interrupts
+	li	t0, ~(MACH_INT_MASK_3 | MACH_SOFT_INT_MASK_1 | MACH_SOFT_INT_MASK_0)
 	and	t0, t0, v0
 	mtc0	t0, MACH_COP_0_STATUS_REG	# save it
 	j	ra
