@@ -32,15 +32,19 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)pty.c	5.2 (Berkeley) 02/24/91";
+static char sccsid[] = "@(#)pty.c	5.2 (Berkeley) 02/27/91";
 #endif /* LIBC_SCCS and not lint */
 
+#include <sys/cdefs.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/file.h>
 #include <sys/ioctl.h>
-#include <sys/errno.h>
+#include <fcntl.h>
 #include <termios.h>
+#include <errno.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <string.h>
 #include <grp.h>
 
 openpty(amaster, aslave, name, termp, winp)
@@ -49,9 +53,10 @@ openpty(amaster, aslave, name, termp, winp)
 	struct termios *termp;
 	struct winsize *winp;
 {
-	register char *line = "/dev/ptyXX", *cp1, *cp2;
+	register const char *cp1, *cp2;
 	register int master, slave, ttygid;
 	struct group *gr;
+	char line[] = "/dev/ptyXX";
 
 	if ((gr = getgrnam("tty")) != NULL)
 		ttygid = gr->gr_gid;
@@ -77,7 +82,7 @@ openpty(amaster, aslave, name, termp, winp)
 						strcpy(name, line);
 					if (termp)
 						(void) tcsetattr(slave, 
-							TCSAFLUSH, &termp);
+							TCSAFLUSH, termp);
 					if (winp)
 						(void) ioctl(slave, TIOCSWINSZ, 
 							(char *)&winp);
