@@ -28,7 +28,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_usrreq.c	7.38 (Berkeley) 10/11/92
+ *	@(#)uipc_usrreq.c	7.39 (Berkeley) 02/26/93
  */
 
 #include <sys/param.h>
@@ -807,6 +807,8 @@ unp_discard(fp)
 	struct file *fp;
 {
 
+	if (fp->f_msgcount == 0)
+		return;
 	fp->f_msgcount--;
 	unp_rights--;
 	(void) closef(fp, (struct proc *)NULL);
