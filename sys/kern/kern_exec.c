@@ -1,9 +1,12 @@
-/*
- * Copyright (c) 1982, 1986, 1989, 1991 Regents of the University of California.
- * All rights reserved.  The Berkeley software License Agreement
- * specifies the terms and conditions for redistribution.
+/*-
+ * Copyright (c) 1982, 1986, 1991 The Regents of the University of California.
+ * All rights reserved.
  *
- *	@(#)kern_exec.c	7.42 (Berkeley) 05/09/91
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ *
+ *	@(#)kern_exec.c	7.43 (Berkeley) 05/09/91
  */
 
 #include "param.h"
