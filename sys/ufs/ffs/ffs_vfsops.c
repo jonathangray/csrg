@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vfsops.c	8.1 (Berkeley) 06/11/93
+ *	@(#)ffs_vfsops.c	8.2 (Berkeley) 09/21/93
  */
 
 #include <sys/param.h>
@@ -278,16 +278,16 @@ ffs_reload(mountp, cred, p)
 	 */
 	if (error = bread(devvp, SBLOCK, SBSIZE, NOCRED, &bp))
 		return (error);
-	fs = bp->b_un.b_fs;
+	fs = (struct fs *)bp->b_data;
 	if (fs->fs_magic != FS_MAGIC || fs->fs_bsize > MAXBSIZE ||
 	    fs->fs_bsize < sizeof(struct fs)) {
 		brelse(bp);
 		return (EIO);		/* XXX needs translation */
 	}
 	fs = VFSTOUFS(mountp)->um_fs;
-	bcopy((caddr_t)&fs->fs_csp[0], (caddr_t)&bp->b_un.b_fs->fs_csp[0],
+	bcopy(&fs->fs_csp[0], &((struct fs *)bp->b_data)->fs_csp[0],
 	    sizeof(fs->fs_csp));
-	bcopy((caddr_t)bp->b_un.b_addr, (caddr_t)fs, (u_int)fs->fs_sbsize);
+	bcopy(bp->b_data, fs, (u_int)fs->fs_sbsize);
 	if (fs->fs_sbsize < SBSIZE)
 		bp->b_flags |= B_INVAL;
 	brelse(bp);
@@ -304,8 +304,7 @@ ffs_reload(mountp, cred, p)
 		if (error = bread(devvp, fsbtodb(fs, fs->fs_csaddr + i), size,
 		    NOCRED, &bp))
 			return (error);
-		bcopy((caddr_t)bp->b_un.b_addr, fs->fs_csp[fragstoblks(fs, i)],
-		    (u_int)size);
+		bcopy(bp->b_data, fs->fs_csp[fragstoblks(fs, i)], (u_int)size);
 		brelse(bp);
 	}
 loop:
@@ -334,7 +333,7 @@ loop:
 			vput(vp);
 			return (error);
 		}
-		dp = bp->b_un.b_dino;
+		dp = (struct dinode *)bp->b_data;
 		dp += itoo(fs, ip->i_number);
 		ip->i_din = *dp;
 		brelse(bp);
@@ -379,7 +378,7 @@ ffs_mountfs(devvp, mp, p)
 	ump = NULL;
 	if (error = bread(devvp, SBLOCK, SBSIZE, NOCRED, &bp))
 		goto out;
-	fs = bp->b_un.b_fs;
+	fs = (struct fs *)bp->b_data;
 		error = EINVAL;		/* XXX needs translation */
 		goto out;
 	}
@@ -387,8 +386,7 @@ ffs_mountfs(devvp, mp, p)
 	bzero((caddr_t)ump, sizeof *ump);
 	ump->um_fs = malloc((u_long)fs->fs_sbsize, M_UFSMNT,
 	    M_WAITOK);
-	bcopy((caddr_t)bp->b_un.b_addr, (caddr_t)ump->um_fs,
-	   (u_int)fs->fs_sbsize);
+	bcopy(bp->b_data, ump->um_fs, (u_int)fs->fs_sbsize);
 	if (fs->fs_sbsize < SBSIZE)
 		bp->b_flags |= B_INVAL;
 	brelse(bp);
@@ -445,7 +443,7 @@ ffs_mountfs(devvp, mp, p)
 			free(base, M_UFSMNT);
 			goto out;
 		}
-		bcopy((caddr_t)bp->b_un.b_addr, space, (u_int)size);
+		bcopy(bp->b_data, space, (u_int)size);
 		fs->fs_csp[fragstoblks(fs, i)] = (struct csum *)space;
 		space += size;
 		brelse(bp);
@@ -658,7 +656,8 @@ loop:
 		if (VOP_ISLOCKED(vp))
 			continue;
 		ip = VTOI(vp);
-		if ((ip->i_flag & (IMOD|IACC|IUPD|ICHG)) == 0 &&
+		if ((ip->i_flag &
+		    (IMODIFIED | IACCESS | IUPDATE | ICHANGE)) == 0 &&
 		    vp->v_dirtyblkhd.le_next == NULL)
 			continue;
 		if (vget(vp))
@@ -745,7 +744,7 @@ ffs_vget(mp, ino, vpp)
 		*vpp = NULL;
 		return (error);
 	}
-	dp = bp->b_un.b_dino;
+	dp = (struct dinode *)bp->b_data;
 	dp += itoo(fs, ino);
 	ip->i_din = *dp;
 	brelse(bp);
@@ -773,7 +772,7 @@ ffs_vget(mp, ino, vpp)
 			nextgennumber = time.tv_sec;
 		ip->i_gen = nextgennumber;
 		if ((vp->v_mount->mnt_flag & MNT_RDONLY) == 0)
-			ip->i_flag |= IMOD;
+			ip->i_flag |= IMODIFIED;
 	}
 	/*
 	 * Ensure that uid and gid are correct. This is a temporary
@@ -857,10 +856,10 @@ ffs_sbupdate(mp, waitfor)
 #else SECSIZE
 	bp = getblk(mp->um_devvp, SBLOCK, (int)fs->fs_sbsize, 0, 0);
 #endif SECSIZE
-	bcopy((caddr_t)fs, bp->b_un.b_addr, (u_int)fs->fs_sbsize);
+	bcopy((caddr_t)fs, bp->b_data, (u_int)fs->fs_sbsize);
 	/* Restore compatibility to old file systems.		   XXX */
 	if (fs->fs_postblformat == FS_42POSTBLFMT)		/* XXX */
-		bp->b_un.b_fs->fs_nrpos = -1;			/* XXX */
+		((struct fs *)bp->b_data)->fs_nrpos = -1;	/* XXX */
 #ifdef SECSIZE
 #ifdef tahoe
 	/* restore standard fsbtodb shift */
@@ -885,7 +884,7 @@ ffs_sbupdate(mp, waitfor)
 		bp = getblk(mp->um_devvp, fsbtodb(fs, fs->fs_csaddr + i),
 		    size, 0, 0);
 #endif SECSIZE
-		bcopy(space, bp->b_un.b_addr, (u_int)size);
+		bcopy(space, bp->b_data, (u_int)size);
 		space += size;
 		if (waitfor == MNT_WAIT)
 			error = bwrite(bp);
