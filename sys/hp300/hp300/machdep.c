@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: machdep.c 1.51 89/11/28$
  *
- *	@(#)machdep.c	7.2 (Berkeley) 05/16/90
+ *	@(#)machdep.c	7.3 (Berkeley) 05/25/90
  */
 
 #include "param.h"
@@ -72,7 +72,7 @@
 #include "isr.h"
 #include "../net/netisr.h"
 
-#define	RETURN(value)	{ u.u_error = (value); return; }
+#define RETURN(value)   { u.u_error = (value); return; }
 
 /*
  * Declare these as initialized data so we can patch them.
@@ -124,6 +124,9 @@ startup(firstaddr)
 		break;
 	case HP_370:
 		cpuspeed = MHZ_33;
+		break;
+	case HP_375:
+		cpuspeed = MHZ_50;
 		break;
 	}
 	/*
@@ -398,6 +401,9 @@ identifycpu()
 	case HP_370:
 		printf("370 (33.33Mhz");
 		break;
+	case HP_375:
+		printf("345/375 (50Mhz");
+		break;
 	default:
 		printf("\nunknown machine type %d\n", machineid);
 		panic("startup");
@@ -420,7 +426,8 @@ identifycpu()
 	if (mmutype == MMU_68030)
 		printf(", %sMhz MC68882 FPU",
 		       machineid == HP_340 ? "16.67" :
-		       (machineid == HP_360 ? "25" : "33.33"));
+		       (machineid == HP_360 ? "25" :
+			(machineid == HP_370 ? "33.33" : "50")));
 	else
 		printf(", %sMhz MC68881 FPU",
 		       machineid == HP_350 ? "20" : "16.67");
@@ -430,7 +437,8 @@ identifycpu()
 		       machineid == HP_320 ? 16 : 32);
 		break;
 	case EC_PHYS:
-		printf(", 64K physical-address cache");
+		printf(", %dK physical-address cache",
+		       machineid == HP_370 ? 64 : 32);
 		break;
 	}
 	printf(")\n");
@@ -1120,17 +1128,6 @@ netintr()
 #endif
 }
 
-#ifdef DEBUG
-int panicbutton = 1;	/* non-zero if panic buttons are enabled */
-int crashandburn = 0;
-int candbdelay = 50;	/* give em half a second */
-
-candbtimer()
-{
-	crashandburn = 0;
-}
-#endif
-
 intrhand(sr)
 	int sr;
 {
@@ -1167,6 +1164,21 @@ intrhand(sr)
 	}
 }
 
+#if defined(DEBUG) && !defined(PANICBUTTON)
+#define PANICBUTTON
+#endif
+
+#ifdef PANICBUTTON
+int panicbutton = 1;	/* non-zero if panic buttons are enabled */
+int crashandburn = 0;
+int candbdelay = 50;	/* give em half a second */
+
+candbtimer()
+{
+	crashandburn = 0;
+}
+#endif
+
 /*
  * Level 7 interrupts can be caused by the keyboard or parity errors.
  */
@@ -1174,14 +1186,13 @@ nmihand(frame)
 	struct frame frame;
 {
 	if (kbdnmi()) {
-#ifdef DEBUG
+#ifdef PANICBUTTON
 		printf("Got a keyboard NMI\n");
-		if (panicbutton && !panicstr) {
+		if (panicbutton) {
 			if (crashandburn) {
-#ifdef BELLS
-				panicstr = "Yow!!";
-#endif
-				panic("forced crash");
+				crashandburn = 0;
+				panic(panicstr ?
+				      "forced crash, nosync" : "forced crash");
 			}
 			crashandburn++;
 			timeout(candbtimer, (caddr_t)0, candbdelay);
@@ -1401,7 +1412,7 @@ dumpmem(ptr, sz, ustack)
 
 char *
 hexstr(val, len)
- register int val;
+	register int val;
 {
 	static char nbuf[9];
 	register int x, i;
