@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)syslog.h	7.18 (Berkeley) 02/22/91
+ *	@(#)syslog.h	7.19 (Berkeley) 02/22/91
  */
 
 #define	_PATH_LOG	"/dev/log"
@@ -165,7 +165,7 @@ CODE facilitynames[] = {
 #ifndef KERNEL
 
 #include <sys/cdefs.h>
-#include <varargs.h>
+#include <stdarg.h>
 
 __BEGIN_DECLS
 void	closelog __P((void));
