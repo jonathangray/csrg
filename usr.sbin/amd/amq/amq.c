@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)amq.c	5.4 (Berkeley) 02/09/92
+ *	@(#)amq.c	5.5 (Berkeley) 06/01/93
  *
  * $Id: amq.c,v 5.2.2.1 1992/02/09 15:09:16 jsp beta $
  *
@@ -55,7 +55,7 @@ char copyright[] = "\
 
 #ifndef lint
 static char rcsid[] = "$Id: amq.c,v 5.2.2.1 1992/02/09 15:09:16 jsp beta $";
-static char sccsid[] = "@(#)amq.c	5.4 (Berkeley) 02/09/92";
+static char sccsid[] = "@(#)amq.c	5.5 (Berkeley) 06/01/93";
 #endif /* not lint */
 
 #include "am.h"
@@ -211,12 +211,16 @@ int *twid;
 						mi->mi_up > 0 ? "up" :
 						mi->mi_up < 0 ? "starting" : "down");
 			if (mi->mi_error > 0) {
+#ifdef HAS_STRERROR
+				printf(" (%s)", strerror(mi->mi_error));
+#else
 				extern char *sys_errlist[];
 				extern int sys_nerr;
 				if (mi->mi_error < sys_nerr)
 					printf(" (%s)", sys_errlist[mi->mi_error]);
 				else
 					printf(" (Error %d)", mi->mi_error);
+#endif
 			} else if (mi->mi_error < 0) {
 				fputs(" (in progress)", stdout);
 			}
