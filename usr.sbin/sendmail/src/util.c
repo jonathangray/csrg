@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)util.c	6.12 (Berkeley) 03/16/93";
+static char sccsid[] = "@(#)util.c	6.13 (Berkeley) 03/17/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -531,16 +531,15 @@ dfopen(filename, mode)
 	}
 	if (fp != NULL)
 	{
-#ifdef FLOCK
 		int locktype;
+		extern bool lockfile();
 
 		/* lock the file to avoid accidental conflicts */
 		if (*mode == 'w' || *mode == 'a')
 			locktype = LOCK_EX;
 		else
 			locktype = LOCK_SH;
-		(void) flock(fileno(fp), locktype);
-#endif
+		(void) lockfile(fileno(fp), filename, locktype);
 		errno = 0;
 	}
 	return (fp);
