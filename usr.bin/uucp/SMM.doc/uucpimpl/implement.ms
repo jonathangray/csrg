@@ -5,7 +5,7 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)implement.ms	8.1 (Berkeley) 06/08/93
+.\"	@(#)implement.ms	8.2 (Berkeley) 06/01/94
 .\"
 .ds UU UUCP
 .ds Uu U\s-2UCP\s+2
@@ -304,6 +304,7 @@ The
 option is not honored in this case.
 .SH
 Type 2
+.pl +1
 .LP
 A one line
 .I "work file"
@@ -332,6 +333,7 @@ expanded to be the login directory for the user.
 The user's login name.
 .IP [5]
 A `\-' followed by an option list.
+.pl -1
 .RE
 .KS
 .SH
@@ -1603,6 +1605,7 @@ The following sections describe only those spool files that were not
 discussed earlier.
 .NH 2
 LCK \- lock files
+.pl +1
 .LP
 Lock files are created for each device in use (except for TCP/IP sockets)
 and each system conversing.
@@ -1611,6 +1614,7 @@ same devices.
 The form of the lock file name is
 .IP "" 12
 \fBLCK..\fRstr
+.pl -1
 .LP
 where
 .I str
