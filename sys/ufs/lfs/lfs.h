@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs.h	7.9 (Berkeley) 01/08/92
+ *	@(#)lfs.h	7.10 (Berkeley) 03/18/92
  */
 
 typedef struct buf	BUF;
@@ -206,7 +206,7 @@ struct segsum {
 	u_long	ss_create;		/* creation time stamp */
 	u_long	ss_nfinfo;		/* number of file info structures */
 	u_long	ss_ninos;		/* number of inodes in summary */
-	/* FINFO's... */
+	/* FINFO's and inode daddr's... */
 };
 
 /* NINDIR is the number of indirects in a file system block. */
