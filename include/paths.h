@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)paths.h	5.6 (Berkeley) 06/01/90
+ *	@(#)paths.h	5.7 (Berkeley) 06/24/90
  */
 
 #define	_PATH_BSHELL	"/bin/sh"
@@ -40,6 +40,7 @@
 #define	_PATH_DEVNULL	"/dev/null"
 #define	_PATH_DRUM	"/dev/drum"
 #define	_PATH_KMEM	"/dev/kmem"
+#define	_PATH_MAILDIR	"/var/mail"
 #define	_PATH_MAN	"/usr/man"
 #define	_PATH_MEM	"/dev/mem"
 #define	_PATH_NOLOGIN	"/etc/nologin"
