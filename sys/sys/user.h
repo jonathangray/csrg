@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)user.h	7.12 (Berkeley) 06/22/90
+ *	@(#)user.h	7.13 (Berkeley) 06/28/90
  */
 
 #ifdef KERNEL
@@ -122,11 +122,6 @@ struct	user {
 	long	u_spare[8];
 	int	u_stack[1];
 };
-
-/* u_eosys values */
-#define	JUSTRETURN	1
-#define	RESTARTSYS	2
-#define NORMALRETURN	3
 
 /* u_error codes */
 #ifdef KERNEL
