@@ -115,6 +115,19 @@ int	upopen(),upstrategy(),upread(),upwrite(),upreset(),updump();
 #define	updump		nodev
 #endif
 
+#include "rx.h"
+#if NFX > 0
+int	rxopen(),rxclose(),rxstrategy(),rxread(),rxwrite(),rxreset(),rxioctl();
+#else
+#define	rxopen		nodev
+#define	rxclose		nodev
+#define	rxstrategy	nodev
+#define	rxread		nodev
+#define	rxwrite		nodev
+#define	rxreset		nulldev
+#define	rxioctl		nodev
+#endif
+
 #include "tj.h"
 #if NUT > 0
 int	utopen(),utclose(),utstrategy(),utread(),utwrite(),utioctl();
@@ -166,6 +179,7 @@ struct bdevsw	bdevsw[] =
 	udopen,		nulldev,	udstrategy,	uddump,	0,	/*9*/
 	utopen,		utclose,	utstrategy,	utdump,	B_TAPE,	/*10*/
 	idcopen,	nodev,		idcstrategy,	idcdump,0,	/*11*/
+	rxopen,		rxclose,	rxstrategy,	nodev,	0,	/*12*/
 };
 int	nblkdev = sizeof (bdevsw) / sizeof (bdevsw[0]);
 
