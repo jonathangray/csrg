@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.11 (Berkeley) 11/06/91
+ *	@(#)extern.h	5.12 (Berkeley) 11/12/91
  */
 
 #include <sys/cdefs.h>
@@ -164,7 +164,7 @@ void	  rscan __P((Char **, void (*)()));
 void	  tglob __P((Char **));
 void	  trim __P((Char **));
 #ifdef FILEC
-int	  sortscmp __P((Char **, Char **));
+int	  sortscmp __P((void *, void *));
 #endif /* FILEC */
 
 /*
