@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mount.h	8.11 (Berkeley) 02/11/94
+ *	@(#)mount.h	8.12 (Berkeley) 02/20/94
  */
 
 #ifndef KERNEL
@@ -161,6 +161,7 @@ struct mount {
 #define	MNT_LOCAL	0x00001000	/* filesystem is stored locally */
 #define	MNT_QUOTA	0x00002000	/* quotas are enabled on filesystem */
 #define	MNT_ROOTFS	0x00004000	/* identifies the root filesystem */
+#define	MNT_USER	0x00008000	/* mounted by a user */
 
 /*
  * Mask of flags that are visible to statfs()
