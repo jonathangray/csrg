@@ -36,7 +36,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)process.c	5.12 (Berkeley) 01/15/93";
+static char sccsid[] = "@(#)process.c	5.13 (Berkeley) 01/27/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -67,7 +67,7 @@ static SPACE HS, PS, SS;
 static inline int	 applies __P((struct s_command *));
 static void		 flush_appends __P((void));
 static void		 lputs __P((char *));
-static inline int	 regexec_e __P((regex_t *, const char *, int, int));
+static inline int	 regexec_e __P((regex_t *, const char *, int, int, size_t));
 static void		 regsub __P((SPACE *, char *, char *));
 static int		 substitute __P((struct s_command *));
 
@@ -82,7 +82,9 @@ static struct iovec iov[2] = { NULL, 0, "\n", 1 };
 
 static regex_t *defpreg;
 size_t maxnsub;
-regmatch_t *match;
+regmatch_t *match, startend;
+
+#define OUT(s) { fwrite(s, sizeof(u_char), psl, stdout); putchar('\n'); }
 
 void
 process()
@@ -113,6 +115,7 @@ redirect:
 					    (appendnum *= 2));
 				appends[appendx].type = AP_STRING;
 				appends[appendx].s = cp->t;
+				appends[appendx].len = strlen(cp->t);
 				appendx++;
 				break;
 			case 'b':
@@ -130,7 +133,7 @@ redirect:
 			case 'D':
 				if (pd)
 					goto new;
-				if ((p = strchr(ps, '\n')) == NULL)
+				if ((p = strnchr(ps, '\n', psl)) == NULL)
 					pd = 1;
 				else {
 					psl -= (p - ps) - 1;
@@ -157,7 +160,7 @@ redirect:
 				break;
 			case 'n':
 				if (!nflag && !pd)
-					(void)printf("%s\n", ps);
+					OUT(ps)
 				flush_appends();
 				r = mf_fgets(&PS, REPLACE);
 #ifdef HISTORIC_PRACTICE
@@ -170,29 +173,29 @@ redirect:
 				flush_appends();
 				if (!mf_fgets(&PS, APPENDNL)) {
 					if (!nflag && !pd)
-						(void)printf("%s\n", ps);
+						OUT(ps)
 					exit(0);
 				}
 				break;
 			case 'p':
 				if (pd)
 					break;
-				(void)printf("%s\n", ps);
+				OUT(ps)
 				break;
 			case 'P':
 				if (pd)
 					break;
-				if ((p = strchr(ps, '\n')) != NULL) {
+				if ((p = strnchr(ps, '\n', psl)) != NULL) {
 					oldc = *p;
 					*p = '\0';
 				}
-				(void)printf("%s\n", ps);
+				OUT(ps)
 				if (p != NULL)
 					*p = oldc;
 				break;
 			case 'q':
 				if (!nflag && !pd)
-					(void)printf("%s\n", ps);
+					OUT(ps)
 				flush_appends();
 				exit(0);
 			case 'r':
@@ -202,6 +205,7 @@ redirect:
 					    (appendnum *= 2));
 				appends[appendx].type = AP_FILE;
 				appends[appendx].s = cp->t;
+				appends[appendx].len = strlen(cp->t);
 				appendx++;
 				break;
 			case 's':
@@ -251,7 +255,7 @@ redirect:
 		} /* for all cp */
 
 new:		if (!nflag && !pd)
-			(void)printf("%s\n", ps);
+			OUT(ps)
 		flush_appends();
 	} /* for all lines */
 }
@@ -260,8 +264,8 @@ new:		if (!nflag && !pd)
  * TRUE if the address passed matches the current program state
  * (lastline, linenumber, ps).
  */
-#define	MATCH(a)							\
-	(a)->type == AT_RE ? regexec_e((a)->u.r, ps, 0, 1) :		\
+#define	MATCH(a)						\
+	(a)->type == AT_RE ? regexec_e((a)->u.r, ps, 0, 1, psl) :	\
 	    (a)->type == AT_LINE ? linenum == (a)->u.l : lastline
 
 /*
@@ -316,7 +320,7 @@ substitute(cp)
 {
 	SPACE tspace;
 	regex_t *re;
-	size_t re_off;
+	size_t re_off, slen;
 	int n;
 	char *s;
 
@@ -329,10 +333,11 @@ substitute(cp)
 			    cp->u.s->maxbref);
 		}
 	}
-	if (!regexec_e(re, s, 0, 0))
+	if (!regexec_e(re, s, 0, 0, psl))
 		return (0);
 
 	SS.len = 0;				/* Clean substitute space. */
+	slen = psl;
 	n = cp->u.s->n;
 	switch (n) {
 	case 0:					/* Global */
@@ -345,14 +350,16 @@ substitute(cp)
 			regsub(&SS, s, cp->u.s->new);
 			/* Move past this match. */
 			s += match[0].rm_eo;
-		} while(regexec_e(re, s, REG_NOTBOL, 0));
+			slen -= match[0].rm_eo;
+		} while(regexec_e(re, s, REG_NOTBOL, 0, slen));
 		/* Copy trailing retained string. */
-		cspace(&SS, s, strlen(s), APPEND);
+		cspace(&SS, s, slen, APPEND);
 		break;
 	default:				/* Nth occurrence */
 		while (--n) {
 			s += match[0].rm_eo;
-			if (!regexec_e(re, s, REG_NOTBOL, 0))
+			slen -= match[0].rm_eo;
+			if (!regexec_e(re, s, REG_NOTBOL, 0, slen))
 				return (0);
 		}
 		/* FALLTHROUGH */
@@ -365,7 +372,8 @@ substitute(cp)
 		regsub(&SS, s, cp->u.s->new);
 		/* Copy trailing retained string. */
 		s += match[0].rm_eo;
-		cspace(&SS, s, strlen(s), APPEND);
+		slen -= match[0].rm_eo;
+		cspace(&SS, s, slen, APPEND);
 		break;
 	}
 
@@ -380,7 +388,7 @@ substitute(cp)
 
 	/* Handle the 'p' flag. */
 	if (cp->u.s->p)
-		(void)printf("%s\n", ps);
+		OUT(ps)
 
 	/* Handle the 'w' flag. */
 	if (cp->u.s->wfile && !pd) {
@@ -409,7 +417,8 @@ flush_appends()
 	for (i = 0; i < appendx; i++) 
 		switch (appends[i].type) {
 		case AP_STRING:
-			(void)printf("%s", appends[i].s);
+			fwrite(appends[i].s, sizeof(char), appends[i].len, 
+			    stdout);
 			break;
 		case AP_FILE:
 			/*
@@ -422,8 +431,9 @@ flush_appends()
 			 */
 			if ((f = fopen(appends[i].s, "r")) == NULL)
 				break;
-			while (count = fread(buf, 1, sizeof(buf), f))
-				(void)fwrite(buf, 1, count, stdout);
+			while (count = fread(buf, sizeof(char), sizeof(buf), 
+			    f))
+				(void)fwrite(buf, sizeof(char), count, stdout);
 			(void)fclose(f);
 			break;
 		}
@@ -477,13 +487,22 @@ lputs(s)
 }
 
 static inline int
-regexec_e(preg, string, eflags, nomatch)
+regexec_e(preg, string, eflags, nomatch, slen)
 	regex_t *preg;
 	const char *string;
 	int eflags, nomatch;
+	size_t slen;
 {
 	int eval;
+	
+	/* So we can work with binary files */
+	startend.rm_so = 0;
+	startend.rm_eo = slen;
+	match[0] = startend;
+	
 
+	eflags |= REG_STARTEND;	
+	
 	if (preg == NULL) {
 		if (defpreg == NULL)
 			err(FATAL, "first RE may not be empty");
@@ -578,6 +597,7 @@ cspace(sp, p, len, spflag)
 		sp->len = 0;
 
 	memmove(sp->space + sp->len, p, len);
+
 	sp->space[sp->len += len] = '\0';
 }
 
