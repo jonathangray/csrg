@@ -30,7 +30,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)tmac.s	1.2 (Berkeley) 07/14/92
+.\"	@(#)tmac.s	8.1 (Berkeley) 06/08/93
 .\"
 .\" If groff, use groff -ms, else use local -ms (w/ditroff, troff, nroff)
 .ie \n(.g \{\
