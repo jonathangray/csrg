@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)pass5.c	5.14 (Berkeley) 11/04/91";
+static char sccsid[] = "@(#)pass5.c	5.15 (Berkeley) 11/11/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -189,7 +189,7 @@ pass5()
 			} else if (frags > 0) {
 				newcg->cg_cs.cs_nffree += frags;
 				blk = blkmap(fs, cg_blksfree(newcg), i);
-				fragacct(fs, blk, newcg->cg_frsum, 1);
+				ffs_fragacct(fs, blk, newcg->cg_frsum, 1);
 			}
 		}
 		cstotal.cs_nffree += newcg->cg_cs.cs_nffree;
