@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.6 (Berkeley) 05/06/91
+#	@(#)Makefile	5.7 (Berkeley) 05/07/91
 
 # need conversion:	tn3270
 # remove ld, lisp
