@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 1991, 1992 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1991, 1992, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This software was developed by the Computer Systems Engineering group
  * at Lawrence Berkeley Laboratory under DARPA contract BG 91-66 and
@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)bsd_audioio.h	7.3 (Berkeley) 04/20/93
+ *	@(#)bsd_audioio.h	8.1 (Berkeley) 06/11/93
  *
  * from: $Header: bsd_audioio.h,v 1.5 92/11/21 20:46:46 van Exp $ (LBL)
  */
