@@ -1,4 +1,4 @@
-#	@(#)Makefile.386BSD	8.1 (Berkeley) 02/26/94
+#	@(#)Makefile.386BSD	8.2 (Berkeley) 03/05/94
 
 PROG=	sendmail
 
