@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mapc.c	5.4 (Berkeley) 05/12/91
+ *	@(#)mapc.c	1.2 (Berkeley) 6/25/91
  *
- * $Id: mapc.c,v 5.2.1.9 91/05/07 22:18:07 jsp Alpha $
+ * $Id: mapc.c,v 5.2.2.1 1992/02/09 15:08:38 jsp beta $
  *
  */
 
@@ -86,8 +86,10 @@ static struct opt_tab mapc_opt[] = {
 	{ "inc", MAPC_INC },
 	{ "mapdefault", MAPC_DFLT },
 	{ "none", MAPC_NONE },
+#ifdef HAS_REGEXP
 	{ "re", MAPC_RE },
 	{ "regexp", MAPC_RE },
+#endif
 	{ "sync", MAPC_SYNC },
 	{ 0, 0 }
 };
@@ -281,10 +283,10 @@ FILE *fp;
 	}
 }
 
-static const char *reg_error = "?";
-void regerror P((const char *m));
+static Const char *reg_error = "?";
+void regerror P((Const char *m));
 void regerror(m)
-const char *m;
+Const char *m;
 {
 	reg_error = m;
 }
@@ -474,6 +476,7 @@ char *opt;
 			alloc = MAPC_INC;
 		}
 		break;
+#ifdef HAS_REGEXP
 	case MAPC_RE:
 		if (mt->reload == error_reload) {
 			plog(XLOG_WARNING, "Map type \"%s\" does not support cache type \"re\"", mt->name);
@@ -481,6 +484,7 @@ char *opt;
 			/* assert: mt->name == "error" */
 		}
 		break;
+#endif
 	}
 
 #ifdef DEBUG
