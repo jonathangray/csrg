@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cgthree.c	8.1 (Berkeley) 06/11/93
+ *	@(#)cgthree.c	8.2 (Berkeley) 10/30/93
  *
  * from: $Header: cgthree.c,v 1.6 92/11/26 02:28:06 torek Exp $
  */
