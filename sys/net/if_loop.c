@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_loop.c	7.21 (Berkeley) 04/17/93
+ *	@(#)if_loop.c	7.22 (Berkeley) 06/04/93
  */
 
 /*
@@ -75,7 +75,6 @@
 #define	LOMTU	(1024+512)
 
 struct	ifnet loif;
-int	looutput(), loioctl();
 
 /* ARGSUSED */
 void
@@ -101,6 +100,7 @@ loopattach(n)
 #endif
 }
 
+int
 looutput(ifp, m, dst, rt)
 	struct ifnet *ifp;
 	register struct mbuf *m;
@@ -198,6 +198,7 @@ lortrequest(cmd, rt, sa)
  * Process an ioctl request.
  */
 /* ARGSUSED */
+int
 loioctl(ifp, cmd, data)
 	register struct ifnet *ifp;
 	int cmd;
