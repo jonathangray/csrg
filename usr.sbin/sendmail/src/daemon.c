@@ -38,9 +38,9 @@
 
 #ifndef lint
 #ifdef DAEMON
-static char sccsid[] = "@(#)daemon.c	8.48 (Berkeley) 04/18/94 (with daemon mode)";
+static char sccsid[] = "@(#)daemon.c	8.49 (Berkeley) 05/15/94 (with daemon mode)";
 #else
-static char sccsid[] = "@(#)daemon.c	8.48 (Berkeley) 04/18/94 (without daemon mode)";
+static char sccsid[] = "@(#)daemon.c	8.49 (Berkeley) 05/15/94 (without daemon mode)";
 #endif
 #endif /* not lint */
 
@@ -539,6 +539,8 @@ myhostname(hostbuf, size)
 
 			sprintf(ipbuf, "[%s]",
 				inet_ntoa(*((struct in_addr *) hp->h_addr_list[i])));
+			if (tTd(0, 4))
+				printf("\ta.k.a.: %s\n", ipbuf);
 			setclass('w', ipbuf);
 		}
 	}
