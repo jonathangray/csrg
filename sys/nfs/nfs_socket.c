@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_socket.c	7.32 (Berkeley) 07/02/92
+ *	@(#)nfs_socket.c	7.33 (Berkeley) 07/10/92
  */
 
 /*
@@ -67,7 +67,6 @@
 #define	TRUE	1
 #define	FALSE	0
 
-int netnetnet = sizeof (struct netaddrhash);
 /*
  * Estimate rto for an nfs rpc sent via. an unreliable datagram.
  * Use the mean and mean deviation of rtt for the appropriate type of rpc
