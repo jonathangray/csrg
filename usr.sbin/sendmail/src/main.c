@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.43 (Berkeley) 01/05/92";
+static char sccsid[] = "@(#)main.c	5.44 (Berkeley) 01/18/92";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -364,7 +364,6 @@ main(argc, argv, envp)
 				ExitStat = EX_USAGE;
 				break;
 # endif SMTP
-			  case MD_ARPAFTP:
 			  case MD_DELIVER:
 			  case MD_VERIFY:
 			  case MD_TEST:
@@ -752,7 +751,7 @@ main(argc, argv, envp)
 	initsys();
 	setsender(from);
 
-	if (OpMode != MD_ARPAFTP && *av == NULL && !GrabTo)
+	if (*av == NULL && !GrabTo)
 	{
 		usrerr("Recipient names must be specified");
 
