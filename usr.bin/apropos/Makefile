@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.3 (Berkeley) 05/27/90
+#	@(#)Makefile	8.1 (Berkeley) 06/06/93
 
 PROG=	apropos
 SRCS=	apropos.c config.c
