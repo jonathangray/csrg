@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.c	5.7 (Berkeley) 05/09/91
+ *	@(#)conf.c	5.8 (Berkeley) 05/12/91
  */
 
 #include "param.h"
@@ -184,6 +184,9 @@ struct cdevsw	cdevsw[] =
 	{ cttyopen,	nullop,		cttyread,	cttywrite,	/*1*/
 	  cttyioctl,	nullop,		nullop,		NULL,
 	  cttyselect,	enodev,		NULL },
+        { nullop,       nullop,         mmrw,           mmrw,           /*2*/
+          enodev,       nullop,         nullop,         NULL,
+          mmselect,     enodev,         NULL },
 	{ wdopen,	wdclose,	wdread,		wdwrite,	/*3*/
 	  wdioctl,	enodev,		nullop,		NULL,
 	  seltrue,	enodev,		wdstrategy },
