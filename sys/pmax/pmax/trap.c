@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: trap.c 1.32 91/04/06$
  *
- *	@(#)trap.c	7.2 (Berkeley) 02/29/92
+ *	@(#)trap.c	7.3 (Berkeley) 02/29/92
  */
 
 #include "param.h"
@@ -186,7 +186,8 @@ trap(statusReg, causeReg, vadr, pc, args)
 	trp->cause = causeReg;
 	trp->vadr = vadr;
 	trp->pc = pc;
-	trp->ra = !USERMODE(statusReg) ? ((int *)&args)[19] : p->p_regs[RA];
+	trp->ra = !USERMODE(statusReg) ? ((int *)&args)[19] :
+		p->p_md.md_regs[RA];
 	trp->code = 0;
 	if (++trp == &trapdebug[TRAPSIZE])
 		trp = trapdebug;
@@ -324,9 +325,10 @@ trap(statusReg, causeReg, vadr, pc, args)
 			printf("vm_fault(%x, %x, %x, 0) -> %x ADR %x PC %x RA %x\n",
 				map, va, ftype, rv, vadr, pc,
 				!USERMODE(statusReg) ? ((int *)&args)[19] :
-					p->p_regs[RA]); /* XXX */
+					p->p_md.md_regs[RA]); /* XXX */
 			printf("\tpid %d %s PC %x RA %x\n", p->p_pid,
-				p->p_comm, p->p_regs[PC], p->p_regs[RA]); /* XXX */
+				p->p_comm, p->p_md.md_regs[PC],
+				p->p_md.md_regs[RA]); /* XXX */
 			trapDump("vm_fault");
 		}
 		/*
@@ -376,7 +378,7 @@ trap(statusReg, causeReg, vadr, pc, args)
 			 * pop the sigframe struct to get the address of
 			 * the sigcontext.
 			 */
-			args.i[0] = p->p_regs[SP] + 4 * sizeof(int);
+			args.i[0] = p->p_md.md_regs[SP] + 4 * sizeof(int);
 			(void) sigreturn(curproc, &args, rval);
 			goto out;
 		}
@@ -390,7 +392,7 @@ trap(statusReg, causeReg, vadr, pc, args)
 
 	case T_SYSCALL+T_USER:
 	    {
-		register int *locr0 = p->p_regs;
+		register int *locr0 = p->p_md.md_regs;
 		register struct sysent *callp;
 		int code, numsys;
 		struct args {
@@ -490,7 +492,7 @@ trap(statusReg, causeReg, vadr, pc, args)
 		 * if this is a child returning from fork syscall.
 		 */
 		p = curproc;
-		locr0 = p->p_regs;
+		locr0 = p->p_md.md_regs;
 #ifdef DEBUG
 		{ int s;
 		s = splhigh();
@@ -581,9 +583,9 @@ trap(statusReg, causeReg, vadr, pc, args)
 			i = SIGILL;	/* only FPU instructions allowed */
 			break;
 		}
-		MachSwitchFPState(machFPCurProcPtr, p->p_regs);
+		MachSwitchFPState(machFPCurProcPtr, p->p_md.md_regs);
 		machFPCurProcPtr = p;
-		p->p_regs[PS] |= MACH_SR_COP_1_BIT;
+		p->p_md.md_regs[PS] |= MACH_SR_COP_1_BIT;
 		p->p_md.md_flags |= MDP_FPUSED;
 		goto out;
 
@@ -641,7 +643,7 @@ trap(statusReg, causeReg, vadr, pc, args)
 		panic("trap");
 	}
 	printf("trap: pid %d %s sig %d adr %x pc %x ra %x\n", p->p_pid,
-		p->p_comm, i, vadr, pc, p->p_regs[RA]); /* XXX */
+		p->p_comm, i, vadr, pc, p->p_md.md_regs[RA]); /* XXX */
 	trapsignal(p, i, ucode);
 out:
 	/*
@@ -1148,7 +1150,7 @@ cpu_singlestep(p)
 	register struct proc *p;
 {
 	register unsigned va;
-	register int *locr0 = p->p_regs;
+	register int *locr0 = p->p_md.md_regs;
 	int i;
 
 	/* compute next address after current location */
