@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_le.c	7.6 (Berkeley) 05/08/91
+ *	@(#)if_le.c	7.7 (Berkeley) 08/08/91
  */
 
 #include "le.h"
@@ -73,9 +73,8 @@
 #include "netns/ns_if.h"
 #endif
 
-#ifdef RMP
-#include "netrmp/rmp.h"
-#include "netrmp/rmp_var.h"
+#ifdef ISO
+extern	char all_es_snpa[], all_is_snpa[], all_l1is_snpa[], all_l2is_snpa[];
 #endif
 
 #include "../include/cpu.h"
@@ -87,6 +86,7 @@
 #if NBPFILTER > 0
 #include "../net/bpf.h"
 #include "../net/bpfdesc.h"
+char hprmp_multi[] = { 9, 0, 9, 0, 0, 4};
 #endif
 
 /* offsets for:	   ID,   REGS,    MEM,  NVRAM */
@@ -133,9 +133,7 @@ struct	le_softc {
 	int	sc_txoff;
 	int	sc_busy;
 	short	sc_iflags;
-#if NBPFILTER > 0
 	caddr_t sc_bpf;
-#endif
 } le_softc[NLE];
 
 /* access LANCE registers */
@@ -188,19 +186,9 @@ leattach(hd)
 	 * Setup for transmit/receive
 	 */
 	ler2->ler2_mode = LE_MODE;
-	ler2->ler2_padr[0] = le->sc_addr[1];
-	ler2->ler2_padr[1] = le->sc_addr[0];
-	ler2->ler2_padr[2] = le->sc_addr[3];
-	ler2->ler2_padr[3] = le->sc_addr[2];
-	ler2->ler2_padr[4] = le->sc_addr[5];
-	ler2->ler2_padr[5] = le->sc_addr[4];
-#ifdef RMP
-	/*
-	 * Set up logical addr filter to accept multicast 9:0:9:0:0:4
-	 * This should be an ioctl() to the driver.  (XXX)
-	 */
-	ler2->ler2_ladrf0 = 0x00100000;
-	ler2->ler2_ladrf1 = 0x0;
+#if defined(ISO) || NBPFILTER > 0
+	ler2->ler2_ladrf0 = 0xffffffff;
+	ler2->ler2_ladrf1 = 0xffffffff;
 #else
 	ler2->ler2_ladrf0 = 0;
 	ler2->ler2_ladrf1 = 0;
@@ -227,12 +215,19 @@ leattach(hd)
 	return (1);
 }
 
-ledrinit(ler2)
+ledrinit(ler2, le)
 	register struct lereg2 *ler2;
+	register struct le_softc *le;
 {
 	register struct lereg2 *lemem = 0;
 	register int i;
 
+	ler2->ler2_padr[0] = le->sc_addr[1];
+	ler2->ler2_padr[1] = le->sc_addr[0];
+	ler2->ler2_padr[2] = le->sc_addr[3];
+	ler2->ler2_padr[3] = le->sc_addr[2];
+	ler2->ler2_padr[4] = le->sc_addr[5];
+	ler2->ler2_padr[5] = le->sc_addr[4];
 	for (i = 0; i < LERBUF; i++) {
 		ler2->ler2_rmd[i].rmd0 = (int)lemem->ler2_rbuf[i];
 		ler2->ler2_rmd[i].rmd1 = LE_OWN;
@@ -269,7 +264,7 @@ lereset(unit)
 #endif
 	LERDWR(ler0, LE_CSR0, ler1->ler1_rap);
 	LERDWR(ler0, LE_STOP, ler1->ler1_rdp);
-	ledrinit(le->sc_r2);
+	ledrinit(le->sc_r2, le);
 	le->sc_rmd = 0;
 	LERDWR(ler0, LE_CSR1, ler1->ler1_rap);
 	LERDWR(ler0, (int)&lemem->ler2_mode, ler1->ler1_rdp);
@@ -534,26 +529,6 @@ leread(unit, buf, len)
 	/* adjust input length to account for header and CRC */
 	len = len - sizeof(struct ether_header) - 4;
 
-#ifdef RMP
-	/*  (XXX)
-	 *
-	 *  If Ethernet Type field is < MaxPacketSize, we probably have
-	 *  a IEEE802 packet here.  Make sure that the size is at least
-	 *  that of the HP LLC.  Also do sanity checks on length of LLC
-	 *  (old Ethernet Type field) and packet length.
-	 *
-	 *  Provided the above checks succeed, change `len' to reflect
-	 *  the length of the LLC (i.e. et->ether_type) and change the
-	 *  type field to ETHERTYPE_IEEE so we can switch() on it later.
-	 *  Yes, this is a hack and will eventually be done "right".
-	 */
-	if (et->ether_type <= IEEE802LEN_MAX && len >= sizeof(struct hp_llc) &&
-	    len >= et->ether_type && len >= IEEE802LEN_MIN) {
-		len = et->ether_type;
-		et->ether_type = ETHERTYPE_IEEE;	/* hack! */
-	}
-#endif
-
 #define	ledataaddr(et, off, type)	((type)(((caddr_t)((et)+1)+(off))))
 	if (et->ether_type >= ETHERTYPE_TRAIL &&
 	    et->ether_type < ETHERTYPE_TRAIL+ETHERTYPE_NTRAILER) {
@@ -583,23 +558,26 @@ leread(unit, buf, len)
 	 * If so, hand off the raw packet to bpf, which must deal with
 	 * trailers in its own way.
 	 */
-	if (le->sc_bpf) {
+	if (le->sc_bpf)
 		bpf_tap(le->sc_bpf, buf, len + sizeof(struct ether_header));
-
-		/*
-		 * Note that the interface cannot be in promiscuous mode if
-		 * there are no bpf listeners.  And if we are in promiscuous
-		 * mode, we have to check if this packet is really ours.
-		 *
-		 * XXX This test does not support multicasts.
-		 */
-		if ((le->sc_if.if_flags & IFF_PROMISC)
-		    && bcmp(et->ether_dhost, le->sc_addr, 
-			    sizeof(et->ether_dhost)) != 0
-		    && bcmp(et->ether_dhost, etherbroadcastaddr, 
-			    sizeof(et->ether_dhost)) != 0)
-			return;
-	}
+#endif
+#if defined(ISO) || NBPFILTER > 0
+	/*
+	 * Note that the interface cannot be in promiscuous mode if
+	 * there are no bpf listeners.  If we are in promiscuous
+	 * mode, we have to check if this packet is really ours.
+	 * However, there may be appropriate multicate addresses involved
+	 */
+#define NOT_TO(p) (bcmp(et->ether_dhost, p, sizeof(et->ether_dhost)) != 0)
+	if (et->ether_dhost[0] & 1) {
+		if (NOT_TO(etherbroadcastaddr) && NOT_TO(hprmp_multi)
+#ifdef ISO
+		    && NOT_TO(all_es_snpa) && NOT_TO(all_is_snpa)
+		    && NOT_TO(all_l1is_snpa) && NOT_TO(all_l2is_snpa)
+#endif
+		     ) return;
+	} else if ((le->sc_if.if_flags & IFF_PROMISC) && NOT_TO(le->sc_addr))
+		return;
 #endif
 	/*
 	 * Pull packet off interface.  Off is nonzero if packet
@@ -610,36 +588,6 @@ leread(unit, buf, len)
 	m = leget(buf, len, off, &le->sc_if);
 	if (m == 0)
 		return;
-#ifdef RMP
-	/*
-	 * (XXX)
-	 * This needs to be integrated with the ISO stuff in ether_input()
-	 */
-	if (et->ether_type == ETHERTYPE_IEEE) {
-		/*
-		 *  Snag the Logical Link Control header (IEEE 802.2).
-		 */
-		struct hp_llc *llc = &(mtod(m, struct rmp_packet *)->hp_llc);
-
-		/*
-		 *  If the DSAP (and HP's extended DXSAP) indicate this
-		 *  is an RMP packet, hand it to the raw input routine.
-		 */
-		if (llc->dsap == IEEE_DSAP_HP && llc->dxsap == HPEXT_DXSAP) {
-			static struct sockproto rmp_sp = {AF_RMP,RMPPROTO_BOOT};
-			static struct sockaddr rmp_src = {AF_RMP};
-			static struct sockaddr rmp_dst = {AF_RMP};
-
-			bcopy(et->ether_shost, rmp_src.sa_data,
-			      sizeof(et->ether_shost));
-			bcopy(et->ether_dhost, rmp_dst.sa_data,
-			      sizeof(et->ether_dhost));
-
-			raw_input(m, &rmp_sp, &rmp_src, &rmp_dst);
-			return;
-		}
-	}
-#endif
 	ether_input(&le->sc_if, et, m);
 }
 
@@ -778,6 +726,7 @@ leioctl(ifp, cmd, data)
 				 * so reset everything
 				 */
 				ifp->if_flags &= ~IFF_RUNNING; 
+				LERDWR(le->sc_r0, LE_STOP, ler1->ler1_rdp);
 				bcopy((caddr_t)ina->x_host.c_host,
 				    (caddr_t)le->sc_addr, sizeof(le->sc_addr));
 			}
