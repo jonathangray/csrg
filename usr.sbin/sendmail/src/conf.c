@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	6.49 (Berkeley) 04/27/93";
+static char sccsid[] = "@(#)conf.c	6.50 (Berkeley) 04/28/93";
 #endif /* not lint */
 
 # include <sys/ioctl.h>
@@ -1348,7 +1348,9 @@ lockfile(fd, filename, type)
 	int action;
 	struct flock lfd;
 
-	if (bitset(LOCK_EX, type))
+	if (bitset(LOCK_UN, type))
+		lfd.l_type = F_UNLCK;
+	else if (bitset(LOCK_EX, type))
 		lfd.l_type = F_WRLCK;
 	else
 		lfd.l_type = F_RDLCK;
@@ -1364,13 +1366,13 @@ lockfile(fd, filename, type)
 		return TRUE;
 
 	if (!bitset(LOCK_NB, type) || (errno != EACCES && errno != EAGAIN))
-		syserr("cannot lockf(%s)", filename);
+		syserr("cannot lockf(%s, %o)", filename, type);
 # else
 	if (flock(fd, type) >= 0)
 		return TRUE;
 
 	if (!bitset(LOCK_NB, type) || errno != EWOULDBLOCK)
-		syserr("cannot flock(%s)", filename);
+		syserr("cannot flock(%s, %o)", filename, type);
 # endif
 	return FALSE;
 }
