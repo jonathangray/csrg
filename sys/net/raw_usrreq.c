@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)raw_usrreq.c	7.10 (Berkeley) 03/07/92
+ *	@(#)raw_usrreq.c	7.11 (Berkeley) 07/09/92
  */
 
 #include "param.h"
@@ -53,7 +53,6 @@ raw_init()
 {
 
 	rawcb.rcb_next = rawcb.rcb_prev = &rawcb;
-	rawintrq.ifq_maxlen = IFQ_MAXLEN;
 }
 
 
@@ -302,5 +301,3 @@ release:
 		m_freem(m);
 	return (error);
 }
-
-rawintr() {} /* XXX - referenced by locore.  will soon go away */
