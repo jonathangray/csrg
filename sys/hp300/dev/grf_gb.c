@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * from: Utah $Hdr: grf_gb.c 1.16 91/04/02$
+ * from: Utah $Hdr: grf_gb.c 1.17 92/01/21$
  *
- *	@(#)grf_gb.c	7.4 (Berkeley) 05/07/91
+ *	@(#)grf_gb.c	7.5 (Berkeley) 06/05/92
  */
 
 #include "grf.h"
@@ -53,8 +53,8 @@
 #include "sys/param.h"
 #include "sys/errno.h"
 
-#include "grfioctl.h"
-#include "grfvar.h"
+#include "hp/dev/grfioctl.h"
+#include "hp/dev/grfvar.h"
 #include "grf_gbreg.h"
 
 #include "../include/cpu.h"
