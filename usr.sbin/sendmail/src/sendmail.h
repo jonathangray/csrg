@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.73 (Berkeley) 11/20/94
+ *	@(#)sendmail.h	8.74 (Berkeley) 11/21/94
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.73		11/20/94";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.74		11/21/94";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -167,8 +167,8 @@ typedef struct address ADDRESS;
 # define QPINGONSUCCESS	0x00001000	/* give return on successful delivery */
 # define QPINGONFAILURE	0x00002000	/* give return on failure */
 # define QPINGONDELAY	0x00004000	/* give return on message delay */
-# define QHASRETPARAM	0x00008000	/* RCPT command had RET argument */
-# define QNOBODYRETURN	0x00010000	/* don't return message body */
+# define QHAS_RET_PARAM	0x00008000	/* RCPT command had RET argument */
+# define QRET_HDRS	0x00010000	/* don't return message body */
 # define QRELAYED	0x00020000	/* relayed to non-DSN aware mailer */
 
 # define NULLADDR	((ADDRESS *) NULL)
@@ -401,6 +401,7 @@ ENVELOPE
 	char		*e_msgboundary;	/* MIME-style message part boundary */
 	char		*e_origrcpt;	/* original recipient (one only) */
 	char		*e_envid;	/* envelope id from MAIL FROM: line */
+	char		*e_omts;	/* OMTS parameter from MAIL FROM: */
 	time_t		e_dtime;	/* time of last delivery attempt */
 	int		e_ntries;	/* number of delivery attempts */
 	dev_t		e_dfdev;	/* df file's device, for crash recov */
