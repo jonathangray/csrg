@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kernfs_vnops.c	7.2 (Berkeley) 07/18/92
+ *	@(#)kernfs_vnops.c	7.3 (Berkeley) 07/19/92
  */
 
 /*
@@ -229,6 +229,8 @@ kernfs_lookup(ap)
 		VOP_LOCK(rootvp);
 		return (0);
 	}
+
+	error = ENOENT;
 
 	for (i = 0; i < nkern_targets; i++) {
 		struct kern_target *kt = &kern_targets[i];
