@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)scsi.h	7.2 (Berkeley) 03/29/92
+ *	@(#)scsi.h	7.3 (Berkeley) 10/11/92
  *
  * scsi.h --
  *
@@ -510,7 +510,7 @@ typedef struct ScsiTapeModeSelectHdr {
  * Driver ioctl's for various scsi operations.
  */
 #ifndef _IOCTL_
-#include "ioctl.h"
+#include <sys/ioctl.h>
 #endif
 
 /*
