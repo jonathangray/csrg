@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.36 (Berkeley) 11/12/93";
+static char sccsid[] = "@(#)main.c	8.37 (Berkeley) 11/14/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -375,6 +375,7 @@ main(argc, argv, envp)
 			printf("UUCP nodename: %s\n", p);
 		p = newstr(p);
 		define('k', p, CurEnv);
+		setclass('k', p);
 		setclass('w', p);
 	}
 	while (av != NULL && *av != NULL)
