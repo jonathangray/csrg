@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)types.h	7.27 (Berkeley) 05/02/93
+ *	@(#)types.h	7.28 (Berkeley) 05/25/93
  */
 
 #ifndef _TYPES_H_
@@ -72,7 +72,6 @@ typedef	unsigned long	uid_t;		/* user id */
  * version of lseek.
  */
 #ifndef KERNEL
-#define	 lseek __lseek
 __BEGIN_DECLS
 off_t	 lseek __P((int, off_t, int));
 __END_DECLS
