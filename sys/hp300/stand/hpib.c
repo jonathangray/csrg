@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hpib.c	7.7 (Berkeley) 10/11/92
+ *	@(#)hpib.c	7.8 (Berkeley) 05/24/93
  */
 
 /*
@@ -41,7 +41,7 @@
 #include <hp/dev/device.h>
 #include <hp300/stand/hpibvar.h>
 
-#include <stand/saio.h>
+#include <stand.att/saio.h>
 #include <hp300/stand/samachdep.h>
 
 int	internalhpib = IIOV(0x478000);
