@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	7.118 (Berkeley) 04/27/93
+ *	@(#)ufs_vnops.c	7.119 (Berkeley) 05/10/93
  */
 
 #include <sys/param.h>
@@ -338,8 +338,8 @@ ufs_setattr(ap)
 		} else {
 			if (ip->i_flags & (SF_IMMUTABLE | SF_APPEND))
 				return (EPERM);
-			ip->i_flags &= 0xffff0000;
-			ip->i_flags |= (vap->va_flags & 0xffff);
+			ip->i_flags &= SF_SETTABLE;
+			ip->i_flags |= (vap->va_flags & UF_SETTABLE);
 		}
 		ip->i_flag |= ICHG;
 		if (vap->va_flags & (IMMUTABLE | APPEND))
