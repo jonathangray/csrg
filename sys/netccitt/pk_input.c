@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pk_input.c	7.3 (Berkeley) 05/22/90
+ *	@(#)pk_input.c	7.4 (Berkeley) 06/21/90
  */
 
 #include "../h/param.h"
@@ -265,12 +265,12 @@ struct x25config *xcp;
 			break;
 		}
 
-		m -> m_off += PKHEADERLN;
+		m -> m_data += PKHEADERLN;
 		m -> m_len -= PKHEADERLN;
 		if (lcp -> lcd_flags & X25_MQBIT) {
 			octet *t;
 
-			m -> m_off -= 1;
+			m -> m_data -= 1;
 			m -> m_len += 1;
 			t = mtod (m, octet *);
 			*t = 0x00;
@@ -551,7 +551,8 @@ struct x25_packet *xp;
 			errstr = "server malfunction";
 			break;
 		}
-		lcp -> lcd_upq.pq_put = lcp -> lcd_upq.pq_put;
+		lcp -> lcd_upper = l -> lcd_upper;
+		lcp -> lcd_upnext = l -> lcd_upnext;
 		lcp -> lcd_lcn = lcn;
 		lcp -> lcd_state = RECEIVED_CALL;
 		lcp -> lcd_craddr = sa;
@@ -559,9 +560,11 @@ struct x25_packet *xp;
 			~X25_REVERSE_CHARGE;
 		pk_assoc (pkp, lcp, sa);
 		lcp -> lcd_template = pk_template (lcp -> lcd_lcn, X25_CALL_ACCEPTED);
-		pk_output (lcp);
-		if (so)
+		if (so) {
+			pk_output (lcp);
 			soisconnected (so);
+		} else if (lcp->lcd_upper)
+			(*lcp->lcd_upper)(lcp);
 		return;
 	}
 
