@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)curses.h	5.8 (Berkeley) 06/01/90
+ *	@(#)curses.h	5.9 (Berkeley) 07/01/90
  */
 
 #ifndef WINDOW
@@ -197,6 +197,9 @@ int	__void__;
 #define	savetty() ((void) ioctl(_tty_ch, TIOCGETP, &_tty), \
 	_res_flg = _tty.sg_flags)
 #define	resetty() (_tty.sg_flags = _res_flg, \
+	_echoit = ((_res_flg & ECHO) == ECHO), \
+	_rawmode = ((_res_flg & (CBREAK|RAW)) != 0), \
+	_pfast = ((_res_flg & CRMOD) ? _rawmode : TRUE), \
 	(void) ioctl(_tty_ch, TIOCSETP, &_tty))
 
 #define	erasechar()	(_tty.sg_erase)
