@@ -29,21 +29,12 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)6.t	6.6 (Berkeley) 07/09/93
+.\"	@(#)6.t	6.7 (Berkeley) 07/12/93
 .\"
 .ds LH "Installing/Operating \*(4B
-.nr H1 6
-.nr H2 0
-.ds RH "System Operation
 .ds CF \*(Dy
-.bp
-.LG
-.B
-.ce
-6. SYSTEM OPERATION
-.sp 2
-.R
-.NL
+.NH 1
+System Operation
 .PP
 This section describes procedures used to operate a \*(4B UNIX system.
 Procedures described here are used periodically, to reboot the system,
