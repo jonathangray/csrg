@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)headers.c	8.13 (Berkeley) 10/24/93";
+static char sccsid[] = "@(#)headers.c	8.14 (Berkeley) 11/29/93";
 #endif /* not lint */
 
 # include <errno.h>
@@ -651,7 +651,7 @@ crackaddr(addr)
 		}
 
 		/* check for quoted strings */
-		if (c == '"')
+		if (c == '"' && cmtlev <= 0)
 		{
 			qmode = !qmode;
 			if (copylev > 0 && !skipping)
@@ -698,7 +698,6 @@ crackaddr(addr)
 			if (!skipping)
 				bp--;
 		}
-
 
 		/* check for characters that may have to be quoted */
 		if (strchr(".'@,;:\\()[]", c) != NULL)
