@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 1983, 1989 The Regents of the University of California.
+/*-
+ * Copyright (c) 1989, 1992 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,13 +32,13 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)newfs.c	6.28 (Berkeley) 8/6/91";
+char copyright[] =
+"@(#) Copyright (c) 1989, 1992 The Regents of the University of California.\n\
+ All rights reserved.\n";
 #endif /* not lint */
 
 #ifndef lint
-char copyright[] =
-"@(#) Copyright (c) 1983, 1989 Regents of the University of California.\n\
- All rights reserved.\n";
+static char sccsid[] = "@(#)newfs.c	5.6 (Berkeley) 07/13/92";
 #endif /* not lint */
 
 /*
