@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs.h	7.15 (Berkeley) 03/16/92
+ *	@(#)nfs.h	7.16 (Berkeley) 03/16/92
  */
 
 /*
@@ -242,6 +242,10 @@ struct nfssvc_sock {
 #define	SLP_NEEDQ	0x04
 #define	SLP_DISCONN	0x08
 #define	SLP_GETSTREAM	0x10
+#define	SLP_INIT	0x20
+#define	SLP_WANTINIT	0x40
+
+#define SLP_ALLFLAGS	0xff
 
 /*
  * One of these structures is allocated for each nfsd.
@@ -272,5 +276,3 @@ struct nfsd {
 #define	NFSD_NEEDAUTH	0x08
 #define	NFSD_AUTHFAIL	0x10
 #endif	/* KERNEL */
-#define	SLP_INIT	0x20
-#define	SLP_WANTINIT	0x40
