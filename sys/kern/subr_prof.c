@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_prof.c	7.15 (Berkeley) 07/08/92
+ *	@(#)subr_prof.c	7.16 (Berkeley) 07/10/92
  */
 
 #include <sys/param.h>
@@ -64,7 +64,6 @@ kmstartup()
 	p->lowpc = ROUNDDOWN(KERNBASE, HISTFRACTION * sizeof(HISTCOUNTER));
 	p->highpc = ROUNDUP((u_long)etext, HISTFRACTION * sizeof(HISTCOUNTER));
 	p->textsize = p->highpc - p->lowpc;
-	p->profrate = profhz;
 	printf("Profiling kernel, textsize=%d [%x..%x]\n",
 	       p->textsize, p->lowpc, p->highpc);
 	ksize = p->textsize / HISTFRACTION;
