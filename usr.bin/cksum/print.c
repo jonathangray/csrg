@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)print.c	5.1 (Berkeley) 04/04/91";
+static char sccsid[] = "@(#)print.c	5.2 (Berkeley) 11/27/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -44,7 +44,10 @@ pcrc(fn, val, len)
 	char *fn;
 	u_long val, len;
 {
-	(void)printf("%lu %lu %s\n", val, len, fn);
+	(void)printf("%lu %lu", val, len);
+	if (fn)
+		(void)printf(" %s", fn);
+	(void)printf("\n");
 }
 
 void
@@ -52,7 +55,10 @@ psum1(fn, val, len)
 	char *fn;
 	u_long val, len;
 {
-	(void)printf("%lu %lu %s\n", val, (len + 1023) / 1024, fn);
+	(void)printf("%lu %lu", val, (len + 1023) / 1024);
+	if (fn)
+		(void)printf(" %s", fn);
+	(void)printf("\n");
 }
 
 void
@@ -60,5 +66,8 @@ psum2(fn, val, len)
 	char *fn;
 	u_long val, len;
 {
-	(void)printf("%lu %lu %s\n", val, (len + 511) / 512, fn);
+	(void)printf("%lu %lu", val, (len + 511) / 512);
+	if (fn)
+		(void)printf(" %s", fn);
+	(void)printf("\n");
 }
