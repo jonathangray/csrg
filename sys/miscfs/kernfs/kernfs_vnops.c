@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kernfs_vnops.c	8.14 (Berkeley) 05/21/95
+ *	@(#)kernfs_vnops.c	8.15 (Berkeley) 05/21/95
  */
 
 /*
