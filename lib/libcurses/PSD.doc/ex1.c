@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)ex1.c	1.1 (Berkeley) 12/30/92
+.\"     @(#)ex1.c	1.2 (Berkeley) 01/14/93
 .\"
 #include <sys/types.h>
 #include <curses.h>
@@ -77,7 +77,7 @@ main()
 		case 'r':		/* Force a refresh on 'r' */
 			wrefresh(curscr);
 			break;
-		default:		/* By defualt output the character */
+		default:		/* By default output the character */
 			addch(c);
 			refresh();
 		}
