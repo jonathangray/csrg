@@ -1,4 +1,4 @@
-#	@(#)rc	5.24 (Berkeley) 02/12/91
+#	@(#)rc	5.25 (Berkeley) 03/15/91
 
 # System startup script run by init on autoboot
 # or after single-user.
