@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty_tty.c	7.15 (Berkeley) 05/28/91
+ *	@(#)tty_tty.c	7.16 (Berkeley) 02/14/92
  */
 
 /*
@@ -71,6 +71,7 @@ cttyopen(dev, flag, mode, p)
 cttyread(dev, uio, flag)
 	dev_t dev;
 	struct uio *uio;
+	int flag;
 {
 	register struct vnode *ttyvp = cttyvp(uio->uio_procp);
 	int error;
@@ -87,6 +88,7 @@ cttyread(dev, uio, flag)
 cttywrite(dev, uio, flag)
 	dev_t dev;
 	struct uio *uio;
+	int flag;
 {
 	register struct vnode *ttyvp = cttyvp(uio->uio_procp);
 	int error;
