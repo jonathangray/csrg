@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	8.44 (Berkeley) 11/25/94";
+static char sccsid[] = "@(#)parseaddr.c	8.45 (Berkeley) 11/27/94";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1921,21 +1921,56 @@ sameaddr(a, b)
 **		none.
 */
 
+struct qflags
+{
+	char	*qf_name;
+	u_long	qf_bit;
+};
+
+struct qflags	AddressFlags[] =
+{
+	"QDONTSEND",		QDONTSEND,
+	"QBADADDR",		QBADADDR,
+	"QGOODUID",		QGOODUID,
+	"QPRIMARY",		QPRIMARY,
+	"QQUEUEUP",		QQUEUEUP,
+	"QSENT",		QSENT,
+	"QNOTREMOTE",		QNOTREMOTE,
+	"QSELFREF",		QSELFREF,
+	"QVERIFIED",		QVERIFIED,
+	"QREPORT",		QREPORT,
+	"QBOGUSSHELL",		QBOGUSSHELL,
+	"QUNSAFEADDR",		QUNSAFEADDR,
+	"QPINGONSUCCESS",	QPINGONSUCCESS,
+	"QPINGONFAILURE",	QPINGONFAILURE,
+	"QPINGONDELAY",		QPINGONDELAY,
+	"QHAS_RET_PARAM",	QHAS_RET_PARAM,
+	"QRET_HDRS",		QRET_HDRS,
+	"QRELAYED",		QRELAYED,
+	NULL
+};
+
 void
 printaddr(a, follow)
 	register ADDRESS *a;
 	bool follow;
 {
-	bool first = TRUE;
 	register MAILER *m;
 	MAILER pseudomailer;
+	register struct qflags *qfp;
+	bool firstone;
+
+	if (a == NULL)
+	{
+		printf("[NULL]\n");
+		return;
+	}
 
 	static int indent;
 	register int i;
 
 	while (a != NULL)
 	{
-		first = FALSE;
 		for (i = indent; i > 0; i--)
 			printf("\t");
 		printf("%x=", a);
@@ -1965,8 +2000,6 @@ printaddr(a, follow)
 		indent--;
 		a = a->q_sibling;
 	}
-	if (first)
-		printf("[NULL]\n");
 }
 /*
 **  EMPTYADDR -- return TRUE if this address is empty (``<>'')
