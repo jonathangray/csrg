@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: mem.c 1.14 90/10/12$
  *
- *	@(#)mem.c	7.5 (Berkeley) 05/07/91
+ *	@(#)mem.c	7.6 (Berkeley) 08/28/91
  */
 
 /*
@@ -54,7 +54,6 @@
 
 #include "vm/vm_param.h"
 #include "vm/lock.h"
-#include "vm/vm_statistics.h"
 #include "vm/pmap.h"
 #include "vm/vm_prot.h"
 
