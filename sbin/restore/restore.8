@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)restore.8	8.1 (Berkeley) 06/05/93
+.\"     @(#)restore.8	8.2 (Berkeley) 12/11/93
 .\"
 .Dd 
 .Dt RESTORE 8
@@ -92,7 +92,7 @@ any necessary incremental backups on top of the level 0.
 The
 .Cm r
 key precludes an interactive file extraction and can be
-detrimental to ones health if not used carefully (not to mention
+detrimental to one's health if not used carefully (not to mention
 the disk). An example:
 .Bd -literal -offset indent
 newfs /dev/rrp0g eagle
@@ -295,7 +295,7 @@ key causes it to type the name of each file it treats
 preceded by its file type.
 .It Cm y
 .Nm Restore
-will not ask whether it should abort the restore if gets an error.
+will not ask whether it should abort the restore if it gets an error.
 It will always try to skip over the bad block(s) and continue as
 best it can.
 .El
