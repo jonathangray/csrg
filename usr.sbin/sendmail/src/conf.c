@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.160 (Berkeley) 05/14/95";
+static char sccsid[] = "@(#)conf.c	8.161 (Berkeley) 05/14/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1079,10 +1079,35 @@ init_vendor_macros(e)
 #define LA_MACH		5	/* MACH load averages (as on NeXT boxes) */
 #define LA_SHORT	6	/* read kmem for avenrun; interpret as short */
 #define LA_PROCSTR	7	/* read string ("1.17") from /proc/loadavg */
+#define LA_READKSYM	8	/* SVR4: use MIOC_READKSYM ioctl call */
+#define LA_DGUX		9	/* special DGUX implementation */
+#define LA_HPUX		10	/* special HPUX implementation */
 
 /* do guesses based on general OS type */
 #ifndef LA_TYPE
 # define LA_TYPE	LA_ZERO
+#endif
+
+#ifndef FSHIFT
+# if defined(unixpc)
+#  define FSHIFT	5
+# endif
+
+# if defined(__alpha) || defined(IRIX)
+#  define FSHIFT	10
+# endif
+
+# if defined(_AIX3)
+#  define FSHIFT	16
+# endif
+#endif
+
+#ifndef FSHIFT
+# define FSHIFT		8
+#endif
+
+#ifndef FSCALE
+# define FSCALE		(1 << FSHIFT)
 #endif
 
 #if (LA_TYPE == LA_INT) || (LA_TYPE == LA_FLOAT) || (LA_TYPE == LA_SHORT)
@@ -1110,34 +1135,12 @@ init_vendor_macros(e)
 # endif
 #endif
 
-struct	nlist Nl[] =
+struct nlist	Nl[] =
 {
 	{ LA_AVENRUN },
 #define	X_AVENRUN	0
 	{ 0 },
 };
-
-#ifndef FSHIFT
-# if defined(unixpc)
-#  define FSHIFT	5
-# endif
-
-# if defined(__alpha) || defined(IRIX)
-#  define FSHIFT	10
-# endif
-
-# if defined(_AIX3)
-#  define FSHIFT	16
-# endif
-#endif
-
-#ifndef FSHIFT
-# define FSHIFT		8
-#endif
-
-#ifndef FSCALE
-# define FSCALE		(1 << FSHIFT)
-#endif
 
 getla()
 {
@@ -1151,8 +1154,8 @@ getla()
 	double avenrun[3];
 # endif
 #endif
-	extern off_t lseek();
 	extern int errno;
+	extern off_t lseek();
 
 	if (kmem < 0)
 	{
@@ -1165,6 +1168,7 @@ getla()
 			return (-1);
 		}
 		(void) fcntl(kmem, F_SETFD, 1);
+
 #ifdef _AIX3
 		if (knlist(Nl, 1, sizeof Nl[0]) < 0)
 #else
@@ -1197,7 +1201,7 @@ getla()
 			printf("getla: lseek or read: %s\n", errstring(errno));
 		return (-1);
 	}
-#if (LA_TYPE == LA_INT) || (LA_TYPE == LA_SHORT)
+# if (LA_TYPE == LA_INT) || (LA_TYPE == LA_SHORT)
 	if (tTd(3, 5))
 	{
 		printf("getla: avenrun = %d", avenrun[0]);
@@ -1208,7 +1212,7 @@ getla()
 	if (tTd(3, 1))
 		printf("getla: %d\n", (int) (avenrun[0] + FSCALE/2) >> FSHIFT);
 	return ((int) (avenrun[0] + FSCALE/2) >> FSHIFT);
-#else
+# else /* LA_TYPE == LA_FLOAT */
 	if (tTd(3, 5))
 	{
 		printf("getla: avenrun = %g", avenrun[0]);
@@ -1219,15 +1223,59 @@ getla()
 	if (tTd(3, 1))
 		printf("getla: %d\n", (int) (avenrun[0] +0.5));
 	return ((int) (avenrun[0] + 0.5));
-#endif
+# endif
 }
 
-#else
-#if LA_TYPE == LA_SUBR
+#endif /* LA_TYPE == LA_INT or LA_SHORT or LA_FLOAT */
 
-#ifdef DGUX
+#if LA_TYPE == LA_READKSYM
 
-#include <sys/dg_sys_info.h>
+getla()
+{
+	static int kmem = -1;
+	long avenrun[3];
+	extern int errno;
+	struct mioc_rksym mirk;
+
+	if (kmem < 0)
+	{
+		kmem = open("/dev/kmem", 0, 0);
+		if (kmem < 0)
+		{
+			if (tTd(3, 1))
+				printf("getla: open(/dev/kmem): %s\n",
+					errstring(errno));
+			return (-1);
+		}
+		(void) fcntl(kmem, F_SETFD, 1);
+	}
+	mirk.mirk_symname = LA_AVENRUN;
+	mirk.mirk_buf = avenrun;
+	mirk.mirk_buflen = sizeof(avenrun);
+	if (ioctl(kmem, MIOC_READKSYM, &mirk) < 0)
+	{
+		if (tTd(3, 1))
+			printf("getla: ioctl(MIOC_READKSYM) failed: %s\n",
+				errstring(errno));
+		return -1;
+	}
+	if (tTd(3, 5))
+	{
+		printf("getla: avenrun = %d", avenrun[0]);
+		if (tTd(3, 15))
+			printf(", %d, %d", avenrun[1], avenrun[2]);
+		printf("\n");
+	}
+	if (tTd(3, 1))
+		printf("getla: %d\n", (int) (avenrun[0] + FSCALE/2) >> FSHIFT);
+	return ((int) (avenrun[0] + FSCALE/2) >> FSHIFT);
+}
+
+#endif /* LA_TYPE == LA_READKSYM */
+
+#if LA_TYPE == LA_DGUX
+
+# include <sys/dg_sys_info.h>
 
 int
 getla()
@@ -1243,13 +1291,14 @@ getla()
 	return((int) (load_info.one_minute + 0.5));
 }
 
-#else
-# ifdef __hpux
+#endif /* LA_TYPE == LA_DGUX */
+
+#if LA_TYPE == LA_HPUX
 
 struct pst_dynamic;
 
-#  include <sys/param.h>
-#  include <sys/pstat.h>
+# include <sys/param.h>
+# include <sys/pstat.h>
 
 int
 getla()
@@ -1266,7 +1315,9 @@ getla()
 	return (int) (pstd.psd_avg_1_min + 0.5);
 }
 
-# else
+#endif /* LA_TYPE == LA_HPUX */
+
+#if LA_TYPE == LA_SUBR
 
 int
 getla()
@@ -1284,9 +1335,8 @@ getla()
 	return ((int) (avenrun[0] + 0.5));
 }
 
-# endif /* __hpux */
-#endif /* DGUX */
-#else
+#endif /* LA_TYPE == LA_SUBR */
+
 #if LA_TYPE == LA_MACH
 
 /*
@@ -1320,8 +1370,8 @@ getla()
 	return (int) (info.load_average + (LOAD_SCALE / 2)) / LOAD_SCALE;
 }
 
+#endif /* LA_TYPE == LA_MACH */
 
-#else
 #if LA_TYPE == LA_PROCSTR
 
 /*
@@ -1367,7 +1417,9 @@ getla()
 	return ((int) (avenrun + 0.5));
 }
 
-#else
+#endif /* LA_TYPE == LA_PROCSTR */
+
+#if LA_TYPE == LA_ZERO
 
 getla()
 {
@@ -1376,10 +1428,7 @@ getla()
 	return (0);
 }
 
-#endif
-#endif
-#endif
-#endif
+#endif /* LA_TYPE == LA_ZERO */
 
 
 /*
