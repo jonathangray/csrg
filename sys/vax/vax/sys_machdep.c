@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)sys_machdep.c	7.3 (Berkeley) 02/17/90
+ *	@(#)sys_machdep.c	7.4 (Berkeley) 06/21/90
  */
 
 #include "param.h"
