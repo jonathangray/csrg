@@ -1,13 +1,15 @@
-/*
- * Copyright (c) 1980, 1986 Regents of the University of California.
- * All rights reserved.  The Berkeley software License Agreement
- * specifies the terms and conditions for redistribution.
+/*-
+ * Copyright (c) 1980, 1986 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)move.c	6.1 (Berkeley) 08/29/86";
-#endif not lint
-
+static char sccsid[] = "@(#)move.c	6.2 (Berkeley) 04/22/91";
+#endif /* not lint */
 
 #include "grnplot.h"
 
