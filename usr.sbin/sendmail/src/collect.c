@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)collect.c	8.4 (Berkeley) 08/06/93";
+static char sccsid[] = "@(#)collect.c	8.5 (Berkeley) 10/15/93";
 #endif /* not lint */
 
 # include <errno.h>
@@ -68,6 +68,7 @@ maketemp(from)
 	bool ignrdot = smtpmode ? FALSE : IgnrDot;
 	char buf[MAXLINE], buf2[MAXLINE];
 	register char *workbuf, *freebuf;
+	bool inputerr = FALSE;
 	extern char *hvalue();
 	extern bool isheader(), flusheol();
 	extern char *index();
@@ -242,7 +243,7 @@ maketemp(from)
 	**  Collect the body of the message.
 	*/
 
-	do
+	for (;;)
 	{
 		register char *bp = buf;
 
@@ -266,33 +267,47 @@ maketemp(from)
 		fputs("\n", tf);
 		if (ferror(tf))
 			tferror(tf, e);
-	} while (sfgets(buf, MAXLINE, InChannel, TimeOuts.to_datablock,
-			"message body read") != NULL);
+		if (sfgets(buf, MAXLINE, InChannel, TimeOuts.to_datablock,
+				"message body read") == NULL)
+			goto readerr;
+	}
 
+	if (feof(InChannel) || ferror(InChannel))
+	{
 readerr:
+		inputerr = TRUE;
+	}
+
 	if (fflush(tf) != 0)
 		tferror(tf, e);
 	(void) fsync(fileno(tf));
 	(void) fclose(tf);
 
 	/* An EOF when running SMTP is an error */
-	if ((feof(InChannel) || ferror(InChannel)) && OpMode == MD_SMTP)
+	if (inputerr && OpMode == MD_SMTP)
 	{
 		char *host;
+		char *problem;
 
 		host = RealHostName;
 		if (host == NULL)
 			host = "localhost";
 
+		if (feof(InChannel))
+			problem = "unexpected close";
+		else if (ferror(InChannel))
+			problem = "I/O error";
+		else
+			problem = "read timeout";
 # ifdef LOG
 		if (LogLevel > 0 && feof(InChannel))
 			syslog(LOG_NOTICE,
-			    "collect: unexpected close on connection from %s, sender=%s: %m\n",
-			    host, e->e_from.q_paddr);
+			    "collect: %s on connection from %s, sender=%s: %m\n",
+			    problem, host, e->e_from.q_paddr);
 # endif
 		(feof(InChannel) ? usrerr : syserr)
-			("451 collect: unexpected close on connection from %s, from=%s",
-				host, e->e_from.q_paddr);
+			("451 collect: %s on connection from %s, from=%s",
+				problem, host, e->e_from.q_paddr);
 
 		/* don't return an error indication */
 		e->e_to = NULL;
@@ -300,6 +315,8 @@ readerr:
 		e->e_flags |= EF_CLRQUEUE;
 
 		/* and don't try to deliver the partial message either */
+		if (InChild)
+			ExitStat = EX_QUIT;
 		finis();
 	}
 
