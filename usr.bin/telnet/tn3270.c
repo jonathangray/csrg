@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)tn3270.c	5.1 (Berkeley) 09/14/90";
+static char sccsid[] = "@(#)tn3270.c	5.2 (Berkeley) 03/01/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -77,7 +77,7 @@ static int
 #endif	/* defined(TN3270) */
 
 
-void
+    void
 init_3270()
 {
 #if	defined(TN3270)
@@ -106,11 +106,11 @@ init_3270()
  * only client needs for us to do that.
  */
 
-int
+    int
 DataToNetwork(buffer, count, done)
-register char	*buffer;	/* where the data is */
-register int	count;		/* how much to send */
-int		done;		/* is this the last of a logical block */
+    register char *buffer;	/* where the data is */
+    register int  count;	/* how much to send */
+    int		  done;		/* is this the last of a logical block */
 {
     register int loop, c;
     int origCount;
@@ -163,7 +163,7 @@ int		done;		/* is this the last of a logical block */
 
 
 #if	defined(unix)
-void
+    void
 inputAvailable()
 {
     HaveInput = 1;
@@ -171,7 +171,7 @@ inputAvailable()
 }
 #endif	/* defined(unix) */
 
-void
+    void
 outputPurge()
 {
     (void) ttyflush(1);
@@ -190,10 +190,10 @@ outputPurge()
  * *all* the data at one time (thus the select).
  */
 
-int
+    int
 DataToTerminal(buffer, count)
-register char	*buffer;		/* where the data is */
-register int	count;			/* how much to send */
+    register char	*buffer;		/* where the data is */
+    register int	count;			/* how much to send */
 {
     register int c;
     int origCount;
@@ -233,7 +233,7 @@ register int	count;			/* how much to send */
  * Push3270 - Try to send data along the 3270 output (to screen) direction.
  */
 
-int
+    int
 Push3270()
 {
     int save = ring_full_count(&netiring);
@@ -259,7 +259,7 @@ Push3270()
  *		before quitting.
  */
 
-void
+    void
 Finish3270()
 {
     while (Push3270() || !DoTerminalOutput()) {
@@ -273,9 +273,9 @@ Finish3270()
 
 /* StringToTerminal - output a null terminated string to the terminal */
 
-void
+    void
 StringToTerminal(s)
-char *s;
+    char *s;
 {
     int count;
 
@@ -291,9 +291,9 @@ char *s;
  *	curses(3x) can call us to send out data.
  */
 
-void
+    void
 _putchar(c)
-char c;
+    char c;
 {
 #if	defined(sun)		/* SunOS 4.0 bug */
     c &= 0x7f;
@@ -309,7 +309,7 @@ char c;
 }
 #endif	/* ((!defined(NOT43)) || defined(PUTCHAR)) */
 
-void
+    void
 SetIn3270()
 {
     if (Sent3270TerminalType && my_want_state_is_will(TELOPT_BINARY)
@@ -339,7 +339,7 @@ SetIn3270()
  *	Return '0' if no more responses to send; '1' if a response sent.
  */
 
-int
+    int
 tn3270_ttype()
 {
     /*
@@ -384,6 +384,7 @@ tn3270_ttype()
 }
 
 #if	defined(unix)
+	void
 settranscom(argc, argv)
 	int argc;
 	char *argv[];
