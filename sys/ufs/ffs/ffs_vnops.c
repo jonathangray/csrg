@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	7.64 (Berkeley) 05/16/91
+ *	@(#)ffs_vnops.c	7.64.1.1 (Berkeley) 05/19/91
  */
 
 #include "param.h"
@@ -864,6 +864,7 @@ ufs_rename(fndp, tndp, p)
 			goto out;
 		if ((tndp->ni_nameiop & SAVESTART) == 0)
 			panic("ufs_rename: lost to startdir");
+		p->p_spare[1]--;
 		if (error = lookup(tndp, p))
 			goto out;
 		dp = VTOI(tndp->ni_dvp);
@@ -987,6 +988,7 @@ unlinkit:
 	fndp->ni_nameiop |= LOCKPARENT | LOCKLEAF;
 	if ((fndp->ni_nameiop & SAVESTART) == 0)
 		panic("ufs_rename: lost from startdir");
+	p->p_spare[1]--;
 	(void) lookup(fndp, p);
 	if (fndp->ni_vp != NULL) {
 		xp = VTOI(fndp->ni_vp);
