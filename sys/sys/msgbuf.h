@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)msgbuf.h	7.3 (Berkeley) 06/28/90
+ *	@(#)msgbuf.h	7.4 (Berkeley) 12/05/90
  */
 
 #define	MSG_MAGIC	0x063061
@@ -42,5 +42,5 @@ struct	msgbuf {
 	char	msg_bufc[MSG_BSIZE];
 };
 #ifdef KERNEL
-struct	msgbuf msgbuf;
+struct	msgbuf *msgbufp;
 #endif
