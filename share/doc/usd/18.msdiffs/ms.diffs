@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)ms.diffs	6.2 (Berkeley) 04/17/91
+.\"	@(#)ms.diffs	6.3 (Berkeley) 06/05/93
 .\"
 .nr LL 6.5i
 .nr FL 6.0i
@@ -37,8 +37,8 @@
 .if t .ds m \u\(ul\dm
 .if n .ds m -m
 .AM
-.OH 'A Revised Version of \*ms''USD:21-%'
-.EH 'USD:21-%''A Revised Version of \*ms'
+.OH 'A Revised Version of \*ms''USD:18-%'
+.EH 'USD:18-%''A Revised Version of \*ms'
 .TL
 A Revised Version of \*ms
 .AU
