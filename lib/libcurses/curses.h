@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)curses.h	5.14 (Berkeley) 09/21/92
+ *	@(#)curses.h	5.15 (Berkeley) 09/22/92
  */
 
 #ifndef _CURSES_H_
@@ -88,6 +88,7 @@ typedef struct __line {
 	u_int flags;
 	u_int hash;			/* Hash value for the line. */
 	size_t firstch, lastch;		/* First and last changed columns. */
+	char *standout;			/* standout character markers */
 /* 
  * XXX
  * _STANDOUT is the 8th bit, characters themselves are encoded.
