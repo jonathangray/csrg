@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_input.c	7.27 (Berkeley) 02/15/92
+ *	@(#)tcp_input.c	7.27 (Berkeley) 10/02/92
  */
 
 #include "param.h"
@@ -503,6 +503,7 @@ findpcb:
 		sin->sin_len = sizeof(*sin);
 		sin->sin_addr = ti->ti_src;
 		sin->sin_port = ti->ti_sport;
+		bzero((caddr_t)sin->sin_zero, sizeof(sin->sin_zero));
 		laddr = inp->inp_laddr;
 		if (inp->inp_laddr.s_addr == INADDR_ANY)
 			inp->inp_laddr = ti->ti_dst;
