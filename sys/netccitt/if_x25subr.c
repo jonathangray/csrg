@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_x25subr.c	7.14 (Berkeley) 06/26/91
+ *	@(#)if_x25subr.c	7.15 (Berkeley) 07/30/91
  */
 
 #include "param.h"
@@ -652,7 +652,6 @@ struct sockaddr_x25 x25_dgmask = {
  {-1}								/* _udata */
 };
 int x25_startproto = 1;
-struct radix_tree_head *x25_rnhead;
 
 pk_init()
 {
@@ -661,7 +660,7 @@ pk_init()
 	 * but contains no data of interest beyond 32
 	 */
 	struct radix_node *rn_addmask();
-	rn_inithead(&x25_rnhead, 32, AF_CCITT);
+	rn_inithead(&rt_tables[AF_CCITT], 32);
 	x25_dgram_sockmask =
 		SA(rn_addmask((caddr_t)&x25_dgmask, 0, 4)->rn_key);
 	if (x25_startproto) {
