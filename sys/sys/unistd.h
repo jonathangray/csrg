@@ -30,8 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)unistd.h	5.8 (Berkeley) 01/21/91
+ *	@(#)unistd.h	5.9 (Berkeley) 02/05/91
  */
+
+#ifndef _UNISTD_H_
+#define	_UNISTD_H_
 
 /* compile-time symbolic constants */
 #define	_POSIX_JOB_CONTROL	/* implementation supports job control */
@@ -91,12 +94,12 @@
 #define	_SC_SAVED_IDS		7
 #define	_SC_VERSION		8
 
-#if __STDC__ || c_plusplus
-char	*cuserid(const char *);
-char	*ctermid();
-char	*getlogin(void);
-#else
-char	*cuserid();
-char	*ctermid();
-char	*getlogin();
-#endif
+#include <sys/cdefs.h>
+
+__BEGIN_DECLS
+char	*getlogin __P((void));
+char	*ctermid __P(());
+char	*cuserid __P((const char *));
+__END_DECLS
+
+#endif /* !_UNISTD_H_ */
