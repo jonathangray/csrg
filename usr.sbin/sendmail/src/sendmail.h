@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.95 (Berkeley) 03/06/95
+ *	@(#)sendmail.h	8.96 (Berkeley) 03/06/95
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.95		03/06/95";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.96		03/06/95";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -591,7 +591,7 @@ MAP
 	short		map_return[MAXMAPACTIONS]; /* return bitmaps for stacked maps */
 };
 
-/* bit values for map_flags */
+/* bit values for map_mflags */
 # define MF_VALID	0x0001		/* this entry is valid */
 # define MF_INCLNULL	0x0002		/* include null byte in key */
 # define MF_OPTIONAL	0x0004		/* don't complain if map not found */
@@ -607,6 +607,7 @@ MAP
 # define MF_IMPL_HASH	0x1000		/* implicit: underlying hash database */
 # define MF_IMPL_NDBM	0x2000		/* implicit: underlying NDBM database */
 # define MF_UNSAFEDB	0x4000		/* this map is world writable */
+# define MF_APPEND	0x8000		/* append new entry on rebuiled */
 
 /* indices for map_actions */
 # define MA_NOTFOUND	0		/* member map returned "not found" */
