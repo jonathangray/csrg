@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.76 (Berkeley) 11/25/94
+ *	@(#)sendmail.h	8.77 (Berkeley) 11/27/94
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.76		11/25/94";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.77		11/27/94";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -325,6 +325,7 @@ MCI
 	char		*mci_phase;	/* SMTP phase string */
 	struct mailer	*mci_mailer;	/* ptr to the mailer for this conn */
 	char		*mci_host;	/* host name */
+	char		*mci_status;	/* DSN status to be copied to addrs */
 	time_t		mci_lastuse;	/* last usage time */
 };
 
