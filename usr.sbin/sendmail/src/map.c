@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)map.c	8.24 (Berkeley) 04/13/94";
+static char sccsid[] = "@(#)map.c	8.25 (Berkeley) 04/17/94";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -643,7 +643,7 @@ bt_map_open(map, mode)
 		omode |= O_CREAT|O_TRUNC;
 #if defined(O_EXLOCK) && HASFLOCK
 		omode |= O_EXLOCK;
-# if !defined(OLD_NEWDB)
+# if !OLD_NEWDB
 	}
 	else
 	{
@@ -667,7 +667,7 @@ bt_map_open(map, mode)
 			syserr("Cannot open BTREE database %s", map->map_file);
 		return FALSE;
 	}
-#if !defined(OLD_NEWDB) && HASFLOCK
+#if !OLD_NEWDB && HASFLOCK
 	fd = db->fd(db);
 # if !defined(O_EXLOCK)
 	if (mode == O_RDWR && fd >= 0)
@@ -685,7 +685,7 @@ bt_map_open(map, mode)
 
 	/* try to make sure that at least the database header is on disk */
 	if (mode == O_RDWR)
-#ifdef OLD_NEWDB
+#if OLD_NEWDB
 		(void) db->sync(db);
 #else
 		(void) db->sync(db, 0);
@@ -727,7 +727,7 @@ hash_map_open(map, mode)
 		omode |= O_CREAT|O_TRUNC;
 #if defined(O_EXLOCK) && HASFLOCK
 		omode |= O_EXLOCK;
-# if !defined(OLD_NEWDB)
+# if !OLD_NEWDB
 	}
 	else
 	{
@@ -751,7 +751,7 @@ hash_map_open(map, mode)
 			syserr("Cannot open HASH database %s", map->map_file);
 		return FALSE;
 	}
-#if !defined(OLD_NEWDB) && HASFLOCK
+#if !OLD_NEWDB && HASFLOCK
 	fd = db->fd(db);
 # if !defined(O_EXLOCK)
 	if (mode == O_RDWR && fd >= 0)
@@ -769,7 +769,7 @@ hash_map_open(map, mode)
 
 	/* try to make sure that at least the database header is on disk */
 	if (mode == O_RDWR)
-#ifdef OLD_NEWDB
+#if OLD_NEWDB
 		(void) db->sync(db);
 #else
 		(void) db->sync(db, 0);
@@ -814,7 +814,7 @@ db_map_lookup(map, name, av, statp)
 	bcopy(name, keybuf, key.size + 1);
 	if (!bitset(MF_NOFOLDCASE, map->map_mflags))
 		makelower(keybuf);
-#ifndef OLD_NEWDB
+#if !OLD_NEWDB
 	fd = db->fd(db);
 	if (fd >= 0 && !bitset(MF_LOCKED, map->map_mflags))
 		(void) lockfile(db->fd(db), map->map_file, ".db", LOCK_SH);
@@ -834,7 +834,7 @@ db_map_lookup(map, name, av, statp)
 			map->map_mflags &= ~MF_TRY0NULL;
 	}
 	saveerrno = errno;
-#ifndef OLD_NEWDB
+#if !OLD_NEWDB
 	if (fd >= 0 && !bitset(MF_LOCKED, map->map_mflags))
 		(void) lockfile(fd, map->map_file, ".db", LOCK_UN);
 #endif
