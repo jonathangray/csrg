@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_log.c	7.11 (Berkeley) 03/17/91
+ *	@(#)subr_log.c	7.12 (Berkeley) 02/05/92
  */
 
 /*
@@ -86,8 +86,10 @@ logopen(dev, flags, mode, p)
 }
 
 /*ARGSUSED*/
-logclose(dev, flag)
+logclose(dev, flag, mode, p)
 	dev_t dev;
+	int flag, mode;
+	struct proc *p;
 {
 	log_open = 0;
 	logsoftc.sc_state = 0;
@@ -184,8 +186,12 @@ logwakeup()
 }
 
 /*ARGSUSED*/
-logioctl(dev, com, data, flag)
+logioctl(dev, com, data, flag, p)
+	dev_t dev;
+	int com;
 	caddr_t data;
+	int flag;
+	struct proc *p;
 {
 	long l;
 	int s;
