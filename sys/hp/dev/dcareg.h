@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dcareg.h	7.1 (Berkeley) 05/08/90
+ *	@(#)dcareg.h	7.2 (Berkeley) 06/27/90
  */
 
 struct dcadevice {
@@ -43,7 +43,8 @@ struct dcadevice {
 	u_char	dca_pad2;
 	volatile u_char	dca_data;
 	volatile short	dca_ier;
-	volatile short	dca_iir;
+	u_char	dca_pad4;
+	volatile u_char	dca_iir;
 	volatile short	dca_cfcr;
 	volatile short	dca_mcr;
 	volatile short	dca_lsr;
@@ -114,10 +115,10 @@ struct dcadevice {
 #define	MSR_RI		0x40
 #define	MSR_DSR		0x20
 #define	MSR_CTS		0x10
-#define	MSR_CCD		0x08
+#define	MSR_DDCD	0x08
 #define	MSR_TERI	0x04
 #define	MSR_DDSR	0x02
-#define	MSR_CCTS	0x01
+#define	MSR_DCTS	0x01
 
 /*
  * WARNING: Serial console is assumed to be at SC9
