@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_subs.c	8.6 (Berkeley) 03/30/95
+ *	@(#)nfs_subs.c	8.7 (Berkeley) 05/14/95
  */
 
 
@@ -1627,6 +1627,7 @@ nfsrv_fhtovp(fhp, lockflag, vpp, cred, slp, nam, rdonlyp, kerbflag)
 	int *rdonlyp;
 	int kerbflag;
 {
+	struct proc *p = curproc;	/* XXX */
 	register struct mount *mp;
 	register struct nfsuid *uidp;
 	register int i;
@@ -1662,7 +1663,7 @@ nfsrv_fhtovp(fhp, lockflag, vpp, cred, slp, nam, rdonlyp, kerbflag)
 	else
 		*rdonlyp = 0;
 	if (!lockflag)
-		VOP_UNLOCK(*vpp);
+		VOP_UNLOCK(*vpp, 0, p);
 	return (0);
 }
 
