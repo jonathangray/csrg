@@ -21,7 +21,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)wd.c	5.4 (Berkeley) 11/08/90
+ *	@(#)wd.c	5.5 (Berkeley) 11/08/90
  */
 
 #include "wd.h"
@@ -374,7 +374,7 @@ loop:
 
 	/* Set up the SDH register (select drive).     */
 	outb(wdc+wd_sdh, WDSD_IBM | (unit<<4) | (head & 0xf));
-	while ((inb(wdc+wd_altsts) & WDCS_READY) == 0) ;
+	while ((inb(wdc+wd_status) & WDCS_READY) == 0) ;
 
 	/*if (bp->b_flags & B_FORMAT)
 		wr(wdc+wd_command, WDCC_FORMAT);
@@ -391,7 +391,7 @@ loop:
 	if (bp->b_flags & B_READ) return;
 
 	/* Ready to send data?	*/
-	while ((inb(wdc+wd_altsts) & WDCS_DRQ) == 0)
+	while ((inb(wdc+wd_status) & WDCS_DRQ) == 0)
 		nulldev();		/* So compiler won't optimize out */
 
 	/* ASSUMES CONTIGUOUS MEMORY */
@@ -444,6 +444,8 @@ static wd_haderror;
 	}
 	if (status & (WDCS_ERR | WDCS_ECCCOR)) {
 		wd_errstat = inb(wdc+wd_error);		/* save error status */
+outb(wdc+wd_command, WDCC_RESTORE);
+while (inb(wdc+wd_status)&WDCS_BUSY);
 #ifdef	WDDEBUG
 		printf("status %x error %x\n", status, wd_errstat);
 #endif
@@ -680,7 +682,7 @@ wdcontrol(bp)
 		return(0);
 
 	case RECAL:
-		if ((stat = inb(wdc+wd_altsts)) & WDCS_ERR) {
+		if ((stat = inb(wdc+wd_status)) & WDCS_ERR) {
 			printf("wd%d: recal", du->dk_unit);
 			if (unit == 0) {
 				printf(": status %b error %b\n",
