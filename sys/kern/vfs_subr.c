@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.58 (Berkeley) 05/16/91
+ *	@(#)vfs_subr.c	7.59 (Berkeley) 06/03/91
  */
 
 /*
@@ -258,7 +258,7 @@ insmntque(vp, mp)
 	register struct vnode *vp;
 	register struct mount *mp;
 {
-	struct vnode *vq;
+	register struct vnode *vq;
 
 	/*
 	 * Delete from old mount point vnode list, if on one.
@@ -277,16 +277,11 @@ insmntque(vp, mp)
 		vp->v_mountb = NULL;
 		return;
 	}
-	if (mp->mnt_mounth) {
-		vp->v_mountf = mp->mnt_mounth;
-		vp->v_mountb = &mp->mnt_mounth;
-		mp->mnt_mounth->v_mountb = &vp->v_mountf;
-		mp->mnt_mounth = vp;
-	} else {
-		mp->mnt_mounth = vp;
-		vp->v_mountb = &mp->mnt_mounth;
-		vp->v_mountf = NULL;
-	}
+	if (vq = mp->mnt_mounth)
+		vq->v_mountb = &vp->v_mountf;
+	vp->v_mountf = vq;
+	vp->v_mountb = &mp->mnt_mounth;
+	mp->mnt_mounth = vp;
 }
 
 /*
@@ -467,6 +462,8 @@ bgetvp(vp, bp)
 	register struct vnode *vp;
 	register struct buf *bp;
 {
+	register struct vnode *vq;
+	register struct buf *bq;
 
 	if (bp->b_vp)
 		panic("bgetvp: not free");
@@ -479,16 +476,11 @@ bgetvp(vp, bp)
 	/*
 	 * Insert onto list for new vnode.
 	 */
-	if (vp->v_cleanblkhd) {
-		bp->b_blockf = vp->v_cleanblkhd;
-		bp->b_blockb = &vp->v_cleanblkhd;
-		vp->v_cleanblkhd->b_blockb = &bp->b_blockf;
-		vp->v_cleanblkhd = bp;
-	} else {
-		vp->v_cleanblkhd = bp;
-		bp->b_blockb = &vp->v_cleanblkhd;
-		bp->b_blockf = NULL;
-	}
+	if (bq = vp->v_cleanblkhd)
+		bq->b_blockb = &bp->b_blockf;
+	bp->b_blockf = bq;
+	bp->b_blockb = &vp->v_cleanblkhd;
+	vp->v_cleanblkhd = bp;
 }
 
 /*
@@ -546,16 +538,11 @@ reassignbuf(bp, newvp)
 		listheadp = &newvp->v_dirtyblkhd;
 	else
 		listheadp = &newvp->v_cleanblkhd;
-	if (*listheadp) {
-		bp->b_blockf = *listheadp;
-		bp->b_blockb = listheadp;
-		bp->b_blockf->b_blockb = &bp->b_blockf;
-		*listheadp = bp;
-	} else {
-		*listheadp = bp;
-		bp->b_blockb = listheadp;
-		bp->b_blockf = NULL;
-	}
+	if (bq = *listheadp)
+		bq->b_blockb = &bp->b_blockf;
+	bp->b_blockf = bq;
+	bp->b_blockb = listheadp;
+	*listheadp = bp;
 }
 
 /*
