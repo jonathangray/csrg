@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sigsetops.c	5.4 (Berkeley) 11/12/91
+ *	@(#)sigsetops.c	5.5 (Berkeley) 01/13/93
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)sigsetops.c	5.4 (Berkeley) 11/12/91";
+static char sccsid[] = "@(#)sigsetops.c	5.5 (Berkeley) 01/13/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <signal.h>
