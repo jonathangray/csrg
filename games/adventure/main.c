@@ -43,7 +43,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.1 (Berkeley) 05/31/93";
+static char sccsid[] = "@(#)main.c	5.3 (Berkeley) 06/02/93";
 #endif /* not lint */
 
 /*      Re-coding of advent in C: main program                          */
@@ -72,7 +72,7 @@ char **argv;
 		switch(i)
 		{
 		    case 0:     /* The restore worked fine */
-			yea=start(0);
+			yea=Start(0);
 			k=null;
 			unlink(argv[1]);/* Don't re-use the save */
 			goto l8;        /* Get where we're going */
