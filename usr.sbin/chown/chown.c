@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)chown.c	8.5 (Berkeley) 03/31/94";
+static char sccsid[] = "@(#)chown.c	8.6 (Berkeley) 03/31/94";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -122,7 +122,7 @@ main(argc, argv)
 	if (argc < 2)
 		usage();
 
-	fts_options = FTS_NOSTAT | FTS_PHYSICAL;
+	fts_options = FTS_PHYSICAL;
 	if (Rflag) {
 		if (hflag)
 			errx(1,
@@ -167,6 +167,7 @@ main(argc, argv)
 			rval = 1;
 			break;
 		case FTS_ERR:			/* Warn, continue. */
+		case FTS_NS:
 			errno = p->fts_errno;
 			warn("%s", p->fts_path);
 			rval = 1;
