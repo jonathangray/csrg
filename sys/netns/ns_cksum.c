@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ns_cksum.c	7.7 (Berkeley) 04/29/91
+ *	@(#)ns_cksum.c	7.8 (Berkeley) 03/02/92
  */
 
-#include "sys/param.h"
-#include "sys/mbuf.h"
+#include "param.h"
+#include "mbuf.h"
 
 /*
  * Checksum routine for Network Systems Protocol Packets (Big-Endian).
