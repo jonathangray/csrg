@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	6.46 (Berkeley) 03/25/93";
+static char sccsid[] = "@(#)main.c	6.47 (Berkeley) 03/26/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -1449,8 +1449,8 @@ obsolete(argv)
 **		none.
 */
 
-#ifdef __STDC__
 void
+#ifdef __STDC__
 auth_warning(register ENVELOPE *e, char *msg, ...)
 #else
 auth_warning(e, msg, va_alist)
