@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)util.c	8.39.1.1 (Berkeley) 02/10/95";
+static char sccsid[] = "@(#)util.c	8.48 (Berkeley) 02/10/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1594,6 +1594,11 @@ cleanstrcpy(t, f, l)
 	register char *f;
 	int l;
 {
+#ifdef LOG
+	/* check for newlines and log if necessary */
+	(void) denlstring(f);
+#endif
+
 	l--;
 	while (l > 0 && *f != '\0')
 	{
@@ -1642,5 +1647,12 @@ denlstring(s)
 	strcpy(bp, s);
 	for (p = bp; (p = strchr(p, '\n')) != NULL; )
 		*p++ = ' ';
+
+#ifdef LOG
+	p = macvalue('_', CurEnv);
+	syslog(LOG_ALERT, "POSSIBLE ATTACK from %s: newline in string \"%s\"",
+		p == NULL ? "[UNKNOWN]" : p, bp);
+#endif
+
 	return bp;
 }
