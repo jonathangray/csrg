@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_prof.c	7.10 (Berkeley) 05/07/91
+ *	@(#)subr_prof.c	7.11 (Berkeley) 02/24/92
  */
 
 #ifdef GPROF
@@ -109,9 +109,6 @@ kmstartup()
 /*
  * This routine is massaged so that it may be jsb'ed to on vax.
  */
-asm(".text");
-asm("#the beginning of mcount()");
-asm(".data");
 mcount()
 {
 	register char *selfpc;			/* r11 => r5 */
@@ -121,7 +118,6 @@ mcount()
 	register long toindex;			/* r7  => r1 */
 	static int s;
 
-	asm("	.text");		/* make sure we're in text space */
 	/*
 	 * Check that we are profiling.
 	 */
