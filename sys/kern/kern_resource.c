@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_resource.c	8.2 (Berkeley) 09/05/93
+ *	@(#)kern_resource.c	8.3 (Berkeley) 09/23/93
  */
 
 #include <sys/param.h>
@@ -87,7 +87,7 @@ getpriority(curp, uap, retval)
 	case PRIO_USER:
 		if (uap->who == 0)
 			uap->who = curp->p_ucred->cr_uid;
-		for (p = (struct proc *)allproc; p != NULL; p = p->p_nxt) {
+		for (p = (struct proc *)allproc; p != NULL; p = p->p_next) {
 			if (p->p_ucred->cr_uid == uap->who &&
 			    p->p_nice < low)
 				low = p->p_nice;
@@ -147,7 +147,7 @@ setpriority(curp, uap, retval)
 	case PRIO_USER:
 		if (uap->who == 0)
 			uap->who = curp->p_ucred->cr_uid;
-		for (p = (struct proc *)allproc; p != NULL; p = p->p_nxt)
+		for (p = (struct proc *)allproc; p != NULL; p = p->p_next)
 			if (p->p_ucred->cr_uid == uap->who) {
 				error = donice(curp, p, uap->prio);
 				found++;
