@@ -32,7 +32,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)cp.1	6.15 (Berkeley) 07/30/91
+.\"	@(#)cp.1	6.16 (Berkeley) 06/01/92
 .\"
 .Dd 
 .Dt CP 1
@@ -42,10 +42,10 @@
 .Nd copy files
 .Sh SYNOPSIS
 .Nm cp
-.Op Fl Rfhip
+.Op Fl HRfhip
 .Ar source_file target_file
 .Nm cp
-.Op Fl Rfhip
+.Op Fl HRfhip
 .Ar source_file ... target_directory
 .Sh DESCRIPTION
 In the first synopsis form, the
@@ -66,6 +66,9 @@ detects an attempt to copy a file to itself, the copy will fail.
 .Pp
 The following options are available:
 .Bl -tag -width flag
+.It Fl H
+When encountering a symbolic link on the command line, follow it.  All other
+symbolic links encountered in the traversal are not followed.
 .It Fl R
 If
 .Ar source_file
@@ -88,9 +91,7 @@ option is ignored if the
 .Fl f
 option is specified.)
 .It Fl h
-Forces
-.Nm cp
-to follow symbolic links.
+When encountering a symbolic link anywhere in the traversal, follow it.
 Provided for the
 .Fl R
 option which does not follow symbolic links by default.
@@ -143,9 +144,11 @@ conditions must be fulfilled or both bits are removed.
 .Pp
 Appropriate permissions are required for file creation or overwriting.
 .Pp
-Symbolic links are followed unless the
-.Fl R
-option is specified, in which case the link itself is copied.
+Symbolic links are not followed unless the
+.Fl H
+or 
+.Fl h
+options are specified, in which case the behavior is as detailed above.
 .Pp
 .Nm Cp
 exits 0 on success, >0 if an error occurred.
