@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ns.c	8.4 (Berkeley) 01/12/95
+ *	@(#)ns.c	8.5 (Berkeley) 02/09/95
  */
 
 #include <sys/param.h>
@@ -171,7 +171,8 @@ ns_control(so, cmd, data, ifp)
 			ia->ia_flags &= ~IFA_ROUTE;
 		}
 		if (ifp->if_ioctl) {
-			error = (*ifp->if_ioctl)(ifp, SIOCSIFDSTADDR, ia);
+			error = (*ifp->if_ioctl)
+				        (ifp, SIOCSIFDSTADDR, (caddr_t)ia);
 			if (error)
 				return (error);
 		}
