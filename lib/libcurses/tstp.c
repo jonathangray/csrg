@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)tstp.c	5.6 (Berkeley) 03/03/91";
+static char sccsid[] = "@(#)tstp.c	5.7 (Berkeley) 05/15/92";
 #endif /* not lint */
 
 # include	<signal.h>
@@ -42,7 +42,7 @@ static char sccsid[] = "@(#)tstp.c	5.6 (Berkeley) 03/03/91";
 /*
  * handle stop and start signals
  *
- * @(#)tstp.c	5.6 (Berkeley) 03/03/91
+ * @(#)tstp.c	5.7 (Berkeley) 05/15/92
  */
 void
 tstp() {
