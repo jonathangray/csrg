@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_synch.c	7.19 (Berkeley) 02/14/92
+ *	@(#)kern_synch.c	7.20 (Berkeley) 02/14/92
  */
 
 #include "param.h"
@@ -327,7 +327,8 @@ tsleep(chan, pri, wmesg, timo)
 			catch = 0;
 			goto resume;
 		}
-	}
+	} else
+		sig = 0;
 	p->p_stat = SSLEEP;
 	p->p_stats->p_ru.ru_nvcsw++;
 	swtch();
@@ -337,7 +338,7 @@ resume:
 	p->p_flag &= ~SSINTR;
 	if (p->p_flag & STIMO) {
 		p->p_flag &= ~STIMO;
-		if (catch == 0 || sig == 0) {
+		if (sig == 0) {
 #ifdef KTRACE
 			if (KTRPOINT(p, KTR_CSW))
 				ktrcsw(p->p_tracep, 0, 0);
