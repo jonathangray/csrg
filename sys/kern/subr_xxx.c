@@ -30,16 +30,17 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_xxx.c	7.13 (Berkeley) 06/20/92
+ *	@(#)subr_xxx.c	7.14 (Berkeley) 10/11/92
  */
 
 /*
  * Miscellaneous trivial functions, including many
  * that are often inline-expanded or done in assembler.
  */
-#include "param.h"
-#include "systm.h"
-#include "machine/cpu.h"
+#include <sys/param.h>
+#include <sys/systm.h>
+
+#include <machine/cpu.h>
 
 /*
  * Unsupported device function (e.g. writing to read-only device).
