@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	6.22 (Berkeley) 04/26/93
+ *	@(#)conf.h	6.23 (Berkeley) 04/27/93
  */
 
 /*
@@ -99,7 +99,7 @@
 **	change these.
 */
 
-# ifdef hpux
+# ifdef __hpux
 # define SYSTEM5	1
 # endif
 
@@ -133,7 +133,7 @@
 **  message such as ICMP_UNREACH_PROTOCOL or _PORT or _NET_PROHIB.
 */
 
-#if !defined(ultrix) && !defined(hpux)
+#if !defined(ultrix) && !defined(__hpux)
 # define IDENTPROTO	1	/* use IDENT proto (RFC 1413) */
 #endif
 
