@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_extern.h	7.7 (Berkeley) 01/10/92
+ *	@(#)lfs_extern.h	7.8 (Berkeley) 01/18/92
  */
 
 struct fid;
@@ -54,7 +54,6 @@ int	 lfs_fsync
 DINODE	*lfs_ifind __P((struct lfs *, ino_t, void *));
 int	 lfs_inactive __P((VNODE *, struct proc *));
 int	 lfs_init __P((void));
-daddr_t	 lfs_itod __P((struct lfs *, ino_t));
 int	 lfs_makeinode __P((int, struct nameidata *, struct inode **));
 int	 lfs_mount
 	     __P((MOUNT *, char *, caddr_t, struct nameidata *, struct proc *));
