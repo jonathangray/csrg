@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fsdump.c	7.1 (Berkeley) 12/13/92
+ *	@(#)fsdump.c	7.2 (Berkeley) 02/09/93
  */
 
 /*
@@ -63,6 +63,9 @@ extern dev_t nrst0;
 
 static u_char *dump_buf = (u_char *) 0x100000;
 
+extern int scsi_device;
+char cons_buf[100];
+
 
 int
 fsdump(argc, argv)
@@ -76,18 +79,22 @@ fsdump(argc, argv)
 	int scsi_id, blk, nblks, size, mark;
 	struct stat boot_stat;
 	struct	partition *pp;
+	scsi_id = scsi_device;
 
-	scsi_id = 6;
+	printf("Current SCSI device = ID %d\n", scsi_id);
+	getline("Is it sure ? (y/n) ", cons_buf);
+
+	if ((cons_buf[0] != 'y') && (cons_buf[0] != 'Y'))
+		return(ST_ERROR);
+
 	scsi_read_raw(scsi_id, 0, 1, index, LABEL_SIZE);
 
 	for (i = 0; i < MAXPARTITIONS; i++) {
 		pp = &(lp->d_partitions[i]);
-/*
 		if ((i != 0) &&
+		    (i != 3) &&
 		    (i != 4) &&
 		    (i != 5)) {
- */
-		if (i != 0) {
 			pp->p_size = 0;
 		}
 	}
@@ -182,9 +189,6 @@ fsdump(argc, argv)
 		}
 	}
 }
-
-extern int scsi_device;
-char cons_buf[100];
 
 int
 fsrestore(argc, argv)
