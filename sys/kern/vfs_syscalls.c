@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	8.23 (Berkeley) 08/30/94
+ *	@(#)vfs_syscalls.c	8.24 (Berkeley) 10/24/94
  */
 
 #include <sys/param.h>
@@ -933,13 +933,13 @@ out:
 /*
  * Delete a whiteout from the filesystem.
  */
-struct unwhiteout_args {
+struct undelete_args {
 	char	*path;
 };
 /* ARGSUSED */
-unwhiteout(p, uap, retval)
+undelete(p, uap, retval)
 	struct proc *p;
-	struct unwhiteout_args *uap;
+	struct undelete_args *uap;
 	int *retval;
 {
 	int error;
