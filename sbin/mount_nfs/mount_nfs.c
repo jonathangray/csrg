@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)mount_nfs.c	5.7 (Berkeley) 10/05/92";
+static char sccsid[] = "@(#)mount_nfs.c	5.8 (Berkeley) 10/21/92";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -182,9 +182,10 @@ main(argc, argv)
 			break;
 		case 'F':
 			num = strtol(optarg, &p, 10);
-			if (*p || num != 0)
+			if (*p)
 				err("illegal -F value -- %s", optarg);
-			flags = num;
+			if (num != 0)
+				flags = num;
 			break;
 		case 'g':
 			num = strtol(optarg, &p, 10);
