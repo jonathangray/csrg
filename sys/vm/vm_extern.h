@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_extern.h	7.1 (Berkeley) 05/04/92
+ *	@(#)vm_extern.h	7.2 (Berkeley) 05/04/92
  */
 
 struct buf;
@@ -39,6 +39,7 @@ struct proc;
 struct vmspace;
 struct vmtotal;
 struct mount;
+struct vnode;
 
 #ifdef KGDB
 void		 chgkprot __P((caddr_t, int, int));
