@@ -1,4 +1,4 @@
-/*	proc.h	3.6	07/11/80	*/
+/*	proc.h	3.7	09/18/80	*/
 
 /*
  * One structure allocated per active
