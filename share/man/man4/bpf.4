@@ -34,7 +34,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)bpf.4	8.2 (Berkeley) 08/08/94
+.\"	@(#)bpf.4	8.3 (Berkeley) 04/25/95
 .\"
 .TH BPF 4 ""
 .UC 7
@@ -673,7 +673,8 @@ struct bpf_insn insns[] = {
 tcpdump(1)
 .LP
 McCanne, S., Jacobson V.,
-.RI ` "An efficient, extensible, and portable network monitor" '
+.IR "The BSD Packet Filter: A New Architecture for User-level Packet Capture" ,
+Proceedings of the 1993 Winter USENIX Technical Conference, pp 259\-269.
 .SH FILES
 /dev/bpf0, /dev/bpf1, ...
 .SH BUGS
