@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	6.5 (Berkeley) 01/28/93
+ *	@(#)conf.h	6.6 (Berkeley) 02/12/93
  */
 
 /*
@@ -104,7 +104,7 @@
 
 # define LOCKF		1	/* use System V lockf instead of flock */
 # define SYS5TZ		1	/* use System V style timezones */
-# define UNAME		1	/* use System V uname system call */
+# define HASUNAME	1	/* use System V uname system call */
 
 # endif
 
@@ -139,18 +139,18 @@
 
 # endif
 
-#ifdef UNAME
+#ifdef HASUNAME
 # include <sys/utsname.h>
 # ifdef newstr
 #  undef newstr
 # endif
-#else /* ! UNAME */
+#else /* ! HASUNAME */
 # define NODE_LENGTH 32
 struct utsname
 {
 	char nodename[NODE_LENGTH+1];
 };
-#endif /* UNAME */
+#endif /* HASUNAME */
 
 #ifdef sun
 # include <vfork.h>
