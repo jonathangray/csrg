@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_seq.h	8.2 (Berkeley) 05/24/95
+ *	@(#)tcp_seq.h	8.3 (Berkeley) 06/21/95
  */
 
 /*
@@ -65,7 +65,7 @@
  * If defined, the tcp_random18() macro should produce a
  * number in the range [0-0x3ffff] that is hard to predict.
  */
-#ifndef tcp_tandom18
+#ifndef tcp_random18
 #define	tcp_random18()	((random() >> 14) & 0x3ffff)
 #endif
 #define	TCP_ISSINCR	(122*1024 + tcp_random18())
