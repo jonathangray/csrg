@@ -30,7 +30,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)op.me	8.16 (Berkeley) 08/26/93
+.\"	@(#)op.me	8.17 (Berkeley) 08/27/93
 .\"
 .\" eqn op.me | pic | troff -me
 .eh 'SMM:08-%''Sendmail Installation and Operation Guide'
@@ -69,7 +69,7 @@ University of California, Berkeley
 Mammoth Project
 eric@CS.Berkeley.EDU
 .sp
-Version 8.16
+Version 8.17
 .sp
 For Sendmail Version 8.6
 .)l
@@ -5276,6 +5276,10 @@ is:
 The kernel stores the load average in the kernel as an array of long integers.
 The actual values are scaled by a factor FSCALE
 (default 256).
+.ip LA_SHORT
+The kernel stores the load average in the kernel as an array of short integers.
+The actual values are scaled by a factor FSCALE
+(default 256).
 .ip LA_FLOAT
 The kernel stores the load average in the kernel as an array of
 double precision floats.
@@ -5288,7 +5292,8 @@ Always return zero as the load average.
 This is the fallback case.
 .lp
 If type
-.sm LA_INT
+.sm LA_INT ,
+.sm LA_SHORT ,
 or
 .sm LA_FLOAT
 is specified,
@@ -6749,7 +6754,7 @@ A transcript of the current session.
 .\"Eric Allman
 .\"Britton-Lee, Inc.
 .\".sp
-.\"Version 8.16
+.\"Version 8.17
 .\".ce 0
 .bp 2
 .ce
