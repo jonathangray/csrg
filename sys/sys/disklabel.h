@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)disklabel.h	7.17 (Berkeley) 04/28/91
+ *	@(#)disklabel.h	7.18 (Berkeley) 04/28/91
  */
 
 /*
@@ -53,8 +53,11 @@
 #define	MAXPARTITIONS	32
 #endif
 
-#ifdef	LABELSECTOR
+#ifndef	LABELSECTOR
 #define LABELSECTOR	0			/* sector containing label */
+#endif
+
+#ifndef	LABELOFFSET
 #define LABELOFFSET	64			/* offset of label in sector */
 #endif
 
