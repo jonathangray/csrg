@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_bio.c	7.6 (Berkeley) 02/04/92
+ *	@(#)lfs_bio.c	7.7 (Berkeley) 04/08/92
  */
 
 #include <sys/param.h>
@@ -73,13 +73,20 @@ printf("lfs_bwrite\n");
 	 * getnewbuf() would try to reclaim the buffers using bawrite, which
 	 * isn't going to work.
 	 */
-	if (!(bp->b_flags & B_LOCKED))
+	if (!(bp->b_flags & B_LOCKED)) {
 		++locked_queue_count;
-	bp->b_flags |= B_DELWRI | B_LOCKED;
-	bp->b_flags &= ~(B_READ | B_DONE | B_ERROR);
-	s = splbio();
-	reassignbuf(bp, bp->b_vp);
-	splx(s);
+		bp->b_flags |= B_DELWRI | B_LOCKED;
+		bp->b_flags &= ~(B_READ | B_DONE | B_ERROR);
+		s = splbio();
+#define	PMAP_BUG_FIX_HACK
+#ifdef PMAP_BUG_FIX_HACK
+		if (((struct ufsmount *)
+		    (bp->b_vp->v_mount->mnt_data))->um_lfs->lfs_ivnode !=
+		    bp->b_vp)
+#endif
+		reassignbuf(bp, bp->b_vp);
+		splx(s);
+	}
 	brelse(bp);
 	return (0);
 }
