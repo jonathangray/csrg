@@ -37,7 +37,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)machdep.c	7.2 (Berkeley) 06/25/92
+ *	@(#)machdep.c	7.3 (Berkeley) 06/26/92
  */
 
 /* from: Utah $Hdr: machdep.c 1.63 91/04/24$ */
@@ -297,6 +297,8 @@ consinit()
 	vt100_open();
 	setup_fnt();
 	setup_fnt24();
+#else
+	dipsw &= SW_CONSOLE;
 #endif
 
 	switch (dipsw & SW_CONSOLE) {
@@ -307,8 +309,10 @@ consinit()
 		break;
 
 	    default:
+#if NBM > 0
 		consdev = makedev(22, 0);
 		constty = cn_tty;
+#endif
 		break;
 	}
 	return(0);
