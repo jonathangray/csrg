@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_prof.c	7.13 (Berkeley) 06/04/92
+ *	@(#)subr_prof.c	7.14 (Berkeley) 06/20/92
  */
 
 #ifdef GPROF
@@ -105,12 +105,8 @@ kmstartup()
 	((struct phdr *)sbuf)->hpc = s_highpc;
 	((struct phdr *)sbuf)->ncnt = ssiz;
 	((struct phdr *)sbuf)->version = GMONVERSION;
-#ifdef PROFTIMER
-	initprofclock();
+	startprofclock(&proc0);
 	((struct phdr *)sbuf)->profrate = profhz;
-#else
-	((struct phdr *)sbuf)->profrate = hz;
-#endif
 	kcount = (u_short *)(((int)sbuf) + sizeof (struct phdr));
 }
 
