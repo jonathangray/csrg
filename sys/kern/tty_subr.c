@@ -6,13 +6,14 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)tty_subr.c	7.8 (Berkeley) 02/14/92
+ *	@(#)tty_subr.c	7.9 (Berkeley) 02/15/92
  */
 
 #include "param.h"
 #include "systm.h"
 #include "buf.h"
 #include "ioctl.h"
+#include "proc.h"
 #include "tty.h"
 #include "clist.h"
 
