@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	8.6 (Berkeley) 01/06/94
+ *	@(#)vfs_subr.c	8.6.1.1 (Berkeley) 01/11/94
  */
 
 /*
@@ -225,6 +225,8 @@ extern int (**dead_vnodeop_p)();
 extern void vclean();
 long numvnodes;
 extern struct vattr va_null;
+int newnodes = 0;
+int printcnt = 0;
 
 /*
  * Return the next vnode from the free list.
@@ -238,13 +240,19 @@ getnewvnode(tag, mp, vops, vpp)
 	register struct vnode *vp;
 	int s;
 
+newnodes++;
 	if ((vnode_free_list.tqh_first == NULL &&
 	     numvnodes < 2 * desiredvnodes) ||
 	    numvnodes < desiredvnodes) {
 		vp = (struct vnode *)malloc((u_long)sizeof *vp,
 		    M_VNODE, M_WAITOK);
 		bzero((char *)vp, sizeof *vp);
+		vp->v_freelist.tqe_next = (struct vnode *)0xdeadf;
+		vp->v_freelist.tqe_prev = (struct vnode **)0xdeadb;
+		vp->v_mntvnodes.le_next = (struct vnode *)0xdeadf;
+		vp->v_mntvnodes.le_prev = (struct vnode **)0xdeadb;
 		numvnodes++;
+		vp->v_spare[0] = numvnodes;
 	} else {
 		if ((vp = vnode_free_list.tqh_first) == NULL) {
 			tablefull("vnode");
@@ -253,7 +261,11 @@ getnewvnode(tag, mp, vops, vpp)
 		}
 		if (vp->v_usecount)
 			panic("free vnode isn't");
+		if (vp->v_freelist.tqe_next == (struct vnode *)0xdeadf ||
+		    vp->v_freelist.tqe_prev == (struct vnode **)0xdeadb)
+			panic("getnewvnode: not on queue");
 		TAILQ_REMOVE(&vnode_free_list, vp, v_freelist);
+		vp->v_freelist.tqe_next = (struct vnode *)0xdeadf;
 		/* see comment on why 0xdeadb is set at end of vgone (below) */
 		vp->v_freelist.tqe_prev = (struct vnode **)0xdeadb;
 		vp->v_lease = NULL;
@@ -284,6 +296,7 @@ getnewvnode(tag, mp, vops, vpp)
 	*vpp = vp;
 	vp->v_usecount = 1;
 	vp->v_data = 0;
+	if (printcnt-- > 0) vprint("getnewvnode got", vp);
 	return (0);
 }
 /*
@@ -297,13 +310,22 @@ insmntque(vp, mp)
 	/*
 	 * Delete from old mount point vnode list, if on one.
 	 */
-	if (vp->v_mount != NULL)
+	if (vp->v_mount != NULL) {
+		if (vp->v_mntvnodes.le_next == (struct vnode *)0xdeadf ||
+		    vp->v_mntvnodes.le_prev == (struct vnode **)0xdeadb)
+			panic("insmntque: not on queue");
 		LIST_REMOVE(vp, v_mntvnodes);
+		vp->v_mntvnodes.le_next = (struct vnode *)0xdeadf;
+		vp->v_mntvnodes.le_prev = (struct vnode **)0xdeadb;
+	}
 	/*
 	 * Insert into list of vnodes for the new mount point, if available.
 	 */
 	if ((vp->v_mount = mp) == NULL)
 		return;
+	if (vp->v_mntvnodes.le_next != (struct vnode *)0xdeadf ||
+	    vp->v_mntvnodes.le_prev != (struct vnode **)0xdeadb)
+		panic("insmntque: already on queue");
 	LIST_INSERT_HEAD(&mp->mnt_vnodelist, vp, v_mntvnodes);
 }
 
@@ -580,11 +602,18 @@ vget(vp, lockflag)
 		sleep((caddr_t)vp, PINOD);
 		return (1);
 	}
-	if (vp->v_usecount == 0)
+	if (vp->v_usecount == 0) {
+		if (vp->v_freelist.tqe_next == (struct vnode *)0xdeadf ||
+		    vp->v_freelist.tqe_prev == (struct vnode **)0xdeadb)
+			panic("vget: not on queue");
 		TAILQ_REMOVE(&vnode_free_list, vp, v_freelist);
+		vp->v_freelist.tqe_next = (struct vnode *)0xdeadf;
+		vp->v_freelist.tqe_prev = (struct vnode **)0xdeadb;
+	}
 	vp->v_usecount++;
 	if (lockflag)
 		VOP_LOCK(vp);
+	if (printcnt-- > 0) vprint("vget got", vp);
 	return (0);
 }
 
@@ -599,7 +628,11 @@ void vref(vp)
 
 	if (vp->v_usecount <= 0)
 		panic("vref used where vget required");
+	if (vp->v_freelist.tqe_next != (struct vnode *)0xdeadf ||
+	    vp->v_freelist.tqe_prev != (struct vnode **)0xdeadb)
+		panic("vref: not free");
 	vp->v_usecount++;
+	if (printcnt-- > 0) vprint("vref get", vp);
 	if (vp->v_type != VBLK && curproc)
 		curproc->p_spare[0]++;
 	if (bug_refs)
@@ -630,6 +663,7 @@ void vrele(vp)
 		panic("vrele: null vp");
 #endif
 	vp->v_usecount--;
+	if (printcnt-- > 0) vprint("vrele put", vp);
 	if (vp->v_type != VBLK && curproc)
 		curproc->p_spare[0]--;
 	if (bug_refs)
@@ -645,6 +679,9 @@ void vrele(vp)
 	/*
 	 * insert at tail of LRU list
 	 */
+	if (vp->v_freelist.tqe_next != (struct vnode *)0xdeadf ||
+	    vp->v_freelist.tqe_prev != (struct vnode **)0xdeadb)
+		panic("vrele: not free");
 	TAILQ_INSERT_TAIL(&vnode_free_list, vp, v_freelist);
 	VOP_INACTIVE(vp);
 }
@@ -888,7 +925,12 @@ void vgone(vp)
 	 * Delete from old mount point vnode list, if on one.
 	 */
 	if (vp->v_mount != NULL) {
+		if (vp->v_mntvnodes.le_next == (struct vnode *)0xdeadf ||
+		    vp->v_mntvnodes.le_prev == (struct vnode **)0xdeadb)
+			panic("vgone: not on queue");
 		LIST_REMOVE(vp, v_mntvnodes);
+		vp->v_mntvnodes.le_next = (struct vnode *)0xdeadf;
+		vp->v_mntvnodes.le_prev = (struct vnode **)0xdeadb;
 		vp->v_mount = NULL;
 	}
 	/*
@@ -942,6 +984,8 @@ void vgone(vp)
 	if (vp->v_usecount == 0 &&
 	    vp->v_freelist.tqe_prev != (struct vnode **)0xdeadb &&
 	    vnode_free_list.tqh_first != vp) {
+		if (vp->v_freelist.tqe_next == (struct vnode *)0xdeadf)
+			panic("vgone: use 0, not free");
 		TAILQ_REMOVE(&vnode_free_list, vp, v_freelist);
 		TAILQ_INSERT_HEAD(&vnode_free_list, vp, v_freelist);
 	}
@@ -1008,6 +1052,7 @@ vprint(label, vp)
 
 	if (label != NULL)
 		printf("%s: ", label);
+	printf("num %d ", vp->v_spare[0]);
 	printf("type %s, usecount %d, writecount %d, refcount %d,",
 		typename[vp->v_type], vp->v_usecount, vp->v_writecount,
 		vp->v_holdcnt);
