@@ -1,7 +1,7 @@
 /*-
  * Copyright (c) 1992 OMRON Corporation.
- * Copyright (c) 1991, 1992 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1991, 1992, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -33,7 +33,7 @@
  *
  * from: hp300/hp300/conf.c	7.16 (Berkeley) 4/28/93
  *
- *	@(#)conf.c	7.9 (Berkeley) 05/02/93
+ *	@(#)conf.c	8.1 (Berkeley) 06/10/93
  */
 
 #include <sys/param.h>
