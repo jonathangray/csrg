@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	7.59 (Berkeley) 05/15/91
+ *	@(#)nfs_vnops.c	7.60 (Berkeley) 05/24/91
  */
 
 /*
@@ -466,7 +466,7 @@ nfs_lookup(vp, ndp, p)
 			   if (!nfs_dogetattr(vdp, &vattr, ndp->ni_cred, 0, p)&&
 			       vattr.va_ctime.tv_sec == VTONFS(vdp)->n_ctime) {
 				nfsstats.lookupcache_hits++;
-				if (flag != LOOKUP)
+				if (flag != LOOKUP && *ndp->ni_next == 0)
 					ndp->ni_nameiop |= SAVENAME;
 				return (0);
 			   }
@@ -492,7 +492,7 @@ nfsmout:
 		if (lockparent || (flag != CREATE && flag != RENAME) ||
 		    *ndp->ni_next != 0)
 			nfs_lock(vp);
-		if (flag != LOOKUP)
+		if (flag != LOOKUP && *ndp->ni_next == 0)
 			ndp->ni_nameiop |= SAVENAME;
 		return (error);
 	}
@@ -592,7 +592,7 @@ nfsmout:
 	if (vp == newvp || (lockparent && *ndp->ni_next == '\0'))
 		nfs_lock(vp);
 	ndp->ni_vp = newvp;
-	if (flag != LOOKUP)
+	if (flag != LOOKUP && *ndp->ni_next == 0)
 		ndp->ni_nameiop |= SAVENAME;
 	if (error == 0 && ndp->ni_makeentry) {
 		np->n_ctime = np->n_vattr.va_ctime.tv_sec;
