@@ -32,9 +32,7 @@ divert(-1)
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-VERSIONID(`@(#)bsd4.3.m4	2.3 (Berkeley) 11/13/92')
-#
-
-define(`QUEUE_DIR', /usr/spool/mqueue)dnl
 
 divert(0)
+VERSIONID(`@(#)bsd4.3.m4	2.4 (Berkeley) 11/14/92')
+define(`QUEUE_DIR', /usr/spool/mqueue)dnl
