@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kbd.c	7.5 (Berkeley) 02/02/93
+ *	@(#)kbd.c	7.6 (Berkeley) 02/04/93
  */
 
 /*
@@ -308,13 +308,19 @@ kbdintr(unit)
 	register u_char code;
 	int s, rr;
 
+	tp = &kbd_tty[0];		/* Keyboard */
 	rr = siogetreg(sio);
 
 	if (rr & RR_RXRDY) {
 		code = sio->sio_data;
-		tp = &kbd_tty[0];		/* Keyboard */
 		if ((tp->t_state & TS_ISOPEN) != 0)
 			(*linesw[tp->t_line].l_rint)(code, tp);
+
+		while ((rr = siogetreg(sio)) & RR_RXRDY) {
+			code = sio->sio_data;
+			if ((tp->t_state & TS_ISOPEN) != 0)
+				(*linesw[tp->t_line].l_rint)(code, tp);
+		}
 	}
 
 	if (rr & RR_TXRDY) {
