@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)kern_physio.c	7.7 (Berkeley) 06/27/89
+ *	@(#)kern_physio.c	7.8 (Berkeley) 08/26/89
  */
 
 #include "param.h"
@@ -197,7 +197,7 @@ physio(strat, bp, dev, rw, mincnt, uio)
 	struct uio *uio;
 {
 	register struct iovec *iov;
-	register int c;
+	register int requested, done;
 	char *a;
 	int s, allocbuf = 0, error = 0;
 	struct buf *getswbuf();
@@ -271,7 +271,6 @@ physio(strat, bp, dev, rw, mincnt, uio)
 		}
 		bp->b_flags &= ~(B_BUSY|B_WANTED|B_PHYS);
 		error = geterror(bp);
-		/* temp kludge for tape drives */
 		if (bp->b_resid || error)
 			return (error);
 		uio->uio_iov++;
