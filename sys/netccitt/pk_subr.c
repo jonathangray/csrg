@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pk_subr.c	7.18 (Berkeley) 11/18/91
+ *	@(#)pk_subr.c	7.19 (Berkeley) 12/17/91
  */
 
 #include "param.h"
