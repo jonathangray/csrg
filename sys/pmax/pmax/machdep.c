@@ -36,7 +36,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)machdep.c	7.5 (Berkeley) 03/22/92
+ *	@(#)machdep.c	7.6 (Berkeley) 04/14/92
  */
 
 /* from: Utah $Hdr: machdep.c 1.63 91/04/24$ */
@@ -503,6 +503,7 @@ cpu_startup()
 	callfree = callout;
 	for (i = 1; i < ncallout; i++)
 		callout[i-1].c_next = &callout[i];
+	callout[i-1].c_next = NULL;
 
 #ifdef DEBUG
 	pmapdebug = opmapdebug;
