@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stdlib.h	5.18 (Berkeley) 06/22/92
+ *	@(#)stdlib.h	5.19 (Berkeley) 06/25/92
  */
 
 #ifndef _STDLIB_H_
@@ -129,6 +129,10 @@ int	 radixsort __P((const u_char **, int, const u_char *, u_int));
 long	 random __P((void));
 char	*setstate __P((char *));
 void	 srandom __P((unsigned));
+long long
+	 strtoq __P((const char *, char **, int));
+unsigned long long
+	 strtouq __P((const char *, char **, int));
 void	 unsetenv __P((const char *));
 #endif
 __END_DECLS
