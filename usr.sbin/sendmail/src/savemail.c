@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)savemail.c	6.19 (Berkeley) 03/08/93";
+static char sccsid[] = "@(#)savemail.c	6.20 (Berkeley) 03/13/93";
 #endif /* not lint */
 
 # include <pwd.h>
@@ -573,8 +573,8 @@ errbody(fp, m, e)
 	*/
 
 	if (NoReturn)
-		fprintf(fp, "\n   ----- Return message suppressed -----\n\n");
-	else if (e->e_parent->e_dfp != NULL)
+		SendBody = FALSE;
+	if (e->e_parent->e_dfp != NULL)
 	{
 		if (SendBody)
 		{
