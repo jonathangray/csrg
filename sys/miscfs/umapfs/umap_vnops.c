@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)umap_vnops.c	8.3 (Berkeley) 01/05/94
+ *	@(#)umap_vnops.c	8.4 (Berkeley) 08/20/94
  */
 
 /*
@@ -351,7 +351,7 @@ umap_reclaim(ap)
 	
 	/* After this assignment, this node will not be re-used. */
 	xp->umap_lowervp = NULL;
-	remque(xp);
+	LIST_REMOVE(xp, umap_hash);
 	FREE(vp->v_data, M_TEMP);
 	vp->v_data = NULL;
 	vrele(lowervp);
