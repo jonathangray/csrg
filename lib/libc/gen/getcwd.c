@@ -1,4 +1,4 @@
-/*	@(#)getcwd.c	4.4	(Berkeley)	01/04/83	*/
+/*	@(#)getcwd.c	4.5	(Berkeley)	01/04/83	*/
 
 /*
  * Getwd
