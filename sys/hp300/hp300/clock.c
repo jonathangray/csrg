@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: clock.c 1.18 91/01/21$
  *
- *	@(#)clock.c	7.6 (Berkeley) 05/07/91
+ *	@(#)clock.c	7.7 (Berkeley) 02/17/92
  */
 
 #include "param.h"
@@ -385,8 +385,8 @@ profclock(pc, ps)
 	 * If this process is being profiled record the tick.
 	 */
 	if (USERMODE(ps)) {
-		if (p->p_stats.p_prof.pr_scale)
-			addupc(pc, &curproc->p_stats.p_prof, 1);
+		if (curproc->p_stats->p_prof.pr_scale)
+			addupc(pc, &curproc->p_stats->p_prof, 1);
 	}
 	/*
 	 * Came from kernel (supervisor) mode.
