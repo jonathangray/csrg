@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)vfs_bio.c	7.53 (Berkeley) 09/30/92
+ *	@(#)vfs_bio.c	7.54 (Berkeley) 10/02/92
  */
 
 #include <sys/param.h>
