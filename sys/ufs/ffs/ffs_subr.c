@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_subr.c	7.25 (Berkeley) 06/23/92
+ *	@(#)ffs_subr.c	7.26 (Berkeley) 07/03/92
  */
 
 #include <sys/param.h>
@@ -50,8 +50,13 @@
  * remaining space in the directory.
  */
 int
-ffs_blkatoff (ap)
-	struct vop_blkatoff_args *ap;
+ffs_blkatoff(ap)
+	struct vop_blkatoff_args /* {
+		struct vnode *a_vp;
+		off_t a_offset;
+		char **a_res;
+		struct buf **a_bpp;
+	} */ *ap;
 {
 	struct inode *ip;
 	register struct fs *fs;
@@ -117,7 +122,6 @@ ffs_checkoverlap(bp, ip)
 	struct buf *bp;
 	struct inode *ip;
 {
-	USES_VOP_BMAP;
 	register struct buf *ebp, *ep;
 	register daddr_t start, last;
 	struct vnode *vp;
