@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)recvjob.c	5.20 (Berkeley) 09/16/92";
+static char sccsid[] = "@(#)recvjob.c	5.21 (Berkeley) 11/30/92";
 #endif /* not lint */
 
 /*
@@ -204,7 +204,7 @@ readjob()
 			(void) readfile(dfname, size);
 			continue;
 		}
-		frecverr("protocol screwup");
+		frecverr("protocol screwup: %s", line);
 	}
 }
 
@@ -342,6 +342,7 @@ frecverr(msg, va_alist)
         va_dcl
 #endif
 {
+	extern char *fromb;
 	va_list ap;
 #if __STDC__
 	va_start(ap, msg);
@@ -349,6 +350,7 @@ frecverr(msg, va_alist)
 	va_start(ap);
 #endif
 	rcleanup(0);
+	syslog(LOG_ERR, "%s", fromb);
 	vsyslog(LOG_ERR, msg, ap);
 	va_end(ap);
 	putchar('\1');		/* return error code */
