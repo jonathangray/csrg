@@ -37,7 +37,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)wizard.c	5.2 (Berkeley) 05/12/93";
+static char sccsid[] = "@(#)wizard.c	8.1 (Berkeley) 05/31/93";
 #endif /* not lint */
 
 /*      Re-coding of advent in C: privileged operations                 */
