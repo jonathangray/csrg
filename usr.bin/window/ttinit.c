@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)ttinit.c	3.27 (Berkeley) 08/12/90";
+static char sccsid[] = "@(#)ttinit.c	3.28 (Berkeley) 11/10/92";
 #endif /* not lint */
 
 #include "ww.h"
@@ -70,7 +70,6 @@ ttinit()
 	register struct tt_tab *tp;
 	register char *p, *q;
 	register char *t;
-	int ttflush();
 
 	tt_strp = tt_strings;
 
@@ -116,6 +115,5 @@ ttinit()
 		return -1;
 	tt.tt_scroll_top = 0;
 	tt.tt_scroll_bot = tt.tt_nrow - 1;
-	tt.tt_flush = ttflush;
 	return 0;
 }
