@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_page.c	7.9 (Berkeley) 08/29/91
+ *	@(#)vm_page.c	7.10 (Berkeley) 11/20/91
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -724,6 +724,7 @@ boolean_t vm_page_zero_fill(m)
 {
 	VM_PAGE_CHECK(m);
 
+	m->clean = 0;
 	pmap_zero_page(VM_PAGE_TO_PHYS(m));
 	return(TRUE);
 }
@@ -741,5 +742,6 @@ void vm_page_copy(src_m, dest_m)
 	VM_PAGE_CHECK(src_m);
 	VM_PAGE_CHECK(dest_m);
 
+	dest_m->clean = 0;
 	pmap_copy_page(VM_PAGE_TO_PHYS(src_m), VM_PAGE_TO_PHYS(dest_m));
 }
