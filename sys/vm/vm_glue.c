@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_glue.c	7.19 (Berkeley) 12/27/92
+ *	@(#)vm_glue.c	7.20 (Berkeley) 01/02/93
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -148,7 +148,7 @@ chgkprot(addr, len, rw)
 		pa = pmap_extract(kernel_pmap, sva|1);
 		if (pa == 0)
 			panic("chgkprot: invalid page");
-		pmap_enter(kernel_pmap, sva, pva&~1, prot, TRUE);
+		pmap_enter(kernel_pmap, sva, pa&~1, prot, TRUE);
 	}
 }
 #endif
