@@ -38,15 +38,14 @@
 
 #ifndef lint
 #ifdef DAEMON
-static char sccsid[] = "@(#)daemon.c	8.48.1.5 (Berkeley) 03/28/95 (with daemon mode)";
+static char sccsid[] = "@(#)daemon.c	8.76 (Berkeley) 03/31/95 (with daemon mode)";
 #else
-static char sccsid[] = "@(#)daemon.c	8.48.1.5 (Berkeley) 03/28/95 (without daemon mode)";
+static char sccsid[] = "@(#)daemon.c	8.76 (Berkeley) 03/31/95 (without daemon mode)";
 #endif
 #endif /* not lint */
 
 #ifdef DAEMON
 
-# include <netdb.h>
 # include <arpa/inet.h>
 
 #if NAMED_BIND
@@ -256,7 +255,7 @@ makeconnection(host, port, mci, usesecureport)
 #endif
 			{
 				/* try it as a host name (avoid MX lookup) */
-				hp = gethostbyname(&host[1]);
+				hp = sm_gethostbyname(&host[1]);
 				if (hp == NULL && p[-1] == '.')
 				{
 #if NAMED_BIND
@@ -265,7 +264,7 @@ makeconnection(host, port, mci, usesecureport)
 					_res.options &= ~(RES_DEFNAMES|RES_DNSRCH);
 #endif
 					p[-1] = '\0';
-					hp = gethostbyname(&host[1]);
+					hp = sm_gethostbyname(&host[1]);
 					p[-1] = '.';
 #if NAMED_BIND
 					_res.options = oldopts;
@@ -290,7 +289,7 @@ makeconnection(host, port, mci, usesecureport)
 	{
 		register char *p = &host[strlen(host) - 1];
 
-		hp = gethostbyname(host);
+		hp = sm_gethostbyname(host);
 		if (hp == NULL && *p == '.')
 		{
 #if NAMED_BIND
@@ -299,7 +298,7 @@ makeconnection(host, port, mci, usesecureport)
 			_res.options &= ~(RES_DEFNAMES|RES_DNSRCH);
 #endif
 			*p = '\0';
-			hp = gethostbyname(host);
+			hp = sm_gethostbyname(host);
 			*p = '.';
 #if NAMED_BIND
 			_res.options = oldopts;
@@ -526,7 +525,6 @@ myhostname(hostbuf, size)
 	int size;
 {
 	register struct hostent *hp;
-	extern struct hostent *gethostbyname();
 	extern bool getcanonname();
 	extern int h_errno;
 
@@ -534,7 +532,7 @@ myhostname(hostbuf, size)
 	{
 		(void) strcpy(hostbuf, "localhost");
 	}
-	hp = gethostbyname(hostbuf);
+	hp = sm_gethostbyname(hostbuf);
 	if (hp == NULL)
 		return NULL;
 	if (strchr(hp->h_name, '.') != NULL || strchr(hostbuf, '.') == NULL)
@@ -804,7 +802,6 @@ host_map_lookup(map, name, av, statp)
 	char *cp;
 	register STAB *s;
 	char hbuf[MAXNAME + 1];
-	extern struct hostent *gethostbyaddr();
 #if NAMED_BIND
 	extern int h_errno;
 #endif
@@ -912,7 +909,7 @@ host_map_lookup(map, name, av, statp)
 			**  Try to look it up in /etc/hosts
 			*/
 
-			hp = gethostbyname(name);
+			hp = sm_gethostbyname(name);
 			if (hp == NULL)
 			{
 				/* no dice there either */
@@ -932,7 +929,7 @@ host_map_lookup(map, name, av, statp)
 	in_addr.s_addr = inet_addr(&name[1]);
 
 	/* nope -- ask the name server */
-	hp = gethostbyaddr((char *)&in_addr, INADDRSZ, AF_INET);
+	hp = sm_gethostbyaddr((char *)&in_addr, INADDRSZ, AF_INET);
 	s->s_namecanon.nc_errno = errno;
 #if NAMED_BIND
 	s->s_namecanon.nc_herrno = h_errno;
@@ -1038,7 +1035,7 @@ hostnamebyanyaddr(sap)
 	{
 #ifdef NETINET
 	  case AF_INET:
-		hp = gethostbyaddr((char *) &sap->sin.sin_addr,
+		hp = sm_gethostbyaddr((char *) &sap->sin.sin_addr,
 			INADDRSZ,
 			AF_INET);
 		break;
@@ -1046,7 +1043,7 @@ hostnamebyanyaddr(sap)
 
 #ifdef NETISO
 	  case AF_ISO:
-		hp = gethostbyaddr((char *) &sap->siso.siso_addr,
+		hp = sm_gethostbyaddr((char *) &sap->siso.siso_addr,
 			sizeof sap->siso.siso_addr,
 			AF_ISO);
 		break;
@@ -1057,7 +1054,7 @@ hostnamebyanyaddr(sap)
 		break;
 
 	  default:
-		hp = gethostbyaddr(sap->sa.sa_data,
+		hp = sm_gethostbyaddr(sap->sa.sa_data,
 			   sizeof sap->sa.sa_data,
 			   sap->sa.sa_family);
 		break;
@@ -1158,7 +1155,7 @@ host_map_lookup(map, name, avp, statp)
 {
 	register struct hostent *hp;
 
-	hp = gethostbyname(name);
+	hp = sm_gethostbyname(name);
 	if (hp != NULL)
 		return hp->h_name;
 	*statp = EX_NOHOST;
