@@ -32,10 +32,11 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)func.c	5.15 (Berkeley) 06/04/91";
+static char sccsid[] = "@(#)func.c	5.16 (Berkeley) 06/07/91";
 #endif /* not lint */
 
-#include "sh.h"
+#include "csh.h"
+#include "extern.h"
 
 extern char **environ;
 
@@ -274,7 +275,7 @@ reexecute(kp)
      * pgrp's as the jobs would then have no way to get the tty (we can't give
      * it to them, and our parent wouldn't know their pgrp, etc.
      */
-    execute(kp, (tpgrp > 0 ? tpgrp : -1), (int *) 0, (int *) 0);
+    execute(kp, (tpgrp > 0 ? tpgrp : -1), NULL, NULL);
 }
 
 void
@@ -298,7 +299,7 @@ dogoto(v)
     for (wp = whyles; wp; wp = wp->w_next)
 	if (wp->w_end == 0) {
 	    search(T_BREAK, 0);
-	    wp->w_end = btell();
+	    wp->w_end = fseekp;
 	}
 	else
 	    bseek(wp->w_end);
@@ -385,7 +386,7 @@ doforeach(v)
     nwp = (struct whyle *) xcalloc(1, sizeof *nwp);
     nwp->w_fe = nwp->w_fe0 = v;
     gargv = 0;
-    nwp->w_start = btell();
+    nwp->w_start = fseekp;
     nwp->w_fename = Strsave(cp);
     nwp->w_next = whyles;
     whyles = nwp;
@@ -450,7 +451,7 @@ preread()
     search(T_BREAK, 0);		/* read the expression in */
     if (setintr)
 	(void) sigblock(sigmask(SIGINT));
-    whyles->w_end = btell();
+    whyles->w_end = fseekp;
 }
 
 void
@@ -458,7 +459,7 @@ doend()
 {
     if (!whyles)
 	stderror(ERR_NAME | ERR_NOTWHILE);
-    whyles->w_end = btell();
+    whyles->w_end = fseekp;
     doagain();
 }
 
@@ -760,7 +761,7 @@ toend()
 {
     if (whyles->w_end == 0) {
 	search(T_BREAK, 0, NULL);
-	whyles->w_end = btell() - 1;
+	whyles->w_end = fseekp - 1;
     }
     else
 	bseek(whyles->w_end);
@@ -770,7 +771,7 @@ toend()
 void
 wfree()
 {
-    long    o = btell();
+    long    o = fseekp;
 
     while (whyles) {
 	register struct whyle *wp = whyles;
