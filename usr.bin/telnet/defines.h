@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)defines.h	1.9 (Berkeley) 06/01/90
+ *	@(#)defines.h	1.10 (Berkeley) 06/28/90
  */
 
 #define	settimer(x)	clocks.x = clocks.system++
@@ -57,3 +57,5 @@
 #define	MODE_LOCAL_CHARS(m)	((m)&(MODE_EDIT|MODE_TRAPSIG))
 #define	MODE_LOCAL_ECHO(m)	((m)&MODE_ECHO)
 #define	MODE_COMMAND_LINE(m)	((m)==-1)
+
+#define	CONTROL(x)	((x)&0x1f)		/* CTRL(x) is not portable */
