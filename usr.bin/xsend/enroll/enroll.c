@@ -1,5 +1,5 @@
 #ifndef lint
-static char sccsid[] = "@(#)enroll.c	4.1 03/30/83";
+static char sccsid[] = "@(#)enroll.c	4.2 05/19/83";
 #endif
 
 #include "xmail.h"
