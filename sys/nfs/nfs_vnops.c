@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	7.100 (Berkeley) 11/10/92
+ *	@(#)nfs_vnops.c	7.101 (Berkeley) 11/30/92
  */
 
 /*
@@ -967,7 +967,7 @@ nfs_mknod(ap)
 	nfsm_request(dvp, NFSPROC_CREATE, cnp->cn_proc, cnp->cn_cred);
 	nfsm_mtofh(dvp, newvp);
 	nfsm_reqdone;
-	if (!error)
+	if (!error && (cnp->cn_flags & MAKEENTRY))
 		cache_enter(dvp, newvp, cnp);
 	FREE(cnp->cn_pnbuf, M_NAMEI);
 	VTONFS(dvp)->n_flag |= NMODIFIED;
@@ -1024,7 +1024,7 @@ nfs_create(ap)
 	nfsm_request(dvp, NFSPROC_CREATE, cnp->cn_proc, cnp->cn_cred);
 	nfsm_mtofh(dvp, *ap->a_vpp);
 	nfsm_reqdone;
-	if (!error)
+	if (!error && (cnp->cn_flags & MAKEENTRY))
 		cache_enter(dvp, *ap->a_vpp, cnp);
 	FREE(cnp->cn_pnbuf, M_NAMEI);
 	VTONFS(dvp)->n_flag |= NMODIFIED;
@@ -1784,7 +1784,8 @@ nfs_readdirlookrpc(vp, uiop, cred)
 					ltime > time.tv_sec)
 					nqnfs_clientlease(nmp, np, NQL_READ,
 						cachable, ltime, frev);
-				cache_enter(ndp->ni_dvp, ndp->ni_vp, cnp);
+				if (cnp->cn_namelen <= NCHNAMLEN)
+					cache_enter(ndp->ni_dvp, ndp->ni_vp, cnp);
 			} else {
 				nfsm_adv(nfsm_rndup(len));
 			}
