@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)sigprocmask.2	6.1 (Berkeley) 07/01/90
+.\"	@(#)sigprocmask.2	6.2 (Berkeley) 08/21/90
 .\"
 .TH SIGPROCMASK 2 ""
 .UC 7
@@ -46,7 +46,7 @@ sigprocmask \- manipulate current signal mask
 .B mask = sigmask(signum)
 .SH DESCRIPTION
 The
-.I sigsetmask
+.I sigprocmask
 function examines and/or the current signal mask (those signals
 that are blocked from delivery).
 Signals are blocked if they are members of the current signal mask set.
@@ -54,7 +54,7 @@ Signals are blocked if they are members of the current signal mask set.
 If
 .I set
 is not null, the action of
-.I sigsetmask
+.I sigprocmask
 depends on the value of the parameter
 .IR how .
 The signal mask is changed as a function of the specified
