@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)systat.h	5.8 (Berkeley) 07/24/92
+ *	@(#)systat.h	5.9 (Berkeley) 09/02/92
  */
 
 #include <curses.h>
@@ -30,7 +30,7 @@ struct  cmdtab {
 #define	UDP	0x2
 
 #define KREAD(addr, buf, len)  kvm_ckread((addr), (buf), (len))
-#define NVAL(indx)  nl[(indx)].n_value
+#define NVAL(indx)  namelist[(indx)].n_value
 #define NPTR(indx)  (void *)NVAL((indx))
 #define NREAD(indx, buf, len) kvm_ckread(NPTR((indx)), (buf), (len))
 #define LONG	(sizeof (long))
