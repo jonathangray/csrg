@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)proc.h	8.5 (Berkeley) 09/26/93
+ *	@(#)proc.h	8.6 (Berkeley) 12/12/93
  */
 
 #ifndef _PROC_H_
