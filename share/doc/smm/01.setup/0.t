@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)0.t	6.7 (Berkeley) 07/20/93
+.\"	@(#)0.t	6.8 (Berkeley) 07/26/93
 .\"
 .ds Ux \s-1UNIX\s0
 .ds Bs \s-1BSD\s0
@@ -41,6 +41,9 @@
 .ds Dk sd
 .ds Dn disk
 .ds Pa c
+.\" block size used on the tape
+.ds Bb 10240
+.ds Bz 20
 .\" document date
 .ds Dy 
 .de Sm
