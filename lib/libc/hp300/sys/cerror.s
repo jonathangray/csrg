@@ -41,8 +41,10 @@
 
 #include "SYS.h"
 
+	.even
 	.globl	_errno
 cerror:
 	movl	d0,_errno
 	movl	#-1,d0
+	movl	#-1,d1
 	rts
