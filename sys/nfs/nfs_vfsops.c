@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vfsops.c	7.36 (Berkeley) 01/14/92
+ *	@(#)nfs_vfsops.c	7.37 (Berkeley) 02/03/92
  */
 
 #include "param.h"
@@ -575,6 +575,7 @@ nfs_unmount(mp, mntflags, p)
 	 */
 	vrele(vp);
 	vrele(vp);
+	vgone(vp);
 	nfs_disconnect(nmp);
 	m_freem(nmp->nm_nam);
 
