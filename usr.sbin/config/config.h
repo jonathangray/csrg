@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)config.h	5.14 (Berkeley) 07/01/91
+ *	@(#)config.h	5.15 (Berkeley) 09/07/91
  */
 
 /*
@@ -134,6 +134,8 @@ char	*machinename;
 #define	MACHINE_TAHOE	2
 #define MACHINE_HP300	3
 #define	MACHINE_I386	4
+#define MACHINE_MIPS	5
+#define MACHINE_PMAX	6
 
 /*
  * For each machine, a set of CPU's may be specified as supported.
