@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_segment.c	8.4 (Berkeley) 12/30/93
+ *	@(#)lfs_segment.c	8.5 (Berkeley) 01/04/94
  */
 
 #include <sys/param.h>
@@ -117,7 +117,6 @@ lfs_vflush(vp)
 	struct inode *ip;
 	struct lfs *fs;
 	struct segment *sp;
-	int error, s;
 
 	fs = VFSTOUFS(vp->v_mount)->um_lfs;
 	if (fs->lfs_nactive > MAX_ACTIVE)
@@ -158,7 +157,6 @@ lfs_writevnodes(fs, mp, sp, op)
 {
 	struct inode *ip;
 	struct vnode *vp;
-	int error, s, active;
 
 loop:
 	for (vp = mp->mnt_vnodelist.lh_first;
@@ -217,8 +215,7 @@ lfs_segwrite(mp, flags)
 	SEGUSE *segusep;
 	daddr_t ibno;
 	CLEANERINFO *cip;
-	int clean, error, i, s;
-	int do_ckp;
+	int clean, do_ckp, error, i;
 
 	fs = VFSTOUFS(mp)->um_lfs;
 
@@ -637,7 +634,6 @@ lfs_initseg(fs)
 	SEGUSE *sup;
 	SEGSUM *ssp;
 	struct buf *bp;
-	daddr_t lbn, *lbnp;
 	int repeat;
 
 	sp = fs->lfs_sp;
@@ -710,7 +706,7 @@ lfs_newseg(fs)
 	CLEANERINFO *cip;
 	SEGUSE *sup;
 	struct buf *bp;
-	int curseg, error, isdirty, sn;
+	int curseg, isdirty, sn;
 
         LFS_SEGENTRY(sup, fs, datosn(fs, fs->lfs_nextseg), bp);
         sup->su_flags |= SEGUSE_DIRTY | SEGUSE_ACTIVE;
@@ -756,7 +752,7 @@ lfs_writeseg(fs, sp)
 	dev_t i_dev;
 	size_t size;
 	u_long *datap, *dp;
-	int ch_per_blk, do_again, error, i, nblocks, num, s;
+	int ch_per_blk, do_again, i, nblocks, num, s;
 	int (*strategy)__P((struct vop_strategy_args *));
 	struct vop_strategy_args vop_strategy_a;
 	u_short ninos;
