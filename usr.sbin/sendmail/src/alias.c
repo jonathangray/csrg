@@ -16,9 +16,9 @@
 
 #ifndef lint
 #ifdef DBM
-static char sccsid[] = "@(#)alias.c	5.15 (Berkeley) 04/01/88 (with DBM)";
+static char sccsid[] = "@(#)alias.c	5.16 (Berkeley) 06/30/88 (with DBM)";
 #else
-static char sccsid[] = "@(#)alias.c	5.15 (Berkeley) 04/01/88 (without DBM)";
+static char sccsid[] = "@(#)alias.c	5.16 (Berkeley) 06/30/88 (without DBM)";
 #endif
 #endif /* not lint */
 
