@@ -39,9 +39,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)zs.c	8.1 (Berkeley) 07/15/93
+ *	@(#)zs.c	7.6 (Berkeley) 07/19/93
  *
- * from: $Header: zs.c,v 1.29 93/07/15 02:57:07 torek Exp $
+ * from: $Header: zs.c,v 1.30 93/07/19 23:44:42 torek Exp $
  */
 
 /*
@@ -267,7 +267,7 @@ zsattach(struct device *parent, struct device *dev, void *aux)
 	}
 	unit++;
 	cs++;
-	tp++;
+	tp = &zs_tty[unit];
 	cs->cs_unit = unit;
 	cs->cs_speed = zs_getspeed(&addr->zs_chan[CHAN_B]);
 	cs->cs_softcar = softcar & 2;
