@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	6.28 (Berkeley) 02/28/93";
+static char sccsid[] = "@(#)main.c	6.29 (Berkeley) 02/28/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -154,6 +154,7 @@ main(argc, argv, envp)
 	extern void intsig();
 	extern char **myhostname();
 	extern char *arpadate();
+	extern char *getrealhostname();
 	extern char *optarg;
 	extern char **environ;
 
@@ -596,6 +597,15 @@ main(argc, argv, envp)
 	  case MD_DAEMON:
 		/* remove things that don't make sense in daemon mode */
 		FullName = NULL;
+		break;
+
+	  default:
+		/* find our real host name */
+		p = getrealhostname(STDIN_FILENO);
+		if (p != NULL)
+			RealHostName = newstr(p);
+		else
+			RealHostName = "localhost";
 		break;
 	}
 
