@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_inode.c	8.4 (Berkeley) 09/23/93
+ *	@(#)ffs_inode.c	8.5 (Berkeley) 12/30/93
  */
 
 #include <sys/param.h>
@@ -354,7 +354,7 @@ done:
 		if (newblks[i] != oip->i_db[i])
 			panic("itrunc2");
 	if (length == 0 &&
-	    (ovp->v_dirtyblkhd.le_next || ovp->v_cleanblkhd.le_next))
+	    (ovp->v_dirtyblkhd.lh_first || ovp->v_cleanblkhd.lh_first))
 		panic("itrunc3");
 #endif /* DIAGNOSTIC */
 	/*
