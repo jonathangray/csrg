@@ -1,4 +1,4 @@
-/*	if_imp.c	4.49	83/02/23	*/
+/*	if_imp.c	4.50	83/06/13	*/
 
 #include "imp.h"
 #if NIMP > 0
