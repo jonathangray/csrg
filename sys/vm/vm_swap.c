@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_swap.c	7.24 (Berkeley) 07/10/92
+ *	@(#)vm_swap.c	7.25 (Berkeley) 07/12/92
  */
 
 #include <sys/param.h>
@@ -41,9 +41,10 @@
 #include <sys/namei.h>
 #include <sys/dmap.h>		/* XXX */
 #include <sys/vnode.h>
-#include <sys/specdev.h>
 #include <sys/map.h>
 #include <sys/file.h>
+
+#include <miscfs/specfs/specdev.h>
 #include "stat.h"
 
 /*
