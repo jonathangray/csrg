@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	8.4 (Berkeley) 07/28/93";
+static char sccsid[] = "@(#)readcf.c	8.5 (Berkeley) 07/29/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -381,7 +381,8 @@ readcf(cfname)
 			break;
 
 		  case 'D':		/* macro definition */
-			define(bp[1], newstr(munchstring(&bp[2], NULL)), e);
+			p = munchstring(&bp[2], NULL);
+			define(bp[1], newstr(p), e);
 			break;
 
 		  case 'H':		/* required header line */
