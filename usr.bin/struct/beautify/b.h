@@ -3,7 +3,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)b.h	5.1 (Berkeley) 04/16/91
+ *	@(#)b.h	8.1 (Berkeley) 06/06/93
  */
 
 extern int xxindent, xxval, newflag, xxmaxchars, xxbpertab;
