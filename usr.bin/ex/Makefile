@@ -3,16 +3,16 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	7.35 (Berkeley) 06/18/93
+#	@(#)Makefile	8.1 (Berkeley) 06/18/93
 #
 #
 # Copyright (c) 1980 Regents of the University of California.
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	7.35 (Berkeley) 06/18/93
+#	@(#)Makefile	8.1 (Berkeley) 06/18/93
 #
-#	@(#)Makefile	7.35 (Berkeley) 06/18/93
+#	@(#)Makefile	8.1 (Berkeley) 06/18/93
 
 # Things that can be turned off to save space:
 #	LISPCODE (-l flag, showmatch and lisp options)
