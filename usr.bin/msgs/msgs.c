@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)msgs.c	5.9 (Berkeley) 02/24/93";
+static char sccsid[] = "@(#)msgs.c	5.9 (Berkeley) 02/25/93";
 #endif /* not lint */
 
 /*
@@ -398,7 +398,9 @@ int argc; char *argv[];
 	}
 	else
 		newrc = YES;
-	msgsrc = fopen(fname, "a");
+	msgsrc = fopen(fname, "r+");
+	if (msgsrc == NULL)
+		msgsrc = fopen(fname, "w");
 	if (msgsrc == NULL) {
 		perror(fname);
 		exit(errno);
