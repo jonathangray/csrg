@@ -30,7 +30,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)op.me	8.8 (Berkeley) 08/15/93
+.\"	@(#)op.me	8.9 (Berkeley) 08/17/93
 .\"
 .\" eqn op.me | pic | troff -me
 .eh 'SMM:08-%''Sendmail Installation and Operation Guide'
@@ -69,7 +69,7 @@ University of California, Berkeley
 Mammoth Project
 eric@CS.Berkeley.EDU
 .sp
-Version 8.8
+Version 8.9
 .sp
 For Sendmail Version 8.6
 .)l
@@ -1603,6 +1603,9 @@ such as NOOP (no-operation) and VERB (go into verbose mode).
 In server SMTP,
 the time to wait for another command.
 [1h, 5m].
+.ip ident
+The timeout waiting for a reply to an IDENT query
+[30s, unspecified].
 .lp
 For compatibility with old configuration files,
 if no ``keyword='' is specified,
@@ -3888,6 +3891,7 @@ rset	reply to RSET command [5m, none]
 quit	reply to QUIT command [2m, none]
 misc	reply to NOOP and VERB commands [2m, none]
 command	command read [1h, 5m]
+ident	IDENT protocol timeout [30s, none]
 .)b
 All but
 .q command
@@ -6751,7 +6755,7 @@ A transcript of the current session.
 .\"Eric Allman
 .\"Britton-Lee, Inc.
 .\".sp
-.\"Version 8.8
+.\"Version 8.9
 .\".ce 0
 .bp 2
 .ce
