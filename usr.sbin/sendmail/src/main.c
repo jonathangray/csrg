@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.115 (Berkeley) 05/27/95";
+static char sccsid[] = "@(#)main.c	8.116 (Berkeley) 05/27/95";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -828,13 +828,19 @@ main(argc, argv, envp)
 	if (st == NULL)
 		syserr("No prog mailer defined");
 	else
+	{
 		ProgMailer = st->s_mailer;
+		clrbitn(M_MUSER, ProgMailer->m_flags);
+	}
 
 	st = stab("*file*", ST_MAILER, ST_FIND);
 	if (st == NULL)
 		syserr("No *file* mailer defined");
 	else
+	{
 		FileMailer = st->s_mailer;
+		clrbitn(M_MUSER, FileMailer->m_flags);
+	}
 
 	st = stab("*include*", ST_MAILER, ST_FIND);
 	if (st == NULL)
