@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1989, 1991, 1993
+ * Copyright (c) 1989, 1991, 1993, 1994
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vfsops.c	8.6 (Berkeley) 04/09/94
+ *	@(#)lfs_vfsops.c	8.7 (Berkeley) 04/16/94
  */
 
 #include <sys/param.h>
@@ -68,7 +68,7 @@ struct vfsops lfs_vfsops = {
 	lfs_mount,
 	ufs_start,
 	lfs_unmount,
-	lfs_root,
+	ufs_root,
 	ufs_quotactl,
 	lfs_statfs,
 	lfs_sync,
