@@ -37,7 +37,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)Makefile	5.2 (Berkeley) 03/17/91
+#	@(#)Makefile	5.3 (Berkeley) 05/12/91
 #
 
 PROG = amdref
