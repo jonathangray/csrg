@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.85 (Berkeley) 02/28/95";
+static char sccsid[] = "@(#)main.c	8.55.1.6 (Berkeley) 02/28/95";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -597,6 +597,7 @@ main(argc, argv, envp)
 			break;
 
 		  case 'X':	/* traffic log file */
+			setgid(RealGid);
 			setuid(RealUid);
 			TrafficLogFile = fopen(optarg, "a");
 			if (TrafficLogFile == NULL)
