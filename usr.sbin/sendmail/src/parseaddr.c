@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	6.11 (Berkeley) 02/15/93";
+static char sccsid[] = "@(#)parseaddr.c	6.12 (Berkeley) 02/15/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1562,6 +1562,7 @@ buildaddr(tv, a)
 			bp += i;
 			spaceleft -= i;
 		}
+		*bp = '\0';
 #ifdef LOG
 		if (LogLevel > 8)
 			syslog (LOG_DEBUG, "%s: Trace: $#ERROR $: %s",
