@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)param.h	7.2 (Berkeley) 07/21/92
+ *	@(#)param.h	7.3 (Berkeley) 10/11/92
  *
  * from: $Header: param.h,v 1.11 92/06/24 08:52:05 torek Exp $ (LBL)
  */
@@ -50,7 +50,7 @@
 #define	MACHINE	"sparc"
 
 #ifdef KERNEL				/* XXX */
-#include "machine/cpu.h"		/* XXX */
+#include <machine/cpu.h>		/* XXX */
 #endif					/* XXX */
 
 /*
