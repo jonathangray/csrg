@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_extern.h	8.3 (Berkeley) 01/09/95
+ *	@(#)vm_extern.h	8.4 (Berkeley) 02/19/95
  */
 
 struct buf;
@@ -47,7 +47,7 @@ void		 chgkprot __P((caddr_t, int, int));
 
 #ifdef KERNEL
 #ifdef TYPEDEF_FOR_UAP
-int		 getpagesize __P((struct proc *p, void *, int *));
+int		 compat_43_getpagesize __P((struct proc *p, void *, int *));
 int		 madvise __P((struct proc *, void *, int *));
 int		 mincore __P((struct proc *, void *, int *));
 int		 mprotect __P((struct proc *, void *, int *));
