@@ -1,4 +1,4 @@
-/*	@(#)lgamma.c	4.3	06/19/85 */
+/*	@(#)lgamma.c	4.4	08/21/85 */
 
 /*
 	C program for floating point log gamma function
