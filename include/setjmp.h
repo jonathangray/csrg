@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)setjmp.h	5.7 (Berkeley) 06/19/92
+ *	@(#)setjmp.h	5.8 (Berkeley) 06/24/92
  */
 
 #ifndef _SETJMP_H_
