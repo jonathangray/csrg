@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)calendar.1	8.1 (Berkeley) 06/06/93
+.\"     @(#)calendar.1	6.14 (Berkeley) 06/29/93
 .\"
 .Dd 
 .Dt CALENDAR 1
@@ -42,7 +42,7 @@
 .Op Fl a
 .Sh DESCRIPTION
 .Nm Calendar
-checks the current directory for a file named named
+checks the current directory for a file named
 .Pa calendar
 and displays lines that begin with either today's date
 or tomorrow's.
@@ -56,7 +56,7 @@ to them.
 This requires super-user privileges.
 .El
 .Pp
-A month and day should begin lines.
+Lines should begin with a month and day.
 They may be entered in almost any format, either numeric or as character
 strings.
 A single asterisk (``*'') matches every month.
@@ -65,7 +65,7 @@ A month without a day matches the first of that month.
 Two numbers default to the month followed by the day.
 Lines with leading tabs default to the last entered date, allowing
 multiple line specifications for a single date.
-By convention, dates followed by an asterisk are not fixed, i.e. change
+By convention, dates followed by an asterisk are not fixed, i.e., change
 from year to year.
 .Pp
 The ``calendar'' file is preprocessed by
@@ -87,8 +87,8 @@ Some possible calendar entries:
 #include	<calendar.birthday>
 
 6/15		... June 15 (if ambiguous, will default to month/day).
-Jun. 15	... June 15.
-15 June	... June 15.
+Jun. 15		... June 15.
+15 June		... June 15.
 Thursday	... Every Thursday.
 June		... Every June 1st.
 15 *		... 15th of every month.
@@ -141,5 +141,5 @@ A
 command appeared in Version 7 AT&T UNIX.
 .Sh BUGS
 .Nm Calendar
-doesn't handle events that move around from year to year, i.e.
+doesn't handle events that move around from year to year, i.e.,
 ``the last Monday in April''.
