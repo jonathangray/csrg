@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fpu_subr.c	7.2 (Berkeley) 07/21/92
+ *	@(#)fpu_subr.c	7.3 (Berkeley) 10/11/92
  *
  * from: $Header: fpu_subr.c,v 1.2 92/06/17 05:41:35 torek Exp $
  */
@@ -48,12 +48,12 @@
  * FPU subroutines.
  */
 
-#include "sys/types.h"
+#include <sys/types.h>
 
-#include "machine/reg.h"
+#include <machine/reg.h>
 
-#include "fpu_arith.h"
-#include "fpu_emu.h"
+#include <sparc/fpu/fpu_arith.h>
+#include <sparc/fpu/fpu_emu.h>
 
 /*
  * Shift the given number right rsh bits.  Any bits that `fall off' will get
