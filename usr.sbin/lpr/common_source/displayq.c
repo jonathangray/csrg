@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)displayq.c	5.14 (Berkeley) 07/21/92";
+static char sccsid[] = "@(#)displayq.c	5.16 (Berkeley) 8/31/92";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -60,22 +60,22 @@ static char sccsid[] = "@(#)displayq.c	5.14 (Berkeley) 07/21/92";
 /*
  * Stuff for handling job specifications
  */
-extern char	*user[];	/* users to process */
-extern int	users;		/* # of users in user array */
 extern int	requ[];		/* job number of spool entries */
 extern int	requests;	/* # of spool requests */
+extern char    *user[];	        /* users to process */
+extern int	users;		/* # of users in user array */
 
-int	lflag;		/* long output option */
-char	current[40];	/* current file being printed */
-int	garbage;	/* # of garbage cf files */
-int	rank;		/* order to be printed (-1=none, 0=active) */
-long	totsize;	/* total print job size in bytes */
-int	first;		/* first file in ``files'' column? */
-int	col;		/* column on screen */
-char	file[132];	/* print file name */
+static int	col;		/* column on screen */
+static char	current[40];	/* current file being printed */
+static char	file[132];	/* print file name */
+static int	first;		/* first file in ``files'' column? */
+static int	garbage;	/* # of garbage cf files */
+static int	lflag;		/* long output option */
+static int	rank;		/* order to be printed (-1=none, 0=active) */
+static long	totsize;	/* total print job size in bytes */
 
-char	*head0 = "Rank   Owner      Job  Files";
-char	*head1 = "Total Size\n";
+static char	*head0 = "Rank   Owner      Job  Files";
+static char	*head1 = "Total Size\n";
 
 /*
  * Display the current state of the queue. Format = 1 if long format.
@@ -94,22 +94,23 @@ displayq(format)
 	lflag = format;
 	totsize = 0;
 	rank = -1;
-
-	if ((i = pgetent(line, printer)) < 0)
-		fatal("cannot open printer description file");
-	else if (i == 0)
+	if ((i = cgetent(&bp, printcapdb, printer)) == -2)
+		fatal("can't open printer description file");
+	else if (i == -1)
 		fatal("unknown printer");
-	if ((LP = pgetstr("lp", &bp)) == NULL)
+	else if (i == -3)
+		fatal("potential reference loop detected in printcap file");
+	if (cgetstr(bp, "lp", &LP) < 0)
 		LP = _PATH_DEFDEVLP;
-	if ((RP = pgetstr("rp", &bp)) == NULL)
+	if (cgetstr(bp, "rp", &RP) < 0)
 		RP = DEFLP;
-	if ((SD = pgetstr("sd", &bp)) == NULL)
+	if (cgetstr(bp, "sd", &SD) < 0)
 		SD = _PATH_DEFSPOOL;
-	if ((LO = pgetstr("lo", &bp)) == NULL)
+	if (cgetstr(bp,"lo", &LO) < 0)
 		LO = DEFLOCK;
-	if ((ST = pgetstr("st", &bp)) == NULL)
+	if (cgetstr(bp, "st", &ST) < 0)
 		ST = DEFSTAT;
-	RM = pgetstr("rm", &bp);
+	cgetstr(bp, "rm", &RM);
 	if (cp = checkremote())
 		printf("Warning: %s\n", cp);
 
