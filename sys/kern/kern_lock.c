@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_lock.c	8.2 (Berkeley) 04/10/95
+ *	@(#)kern_lock.c	8.3 (Berkeley) 04/11/95
  */
 
 #include <sys/param.h>
@@ -86,10 +86,9 @@ int lock_wait_time = 100;
 	for (error = 0; wanted; ) {					\
 		(lkp)->lk_flags |= LK_WAITING;				\
 		atomic_unlock(&(lkp)->lk_interlock);			\
-		error = tsleep(lkp, (lkp)->lk_prio, (lkp)->lk_wmesg,	\
-		    (lkp)->lk_timo);					\
+		error = tsleep((void *)lkp, (lkp)->lk_prio,		\
+		    (lkp)->lk_wmesg, (lkp)->lk_timo);			\
 		atomic_lock(&(lkp)->lk_interlock);			\
-		(lkp)->lk_flags |= LK_SLEPT;				\
 		if (error)						\
 			break;						\
 		if ((extflags) & LK_SLEEPFAIL) {			\
@@ -125,17 +124,17 @@ void lock_init(lkp, prio, wmesg, timo, flags)
  * accepted shared locks and shared-to-exclusive upgrades to go away.
  */
 lockmgr(lkp, p, flags)
-	struct lock *lkp;
+	volatile struct lock *lkp;
 	struct proc *p;
-	int flags;
+	u_int flags;
 {
+	int error;
 	pid_t pid;
-	int error, extflags;
+	volatile int extflags;
 
 	pid = p->p_pid;
 	atomic_lock(&lkp->lk_interlock);
 	extflags = (flags | lkp->lk_flags) & LK_EXTFLG_MASK;
-	lkp->lk_flags &= ~LK_SLEPT;
 
 	switch (flags & LK_TYPE_MASK) {
 
@@ -178,10 +177,23 @@ lockmgr(lkp, p, flags)
 		lkp->lk_lockholder = LK_NOPROC;
 		if (lkp->lk_flags & LK_WAITING) {
 			lkp->lk_flags &= ~LK_WAITING;
-			wakeup(lkp);
+			wakeup((void *)lkp);
 		}
 		atomic_unlock(&lkp->lk_interlock);
 		return (0);
+
+	case LK_EXCLUPGRADE:
+		/*
+		 * If another process is ahead of us to get an upgrade,
+		 * then we want to fail rather than have an intervening
+		 * exclusive access.
+		 */
+		if (lkp->lk_flags & LK_WANT_UPGRADE) {
+			lkp->lk_sharecount--;
+			atomic_unlock(&lkp->lk_interlock);
+			return (EBUSY);
+		}
+		/* fall into normal upgrade */
 
 	case LK_UPGRADE:
 		/*
@@ -232,7 +244,7 @@ lockmgr(lkp, p, flags)
 		 */
 		if (lkp->lk_sharecount == 0 && (lkp->lk_flags & LK_WAITING)) {
 			lkp->lk_flags &= ~LK_WAITING;
-			wakeup(lkp);
+			wakeup((void *)lkp);
 		}
 		/* fall into exclusive request */
 
@@ -295,7 +307,7 @@ lockmgr(lkp, p, flags)
 			lkp->lk_sharecount--;
 		if (lkp->lk_flags & LK_WAITING) {
 			lkp->lk_flags &= ~LK_WAITING;
-			wakeup(lkp);
+			wakeup((void *)lkp);
 		}
 		atomic_unlock(&lkp->lk_interlock);
 		return (0);
