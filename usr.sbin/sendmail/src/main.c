@@ -7,7 +7,7 @@
 # include <syslog.h>
 # endif LOG
 
-SCCSID(@(#)main.c	3.81		06/18/82);
+SCCSID(@(#)main.c	3.82		06/26/82);
 
 /*
 **  SENDMAIL -- Post mail to a set of destinations.
@@ -149,6 +149,7 @@ main(argc, argv)
 	(void) signal(SIGTERM, finis);
 	OldUmask = umask(0);
 	Mode = MD_DEFAULT;
+	MotherPid = getpid();
 
 	/* set up the main envelope */
 	MainEnvelope.e_puthdr = putheader;
