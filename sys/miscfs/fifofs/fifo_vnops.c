@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fifo_vnops.c	7.4 (Berkeley) 06/28/90
+ *	@(#)fifo_vnops.c	7.5 (Berkeley) 02/01/91
  */
 
 #include "param.h"
@@ -68,6 +68,7 @@ int	fifo_lookup(),
 	fifo_unlock(),
 	fifo_close(),
 	fifo_print(),
+	fifo_advlock(),
 	fifo_ebadf(),
 	fifo_badop(),
 	fifo_nullop();
@@ -105,6 +106,7 @@ struct vnodeops fifo_vnodeops = {
 	fifo_badop,		/* strategy */
 	fifo_print,		/* print */
 	fifo_nullop,		/* islocked */
+	fifo_advlock,		/* advlock */
 };
 
 /*
@@ -395,6 +397,20 @@ fifo_ebadf()
 {
 
 	return (EBADF);
+}
+
+/*
+ * Fifo advisory byte-level locks.
+ */
+fifo_advlock(vp, id, op, fl, flags)
+	struct vnode *vp;
+	caddr_t id;
+	int op;
+	struct flock *fl;
+	int flags;
+{
+
+	return (EOPNOTSUPP);
 }
 
 /*
