@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)bt_open.c	8.1 (Berkeley) 06/04/93";
+static char sccsid[] = "@(#)bt_open.c	8.2 (Berkeley) 09/07/93";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -83,9 +83,9 @@ static int tmp __P((void));
  *
  */
 DB *
-__bt_open(fname, flags, mode, openinfo)
+__bt_open(fname, flags, mode, openinfo, dflags)
 	const char *fname;
-	int flags, mode;
+	int flags, mode, dflags;
 	const BTREEINFO *openinfo;
 {
 	BTMETA m;
@@ -199,8 +199,7 @@ __bt_open(fname, flags, mode, openinfo)
 			goto einval;
 		}
 		
-		if ((t->bt_fd =
-		    open(fname, flags & __USE_OPEN_FLAGS, mode)) < 0)
+		if ((t->bt_fd = open(fname, flags, mode)) < 0)
 			goto err;
 
 	} else {
@@ -314,6 +313,14 @@ __bt_open(fname, flags, mode, openinfo)
 	if (nroot(t) == RET_ERROR)
 		goto err;
 
+	/* Global flags. */
+	if (dflags & DB_LOCK)
+		SET(t, B_DB_LOCK);
+	if (dflags & DB_SHMEM)
+		SET(t, B_DB_SHMEM);
+	if (dflags & DB_TXN)
+		SET(t, B_DB_TXN);
+
 	return (dbp);
 
 einval:	errno = EINVAL;
@@ -420,6 +427,13 @@ __bt_fd(dbp)
 
 	t = dbp->internal;
 
+	/* Toss any page pinned across calls. */
+	if (t->bt_pinned != NULL) {
+		mpool_put(t->bt_mp, t->bt_pinned, 0);
+		t->bt_pinned = NULL;
+	}
+
+	/* In-memory database can't have a file descriptor. */
 	if (ISSET(t, B_INMEM)) {
 		errno = ENOENT;
 		return (-1);
