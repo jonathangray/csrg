@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	6.58 (Berkeley) 05/03/93
+ *	@(#)sendmail.h	6.59 (Berkeley) 05/03/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	6.58		05/03/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	6.59		05/03/93";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -749,7 +749,7 @@ EXTERN bool	AutoRebuild;	/* auto-rebuild the alias database as needed */
 EXTERN bool	CheckAliases;	/* parse addresses during newaliases */
 EXTERN bool	NoAlias;	/* suppress aliasing */
 EXTERN bool	UseNameServer;	/* use internet domain name server */
-EXTERN bool	EightBit;	/* try to preserve 8-bit data */
+EXTERN bool	SevenBit;	/* force 7-bit data */
 EXTERN int	SafeAlias;	/* minutes to wait until @:@ in alias file */
 EXTERN FILE	*InChannel;	/* input connection */
 EXTERN FILE	*OutChannel;	/* output connection */
