@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.73 (Berkeley) 12/10/94";
+static char sccsid[] = "@(#)main.c	8.74 (Berkeley) 01/04/95";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -602,9 +602,7 @@ main(argc, argv, envp)
 			break;
 
 		  case 'e':	/* error message disposition */
-# if defined(ultrix)
 		  case 'M':	/* define macro */
-# endif
 			setoption(j, optarg, FALSE, TRUE, CurEnv);
 			break;
 
