@@ -7,7 +7,7 @@
 # include <syslog.h>
 # endif LOG
 
-static char	SccsId[] = "@(#)main.c	3.18	08/18/81";
+static char	SccsId[] = "@(#)main.c	3.19	08/18/81";
 
 /*
 **  SENDMAIL -- Post mail to a set of destinations.
@@ -286,11 +286,17 @@ main(argc, argv)
 # endif DEBUG
 
 		  case 'C':	/* select configuration file */
-			cfname = &p[2];
+			if (p[2] == '\0')
+				cfname = "sendmail.cf";
+			else
+				cfname = &p[2];
 			break;
 
 		  case 'A':	/* select alias file */
-			aliasname = &p[2];
+			if (p[2] == '\0')
+				aliasname = "aliases";
+			else
+				aliasname = &p[2];
 			break;
 		
 		  case 'n':	/* don't alias */
