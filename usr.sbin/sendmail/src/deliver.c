@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	6.62 (Berkeley) 04/14/93";
+static char sccsid[] = "@(#)deliver.c	6.63 (Berkeley) 04/17/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -2058,6 +2058,7 @@ hostsignature(m, host, e)
 	auto int rcode;
 	char *hp;
 	char *endp;
+	int oldoptions;
 	char *mxhosts[MAXMXHOSTS + 1];
 	static char myhostbuf[MAXNAME];
 #endif
@@ -2093,6 +2094,12 @@ hostsignature(m, host, e)
 	*/
 
 #ifdef NAMED_BIND
+	if (ConfigLevel < 2)
+	{
+		oldoptions = _res.options;
+		_res.options &= ~(RES_DEFNAMES | RES_DNSRCH);	/* XXX */
+	}
+
 	if (myhostbuf[0] == '\0')
 		expand("\201j", myhostbuf, &myhostbuf[sizeof myhostbuf - 1], e);
 
@@ -2149,6 +2156,8 @@ hostsignature(m, host, e)
 			*endp++ = ':';
 	}
 	makelower(s->s_hostsig);
+	if (ConfigLevel < 2)
+		_res.options = oldoptions;
 #else
 	/* not using BIND -- the signature is just the host name */
 	s->s_hostsig = host;
