@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)utilities.c	8.1 (Berkeley) 06/05/93";
+static char sccsid[] = "@(#)utilities.c	8.2 (Berkeley) 03/25/94";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -70,6 +70,7 @@ pathcheck(name)
 		*cp = '\0';
 		ep = lookupname(name);
 		if (ep == NULL) {
+			/* Safe; we know the pathname exists in the dump. */
 			ep = addentry(name, pathsearch(name)->d_ino, NODE);
 			newnode(ep);
 		}
@@ -326,11 +327,13 @@ ino_t
 dirlookup(name)
 	const char *name;
 {
+	struct direct *dp;
 	ino_t ino;
+ 
+	ino = ((dp = pathsearch(name)) == NULL) ? 0 : dp->d_ino;
 
-	ino = pathsearch(name)->d_ino;
 	if (ino == 0 || TSTINO(ino, dumpmap) == 0)
-		fprintf(stderr, "%s is not on tape\n", name);
+		fprintf(stderr, "%s is not on the tape\n", name);
 	return (ino);
 }
 
