@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stdlib.h	8.2 (Berkeley) 11/12/93
+ *	@(#)stdlib.h	8.3 (Berkeley) 02/16/94
  */
 
 #ifndef _STDLIB_H_
@@ -158,6 +158,7 @@ int	 radixsort __P((const unsigned char **, int, const unsigned char *,
 int	 sradixsort __P((const unsigned char **, int, const unsigned char *,
 	    unsigned));
 long	 random __P((void));
+char	*realpath __P((const char *, char resolved_path[]));
 char	*setstate __P((char *));
 void	 srandom __P((unsigned));
 char	*user_from_uid __P((unsigned long, int));
