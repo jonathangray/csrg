@@ -3,7 +3,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	6.2 (Berkeley) 05/28/85
+#	@(#)Makefile	6.3 (Berkeley) 06/21/87
 #
 #
 #  Makefile for -man macros
