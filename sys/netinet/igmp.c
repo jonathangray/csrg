@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)igmp.c	8.1 (Berkeley) 06/10/93
+ *	@(#)igmp.c	7.5 (Berkeley) 07/19/93
  */
 
 /* Internet Group Management Protocol (IGMP) routines. */
@@ -73,14 +73,14 @@ igmp_init()
 }
 
 void
-igmp_input(m, ifp)
+igmp_input(m, iphlen)
 	register struct mbuf *m;
-	register struct ifnet *ifp;
+	register int iphlen;
 {
 	register struct igmp *igmp;
 	register struct ip *ip;
 	register int igmplen;
-	register int iphlen;
+	register struct ifnet *ifp = m->m_pkthdr.rcvif;
 	register int minlen;
 	register struct in_multi *inm;
 	register struct in_ifaddr *ia;
@@ -89,7 +89,6 @@ igmp_input(m, ifp)
 	++igmpstat.igps_rcv_total;
 
 	ip = mtod(m, struct ip *);
-	iphlen = ip->ip_hl << 2;
 	igmplen = ip->ip_len;
 
 	/*
@@ -271,8 +270,13 @@ igmp_sendreport(inm)
 	MGETHDR(m, M_DONTWAIT, MT_HEADER);
 	if (m == NULL)
 		return;
+	/*
+	 * Assume max_linkhdr + sizeof(struct ip) + IGMP_MINLEN
+	 * is smaller than mbuf size returned by MGETHDR.
+	 */
 	m->m_data += max_linkhdr;
 	m->m_len = sizeof(struct ip) + IGMP_MINLEN;
+	m->m_pkthdr.len = sizeof(struct ip) + IGMP_MINLEN;
 
 	ip = mtod(m, struct ip *);
 	ip->ip_tos = 0;
