@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)server.c	5.14 (Berkeley) 02/02/91";
+static char sccsid[] = "@(#)server.c	5.15 (Berkeley) 03/01/91";
 #endif /* not lint */
 
 #include "defs.h"
@@ -51,7 +51,7 @@ int	oumask;			/* old umask for creating files */
 
 extern	FILE *lfp;		/* log file for mailing changes */
 
-int	cleanup();
+void	cleanup();
 struct	linkbuf *savelink();
 
 /*
@@ -1487,6 +1487,7 @@ response()
 /*
  * Remove temporary files and do any cleanup operations before exiting.
  */
+void
 cleanup()
 {
 	(void) unlink(tempfile);
