@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: hpux_compat.c 1.55 92/12/26$
  *
- *	@(#)hpux_compat.c	7.34 (Berkeley) 05/12/93
+ *	@(#)hpux_compat.c	7.35 (Berkeley) 05/17/93
  */
 
 /*
@@ -1482,7 +1482,7 @@ hpuxgetrlimit(p, uap, retval)
 		return (EINVAL);
 	if (uap->which == HPUXRLIMIT_NOFILE)
 		uap->which = RLIMIT_NOFILE;
-	return (getrlimit(p, uap, retval));
+	return (ogetrlimit(p, uap, retval));
 }
 
 hpuxsetrlimit(p, uap, retval)
@@ -1494,7 +1494,7 @@ hpuxsetrlimit(p, uap, retval)
 		return (EINVAL);
 	if (uap->which == HPUXRLIMIT_NOFILE)
 		uap->which = RLIMIT_NOFILE;
-	return (setrlimit(p, uap, retval));
+	return (osetrlimit(p, uap, retval));
 }
 
 /*
