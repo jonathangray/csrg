@@ -33,7 +33,8 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cy.c	7.4 (Berkeley) 5/5/89
+ *
+ *	@(#)cy.c	7.8 (Berkeley) 05/08/91
  */
 
 #include "yc.h"
