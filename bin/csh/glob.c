@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)glob.c	5.39 (Berkeley) 02/11/93";
+static char sccsid[] = "@(#)glob.c	5.40 (Berkeley) 05/22/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -236,7 +236,7 @@ expbrace(nvp, elp, size)
 	/* leave {} untouched for find */
 	if (s[0] == '{' && (s[1] == '\0' || (s[1] == '}' && s[2] == '\0')))
 	    continue;
-	if (b = Strchr(s, '{')) {
+	if ((b = Strchr(s, '{')) != NULL) {
 	    Char  **bl;
 	    int     len;
 
@@ -296,7 +296,7 @@ globexpand(v)
     /*
      * Step 1: expand backquotes.
      */
-    while (s = *v++) {
+    while ((s = *v++) != NULL) {
 	if (Strchr(s, '`')) {
 	    int     i;
 
@@ -538,7 +538,7 @@ rscan(t, f)
 {
     register Char *p;
 
-    while (p = *t++)
+    while ((p = *t++) != NULL)
 	while (*p)
 	    (*f) (*p++);
 }
@@ -549,7 +549,7 @@ trim(t)
 {
     register Char *p;
 
-    while (p = *t++)
+    while ((p = *t++) != NULL)
 	while (*p)
 	    *p++ &= TRIM;
 }
@@ -560,13 +560,13 @@ tglob(t)
 {
     register Char *p, c;
 
-    while (p = *t++) {
+    while ((p = *t++) != NULL) {
 	if (*p == '~' || *p == '=')
 	    gflag |= G_CSH;
 	else if (*p == '{' &&
 		 (p[1] == '\0' || (p[1] == '}' && p[2] == '\0')))
 	    continue;
-	while (c = *p++) {
+	while ((c = *p++) != '\0') {
 	    /*
 	     * eat everything inside the matching backquotes
 	     */
@@ -856,9 +856,9 @@ pmatch(string, pattern)
 	    return (0);
 	case '[':
 	    match = 0;
-	    if (negate_range = (*pattern == '^'))
+	    if ((negate_range = (*pattern == '^')) != 0)
 		pattern++;
-	    while (rangec = *pattern++) {
+	    while ((rangec = *pattern++) != '\0') {
 		if (rangec == ']')
 		    break;
 		if (match)
@@ -904,9 +904,9 @@ Gcat(s1, s2)
     }
     gargv[gargc] = 0;
     p = gargv[gargc - 1] = (Char *) xmalloc((size_t) n * sizeof(Char));
-    for (q = s1; *p++ = *q++;)
+    for (q = s1; (*p++ = *q++) != '\0';)
 	continue;
-    for (p--, q = s2; *p++ = *q++;)
+    for (p--, q = s2; (*p++ = *q++) != '\0';)
 	continue;
 }
 
