@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)4.t	6.18 (Berkeley) 07/29/93
+.\"	@(#)4.t	8.1 (Berkeley) 07/29/93
 .\"
 .ds LH "Installing/Operating \*(4B
 .ds CF \*(Dy
