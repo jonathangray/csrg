@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_subr.c	7.6 (Berkeley) 12/31/91
+ *	@(#)lfs_subr.c	7.7 (Berkeley) 01/09/92
  */
 
 #include <sys/param.h>
@@ -114,8 +114,6 @@ lfs_itod(fs, ino)
 #endif
 	/* Translate an inode number to a disk address. */
 	LFS_IENTRY(ifp, fs, ino, bp);
-	if (ifp->if_daddr == LFS_UNUSED_DADDR)
-		panic("lfs_itod: unused disk address");
 	iaddr = ifp->if_daddr;
 	brelse(bp);
 	return (iaddr);
