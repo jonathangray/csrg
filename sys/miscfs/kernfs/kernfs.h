@@ -34,12 +34,17 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kernfs.h	8.1 (Berkeley) 06/10/93
+ *	@(#)kernfs.h	8.2 (Berkeley) 01/04/94
  */
 
 #define	_PATH_KERNFS	"/kern"		/* Default mountpoint */
 
 #ifdef KERNEL
+
+#ifndef VT_KERNFS
+#define VT_KERNFS VT_UFS
+#endif
+
 struct kernfs_mount {
 	struct vnode	*kf_root;	/* Root node */
 };
