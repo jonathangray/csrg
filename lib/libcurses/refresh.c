@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)refresh.c	5.38 (Berkeley) 04/27/93";
+static char sccsid[] = "@(#)refresh.c	5.39 (Berkeley) 05/06/93";
 #endif /* not lint */
 
 #include <curses.h>
@@ -296,12 +296,13 @@ makech(win, wy)
 							curscr->flags &=
 							    ~__WSTANDOUT;
 						}
-					if (!curwin) {
-						csp->attr = nsp->attr;
-						putchar(csp->ch = nsp->ch);
-					} else
-						putchar(nsp->ch);
-
+					if (!(win->flags & __SCROLLWIN)) {
+						if (!curwin) {
+							csp->attr = nsp->attr;
+							putchar(csp->ch = nsp->ch);
+						} else
+							putchar(nsp->ch);
+					}
 					if (wx + win->begx < curscr->maxx) {
 						domvcur(ly, wx + win->begx, 
 						    win->begy + win->maxy - 1,
@@ -310,18 +311,16 @@ makech(win, wy)
 					ly = win->begy + win->maxy - 1;
 					lx = win->begx + win->maxx - 1;
 					return (OK);
-				} else
-					if (win->flags & __SCROLLWIN) {
-						lx = --wx;
-						return (ERR);
-					}
-			if (!curwin) {
-				csp->attr = nsp->attr;
-				putchar(csp->ch = nsp->ch);
-				csp++;
-		       	} else
-				putchar(nsp->ch);
-			
+				} 
+			if (wx < win->maxx || wy < win->maxy - 1 || 
+			    !(win->flags & __SCROLLWIN)) {
+				if (!curwin) {
+					csp->attr = nsp->attr;
+					putchar(csp->ch = nsp->ch);
+					csp++;
+				} else 
+					putchar(nsp->ch);
+			}
 #ifdef DEBUG
 			__TRACE("makech: putchar(%c)\n", nsp->ch & 0177);
 #endif
@@ -330,10 +329,10 @@ makech(win, wy)
 				tputs(UC, 0, __cputchar);
 			}
 			nsp++;
-		}
 #ifdef DEBUG
 		__TRACE("makech: 2: wx = %d, lx = %d\n", wx, lx);
 #endif
+		}
 		if (lx == wx + win->begx)	/* If no change. */
 			break;
 		lx = wx + win->begx;
