@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fsi_analyze.c	5.3 (Berkeley) 05/12/91
+ *	@(#)fsi_analyze.c	5.4 (Berkeley) 02/09/92
  *
- * $Id: fsi_analyze.c,v 5.2.1.3 91/05/07 22:19:06 jsp Alpha $
+ * $Id: fsi_analyze.c,v 5.2.2.1 1992/02/09 15:09:41 jsp beta $
  *
  */
 
