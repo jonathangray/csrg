@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.12 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)main.c	5.13 (Berkeley) 01/09/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -134,8 +134,7 @@ usage:		fputs("usage: config [-gp] sysname\n", stderr);
 	{
 	char xxx[80];
 
-	(void) symlink("../sys", path("sys"));
-	(void) sprintf(xxx, "../%s", machinename);
+	(void) sprintf(xxx, "../../%s/include", machinename);
 	(void) symlink(xxx, path("machine"));
 	}
 	makefile();			/* build Makefile */
@@ -189,8 +188,9 @@ path(file)
 {
 	register char *cp;
 
-	cp = malloc((unsigned)(strlen(PREFIX)+strlen(file)+5));
-	(void) strcpy(cp, "../");
+#define	CDIR	"../../compile/"
+	cp = malloc((unsigned)(strlen(PREFIX)+strlen(file)+sizeof(CDIR)));
+	(void) strcpy(cp, CDIR);
 	(void) strcat(cp, PREFIX);
 	if (file) {
 		(void) strcat(cp, "/");
