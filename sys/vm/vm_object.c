@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_object.c	7.8 (Berkeley) 10/21/91
+ *	@(#)vm_object.c	7.7.1.1 (Berkeley) 11/20/91
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -114,7 +114,8 @@ long	object_bypasses  = 0;
  *
  *	Initialize the VM objects module.
  */
-void vm_object_init()
+void vm_object_init(size)
+	vm_size_t	size;
 {
 	register int	i;
 
@@ -128,8 +129,7 @@ void vm_object_init()
 		queue_init(&vm_object_hashtable[i]);
 
 	kernel_object = &kernel_object_store;
-	_vm_object_allocate(VM_MAX_KERNEL_ADDRESS - VM_MIN_KERNEL_ADDRESS,
-			kernel_object);
+	_vm_object_allocate(size, kernel_object);
 
 	kmem_object = &kmem_object_store;
 	_vm_object_allocate(VM_KMEM_SIZE + VM_MBUF_SIZE, kmem_object);
