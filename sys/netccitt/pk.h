@@ -1,4 +1,42 @@
-/* Copyright (c) University of British Columbia, 1984 */
+/*
+ * Copyright (c) University of British Columbia, 1984
+ * Copyright (c) 1990 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This code is derived from software contributed to Berkeley by
+ * the Laboratory for Computation Vision and the Computer Science Department
+ * of the University of British Columbia.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ *
+ *	@(#)pk.h	7.2 (Berkeley) 05/15/90
+ */
 
 /*
  *
@@ -56,20 +94,38 @@ typedef char    bool;
 
 /*
  *  X.25 Packet format definitions
+ *  This will eventually have to be rewritten without reference
+ *  to bit fields, to be ansi C compliant and allignment safe.
  */
+
+#if BYTE_ORDER == BIG_ENDIAN
+#define ORDER2(a, b) a , b
+#define ORDER3(a, b, c) a , b , c
+#define ORDER4(a, b, c, d) a , b , c , d
+#endif
+
+#if BYTE_ORDER == LITTLE_ENDIAN
+#define ORDER2(a, b) b , a
+#define ORDER3(a, b, c) c , b , a
+#define ORDER4(a, b, c, d) d , c , b , a
+#endif
 
 typedef u_char octet;
 
 struct x25_calladdr {
-#ifdef vax
-	unsigned called_addrlen:4;
-	unsigned calling_addrlen:4;
-#endif 
-#ifdef sun
-	unsigned calling_addrlen:4;
-	unsigned called_addrlen:4;
-#endif
-	char address_field[MAXADDRLN];
+	octet ORDER2(called_addrlen:4, calling_addrlen:4);
+	octet address_field[MAXADDRLN];
+}
+
+struct x25_packet {
+	octet ORDER3(lc_group_number:4, fmt_identifier:3, q_bit:1);
+	octet logical_channel_number;
+	octet packet_type;
+	octet packet_data;
+};
+
+struct data_packet {
+	octet ORDER4(z:1, ps:3, m_bit:1, pr:3);
 };
 
 #define FACILITIES_REVERSE_CHARGE	0x1
@@ -79,36 +135,6 @@ struct x25_calladdr {
 
 #define PKHEADERLN	3
 
-struct x25_packet {
-#ifdef vax
-	unsigned lc_group_number:4;
-	unsigned fmt_identifier:3;
-	unsigned q_bit:1;
-#endif
-#ifdef sun
-	unsigned q_bit:1;
-	unsigned fmt_identifier:3;
-	unsigned lc_group_number:4;
-#endif
-	octet logical_channel_number;
-	octet packet_type;
-	octet packet_data;
-};
-
-struct data_packet {
-#ifdef vax
-	unsigned z:1;
-	unsigned ps:3;
-	unsigned m_bit:1;
-	unsigned pr:3;
-#endif
-#ifdef sun
-	unsigned pr:3;
-	unsigned m_bit:1;
-	unsigned ps:3;
-	unsigned z:1;
-#endif
-};
 
 #define PR(xp)		(((struct data_packet *)&xp -> packet_type)->pr)
 #define PS(xp)		(((struct data_packet *)&xp -> packet_type)->ps)
