@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.h	7.5 (Berkeley) 08/27/91
+ *	@(#)pmap.h	7.5 (Berkeley) 08/28/91
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -69,6 +69,18 @@
 
 #ifndef	_PMAP_VM_
 #define	_PMAP_VM_
+
+/*
+ * Each machine dependent implementation is expected to
+ * keep certain statistics.  They may do this anyway they
+ * so choose, but are expected to return the statistics
+ * in the following structure.
+ */
+struct pmap_statistics {
+	long		resident_count;	/* # of pages mapped (total)*/
+	long		wired_count;	/* # of pages wired */
+};
+typedef struct pmap_statistics	*pmap_statistics_t;
 
 #include <machine/pmap.h>
 
