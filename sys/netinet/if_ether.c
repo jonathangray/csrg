@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_ether.c	7.18 (Berkeley) 01/30/92
+ *	@(#)if_ether.c	7.19 (Berkeley) 01/31/92
  */
 
 /*
@@ -203,7 +203,7 @@ arp_rtrequest(req, rt, sa)
 void
 arpwhohas(ac, addr)
 	register struct arpcom *ac;
-	struct inaddr *addr;
+	struct in_addr *addr;
 {
 	register struct mbuf *m;
 	register struct ether_header *eh;
