@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)misc.c	5.6 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)misc.c	5.7 (Berkeley) 03/08/92";
 #endif /* not lint */
 
 #include	"mille.h"
