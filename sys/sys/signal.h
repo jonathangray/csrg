@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)signal.h	7.16 (Berkeley) 03/17/91
+ *	@(#)signal.h	7.17 (Berkeley) 09/03/91
  */
 
 #ifndef	_SIGNAL_H_
@@ -40,7 +40,7 @@
 
 #ifndef _POSIX_SOURCE
 #include <machine/trap.h>	/* codes for SIGILL, SIGFPE */
-#endif /* _POSIX_SOURCE */
+#endif
 
 #define	SIGHUP	1	/* hangup */
 #define	SIGINT	2	/* interrupt */
@@ -93,6 +93,7 @@
 typedef	void (*sig_t) __P((int));
 #endif
 
+typedef int sig_atomic_t;		/* XXX should be machine dependent. */
 typedef unsigned int sigset_t;
 
 __BEGIN_DECLS
@@ -119,7 +120,7 @@ struct	sigaction {
 };
 #ifndef _POSIX_SOURCE
 #define SA_ONSTACK	0x0001	/* take signal on signal stack */
-#define SA_RESTART	0x0002	/* do not restart system on signal return */
+#define SA_RESTART	0x0002	/* restart system on signal return */
 #endif
 #define SA_NOCLDSTOP	0x0004	/* do not generate SIGCHLD on child stop */
 
@@ -189,6 +190,7 @@ struct	sigcontext {
 
 #define	SIG_DFL		(void (*)())0
 #define	SIG_IGN		(void (*)())1
+#define	SIG_ERR		(void (*)())-1
 
 #ifndef KERNEL
 #include <sys/types.h>
@@ -205,7 +207,7 @@ int	sigsuspend __P((const sigset_t *));
 #endif	/* !_ANSI_SOURCE */
 #if !defined(_ANSI_SOURCE) && !defined(_POSIX_SOURCE)
 int	killpg __P((pid_t, int));
-void	psignal __P((unsigned, const char *));
+void	psignal __P((unsigned int, const char *));
 int	sigblock __P((int));
 int	siginterrupt __P((int, int));
 int	sigpause __P((int));
