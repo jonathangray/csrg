@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)quota.h	7.7 (Berkeley) 09/11/90
+ *	@(#)quota.h	7.8 (Berkeley) 09/27/90
  */
 
 #ifndef _QUOTA_
@@ -71,11 +71,8 @@
 	"group",	/* GRPQUOTA */ \
 	"undefined", \
 };
-#ifndef KERNEL
-char *qfname = "quota";
-char *qfextension[] = INITQFNAMES;
-char *quotagroup = "operator";
-#endif
+#define QUOTAFILENAME "quota"
+#define QUOTAGROUP "operator"
 
 /*
  * Command definitions for the 'quotactl' system call.
