@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.15 (Berkeley) 06/29/90
+#	@(#)Makefile	5.16 (Berkeley) 01/14/91
 
 PROG=	fsck
 MAN8=	fsck.0
