@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	5.30.1.2 (Berkeley) 05/29/92
+ *	@(#)sendmail.h	5.33 (Berkeley) 05/31/92
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	5.30.1.2		05/29/92";
+static char SmailSccsId[] =	"@(#)sendmail.h	5.33		05/31/92";
 # endif lint
 # else  _DEFINE
 # define EXTERN extern
@@ -399,6 +399,9 @@ MCONINFO
 	FILE		*mci_out;	/* output side of connection */
 	int		mci_pid;	/* process id of subordinate proc */
 	short		mci_state;	/* SMTP state */
+	char		*mci_phase;	/* SMTP phase string */
+	struct mailer	*mci_mailer;	/* ptr to the mailer for this conn */
+	time_t		mci_lastuse;	/* last usage time */
 };
 
 
@@ -408,8 +411,12 @@ MCONINFO
 
 /* states */
 #define MCIS_CLOSED	0		/* no traffic on this connection */
-#define MCIS_OPEN	1		/* open, no protocol sent */
-#define MCIS_SSD	2		/* service shutting down */
+#define MCIS_OPENING	1		/* sending initial protocol */
+#define MCIS_OPEN	2		/* open, initial protocol sent */
+#define MCIS_ACTIVE	3		/* message being sent */
+#define MCIS_SSD	4		/* service shutting down */
+#define MCIS_ERROR	5		/* error state */
+#define MCIS_TEMPFAIL	6		/* temporary failure */
 /*
 **  Mapping functions
 **
@@ -475,7 +482,9 @@ typedef struct symtab	STAB;
 # define ST_ADDRESS	2	/* an address in parsed format */
 # define ST_MAILER	3	/* a mailer header */
 # define ST_ALIAS	4	/* an alias */
-# define ST_MCONINFO	5	/* mailer connection info (offset) */
+# define ST_MAPCLASS	5	/* mapping function class */
+# define ST_MAP		6	/* mapping function */
+# define ST_MCONINFO	16	/* mailer connection info (offset) */
 
 # define s_class	s_value.sv_class
 # define s_address	s_value.sv_addr
