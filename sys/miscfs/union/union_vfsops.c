@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_vfsops.c	2.1 (Berkeley) 02/10/94
+ *	@(#)union_vfsops.c	2.2 (Berkeley) 02/10/94
  */
 
 /*
@@ -51,6 +51,7 @@
 #include <sys/namei.h>
 #include <sys/malloc.h>
 #include <sys/filedesc.h>
+#include <sys/queue.h>
 #include "union.h"
 
 /*
