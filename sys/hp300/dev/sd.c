@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sd.c	7.13 (Berkeley) 06/05/92
+ *	@(#)sd.c	7.14 (Berkeley) 07/12/92
  */
 
 /*
@@ -475,7 +475,7 @@ sdlblkstrat(bp, bsize)
 
 		if (boff || resid < bsize) {
 			sdstats[sdunit(bp->b_dev)].sdpartials++;
-			count = MIN(resid, bsize - boff);
+			count = min(resid, bsize - boff);
 			cbp->b_flags = B_BUSY | B_PHYS | B_READ;
 			cbp->b_blkno = bn - btodb(boff);
 			cbp->b_un.b_addr = cbuf;
