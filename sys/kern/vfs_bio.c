@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_bio.c	8.4 (Berkeley) 12/30/93
+ *	@(#)vfs_bio.c	8.5 (Berkeley) 01/06/94
  */
 
 #include <sys/param.h>
@@ -126,6 +126,7 @@ bufinit()
 		bp->b_dev = NODEV;
 		bp->b_rcred = NOCRED;
 		bp->b_wcred = NOCRED;
+		bp->b_vnbufs.le_next = NOLIST;
 		bp->b_data = buffers + i * MAXBSIZE;
 		if (i < residual)
 			bp->b_bufsize = (base + 1) * CLBYTES;
