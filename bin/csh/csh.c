@@ -1,4 +1,4 @@
-static	char *sccsid = "@(#)csh.c 4.12 06/11/83";
+static	char *sccsid = "@(#)csh.c 4.13 06/27/83";
 
 #include "sh.h"
 #include <sys/ioctl.h>
