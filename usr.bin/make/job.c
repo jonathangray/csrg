@@ -37,7 +37,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)job.c	5.14 (Berkeley) 01/10/91";
+static char sccsid[] = "@(#)job.c	5.15 (Berkeley) 03/01/91";
 #endif /* not lint */
 
 /*-
@@ -1920,7 +1920,7 @@ Job_CatchChildren (block)
 	return;
     }
     
-    while ((pid = wait3(&status, (block?0:WNOHANG)|WUNTRACED,
+    while ((pid = wait3((int *)&status, (block?0:WNOHANG)|WUNTRACED,
 			(struct rusage *)0)) > 0)
     {
 	if (DEBUG(JOB))
