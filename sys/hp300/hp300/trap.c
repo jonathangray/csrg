@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: trap.c 1.37 92/12/20$
  *
- *	@(#)trap.c	8.1 (Berkeley) 06/10/93
+ *	@(#)trap.c	7.27 (Berkeley) 06/16/93
  */
 
 #include <sys/param.h>
@@ -904,7 +904,7 @@ syscall(code, frame)
 	params = (caddr_t)frame.f_regs[SP] + sizeof(int);
 	switch (code) {
 
-	case SYS_indir:
+	case SYS_syscall:
 		/*
 		 * Code is first argument, followed by actual args.
 		 */
@@ -919,9 +919,9 @@ syscall(code, frame)
 			code = numsys;
 		break;
 
-	case SYS___indir:
+	case SYS___syscall:
 		/*
-		 * Like indir, but code is a quad, so as to maintain
+		 * Like syscall, but code is a quad, so as to maintain
 		 * quad alignment for the rest of the arguments.
 		 */
 #ifdef HPUXCOMPAT
@@ -939,7 +939,7 @@ syscall(code, frame)
 	if (code < numsys)
 		callp += code;
 	else
-		callp += SYS_indir;	/* => nosys */
+		callp += SYS_syscall;	/* => nosys */
 	argsize = callp->sy_narg * sizeof(int);
 	if (argsize && (error = copyin(params, (caddr_t)&args, argsize))) {
 #ifdef KTRACE
