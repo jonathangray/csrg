@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty_pty.c	7.20 (Berkeley) 05/16/91
+ *	@(#)tty_pty.c	7.21 (Berkeley) 05/30/91
  */
 
 /*
@@ -116,7 +116,7 @@ ptsopen(dev, flag, devtype, p)
 		tp->t_state |= TS_CARR_ON;
 	while ((tp->t_state & TS_CARR_ON) == 0) {
 		tp->t_state |= TS_WOPEN;
-		if (flag&FNDELAY)
+		if (flag&FNONBLOCK)
 			break;
 		if (error = ttysleep(tp, (caddr_t)&tp->t_rawq, TTIPRI | PCATCH,
 		    ttopen, 0))
