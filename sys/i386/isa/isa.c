@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)isa.c	7.4 (Berkeley) 10/11/92
+ *	@(#)isa.c	7.5 (Berkeley) 05/07/93
  */
 
 /*
@@ -71,6 +71,17 @@ isa_configure() {
 	netmask |= ttymask;
 	ttymask |= netmask;
 #endif
+
+	/*
+	 * The problem is... if netmask == 0, then the loopback
+	 * code can do some really ugly things.
+	 * workaround for this: if netmask == 0, set it to 0x8000, which
+	 * is the value used by splsoftclock.  this is nasty, but it
+	 * should work until this interrupt system goes away. -- cgd
+	 */
+	if (netmask == 0)
+		netmask = 0x8000;       /* same as for softclock.  XXX */
+
 	/* biomask |= ttymask ;  can some tty devices use buffers? */
 	printf("biomask %x ttymask %x netmask %x\n", biomask, ttymask, netmask);
 	splnone();
