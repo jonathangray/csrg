@@ -32,6 +32,6 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)des_rw.c	5.8 (Berkeley) 02/25/91";
+static char sccsid[] = "@(#)des_rw.c	5.9 (Berkeley) 03/04/93";
 #endif /* not lint */
 
