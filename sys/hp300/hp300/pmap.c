@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.c	7.9 (Berkeley) 06/05/92
+ *	@(#)pmap.c	7.10 (Berkeley) 07/12/92
  */
 
 /*
@@ -74,6 +74,7 @@
  */
 
 #include "param.h"
+#include "systm.h"
 #include "proc.h"
 #include "malloc.h"
 #include "user.h"
