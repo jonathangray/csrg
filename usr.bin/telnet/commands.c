@@ -32,12 +32,12 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)commands.c	5.7 (Berkeley) 11/16/92";
+static char sccsid[] = "@(#)commands.c	5.8 (Berkeley) 12/18/92";
 #endif /* not lint */
 
 #if	defined(unix)
 #include <sys/param.h>
-#ifdef	CRAY
+#if	defined(CRAY) || defined(sysV88)
 #include <sys/types.h>
 #endif
 #include <sys/file.h>
@@ -67,12 +67,12 @@ static char sccsid[] = "@(#)commands.c	5.7 (Berkeley) 11/16/92";
 #include "defines.h"
 #include "types.h"
 
-#ifndef CRAY
+#if !defined(CRAY) && !defined(sysV88)
 #include <netinet/in_systm.h>
 # if (defined(vax) || defined(tahoe) || defined(hp300)) && !defined(ultrix)
 # include <machine/endian.h>
 # endif /* vax */
-#endif /* CRAY */
+#endif /* !defined(CRAY) && !defined(sysV88) */
 #include <netinet/ip.h>
 
 
@@ -414,21 +414,23 @@ send_tncmd(func, cmd, name)
 {
     char **cpp;
     extern char *telopts[];
+    register int val = 0;
 
     if (isprefix(name, "help") || isprefix(name, "?")) {
 	register int col, len;
 
-	printf("Usage: send %s <option>\n", cmd);
+	printf("Usage: send %s <value|option>\n", cmd);
+	printf("\"value\" must be from 0 to 255\n");
 	printf("Valid options are:\n\t");
 
 	col = 8;
 	for (cpp = telopts; *cpp; cpp++) {
-	    len = strlen(*cpp) + 1;
+	    len = strlen(*cpp) + 3;
 	    if (col + len > 65) {
 		printf("\n\t");
 		col = 8;
 	    }
-	    printf(" %s", *cpp);
+	    printf(" \"%s\"", *cpp);
 	    col += len;
 	}
 	printf("\n");
@@ -440,16 +442,31 @@ send_tncmd(func, cmd, name)
 					name, cmd);
 	return 0;
     }
-    if (cpp == 0) {
-	fprintf(stderr, "'%s': unknown argument ('send %s ?' for help).\n",
+    if (cpp) {
+	val = cpp - telopts;
+    } else {
+	register char *cp = name;
+
+	while (*cp >= '0' && *cp <= '9') {
+	    val *= 10;
+	    val += *cp - '0';
+	    cp++;
+	}
+	if (*cp != 0) {
+	    fprintf(stderr, "'%s': unknown argument ('send %s ?' for help).\n",
 					name, cmd);
-	return 0;
+	    return 0;
+	} else if (val < 0 || val > 255) {
+	    fprintf(stderr, "'%s': bad value ('send %s ?' for help).\n",
+					name, cmd);
+	    return 0;
+	}
     }
     if (!connected) {
 	printf("?Need to be connected first.\n");
 	return 0;
     }
-    (*func)(cpp - telopts, 1);
+    (*func)(val, 1);
     return 1;
 }
 
@@ -603,10 +620,10 @@ togxbinary(val)
 
 
 static int togglehelp P((void));
-#if	defined(AUTHENTICATE)
+#if	defined(AUTHENTICATION)
 extern int auth_togdebug P((int));
 #endif
-#if	defined(ENCRYPT)
+#if	defined(ENCRYPTION)
 extern int EncryptAutoEnc P((int));
 extern int EncryptAutoDec P((int));
 extern int EncryptDebug P((int));
@@ -632,7 +649,7 @@ static struct togglelist Togglelist[] = {
 	    0,
 		&autosynch,
 		    "send interrupt characters in urgent mode" },
-#if	defined(AUTHENTICATE)
+#if	defined(AUTHENTICATION)
     { "autologin",
 	"automatic sending of login and/or authentication info",
 	    0,
@@ -644,7 +661,7 @@ static struct togglelist Togglelist[] = {
 		0,
 		     "print authentication debugging information" },
 #endif
-#if	defined(ENCRYPT)
+#if	defined(ENCRYPTION)
     { "autoencrypt",
 	"automatic encryption of data stream",
 	    EncryptAutoEnc,
@@ -1283,7 +1300,7 @@ display(argc, argv)
 	}
     }
 /*@*/optionstatus();
-#if	defined(ENCRYPT)
+#if	defined(ENCRYPTION)
     EncryptStatus();
 #endif
     return 1;
@@ -1346,11 +1363,15 @@ suspend()
     {
 	long oldrows, oldcols, newrows, newcols, err;
 
-	err = TerminalWindowSize(&oldrows, &oldcols);
+	err = (TerminalWindowSize(&oldrows, &oldcols) == 0) ? 1 : 0;
 	(void) kill(0, SIGTSTP);
-	err += TerminalWindowSize(&newrows, &newcols);
-	if (connected && !err &&
-	    ((oldrows != newrows) || (oldcols != newcols))) {
+	/*
+	 * If we didn't get the window size before the SUSPEND, but we
+	 * can get them now (???), then send the NAWS to make sure that
+	 * we are set up for the right window size.
+	 */
+	if (TerminalWindowSize(&newrows, &newcols) && connected &&
+	    (err || ((oldrows != newrows) || (oldcols != newcols)))) {
 		sendnaws();
 	}
     }
@@ -1370,7 +1391,11 @@ shell(argc, argv)
     int argc;
     char *argv[];
 {
+    long oldrows, oldcols, newrows, newcols, err;
+
     setcommandmode();
+
+    err = (TerminalWindowSize(&oldrows, &oldcols) == 0) ? 1 : 0;
     switch(vfork()) {
     case -1:
 	perror("Fork failed\n");
@@ -1400,6 +1425,12 @@ shell(argc, argv)
 	}
     default:
 	    (void)wait((int *)0);	/* Wait for the shell to complete */
+
+	    if (TerminalWindowSize(&newrows, &newcols) && connected &&
+		(err || ((oldrows != newrows) || (oldcols != newcols)))) {
+		    sendnaws();
+	    }
+	    break;
     }
     return 1;
 }
@@ -1419,7 +1450,7 @@ bye(argc, argv)
 	(void) NetClose(net);
 	connected = 0;
 	resettermname = 1;
-#if	defined(AUTHENTICATE) || defined(ENCRYPT)
+#if	defined(AUTHENTICATION) || defined(ENCRYPTION)
 	auth_encrypt_connect(connected);
 #endif
 	/* reset options */
@@ -1626,10 +1657,11 @@ env_cmd(argc, argv)
 
 struct env_lst {
 	struct env_lst *next;	/* pointer to next structure */
-	struct env_lst *prev;	/* pointer to next structure */
+	struct env_lst *prev;	/* pointer to previous structure */
 	unsigned char *var;	/* pointer to variable name */
-	unsigned char *value;	/* pointer to varialbe value */
+	unsigned char *value;	/* pointer to variable value */
 	int export;		/* 1 -> export with default list of variables */
+	int welldefined;	/* A well defined variable */
 };
 
 struct env_lst envlisthead;
@@ -1714,6 +1746,7 @@ env_define(var, value)
 		if (ep->next)
 			ep->next->prev = ep;
 	}
+	ep->welldefined = opt_welldefined(var);
 	ep->export = 1;
 	ep->var = (unsigned char *)strdup((char *)var);
 	ep->value = (unsigned char *)strdup((char *)value);
@@ -1793,7 +1826,7 @@ env_list()
 }
 
 	unsigned char *
-env_default(init)
+env_default(init, welldefined)
 	int init;
 {
 	static struct env_lst *nep = NULL;
@@ -1804,7 +1837,7 @@ env_default(init)
 	}
 	if (nep) {
 		while (nep = nep->next) {
-			if (nep->export)
+			if (nep->export && (nep->welldefined == welldefined))
 				return(nep->var);
 		}
 	}
@@ -1822,7 +1855,7 @@ env_getvalue(var)
 	return(NULL);
 }
 
-#if	defined(AUTHENTICATE)
+#if	defined(AUTHENTICATION)
 /*
  * The AUTHENTICATE command.
  */
@@ -1898,7 +1931,7 @@ auth_cmd(argc, argv)
 }
 #endif
 
-#if	defined(ENCRYPT)
+#if	defined(ENCRYPTION)
 /*
  * The ENCRYPT command.
  */
@@ -2076,7 +2109,7 @@ status(argc, argv)
 	    printf("%s character echo\n", (mode&MODE_ECHO) ? "Local" : "Remote");
 	    if (my_want_state_is_will(TELOPT_LFLOW))
 		printf("%s flow control\n", (mode&MODE_FLOW) ? "Local" : "No");
-#if	defined(ENCRYPT)
+#if	defined(ENCRYPTION)
 	    encrypt_display();
 #endif
 	}
@@ -2261,6 +2294,9 @@ tn(argc, argv)
 		return 0;
 	    }
 	} else {
+#if	!defined(htons)
+	    u_short htons();
+#endif	/* !defined(htons) */
 	    sin.sin_port = htons(sin.sin_port);
 	}
     } else {
@@ -2297,7 +2333,8 @@ tn(argc, argv)
 	    if (tos < 0)
 		tos = 020;	/* Low Delay bit */
 	    if (tos
-		&& (setsockopt(net, IPPROTO_IP, IP_TOS, &tos, sizeof(int)) < 0)
+		&& (setsockopt(net, IPPROTO_IP, IP_TOS,
+		    (char *)&tos, sizeof(int)) < 0)
 		&& (errno != ENOPROTOOPT))
 		    perror("telnet: setsockopt (IP_TOS) (ignored)");
 	}
@@ -2327,7 +2364,7 @@ tn(argc, argv)
 	    return 0;
 	}
 	connected++;
-#if	defined(AUTHENTICATE) || defined(ENCRYPT)
+#if	defined(AUTHENTICATION) || defined(ENCRYPTION)
 	auth_encrypt_connect(connected);
 #endif
     } while (connected == 0);
@@ -2374,10 +2411,10 @@ static char
 #if	defined(TN3270) && defined(unix)
 	transcomhelp[] = "specify Unix command for transparent mode pipe",
 #endif	/* defined(TN3270) && defined(unix) */
-#if	defined(AUTHENTICATE)
+#if	defined(AUTHENTICATION)
 	authhelp[] =	"turn on (off) authentication ('auth ?' for more)",
 #endif
-#if	defined(ENCRYPT)
+#if	defined(ENCRYPTION)
 	encrypthelp[] =	"turn on (off) encryption ('encrypt ?' for more)",
 #endif
 #if	defined(unix)
@@ -2405,10 +2442,10 @@ static Command cmdtab[] = {
 #if	defined(TN3270) && defined(unix)
 	{ "transcom",	transcomhelp,	settranscom,	0 },
 #endif	/* defined(TN3270) && defined(unix) */
-#if	defined(AUTHENTICATE)
+#if	defined(AUTHENTICATION)
 	{ "auth",	authhelp,	auth_cmd,	0 },
 #endif
-#if	defined(ENCRYPT)
+#if	defined(ENCRYPTION)
 	{ "encrypt",	encrypthelp,	encrypt_cmd,	0 },
 #endif
 #if	defined(unix)
@@ -2716,6 +2753,9 @@ sourceroute(arg, cpp, lenp)
 	int	*lenp;
 {
 	static char lsr[44];
+#ifdef	sysV88
+	static IOPTN ipopt;
+#endif
 	char *cp, *cp2, *lsrp, *lsrep;
 	register int tmp;
 	struct in_addr sin_addr;
@@ -2749,17 +2789,27 @@ sourceroute(arg, cpp, lenp)
 	 * route or a strict source route, and fill in
 	 * the begining of the option.
 	 */
+#ifndef	sysV88
 	if (*cp == '!') {
 		cp++;
 		*lsrp++ = IPOPT_SSRR;
 	} else
 		*lsrp++ = IPOPT_LSRR;
+#else
+	if (*cp == '!') {
+		cp++;
+		ipopt.io_type = IPOPT_SSRR;
+	} else
+		ipopt.io_type = IPOPT_LSRR;
+#endif
 
 	if (*cp != '@')
 		return((unsigned long)-1);
 
+#ifndef	sysV88
 	lsrp++;		/* skip over length, we'll fill it in later */
 	*lsrp++ = 4;
+#endif
 
 	cp++;
 
@@ -2809,6 +2859,7 @@ sourceroute(arg, cpp, lenp)
 		if (lsrp + 4 > lsrep)
 			return((unsigned long)-1);
 	}
+#ifndef	sysV88
 	if ((*(*cpp+IPOPT_OLEN) = lsrp - *cpp) <= 7) {
 		*cpp = 0;
 		*lenp = 0;
@@ -2816,6 +2867,16 @@ sourceroute(arg, cpp, lenp)
 	}
 	*lsrp++ = IPOPT_NOP; /* 32 bit word align it */
 	*lenp = lsrp - *cpp;
+#else
+	ipopt.io_len = lsrp - *cpp;
+	if (ipopt.io_len <= 5) {		/* Is 3 better ? */
+		*cpp = 0;
+		*lenp = 0;
+		return((unsigned long)-1);
+	}
+	*lenp = sizeof(ipopt);
+	*cpp = (char *) &ipopt;
+#endif
 	return(sin_addr.s_addr);
 }
 #endif
