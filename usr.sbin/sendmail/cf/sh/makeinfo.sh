@@ -32,7 +32,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)makeinfo.sh	8.2 (Berkeley) 07/22/93
+#	@(#)makeinfo.sh	8.3 (Berkeley) 07/23/93
 #
 
 usewhoami=0
@@ -43,7 +43,7 @@ do
 	then
 		p="."
 	fi
-	if [ -x $p/whoami ]
+	if [ -f $p/whoami ]
 	then
 		usewhoami=1
 		if [ $usehostname -ne 0 ]
@@ -51,7 +51,7 @@ do
 			break;
 		fi
 	fi
-	if [ -x $p/hostname ]
+	if [ -f $p/hostname ]
 	then
 		usehostname=1
 		if [ $usewhoami -ne 0 ]
