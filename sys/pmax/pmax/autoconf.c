@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: autoconf.c 1.31 91/01/21$
  *
- *	@(#)autoconf.c	7.3 (Berkeley) 03/29/92
+ *	@(#)autoconf.c	7.4 (Berkeley) 09/13/92
  */
 
 /*
@@ -171,7 +171,7 @@ configure()
 		}
 	}
 
-#if GENERIC
+#ifdef GENERIC
 	if ((boothowto & RB_ASKNAME) == 0)
 		setroot();
 	setconf();
