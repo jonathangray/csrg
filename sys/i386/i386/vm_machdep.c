@@ -5,23 +5,35 @@
  * This code is derived from software contributed to Berkeley by
  * the University of Utah, and William Jolitz.
  *
- * Copying or redistribution in any form is explicitly forbidden
- * unless prior written permission is obtained from William Jolitz or an
- * authorized representative of the University of California, Berkeley.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
  *
- * Freely redistributable copies of this code will be available in
- * the near future; for more information contact William Jolitz or
- * the Computer Systems Research Group at the University of California,
- * Berkeley.
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
  *
- * The name of the University may not be used to endorse or promote
- * products derived from this software without specific prior written
- * permission.  THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE.
- *
- *	@(#)vm_machdep.c	5.7 (Berkeley) 05/02/91
+ *	@(#)vm_machdep.c	5.8 (Berkeley) 05/09/91
  */
 
 /*
@@ -43,19 +55,109 @@
  *	@(#)vm_machdep.c	7.1 (Berkeley) 6/5/86
  */
 
-#include "sys/param.h"
-#include "sys/systm.h"
-#include "sys/user.h"
-#include "sys/proc.h"
-#include "sys/cmap.h"
-#include "sys/malloc.h"
-#include "sys/buf.h"
+#include "param.h"
+#include "systm.h"
+#include "proc.h"
+#include "malloc.h"
+#include "buf.h"
+#include "user.h"
 
-#include "machine/cpu.h"
+#include "../include/cpu.h"
 
-#include "vm/vm_param.h"
-#include "vm/pmap.h"
-#include "vm/vm_map.h"
+#include "vm/vm.h"
+#include "vm/vm_kern.h"
+
+/*
+ * Finish a fork operation, with process p2 nearly set up.
+ * Copy and update the kernel stack and pcb, making the child
+ * ready to run, and marking it so that it can return differently
+ * than the parent.  Returns 1 in the child process, 0 in the parent.
+ * We currently double-map the user area so that the stack is at the same
+ * address in each process; in the future we will probably relocate
+ * the frame pointers on the stack after copying.
+ */
+cpu_fork(p1, p2)
+	register struct proc *p1, *p2;
+{
+	register struct user *up = p2->p_addr;
+	int foo, offset, addr, i;
+	extern char kstack[];
+
+	/*
+	 * Copy pcb and stack from proc p1 to p2. 
+	 * We do this as cheaply as possible, copying only the active
+	 * part of the stack.  The stack and pcb need to agree;
+	 * this is tricky, as the final pcb is constructed by savectx,
+	 * but its frame isn't yet on the stack when the stack is copied.
+	 * swtch compensates for this when the child eventually runs.
+	 * This should be done differently, with a single call
+	 * that copies and updates the pcb+stack,
+	 * replacing the bcopy and savectx.
+	 */
+	p2->p_addr->u_pcb = p1->p_addr->u_pcb;
+	offset = (caddr_t)&foo - kstack;
+	bcopy((caddr_t)kstack + offset, (caddr_t)p2->p_addr + offset,
+	    (unsigned) ctob(UPAGES) - offset);
+	p2->p_regs = p1->p_regs;
+
+	/*
+	 * Wire top of address space of child to it's u.
+	 * First, fault in a page of pte's to map it.
+	 */
+        addr = trunc_page((u_int)vtopte(kstack));
+	(void)vm_fault(p2->p_vmspace->vm_map,
+		trunc_page((u_int)vtopte(kstack)), VM_PROT_READ, FALSE);
+	for (i=0; i < UPAGES; i++)
+		pmap_enter(p2->p_vmspace->vm_pmap, kstack+i*NBPG,
+			pmap_extract(kernel_pmap, p2->p_addr), VM_PROT_READ, 1);
+
+	pmap_activate(&p2->p_vmspace->vm_pmap, &up->u_pcb);
+
+	/*
+	 * 
+	 * Arrange for a non-local goto when the new process
+	 * is started, to resume here, returning nonzero from setjmp.
+	 */
+	if (savectx(up, 1)) {
+		/*
+		 * Return 1 in child.
+		 */
+		return (1);
+	}
+	return (0);
+}
+
+/*
+ * cpu_exit is called as the last action during exit.
+ *
+ * We change to an inactive address space and a "safe" stack,
+ * passing thru an argument to the new stack. Now, safely isolated
+ * from the resources we're shedding, we release the address space
+ * and any remaining machine-dependent resources, including the
+ * memory for the user structure and kernel stack.
+ *
+ * Next, we assign a dummy context to be written over by swtch,
+ * calling it to send this process off to oblivion.
+ * [The nullpcb allows us to minimize cost in swtch() by not having
+ * a special case].
+ */
+struct proc *swtch_to_inactive();
+cpu_exit(p)
+	struct proc *p;
+{
+	static struct pcb nullpcb;	/* pcb to overwrite on last swtch */
+
+	/* move to inactive space and stack, passing arg accross */
+	p = swtch_to_inactive(p);
+
+	/* drop per-process resources */
+	vmspace_free(p->p_vmspace);
+	kmem_free(kernel_map, (vm_offset_t)p->p_addr, ctob(UPAGES));
+
+	p->p_addr = (struct user *) &nullpcb;
+	swtch();
+	/* NOTREACHED */
+}
 
 /*
  * Set a red zone in the kernel stack after the u. area.
@@ -96,7 +198,7 @@ pagemove(from, to, size)
 		to += NBPG;
 		size -= NBPG;
 	}
-	load_cr3(u.u_pcb.pcb_cr3);
+	tlbflush();
 }
 
 /*
@@ -243,7 +345,7 @@ vmapbuf(bp)
 	kva = kmem_alloc_wait(phys_map, ctob(npf));
 	bp->b_un.b_addr = (caddr_t) (kva + off);
 	while (npf--) {
-		pa = pmap_extract(vm_map_pmap(p->p_map), (vm_offset_t)addr);
+		pa = pmap_extract(&p->p_vmspace->vm_pmap, (vm_offset_t)addr);
 		if (pa == 0)
 			panic("vmapbuf: null page frame");
 		pmap_enter(vm_map_pmap(phys_map), kva, trunc_page(pa),
