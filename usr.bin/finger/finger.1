@@ -29,10 +29,8 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)finger.1	6.12 (Berkeley) 03/14/91
+.\"	@(#)finger.1	6.13 (Berkeley) 07/27/91
 .\"
-.Vx
-.Vx
 .Dd 
 .Dt FINGER 1
 .Os BSD 4
@@ -42,11 +40,7 @@
 .Sh SYNOPSIS
 .Nm finger
 .Op Fl lmsp
-.Ob
-.Ar user
-.Op \&@host
-\&...
-.Oe
+.Op Ar user Op @host ...
 .Sh DESCRIPTION
 The
 .Nm finger
@@ -54,8 +48,8 @@ command has two basic output formats providing essentially the same
 information.
 .Pp
 Options are:
-.Tw Ds
-.Tp Fl s
+.Bl -tag -width flag
+.It Fl s
 .Nm Finger
 displays the user's login name, real name, terminal name and write
 status (as a ``*'' after the terminal name if write permission is
@@ -71,7 +65,7 @@ than the hours and minutes.
 Unknown devices as well as nonexistent idle and login times are
 displayed as single asterisks.
 .Pp
-.Tp Fl l
+.It Fl l
 Produces a multi-line format displaying all of the information
 described for the
 .Fl s
@@ -98,7 +92,7 @@ One entry per user is displayed with the
 option; if a user is logged on multiple times, terminal information
 is repeated once per login.
 .Pp
-.Tp Fl p
+.It Fl p
 Prevents
 the
 .Fl l
@@ -112,7 +106,7 @@ files.
 .Pp
 Note that some fields may be missing, in either format, if information
 is not available for them.
-.Tp Fl m
+.It Fl m
 Prevent matching of
 .Ar user
 names.
@@ -124,7 +118,7 @@ option is supplied.
 All name matching performed by
 .Nm finger
 is case insensitive.
-.Tp
+.El
 .Pp
 If no options are specified,
 .Nm finger
@@ -161,5 +155,7 @@ option is the only option that may be passed to a remote machine.
 .Xr who 1 ,
 .Xr getpwent 3
 .Sh HISTORY
-.Nm Finger
-appeared in 3 BSD.
+The
+.Nm finger
+command appeared in
+.Bx 3.0 .
