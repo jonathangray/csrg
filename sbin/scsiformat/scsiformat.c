@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)scsiformat.c	5.1 (Berkeley) 07/20/92
+ *	@(#)scsiformat.c	5.2 (Berkeley) 07/20/92
  */
 
 #include <sys/param.h>
@@ -100,8 +100,8 @@ main (argc, argv)
 	if (argc != 1)
 		usage();
 
-	device = argv[1];
-	if ((fd = open(device, O_RDONLY, 0)) < 0) {
+	device = *argv;
+	if ((fd = open(device, O_RDWR, 0)) < 0) {
 		(void)fprintf(stderr,
 		    "scsiformat: %s: %s\n", device, strerror(errno));
 		exit(1);
@@ -110,33 +110,6 @@ main (argc, argv)
 	print_capacity();
 	print_mode_sense();
 	exit(0);
-}
-
-void
-do_command(fd, cdb, buf, len)
-	int fd;
-	struct scsi_fmt_cdb *cdb;
-	u_char *buf;
-	int len;
-{
-	static int on = 1;
-	static int off = 0;
-
-	if (ioctl(fd, SDIOCSFORMAT, &on) < 0) {
-		(void)fprintf(stderr,
-		    "scsiformat: SDIOCSFORMAT (on): %s\n", strerror(errno));
-		return;
-	}
-	if (ioctl(fd, SDIOCSCSICOMMAND, cdb) < 0)
-		(void)fprintf(stderr,
-		    "scsiformat: SDIOCSCSICOMMAND: %s\n", strerror(errno));
-	else if (read(fd, buf, len) < 0)
-		(void)fprintf(stderr,
-		    "scsiformat: read: %s\n", strerror(errno));
-
-	if (ioctl(fd, SDIOCSFORMAT, &off) < 0)
-		(void)fprintf(stderr,
-		    "scsiformat: SDIOCSFORMAT (off): %s\n", strerror(errno));
 }
 
 void
@@ -181,6 +154,34 @@ print_capacity()
 {
 	do_command(fd, &cap, (u_char *)&capbuf, sizeof(capbuf));
 	printf(" %d blocks of %d bytes each\n", capbuf.blks, capbuf.blksize);
+}
+
+void
+print_mode_sense()
+{
+	u_char *cp;
+	u_char *ep;
+
+	do_command(fd, &modesense, (u_char *)&msbuf, sizeof(msbuf));
+
+	printf("\n%d bytes of mode sense data.  ", msbuf.h.len);
+	printf("media type %d, %swrite protected\n", msbuf.h.media_type,
+		msbuf.h.wp? "" : "not ");
+	if (msbuf.h.block_desc_len) {
+		printf("density 0x%x, ", msbuf.h.density);
+		if (msbuf.h.number_blocks)
+			printf("%d blocks of length %d\n",
+				msbuf.h.number_blocks, msbuf.h.block_length);
+		else
+			printf("all blocks of length %d\n",
+				msbuf.h.block_length);
+		cp = msbuf.p;
+	} else
+		cp = &msbuf.h.block_desc_len + 1;
+
+	ep = (u_char *)&msbuf + msbuf.h.len;
+	while (cp < ep)
+		cp = print_mode_page(cp);
 }
 
 u_char *
@@ -330,31 +331,30 @@ print_mode_page(cp)
 }
 
 void
-print_mode_sense()
+do_command(fd, cdb, buf, len)
+	int fd;
+	struct scsi_fmt_cdb *cdb;
+	u_char *buf;
+	int len;
 {
-	u_char *cp;
-	u_char *ep;
+	static int on = 1;
+	static int off = 0;
 
-	do_command(fd, &modesense, (u_char *)&msbuf, sizeof(msbuf));
+	if (ioctl(fd, SDIOCSFORMAT, &on) < 0) {
+		(void)fprintf(stderr,
+		    "scsiformat: SDIOCSFORMAT (on): %s\n", strerror(errno));
+		return;
+	}
+	if (ioctl(fd, SDIOCSCSICOMMAND, cdb) < 0)
+		(void)fprintf(stderr,
+		    "scsiformat: SDIOCSCSICOMMAND: %s\n", strerror(errno));
+	else if (read(fd, buf, len) < 0)
+		(void)fprintf(stderr,
+		    "scsiformat: read: %s\n", strerror(errno));
 
-	printf("\n%d bytes of mode sense data.  ", msbuf.h.len);
-	printf("media type %d, %swrite protected\n", msbuf.h.media_type,
-		msbuf.h.wp? "" : "not ");
-	if (msbuf.h.block_desc_len) {
-		printf("density 0x%x, ", msbuf.h.density);
-		if (msbuf.h.number_blocks)
-			printf("%d blocks of length %d\n",
-				msbuf.h.number_blocks, msbuf.h.block_length);
-		else
-			printf("all blocks of length %d\n",
-				msbuf.h.block_length);
-		cp = msbuf.p;
-	} else
-		cp = &msbuf.h.block_desc_len + 1;
-
-	ep = (u_char *)&msbuf + msbuf.h.len;
-	while (cp < ep)
-		cp = print_mode_page(cp);
+	if (ioctl(fd, SDIOCSFORMAT, &off) < 0)
+		(void)fprintf(stderr,
+		    "scsiformat: SDIOCSFORMAT (off): %s\n", strerror(errno));
 }
 
 void
