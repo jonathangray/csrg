@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)proc.h	8.11 (Berkeley) 08/20/94
+ *	@(#)proc.h	8.12 (Berkeley) 08/22/94
  */
 
 #ifndef _SYS_PROC_H_
@@ -131,12 +131,17 @@ struct	proc {
 	int	p_siglist;		/* Signals arrived but not delivered. */
 
 	struct	vnode *p_textvp;	/* Vnode of executable. */
-	LIST_ENTRY(proc) p_hash;	/* Hash chain. */
 
 	long	p_spare[3];		/* pad to 256, avoid shifting eproc. */
 
 /* End area that is zeroed on creation. */
-#define	p_endzero	p_startcopy
+#define	p_endzero	p_hash.le_next
+
+	/*
+	 * Not copied, not zero'ed.
+	 * Belongs after p_pid, but here to avoid shifting proc elements.
+	 */
+	LIST_ENTRY(proc) p_hash;	/* Hash chain. */
 
 /* The following fields are all copied upon creation in fork. */
 #define	p_startcopy	p_sigmask
