@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)raw_ip.c	8.1 (Berkeley) 06/10/93
+ *	@(#)raw_ip.c	8.2 (Berkeley) 01/04/94
  */
 
 #include <sys/param.h>
@@ -136,7 +136,6 @@ rip_output(m, so, dst)
 {
 	register struct ip *ip;
 	register struct inpcb *inp = sotoinpcb(so);
-	register struct sockaddr_in *sin;
 	struct mbuf *opts;
 	int flags = (so->so_options & SO_DONTROUTE) | IP_ALLOWBROADCAST;
 
