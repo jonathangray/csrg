@@ -30,9 +30,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_timer.c	7.20 (Berkeley) 01/08/93
+ *	@(#)tcp_timer.c	7.21 (Berkeley) 02/12/93
  */
 
+#ifndef TUBA_INCLUDE
 #include <sys/param.h>
 #include <sys/systm.h>
 #include <sys/malloc.h>
@@ -60,6 +61,7 @@
 int	tcp_keepidle = TCPTV_KEEP_IDLE;
 int	tcp_keepintvl = TCPTV_KEEPINTVL;
 int	tcp_maxidle;
+#endif /* TUBA_INCLUDE */
 /*
  * Fast timeout routine for processing delayed acks
  */
@@ -131,6 +133,7 @@ tpgone:
 	tcp_now++;					/* for timestamps */
 	splx(s);
 }
+#ifndef TUBA_INCLUDE
 
 /*
  * Cancel all timers for TCP tp.
@@ -305,3 +308,4 @@ tcp_timers(tp, timer)
 	}
 	return (tp);
 }
+#endif /* TUBA_INCLUDE */
