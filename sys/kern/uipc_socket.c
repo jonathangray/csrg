@@ -9,7 +9,7 @@
  * software without specific prior written permission. This software
  * is provided ``as is'' without express or implied warranty.
  *
- *	@(#)uipc_socket.c	7.8 (Berkeley) 01/20/88
+ *	@(#)uipc_socket.c	7.9 (Berkeley) 05/25/88
  */
 
 #include "param.h"
