@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_descrip.c	7.29 (Berkeley) 12/19/91
+ *	@(#)kern_descrip.c	7.30 (Berkeley) 02/18/92
  */
 
 #include "param.h"
@@ -710,9 +710,10 @@ flock(p, uap, retval)
  * references to this file will be direct to the other driver.
  */
 /* ARGSUSED */
-fdopen(dev, mode, type)
+fdopen(dev, mode, type, p)
 	dev_t dev;
 	int mode, type;
+	struct proc *p;
 {
 
 	/*
@@ -723,7 +724,7 @@ fdopen(dev, mode, type)
 	 * actions in dupfdopen below. Other callers of vn_open or VOP_OPEN
 	 * will simply report the error.
 	 */
-	curproc->p_dupfd = minor(dev);		/* XXX */
+	p->p_dupfd = minor(dev);
 	return (ENODEV);
 }
 
