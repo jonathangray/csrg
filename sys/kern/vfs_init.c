@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_init.c	7.2 (Berkeley) 07/06/92
+ *	@(#)vfs_init.c	7.3 (Berkeley) 07/12/92
  */
 
 
@@ -44,7 +44,6 @@
 #include <sys/time.h>
 #include <sys/vnode.h>
 #include <sys/stat.h>
-#include <sys/specdev.h>
 #include <sys/namei.h>
 #include <sys/ucred.h>
 #include <sys/buf.h>
