@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)strftime.c	5.8 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)strftime.c	5.9 (Berkeley) 11/30/90";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -122,16 +122,16 @@ _fmt(format, t)
 				if (!_fmt("%m/%d/%y %H:%M:%S", t))
 					return(0);
 				continue;
-			case 'e':
-				if (!_conv(t->tm_mday, 2, ' '))
-					return(0);
-				continue;
 			case 'D':
 				if (!_fmt("%m/%d/%y", t))
 					return(0);
 				continue;
 			case 'd':
 				if (!_conv(t->tm_mday, 2, '0'))
+					return(0);
+				continue;
+			case 'e':
+				if (!_conv(t->tm_mday, 2, ' '))
 					return(0);
 				continue;
 			case 'H':
@@ -182,6 +182,10 @@ _fmt(format, t)
 				continue;
 			case 'S':
 				if (!_conv(t->tm_sec, 2, '0'))
+					return(0);
+				continue;
+			case 's':
+				if (!_secs(t))
 					return(0);
 				continue;
 			case 'T':
@@ -239,6 +243,20 @@ _fmt(format, t)
 		*pt++ = *format;
 	}
 	return(gsize);
+}
+
+static
+_secs(t)
+	struct tm *t;
+{
+	static char buf[15];
+	register time_t s;
+	register char *p;
+
+	s = mktime(t);
+	for (p = buf + sizeof(buf) - 2; s > 0 && p > buf; s /= 10)
+		*p-- = s % 10 + '0';
+	return(_add(++p));
 }
 
 static
