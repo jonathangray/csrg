@@ -1,7 +1,7 @@
 /*-
  * Copyright (c) 1992 Henry Spencer.
- * Copyright (c) 1992 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1992, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Henry Spencer of the University of Toronto.
@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)regex.h	5.4 (Berkeley) 05/30/93
+ *	@(#)regex.h	8.1 (Berkeley) 06/02/93
  */
 
 #ifndef _REGEX_H_
