@@ -24,6 +24,7 @@
 #include "buf.h"
 #include "dkstat.h"
 #include "vm.h"
+#include "malloc.h"
 #include "conf.h"
 #include "dmap.h"
 #include "reboot.h"
@@ -640,7 +641,8 @@ unifind(uhp0, pumem)
 	 * Initialize the UNIBUS, by freeing the map
 	 * registers and the buffered data path registers
 	 */
-	uhp->uh_map = (struct map *)calloc(UAMSIZ * sizeof (struct map));
+	uhp->uh_map = (struct map *)
+		malloc(UAMSIZ * sizeof (struct map), M_DEVBUF, M_NOWAIT);
 	ubainitmaps(uhp);
 
 	/*
@@ -651,7 +653,7 @@ unifind(uhp0, pumem)
 	 */
 #if	VAX8600
 	if (cpu == VAX_8600)
-		uhp->uh_vec = (int(**)())calloc(512);
+		uhp->uh_vec = (int(**)())malloc(512, M_DEVBUF, M_NOWAIT);
 	else
 #endif
 	if (numuba == 0)
@@ -660,7 +662,7 @@ unifind(uhp0, pumem)
 	else if (numuba == 1)
 		uhp->uh_vec = UNI1vec;
 	else
-		uhp->uh_vec = (int(**)())calloc(512);
+		uhp->uh_vec = (int(**)())malloc(512, M_DEVBUF, M_NOWAIT);
 #endif
 	for (i = 0; i < 128; i++)
 		uhp->uh_vec[i] =
