@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_synch.c	7.21 (Berkeley) 02/25/92
+ *	@(#)kern_synch.c	7.22 (Berkeley) 02/28/92
  */
 
 #include "param.h"
@@ -48,6 +48,7 @@
 #include "machine/cpu.h"
 
 u_char	curpri;			/* usrpri of curproc */
+int	lbolt;			/* once a second sleep address */
 
 /*
  * Force switch among equal priority processes every 100ms.
