@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)e.c	5.6 (Berkeley) 04/28/93";
+static char sccsid[] = "@(#)e.c	5.7 (Berkeley) 05/11/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -205,4 +205,5 @@ e2(inputt, errnum)
 		}
 	}
 	change_flag = 0;
+	*errnum = 1;
 }
