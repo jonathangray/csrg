@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	6.28 (Berkeley) 02/27/93";
+static char sccsid[] = "@(#)deliver.c	6.29 (Berkeley) 02/28/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1838,7 +1838,7 @@ sendall(e, mode)
 		if (!bitset(QBADADDR, q->q_flags))
 			continue;
 
-		if (q->q_owner == NULL)
+		if (q->q_owner == NULL && strcmp(e->e_from.q_paddr, "<>") != 0)
 			(void) sendtolist(e->e_from.q_paddr, NULL,
 					  &e->e_errorqueue, e);
 	}
