@@ -33,7 +33,7 @@ divert(-1)
 # SUCH DAMAGE.
 #
 divert(0)
-VERSIONID(@(#)CS.Berkeley.EDU.m4	2.13 (Berkeley) 07/24/92)
+VERSIONID(`@(#)CS.Berkeley.EDU.m4	2.14 (Berkeley) 11/13/92')
 DOMAIN(Berkeley)dnl
 HACK(cssubdomain)dnl
 define(`USERDB_SPEC', `/usr/sww/share/lib/users.cs.db')dnl
