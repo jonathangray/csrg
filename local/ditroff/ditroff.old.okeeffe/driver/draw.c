@@ -1,4 +1,4 @@
-/*	draw.c	1.9	84/11/27
+/*	draw.c	1.10	85/12/16
  *
  *	This file contains the functions for producing the graphics
  *   images in the canon/imagen driver for ditroff.
