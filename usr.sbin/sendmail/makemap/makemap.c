@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)makemap.c	8.12 (Berkeley) 05/12/95";
+static char sccsid[] = "@(#)makemap.c	8.13 (Berkeley) 05/31/95";
 #endif /* not lint */
 
 #include <stdio.h>
@@ -264,7 +264,7 @@ main(argc, argv)
 		dbp.db = dbopen(mapname, mode, 0644, DB_HASH, NULL);
 		if (dbp.db != NULL)
 		{
-# ifdef OLD_NEWDB
+# if OLD_NEWDB
 			(void) (*dbp.db->sync)(dbp.db);
 # else
 			(void) (*dbp.db->sync)(dbp.db, 0);
@@ -276,7 +276,7 @@ main(argc, argv)
 		dbp.db = dbopen(mapname, mode, 0644, DB_BTREE, &bti);
 		if (dbp.db != NULL)
 		{
-# ifdef OLD_NEWDB
+# if OLD_NEWDB
 			(void) (*dbp.db->sync)(dbp.db);
 # else
 			(void) (*dbp.db->sync)(dbp.db, 0);
