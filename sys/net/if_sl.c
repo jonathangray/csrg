@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_sl.c	8.8 (Berkeley) 10/09/94
+ *	@(#)if_sl.c	8.9 (Berkeley) 01/09/95
  */
 
 /*
@@ -303,7 +303,7 @@ slclose(tp)
 int
 sltioctl(tp, cmd, data, flag)
 	struct tty *tp;
-	int cmd;
+	u_long cmd;
 	caddr_t data;
 	int flag;
 {
@@ -792,7 +792,7 @@ newpack:
 int
 slioctl(ifp, cmd, data)
 	register struct ifnet *ifp;
-	int cmd;
+	u_long cmd;
 	caddr_t data;
 {
 	register struct ifaddr *ifa = (struct ifaddr *)data;
