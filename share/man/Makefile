@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.13 (Berkeley) 07/21/92
+#	@(#)Makefile	8.1 (Berkeley) 06/05/93
 
 # Missing: man3f
 
