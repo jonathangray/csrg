@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	8.13.1.1 (Berkeley) 08/20/93 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	8.14 (Berkeley) 08/26/93 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	8.13.1.1 (Berkeley) 08/20/93 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	8.14 (Berkeley) 08/26/93 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -574,6 +574,7 @@ smtp(e)
 
 		  case CMDRSET:		/* rset -- reset state */
 			message("250 Reset state");
+			e->e_flags |= EF_CLRQUEUE;
 			if (InChild)
 				finis();
 
