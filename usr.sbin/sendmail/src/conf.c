@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.59 (Berkeley) 01/03/94";
+static char sccsid[] = "@(#)conf.c	8.60 (Berkeley) 01/05/94";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1404,7 +1404,7 @@ usershellok(shell)
 
 	setusershell();
 	while ((p = getusershell()) != NULL)
-		if (strcmp(p, shell) == 0)
+		if (strcmp(p, shell) == 0 || strcmp(p, "*") == 0)
 			break;
 	endusershell();
 	return p != NULL;
@@ -1433,7 +1433,7 @@ usershellok(shell)
 		while (*p != '\0' && *p != '#' && !isspace(*p))
 			p++;
 		*p = '\0';
-		if (strcmp(shell, q) == 0)
+		if (strcmp(shell, q) == 0 || strcmp("*", q) == 0)
 		{
 			fclose(shellf);
 			return TRUE;
