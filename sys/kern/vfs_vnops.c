@@ -30,20 +30,16 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_vnops.c	7.27 (Berkeley) 03/17/91
+ *	@(#)vfs_vnops.c	7.28 (Berkeley) 03/19/91
  */
 
 #include "param.h"
 #include "systm.h"
-#include "user.h"
 #include "kernel.h"
 #include "file.h"
 #include "stat.h"
 #include "buf.h"
 #include "proc.h"
-#include "uio.h"
-#include "socket.h"
-#include "socketvar.h"
 #include "mount.h"
 #include "vnode.h"
 #include "ioctl.h"
