@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)man.c	5.23 (Berkeley) 06/29/90";
+static char sccsid[] = "@(#)man.c	5.24 (Berkeley) 07/21/90";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -51,7 +51,7 @@ static char sccsid[] = "@(#)man.c	5.23 (Berkeley) 06/29/90";
 
 extern int errno;
 
-int f_all, f_cat, f_where;
+int f_all, f_cat, f_how, f_where;
 char *command, *machine, *p_augment, *p_path, *pager, *progname;
 extern char **arorder, *pathbuf;
 
@@ -65,7 +65,7 @@ main(argc, argv)
 	char *section[2], *check_pager(), *getpath(), **getorder(), *tmp;
 
 	progname = "man";
-	while ((ch = getopt(argc, argv, "-acfkM:m:P:w")) != EOF)
+	while ((ch = getopt(argc, argv, "-acfhkM:m:P:w")) != EOF)
 		switch((char)ch) {
 		case 'a':
 			f_all = 1;
@@ -73,6 +73,9 @@ main(argc, argv)
 		case 'c':
 		case '-':		/* deprecated */
 			f_cat = 1;
+			break;
+		case 'h':
+			f_how = 1;
 			break;
 		case 'm':
 			p_augment = optarg;
@@ -103,7 +106,7 @@ main(argc, argv)
 	if (!*argv)
 		usage();
 
-	if (!f_cat)
+	if (!f_cat && !f_how)
 		if (!isatty(1))
 			f_cat = 1;
 		else if (pager = getenv("PAGER"))
@@ -190,6 +193,8 @@ manual(path, name)
 			(void)printf("man: found in %s.\n", fname);
 		else if (f_cat)
 			cat(fname);
+		else if (f_how)
+			how(fname);
 		else
 			add(fname);
 		if (!f_all)
@@ -203,6 +208,48 @@ manual(path, name)
 }
 
 /*
+ * how --
+ *	display how information
+ */
+how(fname)
+	char *fname;
+{
+	register FILE *fp;
+
+	register int lcnt, print;
+	register char *p;
+	char buf[BUFSIZ];
+
+	if (!(fp = fopen(fname, "r"))) {
+		(void)fprintf(stderr, "man: %s: %s\n", fname, strerror(errno));
+		exit(1);
+	}
+#define	S1	"SYNOPSIS"
+#define	S2	"S\bSY\bYN\bNO\bOP\bPS\bSI\bIS\bS"
+#define	D1	"DESCRIPTION"
+#define	D2	"D\bDE\bES\bSC\bCR\bRI\bIP\bPT\bTI\bIO\bON\bN"
+	for (lcnt = print = 0; fgets(buf, sizeof(buf), fp);) {
+		if (!strncmp(buf, S1, sizeof(S1) - 1) ||
+		    !strncmp(buf, S2, sizeof(S2) - 1)) {
+			print = 1;
+			continue;
+		} else if (!strncmp(buf, D1, sizeof(D1) - 1) ||
+		    !strncmp(buf, D2, sizeof(D2) - 1))
+			return;
+		if (!print)
+			continue;
+		if (*buf == '\n')
+			++lcnt;
+		else {
+			for(; lcnt; --lcnt)
+				(void)putchar('\n');
+			for (p = buf; isspace(*p); ++p);
+			(void)fputs(p, stdout);
+		}
+	}
+	(void)fclose(fp);
+}
+/*
  * cat --
  *	cat out the file
  */
@@ -212,7 +259,7 @@ cat(fname)
 	register int fd, n;
 	char buf[BUFSIZ];
 
-	if (!(fd = open(fname, O_RDONLY, 0))) {
+	if ((fd = open(fname, O_RDONLY, 0)) < 0) {
 		(void)fprintf(stderr, "man: %s: %s\n", fname, strerror(errno));
 		exit(1);
 	}
