@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	8.27 (Berkeley) 05/18/95
+ *	@(#)vfs_subr.c	8.28 (Berkeley) 05/19/95
  */
 
 /*
@@ -1080,7 +1080,7 @@ vclean(vp, flags, p)
 	 * Clean out any buffers associated with the vnode.
 	 */
 	if (flags & DOCLOSE)
-		vinvalbuf(vp, V_SAVE, NOCRED, NULL, 0, 0);
+		vinvalbuf(vp, V_SAVE, NOCRED, p, 0, 0);
 	/*
 	 * If purging an active vnode, it must be closed and
 	 * deactivated before being reclaimed. Note that the
