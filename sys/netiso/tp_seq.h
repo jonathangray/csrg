@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_seq.h	7.5 (Berkeley) 05/06/91
+ *	@(#)tp_seq.h	7.6 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -121,4 +121,4 @@ SOFTWARE.
 #define IN_SWINDOW(tpcb, seq, lwe, uwe)\
 	( SEQ_GT(tpcb, seq, lwe) && SEQ_LEQ(tpcb, seq, uwe) )
 
-#endif __TP_SEQ__
+#endif /* __TP_SEQ__ */
