@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs.h	7.13 (Berkeley) 01/07/92
+ *	@(#)nfs.h	7.14 (Berkeley) 03/09/92
  */
 
 /*
@@ -238,7 +238,7 @@ struct nfssvc_sock {
 
 /* Bits for "ns_flag" */
 #define	SLP_VALID	0x01
-#define	SLP_GOTIT	0x02
+#define	SLP_DOREC	0x02
 #define	SLP_NEEDQ	0x04
 #define	SLP_DISCONN	0x08
 #define	SLP_GETSTREAM	0x10
@@ -251,7 +251,6 @@ struct nfsd {
 	struct nfsd	*nd_prev;
 	int		nd_flag;	/* NFSD_ flags */
 	struct nfssvc_sock *nd_slp;	/* Current socket */
-	u_long		nd_sref;
 	struct mbuf	*nd_nam;	/* Client addr for datagram req. */
 	struct mbuf	*nd_mrep;	/* Req. mbuf list */
 	struct mbuf	*nd_md;
