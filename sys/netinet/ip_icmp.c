@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ip_icmp.c	7.19 (Berkeley) 01/08/93
+ *	@(#)ip_icmp.c	7.20 (Berkeley) 02/11/93
  */
 
 #include <sys/param.h>
@@ -524,6 +524,7 @@ icmp_reflect(m)
 		bcopy((caddr_t)ip + optlen, (caddr_t)(ip + 1),
 			 (unsigned)(m->m_len - sizeof(struct ip)));
 	}
+	m->m_flags &= ~(M_BCAST|M_MCAST);
 
 	icmp_send(m, opts);
 	if (opts)
