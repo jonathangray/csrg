@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)trap.c	8.3 (Berkeley) 09/21/93
+ *	@(#)trap.c	8.4 (Berkeley) 09/23/93
  */
 
 /*
@@ -141,9 +141,9 @@ copyfault:	frame.tf_eip = (int)curpcb->pcb_onfault;
 	case T_ASTFLT|T_USER:		/* Allow process switch */
 	case T_ASTFLT:
 		astoff();
-		if ((p->p_flag & SOWEUPC) && p->p_stats->p_prof.pr_scale) {
+		if ((p->p_flag & P_OWEUPC) && p->p_stats->p_prof.pr_scale) {
 			addupc(frame.tf_eip, &p->p_stats->p_prof, 1);
-			p->p_flag &= ~SOWEUPC;
+			p->p_flag &= ~P_OWEUPC;
 		}
 		goto out;
 
@@ -256,8 +256,8 @@ copyfault:	frame.tf_eip = (int)curpcb->pcb_onfault;
 		return;
 out:
 	while (i = CURSIG(p))
-		psig(i);
-	p->p_pri = p->p_usrpri;
+		postsig(i);
+	p->p_priority = p->p_usrpri;
 	if (want_resched) {
 		int pl;
 
@@ -266,16 +266,16 @@ out:
 		 * our priority without moving us from one queue to another
 		 * (since the running process is not on a queue.)
 		 * If that happened after we put ourselves on the run queue
-		 * but before we swtch()'ed, we might not be on the queue
+		 * but before we switched, we might not be on the queue
 		 * indicated by our priority.
 		 */
 		pl = splclock();
 		setrunqueue(p);
 		p->p_stats->p_ru.ru_nivcsw++;
-		swtch();
+		mi_switch();
 		splx(pl);
 		while (i = CURSIG(p))
-			psig(i);
+			postsig(i);
 	}
 	if (p->p_stats->p_prof.pr_scale) {
 		u_quad_t ticks = p->p_sticks - sticks;
@@ -290,7 +290,7 @@ out:
 #endif
 		}
 	}
-	curpriority = p->p_pri;
+	curpriority = p->p_priority;
 	curpcb->pcb_flags &= ~FM_TRAP;	/* used by sendsig */
 }
 
@@ -374,8 +374,8 @@ done:
 	 */
 	p = curproc;
 	while (i = CURSIG(p))
-		psig(i);
-	p->p_pri = p->p_usrpri;
+		postsig(i);
+	p->p_priority = p->p_usrpri;
 	if (want_resched) {
 		int pl;
 
@@ -384,16 +384,16 @@ done:
 		 * our priority without moving us from one queue to another
 		 * (since the running process is not on a queue.)
 		 * If that happened after we put ourselves on the run queue
-		 * but before we swtch()'ed, we might not be on the queue
+		 * but before we switched, we might not be on the queue
 		 * indicated by our priority.
 		 */
 		pl = splclock();
 		setrunqueue(p);
 		p->p_stats->p_ru.ru_nivcsw++;
-		swtch();
+		mi_switch();
 		splx(pl);
 		while (i = CURSIG(p))
-			psig(i);
+			postsig(i);
 	}
 	if (p->p_stats->p_prof.pr_scale) {
 		u_quad_t ticks = p->p_sticks - sticks;
@@ -408,7 +408,7 @@ done:
 #endif
 		}
 	}
-	curpriority = p->p_pri;
+	curpriority = p->p_priority;
 #ifdef KTRACE
 	if (KTRPOINT(p, KTR_SYSRET))
 		ktrsysret(p->p_tracep, code, error, rval[0]);
