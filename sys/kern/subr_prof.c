@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_prof.c	7.12 (Berkeley) 03/18/92
+ *	@(#)subr_prof.c	7.13 (Berkeley) 06/04/92
  */
 
 #ifdef GPROF
@@ -147,7 +147,7 @@ mcount()
 #if defined(tahoe)
 	Fix Me!!
 #endif
-#if defined(hp300)
+#if defined(hp300) || defined(luna68k)
 	/*
 	 * selfpc = pc pushed by mcount jsr,
 	 * frompcindex = pc pushed by jsr into self.
@@ -169,7 +169,7 @@ mcount()
 	asm("	movl (fp),r11");
 	asm("	movl -8(r11),r11");	/* frompcindex = 1 callf frame back */
 #endif
-#if defined(hp300)
+#if defined(hp300) || defined(luna68k)
 	Fix Me!!
 #endif
 #endif /* not __GNUC__ */
@@ -179,7 +179,7 @@ mcount()
 	 * this requires that splhigh() and splx() below
 	 * do NOT call mcount!
 	 */
-#if defined(hp300)
+#if defined(hp300) || defined(luna68k)
 	asm("movw	sr,%0" : "=g" (s));
 	asm("movw	#0x2700,sr");
 #else
@@ -262,7 +262,7 @@ mcount()
 
 	}
 done:
-#if defined(hp300)
+#if defined(hp300) || defined(luna68k)
 	asm("movw	%0,sr" : : "g" (s));
 #else
 	splx(s);
