@@ -36,7 +36,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)machdep.c	7.16 (Berkeley) 02/20/93
+ *	@(#)machdep.c	7.17 (Berkeley) 02/26/93
  */
 
 /* from: Utah $Hdr: machdep.c 1.63 91/04/24$ */
@@ -1133,6 +1133,11 @@ boot(howto)
 	/* take a snap shot before clobbering any registers */
 	if (curproc)
 		savectx(curproc->p_addr, 0);
+
+#ifdef DEBUG
+	if (panicstr)
+		stacktrace();
+#endif
 
 	howto |= RB_HALT; /* XXX */
 	boothowto = howto;
