@@ -161,6 +161,7 @@ fcntl(p, uap, retval)
 	} *uap;
 	int *retval;
 {
+	USES_VOP_ADVLOCK;
 	register struct filedesc *fdp = p->p_fd;
 	register struct file *fp;
 	register char *pop;
@@ -657,6 +658,7 @@ closef(fp, p)
 	register struct file *fp;
 	register struct proc *p;
 {
+	USES_VOP_ADVLOCK;
 	struct vnode *vp;
 	struct flock lf;
 	int error;
@@ -712,6 +714,7 @@ flock(p, uap, retval)
 	} *uap;
 	int *retval;
 {
+	USES_VOP_ADVLOCK;
 	register struct filedesc *fdp = p->p_fd;
 	register struct file *fp;
 	struct vnode *vp;
@@ -758,6 +761,7 @@ fdopen(dev, mode, type, p)
 	int mode, type;
 	struct proc *p;
 {
+	USES_VOP_OPEN;
 
 	/*
 	 * XXX Kludge: set curproc->p_dupfd to contain the value of the
