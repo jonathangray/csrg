@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	7.96 (Berkeley) 06/20/92
+ *	@(#)ufs_vnops.c	7.97 (Berkeley) 06/20/92
  */
 
 #include <sys/param.h>
@@ -62,10 +62,6 @@ static int ufs_chmod __P((struct vnode *, int, struct ucred *, struct proc *));
 static int ufs_chown
 	__P((struct vnode *, uid_t, gid_t, struct ucred *, struct proc *));
 
-#ifdef _NOQUAD
-#define	SETHIGH(q, h)	(q).val[_QUAD_HIGHWORD] = (h)
-#define	SETLOW(q, l)	(q).val[_QUAD_LOWWORD] = (l)
-#else /* QUAD */
 union _qcvt {
 	quad_t qcvt;
 	long val[2];
@@ -82,7 +78,6 @@ union _qcvt {
 	tmp.val[_QUAD_LOWWORD] = (l); \
 	(q) = tmp.qcvt; \
 }
-#endif /* QUAD */
 
 /*
  * Create a regular file
@@ -247,12 +242,7 @@ ufs_getattr(ap)
 	vap->va_uid = ip->i_uid;
 	vap->va_gid = ip->i_gid;
 	vap->va_rdev = (dev_t)ip->i_rdev;
-#ifdef tahoe
-	vap->va_size = ip->i_size;
-	vap->va_size_rsv = 0;
-#else
-	vap->va_qsize = ip->i_din.di_qsize;
-#endif
+	vap->va_size = ip->i_din.di_size;
 	vap->va_atime = ip->i_atime;
 	vap->va_mtime = ip->i_mtime;
 	vap->va_ctime = ip->i_ctime;
@@ -266,9 +256,6 @@ ufs_getattr(ap)
 	else
 		vap->va_blocksize = vp->v_mount->mnt_stat.f_iosize;
 	vap->va_bytes = dbtob(ip->i_blocks);
-#ifdef _NOQUAD
-	vap->va_bytes_rsv = 0;
-#endif
 	vap->va_type = vp->v_type;
 	vap->va_filerev = ip->i_modrev;
 	return (0);
