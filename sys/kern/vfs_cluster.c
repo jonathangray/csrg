@@ -1,4 +1,4 @@
-/*	vfs_cluster.c	3.6	%H%	*/
+/*	vfs_cluster.c	3.7	06/07/80	*/
 
 #include "../h/param.h"
 #include "../h/systm.h"
