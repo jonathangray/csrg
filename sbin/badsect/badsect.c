@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)badsect.c	5.10 (Berkeley) 11/11/91";
+static char sccsid[] = "@(#)badsect.c	5.11 (Berkeley) 02/15/93";
 #endif /* not lint */
 
 /*
@@ -56,6 +56,7 @@ static char sccsid[] = "@(#)badsect.c	5.10 (Berkeley) 11/11/91";
 #include <sys/stat.h>
 #include <ufs/ffs/fs.h>
 #include <ufs/ufs/dinode.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <paths.h>
 
@@ -180,18 +181,19 @@ chkuse(blkno, cnt)
  * read a block from the file system
  */
 rdfs(bno, size, bf)
-	int bno, size;
+	daddr_t bno;
+	int size;
 	char *bf;
 {
 	int n;
 
-	if (lseek(fsi, bno * dev_bsize, 0) < 0) {
+	if (lseek(fsi, (off_t)bno * dev_bsize, SEEK_SET) < 0) {
 		printf("seek error: %ld\n", bno);
 		perror("rdfs");
 		exit(1);
 	}
 	n = read(fsi, bf, size);
-	if(n != size) {
+	if (n != size) {
 		printf("read error: %ld\n", bno);
 		perror("rdfs");
 		exit(1);
