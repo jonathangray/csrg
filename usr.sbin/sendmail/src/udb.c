@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1983 Eric P. Allman
- * Copyright (c) 1988 Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1988, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef USERDB
-static char sccsid [] = "@(#)udb.c	6.23 (Berkeley) 06/02/93 (with USERDB)";
+static char sccsid [] = "@(#)udb.c	8.1 (Berkeley) 06/07/93 (with USERDB)";
 #else
-static char sccsid [] = "@(#)udb.c	6.23 (Berkeley) 06/02/93 (without USERDB)";
+static char sccsid [] = "@(#)udb.c	8.1 (Berkeley) 06/07/93 (without USERDB)";
 #endif
 #endif
 
