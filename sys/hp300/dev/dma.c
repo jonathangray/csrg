@@ -30,24 +30,24 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dma.c	7.2 (Berkeley) 12/05/90
+ *	@(#)dma.c	7.3 (Berkeley) 12/16/90
  */
 
 /*
  * DMA driver
  */
 
-#include "param.h"
-#include "systm.h"
-#include "time.h"
-#include "kernel.h"
-#include "proc.h"
+#include "sys/param.h"
+#include "sys/systm.h"
+#include "sys/time.h"
+#include "sys/kernel.h"
+#include "sys/proc.h"
 #include "dmareg.h"
 #include "dmavar.h"
 #include "device.h"
 
-#include "machine/cpu.h"
-#include "machine/isr.h"
+#include "../include/cpu.h"
+#include "../hp300/isr.h"
 
 extern void isrlink();
 extern void printf();
@@ -345,7 +345,7 @@ dmago(unit, addr, count, flags)
 		}
 	dmatimo[unit] = 1;
 #endif
-	DMA_ARM(dc);
+	DMA_ARM(dc, "KIRK, MISSING AN ARG");
 }
 
 void
@@ -429,7 +429,7 @@ dmaintr()
 			    (dc->sc_flags & DMAF_NOINTR))
 				dc->sc_cmd &= ~DMA_ENAB;
 			DMA_CLEAR(dc);
-			DMA_ARM(dc);
+			DMA_ARM(dc, "KIRK, MISSING AN ARG");
 		} else
 			dmastop(i);
 	}
