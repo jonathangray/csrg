@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)types.h	8.3 (Berkeley) 01/05/94
+ *	@(#)types.h	8.4 (Berkeley) 01/09/95
  */
 
 #ifndef	_MACHTYPES_H_
@@ -61,5 +61,7 @@ typedef	int			  int32_t;
 typedef	unsigned int		u_int32_t;
 typedef	long long		  int64_t;
 typedef	unsigned long long	u_int64_t;
+
+typedef	int32_t			register_t;
 
 #endif	/* _MACHTYPES_H_ */
