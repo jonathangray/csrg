@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	7.45 (Berkeley) 07/02/90
+ *	@(#)nfs_vnops.c	7.46 (Berkeley) 07/26/90
  */
 
 /*
@@ -422,7 +422,11 @@ nfs_setattr(vp, vap, cred)
 	else
 		sp->sa_gid = txdr_unsigned(vap->va_gid);
 	sp->sa_size = txdr_unsigned(vap->va_size);
-	if (vap->va_size != VNOVAL) {
+	sp->sa_atime.tv_sec = txdr_unsigned(vap->va_atime.tv_sec);
+	sp->sa_atime.tv_usec = txdr_unsigned(vap->va_flags);
+	txdr_time(&vap->va_mtime, &sp->sa_mtime);
+	if (vap->va_size != VNOVAL || vap->va_mtime.tv_sec != VNOVAL ||
+	    vap->va_atime.tv_sec != VNOVAL) {
 		np = VTONFS(vp);
 		if (np->n_flag & NMODIFIED) {
 			np->n_flag &= ~NMODIFIED;
@@ -430,9 +434,6 @@ nfs_setattr(vp, vap, cred)
 			np->n_attrstamp = 0;
 		}
 	}
-	sp->sa_atime.tv_sec = txdr_unsigned(vap->va_atime.tv_sec);
-	sp->sa_atime.tv_usec = txdr_unsigned(vap->va_flags);
-	txdr_time(&vap->va_mtime, &sp->sa_mtime);
 	nfsm_request(vp, NFSPROC_SETATTR, u.u_procp, 1);
 	nfsm_loadattr(vp, (struct vattr *)0);
 	/* should we fill in any vap fields ?? */
