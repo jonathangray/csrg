@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: cons.c 1.7 92/01/21$
  *
- *	@(#)cons.c	8.1 (Berkeley) 06/10/93
+ *	@(#)cons.c	8.2 (Berkeley) 01/12/94
  */
 
 #include <sys/param.h>
@@ -106,6 +106,7 @@ cnclose(dev, flag, mode, p)
 cnread(dev, uio, flag)
 	dev_t dev;
 	struct uio *uio;
+	int flag;
 {
 	if (cn_tab == NULL)
 		return (0);
@@ -116,6 +117,7 @@ cnread(dev, uio, flag)
 cnwrite(dev, uio, flag)
 	dev_t dev;
 	struct uio *uio;
+	int flag;
 {
 	if (cn_tab == NULL)
 		return (0);
@@ -125,6 +127,7 @@ cnwrite(dev, uio, flag)
  
 cnioctl(dev, cmd, data, flag, p)
 	dev_t dev;
+	int cmd, flag;
 	caddr_t data;
 	struct proc *p;
 {
