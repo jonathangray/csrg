@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)param.h	8.1 (Berkeley) 06/11/93
+ *	@(#)param.h	8.2 (Berkeley) 03/29/95
  */
 
 /*
@@ -120,9 +120,9 @@
 #define	btoc(x)	(((unsigned)(x)+(NBPG-1))>>PGSHIFT)
 
 #define	btodb(bytes)	 		/* calculates (bytes / DEV_BSIZE) */ \
-	((unsigned)(bytes) >> DEV_BSHIFT)
+	((bytes) >> DEV_BSHIFT)
 #define	dbtob(db)			/* calculates (db * DEV_BSIZE) */ \
-	((unsigned)(db) << DEV_BSHIFT)
+	((db) << DEV_BSHIFT)
 
 /*
  * Map a ``block device block'' to a file system block.
