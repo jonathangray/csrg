@@ -1,7 +1,7 @@
 # include "sendmail.h"
 # include <sys/mx.h>
 
-static char	SccsId[] =	"@(#)daemon.c	3.4	11/08/81";
+SCCSID(@(#)daemon.c	3.5		12/06/81);
 
 /*
 **  DAEMON.C -- routines to use when running as a daemon.
