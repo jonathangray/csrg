@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)asc.c	7.5 (Berkeley) 10/11/92
+ *	@(#)asc.c	7.6 (Berkeley) 10/11/92
  */
 
 /* 
@@ -127,9 +127,9 @@
 #include <sys/conf.h>
 #include <sys/errno.h>
 
-#include <mips/dev/device.h>
-#include <mips/dev/scsi.h>
-#include <mips/dev/ascreg.h>
+#include <pmax/dev/device.h>
+#include <pmax/dev/scsi.h>
+#include <pmax/dev/ascreg.h>
 
 #define ASC_OFFSET_53C94	0x0		/* from module base */
 #define ASC_OFFSET_DMAR		0x40000		/* DMA Address Register */
