@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	5.38 (Berkeley) 05/29/92";
+static char sccsid[] = "@(#)readcf.c	5.39 (Berkeley) 07/11/92";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -903,6 +903,16 @@ setoption(opt, val, sticky)
 		IgnrDot = atobool(val);
 		break;
 
+	  case 'k':		/* connection cache size */
+		MaxMciCache = atoi(val);
+		if (MaxMciCache <= 0)
+			MaxMciCache = 1;
+		break;
+
+	  case 'K':		/* connection cache timeout */
+		MciCacheTimeout = convtime(val);
+		break;
+
 	  case 'L':		/* log level */
 		LogLevel = atoi(val);
 		break;
@@ -959,7 +969,7 @@ setoption(opt, val, sticky)
 
 	  case 'T':		/* queue timeout */
 		TimeOut = convtime(val);
-		/*FALLTHROUGH*/
+		break;
 
 	  case 't':		/* time zone name */
 		TimeZoneSpec = newstr(val);
