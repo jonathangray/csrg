@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)kill.c	5.5 (Berkeley) 08/04/91";
+static char sccsid[] = "@(#)kill.c	5.6 (Berkeley) 03/15/93";
 #endif /* not lint */
 
 #include <signal.h>
@@ -57,7 +57,7 @@ main(argc, argv)
 	char **argv;
 {
 	register int errors, numsig, pid;
-	register char **p;
+	register char *const *p;
 	char *ep;
 
 	if (argc < 2)
@@ -129,7 +129,7 @@ printsig(fp)
 	FILE *fp;
 {
 	register int cnt;
-	register char **p;
+	register char *const *p;
 
 	for (cnt = NSIG, p = sys_signame + 1; --cnt; ++p) {
 		(void)fprintf(fp, "%s ", *p);
