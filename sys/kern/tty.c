@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)tty.c	7.5 (Berkeley) 03/29/87
+ *	@(#)tty.c	7.6 (Berkeley) 07/07/87
  */
 
 #include "../machine/reg.h"
