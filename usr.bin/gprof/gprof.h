@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)gprof.h	5.14 (Berkeley) 09/02/92
+ *	@(#)gprof.h	5.15 (Berkeley) 03/08/93
  */
 
 #include <sys/types.h>
@@ -58,6 +58,9 @@
 #endif
 #if i386
 #   include "i386.h"
+#endif
+#if mips
+#   include "mips.h"
 #endif
 
 
