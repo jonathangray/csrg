@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)ttzapple.c	3.11 (Berkeley) 06/06/90";
+static char sccsid[] = "@(#)ttzapple.c	3.12 (Berkeley) 06/24/92";
 #endif /* not lint */
 
 #include "ww.h"
@@ -59,6 +59,9 @@ zz|zapple|perfect apple:\
 #define TOKEN_MAX	32
 
 extern short gen_frame[];
+
+	/* for error correction */
+int zz_ecc;
 
 zz_setmodes(new)
 {
@@ -216,12 +219,18 @@ zz_start()
 	zz_clear();
 	ttesc('T');
 	ttputc(TOKEN_MAX + ' ');
+	ttesc('U');
+	ttputc('!');
+	zz_ecc = 1;
 }
 
 zz_end()
 {
 	ttesc('T');
 	ttputc(' ');
+	ttesc('U');
+	ttputc(' ');
+	zz_ecc = 0;
 }
 
 zz_clreol()
@@ -329,6 +338,39 @@ zz_put_token(t, s, n)
 	ttputc(t + 0x81);
 }
 
+zz_rint(p, n)
+	char *p;
+{
+	static lastc;
+	register i;
+	register char *q;
+
+	if (!zz_ecc)
+		return n;
+	for (i = n, q = p; --i >= 0;) {
+		register c = (unsigned char) *p++;
+		if (zz_ecc == 1) {
+			if (c)
+				*q++ = c;
+			else {
+				zz_ecc = 2;
+				lastc = -1;
+			}
+		} else {
+			if (lastc < 0) {
+				lastc = c;
+			} else if (lastc == c) {
+				*q++ = lastc;
+				lastc = -1;
+			} else {
+				wwnreadec++;
+				lastc = c;
+			}
+		}
+	}
+	return q - (p - n);
+}
+
 tt_zapple()
 {
 	tt.tt_insspace = zz_insspace;
@@ -361,5 +403,6 @@ tt_zapple()
 	tt.tt_token_max = TOKEN_MAX;
 	tt.tt_set_token_cost = 2;
 	tt.tt_put_token_cost = 1;
+	tt.tt_rint = zz_rint;
 	return 0;
 }
