@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.17 (Berkeley) 09/28/90";
+static char sccsid[] = "@(#)main.c	5.18 (Berkeley) 03/01/91";
 #endif /* not lint */
 
 /*
@@ -59,8 +59,7 @@ static char sccsid[] = "@(#)main.c	5.17 (Berkeley) 09/28/90";
 #include <pwd.h>
 
 uid_t	getuid();
-sig_t	intr();
-sig_t	lostpeer();
+void	intr(), lostpeer();
 extern	char *home;
 char	*getlogin();
 
@@ -155,14 +154,14 @@ main(argc, argv)
 	}
 }
 
-sig_t
+void
 intr()
 {
 
 	longjmp(toplevel, 1);
 }
 
-sig_t
+void
 lostpeer()
 {
 	extern FILE *cout;
