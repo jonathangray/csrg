@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)csh.h	5.17 (Berkeley) 07/22/91
+ *	@(#)csh.h	5.18 (Berkeley) 08/04/91
  */
 
 /*
@@ -516,11 +516,6 @@ char  **Vt;
 
 Char  **evalvec;
 Char   *evalp;
-
-extern struct mesg {
-    char   *iname;		/* name from /usr/include */
-    char   *pname;		/* print name */
-}       mesg[];
 
 /* word_chars is set by default to WORD_CHARS but can be overridden by
    the worchars variable--if unset, reverts to WORD_CHARS */
