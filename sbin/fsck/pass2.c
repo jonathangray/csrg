@@ -32,12 +32,11 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)pass2.c	8.6 (Berkeley) 10/27/94";
+static char sccsid[] = "@(#)pass2.c	8.7 (Berkeley) 01/06/95";
 #endif /* not lint */
 
 #include <sys/param.h>
 #include <sys/time.h>
-#include <sys/stat.h>
 #include <ufs/ufs/dinode.h>
 #include <ufs/ufs/dir.h>
 #include <ufs/ffs/fs.h>
@@ -92,8 +91,8 @@ pass2()
 		if (reply("FIX") == 0)
 			errexit("");
 		dp = ginode(ROOTINO);
-		dp->di_mode &= ~S_IFMT;
-		dp->di_mode |= S_IFDIR;
+		dp->di_mode &= ~IFMT;
+		dp->di_mode |= IFDIR;
 		inodirty();
 		break;
 
@@ -106,7 +105,7 @@ pass2()
 	statemap[ROOTINO] = DFOUND;
 	if (newinofmt) {
 		statemap[WINO] = FSTATE;
-		typemap[WINO] = IFTODT(S_IFWHT);
+		typemap[WINO] = DT_WHT;
 	}
 	/*
 	 * Sort the directory list into disk block order.
@@ -148,7 +147,7 @@ pass2()
 			}
 		}
 		bzero((char *)&dino, sizeof(struct dinode));
-		dino.di_mode = S_IFDIR;
+		dino.di_mode = IFDIR;
 		dp->di_size = inp->i_isize;
 		bcopy((char *)&inp->i_blks[0], (char *)&dp->di_db[0],
 			(size_t)inp->i_numblks);
@@ -401,7 +400,7 @@ again:
 				break;
 			dp = ginode(dirp->d_ino);
 			statemap[dirp->d_ino] =
-			    (dp->di_mode & S_IFMT) == S_IFDIR ? DSTATE : FSTATE;
+			    (dp->di_mode & IFMT) == IFDIR ? DSTATE : FSTATE;
 			lncntp[dirp->d_ino] = dp->di_nlink;
 			goto again;
 
