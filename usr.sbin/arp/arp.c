@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)arp.c	5.16 (Berkeley) 03/08/93";
+static char sccsid[] = "@(#)arp.c	5.17 (Berkeley) 04/01/93";
 #endif /* not lint */
 
 /*
@@ -51,7 +51,7 @@ static char sccsid[] = "@(#)arp.c	5.16 (Berkeley) 03/08/93";
 #include <sys/param.h>
 #include <sys/file.h>
 #include <sys/socket.h>
-#include <sys/kinfo.h>
+#include <sys/sysctl.h>
 
 #include <net/if.h>
 #include <net/if_dl.h>
@@ -343,8 +343,8 @@ delete:
 dump(addr)
 u_long addr;
 {
-	int sz, needed, rlen;
-	long op = KINFO_RT_FLAGS | (((long)AF_INET) << 16);
+	int mib[6];
+	size_t needed;
 	char *host, *malloc(), *lim, *buf, *next;
 	struct rt_msghdr *rtm;
 	struct sockaddr_inarp *sin;
