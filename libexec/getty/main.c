@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.14 (Berkeley) 02/25/91";
+static char sccsid[] = "@(#)main.c	5.15 (Berkeley) 03/04/91";
 #endif /* not lint */
 
 #define USE_OLD_TTY
@@ -479,7 +479,7 @@ putf(cp)
 			break;
 
 		case 'd': {
-			char fmt[] = "%l:% %P on %A, %d %B %Y";
+			static char fmt[] = "%l:% %P on %A, %d %B %Y";
 
 			fmt[4] = 'M';		/* I *hate* SCCS... */
 			(void)time(&t);
