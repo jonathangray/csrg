@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recipient.c	5.29 (Berkeley) 07/12/92";
+static char sccsid[] = "@(#)recipient.c	5.30 (Berkeley) 07/12/92";
 #endif /* not lint */
 
 # include <sys/types.h>
@@ -287,7 +287,7 @@ recipient(a, sendq)
 	{
 		a->q_mailer = m = ProgMailer;
 		a->q_user++;
-		if (a->q_alias == NULL && !QueueRun && !ForceMail)
+		if (a->q_alias == NULL && !ForceMail)
 		{
 			a->q_flags |= QDONTSEND|QBADADDR;
 			usrerr("Cannot mail directly to programs");
@@ -370,7 +370,7 @@ recipient(a, sendq)
 		if (strncmp(a->q_user, ":include:", 9) == 0)
 		{
 			a->q_flags |= QDONTSEND;
-			if (a->q_alias == NULL && !QueueRun && !ForceMail)
+			if (a->q_alias == NULL && !ForceMail)
 			{
 				a->q_flags |= QBADADDR;
 				usrerr("Cannot mail directly to :include:s");
