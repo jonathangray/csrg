@@ -1,4 +1,4 @@
-    /* sccsid:  @(#)gprof.h	1.6 (Berkeley) 11/10/81 */
+    /* sccsid:  @(#)gprof.h	1.7 (Berkeley) 11/10/81 */
 
 #include <stdio.h>
 #include <sys/types.h>
