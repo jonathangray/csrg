@@ -3,7 +3,6 @@
 .\"
 .\" This manual is derived from one contributed to Berkeley by
 .\" Michael Rendell of Memorial University of Newfoundland.
-.\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
 .\" are met:
@@ -32,32 +31,44 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)tsort.1	6.4 (Berkeley) 06/24/90
+.\"     @(#)tsort.1	6.3 (Berkeley) 04/23/91
 .\"
-.TH tsort 1 ""
-.AT 3
-.SH NAME
-tsort \- topological sort of a directed graph
-.SH SYNOPSIS
-.nf
-.ft B
-tsort [ file ]
-.ft R
-.fi
-.SH DESCRIPTION
-.I Tsort
+.Dd 
+.Dt TSORT 1
+.Os
+.Sh NAME
+.Nm tsort
+.Nd topological sort of a directed graph
+.Sh SYNOPSIS
+.Nm tsort
+.Op Ar file
+.Sh DESCRIPTION
+.Nm Tsort
 takes a list of pairs of node names representing directed arcs in
 a graph and prints the nodes in topological order on standard output.
-Input is taken from the named file, or from standard input if no file
+Input is taken from the named
+.Ar file ,
+or from standard input if no file
 is given.
-.PP
+.Pp
 Node names in the input are separated by white space and there must be an
 even number of nodes.
-.PP
+.Pp
 Presence of a node in a graph can be represented by an arc from the node
 to itself.
 This is useful when a node is not connected to any other nodes.
-.PP
+.Pp
 If the graph contains a cycle (and therefore cannot be properly sorted),
 one of the arcs in the cycle is ignored and the sort continues.
 Cycles are reported on standard error.
+.Sh SEE ALSO
+.Xr ar 1
+.Sh HISTORY
+A
+.Nm
+command appeared in
+.At v7 .
+This
+.Nm tsort
+command and manual page are derived from sources contributed to Berkeley by
+Michael Rendell of Memorial University of Newfoundland.
