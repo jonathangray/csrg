@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_clnp.h	7.4 (Berkeley) 10/11/92
+ *	@(#)tp_clnp.h	7.5 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -75,7 +75,7 @@ SOFTWARE.
 
 #ifndef SOCK_STREAM
 #include <sys/socket.h>
-#endif SOCK_STREAM
+#endif /* SOCK_STREAM */
 
 #ifndef RTFREE
 #include <net/route.h>
@@ -91,4 +91,4 @@ SOFTWARE.
 struct isopcb tp_isopcb;	
 	/* queue of active inpcbs for tp ; for tp with dod ip */
 
-#endif __TP_CLNP__
+#endif /* __TP_CLNP__ */
