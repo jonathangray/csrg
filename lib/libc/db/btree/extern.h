@@ -1,6 +1,6 @@
 /*-
- * Copyright (c) 1991 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1991, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.8 (Berkeley) 05/24/93
+ *	@(#)extern.h	8.1 (Berkeley) 06/04/93
  */
 
 int	 __bt_close __P((DB *));
