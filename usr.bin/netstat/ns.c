@@ -32,12 +32,8 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)ns.c	5.12 (Berkeley) 06/18/90";
+static char sccsid[] = "@(#)ns.c	5.13 (Berkeley) 03/01/91";
 #endif /* not lint */
-
-#include <stdio.h>
-#include <errno.h>
-#include <nlist.h>
 
 #include <sys/param.h>
 #include <sys/socket.h>
@@ -62,6 +58,10 @@ static char sccsid[] = "@(#)ns.c	5.12 (Berkeley) 06/18/90";
 #define SANAMES
 #include <netns/spp_debug.h>
 
+#include <nlist.h>
+#include <errno.h>
+#include <stdio.h>
+#include <string.h>
 
 struct	nspcb nspcb;
 struct	sppcb sppcb;
@@ -149,7 +149,8 @@ nsprotopr(off, name)
 		prev = next;
 	}
 }
-#define ANY(x,y,z)  ((x) ? printf("\t%d %s%s%s -- %s\n",x,y,plural(x),z,"x") : 0)
+#define ANY(x,y,z) \
+	((x) ? printf("\t%d %s%s%s -- %s\n",x,y,plural(x),z,"x") : 0)
 
 /*
  * Dump SPP statistics structure.
@@ -167,9 +168,12 @@ spp_stats(off, name)
 	printf("%s:\n", name);
 	ANY(spp_istat.nonucn, "connection", " dropped due to no new sockets ");
 	ANY(spp_istat.gonawy, "connection", " terminated due to our end dying");
-	ANY(spp_istat.nonucn, "connection", " dropped due to inability to connect");
-	ANY(spp_istat.noconn, "connection", " dropped due to inability to connect");
-	ANY(spp_istat.notme, "connection", " incompleted due to mismatched id's");
+	ANY(spp_istat.nonucn, "connection",
+	    " dropped due to inability to connect");
+	ANY(spp_istat.noconn, "connection",
+	    " dropped due to inability to connect");
+	ANY(spp_istat.notme, "connection",
+	    " incompleted due to mismatched id's");
 	ANY(spp_istat.wrncon, "connection", " dropped due to mismatched id's");
 	ANY(spp_istat.bdreas, "packet", " dropped out of sequence");
 	ANY(spp_istat.lstdup, "packet", " duplicating the highest packet");
@@ -304,12 +308,13 @@ nserr_stats(off, name)
 		ns_erputil(z, ns_errstat.ns_es_codes[j]);
 	}
 }
-static
+
 ns_erputil(z, c)
 {
 	int j;
 	char codebuf[30];
 	char *name, *where;
+
 	for(j = 0;; j ++) {
 		if ((name = ns_errnames[j].name) == 0)
 			break;
@@ -327,13 +332,15 @@ ns_erputil(z, c)
 		where =  ns_errnames[j].where;
 	ANY(z, name, where);
 }
+
 static struct sockaddr_ns ssns = {AF_NS};
 
 char *ns_prpr(x)
-struct ns_addr *x;
+	struct ns_addr *x;
 {
-	extern char *ns_print();
 	struct sockaddr_ns *sns = &ssns;
+	extern char *ns_print();
+
 	sns->sns_addr = *x;
 	return(ns_print(sns));
 }
