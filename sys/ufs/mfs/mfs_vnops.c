@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mfs_vnops.c	7.26 (Berkeley) 12/16/91
+ *	@(#)mfs_vnops.c	7.27 (Berkeley) 03/01/92
  */
 
 #include <sys/param.h>
@@ -44,7 +44,9 @@
 #include <sys/malloc.h>
 
 #include <machine/vmparam.h>
+#if defined(tahoe)
 #include <machine/mtpr.h>
+#endif
 
 #include <ufs/mfs/mfsnode.h>
 #include <ufs/mfs/mfsiom.h>
