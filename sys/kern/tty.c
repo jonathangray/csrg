@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty.c	7.46 (Berkeley) 09/05/91
+ *	@(#)tty.c	7.47 (Berkeley) 09/09/91
  */
 
 #include "param.h"
