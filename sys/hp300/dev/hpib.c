@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hpib.c	7.4 (Berkeley) 06/05/92
+ *	@(#)hpib.c	7.5 (Berkeley) 07/07/92
  */
 
 /*
@@ -157,14 +157,15 @@ hpibpptest(unit, slave)
 }
 
 hpibawait(unit)
+	int unit;
 {
 	register struct hpib_softc *hs = &hpib_softc[unit];
 
 	hs->sc_flags |= HPIBF_PPOLL;
 	if (hs->sc_type == HPIBC)
-		fhpibppwatch(unit);
+		fhpibppwatch((void *)unit);
 	else
-		nhpibppwatch(unit);
+		nhpibppwatch((void *)unit);
 }
 
 hpibswait(unit, slave)
