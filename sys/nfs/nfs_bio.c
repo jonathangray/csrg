@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_bio.c	7.25 (Berkeley) 05/15/92
+ *	@(#)nfs_bio.c	7.26 (Berkeley) 05/20/92
  */
 
 #include <sys/param.h>
@@ -313,6 +313,10 @@ nfs_write (ap)
 #endif
 	if (ap->a_vp->v_type != VREG)
 		return (EIO);
+	if (np->n_flag & NWRITEERR) {
+		np->n_flag &= ~NWRITEERR;
+		return (np->n_error);
+	}
 	if (ap->a_ioflag & (IO_APPEND | IO_SYNC)) {
 		if (np->n_flag & NMODIFIED) {
 			np->n_flag &= ~NMODIFIED;
