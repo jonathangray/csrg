@@ -1,6 +1,6 @@
 /*-
- * Copyright (c) 1980, 1987, 1988 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1980, 1987, 1988, 1991 The Regents of the University
+ * of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -33,12 +33,12 @@
 
 #ifndef lint
 char copyright[] =
-"@(#) Copyright (c) 1980, 1987, 1988 The Regents of the University of California.\n\
+"@(#) Copyright (c) 1980, 1987, 1988, 1991 The Regents of the University of California.\n\
  All rights reserved.\n";
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)login.c	5.66 (Berkeley) 03/01/91";
+static char sccsid[] = "@(#)login.c	5.67 (Berkeley) 03/15/91";
 #endif /* not lint */
 
 /*
@@ -409,6 +409,9 @@ main(argc, argv)
 	if (!quietlog) {
 		struct stat st;
 
+		printf(
+"Copyright (c) 1980,1983,1986,1988,1990,1991 The Regents of the University\n%s",
+"of California.  All rights reserved.\n\n");
 		motd();
 		(void)sprintf(tbuf, "%s/%s", _PATH_MAILDIR, pwd->pw_name);
 		if (stat(tbuf, &st) == 0 && st.st_size != 0)
