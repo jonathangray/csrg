@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)signal.h	7.23 (Berkeley) 02/05/92
+ *	@(#)signal.h	7.24 (Berkeley) 02/11/92
  */
 
 #ifndef	_SYS_SIGNAL_H_
@@ -38,7 +38,9 @@
 
 #define NSIG	32		/* counting 0; could be 33 (mask is 1-32) */
 
+#ifndef _ANSI_SOURCE
 #include <machine/signal.h>	/* sigcontext; codes for SIGILL, SIGFPE */
+#endif
 
 #define	SIGHUP	1	/* hangup */
 #define	SIGINT	2	/* interrupt */
