@@ -4,7 +4,7 @@
 # Use and redistribution is subject to the Berkeley Software License
 # Agreement and your Software Agreement with AT&T (Western Electric).
 #
-#	@(#)plot.sh	4.7 (Berkeley) 04/18/91
+#	@(#)plot.sh	8.1 (Berkeley) 06/06/93
 #
 
 PATH=/bin:/usr/bin:/usr/libexec/plot
