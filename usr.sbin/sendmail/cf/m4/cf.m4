@@ -101,6 +101,7 @@ define(`confDELIVERY_MODE', `background')
 define(`confAUTO_REBUILD', `False')
 define(`confSAVE_FROM_LINES', `False')
 define(`confTEMP_FILE_MODE', `0600')
+define(`confMATCH_GECOS', `False')
 define(`confDEF_GROUP_ID', `1')
 define(`confMAX_HOP', `17')
 define(`confIGNORE_DOTS', `False')
@@ -121,4 +122,4 @@ define(`confREFUSE_LA', `12')
 define(`confSEPARATE_PROC', `False')
 
 divert(0)dnl
-VERSIONID(`@(#)cf.m4	6.2 (Berkeley) 02/12/93')
+VERSIONID(`@(#)cf.m4	6.3 (Berkeley) 02/15/93')
