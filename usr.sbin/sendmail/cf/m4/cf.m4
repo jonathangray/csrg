@@ -32,7 +32,7 @@ divert(0)dnl
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)cf.m4	2.10 (Berkeley) 10/05/91
+#	@(#)cf.m4	2.11 (Berkeley) 10/05/91
 #
 
 
@@ -55,7 +55,7 @@ define(`PUSHDIVERT', `pushdef(`__D__', divnum)divert($1)')
 define(`POPDIVERT', `divert(__D__)popdef(`__D__')')
 define(`OSTYPE', `include(../ostype/$1.m4)')
 define(`MAILER',
-`ifdef(`_MAILER_$1_', `dnl',
+`ifdef(`_MAILER_$1_', `dnl`'',
 `define(`_MAILER_$1_')PUSHDIVERT(7)include(../mailer/$1.m4)POPDIVERT`'')')
 define(`DOMAIN', `include(../domain/$1.m4)')
 define(`FEATURE', `include(../feature/$1.m4)')
