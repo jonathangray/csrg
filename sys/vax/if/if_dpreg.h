@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_dpreg.h	7.1 (Berkeley) 08/30/90
+ *	@(#)if_dpreg.h	7.2 (Berkeley) 08/30/90
  */
 
 /*
@@ -46,7 +46,7 @@ struct dpdevice {
 	short	dptdsr;		/* Transmit Data and Status Register */
 };
 
-#define dprdsr	dpun.u_rbuf
+#define dprdsr	dpun.u_rdsr
 #define dpsar	dpun.u_sar
 
 
