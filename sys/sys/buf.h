@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)buf.h	8.2 (Berkeley) 09/21/93
+ *	@(#)buf.h	8.3 (Berkeley) 09/23/93
  */
 
 #ifndef _BUF_H_
@@ -70,7 +70,12 @@ struct buf {
 	int	b_validend;		/* Offset of end of valid region. */
 };
 
-#define	b_data	b_un.b_addr	
+/* Device driver compatibility definitions. */
+#define	b_active b_bcount		/* Driver queue head: drive active. */
+#define	b_data	 b_un.b_addr		/* b_un.b_addr is not changeable. */
+#define	b_errcnt b_resid		/* Retry count while I/O in progress. */
+#define	iodone	 biodone		/* Old name for biodone. */
+#define	iowait	 biowait		/* Old name for biowait. */
 
 /*
  * These flags are kept in b_flags.
@@ -102,12 +107,6 @@ struct buf {
 #define	B_WRITE		0x00000000	/* Write buffer (pseudo flag). */
 #define	B_WRITEINPROG	0x01000000	/* Write in progress. */
 #define	B_XXX		0x02000000	/* Debugging flag. */
-
-/* Device driver compatibility definitions. */
-#define	b_active b_bcount		/* Driver queue head: drive active. */
-#define	b_errcnt b_resid		/* Retry count while I/O in progress. */
-#define	iodone	 biodone		/* Old name for biodone. */
-#define	iowait	 biowait		/* Old name for biowait. */
 
 /*
  * This structure describes a clustered I/O.  It is stored in the b_saveaddr
