@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_malloc.c	7.32 (Berkeley) 03/14/92
+ *	@(#)kern_malloc.c	7.33 (Berkeley) 05/20/92
  */
 
 #include "param.h"
@@ -78,9 +78,8 @@ long addrmask[] = { 0,
  */
 struct freelist {
 	long	spare0;
-	long	spare1;
 	short	type;
-	short	spare2;
+	long	spare1;
 	caddr_t	next;
 };
 #else /* !DIAGNOSTIC */
@@ -111,7 +110,6 @@ malloc(size, type, flags)
 		panic("malloc - bogus type");
 	if (type == M_NAMEI)
 		curproc->p_spare[0]++;
-
 	indx = BUCKETINDX(size);
 	kbp = &bucket[indx];
 	s = splimp();
