@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)proc.h	7.30 (Berkeley) 02/05/92
+ *	@(#)proc.h	7.31 (Berkeley) 02/15/92
  */
 
 #ifndef _PROC_H_
@@ -171,6 +171,16 @@ struct	pcred {
 	int	p_refcnt;		/* number of references */
 };
 
+/*
+ * Used to maintain information about processes that wish to be
+ * notified when I/O becomes possible.
+ */
+struct selinfo {
+	pid_t	si_pid;		/* process to be notified */
+	short	si_flags;	/* see below */
+};
+#define	SI_COLL	0x0001		/* collision occurred */
+
 /* stat codes */
 #define	SSLEEP	1		/* awaiting an event */
 #define	SWAIT	2		/* (abandoned state) */
@@ -249,6 +259,8 @@ int	unsleep __P((struct proc *));
 int	wakeup __P((caddr_t));
 int	setrun __P((struct proc *));
 int	setpri __P((struct proc *));
+void	selrecord __P((struct proc *selector, struct selinfo *));
+void	selwakeup __P((struct selinfo *));
 
 #endif	/* KERNEL */
 
