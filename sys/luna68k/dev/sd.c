@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sd.c	8.1 (Berkeley) 06/10/93
+ *	@(#)sd.c	8.2 (Berkeley) 12/06/93
  */
 
 /*
@@ -56,8 +56,8 @@
 #include <sys/disklabel.h>
 
 #include <luna68k/dev/device.h>
-#include <luna68k/dev/scsireg.h>
-#include <luna68k/dev/scsivar.h>
+#include <luna68k/dev/screg.h>
+#include <luna68k/dev/scvar.h>
 
 int	sdinit(), sdstrategy(), sdstart(), sdintr();
 
@@ -189,14 +189,14 @@ sdident(sc, hd)
 	/*
 	 * See if unit exists and is a disk then read block size & nblocks.
 	 */
-	while ((i = scsi_test_unit_rdy(ctlr, slave, unit)) != 0) {
+	while ((i = sc_test_unit_rdy(ctlr, slave, unit)) != 0) {
 		if (i < 0 || --tries < 0)
 			return (-1);
 		if (i == STS_CHECKCOND) {
 			u_char sensebuf[8];
 			struct scsi_xsense *sp = (struct scsi_xsense *)sensebuf;
 
-			scsi_request_sense(ctlr, slave, unit, sensebuf, 8);
+			sc_request_sense(ctlr, slave, unit, sensebuf, 8);
 			if (sp->class == 7 && sp->key == 6)
 				/* drive doing an RTZ -- give it a while */
 				DELAY(1000000);
@@ -403,7 +403,7 @@ sderror(unit, sc, hp, stat)
 	if (stat & STS_CHECKCOND) {
 		struct scsi_xsense *sp;
 
-		scsi_request_sense(hp->hp_ctlr, hp->hp_slave,
+		sc_request_sense(hp->hp_ctlr, hp->hp_slave,
 				   sc->sc_punit, sdsense[unit].sense,
 				   sizeof(sdsense[unit].sense));
 		sp = (struct scsi_xsense *)sdsense[unit].sense;
