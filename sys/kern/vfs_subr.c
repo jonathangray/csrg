@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.56 (Berkeley) 05/12/91
+ *	@(#)vfs_subr.c	7.57 (Berkeley) 05/15/91
  */
 
 /*
@@ -171,43 +171,6 @@ void vattr_null(vap)
 		vap->va_mtime.tv_sec = vap->va_mtime.tv_usec =
 		vap->va_ctime.tv_sec = vap->va_ctime.tv_usec =
 		vap->va_flags = vap->va_gen = VNOVAL;
-}
-
-/*
- * Initialize a nameidata structure
- */
-ndinit(ndp)
-	register struct nameidata *ndp;
-{
-
-	bzero((caddr_t)ndp, sizeof(struct nameidata));
-	ndp->ni_iov = &ndp->ni_nd.nd_iovec;
-	ndp->ni_iovcnt = 1;
-	ndp->ni_base = (caddr_t)&ndp->ni_dent;
-	ndp->ni_rw = UIO_WRITE;
-	ndp->ni_uioseg = UIO_SYSSPACE;
-}
-
-/*
- * Duplicate a nameidata structure
- */
-nddup(ndp, newndp)
-	register struct nameidata *ndp, *newndp;
-{
-
-	ndinit(newndp);
-	newndp->ni_cred = ndp->ni_cred;
-	crhold(newndp->ni_cred);
-}
-
-/*
- * Release a nameidata structure
- */
-ndrele(ndp)
-	register struct nameidata *ndp;
-{
-
-	crfree(ndp->ni_cred);
 }
 
 /*
