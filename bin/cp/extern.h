@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.2 (Berkeley) 04/03/91
+ *	@(#)extern.h	5.3 (Berkeley) 10/27/91
  */
 
 typedef struct {
@@ -43,6 +43,7 @@ extern char *progname;			/* program name */
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
+void	 err __P((const char *fmt, ...));
 int	 path_set __P((PATH_T *, char *));
 char	*path_append __P((PATH_T *, char *, int));
 char	*path_basename __P((PATH_T *));
