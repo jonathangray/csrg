@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vfsops.c	7.78 (Berkeley) 07/12/92
+ *	@(#)lfs_vfsops.c	7.79 (Berkeley) 07/20/92
  */
 
 #include <sys/param.h>
@@ -491,9 +491,7 @@ lfs_vget(mp, ino, vpp)
 		 * would be misleading to leave it on its hash chain.
 		 * Iput() will return it to the free list.
 		 */
-		remque(ip);
-		ip->i_forw = ip;
-		ip->i_back = ip;
+		ufs_ihashrem(ip);
 
 		/* Unlock and discard unneeded inode. */
 		ufs_iput(ip);
