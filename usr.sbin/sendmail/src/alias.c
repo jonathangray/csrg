@@ -55,15 +55,15 @@ ERROR: DBM is no longer supported -- use NDBM instead.
 #ifndef lint
 #ifdef NEWDB
 #ifdef NDBM
-static char sccsid[] = "@(#)alias.c	6.15 (Berkeley) 02/20/93 (with NEWDB and NDBM)";
+static char sccsid[] = "@(#)alias.c	6.16 (Berkeley) 02/23/93 (with NEWDB and NDBM)";
 #else
-static char sccsid[] = "@(#)alias.c	6.15 (Berkeley) 02/20/93 (with NEWDB)";
+static char sccsid[] = "@(#)alias.c	6.16 (Berkeley) 02/23/93 (with NEWDB)";
 #endif
 #else
 #ifdef NDBM
-static char sccsid[] = "@(#)alias.c	6.15 (Berkeley) 02/20/93 (with NDBM)";
+static char sccsid[] = "@(#)alias.c	6.16 (Berkeley) 02/23/93 (with NDBM)";
 #else
-static char sccsid[] = "@(#)alias.c	6.15 (Berkeley) 02/20/93 (without NEWDB or NDBM)";
+static char sccsid[] = "@(#)alias.c	6.16 (Berkeley) 02/23/93 (without NEWDB or NDBM)";
 #endif
 #endif
 #endif /* not lint */
@@ -171,7 +171,7 @@ alias(a, sendq, e)
 	if (tTd(27, 1))
 		printf("%s (%s, %s) aliased to %s\n",
 		    a->q_paddr, a->q_host, a->q_user, p);
-	message(Arpa_Info, "aliased to %s", p);
+	message("aliased to %s", p);
 	if (bitset(EF_VRFYONLY, e->e_flags))
 		return;
 #ifdef LOG
@@ -301,7 +301,7 @@ initaliases(aliasfile, init, e)
 	if (aliasfile == NULL || stat(aliasfile, &stb) < 0)
 	{
 		if (aliasfile != NULL && init)
-			syserr("Cannot open %s", aliasfile);
+			syserr("554 Cannot open %s", aliasfile);
 		NoAlias = TRUE;
 		errno = 0;
 		return;
@@ -426,7 +426,7 @@ initaliases(aliasfile, init, e)
 		{
 			init = TRUE;
 			automatic = TRUE;
-			message(Arpa_Info, "rebuilding alias database");
+			message("rebuilding alias database");
 #ifdef LOG
 			if (LogLevel > 14)
 				syslog(LOG_INFO, "rebuilding alias database");
@@ -438,7 +438,7 @@ initaliases(aliasfile, init, e)
 			if (LogLevel > 3)
 				syslog(LOG_INFO, "alias database out of date");
 #endif /* LOG */
-			message(Arpa_Info, "Warning: alias database out of date");
+			message("Warning: alias database out of date");
 		}
 	}
 
@@ -513,7 +513,7 @@ readaliases(aliasfile, init, e)
 	if ((af = fopen(aliasfile, "r+")) == NULL)
 	{
 		if (init)
-			syserr("Can't open %s", aliasfile);
+			syserr("554 Can't open %s", aliasfile);
 		else if (tTd(27, 1))
 			printf("Can't open %s\n", aliasfile);
 		errno = 0;
@@ -532,7 +532,7 @@ readaliases(aliasfile, init, e)
 # endif
 	{
 		/* yes, they are -- wait until done and then return */
-		message(Arpa_Info, "Alias file is already being rebuilt");
+		message("Alias file is already being rebuilt");
 		if (OpMode != MD_INITALIAS)
 		{
 			/* wait for other rebuild to complete */
@@ -612,7 +612,7 @@ readaliases(aliasfile, init, e)
 		  case ' ':
 		  case '\t':
 			if (!skipping)
-				syserr("Non-continuation line starts with space");
+				syserr("554 Non-continuation line starts with space");
 			skipping = TRUE;
 			continue;
 		}
@@ -711,7 +711,7 @@ readaliases(aliasfile, init, e)
 					if (*p == '\0')
 						break;
 					if (parseaddr(p, &bl, -1, ',', e) == NULL)
-						usrerr("%s... bad address", p);
+						usrerr("553 %s... bad address", p);
 					p = DelimChar;
 				}
 			}
@@ -737,7 +737,7 @@ readaliases(aliasfile, init, e)
 			/* check for line overflow */
 			if (strchr(p, '\n') == NULL)
 			{
-				usrerr("alias too long");
+				usrerr("554 alias too long");
 				break;
 			}
 		}
@@ -846,7 +846,7 @@ readaliases(aliasfile, init, e)
 	(void) fclose(af);
 	e->e_to = NULL;
 	FileName = NULL;
-	message(Arpa_Info, "%d aliases, longest %d bytes, %d bytes total",
+	message("%d aliases, longest %d bytes, %d bytes total",
 			naliases, longest, bytes);
 # ifdef LOG
 	if (LogLevel > 7)
@@ -936,7 +936,7 @@ forward(user, sendq, e)
 		return;
 	if (user->q_home == NULL)
 	{
-		syserr("forward: no home");
+		syserr("554 forward: no home");
 		user->q_home = "/nosuchdirectory";
 	}
 
