@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)util.c	8.15 (Berkeley) 10/31/93";
+static char sccsid[] = "@(#)util.c	8.16 (Berkeley) 11/08/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -522,7 +522,7 @@ safefile(fn, uid, gid, uname, mustown, mode)
 	if (tTd(54, 4))
 		printf("\t[uid %d, stat %o, mode %o] ",
 			stbuf.st_uid, stbuf.st_mode, mode);
-	if ((stbuf.st_uid == uid || uid == 0 || !mustown) &&
+	if ((stbuf.st_uid == uid || stbuf.st_uid == 0 || !mustown) &&
 	    (stbuf.st_mode & mode) == mode)
 	{
 		if (tTd(54, 4))
