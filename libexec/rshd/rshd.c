@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)rshd.c	5.32 (Berkeley) 06/18/90";
+static char sccsid[] = "@(#)rshd.c	5.33 (Berkeley) 06/18/90";
 #endif /* not lint */
 
 /* From:
@@ -90,7 +90,6 @@ main(argc, argv)
 	int argc;
 	char **argv;
 {
-	
 	extern int opterr, optind;
 	extern int _check_rhosts_file;
 	struct linger linger;
@@ -152,7 +151,7 @@ doit(fromp)
 	int s;
 	struct hostent *hp;
 	char *hostname, *errorstr = NULL, *errorhost;
-	short port;
+	u_short port;
 	int pv[2], pid, cc;
 	int nfd;
 	fd_set ready, readfrom;
@@ -257,7 +256,7 @@ doit(fromp)
 		}
 #ifdef	KERBEROS
 		if (!use_kerberos)
-		fromp->sin_port = htons((u_short)port);
+		fromp->sin_port = htons(port);
 		if (connect(s, fromp, sizeof (*fromp)) < 0) {
 			syslog(LOG_INFO, "connect second port: %m");
 			exit(1);
@@ -291,7 +290,7 @@ doit(fromp)
 				syslog(LOG_INFO,
 				    "Couldn't look up address for %s",
 				    remotehost);
-				errorstr = 
+				errorstr =
 				"Couldn't look up address for your host (%s)\n";
 				hostname = inet_ntoa(fromp->sin_addr);
 			}
@@ -432,7 +431,7 @@ doit(fromp)
 				} else
 #endif
 					if (select(nfd, &ready, (fd_set *)0,
-				          (fd_set *)0, (struct timeval *)0) < 0)
+					  (fd_set *)0, (struct timeval *)0) < 0)
 						break;
 				if (FD_ISSET(s, &ready)) {
 					int	ret;
