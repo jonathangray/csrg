@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)com.c	7.7 (Berkeley) 02/28/92
+ *	@(#)com.c	7.8 (Berkeley) 05/20/92
  */
 
 #include "com.h"
@@ -113,7 +113,7 @@ comprobe(dev)
 struct isa_device *dev;
 {
 	/* force access to id reg */
-	outb(dev->id_iobase+com_cfcr, 0);
+	outb(dev->id_iobase+com_cfcr, inb (dev->id_iobase+com_cfcr) & ~0x80);
 	outb(dev->id_iobase+com_iir, 0);
 	if ((inb(dev->id_iobase+com_iir) & 0x38) == 0)
 		return(1);
