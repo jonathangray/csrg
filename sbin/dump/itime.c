@@ -32,30 +32,32 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)itime.c	5.15 (Berkeley) 06/18/92";
+static char sccsid[] = "@(#)itime.c	5.16 (Berkeley) 01/25/93";
 #endif /* not lint */
 
-#ifdef sunos
-#include <stdio.h>
-#include <ctype.h>
-#include <sys/param.h>
-#include <sys/stat.h>
-#include <ufs/fs.h>
-#else
 #include <sys/param.h>
 #include <sys/time.h>
-#endif
+#ifdef sunos
+#include <sys/vnode.h>
+
+#include <ufs/fsdir.h>
+#include <ufs/inode.h>
+#include <ufs/fs.h>
+#else
 #include <ufs/ufs/dinode.h>
-#include <fcntl.h>
+#endif
+
 #include <protocols/dumprestore.h>
+
 #include <errno.h>
+#include <fcntl.h>
 #include <stdio.h>
 #ifdef __STDC__
-#include <time.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #endif
+
 #include "dump.h"
 
 struct	dumpdates **ddatev = 0;
@@ -63,11 +65,14 @@ int	nddates = 0;
 int	ddates_in = 0;
 struct	dumptime *dthead = 0;
 
-void	readdumptimes();
-int	getrecord();
-int	makedumpdate();
+static	void dumprecout __P((FILE *, struct dumpdates *));
+static	int getrecord __P((FILE *, struct dumpdates *));
+static	int makedumpdate __P((struct dumpdates *, char *));
+static	void readdumptimes __P((FILE *));
 
-static void dumprecout();
+#ifdef COMPAT
+extern	char *calloc();
+#endif
 
 void
 initdumptimes()
@@ -101,7 +106,7 @@ initdumptimes()
 	(void) fclose(df);
 }
 
-void
+static void
 readdumptimes(df)
 	FILE *df;
 {
@@ -232,7 +237,8 @@ dumprecout(file, what)
 }
 
 int	recno;
-int
+
+static int
 getrecord(df, ddatep)
 	FILE *df;
 	struct dumpdates *ddatep;
@@ -254,7 +260,7 @@ getrecord(df, ddatep)
 	return(0);
 }
 
-int
+static int
 makedumpdate(ddp, tbuf)
 	struct dumpdates *ddp;
 	char *tbuf;
