@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)glob.c	8.2 (Berkeley) 10/13/93";
+static char sccsid[] = "@(#)glob.c	8.3 (Berkeley) 10/13/93";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -467,7 +467,7 @@ glob0(pattern, pglob)
 	 */
 	if (pglob->gl_pathc == oldpathc && 
 	    ((pglob->gl_flags & GLOB_NOCHECK) || 
-	      ((pglob->gl_flags & (GLOB_NOMAGIC|GLOB_BRACE|GLOB_TILDE)) || 
+	      ((pglob->gl_flags & GLOB_NOMAGIC) &&
 	       !(pglob->gl_flags & GLOB_MAGCHAR))))
 		return(globextend(pattern, pglob));
 	else if (!(pglob->gl_flags & GLOB_NOSORT)) 
