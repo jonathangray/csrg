@@ -34,7 +34,7 @@ divert(-1)
 #
 divert(0)
 
-VERSIONID(`@(#)proto.m4	6.40 (Berkeley) 05/24/93')
+VERSIONID(`@(#)proto.m4	6.41 (Berkeley) 05/28/93')
 
 MAILER(local)dnl
 
@@ -503,7 +503,6 @@ R$* $=O $* < @ $j . >	$@ $>7 $1 $2 $3			...@here -> ...
 ifdef(`MAILER_TABLE',
 `
 # try mailer table lookup
-R$* < @ $+ > $*		$: $1 < @ $(mailertable $2 $) > $3
 R$* < @ $-:$+ > $*	$# $2 $@ $3 $: $1 @ $3 $4	found a match',
 `dnl')
 
@@ -606,6 +605,20 @@ R$+ < @ $j >		$@ $1				we are relay/hub: local
 R$+ < @ $-:$+ >		$# $2 $@ $3 $: $1		send to relay or hub
 ifdef(`_MAILER_smtp_',
 `R$+ < @ $+ >		$#relay $@ $2 $: $1		send to relay or hub')')
+ifdef(`MAILER_TABLE',
+`
+
+###########################################################################
+###  Ruleset 90 -- try domain part of mailertable entry 		###
+###		   (new sendmail only)					###
+###########################################################################
+
+S90
+R<$- . $+ > $*		$: < $(mailertable .$2 $: $) > $3	lookup
+R<$- : $+ > $*		$# $1 $@ $2 $: $3		check -- resolved?
+R<$- . $+ > $*		$@ $>99 <$2> $3			no -- strip & try again
+R<$*> $*		$@ $2				no match',
+`dnl')
 #
 ######################################################################
 ######################################################################
