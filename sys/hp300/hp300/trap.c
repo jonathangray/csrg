@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: trap.c 1.32 91/04/06$
  *
- *	@(#)trap.c	7.15 (Berkeley) 08/02/91
+ *	@(#)trap.c	7.16 (Berkeley) 08/28/91
  */
 
 #include "param.h"
@@ -62,7 +62,6 @@
 
 #include "vm/vm.h"
 #include "vm/pmap.h"
-#include "vmmeter.h"
 
 #ifdef HPUXCOMPAT
 #include "../hpux/hpux.h"
