@@ -2,8 +2,8 @@ This manual page documents a tool used for debugging failures in
 the Xerox NS Sequenced packet protocol layer.  It is adapted from
 the Internet equivalent trpt(8c).
 /*
- * Copyright (c) 1985 Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1985, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -35,13 +35,13 @@ the Internet equivalent trpt(8c).
  */
 
 #ifndef lint
-char copyright[] =
-"@(#) Copyright (c) 1985 Regents of the University of California.\n\
- All rights reserved.\n";
+static char copyright[] =
+"@(#) Copyright (c) 1985, 1993\n\
+	The Regents of the University of California.  All rights reserved.\n";
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)trsp.c	6.9 (Berkeley) 01/28/92";
+static char sccsid[] = "@(#)trsp.c	8.1 (Berkeley) 06/06/93";
 #endif /* not lint */
 
 #include <sys/cdefs.h>
