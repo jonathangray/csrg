@@ -4,7 +4,7 @@
 # Use and redistribution is subject to the Berkeley Software License
 # Agreement and your Software Agreement with AT&T (Western Electric).
 #
-#	@(#)explain.sh	4.7 (Berkeley) 04/17/91
+#	@(#)explain.sh	8.1 (Berkeley) 06/06/93
 #
 
 D=/usr/share/dict/explain.d
