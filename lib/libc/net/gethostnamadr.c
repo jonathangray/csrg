@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)gethostnamadr.c	6.44 (Berkeley) 02/24/91";
+static char sccsid[] = "@(#)gethostnamadr.c	6.45 (Berkeley) 02/24/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -43,6 +43,7 @@ static char sccsid[] = "@(#)gethostnamadr.c	6.44 (Berkeley) 02/24/91";
 #include <netdb.h>
 #include <resolv.h>
 #include <stdio.h>
+#include <ctype.h>
 #include <errno.h>
 #include <string.h>
 
