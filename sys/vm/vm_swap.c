@@ -108,6 +108,7 @@ void
 swstrategy(bp)
 	register struct buf *bp;
 {
+	USES_VOP_STRATEGY;
 	int sz, off, seg, index;
 	register struct swdevt *sp;
 
@@ -215,6 +216,7 @@ swfree(p, index)
 	struct proc *p;
 	int index;
 {
+	USES_VOP_OPEN;
 	register struct swdevt *sp;
 	register struct swdevt *sp;
 	register swblk_t vsbase;
