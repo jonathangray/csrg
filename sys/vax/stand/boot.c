@@ -1,4 +1,4 @@
-/*	boot.c	4.1	11/09/80 */
+/*	boot.c	4.2	01/29/81 */
 
 #include "../h/param.h"
 #include "../h/ino.h"
