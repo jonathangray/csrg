@@ -38,9 +38,9 @@
 
 #ifndef lint
 #ifdef DAEMON
-static char sccsid[] = "@(#)daemon.c	8.103 (Berkeley) 06/15/95 (with daemon mode)";
+static char sccsid[] = "@(#)daemon.c	8.104 (Berkeley) 06/20/95 (with daemon mode)";
 #else
-static char sccsid[] = "@(#)daemon.c	8.103 (Berkeley) 06/15/95 (without daemon mode)";
+static char sccsid[] = "@(#)daemon.c	8.104 (Berkeley) 06/20/95 (without daemon mode)";
 #endif
 #endif /* not lint */
 
@@ -420,7 +420,7 @@ gothostent:
 		if (s < 0)
 		{
 			sav_errno = errno;
-			syserr("makeconnection: no socket");
+			syserr("makeconnection: cannot create socket");
 			goto failure;
 		}
 
