@@ -1,0 +1,115 @@
+.\" Copyright (c) 1990 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" This code is derived from software contributed to Berkeley by
+.\" John B. Roll Jr.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"	@(#)xargs.1	5.1 (Berkeley) 04/17/90
+.\"
+.TH XARGS 1 ""
+.UC 7
+.SH NAME
+xargs \- construct argument list(s) and execute utility.
+.SH SYNOPSIS
+.ft B
+xargs [\-t] [\-n number] [\-s size] [utility [argument ...]]
+.ft R
+.SH DESCRIPTION
+The
+.I xargs utility
+reads space, tab, and newline delimited arguments from the standard
+input and executes the specified
+.I utility
+with them as arguments.
+Any arguments specified on the command line are given to the
+.I utility
+upon each invocation, followed by some number of the arguments read
+from standard input.
+The
+.I utility
+is repeatedly executed until standard input is exhausted.
+.PP
+Spaces and tabs may be embedded in arguments using single (`` ' '') or
+double (``"'') quotes or backslashes (``\e'').
+Single or double quotes escape all characters to the next matching quote
+character, backslashes escape the next character.
+Newlines may not be escaped.
+.PP
+The following options are available:
+.TP
+-n number
+Set the maximum number of arguments used from standard input for
+each invocation of the utility.
+An invocation of
+.I utility
+will use less than
+.I number
+standard input arguments if the number of bytes accumulated (see the
+.I \-s
+option) exceeds the specified size or the last invocation of
+.I utility
+has fewer than
+.I number
+arguments remaining.
+The default value for
+.I number
+is 255.
+.TP
+-s size
+Set the maximum number of bytes to which the last component of the
+.I utility
+name, the command-line arguments, and the arguments read in from
+standard input may sum.
+The default value for
+.I size
+is 2048.
+.TP
+-t
+Echo the command to be executed to standard error immediately before it
+is executed.
+.PP
+If no
+.I utility
+is specified,
+.IR echo (1)
+is used.
+.PP
+.I Utility
+should never read from the standard input.
+.PP
+.I Xargs
+exits with 0 if no error occurred, and 1 otherwise.
+.SH "SEE ALSO"
+echo(1)
+.SH STANDARDS
+The
+.I xargs
+utility is expected to be POSIX 1003.2 compliant.
