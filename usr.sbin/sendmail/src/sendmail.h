@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.99 (Berkeley) 03/10/95
+ *	@(#)sendmail.h	8.100 (Berkeley) 03/10/95
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.99		03/10/95";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.100		03/10/95";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -845,6 +845,9 @@ struct prival
 #define SFF_SETUIDOK		0x0020	/* setuid files are ok */
 #define SFF_CREAT		0x0040	/* ok to create file if necessary */
 #define SFF_REGONLY		0x0080	/* regular files only */
+
+/* flags that are actually specific to safefopen */
+#define SFF_OPENASROOT		0x1000	/* open as root instead of real user */
 
 
 /*
