@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cons.c	7.4 (Berkeley) 04/20/93
+ *	@(#)cons.c	8.1 (Berkeley) 06/11/93
  *
  * from: $Header: cons.c,v 1.11 92/11/26 01:09:28 torek Exp $
  */
