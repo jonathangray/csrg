@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_log.c	7.10 (Berkeley) 12/05/90
+ *	@(#)subr_log.c	7.11 (Berkeley) 03/17/91
  */
 
 /*
@@ -38,13 +38,11 @@
  */
 
 #include "param.h"
-#include "user.h"
 #include "proc.h"
 #include "vnode.h"
 #include "ioctl.h"
 #include "msgbuf.h"
 #include "file.h"
-#include "errno.h"
 
 #define LOG_RDPRI	(PZERO + 1)
 
@@ -60,15 +58,17 @@ struct logsoftc {
 int	log_open;			/* also used in log() */
 
 /*ARGSUSED*/
-logopen(dev)
+logopen(dev, flags, mode, p)
 	dev_t dev;
+	int flags, mode;
+	struct proc *p;
 {
 	register struct msgbuf *mbp = msgbufp;
 
 	if (log_open)
 		return (EBUSY);
 	log_open = 1;
-	logsoftc.sc_pgid = u.u_procp->p_pid;	/* signal process only */
+	logsoftc.sc_pgid = p->p_pid;		/* signal process only */
 	/*
 	 * Potential race here with putchar() but since putchar should be
 	 * called by autoconf, msg_magic should be initialized by the time
@@ -140,9 +140,10 @@ logread(dev, uio, flag)
 }
 
 /*ARGSUSED*/
-logselect(dev, rw)
+logselect(dev, rw, p)
 	dev_t dev;
 	int rw;
+	struct proc *p;
 {
 	int s = splhigh();
 
@@ -153,7 +154,7 @@ logselect(dev, rw)
 			splx(s);
 			return (1);
 		}
-		logsoftc.sc_selp = u.u_procp;
+		logsoftc.sc_selp = p;
 		break;
 	}
 	splx(s);
