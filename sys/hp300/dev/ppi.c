@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ppi.c	7.3 (Berkeley) 12/16/90
+ *	@(#)ppi.c	7.4 (Berkeley) 06/05/92
  */
 
 /*
@@ -45,7 +45,7 @@
 #include "sys/uio.h"
 #include "sys/malloc.h"
 
-#include "device.h"
+#include "hp/dev/device.h"
 #include "ppiioctl.h"
 
 int	ppiattach(), ppistart(), ppitimo();
