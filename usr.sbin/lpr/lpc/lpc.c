@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)lpc.c	5.10 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)lpc.c	5.11 (Berkeley) 03/02/91";
 #endif /* not lint */
 
 /*
@@ -58,7 +58,7 @@ char	cmdline[200];
 int	margc;
 char	*margv[20];
 int	top;
-int	intr();
+void	intr();
 struct	cmd *getcmd();
 
 jmp_buf	toplevel;
@@ -99,6 +99,7 @@ main(argc, argv)
 	}
 }
 
+void
 intr()
 {
 	if (!fromatty)
