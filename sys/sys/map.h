@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)map.h	7.4 (Berkeley) 05/06/91
+ *	@(#)map.h	7.5 (Berkeley) 05/07/91
  */
 
 /*
@@ -68,6 +68,6 @@ struct mapent {
 
 #ifdef KERNEL
 #define	ARGMAPSIZE	16
-struct	map *kernelmap, *kmemmap, *mbmap, *swapmap;
+struct	map *kmemmap, *mbmap, *swapmap;
 int	nswapmap;
 #endif
