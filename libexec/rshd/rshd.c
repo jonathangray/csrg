@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)rshd.c	5.35 (Berkeley) 09/27/90";
+static char sccsid[] = "@(#)rshd.c	5.36 (Berkeley) 10/21/90";
 #endif /* not lint */
 
 /* From:
@@ -367,7 +367,8 @@ doit(fromp)
 			error("Can't make pipe.\n");
 			exit(1);
 		}
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef CRYPT
+#ifdef KERBEROS
 		if (encrypt) {
 			if (pipe(pv1) < 0) {
 				error("Can't make 2nd pipe.\n");
@@ -379,13 +380,15 @@ doit(fromp)
 			}
 		}
 #endif
+#endif
 		pid = fork();
 		if (pid == -1)  {
 			error("Can't fork; try again.\n");
 			exit(1);
 		}
 		if (pid) {
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef CRYPT
+#ifdef KERBEROS
 			if (encrypt) {
 				static char msg[] = SECURE_MESSAGE;
 				(void) close(pv1[1]);
@@ -393,6 +396,7 @@ doit(fromp)
 				des_write(s, msg, sizeof(msg));
 
 			} else
+#endif
 #endif
 			{
 				(void) close(0); (void) close(1);
@@ -406,7 +410,8 @@ doit(fromp)
 				nfd = pv[0];
 			else
 				nfd = s;
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef CRYPT
+#ifdef KERBEROS
 			if (encrypt) {
 				FD_ZERO(&writeto);
 				FD_SET(pv2[0], &writeto);
@@ -416,13 +421,15 @@ doit(fromp)
 				nfd = MAX(nfd, pv1[0]);
 			} else
 #endif
+#endif
 				ioctl(pv[0], FIONBIO, (char *)&one);
 
 			/* should set s nbio! */
 			nfd++;
 			do {
 				ready = readfrom;
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef CRYPT
+#ifdef KERBEROS
 				if (encrypt) {
 					wready = writeto;
 					if (select(nfd, &ready,
@@ -431,15 +438,18 @@ doit(fromp)
 						break;
 				} else
 #endif
+#endif
 					if (select(nfd, &ready, (fd_set *)0,
 					  (fd_set *)0, (struct timeval *)0) < 0)
 						break;
 				if (FD_ISSET(s, &ready)) {
 					int	ret;
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef CRYPT
+#ifdef KERBEROS
 					if (encrypt)
 						ret = des_read(s, &sig, 1);
 					else
+#endif
 #endif
 						ret = read(s, &sig, 1);
 					if (ret <= 0)
@@ -454,17 +464,20 @@ doit(fromp)
 						shutdown(s, 1+1);
 						FD_CLR(pv[0], &readfrom);
 					} else {
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef CRYPT
+#ifdef KERBEROS
 						if (encrypt)
 							(void)
 							  des_write(s, buf, cc);
 						else
 #endif
+#endif
 							(void)
 							  write(s, buf, cc);
 					}
 				}
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef CRYPT
+#ifdef KERBEROS
 				if (encrypt && FD_ISSET(pv1[0], &ready)) {
 					errno = 0;
 					cc = read(pv1[0], buf, sizeof(buf));
@@ -485,17 +498,21 @@ doit(fromp)
 						(void) write(pv2[0], buf, cc);
 				}
 #endif
+#endif
 
 			} while (FD_ISSET(s, &readfrom) ||
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef CRYPT
+#ifdef KERBEROS
 			    (encrypt && FD_ISSET(pv1[0], &readfrom)) ||
+#endif
 #endif
 			    FD_ISSET(pv[0], &readfrom));
 			exit(0);
 		}
 		setpgrp(0, getpid());
 		(void) close(s); (void) close(pv[0]);
-#if defined(KERBEROS) && defined(CRYPT)
+#ifdef CRYPT
+#ifdef KERBEROS
 		if (encrypt) {
 			close(pv1[0]); close(pv2[0]);
 			dup2(pv1[1], 1);
@@ -503,6 +520,7 @@ doit(fromp)
 			close(pv1[1]);
 			close(pv2[1]);
 		}
+#endif
 #endif
 		dup2(pv[1], 2);
 		close(pv[1]);
