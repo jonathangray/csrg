@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)extract.c	5.2 (Berkeley) 03/10/91";
+static char sccsid[] = "@(#)extract.c	5.3 (Berkeley) 03/11/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -67,7 +67,7 @@ extract(argv)
 	struct stat sb;
 	CF cf;
 	int eval;
-	char *file, *rname();
+	char *file;
 
 	eval = 0;
 	tv[0].tv_usec = tv[1].tv_usec = 0;
@@ -100,7 +100,7 @@ extract(argv)
 		}
 
 		if (options & AR_V)
-			(void)printf("x - %s\n", rname(file));
+			(void)printf("x - %s\n", file);
 
 		cf.wfd = tfd;
 		cf.wname = file;
