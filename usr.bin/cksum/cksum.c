@@ -3,7 +3,7 @@
  * All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
- * James W. Williams of the University of Maryland.
+ * James W. Williams of NASA Goddard Space Flight Center.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)cksum.c	5.3 (Berkeley) 04/04/91";
+static char sccsid[] = "@(#)cksum.c	5.4 (Berkeley) 09/09/91";
 #endif /* not lint */
 
 #include <sys/cdefs.h>
