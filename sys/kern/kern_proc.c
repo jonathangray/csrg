@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_proc.c	8.6 (Berkeley) 01/09/95
+ *	@(#)kern_proc.c	8.7 (Berkeley) 02/14/95
  */
 
 #include <sys/param.h>
@@ -170,13 +170,13 @@ pgfind(pgid)
 /*
  * Move p to a new or existing process group (and session)
  */
+int
 enterpgrp(p, pgid, mksess)
 	register struct proc *p;
 	pid_t pgid;
 	int mksess;
 {
 	register struct pgrp *pgrp = pgfind(pgid);
-	int n;
 
 #ifdef DIAGNOSTIC
 	if (pgrp != NULL && mksess)	/* firewalls */
@@ -248,6 +248,7 @@ enterpgrp(p, pgid, mksess)
 /*
  * remove process from process group
  */
+int
 leavepgrp(p)
 	register struct proc *p;
 {
