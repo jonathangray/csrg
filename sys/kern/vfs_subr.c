@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.59 (Berkeley) 06/03/91
+ *	@(#)vfs_subr.c	7.60 (Berkeley) 06/21/91
  */
 
 /*
@@ -696,13 +696,19 @@ void vrele(vp)
 {
 	struct proc *p = curproc;		/* XXX */
 
+#ifdef DIAGNOSTIC
 	if (vp == NULL)
 		panic("vrele: null vp");
+#endif
 	vp->v_usecount--;
-	if (vp->v_usecount < 0)
-		vprint("vrele: bad ref count", vp);
 	if (vp->v_usecount > 0)
 		return;
+#ifdef DIAGNOSTIC
+	if (vp->v_usecount != 0 || vp->v_writecount != 0) {
+		vprint("vrele: bad ref count", vp);
+		panic("vrele: ref cnt");
+	}
+#endif
 	if (vfreeh == NULLVP) {
 		/*
 		 * insert into empty list
@@ -1067,8 +1073,9 @@ vprint(label, vp)
 
 	if (label != NULL)
 		printf("%s: ", label);
-	printf("type %s, usecount %d, refcount %d,", typename[vp->v_type],
-		vp->v_usecount, vp->v_holdcnt);
+	printf("type %s, usecount %d, writecount %d, refcount %d,",
+		typename[vp->v_type], vp->v_usecount, vp->v_writecount,
+		vp->v_holdcnt);
 	buf[0] = '\0';
 	if (vp->v_flag & VROOT)
 		strcat(buf, "|VROOT");
