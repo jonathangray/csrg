@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_time.c	7.13 (Berkeley) 06/28/90
+ *	@(#)kern_time.c	7.14 (Berkeley) 08/24/90
  */
 
 #include "param.h"
@@ -73,6 +73,7 @@ gettimeofday(p, uap, retval)
 	return (error);
 }
 
+/* ARGSUSED */
 settimeofday(p, uap, retval)
 	struct proc *p;
 	struct args {
