@@ -37,7 +37,7 @@
 # include <pwd.h>
 
 #ifndef lint
-static char sccsid[] = "@(#)alias.c	6.47 (Berkeley) 05/21/93";
+static char sccsid[] = "@(#)alias.c	6.48 (Berkeley) 05/22/93";
 #endif /* not lint */
 
 
@@ -240,7 +240,7 @@ setalias(spec)
 		else
 		{
 			class = "implicit";
-			map->map_mflags = MF_OPTIONAL;
+			map->map_mflags = MF_OPTIONAL|MF_INCLNULL;
 		}
 
 		/* find end of spec */
