@@ -33,7 +33,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)fread.3	6.7 (Berkeley) 08/16/91
+.\"     @(#)fread.3	6.8 (Berkeley) 02/04/92
 .\"
 .Dd 
 .Dt FREAD 3
@@ -89,6 +89,11 @@ must use
 and
 .Xr ferror 3
 to determine which occurred.
+The function
+.Fn fwrite
+returns a value less than
+.Fa nmemb
+only if a write error has occurred.
 .Sh SEE ALSO
 .Xr read 2 ,
 .Xr write 2
