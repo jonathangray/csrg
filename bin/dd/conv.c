@@ -3,7 +3,8 @@
  * All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
- * Keith Muller of the University of California, San Diego.
+ * Keith Muller of the University of California, San Diego and Lance
+ * Visser of Convex Computer Corporation.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -35,7 +36,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conv.c	5.1 (Berkeley) 07/26/91";
+static char sccsid[] = "@(#)conv.c	5.2 (Berkeley) 07/27/91";
 #endif /* not lint */
 
 #include <sys/param.h>
