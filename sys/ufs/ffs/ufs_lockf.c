@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lockf.c	7.3 (Berkeley) 03/19/91
+ *	@(#)ufs_lockf.c	7.4 (Berkeley) 05/15/91
  */
 
 #include "param.h"
@@ -381,6 +381,8 @@ lf_getlock(lock, fl)
 			fl->l_pid = ((struct proc *)(block->lf_id))->p_pid;
 		else
 			fl->l_pid = -1;
+	} else {
+		fl->l_type = F_UNLCK;
 	}
 	return (0);
 }
