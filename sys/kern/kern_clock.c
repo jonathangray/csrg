@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_clock.c	7.22 (Berkeley) 07/08/92
+ *	@(#)kern_clock.c	7.23 (Berkeley) 07/10/92
  */
 
 #include "param.h"
@@ -416,7 +416,7 @@ statclock(frame)
 		if (g->state == GMON_PROF_ON) {
 			i = CLKF_PC(frame) - g->lowpc;
 			if (i < g->textsize)
-				kcount[s / (HISTFRACTION * sizeof(*kcount))]++;
+				kcount[i / (HISTFRACTION * sizeof(*kcount))]++;
 		}
 #endif
 		if (--pscnt > 0)
