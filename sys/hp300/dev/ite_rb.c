@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * from: Utah $Hdr: ite_rb.c 1.18 92/12/20$
+ * from: Utah $Hdr: ite_rb.c 1.19 93/06/25$
  *
- *	@(#)ite_rb.c	8.1 (Berkeley) 06/10/93
+ *	@(#)ite_rb.c	7.9 (Berkeley) 07/08/93
  */
 
 #include "ite.h"
@@ -78,6 +78,17 @@ rbox_init(ip)
 		ip->fbheight = gp->g_display.gd_fbheight;
 		ip->dwidth = gp->g_display.gd_dwidth;
 		ip->dheight = gp->g_display.gd_dheight;
+		/*
+		 * XXX some displays (e.g. the davinci) appear
+		 * to return a display height greater than the
+		 * returned FB height.  Guess we should go back
+		 * to getting the display dimensions from the
+		 * fontrom...
+		 */
+		if (ip->dwidth > ip->fbwidth)
+			ip->dwidth = ip->fbwidth;
+		if (ip->dheight > ip->fbheight)
+			ip->dheight = ip->fbheight;
 	}
 
 	rb_waitbusy(ip->regbase);
