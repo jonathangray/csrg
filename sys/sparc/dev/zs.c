@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)zs.c	7.5 (Berkeley) 07/15/93
+ *	@(#)zs.c	8.1 (Berkeley) 07/15/93
  *
  * from: $Header: zs.c,v 1.29 93/07/15 02:57:07 torek Exp $
  */
