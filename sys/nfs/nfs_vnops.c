@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	7.46 (Berkeley) 07/26/90
+ *	@(#)nfs_vnops.c	7.47 (Berkeley) 08/17/90
  */
 
 /*
@@ -581,6 +581,7 @@ nfsmout:
 		ndp->ni_vp = newvp;
 		if (lockparent)
 			nfs_lock(vp);
+		m_freem(mrep);
 		return (0);
 	}
 
