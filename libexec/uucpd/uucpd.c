@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)uucpd.c	5.9 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)uucpd.c	5.10 (Berkeley) 02/26/91";
 #endif /* not lint */
 
 /*
@@ -50,16 +50,21 @@ static char sccsid[] = "@(#)uucpd.c	5.9 (Berkeley) 06/01/90";
  */
 
 #include <sys/types.h>
-#include <sys/socket.h>
 #include <sys/wait.h>
 #include <sys/ioctl.h>
-#include <sys/file.h>
+#include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <netdb.h>
 #include <signal.h>
-#include <errno.h>
+#include <fcntl.h>
+#include <time.h>
 #include <pwd.h>
+#include <unistd.h>
+#include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "pathnames.h"
 
 struct	sockaddr_in hisctladdr;
@@ -235,9 +240,9 @@ dologout()
 	int pid, wtmp;
 
 #ifdef BSDINETD
-	while ((pid=wait(&status)) > 0) {
+	while ((pid=wait((int *)&status)) > 0) {
 #else  !BSDINETD
-	while ((pid=wait3(&status,WNOHANG,0)) > 0) {
+	while ((pid=wait3((int *)&status,WNOHANG,0)) > 0) {
 #endif !BSDINETD
 		wtmp = open(_PATH_WTMP, O_WRONLY|O_APPEND);
 		if (wtmp >= 0) {
@@ -261,7 +266,7 @@ struct sockaddr_in *sin;
 	char line[32];
 	char remotehost[32];
 	int wtmp, f;
-	struct hostent *hp = gethostbyaddr(&sin->sin_addr,
+	struct hostent *hp = gethostbyaddr((char *)&sin->sin_addr,
 		sizeof (struct in_addr), AF_INET);
 
 	if (hp) {
