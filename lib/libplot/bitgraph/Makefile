@@ -2,7 +2,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	5.1 (Berkeley) 04/30/85
+#	@(#)Makefile	5.2 (Berkeley) 06/19/87
 #
 #
 CFLAGS=	-O
