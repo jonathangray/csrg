@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_exit.c	7.36 (Berkeley) 09/06/91
+ *	@(#)kern_exit.c	7.37 (Berkeley) 09/06/91
  */
 
 #include "param.h"
@@ -158,6 +158,12 @@ exit(p, rv)
 	fixjobc(p, p->p_pgrp, 0);
 	p->p_rlimit[RLIMIT_FSIZE].rlim_cur = RLIM_INFINITY;
 	(void) acct(p);
+	if (--p->p_limit->p_refcnt == 0)
+		FREE(p->p_limit, M_SUBPROC);
+	if (--p->p_cred->p_refcnt == 0) {
+		crfree(p->p_cred->pc_ucred);
+		FREE(p->p_cred, M_SUBPROC);
+	}
 #ifdef KTRACE
 	/* 
 	 * release trace file
@@ -262,6 +268,7 @@ owait(p, uap, retval)
 	int *retval;
 {
 
+#ifdef PSL_ALLCC
 	if ((p->p_regs[PS] & PSL_ALLCC) != PSL_ALLCC) {
 		uap->options = 0;
 		uap->rusage = 0;
@@ -269,6 +276,10 @@ owait(p, uap, retval)
 		uap->options = p->p_regs[R0];
 		uap->rusage = (struct rusage *)p->p_regs[R1];
 	}
+#else
+	uap->options = 0;
+	uap->rusage = 0;
+#endif
 	uap->pid = WAIT_ANY;
 	uap->status = 0;
 	uap->compat = 1;
@@ -390,7 +401,7 @@ loop:
 			if (uap->status) {
 				status = W_STOPCODE(p->p_xstat);
 				error = copyout((caddr_t)&status,
-				    (caddr_t)uap->status, sizeof(status));
+					(caddr_t)uap->status, sizeof(status));
 			} else
 				error = 0;
 			return (error);
