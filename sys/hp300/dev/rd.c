@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: rd.c 1.38 90/10/12$
  *
- *	@(#)rd.c	7.10 (Berkeley) 08/28/91
+ *	@(#)rd.c	7.11 (Berkeley) 09/12/91
  */
 
 /*
@@ -59,8 +59,8 @@
 
 #include "vm/vm_param.h"
 #include "vm/lock.h"
-#include "vm/pmap.h"
 #include "vm/vm_prot.h"
+#include "vm/pmap.h"
 
 int	rdinit(), rdstart(), rdgo(), rdintr();
 struct	driver rddriver = {
