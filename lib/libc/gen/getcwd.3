@@ -1,29 +1,128 @@
-.\" Copyright (c) 1983 Regents of the University of California.
-.\" All rights reserved.  The Berkeley software License Agreement
-.\" specifies the terms and conditions for redistribution.
+.\" Copyright (c) 1991 The Regents of the University of California.
+.\" All rights reserved.
 .\"
-.\"	@(#)getcwd.3	6.2 (Berkeley) 05/12/86
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"	@(#)getcwd.3	6.3 (Berkeley) 02/20/91
 .\"
 .TH GETWD 3 ""
 .UC 5
 .SH NAME
-getwd \- get current working directory pathname
+getwd \- get working directory pathname
 .SH SYNOPSIS
 .nf
-.B char *getwd(pathname)
-.B char *pathname;
+.ft B
+char *getcwd(char *buf, size_t size);
+char *getwd(char *buf);
+.ft R
 .fi
 .SH DESCRIPTION
+The
+.I getcwd
+function copies the absolute pathname of the current working directory
+into the memory referenced by
+.I buf
+and returns a pointer to
+.IR buf .
+The
+.I size
+argument is the size, in bytes, of the array referenced by
+.IR buf .
+.PP
+If
+.I buf
+is NULL, space is allocated as necessary to store the pathname.
+This space may later be
+.IR free 'd.
+.PP
+The function
+.I getwd
+is a compatibility routine which calls
+.I getcwd
+with its
+.I buf
+argument and a size of MAXPATHLEN (as defined in the include
+file <sys/param.h>).
+Obviously,
+.I buf
+should be at least MAXPATHLEN bytes in length.
+.PP
+These routines have traditionally been used by programs to save the
+name of a working directory for the purpose of returning to it.
+A much faster and less error-prone method of accomplishing this is to
+open the current directory (``.'') and use the
+.IR fchdir (2)
+function to return.
+.SH RETURN VALUES
+Upon successful completion, a pointer to the pathname is returned.
+Otherwise a NULL pointer is returned and
+.I errno
+is set to indicate the error.
+In addition,
+.I getwd
+copies the error message associated with
+.I errno
+into the memory referenced by
+.IR buf .
+.SH ERRORS
+.I Getcwd
+will fail if:
+.TP 15
+[EACCESS]
+Read or search permission was denied for a component of the pathname.
+.TP 15
+[EINVAL]
+The
+.I size
+argument is zero.
+.TP 15
+[ENOENT]
+A component of the pathname no longer exists.
+.TP 15
+[ENOMEM]
+Insufficient memory is available.
+.TP 15
+[ERANGE]
+The
+.I size 
+argument is greater than zero but smaller than the length of the pathname
+plus 1.
+.SH BUGS
 .I Getwd
-copies the absolute pathname of the current working directory to
-.I pathname
-and returns a pointer to the result.
-.SH LIMITATIONS
-Maximum pathname length is MAXPATHLEN characters (1024),
-as defined in
-.I <sys/param.h>.
-.SH DIAGNOSTICS
-.I Getwd
-returns zero and places a message in
-.I pathname
-if an error occurs.
+does not do sufficient error checking and is not able to return very
+long, but valid, paths.
+It is provided for compatibility.
+.SH SEE ALSO
+chdir(2), fchdir(2), malloc(3), strerror(3)
+.SH STANDARDS
+.I Getcwd
+conforms to IEEE Std 1003.1-1988 (``POSIX'').
+The ability to specify a NULL pointer and have
+.I getcwd
+allocate memory as necessary is an extension.
