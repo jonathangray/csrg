@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)mci.c	8.9 (Berkeley) 12/01/93";
+static char sccsid[] = "@(#)mci.c	8.10 (Berkeley) 01/24/94";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -300,6 +300,12 @@ mci_get(host, m)
 			mci->mci_exitstat = EX_OK;
 			mci->mci_state = MCIS_CLOSED;
 		}
+	}
+	if (mci->mci_state == MCIS_CLOSED)
+	{
+		/* copy out any mailer flags needed in connection state */
+		if (bitnset(M_7BITS, m->m_flags))
+			mci->mci_flags |= MCIF_7BIT;
 	}
 
 	return mci;
