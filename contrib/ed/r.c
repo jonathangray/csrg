@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)r.c	5.3 (Berkeley) 02/28/93";
+static char sccsid[] = "@(#)r.c	5.4 (Berkeley) 02/28/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -152,7 +152,7 @@ r(inputt, errnum)
 	if (l_filename_read != filename_current)
 		free(l_filename_read);
 
-point:	fclose(l_fp);
+	fclose(l_fp);
 	change_flag = 1;
 	if (sigint_flag)
 		SIGINT_ACTION;
