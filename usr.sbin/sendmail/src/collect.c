@@ -1,7 +1,7 @@
 # include <errno.h>
 # include "sendmail.h"
 
-SCCSID(@(#)collect.c	3.38		05/22/82);
+SCCSID(@(#)collect.c	3.38.1.1		05/29/82);
 
 /*
 **  COLLECT -- read & parse message header & make temp file.
@@ -51,7 +51,7 @@ maketemp(from)
 	*/
 
 	strcpy(tempfname, QueueDir);
-	strcat(tempfname, "/dfaXXXXXX");
+	strcat(tempfname, "/dfXXXXXX");
 	(void) mktemp(tempfname);
 	if ((tf = dfopen(tempfname, "w")) == NULL)
 	{
@@ -72,7 +72,7 @@ maketemp(from)
 
 		(void) sprintf(xbuf, "Mail-From: %s$s received by $i at $b",
 			macvalue('r') == NULL ? "" : "$r host ");
-		(void) expand(xbuf, buf, &buf[sizeof buf - 1]);
+		expand(xbuf, buf, &buf[sizeof buf - 1], CurEnv);
 		(void) chompheader(buf, FALSE);
 	}
 
