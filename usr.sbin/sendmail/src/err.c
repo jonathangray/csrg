@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)err.c	8.15 (Berkeley) 11/08/93";
+static char sccsid[] = "@(#)err.c	8.16 (Berkeley) 12/10/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -456,8 +456,6 @@ errstring(errno)
 	extern char *SmtpPhase;
 # endif /* SMTP */
 
-# ifdef DAEMON
-# ifdef ETIMEDOUT
 	/*
 	**  Handle special network error codes.
 	**
@@ -466,6 +464,7 @@ errstring(errno)
 
 	switch (errno)
 	{
+# if defined(DAEMON) && defined(ETIMEDOUT)
 	  case ETIMEDOUT:
 	  case ECONNRESET:
 		(void) strcpy(buf, sys_errlist[errno]);
@@ -492,6 +491,7 @@ errstring(errno)
 			break;
 		(void) sprintf(buf, "Connection refused by %s", CurHostName);
 		return (buf);
+# endif
 
 	  case EOPENTIMEOUT:
 		return "Timeout on file open";
@@ -509,9 +509,11 @@ errstring(errno)
 	  case NO_DATA + E_DNSBASE:
 		return ("Name server: no data known for name");
 # endif
+
+	  case EPERM:
+		/* SunOS gives "Not owner" -- this is the POSIX message */
+		return "Operation not permitted";
 	}
-# endif
-# endif
 
 	if (errno > 0 && errno < sys_nerr)
 		return (sys_errlist[errno]);
