@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	5.4 (Berkeley) 10/26/91
+ *	@(#)pathnames.h	5.5 (Berkeley) 07/20/92
  */
 
 #include <paths.h>
@@ -38,7 +38,7 @@
 #define	_PATH_ALL	"/usr/dict/lookall/All"
 #define	_PATH_EIGN	"/usr/dict/eign"
 #define	_PATH_HUNT	"/usr/old/libexec/hunt"
-#define	_PATH_IND	"/var/db/Ind"
+#define	_PATH_IND	"/usr/old/dict/papers/Ind"
 #define	_PATH_LIB	"/usr/old/libexec"
 #define	_PATH_MKEY	"/usr/old/libexec/mkey"
 #define	_PATH_PWD	"/bin/pwd"
