@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)util.c	8.17.1.1 (Berkeley) 11/27/93";
+static char sccsid[] = "@(#)util.c	8.18 (Berkeley) 12/01/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1364,7 +1364,7 @@ defprint:
 
 printit:
 	if (logit)
-		syslog(LOG_INFO, "%s", buf);
+		syslog(LOG_DEBUG, "%s", buf);
 	else
 		printf("%s\n", buf);
 }
