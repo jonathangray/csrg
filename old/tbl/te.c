@@ -1,6 +1,12 @@
+/*-
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ */
+
 #ifndef lint
-static char sccsid[] = "@(#)te.c	4.2 08/11/83";
-#endif
+static char sccsid[] = "@(#)te.c	4.3 (Berkeley) 04/18/91";
+#endif /* not lint */
 
  /* te.c: error message control, input line count */
 # include "t..c"
