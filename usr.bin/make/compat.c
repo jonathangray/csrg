@@ -37,7 +37,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)compat.c	5.7 (Berkeley) 03/01/91";
+static char sccsid[] = "@(#)compat.c	5.8 (Berkeley) 10/26/91";
 #endif /* not lint */
 
 /*-
@@ -55,9 +55,9 @@ static char sccsid[] = "@(#)compat.c	5.7 (Berkeley) 03/01/91";
 
 #include    <stdio.h>
 #include    <sys/types.h>
-#include    <sys/signal.h>
 #include    <sys/wait.h>
 #include    <sys/errno.h>
+#include    <signal.h>
 #include    <ctype.h>
 #include    "make.h"
 extern int errno;
