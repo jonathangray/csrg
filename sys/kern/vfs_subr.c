@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	8.18 (Berkeley) 03/30/95
+ *	@(#)vfs_subr.c	8.19 (Berkeley) 04/11/95
  */
 
 /*
@@ -885,6 +885,7 @@ vclean(vp, flags)
 		panic("vclean: cannot reclaim");
 	if (active)
 		vrele(vp);
+	cache_purge(vp);
 
 	/*
 	 * Done with purge, notify sleepers of the grim news.
