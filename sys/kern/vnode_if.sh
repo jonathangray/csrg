@@ -31,7 +31,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)vnode_if.sh	8.1 (Berkeley) 06/10/93
+#	@(#)vnode_if.sh	8.2 (Berkeley) 08/05/94
 #
 
 # Script to produce VFS front-end sugar.
@@ -66,7 +66,7 @@ cat << END_OF_LEADING_COMMENT > $HEADER
  * This file is produced automatically.
  * Do not modify anything in here by hand.
  *
- * Created from @(#)vnode_if.sh	8.1 (Berkeley) 06/10/93
+ * Created from @(#)vnode_if.sh	8.2 (Berkeley) 08/05/94
  */
 
 extern struct vnodeop_desc vop_default_desc;
@@ -113,7 +113,7 @@ $AWK '
 		printf("extern struct vnodeop_desc %s_desc;\n", name);
 
 		# Print out inline struct.
-		printf("static inline int %s(", uname);
+		printf("static __inline int %s(", uname);
 		sep = ", ";
 		for (c2 = 0; c2 < c1; ++c2) {
 			if (c2 == c1 - 1)
@@ -159,7 +159,7 @@ cat << END_OF_LEADING_COMMENT > $CFILE
  * This file is produced automatically.
  * Do not modify anything in here by hand.
  *
- * Created from @(#)vnode_if.sh	8.1 (Berkeley) 06/10/93
+ * Created from @(#)vnode_if.sh	8.2 (Berkeley) 08/05/94
  */
 
 #include <sys/param.h>
