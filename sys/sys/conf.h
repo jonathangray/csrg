@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	7.9 (Berkeley) 05/05/91
+ *	@(#)conf.h	7.10 (Berkeley) 09/06/91
  */
 
 /*
@@ -55,7 +55,7 @@ struct bdevsw {
 };
 
 #ifdef KERNEL
-struct bdevsw bdevsw[];
+extern struct bdevsw bdevsw[];
 #endif
 
 struct cdevsw {
@@ -76,7 +76,7 @@ struct cdevsw {
 };
 
 #ifdef KERNEL
-struct cdevsw cdevsw[];
+extern struct cdevsw cdevsw[];
 
 /* symbolic sleep message strings */
 extern char devopn[], devio[], devwait[], devin[], devout[];
@@ -97,7 +97,7 @@ struct linesw {
 };
 
 #ifdef KERNEL
-struct linesw linesw[];
+extern struct linesw linesw[];
 #endif
 
 struct swdevt {
@@ -112,5 +112,5 @@ struct swdevt {
 };
 
 #ifdef KERNEL
-struct swdevt swdevt[];
+extern struct swdevt swdevt[];
 #endif
