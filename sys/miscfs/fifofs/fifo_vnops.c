@@ -30,10 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fifo_vnops.c	8.7 (Berkeley) 02/22/95
+ *	@(#)fifo_vnops.c	8.8 (Berkeley) 05/14/95
  */
 
 #include <sys/param.h>
+#include <sys/systm.h>
 #include <sys/proc.h>
 #include <sys/time.h>
 #include <sys/namei.h>
@@ -41,7 +42,6 @@
 #include <sys/socket.h>
 #include <sys/socketvar.h>
 #include <sys/stat.h>
-#include <sys/systm.h>
 #include <sys/ioctl.h>
 #include <sys/file.h>
 #include <sys/errno.h>
@@ -138,8 +138,9 @@ fifo_open(ap)
 		struct proc *a_p;
 	} */ *ap;
 {
-	register struct vnode *vp = ap->a_vp;
-	register struct fifoinfo *fip;
+	struct vnode *vp = ap->a_vp;
+	struct fifoinfo *fip;
+	struct proc *p = ap->a_p;
 	struct socket *rso, *wso;
 	int error;
 	static char openstr[] = "fifo";
@@ -184,10 +185,10 @@ fifo_open(ap)
 		if (ap->a_mode & O_NONBLOCK)
 			return (0);
 		while (fip->fi_writers == 0) {
-			VOP_UNLOCK(vp);
+			VOP_UNLOCK(vp, 0, p);
 			error = tsleep((caddr_t)&fip->fi_readers,
 			    PCATCH | PSOCK, openstr, 0);
-			VOP_LOCK(vp);
+			vn_lock(vp, LK_EXCLUSIVE | LK_RETRY, p);
 			if (error)
 				break;
 		}
@@ -202,17 +203,17 @@ fifo_open(ap)
 					wakeup((caddr_t)&fip->fi_readers);
 			}
 			while (fip->fi_readers == 0) {
-				VOP_UNLOCK(vp);
+				VOP_UNLOCK(vp, 0, p);
 				error = tsleep((caddr_t)&fip->fi_writers,
 				    PCATCH | PSOCK, openstr, 0);
-				VOP_LOCK(vp);
+				vn_lock(vp, LK_EXCLUSIVE | LK_RETRY, p);
 				if (error)
 					break;
 			}
 		}
 	}
 	if (error)
-		VOP_CLOSE(vp, ap->a_mode, ap->a_cred, ap->a_p);
+		VOP_CLOSE(vp, ap->a_mode, ap->a_cred, p);
 	return (error);
 }
 
@@ -228,8 +229,9 @@ fifo_read(ap)
 		struct ucred *a_cred;
 	} */ *ap;
 {
-	register struct uio *uio = ap->a_uio;
-	register struct socket *rso = ap->a_vp->v_fifoinfo->fi_readsock;
+	struct uio *uio = ap->a_uio;
+	struct socket *rso = ap->a_vp->v_fifoinfo->fi_readsock;
+	struct proc *p = uio->uio_procp;
 	int error, startresid;
 
 #ifdef DIAGNOSTIC
@@ -241,10 +243,10 @@ fifo_read(ap)
 	if (ap->a_ioflag & IO_NDELAY)
 		rso->so_state |= SS_NBIO;
 	startresid = uio->uio_resid;
-	VOP_UNLOCK(ap->a_vp);
+	VOP_UNLOCK(ap->a_vp, 0, p);
 	error = soreceive(rso, (struct mbuf **)0, uio, (struct mbuf **)0,
 	    (struct mbuf **)0, (int *)0);
-	VOP_LOCK(ap->a_vp);
+	vn_lock(ap->a_vp, LK_EXCLUSIVE | LK_RETRY, p);
 	/*
 	 * Clear EOF indication after first such return.
 	 */
@@ -268,6 +270,7 @@ fifo_write(ap)
 	} */ *ap;
 {
 	struct socket *wso = ap->a_vp->v_fifoinfo->fi_writesock;
+	struct proc *p = ap->a_uio->uio_procp;
 	int error;
 
 #ifdef DIAGNOSTIC
@@ -276,9 +279,9 @@ fifo_write(ap)
 #endif
 	if (ap->a_ioflag & IO_NDELAY)
 		wso->so_state |= SS_NBIO;
-	VOP_UNLOCK(ap->a_vp);
+	VOP_UNLOCK(ap->a_vp, 0, p);
 	error = sosend(wso, (struct mbuf *)0, ap->a_uio, 0, (struct mbuf *)0, 0);
-	VOP_LOCK(ap->a_vp);
+	vn_lock(ap->a_vp, LK_EXCLUSIVE | LK_RETRY, p);
 	if (ap->a_ioflag & IO_NDELAY)
 		wso->so_state &= ~SS_NBIO;
 	return (error);
@@ -347,29 +350,6 @@ fifo_bmap(ap)
 		*ap->a_bnp = ap->a_bn;
 	if (ap->a_runp != NULL)
 		*ap->a_runp = 0;
-	return (0);
-}
-
-/*
- * At the moment we do not do any locking.
- */
-/* ARGSUSED */
-fifo_lock(ap)
-	struct vop_lock_args /* {
-		struct vnode *a_vp;
-	} */ *ap;
-{
-
-	return (0);
-}
-
-/* ARGSUSED */
-fifo_unlock(ap)
-	struct vop_unlock_args /* {
-		struct vnode *a_vp;
-	} */ *ap;
-{
-
 	return (0);
 }
 
