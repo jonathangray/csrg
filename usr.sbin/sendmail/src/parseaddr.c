@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	8.15 (Berkeley) 10/28/93";
+static char sccsid[] = "@(#)parseaddr.c	8.16 (Berkeley) 10/28/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -477,18 +477,18 @@ prescan(addr, delim, pvpbuf, delimptr)
 				/* diagnose and patch up bad syntax */
 				if (state == QST)
 				{
-					usrerr("653 Unbalanced '\"' (fixed)");
+					usrerr("653 Unbalanced '\"'");
 					c = '"';
 				}
 				else if (cmntcnt > 0)
 				{
-					usrerr("653 Unbalanced '(' (fixed)");
+					usrerr("653 Unbalanced '('");
 					c = ')';
 				}
 				else if (anglecnt > 0)
 				{
 					c = '>';
-					usrerr("653 Unbalanced '<' (fixed)");
+					usrerr("653 Unbalanced '<'");
 				}
 				else
 					break;
@@ -538,7 +538,7 @@ prescan(addr, delim, pvpbuf, delimptr)
 			{
 				if (cmntcnt <= 0)
 				{
-					usrerr("653 Unbalanced ')' (fixed)");
+					usrerr("653 Unbalanced ')'");
 					c = NOCHAR;
 				}
 				else
@@ -552,7 +552,7 @@ prescan(addr, delim, pvpbuf, delimptr)
 			{
 				if (anglecnt <= 0)
 				{
-					usrerr("653 Unbalanced '>' (fixed)");
+					usrerr("653 Unbalanced '>'");
 					c = NOCHAR;
 				}
 				else
