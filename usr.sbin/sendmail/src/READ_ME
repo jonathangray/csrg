@@ -30,7 +30,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)READ_ME	8.95 (Berkeley) 06/10/95
+#	@(#)READ_ME	8.96 (Berkeley) 06/18/95
 #
 
 This directory contains the source files for sendmail.
@@ -704,9 +704,13 @@ IRIX
 	the developers' option in order to get the necessary include
 	files.
 
-NeXT
-	If you are compiling on NeXT, you will have to create an empty
-	file "unistd.h" and create a file "dirent.h" containing:
+NeXT or NEXTSTEP
+	NEXTSTEP 3.3 and earlier ship with the old DBM library.  You will
+	need to acquire the new Berkeley DB from ftp.cs.berkeley.edu.
+	Install it in /usr/local/{lib,include}.
+
+	If you are compiling on NEXTSTEP, you will have to create an
+	empty file "unistd.h" and create a file "dirent.h" containing:
 
 		#include <sys/dir.h>
 		#define dirent	direct
@@ -1092,4 +1096,4 @@ version.c	The version number and information about this
 
 Eric Allman
 
-(Version 8.95, last update 06/10/95 09:16:01)
+(Version 8.96, last update 06/18/95 12:37:34)
