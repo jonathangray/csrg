@@ -30,8 +30,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_lereg.h	7.2 (Berkeley) 08/08/91
+ *	@(#)if_lereg.h	7.3 (Berkeley) 06/05/92
  */
+
+#ifdef KERNEL
+#include "hp/dev/iotypes.h"	/* XXX */
+#else
+#include <hp/dev/iotypes.h>	/* XXX */
+#endif
 
 #define	LEID		21
 
@@ -43,8 +49,6 @@
 #define	LETBUF		2
 #define	LETBUFLOG2	1
 #define	LE_TLEN		(LETBUFLOG2 << 13)
-
-#define vu_char		volatile u_char
 
 /*
  * LANCE registers.
@@ -63,8 +67,8 @@ struct lereg1 {
 
 /*
  * Overlayed on 16K dual-port RAM.
- * Current size is 13,758 bytes with 8 x 1518 receive buffers and
- * 1 x 1518 transmit buffer.
+ * Current size is 15,284 bytes with 8 x 1518 receive buffers and
+ * 2 x 1518 transmit buffers.
  */
 struct lereg2 {
 	/* init block */
@@ -90,8 +94,8 @@ struct lereg2 {
 		short	tmd2;
 		u_short	tmd3;
 	} ler2_tmd[LETBUF];
-	char	ler2_rbuf[LERBUF][LEMTU]; /* +0x0060 */
-	char	ler2_tbuf[LETBUF][LEMTU]; /* +0x2FD0 */
+	char	ler2_rbuf[LERBUF][LEMTU]; /* +0x0068 */
+	char	ler2_tbuf[LETBUF][LEMTU]; /* +0x2FD8 */
 };
 
 /*
