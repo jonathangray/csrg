@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_extern.h	7.13 (Berkeley) 04/21/92
+ *	@(#)lfs_extern.h	7.14 (Berkeley) 05/13/92
  */
 
 struct fid;
