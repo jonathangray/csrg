@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)syslog.h	7.19 (Berkeley) 02/22/91
+ *	@(#)syslog.h	7.20 (Berkeley) 02/23/91
  */
 
 #define	_PATH_LOG	"/dev/log"
@@ -170,7 +170,7 @@ CODE facilitynames[] = {
 __BEGIN_DECLS
 void	closelog __P((void));
 void	openlog __P((const char *, int, int));
-void	setlogmask __P((int));
+int	setlogmask __P((int));
 void	syslog __P((int, const char *, ...));
 void	vsyslog __P((int, const char *, va_list));
 __END_DECLS
