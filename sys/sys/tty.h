@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty.h	7.11 (Berkeley) 02/05/92
+ *	@(#)tty.h	7.12 (Berkeley) 02/05/92
  */
 
 #include <sys/termios.h>
@@ -60,7 +60,7 @@ struct tty {
 #ifdef sun4c
 	void	(*t_stop)();		/* device */
 #endif
-	void	(*t_param)();		/* device */
+	int	(*t_param)();		/* device */
 	struct	proc *t_rsel;		/* tty */
 	struct	proc *t_wsel;
 	caddr_t	T_LINEP; 		/* XXX */
