@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stat.h	7.8 (Berkeley) 01/17/91
+ *	@(#)stat.h	7.9 (Berkeley) 02/05/91
  */
 
 struct stat
@@ -111,19 +111,14 @@ struct stat
 #endif
 
 #ifndef KERNEL
-#if __STDC__ || c_plusplus
-mode_t umask(mode_t);
-int mkdir(const char *, mode_t);
-int mkfifo(const char *, mode_t);
-int stat(const char *, struct stat *);
-int fstat(int, struct stat *);
-int chmod(const char *, mode_t);
-#else
-mode_t umask();
-int mkdir();
-int mkfifo();
-int stat();
-int fstat();
-int chmod();
-#endif
+#include <sys/cdefs.h>
+
+__BEGIN_DECLS
+mode_t	umask __P((mode_t));
+int	chmod __P((const char *, mode_t));
+int	fstat __P((int, struct stat *));
+int	mkdir __P((const char *, mode_t));
+int	mkfifo __P((const char *, mode_t));
+int	stat __P((const char *, struct stat *));
+__END_DECLS
 #endif
