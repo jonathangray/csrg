@@ -1,7 +1,6 @@
 /*-
  * Copyright (c) 1994
- *	The Regents of the University of California.
- * All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chuck Karish of Mindcraft, Inc.
@@ -34,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tar.h	8.1 (Berkeley) 01/04/94
+ *	@(#)tar.h	8.2 (Berkeley) 01/04/94
  */
 
 #ifndef _TAR_H
