@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 1990 Jan-Simon Pendry
  * Copyright (c) 1990 Imperial College of Science, Technology & Medicine
- * Copyright (c) 1990 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1990, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Jan-Simon Pendry at Imperial College, London.
@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)amq.c	5.6 (Berkeley) 06/06/93
+ *	@(#)amq.c	8.1 (Berkeley) 06/07/93
  *
  * $Id: amq.c,v 5.2.2.1 1992/02/09 15:09:16 jsp beta $
  *
@@ -49,13 +49,13 @@
 char copyright[] = "\
 @(#)Copyright (c) 1990 Jan-Simon Pendry\n\
 @(#)Copyright (c) 1990 Imperial College of Science, Technology & Medicine\n\
-@(#)Copyright (c) 1990 The Regents of the University of California.\n\
-@(#)All rights reserved.\n";
+@(#)Copyright (c) 1990, 1993\n\
+	The Regents of the University of California.  All rights reserved.\n";
 #endif /* not lint */
 
 #ifndef lint
 static char rcsid[] = "$Id: amq.c,v 5.2.2.1 1992/02/09 15:09:16 jsp beta $";
-static char sccsid[] = "@(#)amq.c	5.6 (Berkeley) 06/06/93";
+static char sccsid[] = "@(#)amq.c	8.1 (Berkeley) 06/07/93";
 #endif /* not lint */
 
 #include "am.h"
