@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.74 (Berkeley) 11/21/94
+ *	@(#)sendmail.h	8.75 (Berkeley) 11/22/94
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.74		11/21/94";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.75		11/22/94";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -903,7 +903,6 @@ EXTERN char	*DefUser;	/* default user to run as (from DefUid) */
 EXTERN int	OldUmask;	/* umask when sendmail starts up */
 EXTERN int	Errors;		/* set if errors (local to single pass) */
 EXTERN int	ExitStat;	/* exit status code */
-EXTERN int	AliasLevel;	/* depth of aliasing */
 EXTERN int	LineNumber;	/* line number in current input */
 EXTERN int	LogLevel;	/* level of logging to perform */
 EXTERN int	FileMode;	/* mode on files */
@@ -1052,7 +1051,7 @@ extern int		macid __P((char *, char **));
 extern char		**prescan __P((char *, int, char[], int, char **));
 extern int		rewrite __P((char **, int, int, ENVELOPE *));
 extern char		*fgetfolded __P((char *, int, FILE *));
-extern ADDRESS		*recipient __P((ADDRESS *, ADDRESS **, ENVELOPE *));
+extern ADDRESS		*recipient __P((ADDRESS *, ADDRESS **, int, ENVELOPE *));
 extern ENVELOPE		*newenvelope __P((ENVELOPE *, ENVELOPE *));
 extern void		dropenvelope __P((ENVELOPE *));
 extern void		clearenvelope __P((ENVELOPE *, int));
