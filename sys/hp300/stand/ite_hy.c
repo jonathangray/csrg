@@ -5,7 +5,8 @@
  *
  * This code is derived from software contributed to Berkeley by
  * the Systems Programming Group of the University of Utah Computer
- * Science Department.
+ * Science Department and Mark Davies of the Department of Computer
+ * Science, Victoria University of Wellington, New Zealand.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -37,7 +38,7 @@
  *
  * from: Utah $Hdr: ite_hy.c 1.1 92/01/22$
  *
- *	@(#)ite_hy.c	7.1 (Berkeley) 06/18/92
+ *	@(#)ite_hy.c	7.2 (Berkeley) 06/23/92
  */
 
 #include "samachdep.h"
