@@ -31,7 +31,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)strip.sed	5.1 (Berkeley) 06/08/93
+#	@(#)strip.sed	8.1 (Berkeley) 06/08/93
 #
 
 /%beginstrip%/{
