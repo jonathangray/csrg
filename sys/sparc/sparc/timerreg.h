@@ -9,7 +9,7 @@
  * All advertising materials mentioning features or use of this software
  * must display the following acknowledgement:
  *	This product includes software developed by the University of
- *	California, Lawrence Berkeley Laboratories.
+ *	California, Lawrence Berkeley Laboratory.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -39,9 +39,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)timerreg.h	7.3 (Berkeley) 10/11/92
+ *	@(#)timerreg.h	7.4 (Berkeley) 04/20/93
  *
- * from: $Header: timerreg.h,v 1.6 92/07/07 04:56:09 leres Exp $ (LBL)
+ * from: $Header: timerreg.h,v 1.7 92/11/26 03:05:09 leres Exp $ (LBL)
  */
 
 /*
