@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)names.c	5.17 (Berkeley) 06/26/92";
+static char sccsid[] = "@(#)names.c	5.18 (Berkeley) 09/20/92";
 #endif /* not lint */
 
 /*
@@ -259,6 +259,7 @@ outof(names, fo, hp)
 				(void) Fclose(fout);
 				goto cant;
 			}
+			(void) fcntl(image, F_SETFD, 1);
 			fprintf(fout, "From %s %s", myname, date);
 			puthead(hp, fout, GTO|GSUBJECT|GCC|GNL);
 			while ((c = getc(fo)) != EOF)
