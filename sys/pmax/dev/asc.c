@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)asc.c	7.2 (Berkeley) 03/14/92
+ *	@(#)asc.c	7.3 (Berkeley) 03/29/92
  */
 
 /* 
@@ -143,7 +143,7 @@
  */
 #define ASC_DMAR_MASK		0x1ffff		/* 17 bits, 128k */
 #define ASC_DMAR_WRITE		0x80000000	/* DMA direction bit */
-#define	ASC_DMA_ADDR(x)		((unsigned)(x)) & ASC_DMAR_MASK
+#define	ASC_DMA_ADDR(x)		((unsigned)(x) & ASC_DMAR_MASK)
 
 /*
  * Synch xfer parameters, and timing conversions
@@ -327,13 +327,13 @@ script_t asc_scripts[] = {
 	/* try to negotiate synchonous transfer parameters */
 	{SCRIPT_MATCH(ASC_INT_FC | ASC_INT_BS, ASC_PHASE_MSG_OUT),	/* 12 */
 		asc_sendsync, ASC_CMD_XFER_INFO,
-		&asc_scripts[SCRIPT_GET_STATUS]},
-	{SCRIPT_MATCH(ASC_INT_FC, ASC_PHASE_MSG_IN),			/* 13 */
+		&asc_scripts[SCRIPT_TRY_SYNC + 1]},
+	{SCRIPT_MATCH(ASC_INT_BS, ASC_PHASE_MSG_IN),			/* 13 */
 		script_nop, ASC_CMD_XFER_INFO,
-		&asc_scripts[SCRIPT_GET_STATUS]},
-	{SCRIPT_MATCH(ASC_INT_FC, ASC_PHASE_MSG_IN),			/* 14 */
-		asc_msg_in, ASC_CMD_MSG_ACPT,
-		&asc_scripts[SCRIPT_GET_STATUS]},
+		&asc_scripts[SCRIPT_MSG_IN]},
+	{SCRIPT_MATCH(ASC_INT_BS, ASC_PHASE_COMMAND),			/* 14 */
+		script_nop, ASC_CMD_XFER_INFO | ASC_CMD_DMA,
+		&asc_scripts[SCRIPT_RESUME_NO_DATA]},
 
 	/* handle a disconnect */
 	{SCRIPT_MATCH(ASC_INT_DISC, ASC_PHASE_DATAO),			/* 15 */
@@ -395,7 +395,7 @@ typedef struct scsi_state {
 
 /* state flags */
 #define DISCONN		0x01	/* true if currently disconnected from bus */
-#define FIRST_DMA	0x02	/* true if no data DMA started yet */
+#define DMA_IN_PROGRESS	0x02	/* true if data DMA started */
 #define DMA_IN		0x04	/* true if reading from SCSI device */
 #define DMA_OUT		0x10	/* true if writing to SCSI device */
 #define DID_SYNC	0x20	/* true if synchronous offset was negotiated */
@@ -629,9 +629,10 @@ asc_startcmd(asc, target)
 			scsicmd->cmd[5];
 		asc_debug_sz = (scsicmd->cmd[7] << 8) | scsicmd->cmd[8];
 	}
-	asc_logp->status = PACK(asc - asc_softc, 0, 0, 0);
+	asc_logp->status = PACK(asc - asc_softc, 0, 0, asc_debug_cmd);
 	asc_logp->target = asc->target;
 	asc_logp->state = 0;
+	asc_logp->msg = 0xff;
 	if (++asc_logp >= &asc_log[NLOG])
 		asc_logp = asc_log;
 #endif
@@ -640,7 +641,7 @@ asc_startcmd(asc, target)
 	 * Init the chip and target state.
 	 */
 	regs->asc_cmd = ASC_CMD_FLUSH;
-	state->flags = FIRST_DMA | (state->flags & DID_SYNC);
+	state->flags = state->flags & DID_SYNC;
 	state->error = 0;
 	state->script = (script_t *)0;
 	state->msg_out = SCSI_NO_OP;
@@ -663,20 +664,9 @@ asc_startcmd(asc, target)
 			asc->script = &asc_scripts[SCRIPT_SIMPLE];
 		state->buf = (char *)0;
 	} else if (scsicmd->flags & SCSICMD_DATA_TO_DEVICE) {
-		int cnt;
-
 		asc->script = &asc_scripts[SCRIPT_DATA_OUT];
-
-		/* setup to write first chunk */
-		state->flags |= DMA_OUT;
 		state->buf = scsicmd->buf;
-		cnt = state->dmaBufSize - len;
-		if (cnt > state->buflen)
-			cnt = state->buflen;
-		else printf("can't write in one chunk cnt %d buflen %d\n",
-			cnt, state->buflen); /* XXX */
-		state->dmalen = cnt;
-		bcopy(state->buf, state->dmaBufAddr + len, cnt);
+		state->flags |= DMA_OUT;
 	} else {
 		asc->script = &asc_scripts[SCRIPT_DATA_IN];
 		state->buf = scsicmd->buf;
@@ -695,7 +685,7 @@ asc_startcmd(asc, target)
 	regs->asc_syn_o = state->sync_offset;
 
 	if (state->flags & TRY_SYNC)
-		regs->asc_cmd = ASC_CMD_SEL_ATN_STOP | ASC_CMD_DMA;
+		regs->asc_cmd = ASC_CMD_SEL_ATN_STOP;
 	else
 		regs->asc_cmd = ASC_CMD_SEL_ATN | ASC_CMD_DMA;
 }
@@ -718,9 +708,9 @@ asc_intr(unit)
 	register script_t *scpt;
 	register int ss, ir, status;
 
-again:
 	/* collect ephemeral information */
 	status = regs->asc_status;
+again:
 	ss = regs->asc_ss;
 	ir = regs->asc_intr;	/* this resets the previous two */
 	scpt = asc->script;
@@ -755,6 +745,14 @@ again:
 
 		state = &asc->st[asc->target];
 		switch (ASC_PHASE(status)) {
+		case ASC_PHASE_DATAI:
+		case ASC_PHASE_DATAO:
+			ASC_TC_GET(regs, len);
+			fifo = regs->asc_flags & ASC_FLAGS_FIFO_CNT;
+			printf("asc_intr: data overrun: buflen %d dmalen %d tc %d fifo %d\n",
+				state->buflen, state->dmalen, len, fifo);
+			goto abort;
+
 		case ASC_PHASE_MSG_IN:
 			break;
 
@@ -765,7 +763,6 @@ again:
 			goto done;
 
 		case ASC_PHASE_STATUS:
-			asc_DumpLog("asc_intr: status"); /* XXX */
 			/* probably an error in the SCSI command */
 			asc->script = &asc_scripts[SCRIPT_GET_STATUS];
 			regs->asc_cmd = ASC_CMD_I_COMPLETE;
@@ -783,10 +780,20 @@ again:
 		fifo = regs->asc_flags & ASC_FLAGS_FIFO_CNT;
 		/* flush any data in the FIFO */
 		if (fifo) {
-			printf("asc_intr: suspend flags %x dmalen %d len %d fifo %d\n",
-				state->flags, state->dmalen,
-				len, fifo); /* XXX */
-			len += fifo;
+			if (state->flags & DMA_OUT)
+				len += fifo;
+			else if (state->flags & DMA_IN) {
+				u_char *cp;
+
+				printf("asc_intr: IN: dmalen %d len %d fifo %d\n",
+					state->dmalen, len, fifo); /* XXX */
+				len += fifo;
+				cp = state->dmaBufAddr + (state->dmalen - len);
+				while (fifo-- > 0)
+					*cp++ = regs->asc_fifo;
+			} else
+				printf("asc_intr: dmalen %d len %d fifo %d\n",
+					state->dmalen, len, fifo); /* XXX */
 			regs->asc_cmd = ASC_CMD_FLUSH;
 			MachEmptyWriteBuffer();
 		}
@@ -805,14 +812,14 @@ again:
 		} else {
 			/* setup state to resume to */
 			if (state->flags & DMA_IN) {
-				if (!(state->flags & FIRST_DMA)) {
+				if (state->flags & DMA_IN_PROGRESS) {
+					state->flags &= ~DMA_IN_PROGRESS;
 					len = state->dmalen;
 					bcopy(state->dmaBufAddr, state->buf,
 						len);
 					state->buf += len;
 					state->buflen -= len;
-				} else
-					state->flags &= ~FIRST_DMA;
+				}
 				if (state->buflen)
 					state->script =
 					    &asc_scripts[SCRIPT_RESUME_IN];
@@ -824,16 +831,22 @@ again:
 				 * If this is the last chunk, the next expected
 				 * state is to get status.
 				 */
-				len = state->dmalen;
-				state->buf += len;
-				state->buflen -= len;
+				if (state->flags & DMA_IN_PROGRESS) {
+					state->flags &= ~DMA_IN_PROGRESS;
+					len = state->dmalen;
+					state->buf += len;
+					state->buflen -= len;
+				}
 				if (state->buflen)
 					state->script =
 					    &asc_scripts[SCRIPT_RESUME_OUT];
 				else
 					state->script =
 					    &asc_scripts[SCRIPT_RESUME_NO_DATA];
-			} else
+			} else if (asc->script == &asc_scripts[SCRIPT_SIMPLE])
+				state->script =
+					    &asc_scripts[SCRIPT_RESUME_NO_DATA];
+			else
 				state->script = asc->script;
 		}
 
@@ -912,6 +925,8 @@ again:
 		if (!(state->flags & DISCONN))
 			goto abort;
 		state->flags &= ~DISCONN;
+		regs->asc_syn_p = state->sync_period;
+		regs->asc_syn_o = state->sync_offset;
 		regs->asc_cmd = ASC_CMD_MSG_ACPT;
 		goto done;
 	}
@@ -923,7 +938,11 @@ again:
 	/* must be just a ASC_INT_FC */
 done:
 	MachEmptyWriteBuffer();
-	if (regs->asc_status & ASC_CSR_INT)
+	/* watch out for HW race conditions and setup & hold time violations */
+	ir = regs->asc_status;
+	while (ir != (status = regs->asc_status))
+		ir = status;
+	if (status & ASC_CSR_INT)
 		goto again;
 	return;
 
@@ -1059,10 +1078,10 @@ asc_dma_in(asc, status, ss, ir)
 {
 	register asc_regmap_t *regs = asc->regs;
 	register State *state = &asc->st[asc->target];
-	register int len, fifo;
+	register int len;
 
 	/* check for previous chunk in buffer */
-	if (!(state->flags & FIRST_DMA)) {
+	if (state->flags & DMA_IN_PROGRESS) {
 		/*
 		 * Only count bytes that have been copied to memory.
 		 * There may be some bytes in the FIFO if synchonous transfers
@@ -1073,8 +1092,7 @@ asc_dma_in(asc, status, ss, ir)
 		bcopy(state->dmaBufAddr, state->buf, len);
 		state->buf += len;
 		state->buflen -= len;
-	} else
-		state->flags &= ~FIRST_DMA;
+	}
 
 	/* setup to start reading the next chunk */
 	len = state->buflen;
@@ -1089,6 +1107,7 @@ asc_dma_in(asc, status, ss, ir)
 #endif
 
 	/* check for next chunk */
+	state->flags |= DMA_IN_PROGRESS;
 	if (len != state->buflen) {
 		regs->asc_cmd = ASC_CMD_XFER_INFO | ASC_CMD_DMA;
 		asc->script = &asc_scripts[SCRIPT_CONTINUE_IN];
@@ -1111,11 +1130,7 @@ asc_last_dma_in(asc, status, ss, ir)
 	ASC_TC_GET(regs, len);
 	fifo = regs->asc_flags & ASC_FLAGS_FIFO_CNT;
 #ifdef DEBUG
-#if 0
 	if (asc_debug > 2)
-#else
-	if (asc_debug > 2 || len || fifo) /* XXX */
-#endif
 		printf("asc_last_dma_in: buflen %d dmalen %d tc %d fifo %d\n",
 			state->buflen, state->dmalen, len, fifo);
 #endif
@@ -1124,6 +1139,7 @@ asc_last_dma_in(asc, status, ss, ir)
 		regs->asc_cmd = ASC_CMD_FLUSH;
 		MachEmptyWriteBuffer();
 	}
+	state->flags &= ~DMA_IN_PROGRESS;
 	len = state->dmalen - len;
 	state->buflen -= len;
 	bcopy(state->dmaBufAddr, state->buf, len);
@@ -1155,6 +1171,7 @@ asc_resume_in(asc, status, ss, ir)
 #endif
 
 	/* check for next chunk */
+	state->flags |= DMA_IN_PROGRESS;
 	if (len != state->buflen) {
 		regs->asc_cmd = ASC_CMD_XFER_INFO | ASC_CMD_DMA;
 		asc->script = &asc_scripts[SCRIPT_CONTINUE_IN];
@@ -1190,6 +1207,7 @@ asc_resume_dma_in(asc, status, ss, ir)
 #endif
 
 	/* check for next chunk */
+	state->flags |= DMA_IN_PROGRESS;
 	if (state->dmalen != state->buflen) {
 		regs->asc_cmd = ASC_CMD_XFER_INFO | ASC_CMD_DMA;
 		asc->script = &asc_scripts[SCRIPT_CONTINUE_IN];
@@ -1208,7 +1226,7 @@ asc_dma_out(asc, status, ss, ir)
 	register State *state = &asc->st[asc->target];
 	register int len, fifo;
 
-	if (!(state->flags & FIRST_DMA)) {
+	if (state->flags & DMA_IN_PROGRESS) {
 		/* check to be sure previous chunk was finished */
 		ASC_TC_GET(regs, len);
 		fifo = regs->asc_flags & ASC_FLAGS_FIFO_CNT;
@@ -1217,20 +1235,17 @@ asc_dma_out(asc, status, ss, ir)
 				state->buflen, state->dmalen, len, fifo); /* XXX */
 		len += fifo;
 		len = state->dmalen - len;
-		state->buflen -= len;
 		state->buf += len;
+		state->buflen -= len;
+	}
 
-		/* setup for this chunck */
-		len = state->buflen;
-		if (len > state->dmaBufSize)
-			len = state->dmaBufSize;
-		state->dmalen = len;
-		bcopy(state->buf, state->dmaBufAddr, len);
-		*asc->dmar = ASC_DMAR_WRITE | ASC_DMA_ADDR(state->dmaBufAddr);
-	} else
-		state->flags &= ~FIRST_DMA;
-
-	len = state->dmalen;
+	/* setup for this chunck */
+	len = state->buflen;
+	if (len > state->dmaBufSize)
+		len = state->dmaBufSize;
+	state->dmalen = len;
+	bcopy(state->buf, state->dmaBufAddr, len);
+	*asc->dmar = ASC_DMAR_WRITE | ASC_DMA_ADDR(state->dmaBufAddr);
 	ASC_TC_PUT(regs, len);
 #ifdef DEBUG
 	if (asc_debug > 2)
@@ -1238,6 +1253,7 @@ asc_dma_out(asc, status, ss, ir)
 #endif
 
 	/* check for next chunk */
+	state->flags |= DMA_IN_PROGRESS;
 	if (len != state->buflen) {
 		regs->asc_cmd = ASC_CMD_XFER_INFO | ASC_CMD_DMA;
 		asc->script = &asc_scripts[SCRIPT_CONTINUE_OUT];
@@ -1259,19 +1275,16 @@ asc_last_dma_out(asc, status, ss, ir)
 	ASC_TC_GET(regs, len);
 	fifo = regs->asc_flags & ASC_FLAGS_FIFO_CNT;
 #ifdef DEBUG
-#if 0
 	if (asc_debug > 2)
-#else
-	if (asc_debug > 2 || len || fifo) /* XXX */
-#endif
 		printf("asc_last_dma_out: buflen %d dmalen %d tc %d fifo %d\n",
-			state->buflen, state->dmalen, len, fifo); /* XXX */
+			state->buflen, state->dmalen, len, fifo);
 #endif
 	if (fifo) {
 		len += fifo;
 		regs->asc_cmd = ASC_CMD_FLUSH;
 		MachEmptyWriteBuffer();
 	}
+	state->flags &= ~DMA_IN_PROGRESS;
 	len = state->dmalen - len;
 	state->buflen -= len;
 	return (1);
@@ -1302,6 +1315,7 @@ asc_resume_out(asc, status, ss, ir)
 #endif
 
 	/* check for next chunk */
+	state->flags |= DMA_IN_PROGRESS;
 	if (len != state->buflen) {
 		regs->asc_cmd = ASC_CMD_XFER_INFO | ASC_CMD_DMA;
 		asc->script = &asc_scripts[SCRIPT_CONTINUE_OUT];
@@ -1339,6 +1353,7 @@ asc_resume_dma_out(asc, status, ss, ir)
 #endif
 
 	/* check for next chunk */
+	state->flags |= DMA_IN_PROGRESS;
 	if (state->dmalen != state->buflen) {
 		regs->asc_cmd = ASC_CMD_XFER_INFO | ASC_CMD_DMA;
 		asc->script = &asc_scripts[SCRIPT_CONTINUE_OUT];
@@ -1354,11 +1369,9 @@ asc_sendsync(asc, status, ss, ir)
 	register int status, ss, ir;
 {
 	register asc_regmap_t *regs = asc->regs;
+	register State *state = &asc->st[asc->target];
 
-	/*
-	 * Phase is MSG_OUT here.
-	 * Try sync negotiation, unless prohibited
-	 */
+	/* send the extended synchronous negotiation message */
 	regs->asc_fifo = SCSI_EXTENDED_MSG;
 	MachEmptyWriteBuffer();
 	regs->asc_fifo = 3;
@@ -1368,6 +1381,9 @@ asc_sendsync(asc, status, ss, ir)
 	regs->asc_fifo = SCSI_MIN_PERIOD;
 	MachEmptyWriteBuffer();
 	regs->asc_fifo = ASC_MAX_OFFSET;
+	/* state to resume after we see the sync reply message */
+	state->script = asc->script + 2;
+	state->msglen = 0;
 	return (1);
 }
 
