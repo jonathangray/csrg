@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)route.c	8.2.1.1 (Berkeley) 12/02/94
+ *	@(#)route.c	8.3 (Berkeley) 01/09/95
  */
 
 #include <sys/param.h>
@@ -274,7 +274,7 @@ out:
 */
 int
 rtioctl(req, data, p)
-	int req;
+	u_long req;
 	caddr_t data;
 	struct proc *p;
 {
