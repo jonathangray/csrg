@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)x25.h	7.6 (Berkeley) 01/09/91
+ *	@(#)x25.h	7.7 (Berkeley) 05/01/91
  */
 
 #ifdef KERNEL
@@ -132,7 +132,9 @@ struct	x25config {
 #define X25_DDN		3
 #define X25_BASIC	4
 		xc_ptrace:1,	/* packet level tracing flag */
-		xc_rsvd2:5;
+		xc_nodnic:1,	/* remove our dnic when calling on net */
+		xc_prepnd0:1,	/* prepend 0 when making offnet calls */
+		xc_rsvd2:3;
 	u_short	xc_maxlcn;	/* max logical channels */
 	u_short	xc_dg_idletimo;	/* timeout for idle datagram circuits. */
 };
