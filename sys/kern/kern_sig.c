@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sig.c	7.33 (Berkeley) 06/21/91
+ *	@(#)kern_sig.c	7.34 (Berkeley) 06/25/91
  */
 
 #define	SIGPROP		/* include signal properties table */
@@ -486,7 +486,7 @@ killpg1(cp, signo, pgid, all)
 		}
 		for (p = pgrp->pg_mem; p != NULL; p = p->p_pgrpnxt) {
 			if (p->p_pid <= 1 || p->p_flag&SSYS ||
-			    !CANSIGNAL(cp, pc, p, signo))
+			    p->p_stat == SZOMB || !CANSIGNAL(cp, pc, p, signo))
 				continue;
 			nfound++;
 			if (signo)
