@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)in_pcb.c	7.14 (Berkeley) 04/20/91
+ *	@(#)in_pcb.c	7.15 (Berkeley) 10/02/91
  */
 
 #include "param.h"
@@ -41,6 +41,7 @@
 #include "socket.h"
 #include "socketvar.h"
 #include "ioctl.h"
+#include "errno.h"
 
 #include "../net/if.h"
 #include "../net/route.h"
