@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)send.c	5.24 (Berkeley) 06/26/92";
+static char sccsid[] = "@(#)send.c	5.25 (Berkeley) 12/17/92";
 #endif /* not lint */
 
 #include "rcv.h"
@@ -369,15 +369,6 @@ mail1(hp, printheaders)
 		goto out;
 	}
 	if (pid == 0) {
-		if (access(_PATH_MAIL_LOG, 0) == 0) {
-			FILE *postage;
-
-			if ((postage = Fopen(_PATH_MAIL_LOG, "a")) != NULL) {
-				fprintf(postage, "%s %d %ld\n", myname,
-				    count(to), fsize(mtf));
-				(void) Fclose(postage);
-			}
-		}
 		prepare_child(sigmask(SIGHUP)|sigmask(SIGINT)|sigmask(SIGQUIT)|
 			sigmask(SIGTSTP)|sigmask(SIGTTIN)|sigmask(SIGTTOU),
 			fileno(mtf), -1);
