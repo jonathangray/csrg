@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_le.c	7.2 (Berkeley) 02/29/92
+ *	@(#)if_le.c	7.3 (Berkeley) 03/29/92
  */
 
 #include "le.h"
@@ -402,7 +402,7 @@ leintr(unit)
 	ler1 = le->sc_r1;
 	stat = ler1->ler1_rdp;
 	if (!(stat & LE_INTR)) {
-		printf("le?: spurrious interrupt\n");
+		printf("le%d: spurrious interrupt\n", unit);
 		return;
 	}
 	if (stat & LE_SERR) {
