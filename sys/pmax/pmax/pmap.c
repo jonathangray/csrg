@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.c	8.1 (Berkeley) 06/10/93
+ *	@(#)pmap.c	8.2 (Berkeley) 09/23/93
  */
 
 /*
@@ -1293,7 +1293,7 @@ pmap_phys_address(ppn)
  * Therefore, when we allocate a new PID, we just take the next number. When
  * we run out of numbers, we flush the TLB, increment the generation count
  * and start over. PID zero is reserved for kernel use.
- * This is called only by swtch().
+ * This is called only by switch().
  */
 int
 pmap_alloc_tlbpid(p)
