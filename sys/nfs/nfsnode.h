@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsnode.h	8.5 (Berkeley) 08/11/94
+ *	@(#)nfsnode.h	8.6 (Berkeley) 08/18/94
  */
 
 /*
@@ -56,8 +56,8 @@ struct sillyrename {
  */
 
 struct nfsnode {
-	struct	nfsnode *n_forw;	/* hash, forward */
-	struct	nfsnode **n_back;	/* hash, backward */
+	LIST_ENTRY(nfsnode) n_hash;	/* Hash chain */
+	CIRCLEQ_ENTRY(nfsnode) n_timer;	/* Nqnfs timer chain */
 	nfsv2fh_t n_fh;			/* NFS File Handle */
 	long	n_flag;			/* Flag for locking.. */
 	struct	vnode *n_vnode;		/* vnode associated with this node */
@@ -72,8 +72,6 @@ struct nfsnode {
 	u_quad_t n_brev;		 /* Modify rev when cached */
 	u_quad_t n_lrev;		 /* Modify rev for lease */
 	time_t	n_expiry;		 /* Lease expiry time */
-	struct	nfsnode *n_tnext;	 /* Nqnfs timer chain */
-	struct	nfsnode *n_tprev;		
 	long	spare1;			/* To 8 byte boundary */
 	struct	sillyrename n_silly;	/* Silly rename struct */
 	struct	timeval n_atim;		/* Special file times */
