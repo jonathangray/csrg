@@ -1,5 +1,5 @@
 #ifndef lint
-static char sccsid[] = "@(#)egrep.c	5.7 (Berkeley) 10/07/87";
+static char sccsid[] = "@(#)egrep.c	5.8 (Berkeley) 10/07/87";
 #endif not lint
 
 /*
