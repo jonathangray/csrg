@@ -1,11 +1,10 @@
 #ifndef lint
-static char sccsid[] = "@(#)ed.c	4.13 (Berkeley) 02/20/90";
+static char sccsid[] = "@(#)ed.c	4.13.1.1 (Berkeley) 10/21/90";
 #endif
 
 /*
  * Editor
  */
-
 #include <sys/param.h>
 #include <sys/signal.h>
 #include <sgtty.h>
