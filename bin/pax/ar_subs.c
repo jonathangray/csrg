@@ -36,7 +36,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)ar_subs.c	1.4 (Berkeley) 01/16/93";
+static char sccsid[] = "@(#)ar_subs.c	1.5 (Berkeley) 03/12/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -1047,8 +1047,14 @@ next_head(arcn)
 			/*
 			 * this format has trailers outside of valid headers
 			 */
-			if ((ret = (*frmt->trail)(hdbuf,in_resync, &cnt)) == 0)
+			if ((ret = (*frmt->trail)(hdbuf,in_resync,&cnt)) == 0){
+				/*
+				 * valid trailer found, drain input as required
+				 */
+				ar_drain();
 				return(-1);
+			}
+
 			if (ret == 1) {
 				/*
 				 * we are in resync and we were told to throw
@@ -1088,8 +1094,14 @@ next_head(arcn)
 	 * the header. NOTE: the parameters are different than trailer routines
 	 * which encode trailers outside of the header!
 	 */
-	if (frmt->inhead && ((*frmt->trail)(arcn) == 0))
+	if (frmt->inhead && ((*frmt->trail)(arcn) == 0)) {
+		/*
+		 * valid trailer found, drain input as required
+		 */
+		ar_drain();
 		return(-1);
+	}
+
 	++flcnt;
 	return(0);
 }
