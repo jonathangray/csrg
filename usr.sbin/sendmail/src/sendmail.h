@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.53 (Berkeley) 08/07/94
+ *	@(#)sendmail.h	8.54 (Berkeley) 08/08/94
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.53		08/07/94";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.54		08/08/94";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -207,6 +207,7 @@ typedef struct mailer	MAILER;
 # define M_BLANKEND	'b'	/* ensure blank line at end of message */
 # define M_NOCOMMENT	'c'	/* don't include comment part of address */
 # define M_CANONICAL	'C'	/* make addresses canonical "u@dom" */
+# define M_NOBRACKET	'd'	/* never angle bracket envelope route-addrs */
 		/*	'D'	/* CF: include Date: */
 # define M_EXPENSIVE	'e'	/* it costs to use this mailer.... */
 # define M_ESCFROM	'E'	/* escape From lines to >From */
@@ -216,8 +217,8 @@ typedef struct mailer	MAILER;
 # define M_HST_UPPER	'h'	/* preserve host case distinction */
 # define M_PREHEAD	'H'	/* MAIL11V3: preview headers */
 # define M_INTERNAL	'I'	/* SMTP to another sendmail site */
-# define M_LOCALMAILER	'l'	/* delivery is to this host */
 # define M_NOLOOPCHECK	'k'	/* don't check for loops in HELO command */
+# define M_LOCALMAILER	'l'	/* delivery is to this host */
 # define M_LIMITS	'L'	/* must enforce SMTP line limits */
 # define M_MUSER	'm'	/* can handle multiple users at once */
 		/*	'M'	/* CF: include Message-Id: */
