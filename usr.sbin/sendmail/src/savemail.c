@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)savemail.c	6.23 (Berkeley) 03/18/93";
+static char sccsid[] = "@(#)savemail.c	6.24 (Berkeley) 03/19/93";
 #endif /* not lint */
 
 # include <pwd.h>
@@ -103,7 +103,7 @@ savemail(e)
 		CurEnv->e_returnto = parse("root", (ADDRESS *) NULL, 0);
 		if (CurEnv->e_returnto == NULL)
 		{
-			syserr("553 Cannot parse root!");
+			syserr("553 Cannot parse Postmaster!");
 			ExitStat = EX_SOFTWARE;
 			finis();
 		}
