@@ -38,14 +38,14 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.3 (Berkeley) 09/13/94";
+static char sccsid[] = "@(#)main.c	8.4 (Berkeley) 05/01/95";
 #endif /* not lint */
 
 #include <sys/param.h>
 #include <sys/time.h>
 
-#include <ufs/ffs/fs.h>
 #include <ufs/ufs/dinode.h>
+#include <ufs/ffs/fs.h>
 #include <protocols/dumprestore.h>
 
 #include <err.h>
@@ -311,17 +311,20 @@ obsolete(argcp, argvp)
 	argv += 2;
 
 	for (flags = 0; *ap; ++ap) {
-		switch(*ap) {
+		switch (*ap) {
 		case 'b':
 		case 'f':
 		case 's':
+			if (*argv == NULL) {
+				warnx("option requires an argument -- %c", *ap);
+				usage();
+			}
 			if ((nargv[0] = malloc(strlen(*argv) + 2 + 1)) == NULL)
 				err(1, NULL);
 			nargv[0][0] = '-';
 			nargv[0][1] = *ap;
 			(void)strcpy(&nargv[0][2], *argv);
-			if (*argv != NULL)
-				++argv;
+			++argv;
 			++nargv;
 			break;
 		default:
@@ -342,4 +345,7 @@ obsolete(argcp, argvp)
 
 	/* Copy remaining arguments. */
 	while (*nargv++ = *argv++);
+
+	/* Update argument count. */
+	*argcp = nargv - *argvp - 1;
 }
