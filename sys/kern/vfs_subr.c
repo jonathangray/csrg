@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.97 (Berkeley) 03/08/93
+ *	@(#)vfs_subr.c	7.98 (Berkeley) 04/28/93
  */
 
 /*
@@ -287,7 +287,7 @@ getnewvnode(tag, mp, vops, vpp)
 	vp->v_tag = tag;
 	vp->v_op = vops;
 	insmntque(vp, mp);
-	VREF(vp);
+	vp->v_usecount++;
 	*vpp = vp;
 	return (0);
 }
@@ -607,7 +607,7 @@ vget(vp)
 		vp->v_freef = NULL;
 		vp->v_freeb = NULL;
 	}
-	VREF(vp);
+	vp->v_usecount++;
 	VOP_LOCK(vp);
 	return (0);
 }
@@ -621,6 +621,8 @@ void vref(vp)
 	struct vnode *vp;
 {
 
+	if (vp->v_usecount <= 0)
+		panic("vref used where vget required");
 	vp->v_usecount++;
 	if (vp->v_type != VBLK && curproc)
 		curproc->p_spare[0]++;
