@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cfb.c	7.8 (Berkeley) 04/13/93
+ *	@(#)cfb.c	7.9 (Berkeley) 05/09/93
  */
 
 /*
@@ -377,7 +377,7 @@ cfbLoadCursor(cursor)
 		while (j < 4) {
 			out = 0;
 			for (i = 0; i < 4; i++) {
-#ifdef CURSOR_EL
+#ifndef CURSOR_EB
 				out = (out << 2) | ((ap & 0x1) << 1) |
 					(bp & 0x1);
 #else
