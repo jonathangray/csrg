@@ -49,12 +49,12 @@
 
 #ifndef lint
 #ifdef NEWDB
-static char sccsid[] = "@(#)alias.c	5.33 (Berkeley) 05/29/92 (with NEWDB)";
+static char sccsid[] = "@(#)alias.c	5.34 (Berkeley) 07/12/92 (with NEWDB)";
 #else
 #ifdef DBM
-static char sccsid[] = "@(#)alias.c	5.33 (Berkeley) 05/29/92 (with DBM)";
+static char sccsid[] = "@(#)alias.c	5.34 (Berkeley) 07/12/92 (with DBM)";
 #else
-static char sccsid[] = "@(#)alias.c	5.33 (Berkeley) 05/29/92 (without DBM)";
+static char sccsid[] = "@(#)alias.c	5.34 (Berkeley) 07/12/92 (without DBM)";
 #endif
 #endif
 #endif /* not lint */
@@ -116,9 +116,10 @@ extern DBT fetch();
 static DB	*AliasDBptr;
 #endif
 
-alias(a, sendq)
+alias(a, sendq, e)
 	register ADDRESS *a;
 	ADDRESS **sendq;
+	register ENVELOPE *e;
 {
 	register char *p;
 	extern ADDRESS *sendto();
@@ -131,7 +132,7 @@ alias(a, sendq)
 	if (bitset(QDONTSEND, a->q_flags))
 		return;
 
-	CurEnv->e_to = a->q_paddr;
+	e->e_to = a->q_paddr;
 
 	/*
 	**  Look up this name
@@ -232,9 +233,10 @@ aliaslookup(name)
 
 # define DBMMODE	0644
 
-initaliases(aliasfile, init)
+initaliases(aliasfile, init, e)
 	char *aliasfile;
 	bool init;
+	register ENVELOPE *e;
 {
 #if defined(DBM) || defined(NEWDB)
 	int atcnt;
@@ -387,10 +389,10 @@ initaliases(aliasfile, init)
 				automatic ? "auto" : "", username());
 		}
 #endif LOG
-		readaliases(aliasfile, TRUE);
+		readaliases(aliasfile, TRUE, e);
 	}
 # else DBM
-	readaliases(aliasfile, init);
+	readaliases(aliasfile, init, e);
 # endif DBM
 }
 /*
@@ -412,9 +414,10 @@ initaliases(aliasfile, init)
 */
 
 static
-readaliases(aliasfile, init)
+readaliases(aliasfile, init, e)
 	char *aliasfile;
 	bool init;
+	register ENVELOPE *e;
 {
 	register char *p;
 	char *lhs;
@@ -639,7 +642,7 @@ readaliases(aliasfile, init)
 						p++;
 					if (*p == '\0')
 						break;
-					if (parseaddr(p, &bl, -1, ',') == NULL)
+					if (parseaddr(p, &bl, -1, ',', e) == NULL)
 						usrerr("%s... bad address", p);
 					p = DelimChar;
 				}
@@ -728,7 +731,7 @@ readaliases(aliasfile, init)
 
 	/* closing the alias file drops the lock */
 	(void) fclose(af);
-	CurEnv->e_to = NULL;
+	e->e_to = NULL;
 	FileName = NULL;
 	message(Arpa_Info, "%d aliases, longest %d bytes, %d bytes total",
 			naliases, longest, bytes);
@@ -758,9 +761,10 @@ readaliases(aliasfile, init)
 **		New names are added to send queues.
 */
 
-forward(user, sendq)
+forward(user, sendq, e)
 	ADDRESS *user;
 	ADDRESS **sendq;
+	register ENVELOPE *e;
 {
 	char buf[60];
 	extern bool safefile();
@@ -774,9 +778,9 @@ forward(user, sendq)
 		syserr("forward: no home");
 
 	/* good address -- look for .forward file in home */
-	define('z', user->q_home, CurEnv);
-	expand("\001z/.forward", buf, &buf[sizeof buf - 1], CurEnv);
-	include(buf, TRUE, user, sendq);
+	define('z', user->q_home, e);
+	expand("\001z/.forward", buf, &buf[sizeof buf - 1], e);
+	include(buf, TRUE, user, sendq, e);
 }
 /*
 **  MAPHOST -- given a host description, produce a mapping.
