@@ -1,5 +1,5 @@
 #ifndef lint
-static char sccsid[] = "@(#)lookup.c	2.3	01/24/84";
+static char sccsid[] = "@(#)lookup.c	2.4	10/12/84";
 #endif not lint
 # include "stdio.h"
 # include "streams.h"
