@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)malloc.h	7.24 (Berkeley) 05/04/91
+ *	@(#)malloc.h	7.25 (Berkeley) 05/15/91
  */
 
 #ifndef _MALLOC_H_
@@ -133,7 +133,7 @@
 	"VM pager",	/* 36 M_VMPAGER */ \
 	"VM pgdata",	/* 37 M_VMPGDATA */ \
 	"file",		/* 38 M_FILE */ \
-	"file descrip",	/* 39 M_FILEDESC */ \
+	"file desc",	/* 39 M_FILEDESC */ \
 	"lockf",	/* 40 M_LOCKF */ \
 	"proc",		/* 41 M_PROC */ \
 	"subproc",	/* 42 M_PROC */ \
