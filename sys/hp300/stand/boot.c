@@ -30,13 +30,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)boot.c	7.7 (Berkeley) 12/26/92
+ *	@(#)boot.c	7.8 (Berkeley) 05/24/93
  */
 
 #include <sys/param.h>
 #include <sys/reboot.h>
 #include <a.out.h>
-#include <stand/saio.h>
+#include <stand.att/saio.h>
 
 #ifndef INSECURE
 #include <sys/stat.h>
