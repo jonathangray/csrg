@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef NAMED_BIND
-static char sccsid[] = "@(#)domain.c	5.22 (Berkeley) 06/01/90 (with name server)";
+static char sccsid[] = "@(#)domain.c	5.23 (Berkeley) 03/02/91 (with name server)";
 #else
-static char sccsid[] = "@(#)domain.c	5.22 (Berkeley) 06/01/90 (without name server)";
+static char sccsid[] = "@(#)domain.c	5.23 (Berkeley) 03/02/91 (without name server)";
 #endif
 #endif /* not lint */
 
@@ -108,7 +108,7 @@ getmxrr(host, mxhosts, localhost, rcode)
 	cp = (u_char *)&answer + sizeof(HEADER);
 	eom = (u_char *)&answer + n;
 	for (qdcount = ntohs(hp->qdcount); qdcount--; cp += n + QFIXEDSZ)
-		if ((n = dn_skipname(cp, eom)) < 0)
+		if ((n = __dn_skipname(cp, eom)) < 0)
 			goto punt;
 	nmx = 0;
 	seenlocal = 0;
@@ -116,7 +116,8 @@ getmxrr(host, mxhosts, localhost, rcode)
 	bp = hostbuf;
 	ancount = ntohs(hp->ancount);
 	while (--ancount >= 0 && cp < eom && nmx < MAXMXHOSTS) {
-		if ((n = dn_expand((char *)&answer, eom, cp, bp, buflen)) < 0)
+		if ((n = dn_expand((u_char *)&answer,
+		    eom, cp, (u_char *)bp, buflen)) < 0)
 			break;
 		cp += n;
 		GETSHORT(type, cp);
@@ -130,7 +131,8 @@ getmxrr(host, mxhosts, localhost, rcode)
 			continue;
 		}
 		GETSHORT(pref, cp);
-		if ((n = dn_expand((char *)&answer, eom, cp, bp, buflen)) < 0)
+		if ((n = dn_expand((u_char *)&answer,
+		    eom, cp, (u_char *)bp, buflen)) < 0)
 			break;
 		cp += n;
 		if (!strcasecmp(bp, localhost)) {
@@ -231,7 +233,7 @@ loop:
 	cp = (u_char *)&answer + sizeof(HEADER);
 	eom = (u_char *)&answer + n;
 	for (qdcount = ntohs(hp->qdcount); qdcount--; cp += n + QFIXEDSZ)
-		if ((n = dn_skipname(cp, eom)) < 0)
+		if ((n = __dn_skipname(cp, eom)) < 0)
 			return;
 
 	/*
@@ -240,8 +242,8 @@ loop:
 	 * name found.
 	 */
 	for (first = 1; --ancount >= 0 && cp < eom; cp += n) {
-		if ((n = dn_expand((char *)&answer, eom, cp, nbuf,
-		    sizeof(nbuf))) < 0)
+		if ((n = dn_expand((u_char *)&answer,
+		    eom, cp, (u_char *)nbuf, sizeof(nbuf))) < 0)
 			break;
 		if (first) {			/* XXX */
 			(void)strncpy(host, nbuf, hbsize);
@@ -258,8 +260,8 @@ loop:
 			 * than one is undefined.  Copy so that if dn_expand
 			 * fails, `host' is still okay.
 			 */
-			if ((n = dn_expand((char *)&answer, eom, cp, nbuf,
-			    sizeof(nbuf))) < 0)
+			if ((n = dn_expand((u_char *)&answer,
+			    eom, cp, (u_char *)nbuf, sizeof(nbuf))) < 0)
 				break;
 			(void)strncpy(host, nbuf, hbsize); /* XXX */
 			host[hbsize - 1] = '\0';
