@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	5.26 (Berkeley) 07/20/92
+ *	@(#)conf.h	5.27 (Berkeley) 09/23/92
  */
 
 /*
@@ -78,8 +78,11 @@
 # define DAEMON		1	/* include the daemon (requires IPC & SMTP) */
 # define SETPROCTITLE	1	/* munge argv to display current status */
 # define NAMED_BIND	1	/* use Berkeley Internet Domain Server */
-# define USERDB		1	/* look in user database */
 # define MATCHGECOS	1	/* match user names from gecos field */
+
+# ifdef NEWDB
+# define USERDB		1	/* look in user database (requires NEWDB) */
+# endif
 
 # ifdef SYSTEM5
 
