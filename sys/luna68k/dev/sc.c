@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sc.c	7.2 (Berkeley) 07/13/92
+ *	@(#)sc.c	7.3 (Berkeley) 10/11/92
  */
 
 /*
@@ -49,13 +49,13 @@
 #include "sc.h"
 #if NSC > 0
 
-#include "sys/param.h"
-#include "sys/systm.h"
-#include "sys/buf.h"
-#include "device.h"
+#include <sys/param.h>
+#include <sys/systm.h>
+#include <sys/buf.h>
 
-#include "scsireg.h"
-#include "scsivar.h"
+#include <luna68k/dev/device.h>
+#include <luna68k/dev/scsireg.h>
+#include <luna68k/dev/scsivar.h>
 
 /*
  * SC Driver Options
