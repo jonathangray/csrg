@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.122 (Berkeley) 06/10/95";
+static char sccsid[] = "@(#)main.c	8.123 (Berkeley) 06/10/95";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -803,6 +803,7 @@ main(argc, argv, envp)
 	  case MD_DAEMON:
 		/* remove things that don't make sense in daemon mode */
 		FullName = NULL;
+		GrabTo = FALSE;
 
 		/* arrange to restart on hangup signal */
 		setsignal(SIGHUP, sighup);
