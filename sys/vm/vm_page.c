@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_page.c	7.12 (Berkeley) 02/24/92
+ *	@(#)vm_page.c	7.13 (Berkeley) 05/04/92
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -66,12 +66,13 @@
  *	Resident memory management module.
  */
 
-#include "param.h"
+#include <sys/param.h>
+#include <sys/systm.h>
 
-#include "vm.h"
-#include "vm_map.h"
-#include "vm_page.h"
-#include "vm_pageout.h"
+#include <vm/vm.h>
+#include <vm/vm_page.h>
+#include <vm/vm_map.h>
+#include <vm/vm_pageout.h>
 
 /*
  *	Associated with page of user-allocatable memory is a
