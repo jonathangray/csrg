@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)df.c	5.26 (Berkeley) 11/05/91";
+static char sccsid[] = "@(#)df.c	5.26 (Berkeley) 11/10/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -214,7 +214,7 @@ prtstat(sfsp, maxwidth)
  * This code constitutes the old df code for extracting
  * information from filesystem superblocks.
  */
-#include <ufs/fs.h>
+#include <ufs/ffs/fs.h>
 #include <errno.h>
 #include <fstab.h>
 
