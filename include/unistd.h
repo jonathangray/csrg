@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)unistd.h	5.3 (Berkeley) 02/22/91
+ *	@(#)unistd.h	5.4 (Berkeley) 02/22/91
  */
 
 #include <sys/cdefs.h>
