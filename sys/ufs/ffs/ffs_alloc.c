@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_alloc.c	7.32 (Berkeley) 04/21/92
+ *	@(#)ffs_alloc.c	7.33 (Berkeley) 05/04/92
  */
 
 #include <sys/param.h>
@@ -40,6 +40,8 @@
 #include <sys/vnode.h>
 #include <sys/kernel.h>
 #include <sys/syslog.h>
+
+#include <vm/vm.h>
 
 #include <ufs/ufs/quota.h>
 #include <ufs/ufs/inode.h>
