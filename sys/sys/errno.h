@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)errno.h	8.3 (Berkeley) 01/04/94
+ *	@(#)errno.h	8.4 (Berkeley) 01/06/94
  */
 
 #ifndef KERNEL
@@ -94,7 +94,7 @@ extern int errno;			/* global error number */
 #define	ENOPROTOOPT	42		/* Protocol not available */
 #define	EPROTONOSUPPORT	43		/* Protocol not supported */
 #define	ESOCKTNOSUPPORT	44		/* Socket type not supported */
-#define	EOPNOTSUPP	45		/* Operation not supported on socket */
+#define	EOPNOTSUPP	45		/* Operation not supported */
 #define	EPFNOSUPPORT	46		/* Protocol family not supported */
 #define	EAFNOSUPPORT	47		/* Address family not supported by protocol family */
 #define	EADDRINUSE	48		/* Address already in use */
