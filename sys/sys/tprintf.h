@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tprintf.h	1.2 (Berkeley) 06/28/90
+ *	@(#)tprintf.h	7.1 (Berkeley) 07/01/90
  */
 
 typedef struct session *tpr_t;
