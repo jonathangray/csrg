@@ -21,7 +21,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)icu.s	5.1 (Berkeley) 04/24/90
+ *	@(#)icu.s	5.2 (Berkeley) 06/23/90
  */
 
 /*
@@ -33,8 +33,12 @@
 	.data
 	.globl	_imen
 	.globl	_cpl
-_cpl:	.long	15			# current priority level (all off)
+_cpl:	.long	0xffff			# current priority level (all off)
 _imen:	.long	0xffff			# interrupt mask enable (all off)
+	.globl	_ttymask
+_ttymask:	.long	IRQ1+IRQ3+IRQ4
+	.globl	_biomask
+_biomask:	.long	IRQ14+IRQ6
 	.text
 
 	.globl	_iml0			# masks off all interrupts
@@ -48,7 +52,7 @@ _splclock:
 	cli				# disable interrupts
 	movw	$0xffff,%ax		# set new priority level
 	movw	%ax,%dx
-	orw	_imen,%ax		# mask off those not enabled yet
+	# orw	_imen,%ax		# mask off those not enabled yet
 	movw	%ax,%cx
 	NOP
 	outb	%al,$0x21		/* update icu's */
@@ -59,7 +63,7 @@ _splclock:
 	NOP
 	movzwl	_cpl,%eax		# return old priority
 	movw	%dx,_cpl		# set new priority level
-#	sti				# enable interrupts
+	sti				# enable interrupts
 	ret
 
 	.globl	_iml1			# mask off all but irq0
@@ -67,7 +71,9 @@ _splclock:
 _iml1:
 _spltty:
 	cli				# disable interrupts
-	movw	$0xfffe,%ax		# set new priority level
+	# movw	$0xfffe,%ax		# set new priority level
+	movw	_cpl,%ax
+	orw	_ttymask,%ax
 	movw	%ax,%dx
 	orw	_imen,%ax		# mask off those not enabled yet
 	movw	%ax,%cx
@@ -80,7 +86,7 @@ _spltty:
 	NOP
 	movzwl	_cpl,%eax		# return old priority
 	movw	%dx,_cpl		# set new priority level
-#	sti				# enable interrupts
+	sti				# enable interrupts
 	ret
 
 	.globl	_iml8			# mask off all but irq0-1
@@ -99,7 +105,7 @@ _iml8:
 	NOP
 	movzwl	_cpl,%eax		# return old priority
 	movw	%dx,_cpl		# set new priority level
-#	sti				# enable interrupts
+	sti				# enable interrupts
 	ret
 
 	.globl	_iml9			# mask off all but irq0-1,8
@@ -111,7 +117,8 @@ _iml2:
 _splimp:
 _splnet:
 	cli				# disable interrupts
-	movw	$0xfef8,%ax		# set new priority level
+	# movw	$0xfef8,%ax		# set new priority level
+	movw	$0xffff,%ax		# set new priority level
 	movw	%ax,%dx
 	orw	_imen,%ax		# mask off those not enabled yet
 	movw	%ax,%cx
@@ -124,7 +131,7 @@ _splnet:
 	NOP
 	movzwl	_cpl,%eax		# return old priority
 	movw	%dx,_cpl		# set new priority level
-#	sti				# enable interrupts
+	sti				# enable interrupts
 	ret
 
 	.globl	_iml10			# mask off all but irq0-1,8-9
@@ -208,7 +215,10 @@ _iml13:
 _iml14:
 _splbio:
 	cli				# disable interrupts
-	movw	$0xc0f8,%ax		# set new priority level
+	movw	_cpl,%ax
+	orw	_biomask,%ax
+	# movw	$0xffff,%ax		# set new priority level XXX
+	# movw	$0xc0f8,%ax		# set new priority level
 	movw	%ax,%dx
 	orw	_imen,%ax		# mask off those not enabled yet
 	movw	%ax,%cx
@@ -221,7 +231,7 @@ _splbio:
 	NOP
 	movzwl	_cpl,%eax		# return old priority
 	movw	%dx,_cpl		# set new priority level
-#	sti				# enable interrupts
+	sti				# enable interrupts
 	ret
 
 	.globl	_iml15			# mask off all but irq0-1,8-14
@@ -336,7 +346,7 @@ _splsoftclock:
 	NOP
 	movzwl	_cpl,%eax		# return old priority
 	movw	%dx,_cpl		# set new priority level
-#	sti				# enable interrupts
+	sti				# enable interrupts
 	ret
 
 	.globl _imlnone			# masks off no interrupts
@@ -378,8 +388,5 @@ _splx:
 	NOP
 	movzwl	_cpl,%eax		# return old priority
 	movw	%dx,_cpl		# set new priority level
-	cmpw	$0,%dx		# XXX
-	jne	1f		# XXX
 	sti				# enable interrupts
-1:
 	ret
