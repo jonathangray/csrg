@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)rtsock.c	7.20 (Berkeley) 07/30/91
+ *	@(#)rtsock.c	7.21 (Berkeley) 08/08/91
  */
 
 #include "param.h"
@@ -310,9 +310,9 @@ route_output(m, so)
 			 * Fall into
 			 */
 		case RTM_LOCK:
+			rt->rt_rmx.rmx_locks &= ~(rtm->rtm_inits);
 			rt->rt_rmx.rmx_locks |=
 				(rtm->rtm_inits & rtm->rtm_rmx.rmx_locks);
-			rt->rt_rmx.rmx_locks &= ~(rtm->rtm_inits);
 			break;
 		}
 		goto cleanup;
