@@ -29,11 +29,11 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)fork.2	6.5 (Berkeley) 03/10/91
+.\"	@(#)fork.2	6.6 (Berkeley) 08/06/91
 .\"
 .Dd 
 .Dt FORK 2
-.Os BSD 4.0
+.Os BSD 4
 .Sh NAME
 .Nm fork
 .Nd create a new process
@@ -103,5 +103,6 @@ There is insufficient swap space for the new process.
 .Xr wait 2
 .Sh HISTORY
 A
-.Nm
-function call appeared in Version 6 AT&T UNIX.
+.Fn fork 2
+function call appeared in
+.At v6 .
