@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)dn11.c	5.3 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)dn11.c	5.4 (Berkeley) 03/02/91";
 #endif /* not lint */
 
 /*
@@ -40,7 +40,8 @@ static char sccsid[] = "@(#)dn11.c	5.3 (Berkeley) 06/01/90";
  */
 #include "tip.h"
 
-int dn_abort(), alarmtr();
+int dn_abort();
+void alarmtr();
 static jmp_buf jmpbuf;
 static int child = -1, dn;
 
@@ -107,9 +108,9 @@ dn_dialer(num, acu)
 	return (1);
 }
 
+void
 alarmtr()
 {
-
 	alarm(0);
 	longjmp(jmpbuf, 1);
 }
