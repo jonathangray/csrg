@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty.h	8.5 (Berkeley) 01/21/94
+ *	@(#)tty.h	8.6 (Berkeley) 01/21/94
  */
 
 #include <sys/termios.h>
@@ -77,10 +77,8 @@ struct tty {
 	struct	winsize t_winsize;	/* Window size. */
 					/* Start output. */
 	void	(*t_oproc) __P((struct tty *));
-#ifdef sun4c
 					/* Stop output. */
 	void	(*t_stop) __P((struct tty *, int));
-#endif
 					/* Set hardware state. */
 	int	(*t_param) __P((struct tty *, struct termios *));
 	void	*t_sc;			/* XXX: net/if_sl.c:sl_softc. */
