@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)chmod.c	8.6 (Berkeley) 03/31/94";
+static char sccsid[] = "@(#)chmod.c	8.7 (Berkeley) 03/31/94";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -161,8 +161,6 @@ done:	argv += optind;
 				continue;
 			fts_set(ftsp, p, FTS_SKIP);
 			break;
-		case FTS_DC:			/* Ignore. */
-			continue;
 		case FTS_DNR:			/* Warn, chmod, continue. */
 			errno = p->fts_errno;
 			warn("%s", p->fts_path);
