@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1983, 1989, 1993
+ * Copyright (c) 1983, 1989, 1993, 1994
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,12 +32,12 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)newfs.c	8.5 (Berkeley) 02/05/94";
+static char sccsid[] = "@(#)newfs.c	8.6 (Berkeley) 03/27/94";
 #endif /* not lint */
 
 #ifndef lint
 static char copyright[] =
-"@(#) Copyright (c) 1983, 1989, 1993\n\
+"@(#) Copyright (c) 1983, 1989, 1993, 1994\n\
 	The Regents of the University of California.  All rights reserved.\n";
 #endif /* not lint */
 
@@ -50,22 +50,31 @@ static char copyright[] =
 #include <sys/disklabel.h>
 #include <sys/file.h>
 #include <sys/mount.h>
+
 #include <ufs/ufs/dir.h>
 #include <ufs/ffs/fs.h>
 
+#include <ctype.h>
 #include <errno.h>
+#include <paths.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <syslog.h>
+#include <unistd.h>
+
 #if __STDC__
 #include <stdarg.h>
 #else
 #include <varargs.h>
 #endif
-#include <unistd.h>
-#include <stdio.h>
-#include <ctype.h>
-#include <string.h>
-#include <stdlib.h>
-#include <syslog.h>
-#include <paths.h>
+
+#include "mntopts.h"
+
+struct mntopt mopts[] = {
+	MOPT_STDOPTS,
+	{ NULL },
+};
 
 #if __STDC__
 void	fatal(const char *fmt, ...);
@@ -181,6 +190,7 @@ int	unlabeled;
 char	device[MAXPATHLEN];
 char	*progname;
 
+int
 main(argc, argv)
 	int argc;
 	char *argv[];
@@ -193,11 +203,9 @@ main(argc, argv)
 	struct disklabel *getdisklabel();
 	struct partition oldpartition;
 	struct stat st;
-	int fsi, fso;
-	char *cp, *special, *opstring, buf[BUFSIZ];
 	struct statfs *mp;
-	char *s1, *s2;
-	int len, n;
+	int fsi, fso, len, n;
+	char *cp, *s1, *s2, *special, *opstring, buf[BUFSIZ];
 
 	if (progname = rindex(*argv, '/'))
 		++progname;
@@ -209,21 +217,16 @@ main(argc, argv)
 		Nflag++;
 	}
 
-	opstring = "F:NOS:T:a:b:c:d:e:f:i:k:l:m:n:o:p:r:s:t:u:x:";
-	if (!mfs)
-		opstring += 2;		/* -F is mfs only */
-
+	opstring = mfs ?
+	    "Na:b:c:d:e:f:i:m:o:s:" :
+	    "NOS:T:a:b:c:d:e:f:i:k:l:m:n:o:p:r:s:t:u:x:";
 	while ((ch = getopt(argc, argv, opstring)) != EOF)
-		switch(ch) {
-		case 'F':
-			if ((mntflags = atoi(optarg)) == 0)
-				fatal("%s: bad mount flags", optarg);
-			break;
+		switch (ch) {
 		case 'N':
-			Nflag++;
+			Nflag = 1;
 			break;
 		case 'O':
-			Oflag++;
+			Oflag = 1;
 			break;
 		case 'S':
 			if ((sectorsize = atoi(optarg)) <= 0)
@@ -236,7 +239,7 @@ main(argc, argv)
 #endif
 		case 'a':
 			if ((maxcontig = atoi(optarg)) <= 0)
-				fatal("%s: bad max contiguous blocks\n",
+				fatal("%s: bad maximum contiguous blocks\n",
 				    optarg);
 			break;
 		case 'b':
@@ -254,12 +257,12 @@ main(argc, argv)
 			break;
 		case 'e':
 			if ((maxbpg = atoi(optarg)) <= 0)
-				fatal("%s: bad blocks per file in a cyl group\n",
+		fatal("%s: bad blocks per file in a cylinder group\n",
 				    optarg);
 			break;
 		case 'f':
 			if ((fsize = atoi(optarg)) <= 0)
-				fatal("%s: bad frag size", optarg);
+				fatal("%s: bad fragment size", optarg);
 			break;
 		case 'i':
 			if ((density = atoi(optarg)) <= 0)
@@ -283,13 +286,16 @@ main(argc, argv)
 				    optarg);
 			break;
 		case 'o':
-			if (strcmp(optarg, "space") == 0)
-				opt = FS_OPTSPACE;
-			else if (strcmp(optarg, "time") == 0)
-				opt = FS_OPTTIME;
-			else
-				fatal("%s: bad optimization preference %s",
-				    optarg, "(options are `space' or `time')");
+			if (mfs)
+				getmntopts(optarg, mopts, &mntflags);
+			else {
+				if (strcmp(optarg, "space") == 0)
+					opt = FS_OPTSPACE;
+				else if (strcmp(optarg, "time") == 0)
+					opt = FS_OPTTIME;
+				else
+	fatal("%s: unknown optimization preference: use `space' or `time'.");
+			}
 			break;
 		case 'p':
 			if ((trackspares = atoi(optarg)) < 0)
@@ -298,7 +304,7 @@ main(argc, argv)
 			break;
 		case 'r':
 			if ((rpm = atoi(optarg)) <= 0)
-				fatal("%s: bad revs/minute\n", optarg);
+				fatal("%s: bad revolutions/minute\n", optarg);
 			break;
 		case 's':
 			if ((fssize = atoi(optarg)) <= 0)
