@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ptrace.h	7.5 (Berkeley) 02/05/92
+ *	@(#)ptrace.h	7.6 (Berkeley) 06/23/92
  */
 
 #ifndef	_PTRACE_H_
@@ -52,7 +52,9 @@
 #define	PT_FIRSTMACH	32	/* for machine-specific requests */
 #include <machine/ptrace.h>	/* machine-specific requests, if any */
 
-#ifndef KERNEL
+#ifdef KERNEL
+void	proc_reparent __P((struct proc *child, struct proc *newparent));
+#else /* !KERNEL */
 
 #include <sys/cdefs.h>
 
