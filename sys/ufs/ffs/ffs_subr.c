@@ -30,15 +30,15 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_subr.c	7.20 (Berkeley) 05/15/92
+ *	@(#)ffs_subr.c	7.21 (Berkeley) 05/27/92
  */
 
 #include <sys/param.h>
-#include <sys/vnode.h>
 #include <ufs/ffs/fs.h>
-#include <ufs/ffs/ffs_extern.h>
 
 #ifdef KERNEL
+#include <sys/vnode.h>
+#include <ufs/ffs/ffs_extern.h>
 #include <sys/buf.h>
 #include <ufs/ufs/quota.h>
 #include <ufs/ufs/inode.h>
