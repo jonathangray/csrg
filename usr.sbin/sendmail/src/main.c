@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	6.25 (Berkeley) 02/22/93";
+static char sccsid[] = "@(#)main.c	6.26 (Berkeley) 02/24/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -700,7 +700,7 @@ main(argc, argv, envp)
 	**  Switch to the main envelope.
 	*/
 
-	CurEnv = newenvelope(&MainEnvelope);
+	CurEnv = newenvelope(&MainEnvelope, CurEnv);
 	MainEnvelope.e_flags = BlankEnvelope.e_flags;
 
 	/*
@@ -831,7 +831,7 @@ main(argc, argv, envp)
 
 		/* at this point we are in a child: reset state */
 		OpMode = MD_SMTP;
-		(void) newenvelope(CurEnv);
+		(void) newenvelope(CurEnv, CurEnv);
 		openxscript(CurEnv);
 #endif /* DAEMON */
 	}
