@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	7.114 (Berkeley) 03/04/93
+ *	@(#)ufs_vnops.c	7.115 (Berkeley) 03/05/93
  */
 
 #include <sys/param.h>
@@ -362,7 +362,9 @@ ufs_setattr(ap)
 	ip = VTOI(vp);
 	if (vap->va_atime.ts_sec != VNOVAL || vap->va_mtime.ts_sec != VNOVAL) {
 		if (cred->cr_uid != ip->i_uid &&
-		    (error = suser(cred, &p->p_acflag)))
+		    (error = suser(cred, &p->p_acflag)) &&
+		    ((vap->va_cflags & VA_UTIMES_NULL) != 0 || 
+		    (error = VOP_ACCESS(vp, VWRITE, cred, p))))
 			return (error);
 		if (vap->va_atime.ts_sec != VNOVAL)
 			ip->i_flag |= IACC;
