@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_glue.c	7.24 (Berkeley) 05/24/93
+ *	@(#)vm_glue.c	7.25 (Berkeley) 06/02/93
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -422,7 +422,7 @@ swapout_threads()
 			
 		case SSLEEP:
 		case SSTOP:
-			if (p->p_slptime > maxslp) {
+			if (p->p_slptime >= maxslp) {
 				swapout(p);
 				didswap++;
 			} else if (p->p_slptime > outpri) {
