@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)sysctl.c	5.9 (Berkeley) 05/02/93";
+static char sccsid[] = "@(#)sysctl.c	5.10 (Berkeley) 05/04/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -67,6 +67,7 @@ struct ctlname kernname[] = CTL_KERN_NAMES;
 struct ctlname vmname[] = CTL_VM_NAMES;
 struct ctlname netname[] = CTL_NET_NAMES;
 struct ctlname hwname[] = CTL_HW_NAMES;
+struct ctlname username[] = CTL_USER_NAMES;
 struct ctlname debugname[CTL_DEBUG_MAXID];
 char names[BUFSIZ];
 
@@ -84,6 +85,7 @@ struct list secondlevel[] = {
 	{ 0, CTL_DEBUG_MAXID },		/* CTL_DEBUG */
 	{ hwname, HW_MAXID },		/* CTL_HW */
 	{ 0, 0 },			/* CTL_MACHDEP */
+	{ username, USER_MAXID },	/* CTL_USER_NAMES */
 };
 
 int	Aflag, aflag, nflag, wflag;
@@ -289,6 +291,7 @@ parse(string, flags)
 
 	case CTL_FS:
 	case CTL_MACHDEP:
+	case CTL_USER:
 		break;
 
 	default:
