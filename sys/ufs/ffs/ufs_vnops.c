@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	7.73 (Berkeley) 02/03/92
+ *	@(#)ufs_vnops.c	7.74 (Berkeley) 02/03/92
  */
 
 #include <sys/param.h>
@@ -649,7 +649,8 @@ relookup(dvp, vpp, cnp)
 	 */
 	wantparent = cnp->cn_flags & (LOCKPARENT|WANTPARENT);
 	docache = (cnp->cn_flags & NOCACHE) ^ NOCACHE;
-	if (cnp->cn_nameiop == DELETE || (wantparent && cnp->cn_nameiop != CREATE))
+	if (cnp->cn_nameiop == DELETE ||
+	    (wantparent && cnp->cn_nameiop != CREATE))
 		docache = 0;
 	rdonly = cnp->cn_flags & RDONLY;
 	cnp->cn_flags &= ~ISSYMLINK;
