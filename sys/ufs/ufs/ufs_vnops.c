@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1982, 1986, 1989, 1993
+ * Copyright (c) 1982, 1986, 1989, 1993, 1995
  *	The Regents of the University of California.  All rights reserved.
  * (c) UNIX System Laboratories, Inc.
  * All or some portions of this file are derived from material licensed
@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	8.24 (Berkeley) 04/28/95
+ *	@(#)ufs_vnops.c	8.25 (Berkeley) 05/14/95
  */
 
 #include <sys/param.h>
@@ -119,9 +119,9 @@ ufs_mknod(ap)
 		struct vattr *a_vap;
 	} */ *ap;
 {
-	register struct vattr *vap = ap->a_vap;
-	register struct vnode **vpp = ap->a_vpp;
-	register struct inode *ip;
+	struct vattr *vap = ap->a_vap;
+	struct vnode **vpp = ap->a_vpp;
+	struct inode *ip;
 	int error;
 
 	if (error =
@@ -192,8 +192,10 @@ ufs_close(ap)
 	register struct vnode *vp = ap->a_vp;
 	register struct inode *ip = VTOI(vp);
 
-	if (vp->v_usecount > 1 && !(ip->i_flag & IN_LOCKED))
+	simple_lock(&vp->v_interlock);
+	if (vp->v_usecount > 1)
 		ITIMES(ip, &time, &time);
+	simple_unlock(&vp->v_interlock);
 	return (0);
 }
 
@@ -206,19 +208,13 @@ ufs_access(ap)
 		struct proc *a_p;
 	} */ *ap;
 {
-	register struct vnode *vp = ap->a_vp;
-	register struct inode *ip = VTOI(vp);
-	register struct ucred *cred = ap->a_cred;
+	struct vnode *vp = ap->a_vp;
+	struct inode *ip = VTOI(vp);
+	struct ucred *cred = ap->a_cred;
 	mode_t mask, mode = ap->a_mode;
 	register gid_t *gp;
 	int i, error;
 
-#ifdef DIAGNOSTIC
-	if (!VOP_ISLOCKED(vp)) {
-		vprint("ufs_access: not locked", vp);
-		panic("ufs_access: not locked");
-	}
-#endif
 #ifdef QUOTA
 	if (mode & VWRITE)
 		switch (vp->v_type) {
@@ -333,11 +329,11 @@ ufs_setattr(ap)
 		struct proc *a_p;
 	} */ *ap;
 {
-	register struct vattr *vap = ap->a_vap;
-	register struct vnode *vp = ap->a_vp;
-	register struct inode *ip = VTOI(vp);
-	register struct ucred *cred = ap->a_cred;
-	register struct proc *p = ap->a_p;
+	struct vattr *vap = ap->a_vap;
+	struct vnode *vp = ap->a_vp;
+	struct inode *ip = VTOI(vp);
+	struct ucred *cred = ap->a_cred;
+	struct proc *p = ap->a_p;
 	struct timeval atimeval, mtimeval;
 	int error;
 
@@ -626,9 +622,9 @@ ufs_remove(ap)
 		struct componentname *a_cnp;
 	} */ *ap;
 {
-	register struct inode *ip;
-	register struct vnode *vp = ap->a_vp;
-	register struct vnode *dvp = ap->a_dvp;
+	struct inode *ip;
+	struct vnode *vp = ap->a_vp;
+	struct vnode *dvp = ap->a_dvp;
 	int error;
 
 	ip = VTOI(vp);
@@ -661,10 +657,11 @@ ufs_link(ap)
 		struct componentname *a_cnp;
 	} */ *ap;
 {
-	register struct vnode *vp = ap->a_vp;
-	register struct vnode *tdvp = ap->a_tdvp;
-	register struct componentname *cnp = ap->a_cnp;
-	register struct inode *ip;
+	struct vnode *vp = ap->a_vp;
+	struct vnode *tdvp = ap->a_tdvp;
+	struct componentname *cnp = ap->a_cnp;
+	struct proc *p = cnp->cn_proc;
+	struct inode *ip;
 	struct timeval tv;
 	int error;
 
@@ -677,7 +674,7 @@ ufs_link(ap)
 		error = EXDEV;
 		goto out2;
 	}
-	if (tdvp != vp && (error = VOP_LOCK(vp))) {
+	if (tdvp != vp && (error = vn_lock(vp, LK_EXCLUSIVE, p))) {
 		VOP_ABORTOP(tdvp, cnp);
 		goto out2;
 	}
@@ -705,7 +702,7 @@ ufs_link(ap)
 	FREE(cnp->cn_pnbuf, M_NAMEI);
 out1:
 	if (tdvp != vp)
-		VOP_UNLOCK(vp);
+		VOP_UNLOCK(vp, 0, p);
 out2:
 	vput(tdvp);
 	return (error);
@@ -807,10 +804,11 @@ ufs_rename(ap)
 	struct vnode *tvp = ap->a_tvp;
 	register struct vnode *tdvp = ap->a_tdvp;
 	struct vnode *fvp = ap->a_fvp;
-	register struct vnode *fdvp = ap->a_fdvp;
-	register struct componentname *tcnp = ap->a_tcnp;
-	register struct componentname *fcnp = ap->a_fcnp;
-	register struct inode *ip, *xp, *dp;
+	struct vnode *fdvp = ap->a_fdvp;
+	struct componentname *tcnp = ap->a_tcnp;
+	struct componentname *fcnp = ap->a_fcnp;
+	struct proc *p = fcnp->cn_proc;
+	struct inode *ip, *xp, *dp;
 	struct dirtemplate dirbuf;
 	struct timeval tv;
 	int doingdirectory = 0, oldparent = 0, newparent = 0;
@@ -872,12 +870,12 @@ abortit:
 		(void) relookup(fdvp, &fvp, fcnp);
 		return (VOP_REMOVE(fdvp, fvp, fcnp));
 	}
-	if (error = VOP_LOCK(fvp))
+	if (error = vn_lock(fvp, LK_EXCLUSIVE, p))
 		goto abortit;
 	dp = VTOI(fdvp);
 	ip = VTOI(fvp);
 	if ((ip->i_flags & (IMMUTABLE | APPEND)) || (dp->i_flags & APPEND)) {
-		VOP_UNLOCK(fvp);
+		VOP_UNLOCK(fvp, 0, p);
 		error = EPERM;
 		goto abortit;
 	}
@@ -888,7 +886,7 @@ abortit:
 		if ((fcnp->cn_namelen == 1 && fcnp->cn_nameptr[0] == '.') ||
 		    dp == ip || (fcnp->cn_flags&ISDOTDOT) ||
 		    (ip->i_flag & IN_RENAME)) {
-			VOP_UNLOCK(fvp);
+			VOP_UNLOCK(fvp, 0, p);
 			error = EINVAL;
 			goto abortit;
 		}
@@ -917,7 +915,7 @@ abortit:
 	ip->i_flag |= IN_CHANGE;
 	tv = time;
 	if (error = VOP_UPDATE(fvp, &tv, &tv, 1)) {
-		VOP_UNLOCK(fvp);
+		VOP_UNLOCK(fvp, 0, p);
 		goto bad;
 	}
 
@@ -932,7 +930,7 @@ abortit:
 	 * call to checkpath().
 	 */
 	error = VOP_ACCESS(fvp, VWRITE, tcnp->cn_cred, tcnp->cn_proc);
-	VOP_UNLOCK(fvp);
+	VOP_UNLOCK(fvp, 0, p);
 	if (oldparent != dp->i_number)
 		newparent = dp->i_number;
 	if (doingdirectory && newparent) {
@@ -1157,7 +1155,7 @@ bad:
 out:
 	if (doingdirectory)
 		ip->i_flag &= ~IN_RENAME;
-	if (VOP_LOCK(fvp) == 0) {
+	if (vn_lock(fvp, LK_EXCLUSIVE, p) == 0) {
 		ip->i_nlink--;
 		ip->i_flag |= IN_CHANGE;
 		vput(fvp);
@@ -1306,10 +1304,10 @@ ufs_rmdir(ap)
 		struct componentname *a_cnp;
 	} */ *ap;
 {
-	register struct vnode *vp = ap->a_vp;
-	register struct vnode *dvp = ap->a_dvp;
-	register struct componentname *cnp = ap->a_cnp;
-	register struct inode *ip, *dp;
+	struct vnode *vp = ap->a_vp;
+	struct vnode *dvp = ap->a_dvp;
+	struct componentname *cnp = ap->a_cnp;
+	struct inode *ip, *dp;
 	int error;
 
 	ip = VTOI(vp);
@@ -1570,78 +1568,31 @@ int
 ufs_lock(ap)
 	struct vop_lock_args /* {
 		struct vnode *a_vp;
+		int a_flags;
+		struct proc *a_p;
 	} */ *ap;
 {
-	register struct vnode *vp = ap->a_vp;
-	register struct inode *ip;
-	struct proc *p = curproc;	/* XXX */
+	struct vnode *vp = ap->a_vp;
 
-start:
-	while (vp->v_flag & VXLOCK) {
-		vp->v_flag |= VXWANT;
-		sleep((caddr_t)vp, PINOD);
-	}
-	if (vp->v_tag == VT_NON)
-		return (ENOENT);
-	ip = VTOI(vp);
-	if (ip->i_flag & IN_LOCKED) {
-		ip->i_flag |= IN_WANTED;
-#ifdef DIAGNOSTIC
-		if (p) {
-			if (p->p_pid == ip->i_lockholder)
-				panic("locking against myself");
-			ip->i_lockwaiter = p->p_pid;
-		} else
-			ip->i_lockwaiter = -1;
-#endif
-		(void) sleep((caddr_t)ip, PINOD);
-		goto start;
-	}
-#ifdef DIAGNOSTIC
-	ip->i_lockwaiter = 0;
-	if (ip->i_lockholder != 0)
-		panic("lockholder (%d) != 0", ip->i_lockholder);
-	if (p && p->p_pid == 0)
-		printf("locking by process 0\n");
-	if (p)
-		ip->i_lockholder = p->p_pid;
-	else
-		ip->i_lockholder = -1;
-#endif
-	ip->i_flag |= IN_LOCKED;
-	return (0);
+	return (lockmgr(&VTOI(vp)->i_lock, ap->a_flags, &vp->v_interlock,
+		ap->a_p));
 }
 
 /*
- * Unlock an inode.  If WANT bit is on, wakeup.
+ * Unlock an inode.
  */
-int lockcount = 90;
 int
 ufs_unlock(ap)
 	struct vop_unlock_args /* {
 		struct vnode *a_vp;
+		int a_flags;
+		struct proc *a_p;
 	} */ *ap;
 {
-	register struct inode *ip = VTOI(ap->a_vp);
-	struct proc *p = curproc;	/* XXX */
+	struct vnode *vp = ap->a_vp;
 
-#ifdef DIAGNOSTIC
-	if ((ip->i_flag & IN_LOCKED) == 0) {
-		vprint("ufs_unlock: unlocked inode", ap->a_vp);
-		panic("ufs_unlock NOT LOCKED");
-	}
-	if (p && p->p_pid != ip->i_lockholder && p->p_pid > -1 &&
-	    ip->i_lockholder > -1 && lockcount++ < 100)
-		panic("unlocker (%d) != lock holder (%d)",
-		    p->p_pid, ip->i_lockholder);
-	ip->i_lockholder = 0;
-#endif
-	ip->i_flag &= ~IN_LOCKED;
-	if (ip->i_flag & IN_WANTED) {
-		ip->i_flag &= ~IN_WANTED;
-		wakeup((caddr_t)ip);
-	}
-	return (0);
+	return (lockmgr(&VTOI(vp)->i_lock, ap->a_flags | LK_RELEASE,
+		&vp->v_interlock, ap->a_p));
 }
 
 /*
@@ -1654,9 +1605,7 @@ ufs_islocked(ap)
 	} */ *ap;
 {
 
-	if (VTOI(ap->a_vp)->i_flag & IN_LOCKED)
-		return (1);
-	return (0);
+	return (lockstatus(&VTOI(ap->a_vp)->i_lock));
 }
 
 /*
@@ -1747,12 +1696,7 @@ ufs_print(ap)
 	if (vp->v_type == VFIFO)
 		fifo_printinfo(vp);
 #endif /* FIFO */
-	printf("%s\n", (ip->i_flag & IN_LOCKED) ? " (LOCKED)" : "");
-	if (ip->i_lockholder == 0)
-		return (0);
-	printf("\towner pid %d", ip->i_lockholder);
-	if (ip->i_lockwaiter)
-		printf(" waiting pid %d", ip->i_lockwaiter);
+	lockmgr_printinfo(&ip->i_lock);
 	printf("\n");
 	return (0);
 }
@@ -1811,10 +1755,13 @@ ufsspec_close(ap)
 		struct proc *a_p;
 	} */ *ap;
 {
-	register struct inode *ip = VTOI(ap->a_vp);
+	struct vnode *vp = ap->a_vp;
+	struct inode *ip = VTOI(vp);
 
-	if (ap->a_vp->v_usecount > 1 && !(ip->i_flag & IN_LOCKED))
+	simple_lock(&vp->v_interlock);
+	if (ap->a_vp->v_usecount > 1)
 		ITIMES(ip, &time, &time);
+	simple_unlock(&vp->v_interlock);
 	return (VOCALL (spec_vnodeop_p, VOFFSET(vop_close), ap));
 }
 
@@ -1875,10 +1822,13 @@ ufsfifo_close(ap)
 	} */ *ap;
 {
 	extern int (**fifo_vnodeop_p)();
-	register struct inode *ip = VTOI(ap->a_vp);
+	struct vnode *vp = ap->a_vp;
+	struct inode *ip = VTOI(vp);
 
-	if (ap->a_vp->v_usecount > 1 && !(ip->i_flag & IN_LOCKED))
+	simple_lock(&vp->v_interlock);
+	if (ap->a_vp->v_usecount > 1)
 		ITIMES(ip, &time, &time);
+	simple_unlock(&vp->v_interlock);
 	return (VOCALL (fifo_vnodeop_p, VOFFSET(vop_close), ap));
 }
 #endif /* FIFO */
@@ -2021,6 +1971,7 @@ ufs_vinit(mntp, specops, fifoops, vpp)
 	int (**fifoops)();
 	struct vnode **vpp;
 {
+	struct proc *p = curproc;	/* XXX */
 	struct inode *ip;
 	struct vnode *vp, *nvp;
 
@@ -2035,7 +1986,7 @@ ufs_vinit(mntp, specops, fifoops, vpp)
 			 * Discard unneeded vnode, but save its inode.
 			 */
 			ufs_ihashrem(ip);
-			VOP_UNLOCK(vp);
+			VOP_UNLOCK(vp, 0, p);
 			nvp->v_data = vp->v_data;
 			vp->v_data = NULL;
 			vp->v_op = spec_vnodeop_p;
