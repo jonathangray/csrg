@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufsmount.h	8.4 (Berkeley) 10/27/94
+ *	@(#)ufsmount.h	8.5 (Berkeley) 01/02/95
  */
 
 struct buf;
@@ -64,7 +64,7 @@ struct ufsmount {
 	time_t	um_itime[MAXQUOTAS];		/* inode quota time limit */
 	char	um_qflags[MAXQUOTAS];		/* quota specific flags */
 	struct	netexport um_export;		/* export information */
-	quad_t	um_savedmaxfilesize;		/* XXX - limit maxfilesize */
+	int64_t	um_savedmaxfilesize;		/* XXX - limit maxfilesize */
 };
 
 /*
