@@ -1,6 +1,6 @@
 /* Copyright (c) 1982 Regents of the University of California */
 
-static char sccsid[] = "@(#)scanner.c 1.8 08/05/83";
+static char sccsid[] = "@(#)scanner.c 1.9 08/18/83";
 
 /*
  * Debugger scanner.
