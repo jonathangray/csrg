@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	5.45 (Berkeley) 11/15/92";
+static char sccsid[] = "@(#)conf.c	5.46 (Berkeley) 11/16/92";
 #endif /* not lint */
 
 # include <sys/ioctl.h>
@@ -710,15 +710,17 @@ refuseconnections()
 */
 
 /*VARARGS1*/
-setproctitle(fmt, a, b, c)
+setproctitle(fmt VA_ARG_FORMAL)
 	char *fmt;
+	VA_ARG_DECL
 {
 # ifdef SETPROCTITLE
 	register char *p;
 	register int i;
+	char buf[MAXLINE];
+	VA_LOCAL_DECL
 	extern char **Argv;
 	extern char *LastArgv;
-	char buf[MAXLINE];
 
 	p = buf;
 
@@ -727,7 +729,9 @@ setproctitle(fmt, a, b, c)
 	p += strlen(p);
 
 	/* print the argument string */
-	(void) sprintf(p, fmt, a, b, c);
+	VA_START(fmt);
+	(void) vsprintf(p, fmt, ap);
+	VA_END;
 
 	i = strlen(buf);
 	if (i > LastArgv - Argv[0] - 2)
