@@ -29,10 +29,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_mbuf.c	7.23 (Berkeley) 07/12/92
+ *	@(#)uipc_mbuf.c	7.24 (Berkeley) 07/12/92
  */
 
 #include "param.h"
+#include "systm.h"
 #include "proc.h"
 #include "malloc.h"
 #include "map.h"
