@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)start.s	7.3 (Berkeley) 09/13/92
+ *	@(#)start.s	7.4 (Berkeley) 10/11/92
  *
  * start.s -
  *
@@ -51,8 +51,8 @@
  *	v 1.1 90/02/16 16:19:39 shirriff Exp $ SPRITE (DECWRL)
  */
 
-#include "../include/regdef.h"
-#include "../include/machConst.h"
+#include <machine/regdef.h>
+#include <machine/machConst.h>
 
 /*
  * Amount to take off of the stack for the benefit of the debugger.
