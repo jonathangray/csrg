@@ -35,7 +35,7 @@
 # include "sendmail.h"
 
 #ifndef lint
-static char sccsid[] = "@(#)alias.c	8.42 (Berkeley) 03/31/95";
+static char sccsid[] = "@(#)alias.c	8.43 (Berkeley) 04/13/95";
 #endif /* not lint */
 
 
@@ -384,6 +384,7 @@ aliaswait(map, ext, isopen)
 					sleeptime);
 
 			map->map_class->map_close(map);
+			map->map_mflags &= ~(MF_OPEN|MF_WRITABLE);
 			sleep(sleeptime);
 			sleeptime *= 2;
 			if (sleeptime > 60)
@@ -422,7 +423,10 @@ aliaswait(map, ext, isopen)
 			oldSuprErrs = SuprErrs;
 			SuprErrs = TRUE;
 			if (isopen)
+			{
 				map->map_class->map_close(map);
+				map->map_mflags &= ~(MF_OPEN|MF_WRITABLE);
+			}
 			rebuildaliases(map, TRUE);
 			isopen = map->map_class->map_open(map, O_RDONLY);
 			SuprErrs = oldSuprErrs;
@@ -546,7 +550,10 @@ rebuildaliases(map, automatic)
 
 	/* add distinguished entries and close the database */
 	if (bitset(MF_OPEN, map->map_mflags))
+	{
 		map->map_class->map_close(map);
+		map->map_mflags &= ~(MF_OPEN|MF_WRITABLE);
+	}
 
 	/* restore the old signals */
 	(void) setsignal(SIGINT, oldsigint);
