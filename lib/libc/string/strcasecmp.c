@@ -31,11 +31,11 @@
  * SUCH DAMAGE.
  */
 
-#include <sys/stdc.h>
+#include <sys/cdefs.h>
 #include <string.h>
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char sccsid[] = "@(#)strcasecmp.c	5.9 (Berkeley) 06/01/90";
+static const char sccsid[] = "@(#)strcasecmp.c	5.10 (Berkeley) 01/26/91";
 #endif /* LIBC_SCCS and not lint */
 
 typedef unsigned char u_char;
