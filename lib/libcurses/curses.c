@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)curses.c	5.7 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)curses.c	5.8 (Berkeley) 05/15/92";
 #endif /* not lint */
 
 /*
