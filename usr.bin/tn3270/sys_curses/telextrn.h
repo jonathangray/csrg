@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)telextrn.h	4.2 (Berkeley) 04/26/91
+ *	@(#)telextrn.h	4.3 (Berkeley) 05/11/93
  */
 
 /*
@@ -60,7 +60,6 @@ extern void
 	outputPurge(),
 	EmptyTerminal(),
 	StringToTerminal(),
-	_putchar(),
 	ExitPerror(),
 	setcommandmode();
 
