@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)collect.c	8.21 (Berkeley) 08/15/94";
+static char sccsid[] = "@(#)collect.c	8.22 (Berkeley) 08/15/94";
 #endif /* not lint */
 
 # include <errno.h>
@@ -129,7 +129,10 @@ maketemp(from)
 		if (fstat(fileno(tf), &stbuf) < 0)
 			e->e_dfino = -1;
 		else
+		{
+			e->e_dfdev = stbuf.st_dev;
 			e->e_dfino = stbuf.st_ino;
+		}
 		HasEightBits = FALSE;
 	}
 
