@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)telnet.h	5.9 (Berkeley) 06/19/90
+ *	@(#)telnet.h	5.10 (Berkeley) 06/28/90
  */
 
 /*
@@ -107,6 +107,8 @@ char *telcmds[] = {
 #define	TELOPT_TSPEED	32	/* terminal speed */
 #define	TELOPT_LFLOW	33	/* remote flow control */
 #define TELOPT_LINEMODE	34	/* Linemode option */
+#define TELOPT_XDISPLOC	35	/* X Display Location */
+#define TELOPT_ENVIRON	36	/* Environment variables */
 #define	TELOPT_AUTHENTICATION 45 /* XXX Auto Authenticate */
 #define	TELOPT_EXOPL	255	/* extended-options-list */
 
@@ -121,8 +123,8 @@ char *telopts[NTELOPTS] = {
 	"SEND LOCATION", "TERMINAL TYPE", "END OF RECORD",
 	"TACACS UID", "OUTPUT MARKING", "TTYLOC",
 	"3270 REGIME", "X.3 PAD", "NAWS", "TSPEED", "LFLOW",
-	"LINEMODE", "UNKNOWN 35", "UNKNOWN 36", "UNKNOWN 37",
-	"UNKNOWN 38", "UNKNOWN 39", "UNKNOWN 40", "UNKNOWN 41",
+	"LINEMODE", "XDISPLOC", "ENVIRON",
+	"UNKNOWN 37", "UNKNOWN 38", "UNKNOWN 39", "UNKNOWN 40", "UNKNOWN 41",
 	"UNKNOWN 42", "UNKNOWN 43", "UNKNOWN 44", "AUTHENTICATION",
 };
 #define	TELOPT_FIRST	TELOPT_BINARY
@@ -134,6 +136,7 @@ char *telopts[NTELOPTS] = {
 /* sub-option qualifiers */
 #define	TELQUAL_IS	0	/* option is... */
 #define	TELQUAL_SEND	1	/* send option */
+#define	TELQUAL_INFO	2	/* ENVIRON: informational version of IS */
 
 /*
  * LINEMODE suboptions
@@ -146,8 +149,10 @@ char *telopts[NTELOPTS] = {
 #define	MODE_EDIT	0x01
 #define	MODE_TRAPSIG	0x02
 #define	MODE_ACK	0x04
+#define MODE_SOFT_TAB	0x08
+#define MODE_LIT_ECHO	0x10
 
-#define	MODE_MASK	(MODE_EDIT|MODE_TRAPSIG|MODE_ACK)
+#define	MODE_MASK	0x1f
 
 /* Not part of protocol, but needed to simplify things... */
 #define MODE_FLOW		0x0100
@@ -194,6 +199,10 @@ char *telopts[NTELOPTS] = {
 #define	SLC_ACK		0x80
 #define	SLC_FLUSHIN	0x40
 #define	SLC_FLUSHOUT	0x20
+
+#define	ENV_VALUE	0
+#define	ENV_VAR		1
+#define	ENV_ESC		2
 
 /*
  * AUTHENTICATION suboptions
