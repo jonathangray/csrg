@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * from: Utah $Hdr: ite.c 1.23 92/02/28$
+ * from: Utah $Hdr: ite.c 1.24 93/06/25$
  *
- *	@(#)ite.c	8.1 (Berkeley) 06/10/93
+ *	@(#)ite.c	7.6 (Berkeley) 07/08/93
  */
 
 /*
@@ -138,6 +138,17 @@ iteconfig()
 		ip->fbheight = gr->gr_fbheight_h << 8 | gr->gr_fbheight_l;
 		ip->dwidth   = gr->gr_dwidth_h << 8 | gr->gr_dwidth_l;
 		ip->dheight  = gr->gr_dheight_h << 8 | gr->gr_dheight_l;
+		/*
+		 * XXX some displays (e.g. the davinci) appear
+		 * to return a display height greater than the
+		 * returned FB height.  Guess we should go back
+		 * to getting the display dimensions from the
+		 * fontrom...
+		 */
+		if (ip->dwidth > ip->fbwidth)
+			ip->dwidth = ip->fbwidth;
+		if (ip->dheight > ip->fbheight)
+			ip->dheight = ip->fbheight;
 		ip->flags = ITE_ALIVE|ITE_CONSOLE;
 		i++;
 	}
