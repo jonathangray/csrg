@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.39 (Berkeley) 01/24/94
+ *	@(#)sendmail.h	8.40 (Berkeley) 02/03/94
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.39		01/24/94";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.40		02/03/94";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -675,6 +675,7 @@ EXTERN char	OpMode;		/* operation mode, see below */
 
 #define MD_DELIVER	'm'		/* be a mail sender */
 #define MD_SMTP		's'		/* run SMTP on standard input */
+#define MD_ARPAFTP	'a'		/* obsolete ARPANET mode (Grey Book) */
 #define MD_DAEMON	'd'		/* run as a daemon */
 #define MD_VERIFY	'v'		/* verify: don't collect or deliver */
 #define MD_TEST		't'		/* test mode: resolve addrs only */
