@@ -1,11 +1,10 @@
-#!/bin/sh -
-#
-# Copyright (c) 1991 The Regents of the University of California.
-# All rights reserved.
-#
-# This code is derived from software contributed to Berkeley by
-# Ralph Campbell.
-#
+/*
+ * Copyright (c) 1991 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This code is derived from software contributed to Berkeley by
+ * Ralph Campbell.
+ *
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
@@ -33,9 +32,9 @@
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
-#
-#	@(#)crt0.s	5.1 (Berkeley) 03/09/92
-#
+ *
+ *	@(#)crt0.s	5.2 (Berkeley) 03/15/92
+ */
 
 #include <machine/regdef.h>
 #include "../libc/mips/DEFS.h"
