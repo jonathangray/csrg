@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_subs.c	7.41 (Berkeley) 05/15/91
+ *	@(#)nfs_subs.c	7.42 (Berkeley) 11/01/91
  */
 
 /*
@@ -53,8 +53,8 @@
 #include "mbuf.h"
 #include "map.h"
 
-#include "../ufs/quota.h"
-#include "../ufs/inode.h"
+#include "ufs/ufs/quota.h"
+#include "ufs/ufs/inode.h"
 
 #include "rpcv2.h"
 #include "nfsv2.h"
