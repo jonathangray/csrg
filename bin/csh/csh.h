@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)csh.h	5.11 (Berkeley) 06/04/91
+ *	@(#)csh.h	5.12 (Berkeley) 06/05/91
  */
 
 #ifdef SHORT_STRINGS
@@ -270,10 +270,7 @@ struct Bin {
  */
 off_t   lineloc;
 
-#ifdef	TELL
 bool    cantell;		/* Is current source tellable ? */
-
-#endif				/* TELL */
 
 /*
  * Input lines are parsed into doubly linked circular
