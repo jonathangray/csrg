@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: ite_tc.c 1.22 89/04/11$
  *
- *	@(#)ite_tc.c	7.1 (Berkeley) 05/08/90
+ *	@(#)ite_tc.c	7.2 (Berkeley) 12/05/90
  */
 
 #include "ite.h"
