@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)lptest.c	5.5 (Berkeley) 07/21/92";
+static char sccsid[] = "@(#)lptest.c	5.6 (Berkeley) 7/30/92";
 #endif /* not lint */
 
 #include <stdlib.h>
@@ -47,7 +47,7 @@ static char sccsid[] = "@(#)lptest.c	5.5 (Berkeley) 07/21/92";
 /*
  * lptest -- line printer test program (and other devices).
  */
-int
+void
 main(argc, argv)
 	int argc;
 	char **argv;
