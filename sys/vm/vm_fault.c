@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_fault.c	7.9 (Berkeley) 03/09/92
+ *	@(#)vm_fault.c	7.10 (Berkeley) 04/25/92
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -375,6 +375,7 @@ vm_fault(map, vaddr, fault_type, change_wiring)
 
 				cnt.v_pageins++;
 				m->fake = FALSE;
+				m->clean = TRUE;
 				pmap_clear_modify(VM_PAGE_TO_PHYS(m));
 				break;
 			}
@@ -410,6 +411,7 @@ vm_fault(map, vaddr, fault_type, change_wiring)
 				 * XXX - we cannot just fall out at this
 				 * point, m has been freed and is invalid!
 				 */
+				panic("vm_fault: free page"); /* XXX */
 			}
 		}
 
