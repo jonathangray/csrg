@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	8.31 (Berkeley) 03/19/95
+ *	@(#)vfs_syscalls.c	8.32 (Berkeley) 03/22/95
  */
 
 #include <sys/param.h>
@@ -1380,8 +1380,8 @@ lstat(p, uap, retval)
 	if (error = namei(&nd))
 		return (error);
 	/*
-	 * For symbolic links, always return the attributes of its
-	 * containing directory, except for mode, size, and links.
+	 * For symbolic links, always return the attributes of its containing
+	 * directory, except for mode, size, inode number, and links.
 	 */
 	vp = nd.ni_vp;
 	dvp = nd.ni_dvp;
@@ -1410,6 +1410,7 @@ lstat(p, uap, retval)
 		sb.st_nlink = sb1.st_nlink;
 		sb.st_size = sb1.st_size;
 		sb.st_blocks = sb1.st_blocks;
+		sb.st_ino = sb1.st_ino;
 	}
 	error = copyout((caddr_t)&sb, (caddr_t)SCARG(uap, ub), sizeof (sb));
 	return (error);
