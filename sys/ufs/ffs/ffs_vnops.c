@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	7.85 (Berkeley) 06/25/92
+ *	@(#)ffs_vnops.c	7.86 (Berkeley) 07/03/92
  */
 
 #include <sys/param.h>
@@ -97,7 +97,6 @@ struct vnodeopv_entry_desc ffs_vnodeop_entries[] = {
 	{ &vop_islocked_desc, ufs_islocked },		/* islocked */
 	{ &vop_advlock_desc, ufs_advlock },		/* advlock */
 	{ &vop_blkatoff_desc, ffs_blkatoff },		/* blkatoff */
-	{ &vop_vget_desc, ffs_vget },			/* vget */
 	{ &vop_valloc_desc, ffs_valloc },		/* valloc */
 	{ &vop_vfree_desc, ffs_vfree },			/* vfree */
 	{ &vop_truncate_desc, ffs_truncate },		/* truncate */
@@ -145,7 +144,6 @@ struct vnodeopv_entry_desc ffs_specop_entries[] = {
 	{ &vop_islocked_desc, ufs_islocked },		/* islocked */
 	{ &vop_advlock_desc, spec_advlock },		/* advlock */
 	{ &vop_blkatoff_desc, spec_blkatoff },		/* blkatoff */
-	{ &vop_vget_desc, spec_vget },			/* vget */
 	{ &vop_valloc_desc, spec_valloc },		/* valloc */
 	{ &vop_vfree_desc, ffs_vfree },			/* vfree */
 	{ &vop_truncate_desc, spec_truncate },		/* truncate */
@@ -194,7 +192,6 @@ struct vnodeopv_entry_desc ffs_fifoop_entries[] = {
 	{ &vop_islocked_desc, ufs_islocked },		/* islocked */
 	{ &vop_advlock_desc, fifo_advlock },		/* advlock */
 	{ &vop_blkatoff_desc, fifo_blkatoff },		/* blkatoff */
-	{ &vop_vget_desc, fifo_vget },			/* vget */
 	{ &vop_valloc_desc, fifo_valloc },		/* valloc */
 	{ &vop_vfree_desc, ffs_vfree },			/* vfree */
 	{ &vop_truncate_desc, fifo_truncate },		/* truncate */
@@ -286,8 +283,6 @@ ffs_write(ap)
 		struct ucred *a_cred;
 	} */ *ap;
 {
-	USES_VOP_TRUNCATE;
-	USES_VOP_UPDATE;
 	register struct vnode *vp = ap->a_vp;
 	register struct uio *uio = ap->a_uio;
 	register struct inode *ip = VTOI(vp);
@@ -394,7 +389,6 @@ ffs_fsync(ap)
 		struct proc *a_p;
 	} */ *ap;
 {
-	USES_VOP_UPDATE;
 	register struct vnode *vp = ap->a_vp;
 	struct inode *ip = VTOI(vp);
 	register struct buf *bp;
@@ -451,9 +445,6 @@ ffs_inactive(ap)
 		struct vnode *a_vp;
 	} */ *ap;
 {
-	USES_VOP_TRUNCATE;
-	USES_VOP_UPDATE;
-	USES_VOP_VFREE;
 	register struct vnode *vp = ap->a_vp;
 	register struct inode *ip = VTOI(vp);
 	int mode, error;
