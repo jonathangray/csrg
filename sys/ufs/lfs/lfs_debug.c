@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_debug.c	7.2 (Berkeley) 12/06/91
+ *	@(#)lfs_debug.c	7.3 (Berkeley) 12/19/91
  */
 
 #ifdef DEBUG
@@ -117,7 +117,7 @@ lfs_dump_dinode(dip)
 		"nlink ", dip->di_nlink,
 		"uid   ", dip->di_uid,
 		"gid   ", dip->di_gid,
-		"size  ", dip->di_size);
+		"size  ", (u_long)dip->di_size);
 	(void)printf("inum  %d\n", dip->di_inum);
 	(void)printf("Direct Addresses\n");
 	for (i = 0; i < NDADDR; i++) {
