@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fifo_vnops.c	7.18 (Berkeley) 05/25/93
+ *	@(#)fifo_vnops.c	7.19 (Berkeley) 05/26/93
  */
 
 #include <sys/param.h>
@@ -183,8 +183,8 @@ fifo_open(ap)
 			return (0);
 		while (fip->fi_writers == 0) {
 			VOP_UNLOCK(vp);
-			error = tsleep((caddr_t)&fip->fi_readers, PSOCK,
-				openstr, 0);
+			error = tsleep((caddr_t)&fip->fi_readers,
+			    PCATCH | PSOCK, openstr, 0);
 			VOP_LOCK(vp);
 			if (error)
 				break;
@@ -202,7 +202,7 @@ fifo_open(ap)
 			while (fip->fi_readers == 0) {
 				VOP_UNLOCK(vp);
 				error = tsleep((caddr_t)&fip->fi_writers,
-					PSOCK, openstr, 0);
+				    PCATCH | PSOCK, openstr, 0);
 				VOP_LOCK(vp);
 				if (error)
 					break;
