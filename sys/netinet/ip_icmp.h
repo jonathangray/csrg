@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ip_icmp.h	7.7 (Berkeley) 05/31/93
+ *	@(#)ip_icmp.h	7.8 (Berkeley) 06/04/93
  */
 
 /*
@@ -153,4 +153,8 @@ struct icmp {
 
 #ifdef KERNEL
 void	icmp_error __P((struct mbuf *, int, int, n_long, struct ifnet *));
+void	icmp_input __P((struct mbuf *, int));
+void	icmp_reflect __P((struct mbuf *));
+void	icmp_send __P((struct mbuf *, struct mbuf *));
+int	icmp_sysctl __P((int *, u_int, void *, size_t *, void *, size_t));
 #endif
