@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 1982, 1990 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1982, 1990, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,7 +32,7 @@
  *
  * from: hp300/dev/if_le.c	7.16 (Berkeley) 3/11/93
  *
- *	@(#)if_le.c	7.6 (Berkeley) 05/12/93
+ *	@(#)if_le.c	8.1 (Berkeley) 06/10/93
  */
 
 #include "le.h"
