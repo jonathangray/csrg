@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)cap_mkdb.c	5.1 (Berkeley) 10/17/92";
+static char sccsid[] = "@(#)cap_mkdb.c	5.2 (Berkeley) 01/23/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -58,7 +58,7 @@ static void	 err __P((int, const char *, ...));
 static void	 getnamefield __P((char **, char *));
 static void	 usage __P((void));
 
-int docapdbunlink, printnl;
+int docapdbunlink, printnl, verbose;
 char *capdb, **inputfiles;
 
 /*
@@ -77,10 +77,13 @@ main(argc, argv)
 	char *outname, buf[MAXPATHLEN + 1], **f;
 
 	outname = NULL;
-	while ((c = getopt(argc, argv, "f:")) != EOF) {
+	while ((c = getopt(argc, argv, "f:v")) != EOF) {
 		switch(c) {
 		case 'f':
 			outname = optarg;
+			break;
+		case 'v':
+			verbose = 1;
 			break;
 		case '?':
 		default:
@@ -111,11 +114,11 @@ main(argc, argv)
 	 */
 	for (f = inputfiles; *f != NULL; f++) {
 		(void)sprintf(buf, "%s.db", *f);
-		fd = open(buf, O_RDONLY, 0444);
+		fd = open(buf, O_RDONLY, 0);
 		if (fd == -1 && errno != ENOENT)
 			err(1, "%s: %s", buf, strerror(errno));
 		if (fd >= 0) {
-			err(0, "Warning -- %s.db will override %s.", *f, *f);
+			err(0, "%s.db overrides %s.", *f, *f);
 			(void)close(fd);
 		}
 	}
@@ -217,7 +220,8 @@ db_build(inputfiles)
 	free(nf);
 	free(bp);
 
-	(void)printf("cap_mkdb: %d capability records\n", reccnt);
+	if (verbose)
+		(void)printf("cap_mkdb: %d capability records\n", reccnt);
 }
 
 void
