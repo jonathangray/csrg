@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dinode.h	8.4 (Berkeley) 07/08/94
+ *	@(#)dinode.h	8.5 (Berkeley) 08/10/94
  */
 
 /*
@@ -45,6 +45,14 @@
  * numerous dump tapes make this assumption, so we are stuck with it).
  */
 #define	ROOTINO	((ino_t)2)
+
+/*
+ * The Whiteout inode# is a dummy non-zero inode number which will
+ * never be allocated to a real file.  It is used as a place holder
+ * in the directory entry which has been tagged as a DT_W entry.
+ * See the comments about ROOTINO above.
+ */
+#define	WINO	((ino_t)1)
 
 /*
  * A dinode contains all the meta-data associated with a UFS file.
