@@ -1,7 +1,7 @@
 /*-
  * Copyright (c) 1990, 1991 William F. Jolitz.
- * Copyright (c) 1990 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1990, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_ne.c	7.5 (Berkeley) 10/11/92
+ *	@(#)if_ne.c	8.1 (Berkeley) 06/11/93
  */
 
 /*
