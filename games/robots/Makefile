@@ -3,7 +3,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	5.4	(Berkeley)	06/05/87
+#	@(#)Makefile	5.5	(Berkeley)	09/20/87
 #
 DEFS=	-DMAX_PER_UID=5
 CFLAGS=	-O ${DEFS}
