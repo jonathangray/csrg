@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_syscalls.c	7.19 (Berkeley) 08/21/92
+ *	@(#)lfs_syscalls.c	7.20 (Berkeley) 08/25/92
  */
 
 #include <sys/param.h>
@@ -97,6 +97,7 @@ lfs_markv(p, uap, retval)
 	sp->bpp = malloc(((LFS_SUMMARY_SIZE - sizeof(SEGSUM)) /
 	    sizeof(daddr_t) + 1) * sizeof(struct buf *), M_SEGMENT, M_WAITOK);
 	sp->seg_flags = SEGM_CKP;
+	sp->vp = NULL;
 
 	cnt = uap->blkcnt;
 	start = malloc(cnt * sizeof(BLOCK_INFO), M_SEGMENT, M_WAITOK);
@@ -119,7 +120,7 @@ lfs_markv(p, uap, retval)
 		 */
 		if (lastino != blkp->bi_inode) {
 			if (lastino != LFS_UNUSED_INUM) {
-				lfs_updatemeta(sp, vp);
+				lfs_updatemeta(sp);
 				lfs_writeinode(fs, sp, ip);
 				vput(vp);
 			}
@@ -137,9 +138,11 @@ lfs_markv(p, uap, retval)
 				printf("lfs_markv: VFS_VGET failed (%d)\n",
 				    blkp->bi_inode);
 #endif
+				lastino = LFS_UNUSED_INUM;
 				v_daddr == LFS_UNUSED_DADDR;
 				continue;
 			}
+			sp->vp = vp;
 			ip = VTOI(vp);
 		} else if (v_daddr == LFS_UNUSED_DADDR)
 			continue;
@@ -174,11 +177,13 @@ lfs_markv(p, uap, retval)
 			if (error = VOP_BWRITE(bp))
 				goto err2;
 		}
-		lfs_gatherblock(sp, bp, NULL);
+		while (lfs_gatherblock(sp, bp, NULL));
 	}
-	lfs_updatemeta(sp, vp);
-	lfs_writeinode(fs, sp, ip);
-	vput(vp);
+	if (sp->vp) {
+		lfs_updatemeta(sp);
+		lfs_writeinode(fs, sp, ip);
+		vput(vp);
+	}
 	(void) lfs_writeseg(fs, sp);
 	lfs_segunlock(fs);
 	free(start, M_SEGMENT);
