@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	6.52 (Berkeley) 05/03/93";
+static char sccsid[] = "@(#)conf.c	6.53 (Berkeley) 05/04/93";
 #endif /* not lint */
 
 # include <sys/ioctl.h>
@@ -858,6 +858,14 @@ refuseconnections()
 # ifdef __hpux
 #  include <sys/pstat.h>
 # endif
+# ifdef BSD4_4
+#  include <machine/vmparam.h>
+#  include <sys/exec.h>
+#  define SETPROC_STATIC static
+# endif
+# ifndef SETPROC_STATIC
+#  define SETPROC_STATIC
+# endif
 #endif
 
 char	ProcTitleBuf[MAXLINE];
@@ -910,6 +918,7 @@ setproctitle(fmt, va_alist)
 	p = &Argv[0][i];
 	while (p < LastArgv)
 		*p++ = ' ';
+#   endif
 #  endif
 # endif /* SETPROCTITLE */
 }
