@@ -1,7 +1,12 @@
-#! /bin/sh
+#!/bin/sh -
 #
-#	@(#)style.sh	4.7	(Berkeley)	89/08/31
+# This module is believed to contain source code proprietary to AT&T.
+# Use and redistribution is subject to the Berkeley Software License
+# Agreement and your Software Agreement with AT&T (Western Electric).
 #
+#	@(#)style.sh	4.8 (Berkeley) 04/17/91
+#
+
 L=/usr/libexec
 B=/usr/ucb
 echo " " $*
