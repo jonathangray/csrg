@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)restore.h	5.10 (Berkeley) 11/11/91
+ *	@(#)restore.h	5.11 (Berkeley) 06/30/92
  */
 
 #include <sys/param.h>
@@ -63,6 +63,8 @@ extern time_t	dumptime;	/* time that this dump begins */
 extern time_t	dumpdate;	/* time that this dump was made */
 extern char	command;	/* opration being performed */
 extern FILE	*terminal;	/* file descriptor for the terminal input */
+extern int	oldinofmt;	/* reading tape with old format inodes */
+extern int	Bcvt;		/* need byte swapping on inodes and dirs */
 
 /*
  * Each file in the file system is described by one of these entries
