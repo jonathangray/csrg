@@ -8,7 +8,7 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)fsdb.8	8.5 (Berkeley) 04/19/94
+.\"	@(#)fsdb.8	8.6 (Berkeley) 06/01/94
 .\"
 .TH FSDB 8 ""
 .UC 7
@@ -410,6 +410,7 @@ The address pointed to by
 .IR dot
 has its contents decremented by expression
 .IR e .
+.ne 1i
 .SH COMMANDS
 .PP
 A command must be prefixed by a ':' character.
@@ -609,6 +610,7 @@ display the current working directory.
 .B quit
 quit
 .IR fsdb .
+.ne 1i
 .TP 7.2n
 .B sb
 the value of
