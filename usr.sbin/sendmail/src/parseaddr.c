@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	8.3 (Berkeley) 07/11/93";
+static char sccsid[] = "@(#)parseaddr.c	8.4 (Berkeley) 07/16/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -523,10 +523,7 @@ prescan(addr, delim, pvpbuf, delimptr)
 				if (cmntcnt <= 0)
 				{
 					usrerr("553 Unbalanced ')'");
-					if (delimptr != NULL)
-						*delimptr = p;
-					CurEnv->e_to = saveto;
-					return (NULL);
+					c = NOCHAR;
 				}
 				else
 					cmntcnt--;
@@ -540,12 +537,10 @@ prescan(addr, delim, pvpbuf, delimptr)
 				if (anglecnt <= 0)
 				{
 					usrerr("553 Unbalanced '>'");
-					if (delimptr != NULL)
-						*delimptr = p;
-					CurEnv->e_to = saveto;
-					return (NULL);
+					c = NOCHAR;
 				}
-				anglecnt--;
+				else
+					anglecnt--;
 			}
 			else if (delim == ' ' && isascii(c) && isspace(c))
 				c = ' ';
