@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	8.69 (Berkeley) 02/06/94";
+static char sccsid[] = "@(#)deliver.c	8.70 (Berkeley) 02/06/94";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -401,8 +401,8 @@ sendall(e, mode)
 			}
 #ifdef LOG
 			if (LogLevel > 4)
-				syslog(LOG_INFO, "%s: clone %s",
-					ee->e_id, e->e_id);
+				syslog(LOG_INFO, "%s: clone %s, owner=%s",
+					ee->e_id, e->e_id, owner);
 #endif
 			CurEnv = ee;
 			sendenvelope(ee, mode, announcequeueup);
