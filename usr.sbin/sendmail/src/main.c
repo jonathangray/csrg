@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.50 (Berkeley) 03/07/94";
+static char sccsid[] = "@(#)main.c	8.51 (Berkeley) 03/08/94";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -712,13 +712,6 @@ main(argc, argv, envp)
 	  case MD_DAEMON:
 		/* remove things that don't make sense in daemon mode */
 		FullName = NULL;
-		break;
-
-	  case MD_SMTP:
-		if (RealUid != 0)
-			auth_warning(CurEnv,
-				"%s owned process doing -bs",
-				RealUserName);
 		break;
 	}
 
