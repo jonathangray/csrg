@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)append.c	5.5 (Berkeley) 03/12/91";
+static char sccsid[] = "@(#)append.c	5.6 (Berkeley) 03/12/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -63,7 +63,7 @@ append(argv)
 	register char *file;
 	struct stat sb;
 	CF cf;
-	int rval;
+	int eval;
 
 	afd = open_archive(O_CREAT|O_RDWR);
 	if (lseek(afd, (off_t)0, SEEK_END) == (off_t)-1)
@@ -71,11 +71,11 @@ append(argv)
 
 	/* Read from disk, write to an archive; pad on write. */
 	SETCF(0, 0, afd, archive, WPAD);
-	while (file = *argv++) {
+	for (eval = 0; file = *argv++;) {
 		if ((fd = open(file, O_RDONLY)) < 0) {
 			(void)fprintf(stderr,
 			    "ar: %s: %s.\n", file, strerror(errno));
-			rval = 1;
+			eval = 1;
 			continue;
 		}
 		if (options & AR_V)
@@ -86,5 +86,5 @@ append(argv)
 		(void)close(fd);
 	}
 	close_archive(afd);
-	return(rval);	
+	return(eval);	
 }
