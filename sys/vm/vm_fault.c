@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_fault.c	7.16 (Berkeley) 11/29/92
+ *	@(#)vm_fault.c	7.17 (Berkeley) 03/09/93
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -851,13 +851,14 @@ vm_fault(map, vaddr, fault_type, change_wiring)
  *
  *	Wire down a range of virtual addresses in a map.
  */
-void vm_fault_wire(map, start, end)
+int
+vm_fault_wire(map, start, end)
 	vm_map_t	map;
 	vm_offset_t	start, end;
 {
-
 	register vm_offset_t	va;
 	register pmap_t		pmap;
+	int			rv;
 
 	pmap = vm_map_pmap(map);
 
@@ -875,8 +876,14 @@ void vm_fault_wire(map, start, end)
 	 */
 
 	for (va = start; va < end; va += PAGE_SIZE) {
-		(void) vm_fault(map, va, VM_PROT_NONE, TRUE);
+		rv = vm_fault(map, va, VM_PROT_NONE, TRUE);
+		if (rv) {
+			if (va != start)
+				vm_fault_unwire(map, start, va);
+			return(rv);
+		}
 	}
+	return(KERN_SUCCESS);
 }
 
 
