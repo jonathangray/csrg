@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cd9660_vnops.c	8.8 (Berkeley) 07/13/94
+ *	@(#)cd9660_vnops.c	8.9 (Berkeley) 07/24/94
  */
 
 #include <sys/param.h>
@@ -548,7 +548,7 @@ cd9660_readdir(ap)
 		}
 	}
 	
-	endsearch = ip->i_size;
+	endsearch = roundup(ip->i_size, imp->logical_block_size);
 	
 	while (idp->curroff < endsearch) {
 		/*
@@ -574,8 +574,8 @@ cd9660_readdir(ap)
 		reclen = isonum_711 (ep->length);
 		if (reclen == 0) {
 			/* skip to next block, if any */
-			idp->curroff = roundup (idp->curroff,
-						imp->logical_block_size);
+			idp->curroff =
+				roundup(idp->curroff, imp->logical_block_size);
 			continue;
 		}
 		
@@ -591,23 +591,22 @@ cd9660_readdir(ap)
 			break;
 		}
 		
-		idp->current.d_namlen = isonum_711 (ep->name_len);
-		if (isonum_711(ep->flags)&2)
-			isodirino(&idp->current.d_fileno,ep,imp);
-		else
-			idp->current.d_fileno = dbtob(bp->b_blkno) +
-				idp->curroff;
-		
+		idp->current.d_namlen = isonum_711(ep->name_len);
+
 		if (reclen < ISO_DIRECTORY_RECORD_SIZE + idp->current.d_namlen) {
 			error = EINVAL;
 			/* illegal entry, stop */
 			break;
 		}
 		
+		if (isonum_711(ep->flags)&2)
+			isodirino(&idp->current.d_fileno,ep,imp);
+		else
+			idp->current.d_fileno = dbtob(bp->b_blkno) +
+				entryoffsetinblock;
+		
 		idp->curroff += reclen;
-		/*
-		 *
-		 */
+
 		switch (imp->iso_ftype) {
 		case ISO_FTYPE_RRIP:
 			cd9660_rrip_getname(ep,idp->current.d_name, &elen,
@@ -655,7 +654,6 @@ cd9660_readdir(ap)
 	
 	if (bp)
 		brelse (bp);
-
 	uio->uio_offset = idp->uio_off;
 	*ap->a_eofflag = idp->eofflag;
 	
@@ -663,7 +661,6 @@ cd9660_readdir(ap)
 	
 	return (error);
 }
-
 /*
  * Return target name of a symbolic link
  * Shouldn't we get the parent vnode and read the data from there?
