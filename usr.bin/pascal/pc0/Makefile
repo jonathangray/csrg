@@ -1,9 +1,9 @@
-SCCSID = "@(#)Makefile 1.26 04/16/82"
+SCCSID = "@(#)Makefile 1.27 05/06/82"
 INSTALLDIR = $(DESTDIR)/usr/lib
 INSTALLNAME = ${INSTALLDIR}/pc0
 WHOAMI = pc
-VERSION = 2.2
-DATE = 04/16/82
+VERSION = 2.3
+DATE = 05/06/82
 
 MKSTR = /usr/ucb/mkstr
 EYACC = /usr/ucb/eyacc
@@ -117,6 +117,7 @@ print:	sources
 	@pr yy.h yy*.c
 
 install: a.out
+	${RM} ${LIBDIR}/${OLDSTRINGS}
 	cp ${ERRORSTRINGS} ${LIBDIR}/${ERRORSTRINGS}
 	cp ${INSTALLDIR}/pi ${INSTALLDIR}/pi.bak
 	cp a.out ${INSTALLDIR}/pi
@@ -355,6 +356,7 @@ yymain.o: whoami.h
 yymain.o: 0.h
 yymain.o: yy.h
 yymain.o: objfmt.h
+yymain.o: config.h
 yyoptions.o: whoami.h
 yyoptions.o: 0.h
 yyoptions.o: yy.h
