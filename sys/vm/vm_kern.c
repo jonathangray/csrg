@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_kern.c	7.9 (Berkeley) 05/04/92
+ *	@(#)vm_kern.c	7.10 (Berkeley) 10/01/92
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -176,7 +176,7 @@ vm_offset_t kmem_alloc(map, size)
 			vm_object_lock(kernel_object);
 		}
 		vm_page_zero_fill(mem);
-		mem->busy = FALSE;
+		mem->flags &= ~PG_BUSY;
 	}
 	vm_object_unlock(kernel_object);
 		
@@ -417,7 +417,7 @@ kmem_malloc(map, size, canwait)
 #if 0
 		vm_page_zero_fill(m);
 #endif
-		m->busy = FALSE;
+		m->flags &= ~PG_BUSY;
 	}
 	vm_object_unlock(kmem_object);
 
