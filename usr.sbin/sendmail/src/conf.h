@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.174 (Berkeley) 05/27/95
+ *	@(#)conf.h	8.175 (Berkeley) 05/28/95
  */
 
 /*
@@ -166,9 +166,7 @@ struct rusage;	/* forward declaration to get gcc to shut up in wait.h */
 #  define HASGETUSERSHELL 0	/* getusershell(3) causes core dumps */
 # endif
 # define syslog		hard_syslog
-# ifdef __STDC__
-extern int	syslog(int, char *, ...);
-# endif
+extern void	hard_syslog __P((int, char *, ...));
 
 # ifdef V4FS
 		/* HP-UX 10.x */
