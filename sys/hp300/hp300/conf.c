@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)conf.c	7.10 (Berkeley) 02/15/92
+ *      @(#)conf.c	7.11 (Berkeley) 03/01/92
  */
 
 #include "sys/param.h"
@@ -307,7 +307,7 @@ struct cdevsw	cdevsw[] =
 	cdev_log_init(1,log),		/* 6: /dev/klog */
 	cdev_tape_init(NCT,ct),		/* 7: cs80 cartridge tape */
 	cdev_disk_init(NSD,sd),		/* 8: scsi disk */
-	cdev_disk_init(NSD,rd),		/* 9: hpib disk */
+	cdev_disk_init(NRD,rd),		/* 9: hpib disk */
 	cdev_grf_init(1,grf),		/* 10: frame buffer */
 	cdev_ppi_init(NPPI,ppi),	/* 11: printer/plotter interface */
 	cdev_tty_init(NDCA,dca),	/* 12: built-in single-port serial */
