@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)proc.h	7.36 (Berkeley) 07/08/92
+ *	@(#)proc.h	7.37 (Berkeley) 12/27/92
  */
 
 #ifndef _PROC_H_
@@ -203,11 +203,6 @@ struct	pcred {
 #define	SPROFIL	0x0080000	/* has started profiling */
 /* the following should be moved to machine-dependent areas */
 #define	SOWEUPC	0x0002000	/* owe process an addupc() call at next ast */
-#ifdef HPUXCOMPAT
-#define	SHPUX	0x0010000	/* HP-UX process (HPUXCOMPAT) */
-#else
-#define	SHPUX	0		/* not HP-UX process (HPUXCOMPAT) */
-#endif
 
 #ifdef KERNEL
 /*
