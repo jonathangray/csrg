@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)termios.c	5.7 (Berkeley) 04/30/91";
+static char sccsid[] = "@(#)termios.c	5.8 (Berkeley) 05/06/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -66,7 +66,7 @@ tcsetattr(fd, opt, t)
 		localterm = *t;
 		localterm.c_cflag |= CIGNORE;
 		t = &localterm;
-		opt &= TCSASOFT;
+		opt &= ~TCSASOFT;
 	}
 	if (opt == TCSANOW)
 		return (ioctl(fd, TIOCSETA, t));
