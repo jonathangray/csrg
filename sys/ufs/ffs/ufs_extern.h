@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_extern.h	7.5 (Berkeley) 04/21/92
+ *	@(#)ufs_extern.h	7.6 (Berkeley) 05/13/92
  */
 
 struct buf;
@@ -63,7 +63,7 @@ void	 ufs_bufstats __P((void));
 int	 ufs_checkpath __P((struct inode *, struct inode *, struct ucred *));
 int	 ufs_chmod __P((struct vnode *, int, struct ucred *, struct proc *));
 int	 ufs_chown
-	    __P((struct vnode *, u_int, u_int, struct ucred *, struct proc *));
+	    __P((struct vnode *, uid_t, gid_t, struct ucred *, struct proc *));
 int	 ufs_close __P((struct vnode *, int, struct ucred *, struct proc *));
 int	 ufs_create __P((struct vnode *, struct vnode **,
 			 struct componentname *, struct vattr *));
