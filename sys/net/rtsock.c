@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1988 Regents of the University of California.
+ * Copyright (c) 1988, 1991 Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)rtsock.c	7.18 (Berkeley) 06/25/91
+ *	@(#)rtsock.c	7.18 (Berkeley) 06/27/91
  */
 
 #include "param.h"
@@ -376,6 +376,7 @@ rt_setmetrics(which, in, out)
 	metric(RTV_RTTVAR, rmx_rttvar);
 	metric(RTV_HOPCOUNT, rmx_hopcount);
 	metric(RTV_MTU, rmx_mtu);
+	metric(RTV_EXPIRE, rmx_expire);
 #undef metric
 }
 
