@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_lookup.c	7.46 (Berkeley) 01/22/93
+ *	@(#)vfs_lookup.c	7.47 (Berkeley) 04/27/93
  */
 
 #include <sys/param.h>
@@ -220,7 +220,6 @@ namei(ndp)
  * the target is returned locked, otherwise it is returned unlocked.
  * When creating or renaming and LOCKPARENT is specified, the target may not
  * be ".".  When deleting and LOCKPARENT is specified, the target may be ".".
- * NOTE: (LOOKUP | LOCKPARENT) currently returns the parent vnode unlocked.
  * 
  * Overall outline of lookup:
  *
@@ -314,7 +313,7 @@ dirloop:
 	 * e.g. like "/." or ".".
 	 */
 	if (cnp->cn_nameptr[0] == '\0') {
-		if (cnp->cn_nameiop != LOOKUP || wantparent) {
+		if (cnp->cn_nameiop != LOOKUP) {
 			error = EISDIR;
 			goto bad;
 		}
@@ -322,9 +321,13 @@ dirloop:
 			error = ENOTDIR;
 			goto bad;
 		}
-		if (!(cnp->cn_flags & LOCKLEAF))
-			VOP_UNLOCK(dp);
+		if (wantparent) {
+			ndp->ni_dvp = dp;
+			vref(dp);
+		}
 		ndp->ni_vp = dp;
+		if (!(cnp->cn_flags & (LOCKPARENT | LOCKLEAF)))
+			VOP_UNLOCK(dp);
 		if (cnp->cn_flags & SAVESTART)
 			panic("lookup: SAVESTART");
 		return (0);
