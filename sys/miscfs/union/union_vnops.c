@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_vnops.c	8.10 (Berkeley) 05/07/94
+ *	@(#)union_vnops.c	8.11 (Berkeley) 05/07/94
  */
 
 #include <sys/param.h>
@@ -957,9 +957,6 @@ union_link(ap)
 		VREF(dvp);
 		dun->un_flags |= UN_KLOCK;
 		vput(ap->a_vp);
-		FIXUP(un);
-		VREF(vp);
-		vrele(ap->a_tdvp);
 
 		error = VOP_LINK(dvp, vp, ap->a_cnp);
 	} else {
