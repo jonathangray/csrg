@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dtop.c	8.1 (Berkeley) 06/10/93
+ *	@(#)dtop.c	8.2 (Berkeley) 11/30/93
  */
 
 /* 
@@ -120,7 +120,6 @@ SOFTWARE.
 
 extern int pmax_boardtype;
 
-extern int ttrstrt	__P((void *));
 void dtop_keyboard_repeat	__P((void *));
 int dtop_null_device_handler	__P((dtop_device_t, dtop_message_t, int, int));
 int dtop_locator_handler	__P((dtop_device_t, dtop_message_t, int, int));
