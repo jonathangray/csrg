@@ -1,4 +1,9 @@
-.\"	@(#)tmac.sU	5.1 (Berkeley) 01/02/91
+.\" This module is believed to contain source code proprietary to AT&T.
+.\" Use and redistribution is subject to the Berkeley Software License
+.\" Agreement and your Software Agreement with AT&T (Western Electric).
+.\"
+.\"	@(#)tmac.sU	5.2 (Berkeley) 04/17/91
+.\"
 .\" Modify -ms macros for typesetting manuals for Usenix distribution.
 .\" Differences: page numbers even on page 1, MH = Bell Labs,
 .\" default line length (and title length) 6.5i instead of 6i.
