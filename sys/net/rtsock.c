@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)rtsock.c	7.15 (Berkeley) 11/29/90
+ *	@(#)rtsock.c	7.16 (Berkeley) 03/16/91
  */
 
 #include "param.h"
