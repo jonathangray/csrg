@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hd_input.c	7.8 (Berkeley) 10/11/92
+ *	@(#)hd_input.c	7.9 (Berkeley) 12/08/92
  */
 
 #include <sys/param.h>
@@ -54,6 +54,9 @@
 #include <netccitt/hd_var.h>
 #include <netccitt/x25.h>
 
+static frame_reject();
+static rej_routine();
+static free_iframes();
 /*
  *      HDLC INPUT INTERFACE
  *
@@ -67,7 +70,6 @@ hdintr ()
 	register struct hdcb *hdp;
 	register struct ifnet *ifp;
 	register int s;
-	extern struct ifqueue pkintrq;
 	static struct ifnet *lastifp;
 	static struct hdcb *lasthdp;
 
@@ -111,8 +113,6 @@ hdintr ()
 		if (process_rxframe (hdp, m) == FALSE)
 			m_freem (m);
 	}
-	if (pkintrq.ifq_len)
-		pkintr ();
 }
 
 process_rxframe (hdp, fbuf)
