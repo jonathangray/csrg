@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_vnops.c	8.1 (Berkeley) 02/10/94
+ *	@(#)union_vnops.c	8.2 (Berkeley) 02/10/94
  */
 
 #include <sys/param.h>
@@ -49,7 +49,7 @@
 #include <sys/malloc.h>
 #include <sys/buf.h>
 #include <sys/queue.h>
-#include "union.h"
+#include <miscfs/union/union.h>
 
 static int
 union_lookup1(udvp, dvp, vpp, cnp)
