@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_vnops.c	8.19 (Berkeley) 07/28/94
+ *	@(#)union_vnops.c	8.20 (Berkeley) 08/31/94
  */
 
 #include <sys/param.h>
@@ -773,6 +773,18 @@ union_write(ap)
 	}
 
 	return (error);
+}
+
+union_lease(ap)
+	struct vop_lease_args /* {
+		struct vnode *a_vp;
+		struct proc *a_p;
+		struct ucred *a_cred;
+		int a_flag;
+	} */ *ap;
+{
+
+	return (VOP_LEASE(OTHERVP(ap->a_vp), ap->a_p, ap->a_cred, ap->a_flag));
 }
 
 int
@@ -1514,6 +1526,7 @@ struct vnodeopv_entry_desc union_vnodeop_entries[] = {
 	{ &vop_setattr_desc, union_setattr },		/* setattr */
 	{ &vop_read_desc, union_read },			/* read */
 	{ &vop_write_desc, union_write },		/* write */
+	{ &vop_lease_desc, union_lease },		/* lease */
 	{ &vop_ioctl_desc, union_ioctl },		/* ioctl */
 	{ &vop_select_desc, union_select },		/* select */
 	{ &vop_mmap_desc, union_mmap },			/* mmap */
