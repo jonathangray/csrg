@@ -32,14 +32,13 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)traverse.c	5.15 (Berkeley) 11/10/91";
+static char sccsid[] = "@(#)traverse.c	5.16 (Berkeley) 12/12/91";
 #endif /* not lint */
 
 #ifdef sunos
 #include <stdio.h>
 #include <ctype.h>
 #include <sys/param.h>
-#include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/dir.h>
 #include <sys/vnode.h>
@@ -51,6 +50,7 @@ static char sccsid[] = "@(#)traverse.c	5.15 (Berkeley) 11/10/91";
 #include <ufs/ufs/dinode.h>
 #include <ufs/ffs/fs.h>
 #endif
+#include <sys/stat.h>
 #include <protocols/dumprestore.h>
 #ifdef __STDC__
 #include <unistd.h>
@@ -125,8 +125,9 @@ mapfiles(maxino, tapesize)
 		SETINO(ino, usedinomap);
 		if (mode == IFDIR)
 			SETINO(ino, dumpdirmap);
-		if (dp->di_mtime >= spcl.c_ddate ||
-		    dp->di_ctime >= spcl.c_ddate) {
+		if ((dp->di_mtime >= spcl.c_ddate ||
+		    dp->di_ctime >= spcl.c_ddate) &&
+		    (dp->di_flags & NODUMP) != NODUMP) {
 			SETINO(ino, dumpinomap);
 			if (mode != IFREG && mode != IFDIR && mode != IFLNK) {
 				*tapesize += 1;
