@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_alloc.c	7.30 (Berkeley) 10/02/91
+ *	@(#)lfs_alloc.c	7.31 (Berkeley) 10/03/91
  */
 
 #ifdef LOGFS
@@ -200,7 +200,7 @@ lfs_vcreate(mp, ino, vpp)
 printf("lfs_vcreate: ino %d\n", ino);
 	/* Create the vnode. */
 	if (error = getnewvnode(VT_LFS, mp, &lfs_vnodeops, vpp))
-		return(error);
+		return (error);
 
 	/* Get a pointer to the private mount structure. */
 	ump = VFSTOUFS(mp);
@@ -235,13 +235,13 @@ lfs_getversion(fs, ino)
 	u_long version;
 
 	/*
-	 * Read the appropriate block from the ifile.  Return the version
-	 * number.
+	 * Read the appropriate block from the ifile.  Return the
+	 * version number.
 	 */
 	LFS_IENTRY(ifp, fs, ino, bp);
 	version = ifp->if_version;
 	brelse(bp);
-	return(version);
+	return (version);
 }
 
 /* Set values in the ifile for the inode. */
@@ -256,7 +256,8 @@ lfs_iset(ip, daddr, atime)
 	LFS *fs;
 	ino_t ino;
 
-printf("lfs_iset: setting ino %d daddr %lx time %lx\n", ip->i_number, daddr, atime);
+printf("lfs_iset: setting ino %d daddr %lx time %lx\n",
+ip->i_number, daddr, atime);
 
 	fs = ip->i_lfs;
 	ino = ip->i_number;
