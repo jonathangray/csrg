@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_usrreq.c	8.3 (Berkeley) 01/09/95
+ *	@(#)tcp_usrreq.c	8.4 (Berkeley) 05/02/95
  */
 
 #include <sys/param.h>
