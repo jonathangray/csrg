@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)tty.c	5.12 (Berkeley) 05/16/93";
+static char sccsid[] = "@(#)tty.c	5.13 (Berkeley) 05/16/93";
 #endif /* not lint */
 
 /*
@@ -185,7 +185,7 @@ endwin()
 			tputs(SE, 0, __cputchar);
 			curscr->flags &= ~__WSTANDOUT;
 		}
-		__mvcur(curscr->cury, curscr->cury, curscr->maxy - 1, 0);
+		__mvcur(curscr->cury, curscr->cury, curscr->maxy - 1, 0, 0);
 	}
 
 	(void)tputs(VE, 0, __cputchar);
