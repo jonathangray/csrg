@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)siovar.h	7.1 (Berkeley) 11/17/92
+ *	@(#)siovar.h	7.2 (Berkeley) 05/02/93
  */
 
 /*
@@ -45,6 +45,7 @@
 struct	sio_portc {
 	int	pc_major;
 	int	pc_unit;
+	int	pc_port;
 	struct siodevice *pc_addr;
 	int	(*pc_intr)();
 };
