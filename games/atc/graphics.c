@@ -44,7 +44,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)graphics.c	5.3 (Berkeley) 10/30/90";
+static char sccsid[] = "@(#)graphics.c	5.4 (Berkeley) 12/30/92";
 #endif /* not lint */
 
 #include "include.h"
