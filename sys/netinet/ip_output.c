@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ip_output.c	7.28 (Berkeley) 02/07/93
+ *	@(#)ip_output.c	7.28 (Berkeley) 2/7/93
  */
 
 #include <sys/param.h>
@@ -94,7 +94,7 @@ ip_output(m0, opt, ro, flags, imo)
 	/*
 	 * Fill in IP header.
 	 */
-	if ((flags & IP_FORWARDING) == 0) {
+	if ((flags & (IP_FORWARDING|IP_RAWOUTPUT)) == 0) {
 		ip->ip_v = IPVERSION;
 		ip->ip_off &= IP_DF;
 		ip->ip_id = htons(ip_id++);
