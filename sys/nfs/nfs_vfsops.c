@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vfsops.c	8.8 (Berkeley) 05/09/95
+ *	@(#)nfs_vfsops.c	8.9 (Berkeley) 05/10/95
  */
 
 #include <sys/param.h>
@@ -387,7 +387,6 @@ nfs_mountroot()
 	if (vfs_lock(mp))
 		panic("nfs_mountroot: vfs_lock");
 	CIRCLEQ_INSERT_TAIL(&mountlist, mp, mnt_list);
-	mp->mnt_flag |= MNT_ROOTFS;
 	mp->mnt_vnodecovered = NULLVP;
 	vfs_unlock(mp);
 	rootvp = vp;
@@ -677,13 +676,9 @@ nfs_unmount(mp, mntflags, p)
 	struct nfsnode *np;
 	struct vnode *vp;
 	int error, flags = 0;
-	extern int doforce;
 
-	if (mntflags & MNT_FORCE) {
-		if (!doforce)
-			return (EINVAL);
+	if (mntflags & MNT_FORCE)
 		flags |= FORCECLOSE;
-	}
 	nmp = VFSTONFS(mp);
 	/*
 	 * Goes something like this..
