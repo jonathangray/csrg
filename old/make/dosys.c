@@ -1,4 +1,4 @@
-static	char *sccsid = "@(#)dosys.c	4.13 (Berkeley) 03/26/90";
+static	char *sccsid = "@(#)dosys.c	4.13 (Berkeley) 02/28/91";
 #include "defs"
 #include <signal.h>
 
@@ -57,7 +57,7 @@ return( await() );
 
 
 
-int intrupt();
+void intrupt();
 
 await()
 {
