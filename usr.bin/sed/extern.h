@@ -34,14 +34,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.2 (Berkeley) 08/24/92
+ *	@(#)extern.h	5.3 (Berkeley) 08/24/92
  */
 
 extern struct s_command *prog;
 extern struct s_appends *appends;
 extern u_long linenum;
 extern int appendnum;
-extern int compile_errors;
 extern int lastline;
 extern int aflag, eflag, nflag;
 extern char *fname;
