@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_object.c	7.10 (Berkeley) 01/14/92
+ *	@(#)vm_object.c	7.11 (Berkeley) 05/04/92
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -66,11 +66,12 @@
  *	Virtual memory object module.
  */
 
-#include "param.h"
-#include "malloc.h"
+#include <sys/param.h>
+#include <sys/systm.h>
+#include <sys/malloc.h>
 
-#include "vm.h"
-#include "vm_page.h"
+#include <vm/vm.h>
+#include <vm/vm_page.h>
 
 /*
  *	Virtual memory objects maintain the actual data
@@ -108,6 +109,8 @@ queue_head_t	vm_object_hashtable[VM_OBJECT_HASH_COUNT];
 
 long	object_collapses = 0;
 long	object_bypasses  = 0;
+
+static void _vm_object_allocate __P((vm_size_t, vm_object_t));
 
 /*
  *	vm_object_init:
@@ -154,6 +157,7 @@ vm_object_t vm_object_allocate(size)
 	return(result);
 }
 
+static void
 _vm_object_allocate(size, object)
 	vm_size_t		size;
 	register vm_object_t	object;
@@ -360,6 +364,7 @@ void vm_object_terminate(object)
  *
  *	The object must be locked.
  */
+void
 vm_object_page_clean(object, start, end, de_queue)
 	register vm_object_t	object;
 	register vm_offset_t	start;
@@ -455,6 +460,7 @@ again:
  *
  *	The object must be locked.
  */
+void
 vm_object_deactivate_pages(object)
 	register vm_object_t	object;
 {
@@ -473,6 +479,7 @@ vm_object_deactivate_pages(object)
 /*
  *	Trim the object cache to size.
  */
+void
 vm_object_cache_trim()
 {
 	register vm_object_t	object;
@@ -966,6 +973,7 @@ void vm_object_enter(object, pager)
  *	is locked.  XXX this should be fixed
  *	by reorganizing vm_object_deallocate.
  */
+void
 vm_object_remove(pager)
 	register vm_pager_t	pager;
 {
