@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)sysctl.c	5.1 (Berkeley) 05/15/93";
+static char sccsid[] = "@(#)sysctl.c	5.2 (Berkeley) 05/24/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -41,6 +41,7 @@ static char sccsid[] = "@(#)sysctl.c	5.1 (Berkeley) 05/15/93";
 #include <errno.h>
 #include <limits.h>
 #include <paths.h>
+#include <stdio.h>
 #include <unistd.h>
 
 int
@@ -161,6 +162,12 @@ sysctl(name, namelen, oldp, oldlenp, newp, newlen)
 #else
 		*(int *)oldp = 0;
 #endif
+		return (0);
+	case USER_STREAM_MAX:
+		*(int *)oldp = FOPEN_MAX;
+		return (0);
+	case USER_TZNAME_MAX:
+		*(int *)oldp = 1024;
 		return (0);
 	default:
 		errno = EINVAL;
