@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_vfsops.c	8.7 (Berkeley) 03/05/94
+ *	@(#)union_vfsops.c	8.8 (Berkeley) 04/24/94
  */
 
 /*
@@ -394,7 +394,6 @@ union_root(mp, vpp)
 		if (um->um_lowervp)
 			vrele(um->um_lowervp);
 	} else {
-		(*vpp)->v_flag |= VROOT;
 		if (loselock)
 			VTOUNION(*vpp)->un_flags &= ~UN_ULOCK;
 	}
