@@ -1,16 +1,19 @@
-/*
- * Copyright (c) 1980 Regents of the University of California.
- * All rights reserved.  The Berkeley software License Agreement
- * specifies the terms and conditions for redistribution.
+/*-
+ * Copyright (c) 1983 The Regents of the University of California.
+ * All rights reserved.
+ *
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)gmon.c	5.4 (Berkeley) 08/27/87";
-#endif LIBC_SCCS and not lint
+static char sccsid[] = "@(#)gmon.c	5.5 (Berkeley) 04/12/91";
+#endif /* LIBC_SCCS and not lint */
 
 #ifdef DEBUG
 #include <stdio.h>
-#endif DEBUG
+#endif
 
 #include "gmon.h"
 
