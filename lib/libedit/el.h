@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)el.h	5.4 (Berkeley) 07/16/92
+ *	@(#)el.h	5.5 (Berkeley) 07/18/92
  */
 
 /*
@@ -46,7 +46,7 @@
  */
 #define KSHVI
 #define VIDEFAULT
-/* (XXX - broken) #define ANCHOR*/
+#define ANCHOR
 
 #include <stdio.h>
 #include <sys/types.h>
