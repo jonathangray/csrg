@@ -1,4 +1,4 @@
-#	@(#)Makefile	8.1 (Berkeley) 06/05/93
+#	@(#)Makefile	8.2 (Berkeley) 12/13/93
 
 MAN3=	assert.0 bitstring.0 end.0 intro.0 stdarg.0
 MLINKS+=end.3 edata.3 end.3 etext.3
