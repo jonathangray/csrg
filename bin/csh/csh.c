@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)csh.c	5.30 (Berkeley) 10/27/91";
+static char sccsid[] = "@(#)csh.c	5.31 (Berkeley) 10/28/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -159,7 +159,8 @@ main(argc, argv)
 	tempv[1][0] = '\0';
 	tempv[1][1] = '\0';
 	tempv[1] = NULL;
-	for (tcp = *tempv; *tcp++;);
+	for (tcp = *tempv; *tcp++;)
+	    continue;
 	for (tcp--; tcp >= *tempv; tcp--)
 	    tcp[1] = tcp[0];
 	*++tcp = '-';
@@ -174,7 +175,8 @@ main(argc, argv)
     {
 	int     k;
 
-	for (k = 0200; k <= 0377 && !Isprint(k); k++);
+	for (k = 0200; k <= 0377 && !Isprint(k); k++)
+	    continue;
 	AsciiOnly = k > 0377;
     }
 #else
@@ -262,12 +264,12 @@ main(argc, argv)
 
     /*
      * Process the arguments.
-     * 
+     *
      * Note that processing of -v/-x is actually delayed till after script
      * processing.
-     * 
+     *
      * We set the first character of our name to be '-' if we are a shell
-     * running interruptible commands.  Many programs which examine ps'es 
+     * running interruptible commands.  Many programs which examine ps'es
      * use this to filter such shells out.
      */
     argc--, tempv++;
@@ -364,12 +366,12 @@ main(argc, argv)
 	    stderror(ERR_SYSTEM, tempv[0], strerror(errno));
 	}
 	ffile = SAVE(tempv[0]);
-	/* 
+	/*
 	 * Replace FSHIN. Handle /dev/std{in,out,err} specially
 	 * since once they are closed we cannot open them again.
 	 * In that case we use our own saved descriptors
 	 */
-	if ((SHIN = dmove(nofile, FSHIN)) < 0) 
+	if ((SHIN = dmove(nofile, FSHIN)) < 0)
 	    switch(nofile) {
 	    case 0:
 		SHIN = FSHIN;
@@ -463,7 +465,7 @@ main(argc, argv)
 		shpgrp = getpid();
 		tpgrp = shpgrp;
 		/*
-		 * Setpgid will fail if we are a session leader and 
+		 * Setpgid will fail if we are a session leader and
 		 * mypid == mypgrp (POSIX 4.3.3)
 		 */
 		if (opgrp != shpgrp)
@@ -480,7 +482,7 @@ main(argc, argv)
 	    }
 	    if (tpgrp == -1) {
 notty:
-		(void) fprintf(csherr, "Warning: no access to tty (%s).\n", 
+		(void) fprintf(csherr, "Warning: no access to tty (%s).\n",
 			       strerror(errno));
 		(void) fprintf(csherr, "Thus no job control in this shell.\n");
 	    }
@@ -684,7 +686,7 @@ srcunit(unit, onlyown, hflg)
      * stream since we have stuff in different structures. If we weren't
      * careful an interrupt could corrupt SHIN's Bin structure and kill the
      * shell.
-     * 
+     *
      * We could avoid the critical region by grouping all the stuff in a single
      * structure and pointing at it to move it all at once.  This is less
      * efficient globally on many variable references however.
@@ -990,7 +992,7 @@ process(catch)
 	/*
 	 * Save input text on the history list if reading in old history, or it
 	 * is from the terminal at the top level and not in a loop.
-	 * 
+	 *
 	 * PWP: entry of items in the history list while in a while loop is done
 	 * elsewhere...
 	 */
@@ -1019,7 +1021,7 @@ process(catch)
 	if (seterr)
 	    stderror(ERR_OLD);
 
-	execute(savet, (tpgrp > 0 ? tpgrp : -1), NULL, NULL); 
+	execute(savet, (tpgrp > 0 ? tpgrp : -1), NULL, NULL);
 
 	/*
 	 * Made it!
@@ -1097,7 +1099,7 @@ mailchk()
 	if (cnt == 1)
 	    (void) fprintf(cshout, "You have %smail.\n", new ? "new " : "");
 	else
-	    (void) fprintf(cshout, "%s in %s.\n", new ? "New mail" : "Mail", 
+	    (void) fprintf(cshout, "%s in %s.\n", new ? "New mail" : "Mail",
 			   short2str(*vp));
     }
     chktim = t;
@@ -1254,4 +1256,3 @@ printprompt()
 	(void) fprintf(cshout, "? ");
     (void) fflush(cshout);
 }
-
