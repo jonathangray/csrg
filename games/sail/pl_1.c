@@ -642,6 +642,9 @@ char ** argv;
 	    case 'u':
 		unfoulplayer();
 		break;
+	    case 'v':
+		version();
+		break;
 	    case 'b':
 		boarding();
 		break;
