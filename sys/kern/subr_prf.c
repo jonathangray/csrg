@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)subr_prf.c	7.38 (Berkeley) 03/11/92
+ *	@(#)subr_prf.c	7.39 (Berkeley) 10/11/92
  */
 
 #include <sys/param.h>
@@ -55,7 +55,7 @@
 #include <machine/stdarg.h>
 
 #ifdef KADB
-#include "machine/kdbparam.h"
+#include <machine/kdbparam.h>
 #endif
 
 #define TOCONS	0x01
