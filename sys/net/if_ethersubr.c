@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_ethersubr.c	7.20 (Berkeley) 07/06/92
+ *	@(#)if_ethersubr.c	7.21 (Berkeley) 08/14/92
  */
 
 #include "param.h"
@@ -342,7 +342,7 @@ ether_input(ifp, eh, m)
 		    l->llc_dsap = l->llc_ssap;
 		    l->llc_ssap = c;
 		    if (m->m_flags & (M_BCAST | M_MCAST))
-			bcopy((caddr_t)ac->ac_enaddr,
+			bcopy((caddr_t)((struct arpcom *)ifp)->ac_enaddr,
 			      (caddr_t)eh->ether_dhost, 6);
 		    sa.sa_family = AF_UNSPEC;
 		    sa.sa_len = sizeof(sa);
