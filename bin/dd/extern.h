@@ -3,7 +3,8 @@
  * All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
- * Keith Muller of the University of California, San Diego.
+ * Keith Muller of the University of California, San Diego and Lance
+ * Visser of Convex Computer Corporation.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -33,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.1 (Berkeley) 07/26/91
+ *	@(#)extern.h	5.2 (Berkeley) 07/27/91
  */
 
 #include <sys/cdefs.h>
