@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cltp_usrreq.c	7.6 (Berkeley) 06/27/91
+ *	@(#)cltp_usrreq.c	7.7 (Berkeley) 07/18/91
  */
 
 #ifndef CLTPOVAL_SRC /* XXX -- till files gets changed */
@@ -249,12 +249,6 @@ bad:
 	return (error);
 }
 
-#ifndef TP_LOCAL
-/* XXXX should go in iso.h maybe? from tp_param.h, in any case */
-#define		TP_LOCAL				22
-#define		TP_FOREIGN				33
-#endif
-
 u_long	cltp_sendspace = 9216;		/* really max datagram size */
 u_long	cltp_recvspace = 40 * (1024 + sizeof(struct sockaddr_iso));
 					/* 40 1K datagrams */
@@ -266,7 +260,8 @@ cltp_usrreq(so, req, m, nam, control)
 	int req;
 	struct mbuf *m, *nam, *control;
 {
-	struct isopcb *isop = sotoisopcb(so);
+	register struct isopcb *isop = sotoisopcb(so);
+	register struct sockaddr_iso *siso;
 	int s, error = 0;
 
 	if (req == PRU_CONTROL)
@@ -370,11 +365,15 @@ cltp_usrreq(so, req, m, nam, control)
 		break;
 
 	case PRU_SOCKADDR:
-		iso_getnetaddr(isop, nam, TP_LOCAL);
+		if (isop->isop_laddr)
+			bcopy((caddr_t)isop->isop_laddr, mtod(m, caddr_t),
+				nam->m_len = isop->isop_laddr->siso_len);
 		break;
 
 	case PRU_PEERADDR:
-		iso_getnetaddr(isop, nam, TP_FOREIGN);
+		if (isop->isop_faddr)
+			bcopy((caddr_t)isop->isop_faddr, mtod(m, caddr_t),
+				nam->m_len = isop->isop_faddr->siso_len);
 		break;
 
 	case PRU_SENSE:
