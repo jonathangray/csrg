@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_inode.c	8.6 (Berkeley) 05/31/94
+ *	@(#)ffs_inode.c	8.7 (Berkeley) 06/15/94
  */
 
 #include <sys/param.h>
@@ -161,6 +161,8 @@ ffs_truncate(ap)
 	int aflags, error, allerror;
 	off_t osize;
 
+	if (length < 0)
+		return (EINVAL);
 	oip = VTOI(ovp);
 	tv = time;
 	if (ovp->v_type == VLNK &&
