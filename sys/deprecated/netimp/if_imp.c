@@ -9,7 +9,7 @@
  * software without specific prior written permission. This software
  * is provided ``as is'' without express or implied warranty.
  *
- *	@(#)if_imp.c	7.6 (Berkeley) 05/14/88
+ *	@(#)if_imp.c	7.7 (Berkeley) 05/24/88
  */
 
 #include "imp.h"
