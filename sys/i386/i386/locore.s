@@ -21,7 +21,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- *	@(#)locore.s	1.4 (Berkeley) 04/24/90
+ *	@(#)locore.s	5.1 (Berkeley) 04/24/90
  */
 
 /*
