@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	7.101 (Berkeley) 07/03/92
+ *	@(#)ufs_vnops.c	7.102 (Berkeley) 07/07/92
  */
 
 #include <sys/param.h>
@@ -623,6 +623,7 @@ ufs_link(ap)
 	register struct vnode *tdvp = ap->a_tdvp;
 	register struct componentname *cnp = ap->a_cnp;
 	register struct inode *ip;
+	struct timeval tv;
 	int error;
 
 	if (vp->v_mount != tdvp->v_mount) {
@@ -647,7 +648,8 @@ ufs_link(ap)
 		ILOCK(ip);
 	ip->i_nlink++;
 	ip->i_flag |= ICHG;
-	error = VOP_UPDATE(tdvp, &time, &time, 1);
+	tv = time;
+	error = VOP_UPDATE(tdvp, &tv, &tv, 1);
 	if (!error)
 		error = ufs_direnter(ip, vp, cnp);
 	if (vp != tdvp)
@@ -860,6 +862,7 @@ ufs_rename(ap)
 	register struct componentname *fcnp = ap->a_fcnp;
 	register struct inode *ip, *xp, *dp;
 	struct dirtemplate dirbuf;
+	struct timeval tv;
 	int doingdirectory = 0, oldparent = 0, newparent = 0;
 	int error = 0;
 	int fdvpneedsrele = 1, tdvpneedsrele = 1;
@@ -935,7 +938,8 @@ ufs_rename(ap)
 	 */
 	ip->i_nlink++;
 	ip->i_flag |= ICHG;
-	error = VOP_UPDATE(fvp, &time, &time, 1);
+	tv = time;
+	error = VOP_UPDATE(fvp, &tv, &tv, 1);
 	IUNLOCK(ip);
 
 	/*
@@ -1000,14 +1004,14 @@ ufs_rename(ap)
 			}
 			dp->i_nlink++;
 			dp->i_flag |= ICHG;
-			if (error = VOP_UPDATE(ITOV(dp), &time, &time, 1))
+			if (error = VOP_UPDATE(ITOV(dp), &tv, &tv, 1))
 				goto bad;
 		}
 		if (error = ufs_direnter(ip, tdvp, tcnp)) {
 			if (doingdirectory && newparent) {
 				dp->i_nlink--;
 				dp->i_flag |= ICHG;
-				(void)VOP_UPDATE(ITOV(dp), &time, &time, 1);
+				(void)VOP_UPDATE(ITOV(dp), &tv, &tv, 1);
 			}
 			goto bad;
 		}
@@ -1218,8 +1222,8 @@ ufs_mkdir(ap)
 	register struct inode *ip, *dp;
 	struct vnode *tvp;
 	struct dirtemplate dirtemplate, *dtp;
-	int error;
-	int dmode;
+	struct timeval tv;
+	int error, dmode;
 
 #ifdef DIAGNOSTIC
 	if ((cnp->cn_flags & HASBUF) == 0)
@@ -1260,7 +1264,8 @@ ufs_mkdir(ap)
 	ip->i_mode = dmode;
 	ITOV(ip)->v_type = VDIR;	/* Rest init'd in iget() */
 	ip->i_nlink = 2;
-	error = VOP_UPDATE(ITOV(ip), &time, &time, 1);
+	tv = time;
+	error = VOP_UPDATE(ITOV(ip), &tv, &tv, 1);
 
 	/*
 	 * Bump link count in parent directory
@@ -1270,7 +1275,7 @@ ufs_mkdir(ap)
 	 */
 	dp->i_nlink++;
 	dp->i_flag |= ICHG;
-	if (error = VOP_UPDATE(ITOV(dp), &time, &time, 1))
+	if (error = VOP_UPDATE(ITOV(dp), &tv, &tv, 1))
 		goto bad;
 
 	/* Initialize directory with "." and ".." from static template. */
@@ -1940,6 +1945,7 @@ ufs_makeinode(mode, dvp, vpp, cnp)
 	struct componentname *cnp;
 {
 	register struct inode *ip, *pdir;
+	struct timeval tv;
 	struct vnode *tvp;
 	int error;
 
@@ -1981,7 +1987,8 @@ ufs_makeinode(mode, dvp, vpp, cnp)
 	/*
 	 * Make sure inode goes to disk before directory entry.
 	 */
-	if (error = VOP_UPDATE(tvp, &time, &time, 1))
+	tv = time;
+	if (error = VOP_UPDATE(tvp, &tv, &tv, 1))
 		goto bad;
 	if (error = ufs_direnter(ip, dvp, cnp))
 		goto bad;
