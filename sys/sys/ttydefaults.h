@@ -30,14 +30,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ttydefaults.h	8.2 (Berkeley) 11/30/93
+ *	@(#)ttydefaults.h	8.3 (Berkeley) 01/04/94
  */
 
 /*
  * System wide defaults for terminal state.
  */
-#ifndef _TTYDEFAULTS_H_
-#define	_TTYDEFAULTS_H_
+#ifndef _SYS_TTYDEFAULTS_H_
+#define	_SYS_TTYDEFAULTS_H_
 
 /*
  * Defaults on "first" open.
@@ -76,7 +76,7 @@
 #define	CFLUSH		CDISCARD
 
 /* PROTECTED INCLUSION ENDS HERE */
-#endif /* !_TTYDEFAULTS_H_ */
+#endif /* !_SYS_TTYDEFAULTS_H_ */
 
 /*
  * #define TTYDEFCHARS to include an array of default control characters.
@@ -88,4 +88,4 @@ cc_t	ttydefchars[NCCS] = {
 	CDISCARD, CMIN,	CTIME,  CSTATUS, _POSIX_VDISABLE
 };
 #undef TTYDEFCHARS
-#endif /* TTYDEFCHARS */
+#endif
