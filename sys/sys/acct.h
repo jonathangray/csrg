@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)acct.h	8.3 (Berkeley) 07/10/94
+ *	@(#)acct.h	8.4 (Berkeley) 01/09/95
  */
 
 /*
@@ -73,4 +73,6 @@ struct acct {
 
 #ifdef KERNEL
 struct vnode	*acctp;
+
+int	acct_process __P((struct proc *p));
 #endif
