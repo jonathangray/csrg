@@ -1,5 +1,5 @@
 # Makefile for f77 system lib, libU77.a
-# @(#)Makefile	1.5 (Berkeley) 05/06/85
+# @(#)Makefile	1.6 (Berkeley) 05/15/85
 
 CFLAGS	      = -O
 
