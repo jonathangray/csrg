@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)netstat.h	8.1 (Berkeley) 06/06/93
+ *	@(#)netstat.h	5.6 (Berkeley) 06/12/93
  */
 
 #include <sys/cdefs.h>
@@ -38,7 +38,6 @@
 int	Aflag;		/* show addresses of protocol control block */
 int	aflag;		/* show all sockets (including servers) */
 int	dflag;		/* show i/f dropped packets */
-int	hflag;		/* show IMP host table */
 int	iflag;		/* show interfaces */
 int	Bflag;		/* show multicast tables (or multicast stats) */
 int	mflag;		/* show memory stats */
