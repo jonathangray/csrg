@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hpib.c	7.1 (Berkeley) 05/08/90
+ *	@(#)hpib.c	7.2 (Berkeley) 11/04/90
  */
 
 /*
@@ -49,8 +49,6 @@
 #include "machine/cpu.h"
 #include "machine/isr.h"
 
-int	internalhpib = IOV(0x478000);
-
 int	hpibinit(), hpibstart(), hpibgo(), hpibintr(), hpibdone();
 struct	driver hpibdriver = {
 	hpibinit, "hpib", hpibstart, hpibgo, hpibintr, hpibdone,
@@ -62,6 +60,7 @@ int	nhpibppoll(), fhpibppoll();
 
 int	hpibtimeout = 100000;	/* # of status tests before we give up */
 int	hpibidtimeout = 20000;	/* # of status tests for hpibid() calls */
+int	hpibdmathresh = 3;	/* byte count beyond which to attempt dma */
 
 hpibinit(hc)
 	register struct hp_ctlr *hc;
