@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_exit.c	7.43 (Berkeley) 02/15/92
+ *	@(#)kern_exit.c	7.44 (Berkeley) 06/20/92
  */
 
 #include "param.h"
@@ -93,6 +93,8 @@ exit(p, rv)
 #ifdef PGINPROF
 	vmsizmon();
 #endif
+	if (p->p_flag & SPROFIL)
+		stopprofclock(p);
 	MALLOC(p->p_ru, struct rusage *, sizeof(struct rusage),
 		M_ZOMBIE, M_WAITOK);
 	/*
