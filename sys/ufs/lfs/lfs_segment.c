@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_segment.c	7.1 (Berkeley) 11/01/91
+ *	@(#)lfs_segment.c	7.2 (Berkeley) 11/05/91
  */
 
 #include <sys/param.h>
@@ -516,7 +516,7 @@ lfs_updatemeta(fs, sp, ip, lbp, bpp, nblocks)
 
 	for (lbpp = bpp, i = 0; i < nblocks; ++i, ++lbpp) {
 		lbn = lbp[i];
-		if (error = lfs_bmap(ip, lbn, &daddr))
+		if (error = lfs_bmap(ITOV(ip), lbn, NULL, &daddr))
 			panic("lfs_updatemeta: lfs_bmap");
 
 		/* Update in-core copy of old segment usage information. */
