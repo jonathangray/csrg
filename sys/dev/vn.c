@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: vn.c 1.1 91/04/30$
  *
- *	@(#)vn.c	7.9 (Berkeley) 05/13/92
+ *	@(#)vn.c	7.10 (Berkeley) 05/13/92
  */
 
 /*
