@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_readwrite.c	8.9 (Berkeley) 01/02/95
+ *	@(#)ufs_readwrite.c	8.10 (Berkeley) 03/21/95
  */
 
 #ifdef LFS_READWRITE
@@ -70,7 +70,7 @@ READ(ap)
 	register struct uio *uio;
 	register FS *fs;
 	struct buf *bp;
-	daddr_t lbn, nextlbn;
+	ufs_daddr_t lbn, nextlbn;
 	off_t bytesinfile;
 	long size, xfersize, blkoffset;
 	int error;
@@ -173,7 +173,7 @@ WRITE(ap)
 	register FS *fs;
 	struct buf *bp;
 	struct proc *p;
-	daddr_t lbn;
+	ufs_daddr_t lbn;
 	off_t osize;
 	int blkoffset, error, flags, ioflag, resid, size, xfersize;
 
