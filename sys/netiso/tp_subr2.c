@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_subr2.c	7.17 (Berkeley) 10/02/91
+ *	@(#)tp_subr2.c	7.18 (Berkeley) 12/17/91
  */
 
 /***********************************************************
@@ -493,10 +493,13 @@ tp_mss(tpcb, nhdr_size)
 	struct ifnet *ifp;
 	register int rtt, mss;
 	u_long bufsize;
-	int i, ssthresh = 0;
+	int i, ssthresh = 0, rt_mss;
 	struct socket *so;
 
-	mss = 1 << tpcb->tp_tpdusize;
+	if (tpcb->tp_ptpdusize)
+		mss = tpcb->tp_ptpdusize << 7;
+	else
+		mss = 1 << tpcb->tp_tpdusize;
 	so = tpcb->tp_sock;
 	if ((rt = *(tpcb->tp_routep)) == 0) {
 		bufsize = so->so_rcv.sb_hiwat;
@@ -523,10 +526,13 @@ tp_mss(tpcb, nhdr_size)
 	 * if there's an mtu associated with the route, use it
 	 */
 	if (rt->rt_rmx.rmx_mtu)
-		mss = rt->rt_rmx.rmx_mtu - nhdr_size;
+		rt_mss = rt->rt_rmx.rmx_mtu - nhdr_size;
 	else
 #endif /* RTV_MTU */
-		mss = (ifp->if_mtu - nhdr_size);
+		rt_mss = (ifp->if_mtu - nhdr_size);
+	if (tpcb->tp_ptpdusize == 0 || /* assume application doesn't care */
+	    mss > rt_mss /* network won't support what was asked for */)
+		mss = rt_mss;
 	/* can propose mtu which are multiples of 128 */
 	mss &= ~0x7f;
 	/*
