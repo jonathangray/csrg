@@ -41,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.1 (Berkeley) 03/07/91";
+static char sccsid[] = "@(#)main.c	5.2 (Berkeley) 03/13/91";
 #endif /* not lint */
 
 #include <signal.h>
@@ -199,7 +199,7 @@ cmdloop(top) {
 		}
 		n = parsecmd(inter);
 #ifdef DEBUG
-		/* BROKEN - FIX showtree(n); */
+		/* showtree(n); */
 #endif
 		if (n == NEOF) {
 			if (Iflag == 0 || numeof >= 50)
