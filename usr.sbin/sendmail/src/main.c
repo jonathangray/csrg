@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	6.69 (Berkeley) 05/30/93";
+static char sccsid[] = "@(#)main.c	6.70 (Berkeley) 06/05/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -1436,7 +1436,7 @@ obsolete(argv)
 {
 	char *ap;
 
-	while (ap = *++argv)
+	while ((ap = *++argv) != NULL)
 	{
 		/* Return if "--" or not an option of any form. */
 		if (ap[0] != '-' || ap[1] == '-')
