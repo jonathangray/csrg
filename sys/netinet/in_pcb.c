@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1982, 1986 Regents of the University of California.
+ * Copyright (c) 1982, 1986, 1991 Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,25 +30,26 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)in_pcb.c	7.13 (Berkeley) 06/28/90
+ *	@(#)in_pcb.c	7.14 (Berkeley) 04/20/91
  */
 
 #include "param.h"
 #include "systm.h"
-#include "user.h"
 #include "malloc.h"
 #include "mbuf.h"
+#include "protosw.h"
 #include "socket.h"
 #include "socketvar.h"
 #include "ioctl.h"
+
 #include "../net/if.h"
 #include "../net/route.h"
+
 #include "in.h"
 #include "in_systm.h"
 #include "ip.h"
 #include "in_pcb.h"
 #include "in_var.h"
-#include "protosw.h"
 
 struct	in_addr zeroin_addr;
 
@@ -102,7 +103,7 @@ in_pcbbind(inp, nam)
 		int wild = 0;
 
 		/* GROSS */
-		if (aport < IPPORT_RESERVED && u.u_uid != 0)
+		if (aport < IPPORT_RESERVED && (so->so_state & SS_PRIV) == 0)
 			return (EACCES);
 		/* even GROSSER, but this is the Internet */
 		if ((so->so_options & SO_REUSEADDR) == 0 &&
