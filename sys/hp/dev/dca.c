@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dca.c	8.2 (Berkeley) 01/12/94
+ *	@(#)dca.c	8.3 (Berkeley) 01/09/95
  */
 
 #include "dca.h"
@@ -491,7 +491,7 @@ dcamint(unit, dca)
 
 dcaioctl(dev, cmd, data, flag, p)
 	dev_t dev;
-	int cmd;
+	u_long cmd;
 	caddr_t data;
 	int flag;
 	struct proc *p;
