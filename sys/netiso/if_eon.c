@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_eon.c	7.19 (Berkeley) 10/11/92
+ *	@(#)if_eon.c	7.20 (Berkeley) 04/06/93
  */
 
 /***********************************************************
@@ -116,7 +116,7 @@ int						eonoutput();
 int						eonioctl();
 int						eonattach();
 int						eoninit();
-int						eonrtrequest();
+void						eonrtrequest();
 extern 	int				ip_output();
 struct ifnet			eonif[1];
 
@@ -261,6 +261,7 @@ caddr_t loc;
  *
  * RETURNS:			nothing
  */
+void
 eonrtrequest(cmd, rt, gate)
 register struct rtentry *rt;
 register struct sockaddr *gate;
