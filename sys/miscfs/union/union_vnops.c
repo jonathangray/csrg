@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_vnops.c	8.14 (Berkeley) 05/24/94
+ *	@(#)union_vnops.c	8.15 (Berkeley) 06/04/94
  */
 
 #include <sys/param.h>
