@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	6.11 (Berkeley) 03/17/93
+ *	@(#)conf.h	6.12 (Berkeley) 03/17/93
  */
 
 /*
@@ -182,4 +182,9 @@ struct utsname
 #define LOCK_SH		0x01	/* shared lock */
 #define LOCK_EX		0x02	/* exclusive lock */
 #define LOCK_NB		0x04	/* non-blocking lock */
+
+#else
+
+# include <sys/file.h>
+
 #endif
