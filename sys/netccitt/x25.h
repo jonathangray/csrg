@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)x25.h	7.3 (Berkeley) 05/16/90
+ *	@(#)x25.h	7.4 (Berkeley) 05/22/90
  */
 
 #ifdef KERNEL
