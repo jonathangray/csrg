@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)wait.h	7.14 (Berkeley) 02/05/91
+ *	@(#)wait.h	7.15 (Berkeley) 02/23/91
  */
 
 /*
@@ -144,8 +144,10 @@ union wait {
 
 __BEGIN_DECLS
 pid_t	wait __P((int *));
+pid_t	waitpid __P((pid_t, int *, int));
+#ifndef _POSIX_SOURCE
 pid_t	wait3 __P((int *, int, struct rusage *));
 pid_t	wait4 __P((pid_t, int *, int, struct rusage *));
-pid_t	waitpid __P((pid_t, int *, int));
+#endif
 __END_DECLS
 #endif
