@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_inode.c	7.57 (Berkeley) 06/25/92
+ *	@(#)ffs_inode.c	7.58 (Berkeley) 06/27/92
  */
 
 #include <sys/param.h>
@@ -261,13 +261,22 @@ ffs_truncate (ap)
 	struct inode tip;
 	off_t osize;
 
-	vnode_pager_setsize(ovp, (u_long)ap->a_length);
 	oip = VTOI(ovp);
+	if (ovp->v_type == VLNK && ovp->v_mount->mnt_maxsymlinklen > 0) {
+#ifdef DIAGNOSTIC
+		if (ap->a_length != 0)
+			panic("ffs_truncate: partial truncate of symlink");
+#endif
+		bzero((char *)&oip->i_shortlink, (u_int)oip->i_size);
+		oip->i_size = 0;
+		oip->i_flag |= ICHG|IUPD;
+		return (VOP_UPDATE(ovp, &time, &time, 1));
+	}
 	if (oip->i_size <= ap->a_length) {
 		oip->i_flag |= ICHG|IUPD;
-		error = VOP_UPDATE(ovp, &time, &time, 1);
-		return (error);
+		return (VOP_UPDATE(ovp, &time, &time, 1));
 	}
+	vnode_pager_setsize(ovp, (u_long)ap->a_length);
 	/*
 	 * Calculate index into inode's block list of
 	 * last direct and indirect blocks (if any)
