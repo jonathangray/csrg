@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_alloc.c	7.37 (Berkeley) 12/14/91
+ *	@(#)lfs_alloc.c	7.38 (Berkeley) 12/16/91
  */
 
 #include <sys/param.h>
@@ -39,6 +39,7 @@
 #include <sys/vnode.h>
 #include <sys/syslog.h>
 #include <sys/mount.h>
+#include <sys/malloc.h>
 
 #include <ufs/ufs/quota.h>
 #include <ufs/ufs/inode.h>
@@ -134,14 +135,17 @@ lfs_vcreate(mp, ino, vpp)
 	printf("lfs_vcreate: ino %d\n", ino);
 #endif
 	/* Create the vnode. */
-	if (error = getnewvnode(VT_LFS, mp, &lfs_vnodeops, vpp))
+	if (error = getnewvnode(VT_LFS, mp, &lfs_vnodeops, vpp)) {
+		*vpp = NULL;
 		return (error);
+	}
 
 	/* Get a pointer to the private mount structure. */
 	ump = VFSTOUFS(mp);
 
 	/* Initialize the inode. */
-	ip = VTOI(*vpp);
+	MALLOC(ip, struct inode *, sizeof(struct inode), M_LFSNODE, M_WAITOK);
+	(*vpp)->v_data = ip;
 	ip->i_vnode = *vpp;
 	ip->i_flag = 0;
 	ip->i_mode = 0;
