@@ -16,7 +16,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)pass2.c	5.10 (Berkeley) 03/22/90";
+static char sccsid[] = "@(#)pass2.c	5.11 (Berkeley) 04/29/90";
 #endif /* not lint */
 
 #include <sys/param.h>
