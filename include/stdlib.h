@@ -30,17 +30,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stdlib.h	5.9 (Berkeley) 02/22/91
+ *	@(#)stdlib.h	5.10 (Berkeley) 02/24/91
  */
 
 #ifndef _STDLIB_H_
 #define _STDLIB_H_
-#include <machine/types.h>
-
-#ifdef	_SIZE_T_
-typedef	_SIZE_T_	size_t;
-#undef	_SIZE_T_
-#endif
+#include <sys/types.h>
 
 #ifdef	_WCHAR_T_
 typedef	_WCHAR_T_	wchar_t;
@@ -59,7 +54,7 @@ typedef struct {
 #define	EXIT_FAILURE	1
 #define	EXIT_SUCCESS	0
 
-#define	RAND_MAX	0x7ffffffff
+#define	RAND_MAX	0x7fffffff
 
 #define	MB_CUR_MAX	1	/* XXX */
 
