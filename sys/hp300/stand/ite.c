@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: ite.c 1.23 92/02/28$
  *
- *	@(#)ite.c	7.5 (Berkeley) 10/11/92
+ *	@(#)ite.c	8.1 (Berkeley) 06/10/93
  */
 
 /*
