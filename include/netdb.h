@@ -30,8 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)netdb.h	5.14 (Berkeley) 03/02/91
+ *	@(#)netdb.h	5.15 (Berkeley) 04/03/91
  */
+
+#ifndef _NETDB_H_
+#define _NETDB_H_
 
 #define	_PATH_HEQUIV	"/etc/hosts.equiv"
 #define	_PATH_HOSTS	"/etc/hosts"
@@ -113,3 +116,5 @@ void		setnetent __P((int));
 void		setprotoent __P((int));
 void		setservent __P((int));
 __END_DECLS
+
+#endif /* !_NETDB_H_ */
