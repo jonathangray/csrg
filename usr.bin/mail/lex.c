@@ -32,12 +32,13 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)lex.c	5.23 (Berkeley) 04/01/91";
+static char sccsid[] = "@(#)lex.c	5.24 (Berkeley) 06/26/92";
 #endif /* not lint */
 
 #include "rcv.h"
-#include <sys/stat.h>
 #include <errno.h>
+#include <fcntl.h>
+#include "extern.h"
 
 /*
  * Mail -- a mail program
@@ -53,6 +54,7 @@ char	*prompt = "& ";
  * editing the file, otherwise we are reading our mail which has
  * signficance for mbox and so forth.
  */
+int
 setfile(name)
 	char *name;
 {
@@ -158,6 +160,7 @@ int	reset_on_stop;			/* do a reset() if stopped */
  * Interpret user commands one by one.  If standard input is not a tty,
  * print no prompt.
  */
+void
 commands()
 {
 	int eofloop = 0;
@@ -234,8 +237,10 @@ commands()
  * the interactive command loop.
  * Contxt is non-zero if called while composing mail.
  */
+int
 execute(linebuf, contxt)
 	char linebuf[];
+	int contxt;
 {
 	char word[LINESIZE];
 	char *arglist[MAXARGC];
@@ -429,8 +434,9 @@ out:
  * Set the size of the message vector used to construct argument
  * lists to message list functions.
  */
- 
+void
 setmsize(sz)
+	int sz;
 {
 
 	if (msgvec != 0)
@@ -460,7 +466,7 @@ lex(word)
  * Determine if as1 is a valid prefix of as2.
  * Return true if yep.
  */
-
+int
 isprefix(as1, as2)
 	char *as1, *as2;
 {
@@ -487,6 +493,7 @@ int	inithdr;			/* am printing startup headers */
 /*ARGSUSED*/
 void
 intr(s)
+	int s;
 {
 
 	noreset = 0;
@@ -511,6 +518,7 @@ intr(s)
  */
 void
 stop(s)
+	int s;
 {
 	sig_t old_action = signal(s, SIG_DFL);
 
@@ -530,6 +538,7 @@ stop(s)
 /*ARGSUSED*/
 void
 hangup(s)
+	int s;
 {
 
 	/* nothing to do? */
@@ -540,7 +549,7 @@ hangup(s)
  * Announce the presence of the current Mail version,
  * give the message count, and print a header listing.
  */
-
+void
 announce()
 {
 	int vec[2], mdot;
@@ -560,6 +569,7 @@ announce()
  * Announce information about the file we are editing.
  * Return a likely place to set dot.
  */
+int
 newfileinfo()
 {
 	register struct message *mp;
@@ -620,7 +630,9 @@ newfileinfo()
  */
 
 /*ARGSUSED*/
+int
 pversion(e)
+	int e;
 {
 	extern char *version;
 
@@ -631,6 +643,7 @@ pversion(e)
 /*
  * Load a file of user definitions.
  */
+void
 load(name)
 	char *name;
 {
