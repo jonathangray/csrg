@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vfsops.c	7.84 (Berkeley) 09/02/92
+ *	@(#)lfs_vfsops.c	7.85 (Berkeley) 09/14/92
  */
 
 #include <sys/param.h>
@@ -536,7 +536,7 @@ lfs_fhtovp(mp, fhp, nam, vpp, exflagsp, credanonp)
 	ufhp = (struct ufid *)fhp;
 	if (ufhp->ufid_ino < ROOTINO)
 		return (ESTALE);
-	return (ufs_check_export(mp, fhp, nam, vpp, exflagsp, credanonp));
+	return (ufs_check_export(mp, ufhp, nam, vpp, exflagsp, credanonp));
 }
 
 /*
