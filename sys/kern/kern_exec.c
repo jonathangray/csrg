@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)kern_exec.c	7.64 (Berkeley) 07/08/92
+ *	@(#)kern_exec.c	7.65 (Berkeley) 07/10/92
  */
 
 #include "param.h"
@@ -52,14 +52,15 @@ extern char sigcode[], esigcode[];
 /*
  * exec system call
  */
+struct execve_args {
+	char	*fname;
+	char	**argp;
+	char	**envp;
+};
 /* ARGSUSED */
 execve(p, uap, retval)
 	register struct proc *p;
-	register struct args {
-		char	*fname;
-		char	**argp;
-		char	**envp;
-	} *uap;
+	register struct execve_args *uap;
 	int *retval;
 {
 	register struct ucred *cred = p->p_ucred;
