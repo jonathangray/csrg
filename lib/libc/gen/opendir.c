@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)opendir.c	8.1 (Berkeley) 06/04/93";
+static char sccsid[] = "@(#)opendir.c	5.14 (Berkeley) 06/08/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -40,8 +40,6 @@ static char sccsid[] = "@(#)opendir.c	8.1 (Berkeley) 06/04/93";
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-long _rewinddir;
 
 /*
  * open a directory.
@@ -83,6 +81,6 @@ opendir(name)
 	/*
 	 * Set up seek point for rewinddir.
 	 */
-	_rewinddir = telldir(dirp);
+	dirp->dd_rewind = telldir(dirp);
 	return dirp;
 }
