@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cons.h	7.4 (Berkeley) 10/11/92
+ *	@(#)cons.h	7.5 (Berkeley) 06/04/93
  */
 
 /***********************************************************
@@ -85,8 +85,8 @@ struct dte_addr {
 
 #ifndef	PRC_NCMDS
 #include <sys/protosw.h>
-#endif	PRC_NCMDS
+#endif	/* PRC_NCMDS */
 
 #define PRC_CONS_SEND_DONE 2 /* something unused in protosw.h */
 
-#endif	KERNEL
+#endif	/* KERNEL */
