@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)gfmt.c	8.4 (Berkeley) 03/28/94";
+static char sccsid[] = "@(#)gfmt.c	8.5 (Berkeley) 04/01/94";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -44,7 +44,15 @@ static char sccsid[] = "@(#)gfmt.c	8.4 (Berkeley) 03/28/94";
 #include "stty.h"
 #include "extern.h"
 
-static void gerr __P((char *));
+static void
+gerr(s)
+	char *s;
+{
+	if (s)
+		errx(1, "illegal gfmt1 option -- %s", s);
+	else
+		errx(1, "illegal gfmt1 option");
+}
 
 void
 gprint(tp, wp, ldisc)
@@ -52,7 +60,7 @@ gprint(tp, wp, ldisc)
 	struct winsize *wp;
 	int ldisc;
 {
-	register struct cchar *cp;
+	struct cchar *cp;
 
 	(void)printf("gfmt1:cflag=%x:iflag=%x:lflag=%x:oflag=%x:",
 	    tp->c_cflag, tp->c_iflag, tp->c_lflag, tp->c_oflag);
@@ -63,11 +71,11 @@ gprint(tp, wp, ldisc)
 
 void
 gread(tp, s) 
-	register struct termios *tp;
+	struct termios *tp;
 	char *s;
 {
-	register char *ep, *p;
-	register struct cchar *cp;
+	struct cchar *cp;
+	char *ep, *p;
 	long tmp;
 
 	if ((s = strchr(s, ':')) == NULL)
@@ -118,14 +126,4 @@ gread(tp, s)
 		if (cp->name == NULL)
 			gerr(p);
 	}
-}
-
-static void
-gerr(s)
-	char *s;
-{
-	if (s)
-		errx(1, "illegal gfmt1 option -- %s", s);
-	else
-		errx(1, "illegal gfmt1 option");
 }
