@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)readcf.c	8.100 (Berkeley) 06/10/95";
+static char sccsid[] = "@(#)readcf.c	8.101 (Berkeley) 06/10/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1350,6 +1350,8 @@ struct optioninfo
 /*
 	"MaxDaemonChildren",	O_MAXCHILDREN,	FALSE,
 */
+#define O_KEEPCNAMES	0x8e
+	"DontExpandCnames",	O_KEEPCNAMES,	FALSE,
 
 	NULL,			'\0',		FALSE,
 };
@@ -1987,6 +1989,11 @@ setoption(opt, val, sticky)
 
 	  case O_MAXCHILDREN:	/* max # of children of daemon */
 		MaxChildren = atoi(val);
+		break;
+
+	  case O_KEEPCNAMES:	/* don't expand CNAME records */
+		DontExpandCnames = atobool(val);
+		break;
 
 	  default:
 		if (tTd(37, 1))
