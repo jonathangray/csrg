@@ -8,11 +8,13 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)keyboard.c	5.3 (Berkeley) 07/23/92";
+static char sccsid[] = "@(#)keyboard.c	5.4 (Berkeley) 09/02/92";
 #endif /* not lint */
 
-#include <signal.h>
 #include <ctype.h>
+#include <signal.h>
+#include <termios.h>
+
 #include "systat.h"
 #include "extern.h"
 
@@ -53,7 +55,7 @@ keyboard()
                                 move(CMDLINE, 0);
                                 clrtoeol();
                         }
-                        if (ch == _tty.sg_erase && col > 0) {
+                        if (ch == erasechar() && col > 0) {
                                 if (col == 1 && line[0] == ':')
                                         continue;
                                 col--;
@@ -69,7 +71,7 @@ keyboard()
                                 col++;
                                 goto doerase;
                         }
-                        if (ch == _tty.sg_kill && col > 0) {
+                        if (ch == killchar() && col > 0) {
                                 col = 0;
                                 if (line[0] == ':')
                                         col++;
