@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)umap_vfsops.c	8.4 (Berkeley) 02/22/95
+ *	@(#)umap_vfsops.c	8.4 (Berkeley) 02/23/95
  *
  * @(#)null_vfsops.c       1.5 (Berkeley) 7/10/92
  */
@@ -262,7 +262,7 @@ umapfs_unmount(mp, mntflags, p)
 	/*
 	 * And blow it away for future re-use
 	 */
-	vgone(umapm_rootvp);
+	VOP_REVOKE(umapm_rootvp, 0);
 	/*
 	 * Finally, throw away the umap_mount structure
 	 */
