@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 1983 The Regents of the University of California.
+ * Copyright (c) 1983, 1992 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,9 +31,9 @@
  * SUCH DAMAGE.
  */
 
-#ifndef lint
-static char sccsid[] = "@(#)gmon.c	5.10 (Berkeley) 07/10/92";
-#endif /* not lint */
+#if !defined(lint) && defined(LIBC_SCCS)
+static char sccsid[] = "@(#)gmon.c	5.11 (Berkeley) 07/10/92";
+#endif
 
 #include <unistd.h>
 #include <sys/types.h>
