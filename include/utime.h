@@ -30,8 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)utime.h	5.3 (Berkeley) 02/23/91
+ *	@(#)utime.h	5.4 (Berkeley) 04/03/91
  */
+
+#ifndef	_UTIME_H_
+#define	_UTIME_H_
 
 struct utimbuf {
 	time_t actime;		/* Access time */
@@ -43,3 +46,5 @@ struct utimbuf {
 __BEGIN_DECLS
 int utime __P((const char *, const struct utimbuf *));
 __END_DECLS
+
+#endif /* !_UTIME_H_ */
