@@ -2,12 +2,6 @@
  * Copyright (c) 1992 Regents of the University of California.
  * All rights reserved.
  *
- * Originally written by Eric Cooper in Fall 1981.
- * Inspired by a version 6 program by Len Levin, 1978.
- * Several pieces of code lifted from Bill Joy's 4BSD ps.
- * Most recently, hacked beyond recognition for 4.4BSD by Steven McCanne,
- * Lawrence Berkeley Laboratory.
- *
  * This software was developed by the Computer Systems Engineering group
  * at Lawrence Berkeley Laboratory under DARPA contract BG 91-66 and
  * contributed to Berkeley.
@@ -22,8 +16,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Lawrence Berkeley Laboratory and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
