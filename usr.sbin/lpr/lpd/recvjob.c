@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recvjob.c	5.17 (Berkeley) 07/21/92";
+static char sccsid[] = "@(#)recvjob.c	5.18 (Berkeley) 8/6/92";
 #endif /* not lint */
 
 /*
@@ -43,51 +43,56 @@ static char sccsid[] = "@(#)recvjob.c	5.17 (Berkeley) 07/21/92";
 #include <sys/mount.h>
 #include <sys/stat.h>
 
+#include <unistd.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <dirent.h>
 #include <syslog.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "lp.h"
 #include "lp.local.h"
 #include "extern.h"
 #include "pathnames.h"
 
-char	*sp = "";
 #define ack()	(void) write(1, sp, 1);
 
-char    tfname[40];		/* tmp copy of cf before linking */
-char    dfname[40];		/* data files */
-int	minfree;		/* keep at least minfree blocks available */
+static char	 dfname[40];	/* data files */
+static int	 minfree;       /* keep at least minfree blocks available */
+static char	*sp = "";
+static char	 tfname[40];	/* tmp copy of cf before linking */
 
-static int        readjob __P((void));
-static int        readfile __P((char *, int));
-static int        noresponse __P((void));
 static int        chksize __P((int));
 static void       frecverr __P((const char *, ...));
-static int        read_number __P((char *));
+static int        noresponse __P((void));
 static void       rcleanup __P((int));
+static int        read_number __P((char *));
+static int        readfile __P((char *, int));
+static int        readjob __P((void));
 
 
-int
+void
 recvjob()
 {
 	struct stat stb;
-	char *bp = pbuf;
 	int status;
 
 	/*
 	 * Perform lookup for printer name or abbreviation
 	 */
-	if ((status = pgetent(line, printer)) < 0)
+	if ((status = cgetent(&bp, printcapdb, printer)) == -2)
 		frecverr("cannot open printer description file");
-	else if (status == 0)
+	else if (status == -1)
 		frecverr("unknown printer %s", printer);
-	if ((LF = pgetstr("lf", &bp)) == NULL)
+	else if (status == -3)
+		fatal("potential reference loop detected in printcap file");
+	
+	if (cgetstr(bp, "lf", &LF) == -1)
 		LF = _PATH_CONSOLE;
-	if ((SD = pgetstr("sd", &bp)) == NULL)
+	if (cgetstr(bp, "sd", &SD) == -1)
 		SD = _PATH_DEFSPOOL;
-	if ((LO = pgetstr("lo", &bp)) == NULL)
+	if (cgetstr(bp, "lo", &LO) == -1)
 		LO = DEFLOCK;
 
 	(void) close(2);			/* set up log file */
