@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deliver.c	8.109 (Berkeley) 11/20/94";
+static char sccsid[] = "@(#)deliver.c	8.110 (Berkeley) 11/20/94";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -75,6 +75,7 @@ sendall(e, mode)
 	bool announcequeueup;
 	bool oldverbose = Verbose;
 	int pid;
+	char *qid;
 	int pid;
 #ifdef LOCKF
 	struct flock lfd;
@@ -467,7 +468,6 @@ sendenvelope(e, mode)
 {
 	register ADDRESS *q;
 	char *qf;
-	char *id;
 	bool didany;
 
 	/*
