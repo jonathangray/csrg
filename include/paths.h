@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)paths.h	5.15 (Berkeley) 05/29/91
+ *	@(#)paths.h	5.16 (Berkeley) 04/24/92
  */
 
 #ifndef _PATHS_H_
@@ -58,6 +58,7 @@
 /* Provide trailing slash, since mostly used for building pathnames. */
 #define	_PATH_DEV	"/dev/"
 #define	_PATH_TMP	"/tmp/"
+#define	_PATH_VARDB	"/var/db/"
 #define	_PATH_VARRUN	"/var/run/"
 #define	_PATH_VARTMP	"/var/tmp/"
 
