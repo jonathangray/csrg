@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.31 (Berkeley) 09/18/93
+ *	@(#)conf.h	8.32 (Berkeley) 09/19/93
  */
 
 /*
@@ -41,6 +41,7 @@
 # include <sys/param.h>
 # include <sys/stat.h>
 # include <sys/file.h>
+# include <sys/wait.h>
 # include <fcntl.h>
 # include <signal.h>
 
@@ -237,7 +238,11 @@
 # ifndef LA_TYPE
 #  define LA_TYPE	LA_MACH
 # endif
+# ifndef _POSIX_SOURCE
 typedef int		pid_t;
+#  undef WEXITSTATUS
+#  undef WIFEXITED
+# endif
 # ifndef _PATH_SENDMAILCF
 #  define _PATH_SENDMAILCF	"/etc/sendmail/sendmail.cf"
 # endif
@@ -560,6 +565,13 @@ struct utsname
 
 #ifndef SIG_ERR
 # define SIG_ERR	((void (*)()) -1)
+#endif
+
+#ifndef WEXITSTATUS
+# define WEXITSTATUS(st)	(((st) >> 8) & 0377)
+#endif
+#ifndef WIFEXITED
+# define WIFEXITED(st)		(((st) & 0377) == 0)
 #endif
 
 /*
