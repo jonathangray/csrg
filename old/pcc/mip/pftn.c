@@ -2,7 +2,7 @@
 static char *sccsid ="@(#)pftn.c	1.8 (Berkeley) 03/19/85";
 #endif lint
 
-# include "mfile1"
+# include "pass1.h"
 
 unsigned int offsz;
 
