@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if.h	7.18 (Berkeley) 07/06/92
+ *	@(#)if.h	7.19 (Berkeley) 07/09/92
  */
 
 /*
@@ -323,7 +323,6 @@ struct	ifconf {
 		(ifa)->ifa_refcnt--;
 
 #include "../net/if_arp.h"
-struct	ifqueue rawintrq;		/* raw packet input queue */
 struct	ifnet	*ifnet;
 struct	ifaddr	*ifa_ifwithaddr __P((struct sockaddr *)),
 		*ifa_ifwithnet __P((struct sockaddr *)),
