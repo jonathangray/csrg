@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)procfs.h	8.1 (Berkeley) 01/05/94
+ *	@(#)procfs.h	8.2 (Berkeley) 01/05/94
  *
  * From:
  *	$Id: procfs.h,v 3.2 1993/12/15 09:40:17 jsp Exp $
@@ -120,6 +120,7 @@ extern int procfs_freevp __P((struct vnode *));
 extern int procfs_allocvp __P((struct mount *, struct vnode **, long, pfstype));
 extern struct vnode *procfs_findtextvp __P((struct proc *));
 extern int procfs_sstep __P((struct proc *));
+extern void procfs_fix_sstep __P((struct proc *));
 extern int procfs_read_regs __P((struct proc *, struct reg *));
 extern int procfs_write_regs __P((struct proc *, struct reg *));
 extern int procfs_donote __P((struct proc *, struct proc *, struct pfsnode *pfsp, struct uio *uio));
