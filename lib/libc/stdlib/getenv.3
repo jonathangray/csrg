@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)getenv.3	6.8 (Berkeley) 05/16/90
+.\"	@(#)getenv.3	6.9 (Berkeley) 05/17/90
 .\"
 .TH GETENV 3 ""
 .AT 3
@@ -38,6 +38,8 @@ getenv, putenv, setenv, unsetenv \- manipulate environmental variables
 .SH SYNOPSIS
 .nf
 .ft B
+#include <stdlib.h>
+
 char *
 getenv(const char *name);
 
