@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_pcb.h	7.24 (Berkeley) 10/17/92
+ *	@(#)tp_pcb.h	7.25 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -78,7 +78,7 @@ SOFTWARE.
 #include <netiso/tp_user.h>
 #ifndef sblock
 #include <sys/socketvar.h>
-#endif sblock
+#endif /* sblock */
 
 /* NOTE: the code depends on REF_CLOSED > REF_OPEN > the rest, and
  * on REF_FREE being zero
@@ -274,7 +274,7 @@ struct tp_pcb {
 	/* performance stats - see tp_stat.h */
 	struct tp_pmeas		*tp_p_meas;
 	struct mbuf			*tp_p_mbuf;
-#endif TP_PERF_MEAS
+#endif /* TP_PERF_MEAS */
 
 	/* addressing */
 	u_short				tp_domain;		/* domain (INET, ISO) */
@@ -353,4 +353,4 @@ extern struct tp_pcb	*tp_ftimeolist;
 #define	tpcbtoso(tp)	((struct socket *)((tp)->tp_sock))
 #define	tpcbtoref(tp)	((struct tp_ref *)((tp)->tp_ref))
 
-#endif  __TP_PCB__
+#endif  /* __TP_PCB__ */
