@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.176 (Berkeley) 05/28/95
+ *	@(#)conf.h	8.177 (Berkeley) 05/30/95
  */
 
 /*
@@ -1070,6 +1070,7 @@ typedef int		pid_t;
 */
 
 #ifdef NCR3000
+# include <sys/sockio.h>
 # define __svr4__
 # define IP_SRCROUTE	0	/* Something is broken with getsockopt() */
 # undef BSD
