@@ -29,13 +29,13 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)vi.1	8.1 (Berkeley) 06/09/93
+.\"     @(#)vi.1	6.5 (Berkeley) 06/18/93
 .\"
 .Dd 
 .Dt VI 1
 .Os BSD 3
 .Sh NAME
-.Nm \&vi
+.Nm \&vi , view
 .Nd screen oriented (visual) display editor based on ex
 .Sh SYNOPSIS
 .Nm \&vi
@@ -59,6 +59,11 @@ the command mode of
 from within
 .Nm \&vi
 and vice-versa.
+.Pp
+.Nm View
+is the same as
+.Dq "vi -R" ,
+e.g. run in read-only mode.
 .Pp
 Available options:
 .Bl -tag -width xcommandx
