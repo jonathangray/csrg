@@ -1,23 +1,48 @@
-/*
- * Copyright (c) 1982, 1986 Regents of the University of California.
- * All rights reserved.  The Berkeley software License Agreement
- * specifies the terms and conditions for redistribution.
+/*-
+ * Copyright (c) 1982, 1986 The Regents of the University of California.
+ * All rights reserved.
  *
- *	@(#)tty.h	7.8 (Berkeley) 12/16/90
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ *
+ *	@(#)tty.h	7.9 (Berkeley) 05/09/91
  */
 
 #include <sys/termios.h>
 
 /*
- * A clist structure is the head of a linked list queue
- * of characters.  The characters are stored in blocks
- * containing a link and CBSIZE (param.h) characters. 
- * The routines in tty_subr.c manipulate these structures.
+ * Clists are character lists, which is a variable length linked list
+ * of cblocks, wiht a count of the number of characters in the list.
  */
 struct clist {
-	int	c_cc;		/* character count */
-	char	*c_cf;		/* pointer to first char */
-	char	*c_cl;		/* pointer to last char */
+	int	c_cc;		/* count of characters in queue */
+	char	*c_cf;		/* first character/cblock */
+	char	*c_cl;		/* last chararacter/cblock */
 };
 
 /*
@@ -64,20 +89,20 @@ struct tty {
 	short	t_gen;			/* generation number */
 };
 
-#define	TTIPRI	28
-#define	TTOPRI	29
+#define	TTIPRI	25			/* sleep priority for tty reads */
+#define	TTOPRI	26			/* sleep priority for tty writes */
 
-/* limits */
 #define	TTMASK	15
 #define	OBUFSIZ	100
 #define	TTYHOG	1024
+
 #ifdef KERNEL
 #define TTMAXHIWAT	roundup(2048, CBSIZE)
 #define TTMINHIWAT	roundup(100, CBSIZE)
 #define TTMAXLOWAT	256
 #define TTMINLOWAT	32
 extern	struct ttychars ttydefaults;
-#endif /*KERNEL*/
+#endif /* KERNEL */
 
 /* internal state bits */
 #define	TS_TIMEOUT	0x000001	/* delay timeout in progress */
@@ -99,7 +124,7 @@ extern	struct ttychars ttydefaults;
 #define	TS_ERASE	0x040000	/* within a \.../ for PRTRUB */
 #define	TS_LNCH		0x080000	/* next character is literal */
 #define	TS_TYPEN	0x100000	/* retyping suspended input (PENDIN) */
-#define	TS_CNTTB	0x200000	/* counting tab width, leave FLUSHO alone */
+#define	TS_CNTTB	0x200000	/* counting tab width, ignore FLUSHO */
 
 #define	TS_LOCAL	(TS_BKSL|TS_ERASE|TS_LNCH|TS_TYPEN|TS_CNTTB)
 
