@@ -1,5 +1,5 @@
 /*
- * $Id: nfs_subr.c,v 5.2 90/06/23 22:19:50 jsp Rel $
+ * $Id: nfs_subr.c,v 5.2.1.4 91/03/03 20:46:34 jsp Alpha $
  *
  * Copyright (c) 1990 Jan-Simon Pendry
  * Copyright (c) 1990 Imperial College of Science, Technology & Medicine
@@ -37,7 +37,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_subr.c	5.1 (Berkeley) 06/29/90
+ *	@(#)nfs_subr.c	5.2 (Berkeley) 03/17/91
  */
 
 #include "am.h"
@@ -54,6 +54,7 @@ NFS_ERROR_MAPPING
 #define nfs_error(e) ((nfsstat)(e))
 #endif /* NFS_ERROR_MAPPING */
 
+static char *do_readlink P((am_node *mp, int *error_return, struct attrstat **attrpp));
 static char *do_readlink(mp, error_return, attrpp)
 am_node *mp;
 int *error_return;
@@ -81,7 +82,7 @@ struct attrstat **attrpp;
 		ln = mp->am_mnt->mf_mount;
 	}
 	if (attrpp)
-		*attrpp = &mp->am_mnt->mf_attr;
+		*attrpp = &mp->am_attr;
 	return ln;
 }
 
@@ -122,9 +123,9 @@ getattr_retry:
 			return 0;
 		res.status = nfs_error(retry);
 	} else {
-		struct attrstat *attrp = &mp->am_mnt->mf_attr;
+		struct attrstat *attrp = &mp->am_attr;
 #ifdef PRECISE_SYMLINKS
-		if (mp->am_mnt->mf_fattr.type == NFLNK) {
+		if (mp->am_fattr.type == NFLNK) {
 			/*
 			 * Make sure we can read the link,
 			 * and then determine the length.
@@ -213,12 +214,8 @@ struct svc_req *rqstp;
 			}
 			res.status = nfs_error(error);
 		} else {
-#ifdef DEBUG
-			if (ap->am_mnt->mf_fattr.size < 0)
-				dlog("\tERROR: size = %d!", ap->am_mnt->mf_fattr.size);
-#endif /* DEBUG */
 			mp_to_fh(ap, &res.diropres_u.diropres.file);
-			res.diropres_u.diropres.attributes = ap->am_mnt->mf_fattr;
+			res.diropres_u.diropres.attributes = ap->am_fattr;
 			res.status = NFS_OK;
 		}
 		mp->am_stats.s_lookup++;
@@ -251,7 +248,7 @@ readlink_retry:
 			return 0;
 		res.status = nfs_error(retry);
 	} else {
-		char *ln = do_readlink(mp, &retry, (struct attrstat *) 0);
+		char *ln = do_readlink(mp, &retry, (struct attrstat **) 0);
 		if (ln == 0)
 			goto readlink_retry;
 		res.status = NFS_OK;
@@ -335,10 +332,11 @@ static nfsstat *
 unlink_or_rmdir(argp, rqstp, unlinkp)
 struct diropargs *argp;
 struct svc_req *rqstp;
+int unlinkp;
 {
 	static nfsstat res;
 	int retry;
-	mntfs *mf;
+	/*mntfs *mf;*/
 	am_node *mp = fh_to_mp3(&argp->dir, &retry, VLOOK_DELETE);
 	if (mp == 0) {
 		if (retry < 0)
@@ -346,8 +344,8 @@ struct svc_req *rqstp;
 		res = nfs_error(retry);
 		goto out;
 	}
-	mf = mp->am_mnt;
-	if (mf->mf_fattr.type != NFDIR) {
+	/*mf = mp->am_mnt;*/
+	if (mp->am_fattr.type != NFDIR) {
 		res = nfs_error(ENOTDIR);
 		goto out;
 	}
@@ -384,7 +382,7 @@ nfsproc_remove_2(argp, rqstp)
 struct diropargs *argp;
 struct svc_req *rqstp;
 {
-	return unlink_or_rmdir(argp, rqstp, 1);
+	return unlink_or_rmdir(argp, rqstp, TRUE);
 }
 
 /*ARGSUSED*/
@@ -465,7 +463,7 @@ nfsproc_rmdir_2(argp, rqstp)
 struct diropargs *argp;
 struct svc_req *rqstp;
 {
-	return unlink_or_rmdir(argp, rqstp, 0);
+	return unlink_or_rmdir(argp, rqstp, FALSE);
 }
 
 
@@ -476,7 +474,7 @@ readdirargs *argp;
 struct svc_req *rqstp;
 {
 	static readdirres res;
-	static entry e_res[2];
+	static entry e_res[MAX_READDIR_ENTRIES];
 	am_node *mp;
 	int retry;
 
@@ -496,11 +494,9 @@ struct svc_req *rqstp;
 			plog(XLOG_DEBUG, "\treaddir(%s)", mp->am_path);
 #endif /* DEBUG */
 		res.status = nfs_error((*mp->am_mnt->mf_ops->readdir)(mp, argp->cookie,
-					&res.readdirres_u.reply, e_res));
+					&res.readdirres_u.reply, e_res, argp->count));
 		mp->am_stats.s_readdir++;
 	}
-
-	/* XXX - need to take argp->count into account */
 
 	return &res;
 }
@@ -538,8 +534,12 @@ struct svc_req *rqstp;
 		fp = &res.statfsres_u.reply;
 
 		fp->tsize = 1024;
-		fp->bsize = 4192;
+		fp->bsize = 4096;
+#ifdef HAS_EMPTY_AUTOMOUNTS
+		fp->blocks = 0;
+#else
 		fp->blocks = 1;
+#endif
 		fp->bfree = 0;
 		fp->bavail = 0;
 
