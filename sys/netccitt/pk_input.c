@@ -38,7 +38,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pk_input.c	7.17 (Berkeley) 12/08/92
+ *	@(#)pk_input.c	7.18 (Berkeley) 12/08/92
  */
 
 #include <sys/param.h>
@@ -50,6 +50,9 @@
 #include <sys/errno.h>
 
 #include <net/if.h>
+#include <net/if_dl.h>
+#include <net/if_llc.h>
+#include <net/route.h>
 
 #include <netccitt/dll.h>
 #include <netccitt/x25.h>
