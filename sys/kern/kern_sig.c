@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sig.c	7.51 (Berkeley) 10/11/92
+ *	@(#)kern_sig.c	7.52 (Berkeley) 01/14/93
  */
 
 #define	SIGPROP		/* include signal properties table */
@@ -49,6 +49,7 @@
 #include <sys/kernel.h>
 #include <sys/wait.h>
 #include <sys/ktrace.h>
+#include <sys/syslog.h>
 
 #include <machine/cpu.h>
 
@@ -1060,6 +1061,19 @@ psig(sig)
 		p->p_stats->p_ru.ru_nsignals++;
 		sendsig(action, sig, returnmask, 0);
 	}
+}
+
+/*
+ * Kill the current process for stated reason.
+ */
+killproc(p, why)
+	struct proc *p;
+	char *why;
+{
+
+	log(LOG_ERR, "pid %d was killed: %s\n", p->p_pid, why);
+	uprintf("sorry, pid %d was killed: %s\n", p->p_pid, why);
+	psignal(p, SIGKILL);
 }
 
 /*
