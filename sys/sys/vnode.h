@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode.h	8.1 (Berkeley) 06/02/93
+ *	@(#)vnode.h	8.2 (Berkeley) 09/05/93
  */
 
 #include <sys/queue.h>
@@ -207,7 +207,7 @@ void	vref __P((struct vnode *));
 /*
  * Global vnode data.
  */
-extern	struct vnode *rootdir;		/* root (i.e. "/") vnode */
+extern	struct vnode *rootvnode;	/* root (i.e. "/") vnode */
 extern	int desiredvnodes;		/* number of vnodes desired */
 extern	struct vattr va_null;		/* predefined null vattr structure */
 
