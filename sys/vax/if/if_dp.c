@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_dp.c	7.1 (Berkeley) 08/30/90
+ *	@(#)if_dp.c	7.2 (Berkeley) 08/30/90
  */
 
 #include "dp.h"
@@ -71,7 +71,11 @@
 
 #include "../vax/cpu.h"
 #include "../vax/mtpr.h"
+
 #include "../vaxuba/pdma.h"
+#include "../vaxuba/ubavar.h"
+
+#include "../netcitt/x25.h"
 
 #include "if_dpreg.h"
 
@@ -79,7 +83,7 @@
  * Driver information for auto-configuration stuff.
  */
 int	dpprobe(), dpattach(), dpinit(), dpioctl(), dprint(), dpxint();
-int	dpoutput(), dpreset(), dptimeout(), x25_ifoutput();
+int	dpoutput(), dpreset(), dptimeout(), dpstart(), x25_ifoutput();
 
 struct	uba_device *dpinfo[NDP];
 
@@ -127,7 +131,7 @@ struct dp_softc {
 #define dp_nobuf dp_errors[2]
 #define dp_disc  dp_errors[3]
 	char	dp_obuf[DP_MTU+8];
-	char	dp_rbuf[DP_MTU+8];
+	char	dp_ibuf[DP_MTU+8];
 } dp_softc[NDP];
 
 dpprobe(reg, ui)
@@ -180,7 +184,7 @@ dpattach(ui)
 	pdp->p_addr = (struct dzdevice *)ui->ui_addr;
 	pdp->p_arg = (int)dp;
 	pdp->p_fcn = dprint;
-	pdp->p_mem = pdp->p_end = dp->dp_rbuf;
+	pdp->p_mem = pdp->p_end = dp->dp_ibuf;
 
 	if_attach(&dp->dp_if);
 }
@@ -200,9 +204,9 @@ dpreset(unit, uban)
 	    ui->ui_ubanum != uban)
 		return;
 	printf(" dp%d", unit);
-	dp->dp_flag = 0;
+	dp->dp_flags = 0;
 	dp->dp_if.if_flags &= ~IFF_RUNNING;
-	addr = ui->ui_addr;
+	addr = (struct dpdevice *)ui->ui_addr;
 	addr->dpclr = DP_CLR;
 	addr->dpsar = 0;
 	addr->dprcsr = 0;
@@ -238,7 +242,7 @@ dpinit(unit)
 	dp->dp_iused = 0;
 	dp->dp_istate = dp->dp_ostate = DPS_IDLE;
 	dppdma[2*unit+1].p_end = 
-		dppdma[2*unit+1].p_mem = = dp->dp_rbuf;
+		dppdma[2*unit+1].p_mem = dp->dp_ibuf;
 	/* enable receive interrupt; CTS comming up will trigger it also */
 	addr->dpsar = DP_CHRM | 0x7E; /* 7E is the flag character */
 	addr->dpclr = 0;
@@ -257,7 +261,8 @@ dpstart(ifp)
 {
 	int s, unit = ifp->if_unit;
 	register struct dp_softc *dp = &dp_softc[unit];
-	register struct dpdevice *addr = dpinfo[unit].ui_addr;
+	register struct dpdevice *addr =
+				(struct dpdevice *)(dpinfo[unit]->ui_addr);
 	register struct mbuf *m;
 	register char *cp;
 	char *cplim;
@@ -301,22 +306,22 @@ dprint(unit, pdma, addr)
 register struct pdma *pdma;
 register struct dpdevice *addr;
 {
-	register struct dpsoftc *dp = &dpsoftc[unit];
-	unsigned short dprdsr = addr->dprdsr;
+	register struct dp_softc *dp = &dp_softc[unit];
+	short rdsr = addr->dprdsr;
 
-	if (dprdsr & DP_ROVR) {
+	if (rdsr & DP_ROVR) {
 		dp->dp_flags |= DPF_FLUSH;
 		return;
 	}
-	if (dprdsr & DP_RSM) { /* Received Start of Message */
-		dp->dp_ibuf[0] = dprdsr & DP_RBUF;
+	if (rdsr & DP_RSM) { /* Received Start of Message */
+		dp->dp_ibuf[0] = rdsr & DP_RBUF;
 		pdma->p_mem = dp->dp_ibuf + 1;
-		dpflags &= ~DPF_FLUSH;
+		dp->dp_flags &= ~DPF_FLUSH;
 		return;
 	}
-	if (dprdsr & DP_REM) { /* Received End of Message */
-		if (dprdsr & DP_REC || dp->dp_flags & DPF_FLUSH) {
-			dp->dp_if.if_errors++;
+	if (rdsr & DP_REM) { /* Received End of Message */
+		if (rdsr & DP_REC || dp->dp_flags & DPF_FLUSH) {
+			dp->dp_if.if_ierrors++;
 			pdma->p_mem = dp->dp_ibuf;
 			dp->dp_flags &= ~ DPF_FLUSH;
 			return;
@@ -326,7 +331,7 @@ register struct dpdevice *addr;
 	}
 	dp->dp_flags |= DPF_FLUSH;
 	if (pdma->p_mem != pdma->p_end)
-		log(dp%d: unexplained receiver interrupt\n");
+		log("dp%d: unexplained receiver interrupt\n", unit);
 }
 
 /*
@@ -336,7 +341,7 @@ dpxint(unit, pdma, addr)
 register struct pdma *pdma;
 register struct dpdevice *addr;
 {
-	register struct dpsoftc *dp = &dpsoftc[unit];
+	register struct dp_softc *dp = &dp_softc[unit];
 
 	if (addr->dptdsr & DP_XERR) {
 		log("if_dp%d: data late\n", unit);
@@ -442,7 +447,7 @@ dpget(rxbuf, totlen, off, ifp)
 }
 
 dpinput(dp, len, buffer)
-register struct dpsoftc *dp;
+register struct dp_softc *dp;
 caddr_t buffer;
 {
 	register struct ifnet *ifp = &dp->dp_if;
@@ -466,7 +471,7 @@ caddr_t buffer;
 		m_freem(m);
 	} else {
 		IF_ENQUEUE(inq, m);
-		schednetisr(NETISR_HD);
+		schednetisr(NETISR_CCITT);
 	}
 }
 
@@ -480,6 +485,7 @@ dpioctl(ifp, cmd, data)
 {
 	register struct ifaddr *ifa = (struct ifaddr *)data;
 	int s = splimp(), error = 0;
+	struct dp_softc *dp = &dp_softc[ifp->if_unit];
 
 	switch (cmd) {
 
@@ -488,7 +494,7 @@ dpioctl(ifp, cmd, data)
 		switch (ifa->ifa_addr->sa_family) {
 #ifdef CCITT
 		case AF_CCITT:
-			error = hd_ctlinput (PRC_IFUP, (caddr_t)&ifa->ifa_addr);
+			error = hd_ctlinput(PRC_IFUP, (caddr_t)&ifa->ifa_addr);
 			if (error == 0)
 				dpinit(ifp->if_unit);
 			break;
@@ -525,8 +531,9 @@ dpdown(unit)
 {
 	register struct dp_softc *dp = &dp_softc[unit];
 	register struct ifxmt *ifxp;
+	register struct dpdevice *addr = (struct dpdevice *)dpinfo[unit]->ui_addr;
 
-	dp->dp_flags &= ~(DP_RUNNING | DP_ONLINE);
+	dp->dp_flags &= ~(DPF_RUNNING | DPF_ONLINE);
 	addr->dpclr = DP_CLR;
 	addr->dpclr = 0;
 
@@ -545,7 +552,7 @@ dptimeout(unit)
 	struct dpdevice *addr;
 
 	dp = &dp_softc[unit];
-	if (dp->dp_flags & DP_ONLINE) {
+	if (dp->dp_flags & DPF_ONLINE) {
 		addr = (struct dpdevice *)(dpinfo[unit]->ui_addr);
 		dpstart(unit);
 	}
