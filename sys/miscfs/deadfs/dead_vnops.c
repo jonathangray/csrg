@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dead_vnops.c	7.16 (Berkeley) 04/21/92
+ *	@(#)dead_vnops.c	7.17 (Berkeley) 04/21/92
  */
 
 #include "param.h"
@@ -213,7 +213,8 @@ int	dead_print __P((
 #define dead_truncate ((int (*) __P(( \
 		struct vnode *vp, \
 		off_t length, \
-		int flags))) nullop)
+		int flags, \
+		struct ucred *cred))) nullop)
 #define dead_update ((int (*) __P(( \
 		struct vnode *vp, \
 		struct timeval *ta, \
