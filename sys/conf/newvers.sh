@@ -31,7 +31,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)newvers.sh	7.7 (Berkeley) 05/22/93
+#	@(#)newvers.sh	8.1 (Berkeley) 06/10/93
 #
 
 if [ ! -r version ]
