@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vfsops.c	7.45 (Berkeley) 09/16/92
+ *	@(#)nfs_vfsops.c	7.46 (Berkeley) 09/22/92
  */
 
 #include "param.h"
@@ -238,7 +238,8 @@ nfs_mountroot()
 		VREF(vp);
 		swdevt[0].sw_vp = vp;
 		swdevt[0].sw_nblks = ntohl(nd->swap_nblks);
-	}
+	} else if (bdevvp(swapdev, &swapdev_vp))
+		panic("nfs_mountroot: can't setup swapdev_vp");
 
 	/*
 	 * Create the rootfs mount point.
