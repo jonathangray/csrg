@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)init_main.c	8.1 (Berkeley) 06/10/93
+ *	@(#)init_main.c	8.2 (Berkeley) 08/15/93
  */
 
 #include <sys/param.h>
@@ -49,7 +49,7 @@ extern int dipsw1, dipsw2;
 
 extern char default_file[];
 
-#define	VERS_LOCAL	"Phase-30"
+#define	VERS_LOCAL	"Phase-31"
 
 extern int howto;
 extern int devtype;
