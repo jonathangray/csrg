@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	6.24 (Berkeley) 03/06/93";
+static char sccsid[] = "@(#)parseaddr.c	6.25 (Berkeley) 03/08/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -610,6 +610,8 @@ prescan(addr, delim, pvpbuf, delimptr)
 		printf("prescan==>");
 		printav(av);
 	}
+	if (av[0] == NULL)
+		return (NULL);
 	return (av);
 }
 /*
