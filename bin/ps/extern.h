@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.4 (Berkeley) 04/29/93
+ *	@(#)extern.h	8.1 (Berkeley) 05/31/93
  */
 
 struct kinfo;
