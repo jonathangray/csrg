@@ -1,6 +1,6 @@
 /* Copyright (c) 1982 Regents of the University of California */
 
-static char sccsid[] = "@(#)canfield.c 4.6 05/10/83";
+static char sccsid[] = "@(#)canfield.c 4.7 05/12/83";
 
 /*
  * The canfield program
