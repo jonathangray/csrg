@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)read_password.c	8.1 (Berkeley) 06/04/93";
+static char sccsid[] = "@(#)read_password.c	8.2 (Berkeley) 12/15/93";
 #endif /* not lint */
 
 /*
@@ -49,6 +49,8 @@ static char sccsid[] = "@(#)read_password.c	8.1 (Berkeley) 06/04/93";
  * output as a prompt, and reads a password string without
  * echoing.
  */
+
+#if	defined(RSA_ENCPWD) || defined(KRB4_ENCPWD)
 
 #include <stdio.h>
 #include <strings.h>
@@ -140,3 +142,4 @@ lose:
     s[max-1] = 0;		/* force termination */
     return !ok;			/* return nonzero if not okay */
 }
+#endif	/* defined(RSA_ENCPWD) || defined(KRB4_ENCPWD) */
