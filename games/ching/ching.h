@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 1988 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1988, 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Guy Harris.
@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ching.h	5.2 (Berkeley) 06/01/90
+ *	@(#)ching.h	8.1 (Berkeley) 05/31/93
  */
 
 #define OYIN	6		/* yin (broken) moving to yang (solid) */
