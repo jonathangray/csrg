@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1986, 1989, 1991, 1993
+ * Copyright (c) 1986, 1989, 1991, 1993, 1995
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vnops.c	8.11 (Berkeley) 03/21/95
+ *	@(#)lfs_vnops.c	8.12 (Berkeley) 05/14/95
  */
 
 #include <sys/param.h>
@@ -470,12 +470,14 @@ lfs_close(ap)
 	register struct inode *ip = VTOI(vp);
 	int mod;
 
-	if (vp->v_usecount > 1 && !(ip->i_flag & IN_LOCKED)) {
+	simple_lock(&vp->v_interlock);
+	if (vp->v_usecount > 1) {
 		mod = ip->i_flag & IN_MODIFIED;
 		ITIMES(ip, &time, &time);
 		if (!mod && ip->i_flag & IN_MODIFIED)
 			ip->i_lfs->lfs_uinodes++;
 	}
+	simple_unlock(&vp->v_interlock);
 	return (0);
 }
 
@@ -503,12 +505,13 @@ int
 lfs_reclaim(ap)
 	struct vop_reclaim_args /* {
 		struct vnode *a_vp;
+		struct proc *a_p;
 	} */ *ap;
 {
 	register struct vnode *vp = ap->a_vp;
 	int error;
 
-	if (error = ufs_reclaim(vp))
+	if (error = ufs_reclaim(vp, ap->a_p))
 		return (error);
 	FREE(vp->v_data, M_LFSNODE);
 	vp->v_data = NULL;
