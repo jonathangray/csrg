@@ -32,7 +32,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#       @(#)makesendmail	8.24 (Berkeley) 06/11/95
+#       @(#)makesendmail	8.25 (Berkeley) 06/11/95
 #
 
 #
@@ -104,6 +104,7 @@ in
   Paragon*)	os=Paragon;;
   HP-UX)	rel=`echo $rel | sed -e 's/^[^.]*\.0*//'`;;
   AIX)		rel=`uname -v`;;
+  BSD-386)	os=BSD-OS;;
 esac
 
 # get "base part" of operating system release
