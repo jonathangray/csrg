@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	8.39 (Berkeley) 05/17/94 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	8.40 (Berkeley) 06/17/94 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	8.39 (Berkeley) 05/17/94 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	8.40 (Berkeley) 06/17/94 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -425,23 +425,21 @@ smtp(e)
 						usrerr("501 BODY requires a value");
 						/* NOTREACHED */
 					}
-# ifdef MIME
+					e->e_bodytype = newstr(vp);
 					if (strcasecmp(vp, "8bitmime") == 0)
 					{
-						e->e_bodytype = "8BITMIME";
 						SevenBit = FALSE;
 					}
 					else if (strcasecmp(vp, "7bit") == 0)
 					{
-						e->e_bodytype = "7BIT";
 						SevenBit = TRUE;
 					}
 					else
 					{
 						usrerr("501 Unknown BODY type %s",
 							vp);
+						/* NOTREACHED */
 					}
-# endif
 				}
 				else
 				{
