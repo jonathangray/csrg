@@ -38,7 +38,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_bio.c	8.10 (Berkeley) 02/04/94
+ *	@(#)vfs_bio.c	8.11 (Berkeley) 01/09/95
  */
 
 #include <sys/param.h>
@@ -346,6 +346,7 @@ vn_bwrite(ap)
  * NB: magnetic tapes cannot be delayed; they must be
  * written in the order that the writes are requested.
  */
+void
 bdwrite(bp)
 	register struct buf *bp;
 {
@@ -372,6 +373,7 @@ bdwrite(bp)
  * Start I/O on a buffer, but do not wait for it to complete.
  * The buffer is released when the I/O completes.
  */
+void
 bawrite(bp)
 	register struct buf *bp;
 {
@@ -388,6 +390,7 @@ bawrite(bp)
  * Release a buffer.
  * Even if the buffer is dirty, no I/O is started.
  */
+void
 brelse(bp)
 	register struct buf *bp;
 {
