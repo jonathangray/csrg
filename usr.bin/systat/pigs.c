@@ -8,7 +8,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)pigs.c	5.14 (Berkeley) 03/31/93";
+static char sccsid[] = "@(#)pigs.c	5.15 (Berkeley) 04/27/93";
 #endif /* not lint */
 
 /*
@@ -21,14 +21,15 @@ static char sccsid[] = "@(#)pigs.c	5.14 (Berkeley) 03/31/93";
 #include <sys/time.h>
 #include <sys/proc.h>
 #include <sys/sysctl.h>
-#include <sys/kinfo_proc.h>
 
-#include <pwd.h>
+#include <curses.h>
 #include <math.h>
-#include <stdlib.h>
 #include <nlist.h>
-#include "systat.h"
+#include <pwd.h>
+#include <stdlib.h>
+
 #include "extern.h"
+#include "systat.h"
 
 int compar __P((const void *, const void *));
 
