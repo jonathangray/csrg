@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_syscalls.c	8.11 (Berkeley) 02/20/94
+ *	@(#)vfs_syscalls.c	8.12 (Berkeley) 03/28/94
  */
 
 #include <sys/param.h>
@@ -1440,7 +1440,7 @@ chown(p, uap, retval)
 	int error;
 	struct nameidata nd;
 
-	NDINIT(&nd, LOOKUP, NOFOLLOW, UIO_USERSPACE, uap->path, p);
+	NDINIT(&nd, LOOKUP, FOLLOW, UIO_USERSPACE, uap->path, p);
 	if (error = namei(&nd))
 		return (error);
 	vp = nd.ni_vp;
