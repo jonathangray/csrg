@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	6.19 (Berkeley) 04/16/93
+ *	@(#)conf.h	6.20 (Berkeley) 04/26/93
  */
 
 /*
@@ -115,6 +115,10 @@
 # include <vfork.h>
 #endif
 
+#ifdef _POSIX_VERSION
+# define HASSETSID	1	/* has setsid(2) call */
+#endif
+
 /*
 **  Due to a "feature" in some operating systems such as Ultrix 4.3 and
 **  HPUX 8.0, if you receive a "No route to host" message (ICMP message
@@ -132,7 +136,8 @@
 /*
 **  Remaining definitions should never have to be changed.  They are
 **  primarily to provide back compatibility for older systems -- for
-**  example, it includes some POSIX compatibility definitions */
+**  example, it includes some POSIX compatibility definitions
+*/
 
 /*
 **  Older systems don't have this error code -- it should be in
