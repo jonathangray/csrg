@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_exit.c	7.33 (Berkeley) 05/04/91
+ *	@(#)kern_exit.c	7.34 (Berkeley) 05/12/91
  */
 
 #include "param.h"
@@ -348,6 +348,11 @@ loop:
 				q->p_ysptr = p->p_ysptr;
 			if ((q = p->p_pptr)->p_cptr == p)
 				q->p_cptr = p->p_osptr;
+
+#ifdef i386
+			cpu_wait(p);			/* XXX */
+#endif
+
 			FREE(p, M_PROC);
 			nprocs--;
 			return (0);
