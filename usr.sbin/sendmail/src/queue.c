@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef QUEUE
-static char sccsid[] = "@(#)queue.c	6.19 (Berkeley) 02/26/93 (with queueing)";
+static char sccsid[] = "@(#)queue.c	6.20 (Berkeley) 02/27/93 (with queueing)";
 #else
-static char sccsid[] = "@(#)queue.c	6.19 (Berkeley) 02/26/93 (without queueing)";
+static char sccsid[] = "@(#)queue.c	6.20 (Berkeley) 02/27/93 (without queueing)";
 #endif
 #endif /* not lint */
 
@@ -456,7 +456,6 @@ runqueue(forkflag)
 	}
 
 	setproctitle("running queue: %s", QueueDir);
-	ForceMail = TRUE;
 
 # ifdef LOG
 	if (LogLevel > 69)
@@ -1363,7 +1362,7 @@ setctluser(user)
 		a->q_user = newstr(DefUser);
 	}
 
-	a->q_flags |= QGOODUID;		/* flag as a "ctladdr"  */
+	a->q_flags |= QGOODUID|QPRIMARY;	/* flag as a "ctladdr"  */
 	a->q_mailer = LocalMailer;
 	return a;
 }
