@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)newfs.c	6.24 (Berkeley) 12/18/90";
+static char sccsid[] = "@(#)newfs.c	6.22.1.1 (Berkeley) 12/18/90";
 #endif /* not lint */
 
 #ifndef lint
@@ -427,9 +427,12 @@ main(argc, argv)
 		maxbpg = MAXBLKPG(bsize);
 	headswitch = lp->d_headswitch;
 	trackseek = lp->d_trkseek;
+	/* Reno fix: label may be 0 if faked up by kernel */
+#ifdef notdef
 #ifdef notdef /* label may be 0 if faked up by kernel */
 	bbsize = lp->d_bbsize;
 	sbsize = lp->d_sbsize;
+#endif
 #endif
 	oldpartition = *pp;
 #ifdef tahoe
