@@ -1,4 +1,4 @@
-/*	systm.h	3.2	%H%	*/
+/*	systm.h	3.3	06/07/80	*/
 
 /*
  * Random set of variables
