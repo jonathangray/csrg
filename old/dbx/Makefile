@@ -3,7 +3,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	5.5 (Berkeley) 02/23/86
+#	@(#)Makefile	5.6 (Berkeley) 10/14/86
 #
 # make file for debugger "dbx"
 #
