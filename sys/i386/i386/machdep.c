@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)machdep.c	7.3 (Berkeley) 05/13/91
+ *	@(#)machdep.c	7.4 (Berkeley) 06/03/91
  */
 
 
@@ -154,7 +154,6 @@ again:
 	    (name) = (type *)v; v = (caddr_t)((name)+(num))
 #define	valloclim(name, type, num, lim) \
 	    (name) = (type *)v; v = (caddr_t)((lim) = ((name)+(num)))
-	valloclim(file, struct file, nfile, fileNFILE);
 	valloc(cfree, struct cblock, nclist);
 	valloc(callout, struct callout, ncallout);
 	valloc(swapmap, struct map, nswapmap = maxproc * 2);
