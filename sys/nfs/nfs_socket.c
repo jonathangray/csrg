@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_socket.c	7.33 (Berkeley) 07/10/92
+ *	@(#)nfs_socket.c	7.34 (Berkeley) 07/12/92
  */
 
 /*
@@ -1495,7 +1495,7 @@ nfs_realign(m, hsiz)
 					mnew = m2;
 					m2 = m2->m_next;
 				}
-				siz = MIN(mlen, olen);
+				siz = min(mlen, olen);
 				if (tcp != fcp)
 					bcopy(fcp, tcp, siz);
 				mnew->m_len += siz;
