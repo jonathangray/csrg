@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.17 (Berkeley) 08/15/93";
+static char sccsid[] = "@(#)main.c	8.18 (Berkeley) 08/15/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -346,7 +346,7 @@ main(argc, argv, envp)
 	if (readconfig)
 	{
 		/* initialize some macros, etc. */
-		initmacros();
+		initmacros(CurEnv);
 
 		/* version */
 		define('v', Version, CurEnv);
@@ -1198,7 +1198,8 @@ struct metamac	MetaMacros[] =
 	'\0'
 };
 
-initmacros()
+initmacros(e)
+	register ENVELOPE *e;
 {
 	register struct metamac *m;
 	char buf[5];
@@ -1208,15 +1209,22 @@ initmacros()
 	{
 		buf[0] = m->metaval;
 		buf[1] = '\0';
-		define(m->metaname, newstr(buf), CurEnv);
+		define(m->metaname, newstr(buf), e);
 	}
 	buf[0] = MATCHREPL;
 	buf[2] = '\0';
 	for (c = '0'; c <= '9'; c++)
 	{
 		buf[1] = c;
-		define(c, newstr(buf), CurEnv);
+		define(c, newstr(buf), e);
 	}
+
+	/* set defaults for some macros sendmail will use later */
+	define('e', "\201j Sendmail \201v ready at \201b", e);
+	define('l', "From \201g  \201d", e);
+	define('n', "MAILER-DAEMON", e);
+	define('o', ".:@[]", e);
+	define('q', "<\201g>", e);
 }
 /*
 **  FREEZE -- freeze BSS & allocated memory
