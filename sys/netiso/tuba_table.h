@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 1991 The Regents of the University of California.
+ * Copyright (c) 1992 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tuba_table.h	7.1 (Berkeley) 10/09/92
+ *	@(#)tuba_table.h	7.2 (Berkeley) 10/09/92
  */
 
 struct tuba_cache {
