@@ -6,6 +6,11 @@
  * at Lawrence Berkeley Laboratory under DARPA contract BG 91-66 and
  * contributed to Berkeley.
  *
+ * All advertising materials mentioning features or use of this software
+ * must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Lawrence Berkeley Laboratories.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -34,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)scsi_subr.c	5.1 (Berkeley) 07/10/92
+ *	@(#)scsi_subr.c	5.2 (Berkeley) 07/23/92
  *
  * from: $Header: scsi_subr.c,v 1.7 92/06/11 17:55:48 torek Exp $ (LBL)
  */
@@ -44,11 +49,12 @@
  * Does almost nothing (most work is relegated to per-hba drivers).
  */
 
-#include "sys/param.h"
-#include "sys/buf.h"
-#include "sys/device.h"
-#include "scsi/scsi.h"
-#include "scsi/scsivar.h"
+#include <sys/param.h>
+#include <sys/buf.h>
+#include <sys/device.h>
+
+#include "scsi.h"
+#include "scsivar.h"
 
 /*
  * General subroutines, and scsi data.
