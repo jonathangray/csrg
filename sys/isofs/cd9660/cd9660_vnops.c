@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cd9660_vnops.c	8.12 (Berkeley) 08/19/94
+ *	@(#)cd9660_vnops.c	8.13 (Berkeley) 11/07/94
  */
 
 #include <sys/param.h>
@@ -1058,8 +1058,8 @@ int (**cd9660_specop_p)();
 struct vnodeopv_entry_desc cd9660_specop_entries[] = {
 	{ &vop_default_desc, vn_default_error },
 	{ &vop_lookup_desc, spec_lookup },	/* lookup */
-	{ &vop_create_desc, cd9660_create },	/* create */
-	{ &vop_mknod_desc, cd9660_mknod },	/* mknod */
+	{ &vop_create_desc, spec_create },	/* create */
+	{ &vop_mknod_desc, spec_mknod },	/* mknod */
 	{ &vop_open_desc, spec_open },		/* open */
 	{ &vop_close_desc, spec_close },	/* close */
 	{ &vop_access_desc, cd9660_access },	/* access */
@@ -1073,12 +1073,12 @@ struct vnodeopv_entry_desc cd9660_specop_entries[] = {
 	{ &vop_mmap_desc, spec_mmap },		/* mmap */
 	{ &vop_fsync_desc, spec_fsync },	/* fsync */
 	{ &vop_seek_desc, spec_seek },		/* seek */
-	{ &vop_remove_desc, cd9660_remove },	/* remove */
-	{ &vop_link_desc, cd9660_link },	/* link */
-	{ &vop_rename_desc, cd9660_rename },	/* rename */
-	{ &vop_mkdir_desc, cd9660_mkdir },	/* mkdir */
-	{ &vop_rmdir_desc, cd9660_rmdir },	/* rmdir */
-	{ &vop_symlink_desc, cd9660_symlink },	/* symlink */
+	{ &vop_remove_desc, spec_remove },	/* remove */
+	{ &vop_link_desc, spec_link },		/* link */
+	{ &vop_rename_desc, spec_rename },	/* rename */
+	{ &vop_mkdir_desc, spec_mkdir },	/* mkdir */
+	{ &vop_rmdir_desc, spec_rmdir },	/* rmdir */
+	{ &vop_symlink_desc, spec_symlink },	/* symlink */
 	{ &vop_readdir_desc, spec_readdir },	/* readdir */
 	{ &vop_readlink_desc, spec_readlink },	/* readlink */
 	{ &vop_abortop_desc, spec_abortop },	/* abortop */
@@ -1087,8 +1087,7 @@ struct vnodeopv_entry_desc cd9660_specop_entries[] = {
 	{ &vop_lock_desc, cd9660_lock },	/* lock */
 	{ &vop_unlock_desc, cd9660_unlock },	/* unlock */
 	{ &vop_bmap_desc, spec_bmap },		/* bmap */
-		/* XXX strategy: panics, should be notsupp instead? */
-	{ &vop_strategy_desc, cd9660_strategy },/* strategy */
+	{ &vop_strategy_desc, spec_strategy },	/* strategy */
 	{ &vop_print_desc, cd9660_print },	/* print */
 	{ &vop_islocked_desc, cd9660_islocked },/* islocked */
 	{ &vop_pathconf_desc, spec_pathconf },	/* pathconf */
@@ -1109,8 +1108,8 @@ int (**cd9660_fifoop_p)();
 struct vnodeopv_entry_desc cd9660_fifoop_entries[] = {
 	{ &vop_default_desc, vn_default_error },
 	{ &vop_lookup_desc, fifo_lookup },	/* lookup */
-	{ &vop_create_desc, cd9660_create },	/* create */
-	{ &vop_mknod_desc, cd9660_mknod },	/* mknod */
+	{ &vop_create_desc, fifo_create },	/* create */
+	{ &vop_mknod_desc, fifo_mknod },	/* mknod */
 	{ &vop_open_desc, fifo_open },		/* open */
 	{ &vop_close_desc, fifo_close },	/* close */
 	{ &vop_access_desc, cd9660_access },	/* access */
@@ -1124,12 +1123,12 @@ struct vnodeopv_entry_desc cd9660_fifoop_entries[] = {
 	{ &vop_mmap_desc, fifo_mmap },		/* mmap */
 	{ &vop_fsync_desc, fifo_fsync },	/* fsync */
 	{ &vop_seek_desc, fifo_seek },		/* seek */
-	{ &vop_remove_desc, cd9660_remove },	/* remove */
-	{ &vop_link_desc, cd9660_link },	/* link */
-	{ &vop_rename_desc, cd9660_rename },	/* rename */
-	{ &vop_mkdir_desc, cd9660_mkdir },	/* mkdir */
-	{ &vop_rmdir_desc, cd9660_rmdir },	/* rmdir */
-	{ &vop_symlink_desc, cd9660_symlink },	/* symlink */
+	{ &vop_remove_desc, fifo_remove },	/* remove */
+	{ &vop_link_desc, fifo_link }	,	/* link */
+	{ &vop_rename_desc, fifo_rename },	/* rename */
+	{ &vop_mkdir_desc, fifo_mkdir },	/* mkdir */
+	{ &vop_rmdir_desc, fifo_rmdir },	/* rmdir */
+	{ &vop_symlink_desc, fifo_symlink },	/* symlink */
 	{ &vop_readdir_desc, fifo_readdir },	/* readdir */
 	{ &vop_readlink_desc, fifo_readlink },	/* readlink */
 	{ &vop_abortop_desc, fifo_abortop },	/* abortop */
@@ -1138,7 +1137,7 @@ struct vnodeopv_entry_desc cd9660_fifoop_entries[] = {
 	{ &vop_lock_desc, cd9660_lock },	/* lock */
 	{ &vop_unlock_desc, cd9660_unlock },	/* unlock */
 	{ &vop_bmap_desc, fifo_bmap },		/* bmap */
-	{ &vop_strategy_desc, fifo_badop },	/* strategy */
+	{ &vop_strategy_desc, fifo_strategy },	/* strategy */
 	{ &vop_print_desc, cd9660_print },	/* print */
 	{ &vop_islocked_desc, cd9660_islocked },/* islocked */
 	{ &vop_pathconf_desc, fifo_pathconf },	/* pathconf */
