@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)iso_snpac.c	7.19 (Berkeley) 07/06/92
+ *	@(#)iso_snpac.c	7.20 (Berkeley) 08/14/92
  */
 
 /***********************************************************
@@ -243,7 +243,7 @@ iso_setmcasts(ifp, req)
 	int		doreset = 0;
 
 	bzero((caddr_t)&ifr, sizeof(ifr));
-	for (cpp = (caddr_t *)addrlist; *cpp; cpp+) {
+	for (cpp = (caddr_t *)addrlist; *cpp; cpp++) {
 		bcopy(*cpp, (caddr_t)ifr.ifr_addr.sa_data, 6);
 		if (req == RTM_ADD)
 			if (ether_addmulti(&ifr, (struct arpcom *)ifp) == ENETRESET)
