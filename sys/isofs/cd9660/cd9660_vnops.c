@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cd9660_vnops.c	8.3 (Berkeley) 01/23/94
+ *	@(#)cd9660_vnops.c	8.4 (Berkeley) 05/09/94
  */
 
 #include <sys/param.h>
@@ -565,9 +565,9 @@ cd9660_readdir(ap)
 		 */
 		switch (imp->iso_ftype) {
 		case ISO_FTYPE_RRIP:
-			cd9660_rrip_getname(ep,idp->current.d_name,
-					   (u_short *)&idp->current.d_namlen,
+			cd9660_rrip_getname(ep,idp->current.d_name, &elen,
 					   &idp->current.d_fileno,imp);
+			idp->current.d_namlen = (u_char)elen;
 			if (idp->current.d_namlen)
 				error = iso_uiodir(idp,&idp->current,idp->curroff);
 			break;
