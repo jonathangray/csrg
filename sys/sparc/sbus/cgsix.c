@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 1993 The Regents of the University of California.
- * All rights reserved.
+ * Copyright (c) 1993
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This software was developed by the Computer Systems Engineering group
  * at Lawrence Berkeley Laboratory under DARPA contract BG 91-66 and
@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cgsix.c	8.3 (Berkeley) 12/14/93
+ *	@(#)cgsix.c	8.4 (Berkeley) 01/21/94
  *
  * from: $Header: cgsix.c,v 1.2 93/10/18 00:01:51 torek Exp $
  */
