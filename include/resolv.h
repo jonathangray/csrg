@@ -30,8 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)resolv.h	5.14 (Berkeley) 03/03/91
+ *	@(#)resolv.h	5.15 (Berkeley) 04/03/91
  */
+
+#ifndef _RESOLV_H_
+#define	_RESOLV_H_
 
 /*
  * Resolver configuration file.
@@ -113,3 +116,5 @@ int	 res_mkquery __P((int, const char *, int, int, const char *, int,
 		const struct rrec *, char *, int));
 int	 res_send __P((const char *, int, char *, int));
 __END_DECLS
+
+#endif /* !_RESOLV_H_ */
