@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)procfs_subr.c	8.5 (Berkeley) 06/15/94
+ *	@(#)procfs_subr.c	8.6 (Berkeley) 05/14/95
  *
  * From:
  *	$Id: procfs_subr.c,v 3.2 1993/12/15 09:40:17 jsp Exp $
@@ -85,6 +85,7 @@ procfs_allocvp(mp, vpp, pid, pfs_type)
 	long pid;
 	pfstype pfs_type;
 {
+	struct proc *p = curproc;	/* XXX */
 	struct pfsnode *pfs;
 	struct vnode *vp;
 	struct pfsnode **pp;
@@ -96,7 +97,7 @@ loop:
 		if (pfs->pfs_pid == pid &&
 		    pfs->pfs_type == pfs_type &&
 		    vp->v_mount == mp) {
-			if (vget(vp, 0))
+			if (vget(vp, 0, p))
 				goto loop;
 			*vpp = vp;
 			return (0);
