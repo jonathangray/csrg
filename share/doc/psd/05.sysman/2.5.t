@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)2.5.t	8.4 (Berkeley) 05/26/94
+.\"	@(#)2.5.t	8.5 (Berkeley) 05/26/94
 .\"
 .Sh 2 "Process debugging
 .Sh 3 "Traditional debugging
@@ -48,9 +48,6 @@ and examine and change its core image.
 Its primary use is for the implementation of breakpoint debugging.
 There are four arguments whose interpretation
 depends on a request argument.
-Generally, pid is the process ID of the traced process,
-which must be a child (no more distant descendant)
-of the tracing process.
 A process being traced behaves normally until it
 encounters a signal (whether internally generated like
 ``illegal instruction'' or externally generated
