@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)collect.c	8.11 (Berkeley) 04/14/94";
+static char sccsid[] = "@(#)collect.c	8.12 (Berkeley) 04/15/94";
 #endif /* not lint */
 
 # include <errno.h>
@@ -61,6 +61,9 @@ static char sccsid[] = "@(#)collect.c	8.11 (Berkeley) 04/14/94";
 **		The from person may be set.
 */
 
+char	*CollectErrorMessage;
+bool	CollectErrno;
+
 maketemp(from)
 	char *from;
 {
@@ -72,6 +75,9 @@ maketemp(from)
 	extern char *hvalue();
 	extern bool isheader(), flusheol();
 	extern char *index();
+
+	CollectErrorMessage = NULL;
+	CollectErrno = 0;
 
 	/*
 	**  Create the temp file name and create the file.
@@ -294,13 +300,23 @@ readerr:
 		tferror(tf, e);
 	if (fsync(fileno(tf)) < 0 || fclose(tf) < 0)
 	{
-		syserr("cannot sync message data to disk (%s)", e->e_df);
+		tferror(tf, e);
 		finis();
 	}
 
-	/* An EOF when running SMTP is an error */
-	if (inputerr && (OpMode == MD_SMTP || OpMode == MD_DAEMON))
+	if (CollectErrorMessage != NULL && Errors <= 0)
 	{
+		if (CollectErrno != 0)
+		{
+			errno = CollectErrno;
+			syserr(CollectErrorMessage, e->e_df);
+			finis();
+		}
+		usrerr(CollectErrorMessage);
+	}
+	else if (inputerr && (OpMode == MD_SMTP || OpMode == MD_DAEMON))
+	{
+		/* An EOF when running SMTP is an error */
 		char *host;
 		char *problem;
 
@@ -404,14 +420,12 @@ flusheol(buf, fp)
 	FILE *fp;
 {
 	register char *p = buf;
-	bool printmsg = TRUE;
 	char junkbuf[MAXLINE];
 
 	while (strchr(p, '\n') == NULL)
 	{
-		if (printmsg)
-			usrerr("553 header line too long");
-		printmsg = FALSE;
+		CollectErrorMessage = "553 header line too long";
+		CollectErrno = 0;
 		if (sfgets(junkbuf, MAXLINE, fp, TimeOuts.to_datablock,
 				"long line flush") == NULL)
 			return (FALSE);
@@ -438,6 +452,7 @@ tferror(tf, e)
 	FILE *tf;
 	register ENVELOPE *e;
 {
+	CollectErrno = errno;
 	if (errno == ENOSPC)
 	{
 		struct stat st;
@@ -468,10 +483,12 @@ tferror(tf, e)
 			fprintf(tf, "*** Currently, %ld kilobytes are available for mail temp files.\n",
 				avail);
 		}
-		usrerr("452 Out of disk space for temp file");
+		CollectErrorMessage = "452 Out of disk space for temp file";
 	}
 	else
-		syserr("collect: Cannot write %s", e->e_df);
+	{
+		CollectErrorMessage = "cannot write message body to disk (%s)";
+	}
 	(void) freopen("/dev/null", "w", tf);
 }
 /*
