@@ -34,13 +34,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lofs_vfsops.c	1.2 (Berkeley) 6/18/92
+ *	@(#)null_vfsops.c	1.2 (Berkeley) 6/18/92
  *
- * $Id: lofs_vfsops.c,v 1.9 1992/05/30 10:26:24 jsp Exp jsp $
+ * $Id: null_vfsops.c,v 1.9 1992/05/30 10:26:24 jsp Exp jsp $
  */
 
 /*
- * Loopback Filesystem
+ * Null layer Filesystem
  */
 
 #include <sys/param.h>
@@ -56,7 +56,7 @@
 /*
  * Mount loopback copy of existing name space
  */
-lofs_mount(mp, path, data, ndp, p)
+nullfs_mount(mp, path, data, ndp, p)
 	struct mount *mp;
 	char *path;
 	caddr_t data;
@@ -65,14 +65,14 @@ lofs_mount(mp, path, data, ndp, p)
 {
 	USES_VOP_UNLOCK;
 	int error = 0;
-	struct lofs_args args;
+	struct null_args args;
 	struct vnode *vp;
-	struct vnode *rootvp;
-	struct lofsmount *amp;
+	struct vnode *nullm_rootvp;
+	struct null_mount *amp;
 	u_int size;
 
-#ifdef LOFS_DIAGNOSTIC
-	printf("lofs_mount(mp = %x)\n", mp);
+#ifdef NULLFS_DIAGNOSTIC
+	printf("nullfs_mount(mp = %x)\n", mp);
 #endif
 
 	/*
@@ -80,13 +80,13 @@ lofs_mount(mp, path, data, ndp, p)
 	 */
 	if (mp->mnt_flag & MNT_UPDATE) {
 		return (EOPNOTSUPP);
-		/* return VFS_MOUNT(VFSTOLOFS(mp)->looped_vfs, path, data, ndp, p);*/
+		/* return VFS_MOUNT(MOUNTTONULLMOUNT(mp)->nullm_vfs, path, data, ndp, p);*/
 	}
 
 	/*
 	 * Get argument
 	 */
-	if (error = copyin(data, (caddr_t)&args, sizeof(struct lofs_args)))
+	if (error = copyin(data, (caddr_t)&args, sizeof(struct null_args)))
 		return (error);
 
 	/*
@@ -101,7 +101,7 @@ lofs_mount(mp, path, data, ndp, p)
 	 * Sanity check on target vnode
 	 */
 	vp = ndp->ni_vp;
-#ifdef LOFS_DIAGNOSTIC
+#ifdef NULLFS_DIAGNOSTIC
 	printf("vp = %x, check for VDIR...\n", vp);
 #endif
 	vrele(ndp->ni_dvp);
@@ -112,23 +112,23 @@ lofs_mount(mp, path, data, ndp, p)
 		return (EINVAL);
 	}
 
-#ifdef LOFS_DIAGNOSTIC
+#ifdef NULLFS_DIAGNOSTIC
 	printf("mp = %x\n", mp);
 #endif
 
-	amp = (struct lofsmount *) malloc(sizeof(struct lofsmount),
+	amp = (struct null_mount *) malloc(sizeof(struct null_mount),
 				M_UFSMNT, M_WAITOK);	/* XXX */
 
 	/*
 	 * Save reference to underlying target FS
 	 */
-	amp->looped_vfs = vp->v_mount;
+	amp->nullm_vfs = vp->v_mount;
 
 	/*
 	 * Save reference.  Each mount also holds
 	 * a reference on the root vnode.
 	 */
-	error = make_lofs(mp, &vp);
+	error = make_null_node(mp, &vp);
 	/*
 	 * Unlock the node (either the target or the alias)
 	 */
@@ -144,12 +144,12 @@ lofs_mount(mp, path, data, ndp, p)
 
 	/*
 	 * Keep a held reference to the root vnode.
-	 * It is vrele'd in lofs_unmount.
+	 * It is vrele'd in nullfs_unmount.
 	 */
-	rootvp = vp;
-	rootvp->v_flag |= VROOT;
-	amp->rootvp = rootvp;
-	if (LOFSVP(rootvp)->v_mount->mnt_flag & MNT_LOCAL)
+	nullm_rootvp = vp;
+	nullm_rootvp->v_flag |= VROOT;
+	amp->nullm_rootvp = nullm_rootvp;
+	if (NULLTOLOWERVP(nullm_rootvp)->v_mount->mnt_flag & MNT_LOCAL)
 		mp->mnt_flag |= MNT_LOCAL;
 	mp->mnt_data = (qaddr_t) amp;
 	getnewfsid(mp, MOUNT_LOFS);
@@ -159,8 +159,8 @@ lofs_mount(mp, path, data, ndp, p)
 	(void) copyinstr(args.target, mp->mnt_stat.f_mntfromname, MNAMELEN - 1, 
 	    &size);
 	bzero(mp->mnt_stat.f_mntfromname + size, MNAMELEN - size);
-#ifdef LOFS_DIAGNOSTIC
-	printf("lofs_mount: target %s, alias at %s\n",
+#ifdef NULLFS_DIAGNOSTIC
+	printf("nullfs_mount: target %s, alias at %s\n",
 		mp->mnt_stat.f_mntfromname, mp->mnt_stat.f_mntonname);
 #endif
 	return (0);
@@ -171,30 +171,30 @@ lofs_mount(mp, path, data, ndp, p)
  * on the underlying filesystem will have been called
  * when that filesystem was mounted.
  */
-lofs_start(mp, flags, p)
+nullfs_start(mp, flags, p)
 	struct mount *mp;
 	int flags;
 	struct proc *p;
 {
 	return (0);
-	/* return VFS_START(VFSTOLOFS(mp)->looped_vfs, flags, p); */
+	/* return VFS_START(MOUNTTONULLMOUNT(mp)->nullm_vfs, flags, p); */
 }
 
 /*
  * Free reference to looped FS
  */
-lofs_unmount(mp, mntflags, p)
+nullfs_unmount(mp, mntflags, p)
 	struct mount *mp;
 	int mntflags;
 	struct proc *p;
 {
-	struct vnode *rootvp = VFSTOLOFS(mp)->rootvp;
+	struct vnode *nullm_rootvp = MOUNTTONULLMOUNT(mp)->nullm_rootvp;
 	int error;
 	int flags = 0;
 	extern int doforce;
 
-#ifdef LOFS_DIAGNOSTIC
-	printf("lofs_unmount(mp = %x)\n", mp);
+#ifdef NULLFS_DIAGNOSTIC
+	printf("nullfs_unmount(mp = %x)\n", mp);
 #endif
 
 	if (mntflags & MNT_FORCE) {
@@ -212,72 +212,72 @@ lofs_unmount(mp, mntflags, p)
 	mntflushbuf(mp, 0); 
 	if (mntinvalbuf(mp, 1))
 		return (EBUSY);
-	if (rootvp->v_usecount > 1)
+	if (nullm_rootvp->v_usecount > 1)
 		return (EBUSY);
-	if (error = vflush(mp, rootvp, flags))
+	if (error = vflush(mp, nullm_rootvp, flags))
 		return (error);
 
-#ifdef LOFS_DIAGNOSTIC
+#ifdef NULLFS_DIAGNOSTIC
 	/*
 	 * Flush any remaining vnode references
 	 */
-	lofs_flushmp(mp);
+	null_node_flushmp (mp);
 #endif
 
-#ifdef LOFS_DIAGNOSTIC
-	vprint("alias root of target", rootvp);
+#ifdef NULLFS_DIAGNOSTIC
+	vprint("alias root of target", nullm_rootvp);
 #endif	 
 	/*
 	 * Release reference on underlying root vnode
 	 */
-	vrele(rootvp);
+	vrele(nullm_rootvp);
 	/*
 	 * And blow it away for future re-use
 	 */
-	vgone(rootvp);
+	vgone(nullm_rootvp);
 	/*
-	 * Finally, throw away the lofsmount structure
+	 * Finally, throw away the null_mount structure
 	 */
 	free(mp->mnt_data, M_UFSMNT);	/* XXX */
 	mp->mnt_data = 0;
 	return 0;
 }
 
-lofs_root(mp, vpp)
+nullfs_root(mp, vpp)
 	struct mount *mp;
 	struct vnode **vpp;
 {
 	USES_VOP_LOCK;
 	struct vnode *vp;
 
-#ifdef LOFS_DIAGNOSTIC
-	printf("lofs_root(mp = %x, vp = %x->%x)\n", mp,
-			VFSTOLOFS(mp)->rootvp,
-			LOFSVP(VFSTOLOFS(mp)->rootvp)
+#ifdef NULLFS_DIAGNOSTIC
+	printf("nullfs_root(mp = %x, vp = %x->%x)\n", mp,
+			MOUNTTONULLMOUNT(mp)->nullm_rootvp,
+			NULLTOLOWERVP(MOUNTTONULLMOUNT(mp)->nullm_rootvp)
 			);
 #endif
 
 	/*
 	 * Return locked reference to root.
 	 */
-	vp = VFSTOLOFS(mp)->rootvp;
+	vp = MOUNTTONULLMOUNT(mp)->nullm_rootvp;
 	VREF(vp);
 	VOP_LOCK(vp);
 	*vpp = vp;
 	return 0;
 }
 
-lofs_quotactl(mp, cmd, uid, arg, p)
+nullfs_quotactl(mp, cmd, uid, arg, p)
 	struct mount *mp;
 	int cmd;
 	uid_t uid;
 	caddr_t arg;
 	struct proc *p;
 {
-	return VFS_QUOTACTL(VFSTOLOFS(mp)->looped_vfs, cmd, uid, arg, p);
+	return VFS_QUOTACTL(MOUNTTONULLMOUNT(mp)->nullm_vfs, cmd, uid, arg, p);
 }
 
-lofs_statfs(mp, sbp, p)
+nullfs_statfs(mp, sbp, p)
 	struct mount *mp;
 	struct statfs *sbp;
 	struct proc *p;
@@ -285,16 +285,16 @@ lofs_statfs(mp, sbp, p)
 	int error;
 	struct statfs mstat;
 
-#ifdef LOFS_DIAGNOSTIC
-	printf("lofs_statfs(mp = %x, vp = %x->%x)\n", mp,
-			VFSTOLOFS(mp)->rootvp,
-			LOFSVP(VFSTOLOFS(mp)->rootvp)
+#ifdef NULLFS_DIAGNOSTIC
+	printf("nullfs_statfs(mp = %x, vp = %x->%x)\n", mp,
+			MOUNTTONULLMOUNT(mp)->nullm_rootvp,
+			NULLTOLOWERVP(MOUNTTONULLMOUNT(mp)->nullm_rootvp)
 			);
 #endif
 
 	bzero(&mstat, sizeof(mstat));
 
-	error = VFS_STATFS(VFSTOLOFS(mp)->looped_vfs, &mstat, p);
+	error = VFS_STATFS(MOUNTTONULLMOUNT(mp)->nullm_vfs, &mstat, p);
 	if (error)
 		return (error);
 
@@ -316,40 +316,40 @@ lofs_statfs(mp, sbp, p)
 	return (0);
 }
 
-lofs_sync(mp, waitfor)
+nullfs_sync(mp, waitfor)
 struct mount *mp;
 int waitfor;
 {
 	return (0);
 }
 
-lofs_fhtovp(mp, fhp, setgen, vpp)
+nullfs_fhtovp(mp, fhp, setgen, vpp)
 	struct mount *mp;
 	struct fid *fhp;
 	int setgen;
 	struct vnode **vpp;
 {
-	return VFS_FHTOVP(VFSTOLOFS(mp)->looped_vfs, fhp, setgen, vpp);
+	return VFS_FHTOVP(MOUNTTONULLMOUNT(mp)->nullm_vfs, fhp, setgen, vpp);
 }
 
-lofs_vptofh(vp, fhp)
+nullfs_vptofh(vp, fhp)
 	struct vnode *vp;
 	struct fid *fhp;
 {
-	return VFS_VPTOFH(LOFSVP(vp), fhp);
+	return VFS_VPTOFH(NULLTOLOWERVP(vp), fhp);
 }
 
-int lofs_init __P((void));
+int nullfs_init __P((void));
 
-struct vfsops lofs_vfsops = {
-	lofs_mount,
-	lofs_start,
-	lofs_unmount,
-	lofs_root,
-	lofs_quotactl,
-	lofs_statfs,
-	lofs_sync,
-	lofs_fhtovp,
-	lofs_vptofh,
-	lofs_init,
+struct vfsops null_vfsops = {
+	nullfs_mount,
+	nullfs_start,
+	nullfs_unmount,
+	nullfs_root,
+	nullfs_quotactl,
+	nullfs_statfs,
+	nullfs_sync,
+	nullfs_fhtovp,
+	nullfs_vptofh,
+	nullfs_init,
 };
