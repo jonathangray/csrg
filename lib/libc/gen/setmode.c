@@ -2,6 +2,9 @@
  * Copyright (c) 1989 The Regents of the University of California.
  * All rights reserved.
  *
+ * This code is derived from software contributed to Berkeley by
+ * Dave Borman at Cray Research, Inc.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -32,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)setmode.c	5.7 (Berkeley) 03/02/92";
+static char sccsid[] = "@(#)setmode.c	5.8 (Berkeley) 03/02/92";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -266,7 +269,7 @@ getop:		if ((op = *p++) != '+' && op != '-' && op != '=') {
 				 * to flush out any partial mode that we have,
 				 * and then do the copying of the mode bits.
 				 */
-				if (perm) {
+				if (perm || op == '=') {
 					ADDCMD(op, who, perm, mask);
 					perm = 0;
 				}
@@ -282,7 +285,7 @@ getop:		if ((op = *p++) != '+' && op != '-' && op != '=') {
 				 * Add any permissions that we haven't already
 				 * done.
 				 */
-				if (perm) {
+				if (perm || op == '=') {
 					ADDCMD(op, who, perm, mask);
 					perm = 0;
 				}
