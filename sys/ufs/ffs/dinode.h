@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dinode.h	7.10 (Berkeley) 05/08/91
+ *	@(#)dinode.h	7.11 (Berkeley) 11/01/91
  */
 
 /*
@@ -61,11 +61,16 @@ struct dinode {
 	long	di_spare[4];	/* 112: reserved, currently unused */
 };
 
+#ifdef BYTE_ORDER
 #if BYTE_ORDER == LITTLE_ENDIAN || defined(tahoe) /* ugh! -- must be fixed */
 #define	di_size		di_qsize.val[0]
 #else /* BYTE_ORDER == BIG_ENDIAN */
 #define	di_size		di_qsize.val[1]
 #endif
+#else
+#define	di_size		BYTE_ORDER_UNDEFINED
+#endif
+
 #define	di_rdev		di_db[0]
 
 /* file modes */
