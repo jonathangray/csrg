@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)hash.h	5.1 (Berkeley) 02/12/91
+ *	@(#)hash.h	5.2 (Berkeley) 02/19/91
  */
 
 /* Operations */
@@ -49,13 +49,13 @@ struct _bufhead {
     BUFHEAD	*ovfl;		/* Overflow page buffer header */
     int		addr;		/* Address of this page */
     char	*page;		/* Actual page data */
-    char	flags;	/* Combination of BUF_MOD, BUF_DISK, BUF_BUCKET */
-};
-
-/* Flag Values */
+    char	flags;	
 #define	BUF_MOD		0x0001
 #define BUF_DISK	0x0002
 #define	BUF_BUCKET	0x0004
+#define	BUF_PIN		0x0008
+};
+
 
 #define IS_BUCKET(X)	(X & BUF_BUCKET)
 
@@ -252,13 +252,12 @@ typedef struct htab {	/* Memory resident data structure */
 			    OVFL_PAGENO and OVFLPAGE are optional (they are
 			    not present if there is no next page).
 */
+
 #define OVFLPAGE	0
 #define PARTIAL_KEY	1
 #define FULL_KEY	2
 #define FULL_KEY_DATA	3
 #define	REAL_KEY	4
-
-
 /* Short hands for accessing structure */
 #define BSIZE	hdr.bsize
 #define BSHIFT	hdr.bshift
