@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)time.h	5.4 (Berkeley) 06/01/90
+ *	@(#)time.h	5.5 (Berkeley) 06/23/90
  */
 
 #include <sys/types.h>
@@ -49,7 +49,7 @@ struct tm {
 	char	*tm_zone;	/* timezone abbreviation */
 };
 
-#ifdef __STDC__
+#if __STDC__ || c_plusplus
 extern struct tm *gmtime(const time_t *);
 extern struct tm *localtime(const time_t *);
 extern time_t mktime(const struct tm *);
