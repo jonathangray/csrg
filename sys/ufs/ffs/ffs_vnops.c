@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	8.6 (Berkeley) 01/12/94
+ *	@(#)ffs_vnops.c	8.7 (Berkeley) 02/03/94
  */
 
 #include <sys/param.h>
@@ -100,6 +100,7 @@ struct vnodeopv_entry_desc ffs_vnodeop_entries[] = {
 	{ &vop_advlock_desc, ufs_advlock },		/* advlock */
 	{ &vop_blkatoff_desc, ffs_blkatoff },		/* blkatoff */
 	{ &vop_valloc_desc, ffs_valloc },		/* valloc */
+	{ &vop_reallocblks_desc, ffs_reallocblks },	/* reallocblks */
 	{ &vop_vfree_desc, ffs_vfree },			/* vfree */
 	{ &vop_truncate_desc, ffs_truncate },		/* truncate */
 	{ &vop_update_desc, ffs_update },		/* update */
@@ -148,6 +149,7 @@ struct vnodeopv_entry_desc ffs_specop_entries[] = {
 	{ &vop_advlock_desc, spec_advlock },		/* advlock */
 	{ &vop_blkatoff_desc, spec_blkatoff },		/* blkatoff */
 	{ &vop_valloc_desc, spec_valloc },		/* valloc */
+	{ &vop_reallocblks_desc, spec_reallocblks },	/* reallocblks */
 	{ &vop_vfree_desc, ffs_vfree },			/* vfree */
 	{ &vop_truncate_desc, spec_truncate },		/* truncate */
 	{ &vop_update_desc, ffs_update },		/* update */
@@ -197,6 +199,7 @@ struct vnodeopv_entry_desc ffs_fifoop_entries[] = {
 	{ &vop_advlock_desc, fifo_advlock },		/* advlock */
 	{ &vop_blkatoff_desc, fifo_blkatoff },		/* blkatoff */
 	{ &vop_valloc_desc, fifo_valloc },		/* valloc */
+	{ &vop_reallocblks_desc, fifo_reallocblks },	/* reallocblks */
 	{ &vop_vfree_desc, ffs_vfree },			/* vfree */
 	{ &vop_truncate_desc, fifo_truncate },		/* truncate */
 	{ &vop_update_desc, ffs_update },		/* update */
