@@ -2,9 +2,6 @@
  * Copyright (c) 1991 Regents of the University of California.
  * All rights reserved.
  *
- * This code is derived from software contributed to Berkeley by
- * The Mach Operating System project at Carnegie-Mellon University.
- *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -33,33 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)queue.h	7.4 (Berkeley) 10/07/92
- *
- *
- * Copyright (c) 1987, 1990 Carnegie-Mellon University.
- * All rights reserved.
- *
- * Author: Avadis Tevanian, Jr.
- * 
- * Permission to use, copy, modify and distribute this software and
- * its documentation is hereby granted, provided that both the copyright
- * notice and this permission notice appear in all copies of the
- * software, derivative works or modified versions, and any portions
- * thereof, and that both notices appear in supporting documentation.
- * 
- * CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS" 
- * CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND 
- * FOR ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
- * 
- * Carnegie Mellon requests users of this software to return to
- *
- *  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
- *  School of Computer Science
- *  Carnegie Mellon University
- *  Pittsburgh PA 15213-3890
- *
- * any improvements or extensions that they make and grant Carnegie the
- * rights to redistribute these changes.
+ *	@(#)queue.h	7.5 (Berkeley) 10/07/92
  */
 
 #ifndef	_QUEUE_H_
@@ -175,27 +146,6 @@ struct list_entry {
 	*(elm)->field.prev = queue_ptr; \
 	(elm)->field.next = NOLIST; \
 	(elm)->field.prev = NOLIST; \
-}
-
-/*
- * Compatibility with old MACH VM code.
- */
-typedef struct queue_entry	*queue_t;
-typedef	struct queue_entry	queue_head_t;
-typedef	struct queue_entry	queue_chain_t;
-typedef	struct queue_entry	*queue_entry_t;
-
-#define	queue_first(head)	((head)->next)
-#define	queue_next(elm)		((elm)->next)
-#define	queue_empty(head)	((head)->next == 0)
-#define	queue_end(elm, head)	((elm) == 0)
-
-#define queue_enter(head, elt, type, field) \
-	queue_enter_tail(head, elt, type, field)
-
-#define queue_remove_first(head, elt, type, field) { \
-	elt = queue_first(head); \
-	queue_remove(head, elt, type, field) \
 }
 
 #endif	/* !_QUEUE_H_ */
