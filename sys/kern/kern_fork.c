@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_fork.c	7.28 (Berkeley) 05/15/91
+ *	@(#)kern_fork.c	7.29 (Berkeley) 05/15/91
  */
 
 #include "param.h"
@@ -185,6 +185,7 @@ again:
 	MALLOC(p2->p_cred, struct pcred *, sizeof(struct pcred),
 	    M_SUBPROC, M_WAITOK);
 	bcopy(p1->p_cred, p2->p_cred, sizeof(*p2->p_cred));
+	p2->p_cred->p_refcnt = 1;
 	crhold(p1->p_ucred);
 
 	p2->p_fd = fdcopy(p1);
