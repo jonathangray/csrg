@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ns.c	7.9 (Berkeley) 12/19/91
+ *	@(#)ns.c	7.10 (Berkeley) 02/20/92
  */
 
 #include "param.h"
@@ -318,6 +318,7 @@ ns_ifinit(ifp, ia, sns, scrub)
 		splx(s);
 		return (EINVAL);
 	}
+	ia->ia_ifa.ifa_metric = ifp->if_metric;
 	/*
 	 * Add route for the network.
 	 */
