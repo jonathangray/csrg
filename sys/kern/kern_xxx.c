@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_xxx.c	7.17 (Berkeley) 04/20/91
+ *	@(#)kern_xxx.c	7.18 (Berkeley) 03/18/92
  */
 
 #include "param.h"
@@ -38,6 +38,10 @@
 #include "kernel.h"
 #include "proc.h"
 #include "reboot.h"
+
+char	hostname[MAXHOSTNAMELEN];
+int	hostnamelen;
+long	hostid;
 
 /* ARGSUSED */
 gethostid(p, uap, retval)
