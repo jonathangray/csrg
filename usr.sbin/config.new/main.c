@@ -39,9 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)main.c	5.1 (Berkeley) 01/12/93
- *
- * from: $Header: main.c,v 1.6 93/01/12 10:18:26 torek Exp $
+ *	@(#)main.c	5.2 (Berkeley) 04/18/93
  */
 
 #ifndef lint
