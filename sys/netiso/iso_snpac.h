@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)iso_snpac.h	7.8 (Berkeley) 05/06/91
+ *	@(#)iso_snpac.h	7.9 (Berkeley) 06/04/93
  */
 
 /***********************************************************
@@ -109,4 +109,4 @@ struct llinfo_llc {
 
 #ifdef	KERNEL
 struct llinfo_llc llinfo_llc;	/* head for linked lists */
-#endif	KERNEL
+#endif	/* KERNEL */
