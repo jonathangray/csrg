@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vfsops.c	8.2 (Berkeley) 09/21/93
+ *	@(#)lfs_vfsops.c	8.3 (Berkeley) 12/30/93
  */
 
 #include <sys/param.h>
@@ -318,7 +318,7 @@ lfs_unmount(mp, mntflags, p)
 
 	flags = 0;
 	if (mntflags & MNT_FORCE) {
-		if (!doforce || mp == rootfs)
+		if (!doforce || (mp->mnt_flag & MNT_ROOTFS))
 			return (EINVAL);
 		flags |= FORCECLOSE;
 	}
@@ -346,7 +346,7 @@ lfs_unmount(mp, mntflags, p)
 	fs->lfs_clean = 1;
 	if (error = VFS_SYNC(mp, 1, p->p_ucred, p))
 		return (error);
-	if (fs->lfs_ivnode->v_dirtyblkhd.le_next)
+	if (fs->lfs_ivnode->v_dirtyblkhd.lh_first)
 		panic("lfs_unmount: still dirty blocks on ifile vnode\n");
 	vrele(fs->lfs_ivnode);
 	vgone(fs->lfs_ivnode);
