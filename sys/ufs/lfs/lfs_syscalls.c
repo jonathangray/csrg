@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_syscalls.c	7.14 (Berkeley) 07/03/92
+ *	@(#)lfs_syscalls.c	7.15 (Berkeley) 07/07/92
  */
 
 #include <sys/param.h>
@@ -344,8 +344,8 @@ lfs_segwait(p, uap, retval)
 			return (error);
 		if (itimerfix(&atv))
 			return (EINVAL);
-		s = splhigh();
-		timevaladd(&atv, &time);
+		s = splclock();
+		timevaladd(&atv, (struct timeval *)&time);
 		timeout = hzto(&atv);
 		splx(s);
 	} else
