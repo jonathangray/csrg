@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)init.c	5.3 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)init.c	5.4 (Berkeley) 02/28/91";
 #endif /* not lint */
 
 /*
@@ -201,6 +201,7 @@ stop_window()
 	md_control_keybord(1);
 }
 
+void
 byebye()
 {
 	md_ignore_signals();
@@ -212,6 +213,7 @@ byebye()
 	md_heed_signals();
 }
 
+void
 onintr()
 {
 	md_ignore_signals();
@@ -224,6 +226,7 @@ onintr()
 	md_heed_signals();
 }
 
+void
 error_save()
 {
 	save_is_interactive = 0;
