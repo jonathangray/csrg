@@ -1,4 +1,4 @@
-#	@(#)Makefile	4.14 (Berkeley) 06/24/90
+#	@(#)Makefile	4.15 (Berkeley) 02/16/92
 
 LIBC=	/usr/lib/libc.a
 SRCS=	spell.c spellin.c spellout.c
@@ -30,7 +30,8 @@ clean:
 cleandir: clean
 	rm -f ${MAN1} ${.CURDIR}/tags .depend
 
-depend: ${SRCS}
+depend: .depend
+.depend: ${SRCS}
 	mkdep -p ${CFLAGS:M-[ID]*} ${.ALLSRC}
 
 DIR=	${DESTDIR}/usr/share/dict
