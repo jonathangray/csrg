@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.64 (Berkeley) 12/19/91
+ *	@(#)vfs_subr.c	7.65 (Berkeley) 01/14/92
  */
 
 /*
@@ -238,6 +238,7 @@ getnewvnode(tag, mp, vops, vpp)
 		vfreeh = vq;
 		vp->v_freef = NULL;
 		vp->v_freeb = NULL;
+		vp->v_lease = NULL;
 		if (vp->v_type != VBAD)
 			vgone(vp);
 		if (vp->v_data)
