@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)bmc.c	7.1 (Berkeley) 12/13/92
+ *	@(#)bmc.c	7.2 (Berkeley) 01/20/93
  */
 
 /*
@@ -48,6 +48,8 @@
 #include <luna68k/stand/preset.h>
 
 extern	int dipsw1;
+extern	int nplane;
+
 extern	struct rcvbuf	rcvbuf[];
 
 bmcintr()
@@ -63,6 +65,11 @@ bmccnprobe(cp)
 	struct consdev *cp;
 {
 	if ((dipsw1 & PS_BMC_CONS) == 0) {
+		cp->cn_pri = CN_DEAD;
+		return;
+	}
+
+	if (nplane == 0) {
 		cp->cn_pri = CN_DEAD;
 		return;
 	}
