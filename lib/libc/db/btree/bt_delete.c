@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)bt_delete.c	5.8 (Berkeley) 02/11/93";
+static char sccsid[] = "@(#)bt_delete.c	5.9 (Berkeley) 02/14/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -117,7 +117,7 @@ bt_bdelete(t, key)
 	EPG *e, save;
 	PAGE *h;
 	pgno_t cpgno, pg;
-	index_t cindex;
+	indx_t cindex;
 	int deleted, dirty1, dirty2, exact;
 
 	/* Find any matching record; __bt_search pins the page. */
@@ -274,7 +274,7 @@ __bt_dleaf(t, h, index)
 	int index;
 {
 	register BLEAF *bl;
-	register index_t *ip, offset;
+	register indx_t *ip, offset;
 	register size_t nbytes;
 	register int cnt;
 	char *from;
@@ -312,6 +312,6 @@ __bt_dleaf(t, h, index)
 			ip[0] += nbytes;
 	for (cnt = NEXTINDEX(h) - index; --cnt; ++ip)
 		ip[0] = ip[1] < offset ? ip[1] + nbytes : ip[1];
-	h->lower -= sizeof(index_t);
+	h->lower -= sizeof(indx_t);
 	return (RET_SUCCESS);
 }
