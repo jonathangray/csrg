@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: machdep.c 1.63 91/04/24$
  *
- *	@(#)machdep.c	7.21 (Berkeley) 02/05/92
+ *	@(#)machdep.c	7.22 (Berkeley) 02/19/92
  */
 
 #include "param.h"
@@ -172,7 +172,7 @@ cpu_startup()
 #endif
 	/* avail_end was pre-decremented in pmap_bootstrap to compensate */
 	for (i = 0; i < btoc(sizeof (struct msgbuf)); i++)
-		pmap_enter(pmap_kernel(), (vm_offset_t)msgbufp,
+		pmap_enter(kernel_pmap, (vm_offset_t)msgbufp,
 		    avail_end + i * NBPG, VM_PROT_ALL, TRUE);
 	msgbufmapped = 1;
 
@@ -1339,7 +1339,7 @@ findparerror()
 	looking = 1;
 	ecacheoff();
 	for (pg = btoc(lowram); pg < btoc(lowram)+physmem; pg++) {
-		pmap_enter(pmap_kernel(), (vm_offset_t)vmmap, ctob(pg),
+		pmap_enter(kernel_pmap, (vm_offset_t)vmmap, ctob(pg),
 		    VM_PROT_READ, TRUE);
 		for (o = 0; o < NBPG; o += sizeof(int))
 			i = *(int *)(&vmmap[o]);
@@ -1351,7 +1351,7 @@ findparerror()
 	found = 0;
 done:
 	looking = 0;
-	pmap_remove(pmap_kernel(), (vm_offset_t)vmmap,
+	pmap_remove(kernel_pmap, (vm_offset_t)vmmap,
 	    (vm_offset_t)&vmmap[NBPG]);
 	ecacheon();
 	splx(s);
