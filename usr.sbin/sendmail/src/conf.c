@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.8 (Berkeley) 07/21/93";
+static char sccsid[] = "@(#)conf.c	8.9 (Berkeley) 07/21/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1481,6 +1481,7 @@ lockfile(fd, filename, type)
 	int action;
 	struct flock lfd;
 
+	bzero(&lfd, sizeof lfd);
 	if (bitset(LOCK_UN, type))
 		lfd.l_type = F_UNLCK;
 	else if (bitset(LOCK_EX, type))
@@ -1492,8 +1493,6 @@ lockfile(fd, filename, type)
 		action = F_SETLK;
 	else
 		action = F_SETLKW;
-
-	lfd.l_whence = lfd.l_start = lfd.l_len = 0;
 
 	if (fcntl(fd, action, &lfd) >= 0)
 		return TRUE;
