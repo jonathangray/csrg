@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1989 The Regents of the University of California.
+ * Copyright (c) 1989, 1991 The Regents of the University of California.
  * All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
@@ -33,19 +33,15 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_socket.c	7.19 (Berkeley) 10/01/90
+ *	@(#)nfs_socket.c	7.20 (Berkeley) 03/19/91
  */
 
 /*
  * Socket operations for use by nfs
  */
 
-#include "types.h"
 #include "param.h"
-#include "uio.h"
-#include "user.h"
 #include "proc.h"
-#include "signal.h"
 #include "mount.h"
 #include "kernel.h"
 #include "malloc.h"
@@ -55,16 +51,16 @@
 #include "protosw.h"
 #include "socket.h"
 #include "socketvar.h"
+#include "syslog.h"
 #include "../netinet/in.h"
 #include "../netinet/tcp.h"
+
 #include "rpcv2.h"
 #include "nfsv2.h"
 #include "nfs.h"
 #include "xdr_subs.h"
 #include "nfsm_subs.h"
 #include "nfsmount.h"
-
-#include "syslog.h"
 
 #define	TRUE	1
 #define	FALSE	0
@@ -196,8 +192,9 @@ nfs_connect(nmp)
 			so->so_rcv.sb_timeo = 0;
 			so->so_snd.sb_timeo = 0;
 		}
-		if (error = soreserve(so, nmp->nm_wsize + NFS_MAXPKTHDR,
-		    nmp->nm_rsize + NFS_MAXPKTHDR))
+		if (error = soreserve(so,
+		    min(4 * (nmp->nm_wsize + NFS_MAXPKTHDR), NFS_MAXPACKET),
+		    min(4 * (nmp->nm_rsize + NFS_MAXPKTHDR), NFS_MAXPACKET)))
 			goto bad;
 	} else {
 		if (nmp->nm_flag & (NFSMNT_SOFT | NFSMNT_SPONGY | NFSMNT_INT)) {
@@ -222,8 +219,10 @@ nfs_connect(nmp)
 			sosetopt(so, IPPROTO_TCP, TCP_NODELAY, m);
 		}
 		if (error = soreserve(so,
-		    nmp->nm_wsize + NFS_MAXPKTHDR + sizeof(u_long),
-		    nmp->nm_rsize + NFS_MAXPKTHDR + sizeof(u_long)))
+		    min(4 * (nmp->nm_wsize + NFS_MAXPKTHDR + sizeof(u_long)),
+		    NFS_MAXPACKET + sizeof(u_long)),
+		    min(4 * (nmp->nm_rsize + NFS_MAXPKTHDR + sizeof(u_long)),
+		    NFS_MAXPACKET + sizeof(u_long))))
 			goto bad;
 	}
 	so->so_rcv.sb_flags |= SB_NOINTR;
