@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	6.53 (Berkeley) 05/12/93 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.54 (Berkeley) 05/21/93 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	6.53 (Berkeley) 05/12/93 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.54 (Berkeley) 05/21/93 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -139,7 +139,8 @@ smtp(e)
 	CurHostName = RealHostName;
 	setproctitle("srvrsmtp %s startup", CurHostName);
 	expand("\201e", inp, &inp[sizeof inp], e);
-	message("220 %s", inp);
+	message("220-%s", inp);
+	message("220 ESMTP spoken here");
 	protocol = NULL;
 	sendinghost = macvalue('s', e);
 	gothello = FALSE;
