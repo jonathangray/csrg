@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_trace.h	7.5 (Berkeley) 06/27/91
+ *	@(#)tp_trace.h	7.6 (Berkeley) 10/02/91
  */
 
 /***********************************************************
@@ -118,7 +118,7 @@ struct	tp_Trace {
 		struct inpcb	tpt_Inpcb; /* protocol control block */
 		struct tp_ref 	tpt_Ref; /* ref part of pcb */
 		struct tpdu 	tpt_Tpdu; /* header*/
-		struct tp_param tpt_Param; /* ?? bytes, make sure < 128??*/
+		struct tp_refinfo tpt_Param; /* ?? bytes, make sure < 128??*/
 		struct tp_timeval tpt_Time;
 		struct {
 			u_int tptm_2;
