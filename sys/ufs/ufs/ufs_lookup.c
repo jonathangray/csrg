@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lookup.c	7.32 (Berkeley) 05/15/91
+ *	@(#)ufs_lookup.c	7.33 (Berkeley) 05/19/91
  */
 
 #include "param.h"
@@ -613,6 +613,7 @@ direnter(ip, ndp)
 		 */
 		if (ndp->ni_ufs.ufs_offset & (DIRBLKSIZ - 1))
 			panic("wdir: newblk");
+		auio.uio_offset = ndp->ni_ufs.ufs_offset;
 		newdir.d_reclen = DIRBLKSIZ;
 		auio.uio_resid = newentrysize;
 		aiov.iov_len = newentrysize;
@@ -625,7 +626,7 @@ direnter(ip, ndp)
 		error = ufs_write(ndp->ni_dvp, &auio, IO_SYNC, ndp->ni_cred);
 		if (DIRBLKSIZ > dp->i_fs->fs_fsize) {
 			panic("wdir: blksize"); /* XXX - should grow w/balloc */
-		} else {
+		} else if (!error) {
 			dp->i_size = roundup(dp->i_size, DIRBLKSIZ);
 			dp->i_flag |= ICHG;
 		}
