@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)in_pcb.c	7.23 (Berkeley) 10/11/92
+ *	@(#)in_pcb.c	7.24 (Berkeley) 01/08/93
  */
 
 #include <sys/param.h>
@@ -52,9 +52,7 @@
 #include <netinet/in_pcb.h>
 #include <netinet/in_var.h>
 
-#ifdef MULTICAST
 #include <netinet/ip_var.h>
-#endif
 
 struct	in_addr zeroin_addr;
 
@@ -224,7 +222,6 @@ in_pcbconnect(inp, nam)
 			if (ia == 0)
 				return (EADDRNOTAVAIL);
 		}
-#ifdef MULTICAST
 		/*
 		 * If the destination address is multicast and an outgoing
 		 * interface has been set as a multicast option, use the
@@ -244,7 +241,6 @@ in_pcbconnect(inp, nam)
 					return (EADDRNOTAVAIL);
 			}
 		}
-#endif
 		ifaddr = (struct sockaddr_in *)&ia->ia_addr;
 	}
 	if (in_pcblookup(inp->inp_head,
@@ -285,9 +281,7 @@ in_pcbdetach(inp)
 		(void)m_free(inp->inp_options);
 	if (inp->inp_route.ro_rt)
 		rtfree(inp->inp_route.ro_rt);
-#ifdef MULTICAST
 	ip_freemoptions(inp->inp_moptions);
-#endif
 	remque(inp);
 	FREE(inp, M_PCB);
 }
