@@ -1,4 +1,4 @@
-/*	acct.h	3.1	%H%	*/
+/*	acct.h	3.2	06/07/80	*/
 
 /*
  * Accounting structures
