@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.h	7.3 (Berkeley) 02/29/92
+ *	@(#)pmap.h	7.4 (Berkeley) 05/20/92
  */
 
 #ifndef	_PMAP_MACHINE_
