@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)getlogin.2	6.2 (Berkeley) 03/10/91
+.\"	@(#)getlogin.2	6.3 (Berkeley) 07/23/91
 .\"
 .Dd 
 .Dt GETLOGIN 2
@@ -70,7 +70,8 @@ of the named user
 If a call to
 .Fn getlogin
 succeeds, it returns a pointer to a null-terminated string in a static buffer.
-If the name has not been set, it returns NULL.
+If the name has not been set, it returns
+.Dv NULL .
 If a call to
 .Fn setlogin
 succeeds, a value of 0 is returned.  If
@@ -121,5 +122,6 @@ could not be trusted without checking the user ID.
 Portable programs should probably still make this check.
 .Sh HISTORY
 The
-.Nm
-function call is currently under development.
+.Nm getlogin
+function call is
+.Ud .
