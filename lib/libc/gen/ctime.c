@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)ctime.c	5.24 (Berkeley) 01/20/91";
+static char sccsid[] = "@(#)ctime.c	5.25 (Berkeley) 02/13/91";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -66,8 +66,6 @@ static char sccsid[] = "@(#)ctime.c	5.24 (Berkeley) 01/20/91";
 #else /* !defined __STDC__ */
 
 #define P(s)		()
-#define const
-#define volatile
 
 typedef char *		genericptr_t;
 typedef unsigned	alloc_size_t;
