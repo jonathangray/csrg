@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)mkfs.c	6.23 (Berkeley) 05/27/92";
+static char sccsid[] = "@(#)mkfs.c	6.24 (Berkeley) 06/01/92";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -607,7 +607,7 @@ next:
 	 */
 	fsinit(utime);
 	sblock.fs_time = utime;
-	wtfs(SBOFF / sectorsize, sbsize, (char *)&sblock);
+	wtfs((int)SBOFF / sectorsize, sbsize, (char *)&sblock);
 	for (i = 0; i < sblock.fs_cssize; i += sblock.fs_bsize)
 		wtfs(fsbtodb(&sblock, sblock.fs_csaddr + numfrags(&sblock, i)),
 			sblock.fs_cssize - i < sblock.fs_bsize ?
