@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_resource.c	8.3 (Berkeley) 09/23/93
+ *	@(#)kern_resource.c	8.4 (Berkeley) 12/10/93
  */
 
 #include <sys/param.h>
@@ -159,7 +159,7 @@ setpriority(curp, uap, retval)
 	}
 	if (found == 0)
 		return (ESRCH);
-	return (0);
+	return (error);
 }
 
 donice(curp, chgp, n)
