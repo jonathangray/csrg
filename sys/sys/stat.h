@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stat.h	7.11 (Berkeley) 03/03/91
+ *	@(#)stat.h	7.12 (Berkeley) 12/12/91
  */
 
 struct stat
@@ -98,6 +98,18 @@ struct stat
 
 					/* 0666 */
 #define	DEFFILEMODE	(S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)
+
+/*
+ * Definitions of flags stored in file flags word.
+ *
+ * Low 16-bits owner setable.
+ */
+#define	NODUMP		0x00000001	/* do not dump file */
+#define	IMMUTABLE	0x00000002	/* file may not be changed */
+/*
+ * High 16-bits only super-user setable.
+ */
+#define	ARCHIVED	0x00010000	/* file is archived */
 #endif
 
 #define	S_ISDIR(m)	((m & 0170000) == 0040000)	/* directory */
