@@ -31,7 +31,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)mkdep.sh	5.20 (Berkeley) 11/14/91
+#	@(#)mkdep.sh	5.21 (Berkeley) 09/02/92
 #
 
 PATH=/bin:/usr/bin:/usr/ucb:/usr/old/bin
@@ -55,7 +55,7 @@ while :
 		# the -p flag produces "program: program.c" style dependencies
 		# so .o's don't get produced
 		-p)
-			SED='s;\.o;;'
+			SED='s;\.o ; ;'
 			shift ;;
 		*)
 			break ;;
