@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)syslog.h	7.23 (Berkeley) 06/24/92
+ *	@(#)syslog.h	7.24 (Berkeley) 11/06/92
  */
 
 #define	_PATH_LOG	"/dev/log"
@@ -171,7 +171,7 @@ CODE facilitynames[] = {
  * places (<machine/varargs.h> and <machine/stdarg.h>), so if we include one
  * of them here we may collide with the utility's includes.  It's unreasonable
  * for utilities to have to include one of them to include syslog.h, so we get
- * _VA_LIST_ from <machine/ansi.h> and use it.
+ * _BSD_VA_LIST_ from <machine/ansi.h> and use it.
  */
 #include <machine/ansi.h>
 #include <sys/cdefs.h>
