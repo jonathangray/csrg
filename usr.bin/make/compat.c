@@ -37,7 +37,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)compat.c	5.8 (Berkeley) 10/26/91";
+static char sccsid[] = "@(#)compat.c	5.9 (Berkeley) 05/07/93";
 #endif /* not lint */
 
 /*-
@@ -55,6 +55,7 @@ static char sccsid[] = "@(#)compat.c	5.8 (Berkeley) 10/26/91";
 
 #include    <stdio.h>
 #include    <sys/types.h>
+#include    <sys/stat.h>
 #include    <sys/wait.h>
 #include    <sys/errno.h>
 #include    <signal.h>
@@ -95,11 +96,13 @@ CompatInterrupt (signo)
     int	    signo;
 {
     GNode   *gn;
+    struct stat sb;
     
     if ((curTarg != NILGNODE) && !Targ_Precious (curTarg)) {
 	char 	  *file = Var_Value (TARGET, curTarg);
 
-	if (unlink (file) == SUCCESS) {
+	if (!stat(file, &sb) && S_ISREG(sb.st_mode) &&
+	    unlink (file) == SUCCESS) {
 	    printf ("*** %s removed\n", file);
 	}
 
