@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)getcap.c	5.1 (Berkeley) 08/06/92";
+static char sccsid[] = "@(#)getcap.c	5.1 (Berkeley) 8/6/92";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -57,6 +57,7 @@ static char sccsid[] = "@(#)getcap.c	5.1 (Berkeley) 08/06/92";
 
 static size_t	 topreclen;	/* toprec length */
 static char	*toprec;	/* Additional record specified by cgetset() */
+static int	 gottoprec;	/* Flag indicating retrieval of toprecord */
 
 static int getent __P((char **, u_int *, char **, int, char *, int));
 
@@ -196,7 +197,7 @@ getent(cap, len, db_array, fd, name, depth)
 	/*
 	 * Check if we have a top record from cgetset().
          */
-	if (depth == 0 && toprec != NULL) {
+	if (depth == 0 && toprec != NULL && !gottoprec) {
 		if ((record = malloc (topreclen + BFRAG)) == NULL) {
 			errno = ENOMEM;
 			return (-2);
@@ -302,7 +303,8 @@ getent(cap, len, db_array, fd, name, depth)
 				 * some more.
 				 */
 				if (rp >= r_end) {
-					u_int pos, newsize;
+					u_int pos;
+					size_t newsize;
 
 					pos = rp - record;
 					newsize = r_end - record + BFRAG;
@@ -424,7 +426,8 @@ tc_exp:	{
 			 */
 			diff = newilen - tclen;
 			if (diff >= r_end - rp) {
-				u_int pos, newsize, tcpos, tcposend;
+				u_int pos, tcpos, tcposend;
+				size_t newsize;
 
 				pos = rp - record;
 				newsize = r_end - record + diff + BFRAG;
@@ -469,7 +472,7 @@ tc_exp:	{
 		(void)close(fd);
 	*len = rp - record - 1;	/* don't count NUL */
 	if (r_end > rp)
-		record = realloc(record, (u_int)(rp - record));
+		record = realloc(record, (size_t)(rp - record));
 	*cap = record;
 	return (0);
 }
@@ -520,6 +523,16 @@ int
 cgetfirst(buf, db_array)
 	char **buf, **db_array;
 {
+	if (toprec) {
+		if ((*buf = malloc(topreclen + 1)) == NULL) {
+			errno = ENOMEM;
+			return(-2);
+		}
+		strcpy(*buf, toprec);
+		(void)cgetclose();
+		gottoprec = 1;
+		return(1);
+	}
 	(void)cgetclose();
 	return (cgetnext(buf, db_array));
 }
@@ -536,8 +549,9 @@ cgetclose()
 		pfp = NULL;
 	}
 	dbp = NULL;
+	gottoprec = 0;
 	slash = 0;
-	return (0);
+	return(0);
 }
 
 /*
@@ -554,32 +568,36 @@ cgetnext(bp, db_array)
 	int status;
 	char *cp, *line, *rp, buf[BSIZE];
 
-	if (dbp == NULL)
+	if (dbp == NULL) {
+		if (toprec && !gottoprec) {
+			if ((*bp = malloc(topreclen + 1)) == NULL) {
+				errno = ENOMEM;
+				return(-2);
+			}
+			strcpy(*bp, toprec);
+			gottoprec = 1;
+			return(1);
+		}
 		dbp = db_array;
-
-	if (pfp == NULL && (pfp = fopen(*dbp, "r")) == NULL)
+	}
+	if (pfp == NULL && (pfp = fopen(*dbp, "r")) == NULL) {
+		(void)cgetclose();
 		return (-1);
-
+	}
 	for(;;) {
 		line = fgetline(pfp, &len);
 		if (line == NULL) {
 			(void)fclose(pfp);
 			if (ferror(pfp)) {
-				pfp = NULL;
-				dbp = NULL;
-				slash = 0;
+				(void)cgetclose();
 				return (-1);
 			} else {
 				dbp++;
 				if (*dbp == NULL) {
-					pfp = NULL;
-					dbp = NULL;
-					slash = 0;
+					(void)cgetclose();
 					return (0);
 				} else if ((pfp = fopen(*dbp, "r")) == NULL) {
-					pfp = NULL;
-					dbp = NULL;
-					slash = 0;
+					(void)cgetclose();
 					return (-1);
 				} else
 					continue;
@@ -612,9 +630,7 @@ cgetnext(bp, db_array)
 		if (status == 0)
 			return (1);
 		if (status == -2 || status == -3) {
-			pfp = NULL;
-			dbp = NULL;
-			slash = 0;
+			(void)cgetclose();
 			return (status + 1);
 		}
 	}
@@ -723,7 +739,7 @@ cgetstr(buf, cap, str)
 		 * buffer, try to get some more.
 		 */
 		if (m_room == 0) {
-			u_int size = mp - mem;
+			size_t size = mp - mem;
 
 			if ((mem = realloc(mem, size + SFRAG)) == NULL)
 				return (-2);
@@ -739,7 +755,7 @@ cgetstr(buf, cap, str)
 	 * Give back any extra memory and return value and success.
 	 */
 	if (m_room != 0)
-		mem = realloc(mem, (u_int)(mp - mem));
+		mem = realloc(mem, (size_t)(mp - mem));
 	*str = mem;
 	return (len);
 }
@@ -795,7 +811,7 @@ cgetustr(buf, cap, str)
 		 * buffer, try to get some more.
 		 */
 		if (m_room == 0) {
-			u_int size = mp - mem;
+			size_t size = mp - mem;
 
 			if ((mem = realloc(mem, size + SFRAG)) == NULL)
 				return (-2);
@@ -811,7 +827,7 @@ cgetustr(buf, cap, str)
 	 * Give back any extra memory and return value and success.
 	 */
 	if (m_room != 0)
-		mem = realloc(mem, (u_int)(mp - mem));
+		mem = realloc(mem, (size_t)(mp - mem));
 	*str = mem;
 	return (len);
 }
