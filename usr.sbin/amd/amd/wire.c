@@ -1,6 +1,4 @@
 /*
- * $Id: wire.c,v 5.2.1.1 91/03/17 17:42:58 jsp Alpha $
- *
  * Copyright (c) 1990 Jan-Simon Pendry
  * Copyright (c) 1990 Imperial College of Science, Technology & Medicine
  * Copyright (c) 1990 The Regents of the University of California.
@@ -37,7 +35,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)wire.c	5.2 (Berkeley) 03/17/91
+ *	@(#)wire.c	5.3 (Berkeley) 05/12/91
+ *
+ * $Id: wire.c,v 5.2.1.5 91/05/07 22:14:21 jsp Alpha $
+ *
  */
 
 /*
@@ -110,14 +111,14 @@ char *getwire()
 	 */
 #ifdef AF_LINK
 #define max(a, b) ((a) > (b) ? (a) : (b))
-#define size(p) max((p).sa_len, sizeof(p))
+#define size(ifr) (max((ifr)->ifr_addr.sa_len, sizeof((ifr)->ifr_addr)) + sizeof(ifr->ifr_name))
 #else
-#define size(p) sizeof(p)
+#define size(ifr) sizeof(*ifr)
 #endif
 	/*
 	 * Scan the list looking for a suitable interface
 	 */
-	for (cp = buf; cp < cplim; cp += sizeof(ifr->ifr_name) + size(ifr->ifr_addr)) {
+	for (cp = buf; cp < cplim; cp += size(ifr)) {
 		ifr = (struct ifreq *) cp;
 
 		if (ifr->ifr_addr.sa_family != AF_INET)
@@ -154,6 +155,14 @@ char *getwire()
 		 * Figure out the subnet's network address
 		 */
 		subnet = address & netmask;
+#ifdef IN_CLASSA
+		if (IN_CLASSA(subnet))
+			subnet >>= IN_CLASSA_NSHIFT;
+		else if (IN_CLASSB(subnet))
+			subnet >>= IN_CLASSB_NSHIFT;
+		else if (IN_CLASSC(subnet))
+			subnet >>= IN_CLASSC_NSHIFT;
+#endif
 		/*
 		 * Now get a usable name.
 		 * First use the network database,
@@ -164,6 +173,7 @@ char *getwire()
 		if (np)
 			s = np->n_name;
 		else {
+			subnet = address & netmask;
 			hp = gethostbyaddr((char *) &subnet, 4, AF_INET);
 			if (hp)
 				s = hp->h_name;
@@ -187,31 +197,4 @@ char *getwire()
 {
 	return strdup(NO_SUBNET);
 }
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
 #endif /* SIOCGIFFLAGS */
