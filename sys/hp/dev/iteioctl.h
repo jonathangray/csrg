@@ -35,9 +35,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * from: Utah $Hdr: iteioctl.h 1.2 88/05/24$
+ * from: Utah $Hdr: iteioctl.h 1.1 90/07/09$
  *
- *	@(#)iteioctl.h	7.1 (Berkeley) 05/08/90
+ *	@(#)iteioctl.h	7.2 (Berkeley) 11/04/90
  */
 
 #define ITESWITCH _IOW('Z',0x69, int)	/* XXX */
