@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sd.c	7.8 (Berkeley) 06/09/91
+ *	@(#)sd.c	7.9 (Berkeley) 08/28/91
  */
 
 /*
@@ -58,7 +58,6 @@ static char rcsid[] = "$Header: sd.c,v 1.15 91/04/24 11:54:30 mike Exp $";
 #include "scsireg.h"
 #include "vm/vm_param.h"
 #include "vm/lock.h"
-#include "vm/vm_statistics.h"
 #include "vm/pmap.h"
 #include "vm/vm_prot.h"
 
