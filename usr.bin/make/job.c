@@ -37,7 +37,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)job.c	8.1 (Berkeley) 06/06/93";
+static char sccsid[] = "@(#)job.c	8.2 (Berkeley) 03/19/94";
 #endif /* not lint */
 
 /*-
@@ -455,6 +455,9 @@ JobPrintCommand (cmd, job)
 	}
 	cmd++;
     }
+
+    while (isspace((unsigned char) *cmd))
+	cmd++;
 
     if (shutUp) {
 	if (! (job->flags & JOB_SILENT) && !noSpecials &&
