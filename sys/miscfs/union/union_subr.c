@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_subr.c	8.13 (Berkeley) 08/31/94
+ *	@(#)union_subr.c	8.14 (Berkeley) 09/29/94
  */
 
 #include <sys/param.h>
@@ -48,6 +48,7 @@
 #include <sys/filedesc.h>
 #include <sys/queue.h>
 #include <sys/mount.h>
+#include <sys/stat.h>
 #include <vm/vm.h>		/* for vnode_pager_setsize */
 #include <miscfs/union/union.h>
 
@@ -962,4 +963,26 @@ union_lowervp(vp)
 	}
 
 	return (NULLVP);
+}
+
+/*
+ * determine whether a whiteout is needed
+ * during a remove/rmdir operation.
+ */
+int
+union_dowhiteout(un, cred, p)
+	struct union_node *un;
+	struct ucred *cred;
+	struct proc *p;
+{
+	struct vattr va;
+
+	if (un->un_lowervp != NULLVP)
+		return (1);
+
+	if (VOP_GETATTR(un->un_uppervp, &va, cred, p) == 0 &&
+	    (va.va_flags & OPAQUE))
+		return (1);
+
+	return (0);
 }
