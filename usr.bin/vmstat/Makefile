@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.4 (Berkeley) 12/18/90
+#	@(#)Makefile	5.5 (Berkeley) 01/14/91
 
 PROG=	vmstat
 BINGRP=	kmem
