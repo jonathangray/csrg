@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)igmp.h	7.1 (Berkeley) 07/08/92
+ *	@(#)igmp.h	7.2 (Berkeley) 06/04/93
  */
 
 /* Internet Group Management Protocol (IGMP) definitions. */
@@ -57,4 +57,3 @@ struct igmp {
 					   /*  routing protocol            */
 
 #define IGMP_MAX_HOST_REPORT_DELAY   10    /* max delay for response to    */
-					   /*  query (in seconds)          */
