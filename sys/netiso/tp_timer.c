@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_timer.c	7.8 (Berkeley) 09/05/91
+ *	@(#)tp_timer.c	7.9 (Berkeley) 09/06/91
  */
 
 /***********************************************************
@@ -102,6 +102,7 @@ struct	Ecallout *TP_callout;
 struct	tp_ref *tp_ref;
 int		N_TPREF = 127;
 struct	tp_refinfo tp_refinfo;
+struct	tp_pcb *tp_ftimeolist = (struct tp_pcb *)&tp_ftimeolist;
 
 /*
  * CALLED FROM:
@@ -288,6 +289,33 @@ tp_slowtimo()
 	}
 	splx(s);
 	return 0;
+}
+
+int
+tp_fasttimo()
+{
+	register struct tp_pcb *t;
+	int s = splnet();
+	struct tp_event		E;
+
+	E.ev_number = TM_sendack;
+	while ((t = tp_ftimeolist) != (struct tp_pcb *)&tp_ftimeolist) {
+		if (t == 0) {
+			printf("tp_fasttimeo: should panic");
+			tp_ftimeolist = (struct tp_pcb *)&tp_ftimeolist;
+		} else {
+			if (t->tp_flags & TPF_DELACK) {
+				t->tp_flags &= ~TPF_DELACK;
+				IncStat(ts_Fdelack);
+				tp_driver(t, &E);
+				t->tp_refcallout[TM_sendack].c_time = t->tp_keepalive_ticks;
+			} else
+				IncStat(ts_Fpruned);
+			tp_ftimeolist = t->tp_fasttimeo;
+			t->tp_fasttimeo = 0;
+		}
+	}
+	splx(s);
 }
 
 /*
