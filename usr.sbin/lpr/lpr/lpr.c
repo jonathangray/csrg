@@ -56,8 +56,9 @@
 char lpr_id[] = "~|^`lpr.c:\t4.2\t1 May 1981\n";
 
 /*
- * Copyright (c) 1983 Regents of the University of California.
+ * Copyright (c) 1983, 1989 The Regents of the University of California.
  * All rights reserved.
+ *
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -90,12 +91,12 @@ char lpr_id[] = "~|^`lpr.c:\t4.2\t1 May 1981\n";
 
 #ifndef lint
 char copyright[] =
-"@(#) Copyright (c) 1983, 1989 Regents of the University of California.\n\
+"@(#) Copyright (c) 1983, 1989 The Regents of the University of California.\n\
  All rights reserved.\n";
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)lpr.c	5.13 (Berkeley) 8/31/92";
+static char sccsid[] = "@(#)lpr.c	5.13 (Berkeley) 09/15/92";
 #endif /* not lint */
 
 /*
