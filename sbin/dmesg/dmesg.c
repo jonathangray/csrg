@@ -75,7 +75,7 @@ main(argc, argv)
 	struct msgbuf *bufp, cur;
 	char *memf, *nlistf;
 	kvm_t *kd;
-	char buf[_POSIX2_LINE_MAX];
+	char buf[5];
 
 	memf = nlistf = NULL;
 	while ((ch = getopt(argc, argv, "M:N:")) != EOF)
@@ -101,10 +101,8 @@ main(argc, argv)
 		setgid(getgid());
 
 	/* Read in kernel message buffer, do sanity checks. */
-	buf[0] = 0;
-	kd = kvm_open(nlistf, memf, NULL, O_RDONLY, buf);
-	if (kd == NULL)
-		errx(1, "kvm_open: %s", buf);
+	if ((kd = kvm_open(nlistf, memf, NULL, O_RDONLY, "dmesg")) == NULL)
+		exit (1);
 	if (kvm_nlist(kd, nl) == -1)
 		errx(1, "kvm_nlist: %s", kvm_geterr(kd));
 	if (nl[X_MSGBUF].n_type == 0)
