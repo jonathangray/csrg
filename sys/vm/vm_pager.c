@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_pager.c	7.5 (Berkeley) 07/15/91
+ *	@(#)vm_pager.c	7.6 (Berkeley) 08/28/91
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -276,7 +276,10 @@ pager_cache(object, should_cache)
 
 	vm_object_cache_lock();
 	vm_object_lock(object);
-	object->can_persist = should_cache;
+	if (should_cache)
+		object->flags |= OBJ_CANPERSIST;
+	else
+		object->flags &= ~OBJ_CANPERSIST;
 	vm_object_unlock(object);
 	vm_object_cache_unlock();
 
