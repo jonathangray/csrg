@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)ps.c	5.42 (Berkeley) 06/03/91";
+static char sccsid[] = "@(#)ps.c	5.43 (Berkeley) 07/01/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -346,13 +346,13 @@ saveuser(ki)
 
 	if ((usp = calloc(1, sizeof(struct usave))) == NULL)
 		err("%s", strerror(errno));
-	ki->ki_u = usp;
 	up = kvm_getu(ki->ki_p);
 	/*
 	 * save arguments if needed
 	 */
 	ki->ki_args = needcomm ? strdup(kvm_getargs(ki->ki_p, up)) : NULL;
 	if (up != NULL) {
+		ki->ki_u = usp;
 		/*
 		 * save important fields
 		 */
@@ -367,7 +367,8 @@ saveuser(ki)
 		usp->u_cru = up->u_cru;
 		usp->u_acflag = up->u_acflag;
 #endif
-	}
+	} else
+		free(usp);
 }
 
 pscomp(k1, k2)
