@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)cat.c	5.1 (Berkeley) 05/09/91
+ *	@(#)cat.c	5.2 (Berkeley) 05/09/91
  */
 
 int eval;
