@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vnops.c	7.104 (Berkeley) 07/17/92
+ *	@(#)ufs_vnops.c	7.105 (Berkeley) 07/20/92
  */
 
 #include <sys/param.h>
@@ -1888,7 +1888,7 @@ ufs_vinit(mntp, specops, fifoops, vpp)
 	int (**fifoops)();
 	struct vnode **vpp;
 {
-	struct inode *ip, *nip;
+	struct inode *ip;
 	struct vnode *vp, *nvp;
 	extern int (**spec_vnodeop_p)();
 
@@ -1902,7 +1902,7 @@ ufs_vinit(mntp, specops, fifoops, vpp)
 			/*
 			 * Discard unneeded vnode, but save its inode.
 			 */
-			remque(ip);
+			ufs_ihashrem(ip);
 			IUNLOCK(ip);
 			nvp->v_data = vp->v_data;
 			vp->v_data = NULL;
