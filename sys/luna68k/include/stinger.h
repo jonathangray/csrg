@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stinger.h	7.1 (Berkeley) 06/15/92
+ *	@(#)stinger.h	7.2 (Berkeley) 10/11/92
  */
 
 /*
@@ -44,8 +44,8 @@
  * This file should be remade.
  */
 
-#include "rdvar.h"
-#include "memory.h"
+#include <machine/rdvar.h>
+#include <machine/memory.h>
 
 struct KernInter {
 	caddr_t	  maxaddr;
