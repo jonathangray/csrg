@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	6.4 (Berkeley) 01/21/93
+ *	@(#)conf.h	6.5 (Berkeley) 01/28/93
  */
 
 /*
@@ -154,4 +154,8 @@ struct utsname
 
 #ifdef sun
 # include <vfork.h>
+#endif
+
+#ifndef MAXHOSTNAMELEN
+#define MAXHOSTNAMELEN	256
 #endif
