@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)config.h	5.15 (Berkeley) 09/07/91
+ *	@(#)config.h	5.16 (Berkeley) 06/19/92
  */
 
 /*
