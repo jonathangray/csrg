@@ -34,14 +34,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)umap_vfsops.c	7.1 (Berkeley) 07/12/92
+ *	@(#)umap_vfsops.c	7.2 (Berkeley) 07/12/92
  *
  * @(#)null_vfsops.c       1.5 (Berkeley) 7/10/92
  */
 
 /*
  * Umap Layer
- * (See mount_umap(8) for a descritpion of this layer.)
+ * (See mount_umap(8) for a description of this layer.)
  */
 
 #include <sys/param.h>
@@ -52,7 +52,7 @@
 #include <sys/mount.h>
 #include <sys/namei.h>
 #include <sys/malloc.h>
-#include <umapfs/umap.h>
+#include <miscfs/umapfs/umap.h>
 
 /*
  * Mount umap layer
