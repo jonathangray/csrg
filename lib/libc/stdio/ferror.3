@@ -1,72 +1,91 @@
-.\" Copyright (c) 1980 Regents of the University of California.
-.\" All rights reserved.  The Berkeley software License Agreement
-.\" specifies the terms and conditions for redistribution.
+.\" Copyright (c) 1990 The Regents of the University of California.
+.\" All rights reserved.
 .\"
-.\"	@(#)ferror.3	6.4 (Berkeley) 04/01/89
+.\" This code is derived from software contributed to Berkeley by
+.\" Chris Torek.
 .\"
-.TH FERROR 3  ""
-.UC 4
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"	@(#)ferror.3	6.5 (Berkeley) 01/20/91
+.\"
+.TH FERROR 3 ""
+.UC 7
 .SH NAME
-ferror, feof, clearerr, fileno \- stream status inquiries
+clearerr, feof, ferror, fileno \- stream status inquiries
 .SH SYNOPSIS
-.B #include <stdio.h>
-.PP
-.B feof(stream)
-.br
-.SM
-.B FILE
-.B *stream;
-.PP
-.B ferror(stream)
-.br
-.SM
-.B FILE
-.B *stream
-.PP
-.B clearerr(stream)
-.br
-.SM
-.B FILE
-.B *stream
-.PP
-.B fileno(stream)
-.br
-.SM
-.B FILE
-.B *stream;
+.nf
+.ft B
+#include <stdio.h>
+
+void
+clearerr(FILE *stream);
+
+int
+feof(FILE *stream);
+
+int
+ferror(FILE *stream);
+
+int
+fileno(FILE *stream);
+.ft R
+.fi
 .SH DESCRIPTION
-.I Feof
-returns non-zero when end of file is read on the named input
-.IR stream ,
-otherwise zero.
-Unless cleared by
-.IR clearerr ,
-the end-of-file indication lasts until
-the stream is closed.
-.PP
-.I Ferror
-returns non-zero when an error has occurred reading or writing
-the named
-.IR stream ,
-otherwise zero.
-Unless cleared by
-.IR clearerr ,
-the error indication lasts until
-the stream is closed.
-.PP
 .I Clearerr
-resets the error and end-of-file indicators on the named
+clears the end-of-file and error indicators for the stream pointed
+to by 
 .IR stream .
 .PP
-.I Fileno
-returns the integer file descriptor
-associated with the
+.I Feof
+tests the end-of-file indicator for the stream pointed to by
 .IR stream ,
-see
-.IR open (2).
+returning non-zero if it is set.
+The end-of-file indicator can only be cleared by
+.IR clearerr .
 .PP
-Currently all of these functions
-are implemented as macros;
-they cannot be redeclared.
+.I Ferror
+tests the error indicator for the stream pointed to by
+.IR stream ,
+returning non-zero if it is set.
+The error indicator can only be cleared by
+.IR clearerr .
+.PP
+.I Fileno
+returns the integer file descriptor associated with the
+.I stream
+(see
+.IR open (2)).
 .SH "SEE ALSO"
-open(2), fopen(3)
+open(2), stdio(3)
+.SH STANDARDS
+.IR Clearerr ,
+.IR feof ,
+and
+.I ferror
+conform to ANSI X3.159-1989 (``ANSI C'').
