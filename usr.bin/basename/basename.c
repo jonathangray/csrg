@@ -38,19 +38,21 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)basename.c	8.1 (Berkeley) 06/06/93";
+static char sccsid[] = "@(#)basename.c	8.2 (Berkeley) 04/01/94";
 #endif /* not lint */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+void usage __P((void));
+
+int
 main(argc, argv)
 	int argc;
 	char **argv;
 {
-	extern int optind;
-	register char *p;
+	char *p;
 	int ch;
 
 	while ((ch = getopt(argc, argv, "")) != EOF)
@@ -89,8 +91,10 @@ main(argc, argv)
 	 * (3) If there are any trailing slash characters in string, they
 	 *     shall be removed.
 	 */
-	for (; *p; ++p);
-	while (*--p == '/');
+	for (; *p; ++p)
+		continue;
+	while (*--p == '/')
+		continue;
 	*++p = '\0';
 
 	/*
@@ -125,8 +129,10 @@ main(argc, argv)
 	exit(0);
 }
 
+void
 usage()
 {
+
 	(void)fprintf(stderr, "usage: basename string [suffix]\n");
 	exit(1);
 }
