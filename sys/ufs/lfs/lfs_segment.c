@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_segment.c	7.27 (Berkeley) 08/01/92
+ *	@(#)lfs_segment.c	7.28 (Berkeley) 08/01/92
  */
 
 #include <sys/param.h>
@@ -121,9 +121,6 @@ lfs_vflush(vp)
 	struct segment *sp;
 	int error, s;
 
-#ifdef VERBOSE
-	printf("lfs_vflush\n");
-#endif
 	fs = VFSTOUFS(vp->v_mount)->um_lfs;
 	lfs_seglock(fs);
 
@@ -243,9 +240,6 @@ lfs_segwrite(mp, do_ckp)
 	daddr_t ibno;
 	int error, i, s;
 
-#ifdef VERBOSE
-	printf("lfs_segwrite\n");
-#endif
 	fs = VFSTOUFS(mp)->um_lfs;
 	lfs_seglock(fs);
 
@@ -363,9 +357,6 @@ lfs_writefile(fs, sp, vp)
 	struct finfo *fip;
 	IFILE *ifp;
 
-#ifdef VERBOSE
-	printf("lfs_writefile\n");
-#endif
 	if (sp->seg_bytes_left < fs->lfs_bsize ||
 	    sp->sum_bytes_left < sizeof(struct finfo)) {
 		(void) lfs_writeseg(fs, sp);
@@ -419,9 +410,6 @@ lfs_writeinode(fs, sp, ip)
 	int ndx;
 	int redo_ifile = 0;
 
-#ifdef VERBOSE
-	printf("lfs_writeinode\n");
-#endif
 	/* Allocate a new inode block if necessary. */
 	if (sp->ibp == NULL) {
 		/* Allocate a new segment if necessary. */
@@ -509,9 +497,6 @@ struct buf *lastbp;
 	u_long version;
 	int s;
 
-#ifdef VERBOSE
-	printf("lfs_gather\n");
-#endif
 	ip = VTOI(vp);
 	bpp = sp->cbpp;
 	fip = sp->fip;
@@ -591,9 +576,6 @@ lfs_updatemeta(fs, sp, vp, lbp, bpp, nblocks)
 	daddr_t daddr, lbn, off;
 	int db_per_fsb, error, i, num;
 
-#ifdef VERBOSE
-	printf("lfs_updatemeta\n");
-#endif
 	if (nblocks == 0)
 		return;
 
@@ -667,9 +649,6 @@ lfs_initseg(fs, sp)
 	struct buf *bp;
 	daddr_t lbn, *lbnp;
 
-#ifdef VERBOSE
-	printf("lfs_initseg\n");
-#endif
 	/* Advance to the next segment. */
 	if (!LFS_PARTIAL_FITS(fs)) {
 		/* Wake up any cleaning procs waiting on this file system. */
@@ -733,9 +712,6 @@ lfs_newseg(fs)
 	struct buf *bp;
 	int curseg, isdirty, sn;
 
-#ifdef VERBOSE
-	printf("lfs_newseg\n");
-#endif
         LFS_SEGENTRY(sup, fs, datosn(fs, fs->lfs_nextseg), bp);
         sup->su_flags |= SEGUSE_DIRTY;
         LFS_UBWRITE(bp);
@@ -778,9 +754,6 @@ lfs_writeseg(fs, sp)
 	u_short ninos;
 	char *p;
 
-#ifdef VERBOSE
-	printf("lfs_writeseg\n");
-#endif
 	/* Checkpoint always writes superblock, even if no data blocks. */
 	if ((nblocks = sp->cbpp - sp->bpp) == 0 && !(sp->seg_flags & SEGM_CKP))
 		return (0);
@@ -884,9 +857,6 @@ lfs_writesuper(fs, sp)
 	int (*strategy) __P((struct vop_strategy_args *));
 	struct vop_strategy_args vop_strategy_a;
 
-#ifdef VERBOSE
-	printf("lfs_writesuper\n");
-#endif
 	i_dev = VTOI(fs->lfs_ivnode)->i_dev;
 	strategy = VTOI(fs->lfs_ivnode)->i_devvp->v_op[VOFFSET(vop_strategy)];
 
@@ -967,9 +937,6 @@ lfs_newbuf(fs, daddr, size)
 {
 	struct buf *bp;
 
-#ifdef VERBOSE
-	printf("lfs_newbuf\n");
-#endif
 	bp = getnewbuf();
 	bremhash(bp);
 	bgetvp(fs->lfs_ivnode, bp);
