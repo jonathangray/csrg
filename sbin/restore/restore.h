@@ -129,8 +129,8 @@ struct context {
 /*
  * Definitions for library routines operating on directories.
  */
-typedef struct dirdesc DIR;
-extern DIR *rst_opendir();
+typedef struct rstdirdesc RST_DIR;
+extern RST_DIR *rst_opendir();
 extern struct direct *rst_readdir();
 
 /*
