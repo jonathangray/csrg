@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)machAsmDefs.h	7.5 (Berkeley) 04/13/93
+ *	@(#)machAsmDefs.h	7.6 (Berkeley) 05/09/93
  */
 
 /*
@@ -61,7 +61,7 @@
 /*
  * Define -pg profile entry code.
  */
-#ifdef PROF
+#if defined(GPROF) || defined(PROF)
 #define	MCOUNT	.set noreorder; \
 		.set noat; \
 		move $1,$31; \
@@ -71,7 +71,7 @@
 		.set at;
 #else
 #define	MCOUNT
-#endif PROF
+#endif
 
 /*
  * LEAF(x)
