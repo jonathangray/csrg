@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.94 (Berkeley) 03/31/95";
+static char sccsid[] = "@(#)main.c	8.95 (Berkeley) 03/31/95";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -1640,7 +1640,7 @@ sighup()
 	if (LogLevel > 3)
 		syslog(LOG_INFO, "restarting %s on signal", SaveArgv[0]);
 #endif
-	execv(SaveArgv[0], SaveArgv);
+	execv(SaveArgv[0], (ARGV_T) SaveArgv);
 #ifdef LOG
 	if (LogLevel > 0)
 		syslog(LOG_ALERT, "could not exec %s: %m", SaveArgv[0]);
