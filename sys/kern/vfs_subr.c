@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_subr.c	7.50 (Berkeley) 02/01/91
+ *	@(#)vfs_subr.c	7.51 (Berkeley) 03/04/91
  */
 
 /*
@@ -337,6 +337,8 @@ bdevvp(dev, vpp)
 	struct vnode *nvp;
 	int error;
 
+	if (dev == NODEV)
+		return (0);
 	error = getnewvnode(VT_NON, (struct mount *)0, &spec_vnodeops, &nvp);
 	if (error) {
 		*vpp = 0;
