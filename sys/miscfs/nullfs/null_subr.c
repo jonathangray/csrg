@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)null_subr.c	8.2 (Berkeley) 12/30/93
+ *	@(#)null_subr.c	8.3 (Berkeley) 01/04/94
  *
  * $Id: lofs_subr.c,v 1.11 1992/05/30 10:05:43 jsp Exp jsp $
  */
@@ -152,8 +152,8 @@ null_node_alloc(mp, lowervp, vpp)
 	struct vnode *othervp, *vp;
 	int error;
 
-	if (error = getnewvnode(VT_UFS, mp, null_vnodeop_p, vpp))
-		return (error);	/* XXX: VT_NULL above */
+	if (error = getnewvnode(VT_NULL, mp, null_vnodeop_p, vpp))
+		return (error);
 	vp = *vpp;
 
 	MALLOC(xp, struct null_node *, sizeof(struct null_node), M_TEMP, M_WAITOK);
