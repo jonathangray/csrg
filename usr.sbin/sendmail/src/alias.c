@@ -41,6 +41,7 @@ ERROR: DBM is no longer supported -- use NDBM instead.
 # endif
 
 # ifdef NEWDB
+# undef __P
 # include <db.h>
 # endif
 
@@ -51,15 +52,15 @@ ERROR: DBM is no longer supported -- use NDBM instead.
 #ifndef lint
 #ifdef NEWDB
 #ifdef NDBM
-static char sccsid[] = "@(#)alias.c	6.35 (Berkeley) 05/01/93 (with NEWDB and NDBM)";
+static char sccsid[] = "@(#)alias.c	6.36 (Berkeley) 05/01/93 (with NEWDB and NDBM)";
 #else
-static char sccsid[] = "@(#)alias.c	6.35 (Berkeley) 05/01/93 (with NEWDB)";
+static char sccsid[] = "@(#)alias.c	6.36 (Berkeley) 05/01/93 (with NEWDB)";
 #endif
 #else
 #ifdef NDBM
-static char sccsid[] = "@(#)alias.c	6.35 (Berkeley) 05/01/93 (with NDBM)";
+static char sccsid[] = "@(#)alias.c	6.36 (Berkeley) 05/01/93 (with NDBM)";
 #else
-static char sccsid[] = "@(#)alias.c	6.35 (Berkeley) 05/01/93 (without NEWDB or NDBM)";
+static char sccsid[] = "@(#)alias.c	6.36 (Berkeley) 05/01/93 (without NEWDB or NDBM)";
 #endif
 #endif
 #endif /* not lint */
@@ -985,7 +986,7 @@ forward(user, sendq, e)
 				printf("forward: transient error on %s\n", buf);
 #ifdef LOG
 			if (LogLevel > 2)
-				syslog(LOG_NOTICE, "%s: forward %s: transient error: %e",
+				syslog(LOG_ERR, "%s: forward %s: transient error: %e",
 					e->e_id, buf);
 #endif
 			message("%s: %s: message queued", buf, errstring(err));
