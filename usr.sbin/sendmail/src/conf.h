@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.185 (Berkeley) 06/10/95
+ *	@(#)conf.h	8.186 (Berkeley) 06/11/95
  */
 
 /*
@@ -476,7 +476,7 @@ typedef int		pid_t;
 **	See also BSD defines.
 */
 
-#ifdef BSD4_4
+#if defined(BSD4_4) && !defined(__bsdi__)
 # define HASUNSETENV	1	/* has unsetenv(3) call */
 # define USESETEUID	1	/* has useable seteuid(2) call */
 # include <sys/cdefs.h>
