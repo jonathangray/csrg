@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)defs.h	5.11 (Berkeley) 12/18/92
+ *	@(#)defs.h	5.12 (Berkeley) 05/20/93
  */
 
 /*
@@ -145,6 +145,10 @@ typedef unsigned char cc_t;
 
 #include <memory.h>
 #endif	/* CRAY */
+
+#ifdef __hpux
+#include <sys/ptyio.h>
+#endif
 
 #if	!defined(TIOCSCTTY) && defined(TCSETCTTY)
 # define	TIOCSCTTY TCSETCTTY
