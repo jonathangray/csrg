@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kbd.c	7.2 (Berkeley) 04/28/91
+ *	@(#)kbd.c	7.3 (Berkeley) 04/28/91
  */
 
 #define	L		0x01	/* locking function */
