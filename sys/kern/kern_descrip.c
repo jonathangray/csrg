@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_descrip.c	7.34 (Berkeley) 06/03/92
+ *	@(#)kern_descrip.c	7.35 (Berkeley) 06/23/92
  */
 
 #include "param.h"
@@ -328,7 +328,7 @@ close(p, uap, retval)
 	return (closef(fp, p));
 }
 
-#ifdef COMPAT_43
+#if defined(COMPAT_43) || defined(COMPAT_SUNOS)
 /*
  * Return status information about a file descriptor.
  */
@@ -361,7 +361,7 @@ ofstat(p, uap, retval)
 		break;
 
 	default:
-		panic("fstat");
+		panic("ofstat");
 		/*NOTREACHED*/
 	}
 	cvtstat(&ub, &oub);
@@ -369,7 +369,7 @@ ofstat(p, uap, retval)
 		error = copyout((caddr_t)&oub, (caddr_t)uap->sb, sizeof (oub));
 	return (error);
 }
-#endif /* COMPAT_43 */
+#endif /* COMPAT_43 || COMPAT_SUNOS */
 
 /*
  * Return status information about a file descriptor.
