@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty.h	7.10 (Berkeley) 06/26/91
+ *	@(#)tty.h	7.11 (Berkeley) 02/05/92
  */
 
 #include <sys/termios.h>
@@ -56,8 +56,11 @@ struct tty {
 	struct	clist t_rawq;		/* queues */
 	struct	clist t_canq;
 	struct	clist t_outq;
-	int	(*t_oproc)();		/* device */
-	int	(*t_param)();		/* device */
+	void	(*t_oproc)();		/* device */
+#ifdef sun4c
+	void	(*t_stop)();		/* device */
+#endif
+	void	(*t_param)();		/* device */
 	struct	proc *t_rsel;		/* tty */
 	struct	proc *t_wsel;
 	caddr_t	T_LINEP; 		/* XXX */
