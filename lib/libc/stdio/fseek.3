@@ -32,7 +32,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)fseek.3	6.7 (Berkeley) 03/05/91
+.\"	@(#)fseek.3	6.8 (Berkeley) 03/11/91
 .\"
 .TH FSEEK 3 ""
 .UC 7
@@ -107,10 +107,12 @@ returns no value.
 Upon successful completion,
 .IR fgetpos ,
 .IR fseek ,
-.IR fsetpos ,
 and
-.IR ftell 
-return 0.
+.I fsetpos
+return 0,
+and
+.I ftell
+returns the current offset.
 Otherwise, \-1 is returned and the global variable errno is set to
 indicate the error.
 .SH ERRORS
