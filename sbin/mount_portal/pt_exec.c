@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pt_exec.c	1.1 (Berkeley) 07/09/92
+ *	@(#)pt_exec.c	1.2 (Berkeley) 07/12/92
  *
  * $Id: pt_exec.c,v 1.1 1992/05/25 21:43:09 jsp Exp jsp $
  */
@@ -44,6 +44,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/types.h>
+#include <sys/param.h>
 #include <sys/syslog.h>
 
 #include "portald.h"
