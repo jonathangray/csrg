@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.27 (Berkeley) 11/07/93
+ *	@(#)sendmail.h	8.28 (Berkeley) 11/25/93
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.27		11/07/93";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.28		11/25/93";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -737,6 +737,15 @@ struct prival
 #define RF_COPYPADDR		0040	/* copy print address */
 #define RF_COPYALL		(RF_COPYPARSE|RF_COPYPADDR)
 #define RF_COPYNONE		0
+
+
+/*
+**  Flags passed to safefile.
+*/
+
+#define SF_MUSTOWN		0x0001	/* user must own this file */
+#define SF_NOSLINK		0x0002	/* file cannot be a symbolic link */
+
 
 /*
 **  Regular UNIX sockaddrs are too small to handle ISO addresses, so
