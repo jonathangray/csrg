@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"     @(#)execve.2	6.10 (Berkeley) 02/26/93
+.\"     @(#)execve.2	6.11 (Berkeley) 03/04/93
 .\"
 .Dd 
 .Dt EXECVE 2
@@ -139,7 +139,7 @@ After any set-user-ID and set-group-ID processing,
 the effective user ID is recorded as the saved set-user-ID,
 and the effective group ID is recorded as the saved set-group-ID.
 These values may be used in changing the effective IDs later (see
-.XR setuid 2 ) .
+.Xr setuid 2 ) .
 .Pp
 The new process also inherits the following attributes from
 the calling process:
