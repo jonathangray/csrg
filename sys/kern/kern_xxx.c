@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_xxx.c	8.1 (Berkeley) 06/10/93
+ *	@(#)kern_xxx.c	8.2 (Berkeley) 11/14/93
  */
 
 #include <sys/param.h>
@@ -87,7 +87,10 @@ osethostname(p, uap, retval)
 	int *retval;
 {
 	int name;
+	int error;
 
+	if (error = suser(p->p_ucred, &p->p_acflag))
+		return (error);
 	name = KERN_HOSTNAME;
 	return (kern_sysctl(&name, 1, 0, 0, uap->hostname, uap->len));
 }
