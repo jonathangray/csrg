@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.1 (Berkeley) 12/11/91
+ *	@(#)extern.h	5.2 (Berkeley) 04/17/92
  */
 
 int	 compare __P((char *, NODE *, FTSENT *));
@@ -38,7 +38,7 @@ int	 crc __P((int, u_long *, u_long *));
 void	 cwalk __P((void));
 void	 err __P((const char *, ...));
 char	*inotype __P((u_int));
-u_int	 parsekey __P((char *));
+u_int	 parsekey __P((char *, int *));
 char	*rlink __P((char *));
 NODE	*spec __P((void));
 int	 verify __P((void));
