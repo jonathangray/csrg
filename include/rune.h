@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)rune.h	8.1 (Berkeley) 06/02/93
+ *	@(#)rune.h	5.2 (Berkeley) 06/27/93
  */
 
 #ifndef	_RUNE_H_
@@ -55,6 +55,9 @@ __BEGIN_DECLS
 char	*mbrune __P((const char *, rune_t));
 char	*mbrrune __P((const char *, rune_t));
 char	*mbmb __P((const char *, char *));
+long	 fgetrune __P((FILE *));
+int	 fputrune __P((rune_t, FILE *));
+int	 fungetrune __P((rune_t, FILE *));
 int	 setrunelocale __P((char *));
 void	 setinvalidrune __P((rune_t));
 __END_DECLS
