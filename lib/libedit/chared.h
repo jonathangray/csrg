@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)chared.h	5.1 (Berkeley) 06/22/92
+ *	@(#)chared.h	5.2 (Berkeley) 06/22/92
  */
 
 /*
@@ -45,7 +45,7 @@
 #include <ctype.h>
 #include <string.h>
 
-#include "editline.h"
+#include "histedit.h"
 
 #define EL_MAXMACRO 10
 
