@@ -40,6 +40,7 @@
 #include <sys/param.h>
 #include <sys/proc.h>
 #include <sys/lock.h>
+#include <machine/cpu.h>
 
 /*
  * Locking primitives implementation.
@@ -464,6 +465,7 @@ _simple_lock(alp, id, l)
 			panic("%s:%d: simple_lock: lock held", id, l);
 		if (lockpausetime == 0) {
 			printf("%s:%d: simple_lock: lock held\n", id, l);
+			BACKTRACE(curproc);
 		} else if (lockpausetime > 0) {
 			printf("%s:%d: simple_lock: lock held...", id, l);
 			tsleep(&lockpausetime, PCATCH | PPAUSE, "slock",
@@ -487,6 +489,7 @@ _simple_lock_try(alp, id, l)
 			panic("%s:%d: simple_lock_try: lock held", id, l);
 		if (lockpausetime == 0) {
 			printf("%s:%d: simple_lock_try: lock held\n", id, l);
+			BACKTRACE(curproc);
 		} else if (lockpausetime > 0) {
 			printf("%s:%d: simple_lock_try: lock held...", id, l);
 			tsleep(&lockpausetime, PCATCH | PPAUSE, "slock",
@@ -514,6 +517,7 @@ _simple_unlock(alp, id, l)
 			panic("%s:%d: simple_unlock: lock not held", id, l);
 		if (lockpausetime == 0) {
 			printf("%s:%d: simple_unlock: lock not held\n", id, l);
+			BACKTRACE(curproc);
 		} else if (lockpausetime > 0) {
 			printf("%s:%d: simple_unlock: lock not held...", id, l);
 			tsleep(&lockpausetime, PCATCH | PPAUSE, "sunlock",
