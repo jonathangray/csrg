@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_balloc.c	7.20 (Berkeley) 05/15/92
+ *	@(#)ffs_balloc.c	7.21 (Berkeley) 06/04/92
  */
 
 #include <sys/param.h>
@@ -58,6 +58,7 @@ int
 ffs_bmap (ap)
 	struct vop_bmap_args *ap;
 {
+	register daddr_t bn = ap->a_bn;
 	register struct inode *ip;
 	register struct fs *fs;
 	register daddr_t nb;
@@ -75,15 +76,15 @@ ffs_bmap (ap)
 		*ap->a_vpp = ip->i_devvp;
 	if (ap->a_bnp == NULL)
 		return (0);
-	if (ap->a_bn < 0)
+	if (bn < 0)
 		return (EFBIG);
 	fs = ip->i_fs;
 
 	/*
 	 * The first NDADDR blocks are direct blocks
 	 */
-	if (ap->a_bn < NDADDR) {
-		nb = ip->i_db[ap->a_bn];
+	if (bn < NDADDR) {
+		nb = ip->i_db[bn];
 		if (nb == 0) {
 			*ap->a_bnp = (daddr_t)-1;
 			return (0);
@@ -95,12 +96,12 @@ ffs_bmap (ap)
 	 * Determine the number of levels of indirection.
 	 */
 	sh = 1;
-	ap->a_bn -= NDADDR;
+	bn -= NDADDR;
 	for (j = NIADDR; j > 0; j--) {
 		sh *= NINDIR(fs);
-		if (ap->a_bn < sh)
+		if (bn < sh)
 			break;
-		ap->a_bn -= sh;
+		bn -= sh;
 	}
 	if (j == 0)
 		return (EFBIG);
@@ -120,7 +121,7 @@ ffs_bmap (ap)
 		}
 		bap = bp->b_un.b_daddr;
 		sh /= NINDIR(fs);
-		i = (ap->a_bn / sh) % NINDIR(fs);
+		i = (bn / sh) % NINDIR(fs);
 		nb = bap[i];
 		if (nb == 0) {
 			*ap->a_bnp = (daddr_t)-1;
