@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_subs.c	8.2 (Berkeley) 12/30/93
+ *	@(#)nfs_subs.c	8.3 (Berkeley) 01/04/94
  */
 
 /*
@@ -579,7 +579,6 @@ nfsm_strtmbuf(mb, bpos, cp, siz)
 nfs_init()
 {
 	register int i;
-	union nqsrvthead *lhp;
 
 	nfsrtt.pos = 0;
 	rpc_vers = txdr_unsigned(RPC_VER2);
