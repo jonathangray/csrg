@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	6.17 (Berkeley) 02/20/93";
+static char sccsid[] = "@(#)parseaddr.c	6.18 (Berkeley) 02/21/93";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1725,7 +1725,7 @@ sameaddr(a, b)
 		return (FALSE);
 
 	/* if the mailer ignores hosts, we have succeeded! */
-	if (bitnset(M_LOCAL, a->q_mailer->m_flags))
+	if (bitnset(M_LOCALMAILER, a->q_mailer->m_flags))
 		return (TRUE);
 
 	/* otherwise compare hosts (but be careful for NULL ptrs) */
