@@ -34,9 +34,9 @@
  * SUCH DAMAGE.
  */
 
-#ifndef lint
-static char sccsid[] = "@(#)tokenizer.c	5.1 (Berkeley) 06/22/92";
-#endif /* not lint */
+#if !defined(lint) && !defined(SCCSID)
+static char sccsid[] = "@(#)tokenizer.c	5.2 (Berkeley) 07/03/92";
+#endif /* not lint && not SCCSID */
 
 /*
  * tokenize.c: Bourne shell like tokenizer
