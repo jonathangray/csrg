@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)conf.c	8.178 (Berkeley) 05/27/95";
+static char sccsid[] = "@(#)conf.c	8.179 (Berkeley) 05/28/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1647,8 +1647,10 @@ setproctitle(fmt, va_alist)
 #  if SPT_TYPE == SPT_PSTAT
 	union pstun pst;
 #  endif
+#  if SPT_TYPE == SPT_REUSEARGV
 	extern char **Argv;
 	extern char *LastArgv;
+#  endif
 
 	VA_START(fmt);
 	if (fmt == NULL)
@@ -2801,8 +2803,10 @@ resetlimits()
 char *
 getcfname()
 {
+#ifdef TRY_VERSIONED_CF_NAME
 	int i;
 	static char cbuf[200];
+#endif
 
 	if (ConfFile != NULL)
 		return ConfFile;
@@ -3094,7 +3098,6 @@ sm_gethostbyname(name)
 #else
 	struct hostent *h;
 	int nmaps;
-	int i;
 	char *maptype[MAXMAPSTACK];
 	short mapreturn[MAXMAPACTIONS];
 	char hbuf[MAXNAME];
@@ -3470,6 +3473,7 @@ ni_propval(keydir, keyprop, keyval, valprop, sepchar)
 # define MAXSYSLOGTRIES	100
 # undef syslog
 
+void
 # ifdef __STDC__
 hard_syslog(int pri, char *msg, ...)
 # else
