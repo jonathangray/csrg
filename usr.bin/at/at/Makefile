@@ -3,7 +3,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	5.5 (Berkeley) 01/18/87
+#	@(#)Makefile	5.6 (Berkeley) 06/18/87
 #
 #       Makefile for at, atq, atrm, and atrun
 #
