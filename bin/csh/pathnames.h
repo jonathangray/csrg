@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	5.6 (Berkeley) 06/08/91
+ *	@(#)pathnames.h	5.7 (Berkeley) 07/19/91
  */
 
 #define	_PATH_BIN		"/bin"
