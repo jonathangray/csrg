@@ -2,6 +2,9 @@
  * Copyright (c) 1980, 1987 Regents of the University of California.
  * All rights reserved.
  *
+ * This code is derived from software contributed to Berkeley by
+ * Bob Toxen.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -38,7 +41,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)lock.c	5.13 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)lock.c	5.14 (Berkeley) 02/24/93";
 #endif /* not lint */
 
 /*
