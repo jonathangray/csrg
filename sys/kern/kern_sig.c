@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_sig.c	8.9 (Berkeley) 08/11/94
+ *	@(#)kern_sig.c	8.10 (Berkeley) 08/22/94
  */
 
 #define	SIGPROP		/* include signal properties table */
@@ -551,7 +551,7 @@ killpg1(cp, signum, pgid, all)
 		/* 
 		 * broadcast 
 		 */
-		for (p = (struct proc *)allproc; p != NULL; p = p->p_next) {
+		for (p = allproc.lh_first; p != 0; p = p->p_list.le_next) {
 			if (p->p_pid <= 1 || p->p_flag & P_SYSTEM || 
 			    p == cp || !CANSIGNAL(cp, pc, p, signum))
 				continue;
@@ -570,7 +570,8 @@ killpg1(cp, signum, pgid, all)
 			if (pgrp == NULL)
 				return (ESRCH);
 		}
-		for (p = pgrp->pg_mem; p != NULL; p = p->p_pgrpnxt) {
+		for (p = pgrp->pg_members.lh_first; p != 0;
+		     p = p->p_pglist.le_next) {
 			if (p->p_pid <= 1 || p->p_flag & P_SYSTEM ||
 			    p->p_stat == SZOMB ||
 			    !CANSIGNAL(cp, pc, p, signum))
@@ -608,7 +609,8 @@ pgsignal(pgrp, signum, checkctty)
 	register struct proc *p;
 
 	if (pgrp)
-		for (p = pgrp->pg_mem; p != NULL; p = p->p_pgrpnxt)
+		for (p = pgrp->pg_members.lh_first; p != 0;
+		     p = p->p_pglist.le_next)
 			if (checkctty == 0 || p->p_flag & P_CONTROLT)
 				psignal(p, signum);
 }
