@@ -35,7 +35,7 @@
  */
 
 #if !defined(lint) && !defined(SCCSID)
-static char sccsid[] = "@(#)key.c	5.3 (Berkeley) 10/12/92";
+static char sccsid[] = "@(#)key.c	5.4 (Berkeley) 03/02/93";
 #endif /* not lint && not SCCSID */
 
 /*
@@ -350,6 +350,7 @@ node__try(ptr, str, val, ntype)
 	}
 	switch (ptr->type) {
 	case XK_CMD:
+	case XK_NOD:
 	    break;
 	case XK_STR:
 	case XK_EXE:
