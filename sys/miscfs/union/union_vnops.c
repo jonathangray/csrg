@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_vnops.c	2.1 (Berkeley) 02/10/94
+ *	@(#)union_vnops.c	2.2 (Berkeley) 02/10/94
  */
 
 #include <sys/param.h>
@@ -48,6 +48,7 @@
 #include <sys/namei.h>
 #include <sys/malloc.h>
 #include <sys/buf.h>
+#include <sys/queue.h>
 #include "union.h"
 
 static int
@@ -420,7 +421,7 @@ union_open(ap)
 				return (error);
 
 			/* at this point, uppervp is locked */
-			un->un_uppervp = vp;	/* XXX */
+			union_newupper(un, vp);
 			un->un_flags |= UN_ULOCK;
 
 			/*
@@ -1111,31 +1112,9 @@ union_reclaim(ap)
 		struct vnode *a_vp;
 	} */ *ap;
 {
-	struct vnode *vp = ap->a_vp;
-	struct union_node *un = VTOUNION(vp);
-	struct vnode *uppervp = un->un_uppervp;
-	struct vnode *lowervp = un->un_lowervp;
-	struct vnode *dirvp = un->un_dirvp;
-	char *path = un->un_path;
 
-	/*
-	 * Note: in vop_reclaim, vp->v_op == dead_vnodeop_p,
-	 * so we can't call VOPs on ourself.
-	 */
-	/* After this assignment, this node will not be re-used. */
-	un->un_uppervp = NULLVP;
-	un->un_lowervp = NULLVP;
-	un->un_dirvp = NULLVP;
-	un->un_path = NULL;
-	union_freevp(vp);
-	if (uppervp)
-		vrele(uppervp);
-	if (lowervp)
-		vrele(lowervp);
-	if (dirvp)
-		vrele(dirvp);
-	if (path)
-		free(path, M_TEMP);
+	union_freevp(ap->a_vp);
+
 	return (0);
 }
 
