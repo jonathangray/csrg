@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)str.c	5.2 (Berkeley) 06/07/91";
+static char sccsid[] = "@(#)str.c	5.3 (Berkeley) 06/08/91";
 #endif /* not lint */
 
 /*
@@ -41,6 +41,12 @@ static char sccsid[] = "@(#)str.c	5.2 (Berkeley) 06/07/91";
  */
 #ifdef SHORT_STRINGS
 
+#if __STDC__
+# include <stdarg.h>
+#else
+# include <varargs.h>
+#endif
+
 #include "csh.h"
 #include "extern.h"
 
@@ -48,16 +54,16 @@ Char  **
 blk2short(src)
     register char **src;
 {
-    int     n;
+    size_t     n;
     register Char **sdst, **dst;
 
     /*
      * Count
      */
-    for (n = 0; src[n] != (char *) 0; n++);
+    for (n = 0; src[n] != NULL; n++);
     sdst = dst = (Char **) xmalloc((size_t) ((n + 1) * sizeof(Char *)));
 
-    for (; *src != (char *) 0; src++)
+    for (; *src != NULL; src++)
 	*dst++ = SAVE(*src);
     *dst = NULL;
     return (sdst);
@@ -67,18 +73,18 @@ char  **
 short2blk(src)
     register Char **src;
 {
-    int     n;
+    size_t     n;
     register char **sdst, **dst;
 
     /*
      * Count
      */
-    for (n = 0; src[n] != (Char *) 0; n++);
+    for (n = 0; src[n] != NULL; n++);
     sdst = dst = (char **) xmalloc((size_t) ((n + 1) * sizeof(char *)));
 
-    for (; *src != (Char *) 0; src++)
+    for (; *src != NULL; src++)
 	*dst++ = strsave(short2str(*src));
-    *dst = (char *) 0;
+    *dst = NULL;
     return (sdst);
 }
 
@@ -88,13 +94,13 @@ str2short(src)
     register char *src;
 {
     static Char *sdst;
-    static int dstsize = 0;
+    static size_t dstsize = 0;
     register Char *dst, *edst;
 
-    if (src == (char *) 0)
-	return ((Char *) 0);
+    if (src == NULL)
+	return (NULL);
 
-    if (sdst == (Char *) 0) {
+    if (sdst == (NULL)) {
 	dstsize = MALLOC_INCR;
 	sdst = (Char *) xmalloc((size_t) dstsize * sizeof(Char));
     }
@@ -119,14 +125,14 @@ char   *
 short2qstr(src)
     register Char *src;
 {
-    static char *sdst = (char *) 0;
-    static int dstsize = 0;
+    static char *sdst = NULL;
+    static size_t dstsize = 0;
     register char *dst, *edst;
 
-    if (src == (Char *) 0)
-	return ((char *) 0);
+    if (src == NULL)
+	return (NULL);
 
-    if (sdst == (char *) 0) {
+    if (sdst == NULL) {
 	dstsize = MALLOC_INCR;
 	sdst = (char *) xmalloc((size_t) dstsize * sizeof(char));
     }
@@ -159,14 +165,14 @@ char   *
 short2str(src)
     register Char *src;
 {
-    static char *sdst = (char *) 0;
-    static int dstsize = 0;
+    static char *sdst = NULL;
+    static size_t dstsize = 0;
     register char *dst, *edst;
 
-    if (src == (Char *) 0)
-	return ((char *) 0);
+    if (src == NULL)
+	return (NULL);
 
-    if (sdst == (char *) 0) {
+    if (sdst == NULL) {
 	dstsize = MALLOC_INCR;
 	sdst = (char *) xmalloc((size_t) dstsize * sizeof(char));
     }
@@ -200,7 +206,7 @@ s_strcpy(dst, src)
 Char   *
 s_strncpy(dst, src, n)
     register Char *dst, *src;
-    register int n;
+    register size_t n;
 {
     register Char *sdst;
 
@@ -228,7 +234,7 @@ s_strcat(dst, src)
 Char   *
 s_strncat(dst, src, n)
     register Char *dst, *src;
-    register int n;
+    register size_t n;
 {
     register Char *sdst;
 
@@ -245,22 +251,24 @@ s_strncat(dst, src, n)
 
 Char   *
 s_strchr(str, ch)
-    register Char *str, ch;
+    register Char *str;
+    int ch;
 {
     do
 	if (*str == ch)
 	    return (str);
     while (*str++);
-    return ((Char *) 0);
+    return (NULL);
 }
 
 Char   *
 s_strrchr(str, ch)
-    register short *str, ch;
+    register Char *str;
+    int ch;
 {
     register Char *rstr;
 
-    rstr = (Char *) 0;
+    rstr = NULL;
     do
 	if (*str == ch)
 	    rstr = str;
@@ -268,11 +276,11 @@ s_strrchr(str, ch)
     return (rstr);
 }
 
-int
+size_t
 s_strlen(str)
     register Char *str;
 {
-    register int n;
+    register size_t n;
 
     for (n = 0; *str++; n++);
     return (n);
@@ -301,7 +309,7 @@ s_strcmp(str1, str2)
 int
 s_strncmp(str1, str2, n)
     register Char *str1, *str2;
-    register int n;
+    register size_t n;
 {
     for (; --n >= 0 && *str1 == *str2; str1++, str2++);
 
@@ -382,7 +390,7 @@ s_strstr(s, t)
 		return (s);
 	while (*ss++ == *tt++);
     } while (*s++ != '\0');
-    return ((Char *) 0);
+    return (NULL);
 }
 #endif
 
