@@ -39,7 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kgdb_stub.c	8.3 (Berkeley) 01/12/94
+ *	@(#)kgdb_stub.c	8.4 (Berkeley) 01/12/94
  */
 
 /*
@@ -347,7 +347,7 @@ kgdb_trap(type, frame)
 	int inlen;
 	u_long gdb_regs[NUM_REGS];
 
-	if (kgdb_dev < 0) {
+	if ((int)kgdb_dev < 0) {
 		/* not debugging */
 		return (0);
 	}
