@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)systm.h	7.16 (Berkeley) 05/07/91
+ *	@(#)systm.h	7.17 (Berkeley) 05/25/91
  */
 
 extern char *panicstr;		/* panic message */
@@ -87,6 +87,7 @@ void	tablefull __P((char *));
 void	addlog __P((const char *, ...));
 void	log __P((int, const char *, ...));
 void	printf __P((const char *, ...));
+int	sprintf __P((char *buf, const char *, ...));
 void	ttyprintf __P((struct tty *, const char *, ...));
 
 void	bcopy __P((void *from, void *to, u_int len));
