@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.7 (Berkeley) 09/03/91";
+static char sccsid[] = "@(#)main.c	5.8 (Berkeley) 10/02/91";
 #endif /* not lint */
 
 /*
@@ -58,6 +58,8 @@ static char sccsid[] = "@(#)main.c	5.7 (Berkeley) 09/03/91";
 
 ndptr hashtab[HASHSIZE];	/* hash table for macros etc.  */
 char buf[BUFSIZE];		/* push-back buffer	       */
+char *bufbase = buf;		/* the base for current ilevel */
+char *bbase[MAXINP];		/* the base for each ilevel    */
 char *bp = buf; 		/* first available character   */
 char *endpbb = buf+BUFSIZE;	/* end of push-back buffer     */
 stae mstack[STACKMAX+1]; 	/* stack of m4 machine         */
@@ -178,6 +180,7 @@ char *argv[];
 					/* filename for diversions   */
 	m4temp = mktemp(xstrdup(_PATH_DIVNAME));
 
+	bbase[0] = bufbase;
         if (!argc) {
  		sp = -1;		/* stack pointer initialized */
 		fp = 0; 		/* frame pointer initialized */
@@ -201,6 +204,7 @@ char *argv[];
 
 	if (*m4wraps) { 		/* anything for rundown ??   */
 		ilevel = 0;		/* in case m4wrap includes.. */
+		bufbase = bp = buf;	/* use the entire buffer   */
 		putback(EOF);		/* eof is a must !!	     */
 		pbstr(m4wraps); 	/* user-defined wrapup act   */
 		macro();		/* last will and testament   */
@@ -277,6 +281,7 @@ macro() {
 			if (--ilevel < 0)
 				break;			/* all done thanks.. */
 			(void) fclose(infile[ilevel+1]);
+			bufbase = bbase[ilevel];
 			continue;
 		}
 	/*
