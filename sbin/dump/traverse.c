@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)traverse.c	5.19 (Berkeley) 07/02/92";
+static char sccsid[] = "@(#)traverse.c	5.20 (Berkeley) 07/16/92";
 #endif /* not lint */
 
 #ifdef sunos
@@ -550,7 +550,7 @@ loop:
 		broadcast("DUMP IS AILING!\n");
 		msg("This is an unrecoverable error.\n");
 		if (!query("Do you want to attempt to continue?")){
-			dumpabort();
+			dumpabort(0);
 			/*NOTREACHED*/
 		} else
 			breaderrors = 0;
