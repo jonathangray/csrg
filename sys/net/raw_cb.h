@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)raw_cb.h	7.6 (Berkeley) 06/28/90
+ *	@(#)raw_cb.h	7.7 (Berkeley) 06/04/93
  */
 
 /*
@@ -56,4 +56,14 @@ struct rawcb {
 
 #ifdef KERNEL
 struct rawcb rawcb;			/* head of list */
+
+int	 raw_attach __P((struct socket *, int));
+void	 raw_ctlinput __P((int, struct sockaddr *));
+void	 raw_detach __P((struct rawcb *));
+void	 raw_disconnect __P((struct rawcb *));
+void	 raw_init __P((void));
+void	 raw_input __P((struct mbuf *,
+	    struct sockproto *, struct sockaddr *, struct sockaddr *));
+int	 raw_usrreq __P((struct socket *,
+	    int, struct mbuf *, struct mbuf *, struct mbuf *));
 #endif
