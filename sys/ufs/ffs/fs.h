@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fs.h	7.14 (Berkeley) 12/19/91
+ *	@(#)fs.h	7.15 (Berkeley) 05/27/92
  */
 
 /*
@@ -437,3 +437,6 @@ struct	ocg {
  * NINDIR is the number of indirects in a file system block.
  */
 #define	NINDIR(fs)	((fs)->fs_nindir)
+
+extern int inside[], around[];
+extern u_char *fragtbl[];
