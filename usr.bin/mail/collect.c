@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)collect.c	5.22 (Berkeley) 06/25/90";
+static char sccsid[] = "@(#)collect.c	5.23 (Berkeley) 02/09/91";
 #endif /* not lint */
 
 /*
@@ -95,7 +95,7 @@ collect(hp, printheaders)
 	savettou = signal(SIGTTOU, collstop);
 	savettin = signal(SIGTTIN, collstop);
 	if (setjmp(collabort) || setjmp(colljmp)) {
-		remove(tempMail);
+		rm(tempMail);
 		goto err;
 	}
 	sigsetmask(omask & ~(sigmask(SIGINT) | sigmask(SIGHUP)));
