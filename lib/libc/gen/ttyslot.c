@@ -16,7 +16,7 @@ ttyslot()
 {
 	register struct ttyent *ty;
 	register char *tp, *p;
-	register s, tf;
+	register s;
 
 	if ((tp = ttyname(0)) == NULL &&
 	    (tp = ttyname(1)) == NULL &&
