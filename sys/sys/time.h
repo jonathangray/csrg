@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)time.h	8.2 (Berkeley) 07/10/94
+ *	@(#)time.h	8.3 (Berkeley) 01/09/95
  */
 
 #ifndef _SYS_TIME_H_
@@ -107,7 +107,11 @@ struct clockinfo {
 	int	profhz;		/* profiling clock frequency */
 };
 
-#ifndef KERNEL
+#ifdef KERNEL
+int	itimerfix __P((struct timeval *tv));
+int	itimerdecr __P((struct itimerval *itp, int usec));
+void	microtime __P((struct timeval *tv));
+#else /* !KERNEL */
 #include <time.h>
 
 #ifndef _POSIX_SOURCE
