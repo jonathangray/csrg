@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.4 (Berkeley) 01/15/91
+#	@(#)Makefile	8.1 (Berkeley) 06/05/93
 
 PROG=	tunefs
 MAN8=	tunefs.0
