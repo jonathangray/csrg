@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)map.h	7.5 (Berkeley) 05/07/91
+ *	@(#)map.h	7.6 (Berkeley) 05/13/92
  */
 
 /*
@@ -70,4 +70,8 @@ struct mapent {
 #define	ARGMAPSIZE	16
 struct	map *kmemmap, *mbmap, *swapmap;
 int	nswapmap;
+
+long	rmalloc __P((struct map *, long));
+void	rmfree __P((struct map *, long, long));
+void	rminit __P((struct map *, long, long, char *, int));
 #endif
