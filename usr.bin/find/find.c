@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)find.c	8.2 (Berkeley) 04/01/94";
+static char sccsid[] = "@(#)find.c	8.3 (Berkeley) 04/01/94";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -166,8 +166,8 @@ find_execute(plan, paths)
 		case FTS_ERR:
 		case FTS_NS:
 			(void)fflush(stdout);
-			errno = entry->fts_errno;
-			warn("%s", entry->fts_path);
+			warnx("%s: %s",
+			    entry->fts_path, strerror(entry->fts_errno));
 			rval = 1;
 			continue;
 		}
