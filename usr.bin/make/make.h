@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)make.h	8.1 (Berkeley) 06/06/93
+ *	@(#)make.h	8.2 (Berkeley) 04/28/95
  */
 
 /*-
@@ -50,7 +50,15 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#ifndef MAKE_BOOTSTRAP
 #include <sys/cdefs.h>
+#else
+#if defined(__STDC__) || defined(__cplusplus)
+#define	__P(protos)	protos		/* full-blown ANSI C */
+#else
+#define	__P(protos)	()		/* traditional C preprocessor */    
+#endif
+#endif
 #if __STDC__
 #include <stdlib.h>
 #include <unistd.h>
@@ -347,11 +355,11 @@ extern int debug;
  */
 #include "nonints.h"
 
-void	Make_DoAllVar __P((GNode *));
-int	Make_HandleUse __P((GNode *, GNode *));
-Boolean	Make_OODate __P((GNode *));
-Boolean	Make_Run __P((Lst));
-int	Make_TimeStamp __P((GNode *, GNode *));
-void	Make_Update __P((GNode *));
+int Make_TimeStamp __P((GNode *, GNode *));
+Boolean Make_OODate __P((GNode *));
+int Make_HandleUse __P((GNode *, GNode *));
+void Make_Update __P((GNode *));
+void Make_DoAllVar __P((GNode *));
+Boolean Make_Run __P((Lst));
 
 #endif /* _MAKE_H_ */
