@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lookup.c	8.12 (Berkeley) 05/14/95
+ *	@(#)ufs_lookup.c	8.13 (Berkeley) 05/17/95
  */
 
 #include <sys/param.h>
@@ -494,6 +494,7 @@ found:
 		if ((dp->i_mode & ISVTX) &&
 		    cred->cr_uid != 0 &&
 		    cred->cr_uid != dp->i_uid &&
+		    tdp->v_type != VLNK &&
 		    VTOI(tdp)->i_uid != cred->cr_uid) {
 			vput(tdp);
 			return (EPERM);
