@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_socket.c	8.5 (Berkeley) 05/01/95
+ *	@(#)uipc_socket.c	8.6 (Berkeley) 05/02/95
  */
 
 #include <sys/param.h>
@@ -178,7 +178,7 @@ soclose(so)
 				goto drop;
 			while (so->so_state & SS_ISCONNECTED)
 				if (error = tsleep((caddr_t)&so->so_timeo,
-				    PSOCK | PCATCH, netcls, so->so_linger))
+				    PSOCK | PCATCH, netcls, so->so_linger * hz))
 					break;
 		}
 	}
