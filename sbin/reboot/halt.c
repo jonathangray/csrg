@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)halt.c	5.7 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)halt.c	5.8 (Berkeley) 02/03/91";
 #endif /* not lint */
 
 /*
@@ -60,7 +60,7 @@ main(argc, argv)
 {
 	register int i;
 	register int qflag = 0;
-	struct passwd *pw, *getpwuid();
+	struct passwd *pw;
 	int ch, howto, needlog = 1;
 	char *user, *ttyn, *getlogin(), *ttyname();
 
@@ -146,6 +146,7 @@ dingdong()
 }
 
 setalarm(n)
+	int n;
 {
 	signal(SIGALRM, dingdong);
 	alarm(n);
