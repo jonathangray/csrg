@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)icu.s	7.2 (Berkeley) 05/21/91
+ *	@(#)icu.s	7.3 (Berkeley) 09/03/91
  */
 
 /*
@@ -116,12 +116,19 @@ doreti:
 	DONET(NETISR_RAW,_rawintr)
 #ifdef INET
 	DONET(NETISR_IP,_ipintr)
+	DONET(NETISR_ARP,_arpintr)
 #endif
 #ifdef IMP
 	DONET(NETISR_IMP,_impintr)
 #endif
 #ifdef NS
 	DONET(NETISR_NS,_nsintr)
+#endif
+#ifdef ISO
+	DONET(NETISR_ISO,_clnlintr)
+#endif
+#ifdef CCITT
+	DONET(NETISR_CCITT,_hdintr)
 #endif
 
 	popl	%eax
