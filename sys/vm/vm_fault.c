@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_fault.c	7.10 (Berkeley) 04/25/92
+ *	@(#)vm_fault.c	7.11 (Berkeley) 05/04/92
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -66,11 +66,12 @@
  *	Page fault handling module.
  */
 
-#include "param.h"
+#include <sys/param.h>
+#include <sys/systm.h>
 
-#include "vm.h"
-#include "vm_page.h"
-#include "vm_pageout.h"
+#include <vm/vm.h>
+#include <vm/vm_page.h>
+#include <vm/vm_pageout.h>
 
 /*
  *	vm_fault:
@@ -90,6 +91,7 @@
  *	The map in question must be referenced, and remains so.
  *	Caller may hold no locks.
  */
+int
 vm_fault(map, vaddr, fault_type, change_wiring)
 	vm_map_t	map;
 	vm_offset_t	vaddr;
