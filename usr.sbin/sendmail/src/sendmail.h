@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	5.30.1.1 (Berkeley) 02/26/92
+ *	@(#)sendmail.h	5.31 (Berkeley) 05/25/92
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	5.30.1.1		02/26/92";
+static char SmailSccsId[] =	"@(#)sendmail.h	5.31		05/25/92";
 # endif lint
 # else  _DEFINE
 # define EXTERN extern
@@ -371,6 +371,10 @@ EXTERN struct rewrite	*RewriteRules[MAXRWSETS];
 # define HOSTBEGIN	'\035'	/* hostname lookup begin */
 # define HOSTEND	'\036'	/* hostname lookup end */
 
+/* bracket characters for generalized lookup */
+# define LOOKUPBEGIN	'\005'	/* generalized lookup begin */
+# define LOOKUPEND	'\006'	/* generalized lookup end */
+
 /* \001 is also reserved as the macro expansion character */
 
 /* external <==> internal mapping table */
@@ -401,6 +405,42 @@ MCONINFO
 /* flag bits */
 #define MCIF_VALID	00001		/* this entry is valid */
 /*
+**  Mapping functions
+**
+**	These allow arbitrary mappings in the config file.  The idea
+**	(albeit not the implementation) comes from IDA sendmail.
+*/
+
+
+/*
+**  The class of a map -- essentially the functions to call
+*/
+
+# define MAPCLASS	struct _mapclass
+
+MAPCLASS
+{
+	bool	(*map_init)();		/* initialization function */
+	char	*(*map_lookup)();	/* lookup function */
+};
+
+
+/*
+**  An actual map.
+*/
+
+# define MAP		struct _map
+
+MAP
+{
+	MAPCLASS	*map_class;	/* the class of this map */
+	int		map_flags;	/* flags, see below */
+	char		*map_file;	/* the (nominal) filename */
+};
+
+/* bit values for map_flags */
+# define MF_VALID	00001		/* this entry is valid */
+/*
 **  Symbol table definitions
 */
 
@@ -415,6 +455,8 @@ struct symtab
 		ADDRESS		*sv_addr;	/* pointer to address header */
 		MAILER		*sv_mailer;	/* pointer to mailer */
 		char		*sv_alias;	/* alias */
+		MAPCLASS	sv_mapclass;	/* mapping function class */
+		MAP		sv_map;		/* mapping function */
 		MCONINFO	sv_mci;		/* mailer connection info */
 	}	s_value;
 };
