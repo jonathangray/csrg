@@ -1,4 +1,4 @@
-#	@(#)Makefile	4.2	05/31/87
+#	@(#)Makefile	4.3	06/03/87
 #
 DIFF=	/bin/diff
 DIFFH=	/usr/lib/diffh
