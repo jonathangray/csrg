@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_loop.c	7.13 (Berkeley) 04/26/91
+ *	@(#)if_loop.c	7.14 (Berkeley) 01/30/92
  */
 
 /*
@@ -43,13 +43,12 @@
 #include "socket.h"
 #include "errno.h"
 #include "ioctl.h"
+#include "machine/cpu.h"
 
-#include "../net/if.h"
-#include "../net/if_types.h"
-#include "../net/netisr.h"
-#include "../net/route.h"
-
-#include "machine/mtpr.h"
+#include "if.h"
+#include "if_types.h"
+#include "netisr.h"
+#include "route.h"
 
 #ifdef	INET
 #include "../netinet/in.h"
