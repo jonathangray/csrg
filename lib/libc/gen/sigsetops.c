@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sigsetops.c	5.1 (Berkeley) 06/28/90
+ *	@(#)sigsetops.c	5.2 (Berkeley) 07/01/90
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)sigsetops.c	5.1 (Berkeley) 06/28/90";
+static char sccsid[] = "@(#)sigsetops.c	5.2 (Berkeley) 07/01/90";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/signal.h>
@@ -49,12 +49,14 @@ sigemptyset(set)
 	sigset_t *set;
 {
 	*set = 0;
+	return (0);
 }
 
 sigfillset(set)
 	sigset_t *set;
 {
 	*set = ~(sigset_t)0;
+	return (0);
 }
 
 sigaddset(set, signo)
