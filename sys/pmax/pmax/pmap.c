@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pmap.c	7.10 (Berkeley) 07/27/92
+ *	@(#)pmap.c	7.11 (Berkeley) 10/11/92
  */
 
 /*
@@ -63,17 +63,17 @@
  *	and to when physical maps must be made correct.
  */
 
-#include "param.h"
-#include "proc.h"
-#include "malloc.h"
-#include "user.h"
+#include <sys/param.h>
+#include <sys/proc.h>
+#include <sys/malloc.h>
+#include <sys/user.h>
 
-#include "vm/vm.h"
-#include "vm/vm_kern.h"
-#include "vm/vm_page.h"
+#include <vm/vm.h>
+#include <vm/vm_kern.h>
+#include <vm/vm_page.h>
 
-#include "../include/machConst.h"
-#include "../include/pte.h"
+#include <machine/machConst.h>
+#include <machine/pte.h>
 
 /*
  * For each vm_page_t, there is a list of all currently valid virtual
