@@ -1,4 +1,4 @@
-/*	utmp.h	4.1	83/05/03	*/
+/*	utmp.h	4.2	83/05/22	*/
 
 /*
  * Structure of utmp and wtmp files.
