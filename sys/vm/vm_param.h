@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_param.h	7.4 (Berkeley) 08/28/91
+ *	@(#)vm_param.h	7.5 (Berkeley) 08/28/91
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -94,7 +94,13 @@ typedef int	boolean_t;
  *	we can easily make them constant if we so desire.
  */
 #define	PAGE_SIZE	cnt.v_page_size		/* size of page */
+#define PAGE_MASK	page_mask		/* size of page - 1 */
 #define PAGE_SHIFT	page_shift		/* bits to shift for pages */
+#ifdef KERNEL
+extern vm_size_t	page_mask;
+extern int		page_shift;
+#endif
+
 
 /* 
  *	Return values from the VM routines.
@@ -117,8 +123,8 @@ typedef int	boolean_t;
  */
 
 #ifdef	KERNEL
-#define	atop(x)		(((unsigned)(x)) >> page_shift)
-#define	ptoa(x)		((vm_offset_t)((x) << page_shift))
+#define	atop(x)		(((unsigned)(x)) >> PAGE_SHIFT)
+#define	ptoa(x)		((vm_offset_t)((x) << PAGE_SHIFT))
 #endif	KERNEL
 
 /*
@@ -128,18 +134,20 @@ typedef int	boolean_t;
  */
 
 #ifdef	KERNEL
-#define round_page(x)	((vm_offset_t)((((vm_offset_t)(x)) + page_mask) & ~page_mask))
-#define trunc_page(x)	((vm_offset_t)(((vm_offset_t)(x)) & ~page_mask))
+#define round_page(x) \
+	((vm_offset_t)((((vm_offset_t)(x)) + PAGE_MASK) & ~PAGE_MASK))
+#define trunc_page(x) \
+	((vm_offset_t)(((vm_offset_t)(x)) & ~PAGE_MASK))
+#define num_pages(x) \
+	((vm_offset_t)((((vm_offset_t)(x)) + PAGE_MASK) >> PAGE_SHIFT))
 #else	KERNEL
-#define	round_page(x)	((((vm_offset_t)(x) + (vm_page_size - 1)) / vm_page_size) * vm_page_size)
-#define	trunc_page(x)	((((vm_offset_t)(x)) / vm_page_size) * vm_page_size)
+#define	round_page(x) \
+       ((((vm_offset_t)(x) + (vm_page_size - 1)) / vm_page_size) * vm_page_size)
+#define	trunc_page(x) \
+	((((vm_offset_t)(x)) / vm_page_size) * vm_page_size)
 #endif	KERNEL
 
 #ifdef	KERNEL
-extern vm_size_t	page_mask;	/* cnt.v_page_size - 1; mask for
-						   offset within page */
-extern int		page_shift;	/* shift to use for page size */
-
 extern vm_size_t	mem_size;	/* size of physical memory (bytes) */
 extern vm_offset_t	first_addr;	/* first physical page */
 extern vm_offset_t	last_addr;	/* last physical page */
