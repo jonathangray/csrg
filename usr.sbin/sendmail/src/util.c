@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)util.c	8.51 (Berkeley) 02/24/95";
+static char sccsid[] = "@(#)util.c	8.39.1.3 (Berkeley) 02/28/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -1604,7 +1604,7 @@ cleanstrcpy(t, f, l)
 {
 #ifdef LOG
 	/* check for newlines and log if necessary */
-	(void) denlstring(f);
+	(void) denlstring(f, TRUE);
 #endif
 
 	l--;
@@ -1625,6 +1625,7 @@ cleanstrcpy(t, f, l)
 **
 **	Parameters:
 **		s -- the input string
+**		logattacks -- if set, log attempted attacks.
 **
 **	Returns:
 **		A pointer to a version of the string with newlines
@@ -1632,8 +1633,9 @@ cleanstrcpy(t, f, l)
 */
 
 char *
-denlstring(s)
+denlstring(s, logattacks)
 	char *s;
+	bool logattacks;
 {
 	register char *p;
 	int l;
@@ -1658,9 +1660,12 @@ denlstring(s)
 
 /*
 #ifdef LOG
-	p = macvalue('_', CurEnv);
-	syslog(LOG_ALERT, "POSSIBLE ATTACK from %s: newline in string \"%s\"",
-		p == NULL ? "[UNKNOWN]" : p, bp);
+	if (logattacks)
+	{
+		syslog(LOG_NOTICE, "POSSIBLE ATTACK from %s: newline in string \"%s\"",
+			RealHostName == NULL ? "[UNKNOWN]" : RealHostName,
+			shortenstring(bp, 80));
+	}
 #endif
 */
 
