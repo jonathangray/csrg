@@ -37,7 +37,7 @@
 #include "SYS.h"
 
 #if defined(LIBC_SCCS) && !defined(lint)
-	ASMSTR("@(#)cerror.s	5.1 (Berkeley) 02/29/92")
+	ASMSTR("@(#)cerror.s	8.1 (Berkeley) 06/04/93")
 #endif /* LIBC_SCCS and not lint */
 
 	.globl	errno
