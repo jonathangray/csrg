@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)resource.h	8.1 (Berkeley) 06/14/93
+ *	@(#)resource.h	8.2 (Berkeley) 01/04/94
  */
 
-#ifndef _RESOURCE_H_
-#define	_RESOURCE_H_
+#ifndef _SYS_RESOURCE_H_
+#define	_SYS_RESOURCE_H_
 
 /*
  * Process priority specifications to get/setpriority.
@@ -122,4 +122,4 @@ int	setrlimit __P((int, const struct rlimit *));
 __END_DECLS
 
 #endif	/* KERNEL */
-#endif	/* !_RESOURCE_H_ */
+#endif	/* !_SYS_RESOURCE_H_ */
