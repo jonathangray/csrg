@@ -35,15 +35,18 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)c.c	5.2 (Berkeley) 01/23/93";
+static char sccsid[] = "@(#)c.c	5.3 (Berkeley) 02/28/93";
 #endif /* not lint */
 
 #include <sys/types.h>
 
-#include <db.h>
 #include <regex.h>
 #include <setjmp.h>
 #include <stdio.h>
+
+#ifdef DBI
+#include <db.h>
+#endif
 
 #include "ed.h"
 #include "extern.h"
@@ -77,8 +80,6 @@ c(inputt, errnum)
 
 	if ((current != NULL) && (current != bottom))
 		current = current->above;
-	if (sigint_flag)
-		SIGINT_ACTION;
 	add_flag = 1;
 	start_default = End_default = 1;
 	/* now get the "change" lines */
