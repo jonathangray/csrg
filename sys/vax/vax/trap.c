@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)trap.c	6.6 (Berkeley) 06/08/85
+ *	@(#)trap.c	6.7 (Berkeley) 02/02/86
  */
 
 #include "psl.h"
