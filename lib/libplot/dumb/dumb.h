@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)dumb.h	8.1 (Berkeley) 06/04/93
+ *	@(#)dumb.h	8.2 (Berkeley) 01/07/94
  */
 
 /*
@@ -17,6 +17,7 @@
  * to change, and is left as an exercise for the reader.
  */
 
+#include <stdlib.h>
 #include <math.h>
 
 #define scale(x,y) y = LINES-1-(LINES*y/rangeY +minY); x = COLS*x/rangeX + minX
