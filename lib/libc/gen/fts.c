@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)fts.c	5.32 (Berkeley) 03/01/92";
+static char sccsid[] = "@(#)fts.c	5.33 (Berkeley) 03/05/92";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -873,9 +873,7 @@ fts_alloc(sp, name, len)
 	p->fts_flags = 0;
 	p->fts_instr = FTS_NOINSTR;
 	p->fts_number = 0;
-#ifdef NOT_NECESSARY
 	p->fts_pointer = NULL;
-#endif
 	return (p);
 }
 
