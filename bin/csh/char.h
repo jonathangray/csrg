@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)char.h	5.6 (Berkeley) 06/04/91
+ *	@(#)char.h	5.7 (Berkeley) 07/19/91
  */
 
 #include <ctype.h>
