@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	5.6 (Berkeley) 07/28/91
+ *	@(#)extern.h	5.7 (Berkeley) 08/30/91
  */
 
 #include <sys/cdefs.h>
@@ -178,7 +178,8 @@ void	savehist __P((struct wordent *));
  * lex.c
  */
 void	 addla __P((Char *));
-void	 bseek __P((off_t));
+void	 bseek __P((struct Ain *));
+void	 btell __P((struct Ain *));
 void	 btoeof __P((void));
 void	 copylex __P((struct wordent *, struct wordent *));
 Char	*domod __P((Char *, int));
