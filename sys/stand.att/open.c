@@ -6,7 +6,7 @@
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)open.c	7.1 (Berkeley) 05/05/91
+ *	@(#)open.c	7.2 (Berkeley) 05/25/91
  */
 
 #include <sys/param.h>
@@ -309,7 +309,7 @@ readdir(dirp)
 			io->i_cc = dblksize(&io->i_fs, &io->i_ino, lbn);
 			if (devread(io) < 0) {
 				errno = io->i_error;
-				printf("bn %D: directory read error\n",
+				printf("bn %ld: directory read error\n",
 					io->i_bn);
 				return (NULL);
 			}
