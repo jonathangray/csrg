@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)time.h	7.6 (Berkeley) 02/22/91
+ *	@(#)time.h	7.7 (Berkeley) 03/09/92
  */
 
 #ifndef _SYS_TIME_H_
@@ -79,6 +79,16 @@ struct timezone {
 struct	itimerval {
 	struct	timeval it_interval;	/* timer interval */
 	struct	timeval it_value;	/* current value */
+};
+
+/*
+ * Getkerninfo clock information structure
+ */
+struct clockinfo {
+	int hz;		/* clock frequency */
+	int tick;	/* micro-seconds per hz tick */
+	int phz;	/* alternate clock frequency */
+	int profhz;	/* profiling clock frequency */
 };
 
 #ifndef KERNEL
