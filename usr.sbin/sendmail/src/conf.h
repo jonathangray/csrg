@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.51 (Berkeley) 11/20/93
+ *	@(#)conf.h	8.52 (Berkeley) 11/20/93
  */
 
 /*
@@ -100,7 +100,9 @@
 **  will get #undefed below as needed.
 */
 
+#ifndef IDENTPROTO
 # define IDENTPROTO	1	/* use IDENT proto (RFC 1413) */
+#endif
 
 /**********************************************************************
 **  Operating system configuration.
@@ -734,3 +736,7 @@ typedef void		(*sigfunc_t) __P((int));
 # ifndef FORK
 # define FORK		vfork		/* function to call to fork mailer */
 # endif
+
+#ifndef IDENTPROTO
+# define IDENTPROTO	0		/* don't use RFC 1413 */
+#endif
