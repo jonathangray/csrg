@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dma.c	7.3 (Berkeley) 12/16/90
+ *	@(#)dma.c	7.4 (Berkeley) 12/16/90
  */
 
 /*
@@ -345,7 +345,7 @@ dmago(unit, addr, count, flags)
 		}
 	dmatimo[unit] = 1;
 #endif
-	DMA_ARM(dc, "KIRK, MISSING AN ARG");
+	DMA_ARM(dc);
 }
 
 void
@@ -429,7 +429,7 @@ dmaintr()
 			    (dc->sc_flags & DMAF_NOINTR))
 				dc->sc_cmd &= ~DMA_ENAB;
 			DMA_CLEAR(dc);
-			DMA_ARM(dc, "KIRK, MISSING AN ARG");
+			DMA_ARM(dc);
 		} else
 			dmastop(i);
 	}
