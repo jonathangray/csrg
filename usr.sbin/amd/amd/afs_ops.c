@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)afs_ops.c	5.5 (Berkeley) 05/31/92
+ *	@(#)afs_ops.c	5.6 (Berkeley) 07/20/92
  *
  * $Id: afs_ops.c,v 5.2.2.4 1992/05/31 16:36:36 jsp Exp $
  *
@@ -185,6 +185,11 @@ char *opts;
 	if (strlen(fs_hostname) >= HOSTNAMESZ)
 		strcpy(fs_hostname + HOSTNAMESZ - 3, "..");
 #endif /* HOSTNAMESZ */
+
+#ifdef NFSMNT_DUMBTIMR
+	nfs_args.flags |= NFSMNT_DUMBTIMR;
+	plog(XLOG_INFO, "defeating nfs window computation");
+#endif
 
 	/*
 	 * Parse a subset of the standard nfs options.  The
