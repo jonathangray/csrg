@@ -9,13 +9,13 @@
  * All advertising materials mentioning features or use of this software
  * must display the following acknowledgement:
  *	This product includes software developed by the University of
- *	California, Lawrence Berkeley Laboratories.
+ *	California, Lawrence Berkeley Laboratory.
  *
  * This module is believed to contain source code proprietary to AT&T.
  * Use and redistribution is subject to the Berkeley Software License
  * Agreement and your Software Agreement with AT&T (Western Electric).
  *
- *	@(#)sys_process.c	7.3 (Berkeley) 10/11/92
+ *	@(#)sys_process.c	7.4 (Berkeley) 04/20/93
  */
 
 #include <sys/param.h>
@@ -86,7 +86,6 @@ ptrace(curp, uap, retval)
 
 	if (uap->req == PT_TRACE_ME) {
 		curp->p_flag |= STRC;
-		curp->p_oppid = 0;	/* XXX put in the zeroed section */
 		return (0);
 	}
 	if ((p = pfind(uap->pid)) == NULL)
@@ -106,9 +105,9 @@ ptrace(curp, uap, retval)
 
 	case PT_ATTACH:
 		/*
-		 * Must be root if the process has used set user or
-		 * group privileges or does not belong to the real
-		 * user. Must not be already traced.
+		 * Must be root if the process has used set user or group
+		 * privileges or does not belong to the real user.  Must
+		 * not be already traced.  Can't attach to ourselves.
 		 */
 		if ((p->p_flag & SUGID ||
 		    p->p_cred->p_ruid != curp->p_cred->p_ruid) &&
@@ -116,6 +115,8 @@ ptrace(curp, uap, retval)
 			return (error);
 		if (p->p_flag & STRC)
 			return (EALREADY);	/* ??? */
+		if (p == curp)
+			return (EINVAL);
 		/*
 		 * It would be nice if the tracing relationship was separate
 		 * from the parent relationship but that would require
@@ -128,6 +129,8 @@ ptrace(curp, uap, retval)
 		p->p_flag |= STRC;
 		p->p_oppid = p->p_pptr->p_pid;
 		proc_reparent(p, curp);
+		if (p->p_stat == SSTOP)
+			setrun(p);		/* long enough to stop */
 		psignal(p, SIGSTOP);
 		return (0);
 
@@ -211,7 +214,7 @@ writetext(p, addr, data, len)
 
 	map = &p->p_vmspace->vm_map;
 	sa = trunc_page((vm_offset_t)addr);
-	ea = round_page((vm_offset_t)addr + len - 1);
+	ea = round_page((vm_offset_t)addr + len);
 	if (vm_map_protect(map, sa, ea, VM_PROT_DEFAULT, 0) != KERN_SUCCESS)
 		return (-1);
 	error = copyout(data, addr, len);
@@ -281,7 +284,7 @@ procxmt(p)
 
 	case PT_KILL:			/* kill the child process */
 		wakeup((caddr_t)&ipc);
-		exit(p, (int)p->p_xstat);
+		exit1(p, (int)p->p_xstat);
 
 	case PT_DETACH:			/* stop tracing the child */
 		sig = ipc.ip_data;
