@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)unistd.h	5.7 (Berkeley) 06/28/90
+ *	@(#)unistd.h	5.8 (Berkeley) 01/21/91
  */
 
 /* compile-time symbolic constants */
@@ -90,3 +90,13 @@
 #define	_SC_JOB_CONTROL		6
 #define	_SC_SAVED_IDS		7
 #define	_SC_VERSION		8
+
+#if __STDC__ || c_plusplus
+char	*cuserid(const char *);
+char	*ctermid();
+char	*getlogin(void);
+#else
+char	*cuserid();
+char	*ctermid();
+char	*getlogin();
+#endif
