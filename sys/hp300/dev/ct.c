@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ct.c	7.4 (Berkeley) 06/05/92
+ *	@(#)ct.c	7.5 (Berkeley) 10/02/92
  */
 
 #include "ct.h"
@@ -136,7 +136,10 @@ ctinit(hd)
 	register struct hp_device *hd;
 {
 	register struct ct_softc *sc = &ct_softc[hd->hp_unit];
+	register struct buf *bp;
 
+	for (bp = cttab; bp < &cttab[NCT]; bp++)
+		bp->b_actb = &bp->b_actf;
 	sc->sc_hd = hd;
 	sc->sc_punit = ctpunit(hd->hp_flags);
 	if (ctident(sc, hd) < 0)
@@ -386,13 +389,11 @@ ctstrategy(bp)
 
 	unit = UNIT(bp->b_dev);
 	dp = &cttab[unit];
-	bp->av_forw = NULL;
+	bp->b_actf = NULL;
 	s = splbio();
-	if (dp->b_actf == NULL)
-		dp->b_actf = bp;
-	else
-		dp->b_actl->av_forw = bp;
-	dp->b_actl = bp;
+	bp->b_actb = dp->b_actb;
+	*dp->b_actb = bp;
+	dp->b_actb = &bp->b_actf;
 	if (dp->b_active == 0) {
 		dp->b_active = 1;
 		ctustart(unit);
@@ -417,7 +418,7 @@ ctstart(unit)
 	register int unit;
 {
 	register struct ct_softc *sc = &ct_softc[unit];
-	register struct buf *bp;
+	register struct buf *bp, *dp;
 	register int i;
 
 	bp = cttab[unit].b_actf;
@@ -502,8 +503,12 @@ mustio:
 			bp->b_resid = bp->b_bcount;
 			iodone(bp);
 			hpibfree(&sc->sc_dq);
-			cttab[unit].b_actf = bp = bp->av_forw;
-			if (bp == NULL) {
+			if (dp = bp->b_actf)
+				dp->b_actb = bp->b_actb;
+			else
+				cttab[unit].b_actb = bp->b_actb;
+			*bp->b_actb = dp;
+			if ((bp = dp) == NULL) {
 				cttab[unit].b_active = 0;
 				return;
 			}
@@ -624,7 +629,7 @@ ctintr(unit)
 	register int unit;
 {
 	register struct ct_softc *sc = &ct_softc[unit];
-	register struct buf *bp;
+	register struct buf *bp, *dp;
 	u_char stat;
 
 	bp = cttab[unit].b_actf;
@@ -754,7 +759,11 @@ done:
 	if (ctdebug & CDB_FILES)
 		printf("ctintr: after flags %x\n", sc->sc_flags);
 #endif
-	cttab[unit].b_actf = bp->av_forw;
+	if (dp = bp->b_actf)
+		dp->b_actb = bp->b_actb;
+	else
+		cttab[unit].b_actb = bp->b_actb;
+	*bp->b_actb = dp;
 	iodone(bp);
 	hpibfree(&sc->sc_dq);
 	if (cttab[unit].b_actf == NULL) {
