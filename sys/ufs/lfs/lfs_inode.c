@@ -30,9 +30,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_inode.c	7.42 (Berkeley) 09/25/91
+ *	@(#)lfs_inode.c	7.43 (Berkeley) 10/02/91
  */
 
+#ifdef LOGFS
 #include "param.h"
 #include "systm.h"
 #include "mount.h"
@@ -46,6 +47,8 @@
 #include "../ufs/quota.h"
 #include "../ufs/inode.h"
 #include "../ufs/ufsmount.h"
+#include "../vm/vm_param.h"
+#include "../vm/lock.h"
 #include "lfs.h"
 #include "lfs_extern.h"
 
@@ -64,6 +67,8 @@ union lfsihead {						/* LFS */
 								/* LFS */
 extern int prtactive;	/* 1 => print out reclaim of active vnodes */
 
+lock_data_t lfs_sync_lock;
+
 /*
  * Initialize hash links for inodes.
  */
@@ -73,10 +78,13 @@ lfs_init()
 	register union lfsihead *ih = lfsihead;
 
 printf("lfs_init\n");
+	
 #ifndef lint
 	if (VN_MAXPRIVATE < sizeof(struct inode))
 		panic("ihinit: too small");
-#endif /* not lint */
+#endif
+	lock_init(&lfs_sync_lock, 1);
+
 	for (i = INOHSZ; --i >= 0; ih++) {
 		ih->ih_head[0] = ih;
 		ih->ih_head[1] = ih;
@@ -93,7 +101,6 @@ lfs_hqueue(ip)
 {
 	union lfsihead *ih;
 
-printf("lfs_hqueue ino %d\n", ip->i_number);
 	ih = &lfsihead[INOHASH(ip->i_dev, ip->i_number)];
 	insque(ip, ih);
 	ILOCK(ip);
@@ -587,3 +594,4 @@ lfs_indirtrunc(ip, bn, lastbn, level, countp)
 	panic("lfs_indirtrunc not implemented");
 #endif
 }
+#endif /* LOGFS */
