@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pk_debug.c	7.3 (Berkeley) 08/30/90
+ *	@(#)pk_debug.c	7.4 (Berkeley) 11/13/90
  */
 
 #include "param.h"
@@ -83,7 +83,7 @@ char *dir;
 		++cnt;
 	}
 	printf ("LCN=%d %s:	%s	#=%d, len=%d ",
-		xp -> logical_channel_number, dir, pk_name[i], cnt, len);
+		LCN(xp), dir, pk_name[i], cnt, len);
 	for (s = (char *) xp, i = 0; i < 5; ++i, ++s)
 		printf ("%x ", (int) * s & 0xff);
 	printf ("\n");
