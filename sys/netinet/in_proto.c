@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)in_proto.c	7.6 (Berkeley) 07/06/92
+ *	@(#)in_proto.c	7.7 (Berkeley) 07/09/92
  */
 
 #include "param.h"
@@ -41,6 +41,8 @@
 
 #include "in.h"
 #include "in_systm.h"
+
+#include "net/radix.h"
 
 /*
  * TCP/IP protocol family: IP, ICMP, UDP, TCP.
@@ -148,7 +150,8 @@ struct protosw inetsw[] = {
 
 struct domain inetdomain =
     { AF_INET, "internet", 0, 0, 0, 
-      inetsw, &inetsw[sizeof(inetsw)/sizeof(inetsw[0])] };
+      inetsw, &inetsw[sizeof(inetsw)/sizeof(inetsw[0])], 0,
+      rn_inithead, 32, sizeof(struct sockaddr_in) };
 
 #if NIMP > 0
 extern	struct domain impdomain;
