@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fsck.h	5.16 (Berkeley) 07/20/90
+ *	@(#)fsck.h	5.17 (Berkeley) 07/27/90
  */
 
 #define	MAXDUP		10	/* limit on dup blks (per inode) */
@@ -90,7 +90,7 @@ struct bufarea *getdatablk();
 #define	sblock		(*sblk.b_un.b_fs)
 #define	cgrp		(*cgblk.b_un.b_cg)
 
-enum fixstate {DONTKNOW, NOFIX, FIX};
+enum fixstate {DONTKNOW, NOFIX, FIX, IGNORE};
 
 struct inodesc {
 	enum fixstate id_fix;	/* policy on fixing errors */
