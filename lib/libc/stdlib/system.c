@@ -1,4 +1,7 @@
-/* @(#)system.c	4.2 (Berkeley) 11/14/82 */
+#ifndef lint
+static char sccsid[] = "@(#)system.c	5.1 (Berkeley) 06/05/85";
+#endif not lint
+
 #include	<signal.h>
 
 system(s)
