@@ -30,12 +30,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sgtty.h	5.1 (Berkeley) 02/05/91
+ *	@(#)sgtty.h	5.2 (Berkeley) 06/26/91
  */
 
-#ifndef	_IOCTL_H_
 #ifndef USE_OLD_TTY
 #define	USE_OLD_TTY
 #endif
 #include <sys/ioctl.h>
-#endif /* !_IOCTL_H_ */
