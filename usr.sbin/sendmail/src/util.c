@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)util.c	5.19 (Berkeley) 03/02/91";
+static char sccsid[] = "@(#)util.c	5.20 (Berkeley) 03/08/91";
 #endif /* not lint */
 
 # include <stdio.h>
@@ -495,14 +495,14 @@ putline(l, fp, m)
 	MAILER *m;
 {
 	register char *p;
-	char svchar;
+	register char svchar;
 
 	/* strip out 0200 bits -- these can look like TELNET protocol */
 	if (bitnset(M_LIMITS, m->m_flags))
 	{
-		p = l;
-		while ((*p++ &= ~0200) != 0)
-			continue;
+		for (p = l; svchar = *p; ++p)
+			if (svchar & 0200)
+				*p = svchar &~ 0200;
 	}
 
 	do
@@ -529,16 +529,13 @@ putline(l, fp, m)
 		}
 
 		/* output last part */
-		svchar = *p;
-		*p = '\0';
 		if (l[0] == '.' && bitnset(M_XDOT, m->m_flags))
 			(void) putc('.', fp);
-		fputs(l, fp);
+		for ( ; l < p; ++l)
+			(void) putc(*l, fp);
 		fputs(m->m_eol, fp);
-		*p = svchar;
-		l = p;
 		if (*l == '\n')
-			l++;
+			++l;
 	} while (l[0] != '\0');
 }
 /*
