@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)resource.h	7.7 (Berkeley) 12/01/92
+ *	@(#)resource.h	7.8 (Berkeley) 04/27/93
  */
 
 #ifndef _RESOURCE_H_
@@ -101,7 +101,16 @@ struct rlimit {
 	quad_t	rlim_max;		/* maximum value for rlim_cur */
 };
 
-#ifndef KERNEL
+/* Load average structure. */
+struct loadavg {
+	fixpt_t ldavg[3];
+	long fscale;
+};
+
+#ifdef KERNEL
+extern struct loadavg averunnable;
+
+#else
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
@@ -114,5 +123,5 @@ int	setpriority __P((int, int, int));
 int	setrlimit __P((int, const struct rlimit *));
 __END_DECLS
 
-#endif	/* !KERNEL */
+#endif	/* KERNEL */
 #endif	/* !_RESOURCE_H_ */
