@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)turbochannel.h	7.2 (Berkeley) 11/15/92
+ *	@(#)turbochannel.h	7.3 (Berkeley) 05/09/93
  */
 
 /* 
@@ -131,4 +131,4 @@ typedef struct {
 extern	tc_option_t	tc_slot_info[];
 
 extern	void (*tc_slot_hand_fill) __P((tc_option_t *));
-#endif KERNEL
+#endif /* KERNEL */
