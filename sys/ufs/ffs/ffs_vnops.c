@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vnops.c	7.100 (Berkeley) 03/03/93
+ *	@(#)ffs_vnops.c	7.101 (Berkeley) 04/17/93
  */
 
 #include <sys/param.h>
