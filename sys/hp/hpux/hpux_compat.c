@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: hpux_compat.c 1.55 92/12/26$
  *
- *	@(#)hpux_compat.c	8.1 (Berkeley) 06/10/93
+ *	@(#)hpux_compat.c	7.36 (Berkeley) 06/14/93
  */
 
 /*
@@ -1038,7 +1038,7 @@ hpuxmmap(p, uap, retval)
 		nargs.flags |= MAP_ANON;
 	nargs.fd = (nargs.flags & MAP_ANON) ? -1 : uap->fd;
 	nargs.pos = uap->pos;
-	return (smmap(p, &nargs, retval));
+	return (mmap(p, &nargs, retval));
 }
 
 /* convert from BSD to HP-UX errno */
