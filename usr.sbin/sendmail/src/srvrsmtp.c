@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)srvrsmtp.c	6.4 (Berkeley) 02/14/93 (with SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.5 (Berkeley) 02/15/93 (with SMTP)";
 #else
-static char sccsid[] = "@(#)srvrsmtp.c	6.4 (Berkeley) 02/14/93 (without SMTP)";
+static char sccsid[] = "@(#)srvrsmtp.c	6.5 (Berkeley) 02/15/93 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -246,7 +246,7 @@ smtp(e)
 			if (InChild)
 			{
 				errno = 0;
-				syserr("Nested MAIL command");
+				syserr("Nested MAIL command: MAIL %s", p);
 				exit(0);
 			}
 
@@ -373,7 +373,7 @@ smtp(e)
 				finis();
 
 			/* clean up a bit */
-			hasmail = 0;
+			hasmail = FALSE;
 			dropenvelope(e);
 			CurEnv = e = newenvelope(e);
 			e->e_flags = BlankEnvelope.e_flags;
