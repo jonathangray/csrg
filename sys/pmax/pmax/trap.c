@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: trap.c 1.32 91/04/06$
  *
- *	@(#)trap.c	8.1 (Berkeley) 07/13/93
+ *	@(#)trap.c	8.2 (Berkeley) 09/05/93
  */
 
 #include <sys/param.h>
@@ -727,7 +727,7 @@ out:
 		addupc_task(p, pc, (int)(p->p_sticks - sticks) * psratio);
 	}
 
-	curpri = p->p_pri;
+	curpriority = p->p_pri;
 	return (pc);
 }
 
@@ -1251,7 +1251,7 @@ softintr(statusReg, pc)
 		while ((sig = CURSIG(p)) != 0)
 			psig(sig);
 	}
-	curpri = p->p_pri;
+	curpriority = p->p_pri;
 }
 
 #ifdef DEBUG
