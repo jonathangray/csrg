@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)collect.c	6.5 (Berkeley) 02/20/93";
+static char sccsid[] = "@(#)collect.c	6.6 (Berkeley) 02/21/93";
 #endif /* not lint */
 
 # include <errno.h>
@@ -96,7 +96,7 @@ maketemp(from)
 	**  Try to read a UNIX-style From line
 	*/
 
-	if (sfgets(buf, MAXLINE, InChannel, ReadTimeout) == NULL)
+	if (sfgets(buf, MAXLINE, InChannel, TimeOuts.to_datablock) == NULL)
 		goto readerr;
 	fixcrlf(buf, FALSE);
 # ifndef NOTUNIX
@@ -105,7 +105,7 @@ maketemp(from)
 		if (!flusheol(buf, InChannel))
 			goto readerr;
 		eatfrom(buf, e);
-		if (sfgets(buf, MAXLINE, InChannel, ReadTimeout) == NULL)
+		if (sfgets(buf, MAXLINE, InChannel, TimeOuts.to_datablock) == NULL)
 			goto readerr;
 		fixcrlf(buf, FALSE);
 	}
@@ -151,7 +151,7 @@ maketemp(from)
 		{
 			int clen;
 
-			if (sfgets(freebuf, MAXLINE, InChannel, ReadTimeout) == NULL)
+			if (sfgets(freebuf, MAXLINE, InChannel, TimeOuts.to_datablock) == NULL)
 				goto readerr;
 
 			/* is this a continuation line? */
@@ -227,7 +227,7 @@ maketemp(from)
 	if (*workbuf == '\0')
 	{
 		/* throw away a blank line */
-		if (sfgets(buf, MAXLINE, InChannel, ReadTimeout) == NULL)
+		if (sfgets(buf, MAXLINE, InChannel, TimeOuts.to_datablock) == NULL)
 			goto readerr;
 	}
 	else if (workbuf == buf2)	/* guarantee `buf' contains data */
@@ -261,7 +261,7 @@ maketemp(from)
 		fputs("\n", tf);
 		if (ferror(tf))
 			tferror(tf, e);
-	} while (sfgets(buf, MAXLINE, InChannel, ReadTimeout) != NULL);
+	} while (sfgets(buf, MAXLINE, InChannel, TimeOuts.to_datablock) != NULL);
 
 readerr:
 	if (fflush(tf) != 0)
@@ -351,7 +351,7 @@ flusheol(buf, fp)
 		if (printmsg)
 			usrerr("header line too long");
 		printmsg = FALSE;
-		if (sfgets(junkbuf, MAXLINE, fp, ReadTimeout) == NULL)
+		if (sfgets(junkbuf, MAXLINE, fp, TimeOuts.to_datablock) == NULL)
 			return (FALSE);
 		p = junkbuf;
 	}
