@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)fio.c	5.24 (Berkeley) 02/03/91";
+static char sccsid[] = "@(#)fio.c	5.25 (Berkeley) 03/11/92";
 #endif /* not lint */
 
 #include "rcv.h"
@@ -54,6 +54,7 @@ static char sccsid[] = "@(#)fio.c	5.24 (Berkeley) 02/03/91";
 setptr(ibuf)
 	register FILE *ibuf;
 {
+	extern char *tmpdir;
 	register int c, count;
 	register char *cp, *cp2;
 	struct message this;
@@ -63,7 +64,7 @@ setptr(ibuf)
 	char linebuf[LINESIZE];
 
 	/* Get temporary file. */
-	(void)sprintf(linebuf, "%s/mail.XXXXXX", _PATH_TMP);
+	(void)sprintf(linebuf, "%s/mail.XXXXXX", tmpdir);
 	if ((c = mkstemp(linebuf)) == -1 ||
 	    (mestmp = Fdopen(c, "r+")) == NULL) {
 		(void)fprintf(stderr, "mail: can't open %s\n", linebuf);
