@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)swapgeneric.c	6.4 (Berkeley) 09/16/85
+ *	@(#)swapgeneric.c	7.1 (Berkeley) 06/05/86
  */
 
 #include "mba.h"
