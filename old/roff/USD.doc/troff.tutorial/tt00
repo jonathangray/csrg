@@ -2,7 +2,7 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)tt00	6.3 (Berkeley) 06/05/93
+.\"	@(#)tt00	8.1 (Berkeley) 06/08/93
 .\"
 .EH 'USD:22-%''A TROFF Tutorial'
 .OH 'A TROFF Tutorial''USD:22-%'
