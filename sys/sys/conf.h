@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	7.8 (Berkeley) 04/20/91
+ *	@(#)conf.h	7.9 (Berkeley) 05/05/91
  */
 
 /*
@@ -63,10 +63,8 @@ struct cdevsw {
 				     struct proc *p));
 	int	(*d_close)	__P((dev_t dev, int fflag, int devtype,
 				     struct proc *));
-	int	(*d_read)	__P((dev_t dev, struct uio *uio, int ioflag,
-				     struct proc *p));
-	int	(*d_write)	__P((dev_t dev, struct uio *uio, int ioflag,
-				     struct proc *p));
+	int	(*d_read)	__P((dev_t dev, struct uio *uio, int ioflag));
+	int	(*d_write)	__P((dev_t dev, struct uio *uio, int ioflag));
 	int	(*d_ioctl)	__P((dev_t dev, int cmd, caddr_t data,
 				     int fflag, struct proc *p));
 	int	(*d_stop)	__P((struct tty *tp, int rw));
