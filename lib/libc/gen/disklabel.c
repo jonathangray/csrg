@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)disklabel.c	5.14 (Berkeley) 11/28/90";
+static char sccsid[] = "@(#)disklabel.c	5.15 (Berkeley) 11/28/90";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
@@ -194,7 +194,7 @@ dgetent(bp, name)
 				break;
 			}
 			if (cp >= bp+BUFSIZ) {
-				error(EBADFORMAT);
+				error(EFTYPE);
 				break;
 			} else
 				*cp++ = c;
