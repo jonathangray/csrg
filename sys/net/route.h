@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)route.h	8.4 (Berkeley) 01/09/95
+ *	@(#)route.h	8.5 (Berkeley) 02/08/95
  */
 
 /*
@@ -240,6 +240,8 @@ struct route_cb {
 struct	route_cb route_cb;
 struct	rtstat	rtstat;
 struct	radix_node_head *rt_tables[AF_MAX+1];
+
+struct socket;
 
 void	 route_init __P((void));
 int	 route_output __P((struct mbuf *, struct socket *));
