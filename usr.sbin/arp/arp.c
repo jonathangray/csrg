@@ -41,7 +41,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)arp.c	8.1 (Berkeley) 06/06/93";
+static char sccsid[] = "@(#)arp.c	8.2 (Berkeley) 01/02/94";
 #endif /* not lint */
 
 /*
@@ -449,6 +449,7 @@ rtmsg(cmd)
 				rtm->rtm_flags &= ~RTF_HOST;
 			}
 		}
+		/* FALLTHROUGH */
 	case RTM_GET:
 		rtm->rtm_addrs |= RTA_DST;
 	}
