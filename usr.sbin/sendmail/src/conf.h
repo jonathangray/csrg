@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	6.28 (Berkeley) 05/04/93
+ *	@(#)conf.h	6.29 (Berkeley) 05/17/93
  */
 
 /*
@@ -41,6 +41,7 @@
 # include <sys/param.h>
 # include <sys/stat.h>
 # include <fcntl.h>
+# include "cdefs.h"
 
 /*
 **  Table sizes, etc....
