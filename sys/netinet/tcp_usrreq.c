@@ -9,7 +9,7 @@
  * software without specific prior written permission. This software
  * is provided ``as is'' without express or implied warranty.
  *
- *	@(#)tcp_usrreq.c	7.8 (Berkeley) 03/16/88
+ *	@(#)tcp_usrreq.c	7.7.1.2 (Berkeley) 03/16/88
  */
 
 #include "param.h"
