@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)fstat.c	5.41 (Berkeley) 07/24/92";
+static char sccsid[] = "@(#)fstat.c	5.42 (Berkeley) 02/10/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -717,8 +717,7 @@ getfname(filename)
 	DEVS *cur;
 
 	if (stat(filename, &statbuf)) {
-		fprintf(stderr, "fstat: %s: %s\n", strerror(errno),
-		    filename);
+		fprintf(stderr, "fstat: %s: %s\n", filename, strerror(errno));
 		return(0);
 	}
 	if ((cur = malloc(sizeof(DEVS))) == NULL) {
