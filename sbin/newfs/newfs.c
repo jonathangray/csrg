@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)newfs.c	6.25 (Berkeley) 04/10/91";
+static char sccsid[] = "@(#)newfs.c	6.26 (Berkeley) 05/04/91";
 #endif /* not lint */
 
 #ifndef lint
@@ -187,7 +187,6 @@ main(argc, argv)
 	register struct disklabel *lp;
 	struct disklabel *getdisklabel();
 	struct partition oldpartition;
-	struct mfs_args args;
 	struct stat st;
 	int fsi, fso;
 	char *cp, *special, *opstring, buf[BUFSIZ];
@@ -459,7 +458,10 @@ main(argc, argv)
 	if (!Nflag)
 		close(fso);
 	close(fsi);
+#ifdef MFS
 	if (mfs) {
+		struct mfs_args args;
+
 		sprintf(buf, "mfs:%d", getpid());
 		args.name = buf;
 		args.base = membase;
@@ -467,6 +469,7 @@ main(argc, argv)
 		if (mount(MOUNT_MFS, argv[1], mntflags, &args) < 0)
 			fatal("%s: %s", argv[1], strerror(errno));
 	}
+#endif
 	exit(0);
 }
 
