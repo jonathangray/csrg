@@ -1,5 +1,5 @@
 /*
- * $Id: amq_svc.c,v 5.2 90/06/23 22:20:17 jsp Rel $
+ * $Id: amq_svc.c,v 5.2.1.2 91/03/17 17:39:38 jsp Alpha $
  *
  * Copyright (c) 1990 Jan-Simon Pendry
  * Copyright (c) 1990 Imperial College of Science, Technology & Medicine
@@ -37,7 +37,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)amq_svc.c	5.1 (Berkeley) 07/19/90
+ *	@(#)amq_svc.c	5.2 (Berkeley) 03/17/91
  */
 
 #include "am.h"
@@ -53,6 +53,7 @@ amq_program_1(rqstp, transp)
 		amq_string amqproc_mnttree_1_arg;
 		amq_string amqproc_umnt_1_arg;
 		amq_setopt amqproc_setopt_1_arg;
+		amq_string amqproc_mount_1_arg;
 	} argument;
 	char *result;
 	bool_t (*xdr_argument)(), (*xdr_result)();
@@ -99,6 +100,18 @@ amq_program_1(rqstp, transp)
 		xdr_argument = xdr_void;
 		xdr_result = xdr_amq_mount_info_qelem;
 		local = (char *(*)()) amqproc_getmntfs_1;
+		break;
+
+	case AMQPROC_MOUNT:
+		xdr_argument = xdr_amq_string;
+		xdr_result = xdr_int;
+		local = (char *(*)()) amqproc_mount_1;
+		break;
+
+	case AMQPROC_GETVERS:
+		xdr_argument = xdr_void;
+		xdr_result = xdr_amq_string;
+		local = (char *(*)()) amqproc_getvers_1;
 		break;
 
 	default:
