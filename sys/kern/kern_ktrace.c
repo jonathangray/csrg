@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_ktrace.c	7.14 (Berkeley) 05/28/91
+ *	@(#)kern_ktrace.c	7.15 (Berkeley) 06/21/91
  */
 
 #ifdef KTRACE
@@ -203,7 +203,7 @@ ktrace(curp, uap, retval)
 		vp = nd.ni_vp;
 		VOP_UNLOCK(vp);
 		if (vp->v_type != VREG) {
-			vrele(vp);
+			(void) vn_close(vp, FREAD|FWRITE, curp->p_ucred, curp);
 			return (EACCES);
 		}
 	}
@@ -216,7 +216,8 @@ ktrace(curp, uap, retval)
 				if (ktrcanset(curp, p)) {
 					p->p_tracep = NULL;
 					p->p_traceflag = 0;
-					vrele(vp);
+					(void) vn_close(vp, FREAD|FWRITE,
+						p->p_ucred, p);
 				} else
 					error = EPERM;
 			}
@@ -266,7 +267,7 @@ ktrace(curp, uap, retval)
 		error = EPERM;
 done:
 	if (vp != NULL)
-		vrele(vp);
+		(void) vn_close(vp, FWRITE, curp->p_ucred, curp);
 	return (error);
 }
 
