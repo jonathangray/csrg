@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)resourcevar.h	8.1 (Berkeley) 06/02/93
+ *	@(#)resourcevar.h	8.2 (Berkeley) 01/04/94
  */
 
-#ifndef	_RESOURCEVAR_H_		/* tmp for user.h */
-#define	_RESOURCEVAR_H_
+#ifndef	_SYS_RESOURCEVAR_H_		/* tmp for user.h */
+#define	_SYS_RESOURCEVAR_H_
 
 /*
  * Kernel per-process accounting / statistics
@@ -89,4 +89,4 @@ void	addupc_task __P((struct proc *p, u_long pc, u_int ticks));
 #define	ADDUPROF(p)	addupc_task(p, (p)->p_stats->p_prof.pr_addr, \
 			    (p)->p_stats->p_prof.pr_ticks)
 
-#endif	/* !_RESOURCEVAR_H_ */
+#endif	/* !_SYS_RESOURCEVAR_H_ */
