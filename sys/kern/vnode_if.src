@@ -30,7 +30,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)vnode_if.src	8.11 (Berkeley) 04/12/95
+#	@(#)vnode_if.src	8.12 (Berkeley) 05/14/95
 #
 
 #
@@ -342,10 +342,11 @@ vop_abortop {
 };
 
 #
-#% inactive	vp	U U U
+#% inactive	vp	L U U
 #
 vop_inactive {
 	IN struct vnode *vp;
+	IN struct proc *p;
 };
 
 #
@@ -353,6 +354,7 @@ vop_inactive {
 #
 vop_reclaim {
 	IN struct vnode *vp;
+	IN struct proc *p;
 };
 
 #
