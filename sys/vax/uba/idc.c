@@ -33,6 +33,7 @@ int	*trp = idctrb;
 #include "../h/cmap.h"
 #include "../h/dkbad.h"
 #include "../h/uio.h"
+#include "../h/kernel.h"
 
 #include "../vax/cpu.h"
 #include "../vaxuba/ubareg.h"
