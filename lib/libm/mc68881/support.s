@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)support.s	5.1 (Berkeley) 05/17/90
+ *	@(#)support.s	5.2 (Berkeley) 05/17/90
  */
 
 	.text
@@ -72,9 +72,7 @@ Lnotfin:
 _scalb:
 	fmoved	sp@(4),fp0
 	fbeq	Ldone
-	ftwotoxl	sp@(12),fp1
-	fmoved	fp1,sp@-
-	fmuld	sp@+,fp0
+	fscalel	sp@(12),fp0
 Ldone:
 	fmoved	fp0,sp@-
 	movel	sp@+,d0
