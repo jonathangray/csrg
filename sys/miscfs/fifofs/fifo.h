@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fifo.h	8.1 (Berkeley) 06/10/93
+ *	@(#)fifo.h	8.2 (Berkeley) 02/02/94
  */
 
 #ifdef FIFO
@@ -76,6 +76,8 @@ int	fifo_pathconf __P((struct vop_pathconf_args *));
 int	fifo_advlock __P((struct vop_advlock_args *));
 #define fifo_blkatoff ((int (*) __P((struct  vop_blkatoff_args *)))fifo_badop)
 #define fifo_valloc ((int (*) __P((struct  vop_valloc_args *)))fifo_badop)
+#define fifo_reallocblks \
+	((int (*) __P((struct  vop_reallocblks_args *)))fifo_badop)
 #define fifo_vfree ((int (*) __P((struct  vop_vfree_args *)))fifo_badop)
 #define fifo_truncate ((int (*) __P((struct  vop_truncate_args *)))nullop)
 #define fifo_update ((int (*) __P((struct  vop_update_args *)))nullop)
