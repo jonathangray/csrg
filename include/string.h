@@ -30,16 +30,16 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)string.h	5.10 (Berkeley) 03/09/91
+ *	@(#)string.h	5.11 (Berkeley) 06/22/92
  */
 
 #ifndef _STRING_H_
 #define	_STRING_H_
 #include <machine/ansi.h>
 
-#ifdef	_SIZE_T_
-typedef	_SIZE_T_	size_t;
-#undef	_SIZE_T_
+#ifdef	_BSD_SIZE_T_
+typedef	_BSD_SIZE_T_	size_t;
+#undef	_BSD_SIZE_T_
 #endif
 
 #ifndef	NULL
