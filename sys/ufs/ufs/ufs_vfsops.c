@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_vfsops.c	7.58 (Berkeley) 11/05/91
+ *	@(#)ufs_vfsops.c	7.59 (Berkeley) 06/25/92
  */
 
 #include <sys/param.h>
@@ -81,7 +81,7 @@ int
 ufs_quotactl(mp, cmds, uid, arg, p)
 	struct mount *mp;
 	int cmds;
-	u_int uid;
+	uid_t uid;
 	caddr_t arg;
 	struct proc *p;
 {
