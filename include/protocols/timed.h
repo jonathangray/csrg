@@ -30,8 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)timed.h	1.9 (Berkeley) 06/01/90
+ *	@(#)timed.h	1.10 (Berkeley) 04/03/91
  */
+
+#ifndef	_TIMED_H_
+#define	_TIMED_H_
 
 /*
  * Time Synchronization Protocol
@@ -92,3 +95,5 @@ char *tsptype[TSPTYPENUMBER] =
   "DATE", "DATEREQ", "DATEACK", "TRACEON", "TRACEOFF", "MSITE", "MSITEREQ",
   "TEST", "SETDATE", "SETDATEREQ", "LOOP" };
 #endif
+
+#endif /* !_TIMED_H_ */
