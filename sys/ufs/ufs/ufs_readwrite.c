@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_readwrite.c	8.2 (Berkeley) 09/21/93
+ *	@(#)ufs_readwrite.c	8.3 (Berkeley) 09/23/93
  */
 
 #ifdef LFS_READWRITE
@@ -151,7 +151,7 @@ READ(ap)
 	}
 	if (bp != NULL)
 		brelse(bp);
-	ip->i_flag |= IACCESS;
+	ip->i_flag |= IN_ACCESS;
 	return (error);
 }
 
@@ -272,7 +272,7 @@ WRITE(ap)
 #endif
 		if (error || xfersize == 0)
 			break;
-		ip->i_flag |= IUPDATE | ICHANGE;
+		ip->i_flag |= IN_CHANGE | IN_UPDATE;
 	}
 	/*
 	 * If we successfully wrote any data, and we are not the superuser
