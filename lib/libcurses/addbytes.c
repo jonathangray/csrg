@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)addbytes.c	5.13 (Berkeley) 11/11/92";
+static char sccsid[] = "@(#)addbytes.c	5.14 (Berkeley) 12/30/92";
 #endif	/* not lint */
 
 #include <curses.h>
@@ -78,8 +78,8 @@ __waddbytes(win, bytes, count, so)
 		switch (c) {
 		case '\t':
 			SYNCH_OUT;
-			if (waddbytes(win, blanks, 8 - (x % 8)) == ERR)
-				return (ERR);
+			if (waddbytes(win, blanks, 8 - (x % 8)) == CURSES_ERR)
+				return (CURSES_ERR);
 			SYNCH_IN;
 			break;
 
@@ -162,6 +162,6 @@ newline:			if (y == win->maxy - 1) {
 		}
 	}
 	SYNCH_OUT;
-	return (OK);
+	return (CURSES_OK);
 }
  
