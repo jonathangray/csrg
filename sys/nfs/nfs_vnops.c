@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	7.69 (Berkeley) 03/03/92
+ *	@(#)nfs_vnops.c	7.70 (Berkeley) 04/21/92
  */
 
 /*
@@ -2079,7 +2079,7 @@ nfs_vfree(pvp, ino, mode)
 int
 nfs_truncate(vp, length, flags)
 	struct vnode *vp;
-	u_long length;
+	off_t length;
 	int flags;
 {
 
