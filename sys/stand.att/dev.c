@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dev.c	7.8 (Berkeley) 06/28/90
+ *	@(#)dev.c	7.9 (Berkeley) 12/16/90
  */
 
 #include "sys/param.h"
-#include "saio.h"
+#include "stand/saio.h"			/* used from machine/stand dir */
 
 /*
  * NB: the value "io->i_dev", used to offset the devsw[] array
