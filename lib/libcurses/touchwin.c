@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)touchwin.c	5.10 (Berkeley) 01/11/93";
+static char sccsid[] = "@(#)touchwin.c	5.11 (Berkeley) 02/18/93";
 #endif /* not lint */
 
 #include <curses.h>
@@ -47,7 +47,7 @@ touchline(win, y, sx, ex)
 	WINDOW *win;
 	register int y, sx, ex;
 {
-	__touchline(win, y, sx, ex, 1);
+	return (__touchline(win, y, sx, ex, 1));
 }
 
 
@@ -117,3 +117,5 @@ __touchline(win, y, sx, ex, force)
 #endif
 	return (OK);
 }
+
+
