@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)implog.c	5.13 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)implog.c	5.14 (Berkeley) 04/01/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -65,7 +65,7 @@ int	showcontents = 0;
 int	rawheader = 0;
 int	follow = 0;
 int	skip = 0;
-int	link = -1;
+int	linkn = -1;
 int	host = -1;
 int	imp = -1;
 int	packettype = -1;
@@ -110,7 +110,7 @@ main(argc, argv)
 			follow++;
 			break;
 		case 'L':
-			link = IMPLINK_IP;
+			linkn = IMPLINK_IP;
 			break;
 		case 'c':
 			showcontents++;
@@ -122,7 +122,7 @@ main(argc, argv)
 			imp = atoi(optarg);
 			break;
 		case 'l':
-			link = atoi(optarg);
+			linkn = atoi(optarg);
 			break;
 		case 'r':
 			rawheader++;
@@ -241,7 +241,7 @@ process(l, f)
 		fn = mp->m_func;
 	}
 	if (ip->il_mtype == IMPTYPE_DATA) {
-		if (link >= 0 && ip->il_link != link)
+		if (linkn >= 0 && ip->il_link != linkn)
 			return;
 		if (!showdata)
 			return;
