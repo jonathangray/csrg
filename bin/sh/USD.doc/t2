@@ -1,4 +1,8 @@
-.\"	@(#)t2	6.2 (Berkeley) 09/12/88
+.\" This module is believed to contain source code proprietary to AT&T.
+.\" Use and redistribution is subject to the Berkeley Software License
+.\" Agreement and your Software Agreement with AT&T (Western Electric).
+.\"
+.\"	@(#)t2	6.3 (Berkeley) 04/17/91
 .\"
 .SH
 2.0\ Shell\ procedures
