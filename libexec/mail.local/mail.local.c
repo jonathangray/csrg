@@ -38,7 +38,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)mail.local.c	8.7 (Berkeley) 10/17/94";
+static char sccsid[] = "@(#)mail.local.c	8.8 (Berkeley) 11/29/94";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -277,6 +277,7 @@ deliver(fd, name)
 	 * open(2) should support flock'ing the file.
 	 */
 tryagain:
+	lockmbox(path);
 	if (lstat(path, &sb)) {
 		mbfd = open(path,
 		    O_APPEND|O_CREAT|O_EXCL|O_WRONLY, S_IRUSR|S_IWUSR);
@@ -286,11 +287,13 @@ tryagain:
 		} else if (fchown(mbfd, pw->pw_uid, pw->pw_gid)) {
 			e_to_sys(errno);
 			warn("chown %u.%u: %s", pw->pw_uid, pw->pw_gid, name);
+			unlockmbox();
 			return;
 		}
 	} else if (sb.st_nlink != 1 || S_ISLNK(sb.st_mode)) {
 		e_to_sys(errno);
 		warn("%s: linked file", path);
+		unlockmbox();
 		return;
 	} else {
 		mbfd = open(path, O_APPEND|O_WRONLY, 0);
@@ -300,6 +303,7 @@ tryagain:
 		    sb.st_ino != fsb.st_ino)) {
 			warn("%s: file changed after open", path);
 			(void)close(mbfd);
+			unlockmbox();
 			return;
 		}
 	}
@@ -307,6 +311,7 @@ tryagain:
 	if (mbfd == -1) {
 		e_to_sys(errno);
 		warn("%s: %s", path, strerror(errno));
+		unlockmbox();
 		return;
 	}
 
@@ -314,6 +319,7 @@ tryagain:
 	if (flock(mbfd, LOCK_EX)) {
 		e_to_sys(errno);
 		warn("%s: %s", path, strerror(errno));
+		unlockmbox();
 		goto err1;
 	}
 
@@ -346,6 +352,7 @@ tryagain:
 		warn("%s: %s", path, strerror(errno));
 err2:		(void)ftruncate(mbfd, curoff);
 err1:		(void)close(mbfd);
+		unlockmbox();
 		return;
 	}
 		
@@ -353,10 +360,70 @@ err1:		(void)close(mbfd);
 	if (close(mbfd)) {
 		e_to_sys(errno);
 		warn("%s: %s", path, strerror(errno));
+		unlockmbox();
 		return;
 	}
 
+	unlockmbox();
 	notifybiff(biffmsg);
+}
+
+/*
+ * user.lock files are necessary for compatibility with other
+ * systems, e.g., when the mail spool file is NFS exported.
+ * Alas, mailbox locking is more than just a local matter.
+ * EPA 11/94.
+ */
+
+char	lockname[50];
+int	locked = 0;
+
+lockmbox(path)
+	char *path;
+{
+	char locktmp[50];
+	int statfailed = 0;
+
+	if (locked)
+		return;
+	sprintf(lockname, "%s.lock", path);
+	sprintf(locktmp, "%s/tmXXXXXX", _PATH_MAILDIR);
+	mktemp(locktmp);
+	unlink(locktmp);
+	for (;; sleep(5)) {
+		int fd;
+		struct stat st;
+		time_t now;
+
+		fd = creat(locktmp, 0);
+		if (fd < 0)
+			continue;
+		close(fd);
+		if (link(locktmp, lockname) >= 0) {
+			unlink(locktmp);
+			locked = 1;
+			return;
+		}
+		unlink(locktmp);
+		if (stat(lockname, &st) < 0) {
+			if (statfailed++ > 5)
+				return;
+			continue;
+		}
+		statfailed = 0;
+		time(&now);
+		if (now < st.st_ctime + 300)
+			continue;
+		unlink(lockname);
+	}
+}
+
+unlockmbox()
+{
+	if (!locked)
+		return;
+	unlink(lockname);
+	locked = 0;
 }
 
 void
