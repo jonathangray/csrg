@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.1.1.1 (Berkeley) 05/07/91
+#	@(#)Makefile	5.2 (Berkeley) 06/02/93
 
 #Missing: index iso papers ps2 ucs
 SUBDIR=	ps1 smm usd
