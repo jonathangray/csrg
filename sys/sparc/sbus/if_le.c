@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_le.c	8.1 (Berkeley) 06/11/93
+ *	@(#)if_le.c	8.2 (Berkeley) 10/30/93
  *
  * from: $Header: if_le.c,v 1.23 93/04/21 02:39:38 torek Exp $
  */
