@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_timer.c	7.18 (Berkeley) 06/28/90
+ *	@(#)tcp_timer.c	7.19 (Berkeley) 02/15/92
  */
 
 #include "param.h"
