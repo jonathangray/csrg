@@ -33,8 +33,17 @@ divert(-1)
 # SUCH DAMAGE.
 #
 
+#
+#  This is the prototype for a configuration that only supports UUCP.
+#
+#  You may want to add an OSTYPE macro to get the location of various
+#  support files for your operating system environment.
+#
+
 include(`../m4/cf.m4')
-VERSIONID(`@(#)uucpproto.mc	8.2 (Berkeley) 08/07/93')
+VERSIONID(`@(#)uucpproto.mc	8.3 (Berkeley) 08/21/93')
+
 FEATURE(nodns)dnl
+
 MAILER(local)dnl
 MAILER(uucp)dnl
