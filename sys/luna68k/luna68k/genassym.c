@@ -31,9 +31,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * from: hp300/hp300/genassym.c	7.14 (Berkeley) 12/30/92
+ * from: hp300/hp300/genassym.c	8.2 (Berkeley) 9/23/93
  *
- *	@(#)genassym.c	8.2 (Berkeley) 09/23/93
+ *	@(#)genassym.c	8.3 (Berkeley) 12/06/93
  */
 
 #define KERNEL
