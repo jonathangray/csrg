@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.179 (Berkeley) 06/05/95
+ *	@(#)conf.h	8.180 (Berkeley) 06/05/95
  */
 
 /*
@@ -1324,6 +1324,7 @@ extern int	errno;
 
 /* general System V Release 4 defines */
 #ifdef __svr4__
+# include <sys/mkdev.h>
 # define SYSTEM5	1
 # define USESETEUID	1	/* has useable seteuid(2) call */
 # define HASINITGROUPS	1	/* has initgroups(3) call */
