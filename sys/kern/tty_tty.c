@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty_tty.c	7.20 (Berkeley) 10/11/92
+ *	@(#)tty_tty.c	7.21 (Berkeley) 04/28/93
  */
 
 /*
@@ -59,9 +59,19 @@ cttyopen(dev, flag, mode, p)
 	if (ttyvp == NULL)
 		return (ENXIO);
 	VOP_LOCK(ttyvp);
+#ifdef PARANOID
+	/*
+	 * Since group is tty and mode is 620 on all terminal lines
+	 * and since sessions protect terminals from processes outside
+	 * your session, this check is probably no longer necessary.
+	 * Since it inhibits setuid root programs that later switch 
+	 * to another user from accessing /dev/tty, we have decided
+	 * to delete this test for now.
+	 */
 	error = VOP_ACCESS(ttyvp,
 	  (flag&FREAD ? VREAD : 0) | (flag&FWRITE ? VWRITE : 0), p->p_ucred, p);
 	if (!error)
+#endif /* PARANOID */
 		error = VOP_OPEN(ttyvp, flag, NOCRED, p);
 	VOP_UNLOCK(ttyvp);
 	return (error);
