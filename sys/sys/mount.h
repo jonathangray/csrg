@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mount.h	7.18 (Berkeley) 02/22/91
+ *	@(#)mount.h	7.19 (Berkeley) 02/23/91
  */
 
 typedef quad fsid_t;			/* file system id type */
