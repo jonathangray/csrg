@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)2.2.t	8.5 (Berkeley) 05/26/94
+.\"	@(#)2.2.t	8.6 (Berkeley) 05/26/94
 .\"
 .Sh 2 "Filesystem
 .Sh 3 "Overview
@@ -253,6 +253,9 @@ see section
 for the semantics of
 .Fn flock
 style locks.
+The O_ASYNC flag enables the SIGIO signal to be sent to
+the process group of the opening process when I/O is possible,
+e.g., upon availability of data to be read.
 .Sh 4 "Creating references to devices
 .PP
 The filesystem allows entries which reference peripheral devices.
@@ -308,7 +311,20 @@ Hard links and symbolic links have different
 properties.  A hard link ensures that the target
 file will always be accessible, even after its original
 directory entry is removed; no such guarantee exists for a symbolic link.
-Symbolic links can span filesystems boundaries.
+Unlike hard links,
+symbolic links can refernce directories and span filesystems boundaries.
+An
+.Fn lstat
+call on a hard link will return the information about the
+file (or directory) that the link references.
+A symbolic link does not have an owner,
+group, permissions, access and modification times, etc.
+The only attributes returned from an
+.Fn lstat
+that refer to the symbolic link itself
+are the file type (S_IFLNK), size, blocks, and link count (always 1).
+The other attributes are filled in from
+the directory that contains the link.
 .LP
 The following calls create a new link, named \fIpath2\fP,
 to \fIpath1\fP:
