@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dca.c	7.11 (Berkeley) 05/16/91
+ *	@(#)dca.c	7.12 (Berkeley) 06/27/91
  */
 
 #include "dca.h"
@@ -101,7 +101,7 @@ extern	struct tty *constty;
 #ifdef KGDB
 #include "machine/remote-sl.h"
 
-extern int kgdb_dev;
+extern dev_t kgdb_dev;
 extern int kgdb_rate;
 extern int kgdb_debug_init;
 #endif
@@ -150,9 +150,10 @@ dcaprobe(hd)
 #ifdef KGDB
 	if (kgdb_dev == makedev(dcamajor, unit)) {
 		if (dcaconsole == unit)
-			kgdb_dev = -1;	/* can't debug over console port */
+			kgdb_dev = NODEV; /* can't debug over console port */
 		else {
 			(void) dcainit(unit, kgdb_rate);
+			dcaconsinit = 1;	/* don't re-init in dcaputc */
 			if (kgdb_debug_init) {
 				/*
 				 * Print prefix of device name,
@@ -249,11 +250,11 @@ dcaclose(dev, flag, mode, p)
 	if (dev != kgdb_dev)
 #endif
 	dca->dca_ier = 0;
-	(void) dcamctl(dev, 0, DMSET);
-	if (tp->t_state & TS_HUPCLS)
-		(*linesw[tp->t_line].l_modem)(tp, 0);
+	if (tp->t_cflag&HUPCL || tp->t_state&TS_WOPEN ||
+	    (tp->t_state&TS_ISOPEN) == 0)
+		(void) dcamctl(dev, 0, DMSET);
 	ttyclose(tp);
-	return(0);
+	return (0);
 }
  
 dcaread(dev, uio, flag)
@@ -292,7 +293,7 @@ dcaintr(unit)
 
 	dca = dca_addr[unit];
 	if ((dca->dca_ic & IC_IR) == 0)
-		return(0);
+		return (0);
 	while (1) {
 		code = dca->dca_iir;
 #ifdef DEBUG
@@ -312,8 +313,8 @@ dcaintr(unit)
 #define	RCVBYTE() \
 			code = dca->dca_data; \
 			if ((tp->t_state & TS_ISOPEN) == 0) { \
-				if (kgdb_dev == makedev(dcamajor, unit) && \
-				    code == FRAME_END) \
+				if (code == FRAME_END && \
+				    kgdb_dev == makedev(dcamajor, unit)) \
 					kgdb_connect(0); /* trap into kgdb */ \
 			} else \
 				(*linesw[tp->t_line].l_rint)(code, tp)
@@ -493,7 +494,7 @@ dcaparam(tp, t)
  
 	/* check requested parameters */
         if (ospeed < 0 || (t->c_ispeed && t->c_ispeed != t->c_ospeed))
-                return(EINVAL);
+                return (EINVAL);
         /* and copy to tty */
         tp->t_ispeed = t->c_ispeed;
         tp->t_ospeed = t->c_ospeed;
@@ -503,7 +504,7 @@ dcaparam(tp, t)
 	dca->dca_ier = IER_ERXRDY | IER_ETXRDY | IER_ERLS | IER_EMSC;
 	if (ospeed == 0) {
 		(void) dcamctl(unit, 0, DMSET);	/* hang up line */
-		return(0);
+		return (0);
 	}
 	dca->dca_cfcr |= CFCR_DLAB;
 	dca->dca_data = ospeed & 0xFF;
@@ -528,7 +529,7 @@ dcaparam(tp, t)
 	dca->dca_cfcr = cfcr;
 	if (dca_hasfifo & (1 << unit))
 		dca->dca_fifo = FIFO_ENABLE | FIFO_TRIGGER_14;
-	return(0);
+	return (0);
 }
  
 dcastart(tp)
@@ -621,7 +622,7 @@ dcamctl(dev, bits, how)
 		break;
 	}
 	(void) splx(s);
-	return(bits);
+	return (bits);
 }
 
 /*
@@ -719,7 +720,7 @@ dcacngetc(dev)
 	int c, s;
 
 #ifdef lint
-	stat = dev; if (stat) return(0);
+	stat = dev; if (stat) return (0);
 #endif
 	s = splhigh();
 	while (((stat = dca->dca_lsr) & LSR_RXRDY) == 0)
@@ -727,7 +728,7 @@ dcacngetc(dev)
 	c = dca->dca_data;
 	stat = dca->dca_iir;
 	splx(s);
-	return(c);
+	return (c);
 }
 
 /*
@@ -744,9 +745,6 @@ dcacnputc(dev, c)
 
 #ifdef lint
 	stat = dev; if (stat) return;
-#endif
-#ifdef KGDB
-	if (dev != kgdb_dev)
 #endif
 	if (dcaconsinit == 0) {
 		(void) dcainit(UNIT(dev), dcadefaultrate);
