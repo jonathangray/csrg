@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pk_output.c	7.9 (Berkeley) 05/09/91
+ *	@(#)pk_output.c	7.10 (Berkeley) 05/29/91
  */
 
 #include "param.h"
@@ -112,6 +112,8 @@ register struct pklcd *lcp;
 
 		case DATA + DATA_TRANSFER: 
 			PS(xp) = lcp -> lcd_ssn;
+			lcp -> lcd_input_window =
+				(lcp -> lcd_rsn + 1) % MODULUS;
 			PR(xp) = lcp -> lcd_input_window;
 			lcp -> lcd_last_transmitted_pr = lcp -> lcd_input_window;
 			lcp -> lcd_ssn = (lcp -> lcd_ssn + 1) % MODULUS;
@@ -130,12 +132,9 @@ register struct pklcd *lcp;
 			break;
 
 		case RR + DATA_TRANSFER: 
-			lcp -> lcd_input_window = (lcp -> lcd_input_window + 1) % MODULUS;
-			PR(xp) = lcp -> lcd_input_window;
-			lcp -> lcd_last_transmitted_pr = lcp -> lcd_input_window;
-			break;
-
 		case RNR + DATA_TRANSFER: 
+			lcp -> lcd_input_window =
+				(lcp -> lcd_rsn + 1) % MODULUS;
 			PR(xp) = lcp -> lcd_input_window;
 			lcp -> lcd_last_transmitted_pr = lcp -> lcd_input_window;
 			break;
