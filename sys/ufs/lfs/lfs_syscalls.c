@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_syscalls.c	8.5 (Berkeley) 04/20/94
+ *	@(#)lfs_syscalls.c	8.6 (Berkeley) 06/16/94
  */
 
 #include <sys/param.h>
@@ -464,7 +464,7 @@ lfs_fastvget(mp, ino, daddr, vpp, dinp)
 		if ((*vpp)->v_flag & VXLOCK)
 			printf ("Cleaned vnode VXLOCKED\n");
 		ip = VTOI(*vpp);
-		if (ip->i_flags & IN_LOCKED)
+		if (ip->i_flag & IN_LOCKED)
 			printf("cleaned vnode locked\n");
 		if (!(ip->i_flag & IN_MODIFIED)) {
 			++ump->um_lfs->lfs_uinodes;
