@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)refresh.c	8.4 (Berkeley) 08/04/94";
+static char sccsid[] = "@(#)refresh.c	8.5 (Berkeley) 08/10/94";
 #endif /* not lint */
 
 #include <string.h>
@@ -218,10 +218,10 @@ makech(win, wy)
 	int wy;
 {
 	static __LDATA blank = {' ', 0};
-	register int nlsp, clsp;		/* Last space in lines. */
-	register int wx, lch, y;
-	register __LDATA *nsp, *csp, *cp, *cep;
+	__LDATA *nsp, *csp, *cp, *cep;
 	u_int force;
+	int clsp, nlsp;			/* Last space in lines. */
+	int lch, wx, y;
 	char *ce;
 
 	/* Is the cursor still on the end of the last line? */
@@ -270,16 +270,17 @@ makech(win, wy)
 			__mvcur(0, 0, ly, lx, 1);
 		}
 	}
+
 	while (wx <= lch) {
 		if (!force && memcmp(nsp, csp, sizeof(__LDATA)) == 0) {
 			if (wx <= lch) {
 				while (wx <= lch &&
-				       memcmp(nsp, csp, sizeof(__LDATA)) == 0) {
-					    nsp++;
-					    if (!curwin)
-						    csp++;
-					    ++wx;
-				    }
+				    memcmp(nsp, csp, sizeof(__LDATA)) == 0) {
+					nsp++;
+					if (!curwin)
+						++csp;
+					++wx;
+				}
 				continue;
 			}
 			break;
@@ -325,17 +326,23 @@ makech(win, wy)
 				ce = NULL;
 			}
 
-			/* Enter/exit standout mode as appropriate. */
-			if (SO && (nsp->attr & __STANDOUT) !=
-			    (curscr->flags & __WSTANDOUT)) {
-				if (nsp->attr & __STANDOUT) {
+			/*
+			 * Enter/exit standout mode as appropriate.
+			 * XXX
+			 * Should use UC if SO/SE not available.
+			 */
+			if (nsp->attr & __STANDOUT) {
+				if (!(curscr->flags & __WSTANDOUT) &&
+				    SO != NULL && SE != NULL) {
 					tputs(SO, 0, __cputchar);
 					curscr->flags |= __WSTANDOUT;
-				} else {
+				}
+			} else
+				if (curscr->flags & __WSTANDOUT &&
+				    SE != NULL) {
 					tputs(SE, 0, __cputchar);
 					curscr->flags &= ~__WSTANDOUT;
 				}
-			}
 
 			wx++;
 			if (wx >= win->maxx && wy == win->maxy - 1 && !curwin)
