@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)iso.h	7.8 (Berkeley) 11/25/92
+ *	@(#)iso.h	7.9 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -130,7 +130,7 @@ SOFTWARE.
 
 #ifndef IN_CLASSA_NET
 #include <netinet/in.h>
-#endif IN_CLASSA_NET
+#endif /* IN_CLASSA_NET */
 
 
 
@@ -192,4 +192,4 @@ __END_DECLS
 #endif /* KERNEL */
 
 #define _offsetof(t, m) ((int)((caddr_t)&((t *)0)->m))
-#endif __ISO__
+#endif /* __ISO__ */
