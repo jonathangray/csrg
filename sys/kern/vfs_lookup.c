@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_lookup.c	8.3 (Berkeley) 01/21/94
+ *	@(#)vfs_lookup.c	8.4 (Berkeley) 02/16/94
  */
 
 #include <sys/param.h>
@@ -328,7 +328,7 @@ dirloop:
 		}
 		if (wantparent) {
 			ndp->ni_dvp = dp;
-			vref(dp);
+			VREF(dp);
 		}
 		ndp->ni_vp = dp;
 		if (!(cnp->cn_flags & (LOCKPARENT | LOCKLEAF)))
