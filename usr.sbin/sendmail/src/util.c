@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)util.c	5.30 (Berkeley) 09/22/92";
+static char sccsid[] = "@(#)util.c	5.31 (Berkeley) 11/13/92";
 #endif /* not lint */
 
 # include <stdio.h>
@@ -370,7 +370,6 @@ fullname(pw, buf)
 	register char *p;
 	register char *bp = buf;
 	int l;
-	bool quoteit;
 	register char *p = pw->pw_gecos;
 
 	if (*gecos == '*')
@@ -378,22 +377,15 @@ fullname(pw, buf)
 
 	/* see if the full name needs to be quoted */
 	l = 0;
-	quoteit = FALSE;
 	for (p = gecos; *p != '\0' && *p != ',' && *p != ';' && *p != '%'; p++)
 	{
-		if (index("<>()'.", *p) != NULL)
-			quoteit = TRUE;
 		if (*p == '&')
 			l += strlen(login);
 		else
 			l++;
 	}
-	if (quoteit)
-		l += 2;
 
 	/* now fill in buf */
-	if (quoteit)
-		*bp++ = '"';
 	for (p = gecos; *p != '\0' && *p != ',' && *p != ';' && *p != '%'; p++)
 	{
 		if (*p == '&')
@@ -406,8 +398,6 @@ fullname(pw, buf)
 		else
 			*bp++ = *p;
 	}
-	if (quoteit)
-		*bp++ = '"';
 	*bp = '\0';
 }
 /*
