@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)wwrint.c	3.12 (Berkeley) 06/24/92";
+static char sccsid[] = "@(#)wwrint.c	3.13 (Berkeley) 08/16/92";
 #endif /* not lint */
 
 #include "ww.h"
