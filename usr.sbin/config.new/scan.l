@@ -40,9 +40,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)scan.l	5.1 (Berkeley) 01/12/93
- *
- * from: $Header: scan.l,v 1.5 93/01/12 10:13:42 torek Exp $
+ *	@(#)scan.l	5.2 (Berkeley) 04/18/93
  */
 
 #include <sys/param.h>
