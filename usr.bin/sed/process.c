@@ -36,7 +36,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)process.c	5.13 (Berkeley) 01/27/93";
+static char sccsid[] = "@(#)process.c	5.14 (Berkeley) 04/14/93";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -78,13 +78,11 @@ int appendnum;			/* Size of appends array. */
 static int lastaddr;		/* Set by applies if last address of a range. */
 static int sdone;		/* If any substitutes since last line input. */
 				/* Iov structure for 'w' commands. */
-static struct iovec iov[2] = { NULL, 0, "\n", 1 };
-
 static regex_t *defpreg;
 size_t maxnsub;
-regmatch_t *match, startend;
+regmatch_t *match;
 
-#define OUT(s) { fwrite(s, sizeof(u_char), psl, stdout); putchar('\n'); }
+#define OUT(s) { fwrite(s, sizeof(u_char), psl, stdout); }
 
 void
 process()
@@ -144,13 +142,13 @@ redirect:
 				cspace(&PS, hs, hsl, REPLACE);
 				break;
 			case 'G':
-				cspace(&PS, hs, hsl, APPENDNL);
+				cspace(&PS, hs, hsl, 0);
 				break;
 			case 'h':
 				cspace(&HS, ps, psl, REPLACE);
 				break;
 			case 'H':
-				cspace(&HS, ps, psl, APPENDNL);
+				cspace(&HS, ps, psl, 0);
 				break;
 			case 'i':
 				(void)printf("%s", cp->t);
@@ -171,7 +169,7 @@ redirect:
 				break;
 			case 'N':
 				flush_appends();
-				if (!mf_fgets(&PS, APPENDNL)) {
+				if (!mf_fgets(&PS, 0)) {
 					if (!nflag && !pd)
 						OUT(ps)
 					exit(0);
@@ -226,9 +224,7 @@ redirect:
 				    DEFFILEMODE)) == -1)
 					err(FATAL, "%s: %s\n",
 					    cp->t, strerror(errno));
-				iov[0].iov_base = ps;
-				iov[0].iov_len = psl;
-				if (writev(cp->u.fd, iov, 2) != psl + 1)
+				if (write(cp->u.fd, ps, psl) != psl)
 					err(FATAL, "%s: %s\n",
 					    cp->t, strerror(errno));
 				break;
@@ -242,7 +238,7 @@ redirect:
 			case 'y':
 				if (pd)
 					break;
-				for (p = ps, len = psl; len--; ++p)
+				for (p = ps, len = psl; --len; ++p)
 					*p = cp->u.y[*p];
 				break;
 			case ':':
@@ -395,9 +391,7 @@ substitute(cp)
 		if (cp->u.s->wfd == -1 && (cp->u.s->wfd = open(cp->u.s->wfile,
 		    O_WRONLY|O_APPEND|O_CREAT|O_TRUNC, DEFFILEMODE)) == -1)
 			err(FATAL, "%s: %s\n", cp->u.s->wfile, strerror(errno));
-		iov[0].iov_base = ps;
-		iov[0].iov_len = psl;	
-		if (writev(cp->u.s->wfd, iov, 2) != psl + 1)
+		if (write(cp->u.s->wfd, ps, psl) != psl)
 			err(FATAL, "%s: %s\n", cp->u.s->wfile, strerror(errno));
 	}
 	return (1);
@@ -431,8 +425,7 @@ flush_appends()
 			 */
 			if ((f = fopen(appends[i].s, "r")) == NULL)
 				break;
-			while (count = fread(buf, sizeof(char), sizeof(buf), 
-			    f))
+			while (count = fread(buf, sizeof(char), sizeof(buf), f))
 				(void)fwrite(buf, sizeof(char), count, stdout);
 			(void)fclose(f);
 			break;
@@ -475,7 +468,7 @@ lputs(s)
 				(void)putchar("\\abfnrtv"[p - escapes]);
 				count += 2;
 			} else {
-				(void)printf("%03o", (u_char)*s);
+				(void)printf("%03o", *(u_char *)s);
 				count += 4;
 			}
 		}
@@ -495,22 +488,17 @@ regexec_e(preg, string, eflags, nomatch, slen)
 {
 	int eval;
 	
-	/* So we can work with binary files */
-	startend.rm_so = 0;
-	startend.rm_eo = slen;
-	match[0] = startend;
-	
-
-	eflags |= REG_STARTEND;	
-	
 	if (preg == NULL) {
 		if (defpreg == NULL)
 			err(FATAL, "first RE may not be empty");
 	} else
 		defpreg = preg;
 
+	match[0].rm_so = 0;
+	match[0].rm_eo = slen - 1;	/* Length minus trailing newline. */
+	
 	eval = regexec(defpreg, string,
-	    nomatch ? 0 : maxnsub + 1, match, eflags);
+	    nomatch ? 0 : maxnsub + 1, match, eflags | REG_STARTEND);
 	switch(eval) {
 	case 0:
 		return (1);
@@ -580,20 +568,14 @@ cspace(sp, p, len, spflag)
 {
 	size_t tlen;
 
-	/*
-	 * Make sure SPACE has enough memory and ramp up quickly.  Appends
-	 * need two extra bytes, one for the newline, one for a terminating
-	 * NULL.
-	 */
-	tlen = sp->len + len + (spflag == APPENDNL ? 2 : 1);
+	/* Make sure SPACE has enough memory and ramp up quickly. */
+	tlen = sp->len + len + 1;
 	if (tlen > sp->blen) {
 		sp->blen = tlen + 1024;
 		sp->space = sp->back = xrealloc(sp->back, sp->blen);
 	}
 
-	if (spflag == APPENDNL)
-		sp->space[sp->len++] = '\n';
-	else if (spflag == REPLACE)
+	if (spflag == REPLACE)
 		sp->len = 0;
 
 	memmove(sp->space + sp->len, p, len);
