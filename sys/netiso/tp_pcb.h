@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_pcb.h	8.1 (Berkeley) 06/10/93
+ *	@(#)tp_pcb.h	8.2 (Berkeley) 09/22/94
  */
 
 /***********************************************************
@@ -340,7 +340,6 @@ u_int	tp_start_win;
 
 #ifdef KERNEL
 extern struct tp_refinfo 	tp_refinfo;
-extern struct timeval 	time;
 extern struct tp_ref	*tp_ref;
 extern struct tp_param	tp_param;
 extern struct nl_protosw  nl_protosw[];
