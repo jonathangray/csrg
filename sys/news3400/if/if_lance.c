@@ -35,7 +35,7 @@
  *
  * from: $Hdr: if_lance.c,v 4.300 91/06/09 06:25:58 root Rel41 $ SONY
  *
- *	@(#)if_lance.c	7.3 (Berkeley) 12/17/92
+ *	@(#)if_lance.c	7.4 (Berkeley) 03/09/93
  */
 
 /*
@@ -50,7 +50,6 @@
 
 #if NEN > 0
 
-#include <machine/fix_machine_type.h>
 #include <machine/adrsmap.h>
 
 #include <sys/param.h>
