@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)jobs.h	5.2 (Berkeley) 07/15/92
+ *	@(#)jobs.h	5.3 (Berkeley) 07/16/92
  */
 
 /* Mode argument to forkshell.  Don't change FORK_FG or FORK_BG. */
@@ -84,12 +84,14 @@ void showjobs(int);
 struct job *makejob(union node *, int);
 int forkshell(struct job *, union node *, int);
 int waitforjob(struct job *);
+char *commandtext(union node *);
 #else
 void setjobctl();
 void showjobs();
 struct job *makejob();
 int forkshell();
 int waitforjob();
+char *commandtext();
 #endif
 
 #if ! JOBS
