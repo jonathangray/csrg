@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_descrip.c	7.19 (Berkeley) 02/21/91
+ *	@(#)kern_descrip.c	7.20 (Berkeley) 02/28/91
  */
 
 #include "param.h"
@@ -253,6 +253,8 @@ fcntl(p, uap, retval)
 		error = copyin((caddr_t)uap->arg, (caddr_t)&fl, sizeof (fl));
 		if (error)
 			return (error);
+		if (fl.l_whence == SEEK_CUR)
+			fl.l_start += fp->f_offset;
 		if (error = VOP_ADVLOCK(vp, p, F_GETLK, &fl, F_POSIX))
 			return (error);
 		return (copyout((caddr_t)&fl, (caddr_t)uap->arg, sizeof (fl)));
