@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_page.c	7.11 (Berkeley) 02/19/92
+ *	@(#)vm_page.c	7.12 (Berkeley) 02/24/92
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -305,7 +305,7 @@ void vm_page_startup(start, end)
  *	The object and page must be locked.
  */
 
-static void vm_page_insert(mem, object, offset)
+void vm_page_insert(mem, object, offset)
 	register vm_page_t	mem;
 	register vm_object_t	object;
 	register vm_offset_t	offset;
