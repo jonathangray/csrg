@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)buf.h	7.14 (Berkeley) 01/14/92
+ *	@(#)buf.h	7.15 (Berkeley) 05/04/92
  */
 
 /*
@@ -94,7 +94,7 @@ struct buf
 	long	b_resid;		/* words not transferred after error */
 #define	b_errcnt b_resid		/* while i/o in progress: # retries */
 	struct  proc *b_proc;		/* proc doing physical or swap I/O */
-	int	(*b_iodone)();		/* function called by iodone */
+	void	(*b_iodone)();		/* function called by iodone */
 	struct	vnode *b_vp;		/* vnode for dev */
 	int	b_pfcent;		/* center page when swapping cluster */
 	struct	ucred *b_rcred;		/* ref to read credentials */
