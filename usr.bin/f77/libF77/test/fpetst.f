@@ -1,3 +1,14 @@
+C
+C Copyright (c) 1991 The Regents of the University of California.
+C All rights reserved.
+C
+C This module is believed to contain source code proprietary to AT&T.
+C Use and redistribution is subject to the Berkeley Software License
+C Agreement and your Software Agreement with AT&T (Western Electric).
+C
+C	@(#)fpetst.f	5.2 (Berkeley) 04/12/91
+C
+
 	program fpetst
 	character arg
 	logical flag
