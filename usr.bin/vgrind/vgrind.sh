@@ -31,7 +31,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)vgrind.sh	5.7 (Berkeley) 04/16/91
+#	@(#)vgrind.sh	5.8 (Berkeley) 8/3/92
 #
 
 set voptions=
@@ -116,10 +116,10 @@ if (-r index) then
     else
 	if ("$head" != "") then
 	    $vf $options -h "$head" $files | \
-		sh -c "vtroff -rx1 $voptions -i -mvgrind 2>> xindex"
+		sh -c "psroff -rx1 $voptions -i -mvgrind 2>> xindex"
 	else
 	    $vf $options $files | \
-		sh -c "vtroff -rx1 $voptions -i -mvgrind 2>> xindex"
+		sh -c "psroff -rx1 $voptions -i -mvgrind 2>> xindex"
 	endif
     endif
     sort -df +0 -2 xindex >index
@@ -133,9 +133,9 @@ else
 	endif
     else
 	if ("$head" != "") then
-	    $vf $options -h "$head" $files | vtroff -i $voptions -mvgrind
+	    $vf $options -h "$head" $files | psroff -i $voptions -mvgrind
 	else
-	    $vf $options $files | vtroff -i $voptions -mvgrind
+	    $vf $options $files | psroff -i $voptions -mvgrind
 	endif
     endif
 endif
