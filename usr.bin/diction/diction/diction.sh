@@ -1,7 +1,12 @@
-#! /bin/sh
+#!/bin/sh -
 #
-#	@(#)diction.sh	4.7	(Berkeley)	89/08/31
+# This module is believed to contain source code proprietary to AT&T.
+# Use and redistribution is subject to the Berkeley Software License
+# Agreement and your Software Agreement with AT&T (Western Electric).
 #
+#	@(#)diction.sh	4.8 (Berkeley) 04/17/91
+#
+
 D=/usr/bin
 B=/usr/libexec
 echo $*
