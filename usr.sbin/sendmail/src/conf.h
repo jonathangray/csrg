@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.142 (Berkeley) 03/30/95
+ *	@(#)conf.h	8.143 (Berkeley) 03/31/95
  */
 
 /*
@@ -45,6 +45,8 @@
 # include <sys/wait.h>
 # include <fcntl.h>
 # include <signal.h>
+# include <netdb.h>
+# include <pwd.h>
 
 /**********************************************************************
 **  Table sizes, etc....
