@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ext.h	8.1 (Berkeley) 06/04/93
+ *	@(#)ext.h	8.2 (Berkeley) 12/15/93
  */
 
 /*
@@ -158,7 +158,7 @@ extern int
 	getnpty P((void)),
 #ifndef convex
 	getpty P((int *)),
-#endif convex
+#endif
 	login_tty P((int)),
 	spcset P((int, cc_t *, cc_t **)),
 	stilloob P((int)),
@@ -212,6 +212,7 @@ extern struct {
 	ttypesubopt,		/* ttype subopt is received */
 	tspeedsubopt,		/* tspeed subopt is received */
 	environsubopt,		/* environ subopt is received */
+	oenvironsubopt,		/* old environ subopt is received */
 	xdisplocsubopt,		/* xdisploc subopt is received */
 	baseline,		/* time started to do timed action */
 	gotDM;			/* when did we last see a data mark */
