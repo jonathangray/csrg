@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recipient.c	8.6 (Berkeley) 07/19/93";
+static char sccsid[] = "@(#)recipient.c	8.7 (Berkeley) 07/19/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -672,6 +672,7 @@ writable(s)
 */
 
 static jmp_buf	CtxIncludeTimeout;
+static int	includetimeout();
 
 int
 include(fname, forwarding, ctladdr, sendq, e)
@@ -691,7 +692,6 @@ include(fname, forwarding, ctladdr, sendq, e)
 	ADDRESS *ca;
 	uid_t uid;
 	char buf[MAXLINE];
-	static int includetimeout();
 
 	if (tTd(27, 2))
 		printf("include(%s)\n", fname);
