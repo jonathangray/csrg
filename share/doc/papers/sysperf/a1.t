@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)a1.t	1.2 (Berkeley) 10/14/90
+.\"	@(#)a1.t	5.1 (Berkeley) 04/17/91
 .\"
 .ds RH Appendix A \- Benchmark sources
 .nr H2 1
