@@ -3,7 +3,7 @@
  * All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
- * Ozan Yigit.
+ * Ozan Yigit at York University.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -35,7 +35,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)look.c	5.4 (Berkeley) 09/03/91";
+static char sccsid[] = "@(#)look.c	5.5 (Berkeley) 11/20/91";
 #endif /* not lint */
 
 /*
