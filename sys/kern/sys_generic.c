@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sys_generic.c	7.32 (Berkeley) 02/15/92
+ *	@(#)sys_generic.c	7.33 (Berkeley) 03/13/92
  */
 
 #include "param.h"
@@ -654,9 +654,9 @@ selwakeup(sip)
 		sip->si_flags &= ~SI_COLL;
 		wakeup((caddr_t)&selwait);
 	}
-	if ((p = pfind(sip->si_pid)) == 0) {
-		sip->si_pid = 0;
-	} else {
+	p = pfind(sip->si_pid);
+	sip->si_pid = 0;
+	if (p != NULL) {
 		s = splhigh();
 		if (p->p_wchan == (caddr_t)&selwait) {
 			if (p->p_stat == SSLEEP)
