@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.67 (Berkeley) 12/21/93
+ *	@(#)conf.h	8.68 (Berkeley) 12/24/93
  */
 
 /*
@@ -150,6 +150,7 @@
 # define HASINITGROUPS	1	/* has initgroups(3) call */
 # define HASSTATFS	1	/* has the statfs(2) syscall */
 # define HASUNAME	1	/* use System V uname(2) system call */
+# define NEEDGETUSERSHELL 1	/* needs getusershell(3) implementation */
 # define FORK		fork	/* no vfork primitive available */
 # undef  SETPROCTITLE		/* setproctitle confuses AIX */
 # endif
@@ -166,6 +167,7 @@
 # define HASSETREUID	1	/* has setreuid(2) call */
 # define HASINITGROUPS	1	/* has initgroups(3) call */
 # define HASSTATFS	1	/* has the statfs(2) syscall */
+# define NEEDGETUSERSHELL 1	/* needs getusershell(3) implementation */
 # define FORK		fork	/* no vfork primitive available */
 # define WAITUNION	1	/* use "union wait" as wait argument type */
 # define setpgid	BSDsetpgrp
@@ -185,6 +187,7 @@
 # define LA_TYPE	LA_INT
 # define HASINITGROUPS	1	/* has initgroups(3) call */
 # define HASUNAME	1	/* use System V uname(2) system call */
+# define NEEDGETUSERSHELL 0	/* libc has getusershell(3) */
 
 # ifdef SOLARIS_2_3
 #  define SOLARIS
@@ -272,6 +275,7 @@ extern long	dgux_inet_addr();
 # define HASUNSETENV	1	/* has unsetenv(3) call */
 # define HASINITGROUPS	1	/* has initgroups(3) call */
 # define HASFLOCK	1	/* has flock(2) call */
+# define NEEDGETUSERSHELL 1	/* needs getusershell(3) implementation */
 # ifdef vax
 #  define LA_TYPE	LA_FLOAT
 # else
@@ -577,6 +581,7 @@ extern void		*malloc();
 # define HASSTATFS	1	/* has the statfs(2) syscall */
 # define HASSETVBUF	1	/* we have setvbuf(3) in libc */
 # define HASINITGROUPS	1	/* has initgroups(3) call */
+# define NEEDGETUSERSHELL 1	/* needs getusershell(3) implementation ??? */
 # define SYS5SIGNALS	1	/* SysV signal semantics -- reset on each sig */
 # define SYS5SETPGRP	1	/* use System V setpgrp(2) syscall */
 # define FORK		fork	/* no vfork(2) primitive available */
@@ -664,6 +669,9 @@ typedef int		pid_t;
 #ifdef __svr4__
 # define SYSTEM5	1
 # define HASSETREUID	1	/* has seteuid(2) call & working saved uids */
+# ifndef NEEDGETUSERSHELL
+#  define NEEDGETUSERSHELL 1	/* needs getusershell(3) implementation ??? */
+# endif
 # define setreuid(r, e)	seteuid(e)
 
 # ifndef _PATH_UNIX
@@ -733,6 +741,10 @@ typedef int		pid_t;
 
 #ifndef IDENTPROTO
 # define IDENTPROTO	1	/* use IDENT proto (RFC 1413) */
+#endif
+
+#ifndef NEEDGETUSERSHELL
+# define NEEDGETUSERSHELL 0	/* libc has getusershell(3) */
 #endif
 
 
