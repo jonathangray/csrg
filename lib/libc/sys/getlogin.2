@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)getlogin.2	8.1 (Berkeley) 06/04/93
+.\"	@(#)getlogin.2	6.4 (Berkeley) 06/09/93
 .\"
 .Dd 
 .Dt GETLOGIN 2
@@ -122,6 +122,5 @@ could not be trusted without checking the user ID.
 Portable programs should probably still make this check.
 .Sh HISTORY
 The
-.Nm getlogin
-function call is
-.Ud .
+.Fn getlogin
+function first appeared in 4.4BSD.
