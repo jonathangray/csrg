@@ -35,7 +35,7 @@
  *
  * from: $Hdr: psd.c,v 4.300 91/06/09 06:38:07 root Rel41 $ SONY
  *
- *	@(#)psd.c	7.2 (Berkeley) 12/17/92
+ *	@(#)psd.c	7.3 (Berkeley) 03/09/93
  */
 
 /*
@@ -49,8 +49,6 @@
  * Probe SCSI device routine
  *
  */
-
-#include <machine/fix_machine_type.h>
 
 #include <sys/param.h>
 #include <sys/buf.h>
@@ -90,22 +88,6 @@
 #define	NSCSICHAN	7
 
 #define	NOSUCHDEV	0x7f
-
-#ifdef news800
-#define	MAXCTLR		8
-#endif
-
-#ifdef news1200
-#define	MAXCTLR		8
-#endif
-
-#ifdef news1700
-#define	MAXCTLR		8
-#endif
-
-#ifdef news1800
-#define	MAXCTLR		8
-#endif
 
 #ifdef news3400
 #define	MAXCTLR		8
@@ -221,7 +203,7 @@ psdprobe_loop:
 	}
 #ifndef NO_STATUS_BYTE_MASK
 	sc->sc_tstatus &= TGSTMASK;
-#endif /* !NO_STATUS_BYTE_MASK */
+#endif
 	if (sc->sc_tstatus != TGST_GOOD) {
 		if (sc->sc_tstatus == TGST_CC)
 			scop_rsense(intr, sc, 0, SCSI_INTDIS, 18, 0);
