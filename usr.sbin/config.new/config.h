@@ -39,9 +39,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)config.h	5.1 (Berkeley) 01/12/93
- *
- * from: $Header: config.h,v 1.4 93/01/12 03:54:25 torek Exp $
+ *	@(#)config.h	5.2 (Berkeley) 04/18/93
  */
 
 /*
