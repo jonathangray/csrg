@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)specdev.h	7.3 (Berkeley) 04/15/91
+ *	@(#)specdev.h	7.4 (Berkeley) 04/19/91
  */
 
 /*
@@ -72,6 +72,12 @@ struct vnode *speclisth[SPECHSZ];
 /*
  * Prototypes for special file operations on vnodes.
  */
+struct	nameidata;
+struct	ucred;
+struct	flock;
+struct	buf;
+struct	uio;
+
 int	spec_badop(),
 	spec_ebadf();
 
