@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsm_subs.h	7.14 (Berkeley) 09/16/92
+ *	@(#)nfsm_subs.h	7.15 (Berkeley) 03/30/93
  */
 
 /*
@@ -257,8 +257,7 @@ extern struct mbuf *nfsm_reqh();
 		fp->fa_nfsfileid = txdr_unsigned(vap->va_fileid); \
 		fp->fa_nfssize = txdr_unsigned(vap->va_size); \
 		fp->fa_nfsblocks = txdr_unsigned(vap->va_bytes / NFS_FABLKSIZE); \
-		fp->fa_nfsatime.nfs_sec = txdr_unsigned(vap->va_atime.ts_sec); \
-		fp->fa_nfsatime.nfs_usec = txdr_unsigned(vap->va_flags); \
+		txdr_nfstime(&vap->va_atime, &fp->fa_nfsatime); \
 		txdr_nfstime(&vap->va_mtime, &fp->fa_nfsmtime); \
 		fp->fa_nfsctime.nfs_sec = txdr_unsigned(vap->va_ctime.ts_sec); \
 		fp->fa_nfsctime.nfs_usec = txdr_unsigned(vap->va_gen); \
