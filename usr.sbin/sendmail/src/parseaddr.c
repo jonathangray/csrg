@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parseaddr.c	5.27.1.1 (Berkeley) 12/14/92";
+static char sccsid[] = "@(#)parseaddr.c	5.28 (Berkeley) 12/21/92";
 #endif /* not lint */
 
 #include "sendmail.h"
@@ -1433,6 +1433,25 @@ callsubr(pvp)
 **		fills in 'a'
 */
 
+struct errcodes
+{
+	char	*ec_name;		/* name of error code */
+	int	ec_code;		/* numeric code */
+} ErrorCodes[] =
+{
+	"usage",	EX_USAGE,
+	"nouser",	EX_NOUSER,
+	"nohost",	EX_NOHOST,
+	"unavailable",	EX_UNAVAILABLE,
+	"software",	EX_SOFTWARE,
+	"tempfail",	EX_TEMPFAIL,
+	"protocol",	EX_PROTOCOL,
+#ifdef EX_CONFIG
+	"config",	EX_CONFIG,
+#endif
+	NULL,		EX_UNAVAILABLE,
+};
+
 static ADDRESS *
 buildaddr(tv, a)
 	register char **tv;
@@ -1457,7 +1476,19 @@ buildaddr(tv, a)
 	{
 		if (**++tv == CANONHOST)
 		{
-			setstat(atoi(*++tv));
+			register struct errcodes *ep;
+
+			if (isdigit(**++tv))
+			{
+				setstat(atoi(*tv));
+			}
+			else
+			{
+				for (ep = ErrorCodes; ep->ec_name != NULL; ep++)
+					if (strcasecmp(ep->ec_name, *tv) == 0)
+						break;
+				setstat(ep->ec_code);
+			}
 			tv++;
 		}
 		buf[0] = '\0';
