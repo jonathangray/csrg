@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)vfprintf.c	5.42 (Berkeley) 01/29/91";
+static char sccsid[] = "@(#)vfprintf.c	5.43 (Berkeley) 01/31/91";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -73,6 +73,16 @@ static char sccsid[] = "@(#)vfprintf.c	5.42 (Berkeley) 01/29/91";
 #undef BUFSIZ
 #include "sh.h"
 
+#if __STDC__
+int
+printf(const char *fmt, ...) {
+	FILE f;
+
+	f._flags = __SWR;
+	return (vfprintf(&f, fmt, (va_list)(&fmt + 1)));
+}
+#else
+int
 printf(fmt, args)
 	char *fmt;
 {
@@ -81,9 +91,11 @@ printf(fmt, args)
 	f._flags = __SWR;
 	return (vfprintf(&f, fmt, &args));
 }
+#endif
 
 #define __sprint(fp, uio) cshprintv(uio)
 
+int
 cshprintv(uio)
 	register struct __suio *uio;
 {
@@ -113,7 +125,7 @@ cshprintv(uio)
  * Flush out all the vectors defined by the given uio,
  * then reset it so that it can be reused.
  */
-static
+static int
 __sprint(fp, uio)
 	FILE *fp;
 	register struct __suio *uio;
@@ -135,10 +147,10 @@ __sprint(fp, uio)
  * temporary buffer.  We only work on write-only files; this avoids
  * worries about ungetc buffers and so forth.
  */
-static
+static int
 __sbprintf(fp, fmt, ap)
 	register FILE *fp;
-	char *fmt;
+	const char *fmt;
 	va_list ap;
 {
 	int ret;
@@ -169,8 +181,8 @@ __sbprintf(fp, fmt, ap)
 
 
 #ifdef FLOATING_POINT
-
 #include "floatio.h"
+
 #define	BUF		(MAXEXP+MAXFRACT+1)	/* + decimal point */
 #define	DEFPREC		6
 
@@ -204,9 +216,10 @@ static char *isspecial();
 #define	ZEROPAD		0x20		/* zero (as opposed to blank) pad */
 #define	HEXPREFIX	0x40		/* add 0x or 0X prefix */
 
+int
 vfprintf(fp, fmt0, ap)
 	FILE *fp;
-	char *fmt0;
+	const char *fmt0;
 #if tahoe
  register /* technically illegal, since we do not know what type va_list is */
 #endif
@@ -584,6 +597,7 @@ number:			if ((dprec = prec) >= 0)
 
 				default:
 					cp = "bug in vfprintf: bad base";
+					size = strlen(cp);
 					goto skipsize;
 				}
 			}
@@ -675,6 +689,8 @@ error:
 }
 
 #ifdef FLOATING_POINT
+#include <math.h>
+
 static char *exponent();
 static char *round();
 
@@ -702,7 +718,7 @@ isspecial(d, signp)
 }
 #endif /* hp300 or sparc */
 
-static
+static int
 cvt(number, prec, flags, signp, fmtch, startp, endp)
 	double number;
 	register int prec;
@@ -714,7 +730,7 @@ cvt(number, prec, flags, signp, fmtch, startp, endp)
 	register char *p, *t;
 	register double fract;
 	int dotrim, expcnt, gformat;
-	double integer, tmp, modf();
+	double integer, tmp;
 
 	dotrim = expcnt = gformat = 0;
 	if (number < 0) {
@@ -904,7 +920,7 @@ round(fract, exp, start, end, ch, signp)
 	double tmp;
 
 	if (fract)
-	(void)modf(fract * 10, &tmp);
+		(void)modf(fract * 10, &tmp);
 	else
 		tmp = to_digit(ch);
 	if (tmp > 4)
