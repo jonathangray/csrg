@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_readwrite.c	8.10 (Berkeley) 03/21/95
+ *	@(#)ufs_readwrite.c	8.11 (Berkeley) 05/08/95
  */
 
 #ifdef LFS_READWRITE
-#define	BLKSIZE(a, b, c)	blksize(a)
+#define	BLKSIZE(a, b, c)	blksize(a, b, c)
 #define	FS			struct lfs
 #define	I_FS			i_lfs
 #define	READ			lfs_read
@@ -232,7 +232,7 @@ WRITE(ap)
 			xfersize = uio->uio_resid;
 #ifdef LFS_READWRITE
 		(void)lfs_check(vp, lbn);
-		error = lfs_balloc(vp, xfersize, lbn, &bp);
+		error = lfs_balloc(vp, blkoffset, xfersize, lbn, &bp);
 #else
 		if (fs->fs_bsize > xfersize)
 			flags |= B_CLRBUF;
