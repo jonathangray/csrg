@@ -1,4 +1,10 @@
-/*	1.incl.h	4.2	83/08/11	*/
+/*-
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ *
+ *	@(#)1.incl.h	4.3 (Berkeley) 04/16/91
+ */
 
 #define maxlsw		10	/* max number of switches and labels per statement */
 #define implicit 0L		/* "label" of following line so all flow can be treated as jump to label */
