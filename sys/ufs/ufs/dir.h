@@ -30,11 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dir.h	7.9 (Berkeley) 06/28/90
+ *	@(#)dir.h	7.10 (Berkeley) 03/25/91
  */
 
-#ifndef _DIR_
-#define	_DIR_
+#ifndef _DIR_H_
+#define	_DIR_H_
 
 /*
  * A directory consists of some number of blocks of DIRBLKSIZ
@@ -95,4 +95,4 @@ struct dirtemplate {
 	short	dotdot_namlen;
 	char	dotdot_name[4];		/* ditto */
 };
-#endif /* _DIR_ */
+#endif /* !_DIR_H_ */
