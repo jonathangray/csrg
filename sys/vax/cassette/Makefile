@@ -3,8 +3,8 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	7.1 (Berkeley) 06/05/86
-#
+#	@(#)Makefile	7.2 (Berkeley) 05/09/91
+
 # Make a 750/730 tu58 cassette
 # 
 BOOTS=	boot.730 boot.750
