@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_sl.c	8.2 (Berkeley) 09/21/93
+ *	@(#)if_sl.c	8.3 (Berkeley) 01/04/94
  */
 
 /*
@@ -290,7 +290,6 @@ sltioctl(tp, cmd, data, flag)
 	int flag;
 {
 	struct sl_softc *sc = (struct sl_softc *)tp->t_sc;
-	int s;
 
 	switch (cmd) {
 	case SLIOCGUNIT:
