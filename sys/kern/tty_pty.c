@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tty_pty.c	7.18 (Berkeley) 03/17/91
+ *	@(#)tty_pty.c	7.19 (Berkeley) 04/20/91
  */
 
 /*
@@ -44,7 +44,6 @@
 #include "systm.h"
 #include "ioctl.h"
 #include "tty.h"
-#include "user.h"
 #include "conf.h"
 #include "file.h"
 #include "proc.h"
@@ -74,8 +73,6 @@ struct	pt_ioctl {
 } pt_ioctl[NPTY];
 int	npty = NPTY;		/* for pstat -t */
 
-int ptydebug = 0;
-
 #define	PF_RCOLL	0x0001
 #define	PF_WCOLL	0x0002
 #define	PF_NBIO		0x0004
@@ -91,10 +88,10 @@ int ptydebug = 0;
 #define	PF_OWAIT	0x1000		/* waiting for PF_BLOCK to clear */
 
 /*ARGSUSED*/
-ptsopen(dev, flag)
+ptsopen(dev, flag, devtype, p)
 	dev_t dev;
+	struct proc *p;
 {
-	struct proc *p = curproc;
 	register struct tty *tp;
 	int error;
 
@@ -248,15 +245,19 @@ ptcwakeup(tp, flag)
 			pti->pt_selw = 0;
 			pti->pt_flags &= ~PF_WCOLL;
 		}
-if (ptydebug) printf("WAKEUP c_cf %d\n", curproc->p_pid);
 		wakeup((caddr_t)&tp->t_rawq.c_cf);
 	}
 }
 
 /*ARGSUSED*/
-ptcopen(dev, flag)
+#ifdef __STDC__
+ptcopen(dev_t dev, int flag, int devtype, struct proc *p)
+#else
+ptcopen(dev, flag, devtype, p)
 	dev_t dev;
-	int flag;
+	int flag, devtype;
+	struct proc *p;
+#endif
 {
 	register struct tty *tp;
 	struct pt_ioctl *pti;
@@ -399,14 +400,14 @@ ptsstop(tp, flush)
 	ptcwakeup(tp, flag);
 }
 
-ptcselect(dev, rw)
+ptcselect(dev, rw, p)
 	dev_t dev;
 	int rw;
+	struct proc *p;
 {
-	struct proc *curp = curproc;
 	register struct tty *tp = &pt_tty[minor(dev)];
 	struct pt_ioctl *pti = &pt_ioctl[minor(dev)];
-	struct proc *p;
+	struct proc *prev;
 	int s;
 
 	if ((tp->t_state&TS_CARR_ON) == 0)
@@ -432,10 +433,10 @@ ptcselect(dev, rw)
 		     pti->pt_flags&PF_TIOC && pti->pt_ioc.c_cc ||
 		     pti->pt_flags&PF_UCNTL && pti->pt_ucntl))
 			return (1);
-		if ((p = pti->pt_selr) && p->p_wchan == (caddr_t)&selwait)
+		if ((prev = pti->pt_selr) && prev->p_wchan == (caddr_t)&selwait)
 			pti->pt_flags |= PF_RCOLL;
 		else
-			pti->pt_selr = curp;
+			pti->pt_selr = p;
 		break;
 
 
@@ -451,10 +452,10 @@ ptcselect(dev, rw)
 				    return (1);
 			}
 		}
-		if ((p = pti->pt_selw) && p->p_wchan == (caddr_t)&selwait)
+		if ((prev = pti->pt_selw) && prev->p_wchan == (caddr_t)&selwait)
 			pti->pt_flags |= PF_WCOLL;
 		else
-			pti->pt_selw = curp;
+			pti->pt_selw = p;
 		break;
 
 	}
