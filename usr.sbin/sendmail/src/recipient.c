@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)recipient.c	8.86 (Berkeley) 05/19/95";
+static char sccsid[] = "@(#)recipient.c	8.87 (Berkeley) 05/23/95";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -554,7 +554,12 @@ recipient(a, sendq, aliaslevel, e)
 			{
 				a->q_flags |= QBOGUSSHELL;
 			}
-			if (!quoted)
+			if (bitset(EF_VRFYONLY, e->e_flags))
+			{
+				/* don't do any more now */
+				a->q_flags |= QVERIFIED;
+			}
+			else if (!quoted)
 				forward(a, sendq, aliaslevel, e);
 		}
 	}
