@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef QUEUE
-static char sccsid[] = "@(#)queue.c	8.42 (Berkeley) 07/23/94 (with queueing)";
+static char sccsid[] = "@(#)queue.c	8.43 (Berkeley) 07/23/94 (with queueing)";
 #else
-static char sccsid[] = "@(#)queue.c	8.42 (Berkeley) 07/23/94 (without queueing)";
+static char sccsid[] = "@(#)queue.c	8.43 (Berkeley) 07/23/94 (without queueing)";
 #endif
 #endif /* not lint */
 
@@ -218,6 +218,8 @@ queueup(e, queueall, announce)
 		*p++ = 'w';
 	if (bitset(EF_RESPONSE, e->e_flags))
 		*p++ = 'r';
+	if (bitset(EF_HAS8BIT, e->e_flags))
+		*p++ = '8';
 	*p++ = '\0';
 	if (buf[0] != '\0')
 		fprintf(tfp, "F%s\n", buf);
@@ -1146,6 +1148,10 @@ readqf(e)
 
 				  case 'r':	/* response */
 					e->e_flags |= EF_RESPONSE;
+					break;
+
+				  case '8':	/* has 8 bit data */
+					e->e_flags |= EF_HAS8BIT;
 					break;
 				}
 			}
