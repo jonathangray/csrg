@@ -30,7 +30,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)vnode_if.src	8.7 (Berkeley) 08/10/94
+#	@(#)vnode_if.src	8.8 (Berkeley) 02/14/95
 #
 
 #
@@ -54,8 +54,8 @@
 #% lookup	vpp	- L -
 #
 # XXX - the lookup locking protocol defies simple description and depends
-#       on the flags and operation fields in the (cnp) structure.  Note
-#       especially that *vpp may equal dvp and both may be locked.
+#	on the flags and operation fields in the (cnp) structure.  Note
+#	especially that *vpp may equal dvp and both may be locked.
 #
 vop_lookup {
 	IN struct vnode *dvp;
@@ -78,6 +78,7 @@ vop_create {
 #% whiteout	dvp	L L L
 #% whiteout	cnp	- - -
 #% whiteout	flag	- - -
+#
 vop_whiteout {
 	IN WILLRELE struct vnode *dvp;
 	IN struct componentname *cnp;
@@ -96,7 +97,7 @@ vop_mknod {
 };
 
 #
-#% open 	vp	L L L
+#% open		vp	L L L
 #
 vop_open {
 	IN struct vnode *vp;
@@ -146,7 +147,7 @@ vop_setattr {
 };
 
 #
-#% read 	vp	L L L
+#% read		vp	L L L
 #
 vop_read {
 	IN struct vnode *vp;
@@ -180,7 +181,7 @@ vop_lease {
 #
 vop_ioctl {
 	IN struct vnode *vp;
-	IN int command;
+	IN u_long command;
 	IN caddr_t data;
 	IN int fflag;
 	IN struct ucred *cred;
@@ -191,6 +192,7 @@ vop_ioctl {
 #% select	vp	U U U
 #
 # Needs work?  (fflags)
+#
 vop_select {
 	IN struct vnode *vp;
 	IN int which;
@@ -199,7 +201,9 @@ vop_select {
 	IN struct proc *p;
 };
 
+#
 # XXX - not used
+#
 vop_mmap {
 	IN struct vnode *vp;
 	IN int fflags;
@@ -217,8 +221,10 @@ vop_fsync {
 	IN struct proc *p;
 };
 
+#
 # XXX - not used
-# Needs word: Is newoff right?  What's it mean?
+# Needs work: Is newoff right?  What's it mean?
+#
 vop_seek {
 	IN struct vnode *vp;
 	IN off_t oldoff;
@@ -237,8 +243,8 @@ vop_remove {
 };
 
 #
-#% link 	vp	L U U
-#% link 	tdvp	U U U
+#% link		vp	U U U
+#% link		tdvp	L U U
 #
 vop_link {
 	IN WILLRELE struct vnode *vp;
@@ -285,9 +291,10 @@ vop_rmdir {
 #
 #% symlink	dvp	L U U
 #% symlink	vpp	- U -
+#
 # XXX - note that the return vnode has already been VRELE'ed
-#       by the filesystem layer.  To use it you must use vget,
-#       possibly with a further namei.
+#	by the filesystem layer.  To use it you must use vget,
+#	possibly with a further namei.
 #
 vop_symlink {
 	IN WILLRELE struct vnode *dvp;
@@ -341,7 +348,7 @@ vop_reclaim {
 };
 
 #
-#% lock 	vp	U L U
+#% lock		vp	U L U
 #
 vop_lock {
 	IN struct vnode *vp;
@@ -355,8 +362,8 @@ vop_unlock {
 };
 
 #
-#% bmap 	vp	L L L
-#% bmap 	vpp	- U -
+#% bmap		vp	L L L
+#% bmap		vpp	- U -
 #
 vop_bmap {
 	IN struct vnode *vp;
@@ -366,6 +373,9 @@ vop_bmap {
 	OUT int *runp;
 };
 
+#
+# Needs work: no vp?
+#
 #vop_strategy {
 #	IN struct buf *bp;
 #};
@@ -390,7 +400,7 @@ vop_islocked {
 vop_pathconf {
 	IN struct vnode *vp;
 	IN int name;
-	OUT int *retval;
+	OUT register_t *retval;
 };
 
 #
@@ -462,7 +472,9 @@ vop_update {
 	IN int waitfor;
 };
 
+#
 # Needs work: no vp?
+#
 #vop_bwrite {
 #	IN struct buf *bp;
 #};
