@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfsproto.h	7.10 (Berkeley) 09/16/92
+ *	@(#)nfsproto.h	7.11 (Berkeley) 09/30/92
  */
 
 /*
@@ -118,8 +118,9 @@
 #define	NQNFSPROC_GETLEASE	19
 #define	NQNFSPROC_VACATED	20
 #define	NQNFSPROC_EVICTED	21
+#define	NQNFSPROC_ACCESS	22
 
-#define	NFS_NPROCS		22
+#define	NFS_NPROCS		23
 /* Conversion macros */
 extern int		vttoif_tab[];
 #define	vtonfs_mode(t,m) \
