@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_bio.c	7.2 (Berkeley) 12/06/91
+ *	@(#)lfs_bio.c	7.3 (Berkeley) 12/13/91
  */
 
 #include <sys/param.h>
@@ -49,7 +49,6 @@ lfs_bwrite(bp)
 printf("lfs_bwrite\n");
 #endif
 	/*
-	 *
 	 * LFS version of bawrite, bdwrite, bwrite.  Set the delayed write
 	 * flag and use reassignbuf to move the buffer from the clean list
 	 * to the dirty one, then unlock the buffer.  Note, we set the
@@ -61,8 +60,8 @@ printf("lfs_bwrite\n");
 	 * No accounting for the cost of the write is currently done.
 	 * This is almost certainly wrong for synchronous operations, i.e. NFS.
 	 */
-	bp->b_flags &= ~(B_READ | B_DONE | B_ERROR);
 	bp->b_flags |= B_DELWRI | B_LOCKED;
+	bp->b_flags &= ~(B_READ | B_DONE | B_ERROR);
 	reassignbuf(bp, bp->b_vp);
 	brelse(bp);
 	return (0);
