@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)clock.c	8.6 (Berkeley) 09/29/93";
+static char sccsid[] = "@(#)clock.c	8.7 (Berkeley) 10/21/93";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -166,6 +166,7 @@ tick()
 	register time_t now;
 	register EVENT *ev;
 	int mypid = getpid();
+	int olderrno = errno;
 #ifdef SIG_UNBLOCK
 	sigset_t ss;
 #endif
@@ -221,6 +222,7 @@ tick()
 #endif /* SIG_UNBLOCK */
 
 		/* call ev_func */
+		errno = olderrno;
 		(*f)(arg);
 		(void) alarm(0);
 		now = curtime();
@@ -228,6 +230,7 @@ tick()
 	(void) setsignal(SIGALRM, tick);
 	if (EventQueue != NULL)
 		(void) alarm((unsigned) (EventQueue->ev_time - now));
+	errno = olderrno;
 }
 /*
 **  SLEEP -- a version of sleep that works with this stuff
