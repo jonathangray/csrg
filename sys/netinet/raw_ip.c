@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)raw_ip.c	8.6 (Berkeley) 05/01/95
+ *	@(#)raw_ip.c	8.7 (Berkeley) 05/15/95
  */
 
 #include <sys/param.h>
@@ -230,6 +230,7 @@ rip_ctloutput(op, so, level, optname, m)
 
 	default:
 		if (optname >= DVMRP_INIT) {
+#ifdef MROUTING
 			if (op == PRCO_SETOPT) {
 				error = ip_mrouter_cmd(optname, so, *m);
 				if (*m)
@@ -237,6 +238,11 @@ rip_ctloutput(op, so, level, optname, m)
 			} else
 				error = EINVAL;
 			return (error);
+#else
+			if (op == PRCO_SETOPT && *m)
+				(void)m_free(*m);
+			return (EOPNOTSUPP);
+#endif
 		}
 
 	}
