@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lookup.c	8.2 (Berkeley) 09/21/93
+ *	@(#)ufs_lookup.c	8.3 (Berkeley) 09/23/93
  */
 
 #include <sys/param.h>
@@ -382,7 +382,7 @@ searchloop:
 				enduseful = slotoffset + slotsize;
 		}
 		dp->i_endoff = roundup(enduseful, DIRBLKSIZ);
-		dp->i_flag |= IUPDATE | ICHANGE;
+		dp->i_flag |= IN_CHANGE | IN_UPDATE;
 		/*
 		 * We return with the directory locked, so that
 		 * the parameters we set up above will still be
@@ -418,7 +418,7 @@ found:
 	if (entryoffsetinblock + DIRSIZ(FSFMT(vdp), ep) > dp->i_size) {
 		ufs_dirbad(dp, dp->i_offset, "i_size too small");
 		dp->i_size = entryoffsetinblock + DIRSIZ(FSFMT(vdp), ep);
-		dp->i_flag |= IUPDATE | ICHANGE;
+		dp->i_flag |= IN_CHANGE | IN_UPDATE;
 	}
 
 	/*
@@ -665,7 +665,7 @@ ufs_direnter(ip, dvp, cnp)
 		 * new entry into a fresh block.
 		 */
 		if (dp->i_offset & (DIRBLKSIZ - 1))
-			panic("wdir: newblk");
+			panic("ufs_direnter: newblk");
 		auio.uio_offset = dp->i_offset;
 		newdir.d_reclen = DIRBLKSIZ;
 		auio.uio_resid = newentrysize;
@@ -683,7 +683,7 @@ ufs_direnter(ip, dvp, cnp)
 			panic("ufs_direnter: frag size");
 		else if (!error) {
 			dp->i_size = roundup(dp->i_size, DIRBLKSIZ);
-			dp->i_flag |= ICHANGE;
+			dp->i_flag |= IN_CHANGE;
 		}
 		return (error);
 	}
@@ -742,18 +742,18 @@ ufs_direnter(ip, dvp, cnp)
 	 */
 	if (ep->d_ino == 0) {
 		if (spacefree + dsize < newentrysize)
-			panic("wdir: compact1");
+			panic("ufs_direnter: compact1");
 		newdir.d_reclen = spacefree + dsize;
 	} else {
 		if (spacefree < newentrysize)
-			panic("wdir: compact2");
+			panic("ufs_direnter: compact2");
 		newdir.d_reclen = spacefree;
 		ep->d_reclen = dsize;
 		ep = (struct direct *)((char *)ep + dsize);
 	}
 	bcopy((caddr_t)&newdir, (caddr_t)ep, (u_int)newentrysize);
 	error = VOP_BWRITE(bp);
-	dp->i_flag |= IUPDATE | ICHANGE;
+	dp->i_flag |= IN_CHANGE | IN_UPDATE;
 	if (!error && dp->i_endoff && dp->i_endoff < dp->i_size)
 		error = VOP_TRUNCATE(dvp, (off_t)dp->i_endoff, IO_SYNC,
 		    cnp->cn_cred, cnp->cn_proc);
@@ -792,7 +792,7 @@ ufs_dirremove(dvp, cnp)
 			return (error);
 		ep->d_ino = 0;
 		error = VOP_BWRITE(bp);
-		dp->i_flag |= IUPDATE | ICHANGE;
+		dp->i_flag |= IN_CHANGE | IN_UPDATE;
 		return (error);
 	}
 	/*
@@ -803,7 +803,7 @@ ufs_dirremove(dvp, cnp)
 		return (error);
 	ep->d_reclen += dp->i_reclen;
 	error = VOP_BWRITE(bp);
-	dp->i_flag |= IUPDATE | ICHANGE;
+	dp->i_flag |= IN_CHANGE | IN_UPDATE;
 	return (error);
 }
 
@@ -828,7 +828,7 @@ ufs_dirrewrite(dp, ip, cnp)
 	if (vdp->v_mount->mnt_maxsymlinklen > 0)
 		ep->d_type = IFTODT(ip->i_mode);
 	error = VOP_BWRITE(bp);
-	dp->i_flag |= IUPDATE | ICHANGE;
+	dp->i_flag |= IN_CHANGE | IN_UPDATE;
 	return (error);
 }
 
