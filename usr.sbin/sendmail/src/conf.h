@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.72 (Berkeley) 01/03/94
+ *	@(#)conf.h	8.73 (Berkeley) 01/05/94
  */
 
 /*
@@ -143,6 +143,7 @@
 # ifndef IDENTPROTO
 #  define IDENTPROTO	0	/* TCP/IP implementation is broken */
 # endif
+# define syslog		hard_syslog
 # endif
 
 
@@ -306,7 +307,7 @@ extern long	dgux_inet_addr();
 # define HASFLOCK	1	/* has flock(2) call */
 # define LA_TYPE	LA_INT
 # ifndef _PATH_SENDMAILPID
-#  define _PATH_SENDMAILPID	"/var/run/sendmial.pid"
+#  define _PATH_SENDMAILPID	"/var/run/sendmail.pid"
 # endif
 #endif
 
