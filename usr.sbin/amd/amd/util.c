@@ -1,6 +1,4 @@
 /*
- * $Id: util.c,v 5.2.1.4 91/03/17 17:44:16 jsp Alpha $
- *
  * Copyright (c) 1990 Jan-Simon Pendry
  * Copyright (c) 1990 Imperial College of Science, Technology & Medicine
  * Copyright (c) 1990 The Regents of the University of California.
@@ -37,7 +35,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)util.c	5.2 (Berkeley) 03/17/91
+ *	@(#)util.c	5.3 (Berkeley) 05/12/91
+ *
+ * $Id: util.c,v 5.2.1.8 91/05/07 22:18:41 jsp Alpha $
+ *
  */
 
 /*
@@ -345,8 +346,9 @@ void mf_mounted(mf)
 mntfs *mf;
 {
 	int quoted;
+	int wasmounted = mf->mf_flags & MFF_MOUNTED;
 
-	if (!(mf->mf_flags & MFF_MOUNTED)) {
+	if (!wasmounted) {
 		/*
 		 * If this is a freshly mounted
 		 * filesystem then update the
@@ -368,10 +370,11 @@ mntfs *mf;
 	 * Log message
 	 */
 	quoted = strchr(mf->mf_info, ' ') != 0;
-	plog(XLOG_INFO, "%s%s%s mounted fstype %s on %s",
+	plog(XLOG_INFO, "%s%s%s %s fstype %s on %s",
 		quoted ? "\"" : "",
 		mf->mf_info,
 		quoted ? "\"" : "",
+		wasmounted ? "referenced" : "mounted",
 		mf->mf_ops->fs_type, mf->mf_mount);
 }
 
@@ -442,7 +445,8 @@ am_node *mp;
 	mf->mf_flags |= MFF_MOUNTING;
 	error = (*mf->mf_ops->mount_fs)(mp);
 	mf = mp->am_mnt;
-	mf->mf_flags &= ~MFF_MOUNTING;
+	if (error >= 0)
+		mf->mf_flags &= ~MFF_MOUNTING;
 	if (!error && !(mf->mf_ops->fs_flags & FS_MBACKGROUND)) {
 		/* ...but see ifs_mount */
 		am_mounted(mp);
@@ -501,7 +505,6 @@ am_node *mp;
  * TODO: Need a better strategy for handling errors
  */
 static int dofork(P_void);
-INLINE
 static int dofork()
 {
 	int pid;
@@ -528,13 +531,16 @@ int background()
 	if (pid == 0) {
 #ifdef DEBUG
 		dlog("backgrounded");
-#endif /* DEBUG */
+#endif
 		foreground = 0;
 	}
 
 	return pid;
 }
 
+/*
+ * Make all the directories in the path.
+ */
 int mkdirs P((char *path, int mode));
 int mkdirs(path, mode)
 char *path;
@@ -562,7 +568,7 @@ int mode;
 		} else {
 #ifdef DEBUG
 			dlog("mkdir(%s)", p2);
-#endif /* DEBUG */
+#endif
 		}
 		*sp = '/';
 	}
@@ -572,7 +578,7 @@ int mode;
 	} else {
 #ifdef DEBUG
 		dlog("mkdir(%s)", p2);
-#endif /* DEBUG */
+#endif
 	}
 
 #ifdef SUNOS4_WORKAROUND
@@ -598,6 +604,12 @@ int mode;
 		(stb.st_mode & S_IFMT) == S_IFDIR ? 0 : error_so_far;
 }
 
+/*
+ * Remove as many directories in the path as possible.
+ * Give up if the directory doesn't appear to have
+ * been created by Amd (not mode dr-x) or an rmdir
+ * fails for any reason.
+ */
 void rmdirs P((char *dir));
 void rmdirs(dir)
 char *dir;
@@ -614,13 +626,16 @@ char *dir;
 		 */
 		if (stat(xdp, &stb) == 0 && (stb.st_mode & 0200) == 0) {
 			if (rmdir(xdp) < 0) {
-				if (errno != ENOTEMPTY && errno != EBUSY && errno != EEXIST)
+				if (errno != ENOTEMPTY &&
+				    errno != EBUSY &&
+				    errno != EEXIST &&
+				    errno != EINVAL)
 					plog(XLOG_ERROR, "rmdir(%s): %m", xdp);
 				break;
 			} else {
 #ifdef DEBUG
 				dlog("rmdir(%s)", xdp);
-#endif /* DEBUG */
+#endif
 			}
 		} else {
 			break;
