@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_descrip.c	8.2 (Berkeley) 09/23/93
+ *	@(#)kern_descrip.c	8.3 (Berkeley) 01/04/94
  */
 
 #include <sys/param.h>
@@ -773,7 +773,6 @@ flock(p, uap, retval)
 	register struct file *fp;
 	struct vnode *vp;
 	struct flock lf;
-	int error;
 
 	if ((unsigned)uap->fd >= fdp->fd_nfiles ||
 	    (fp = fdp->fd_ofiles[uap->fd]) == NULL)
