@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)setterm.c	5.18 (Berkeley) 05/10/93";
+static char sccsid[] = "@(#)setterm.c	5.19 (Berkeley) 05/16/93";
 #endif /* not lint */
 
 #include <sys/ioctl.h>
@@ -89,7 +89,7 @@ setterm(type)
 	char *p;
 
 #ifdef DEBUG
-	__TRACE("setterm: (\"%s\")\nLINES = %d, COLS = %d\n",
+	__CTRACE("setterm: (\"%s\")\nLINES = %d, COLS = %d\n",
 	    type, LINES, COLS);
 #endif
 	if (type[0] == '\0')
@@ -100,7 +100,7 @@ setterm(type)
 		strcpy(genbuf, "xx|dumb:");
 	}
 #ifdef DEBUG
-	__TRACE("setterm: tty = %s\n", type);
+	__CTRACE("setterm: tty = %s\n", type);
 #endif
 
 	/* Try TIOCGWINSZ, and, if it fails, the termcap entry. */
@@ -126,7 +126,7 @@ setterm(type)
 		return (ERR);
 
 #ifdef DEBUG
-	__TRACE("setterm: LINES = %d, COLS = %d\n", LINES, COLS);
+	__CTRACE("setterm: LINES = %d, COLS = %d\n", LINES, COLS);
 #endif
 	aoftspace = tspace;
 	zap();			/* Get terminal description. */
@@ -180,7 +180,7 @@ zap()
 		*(tmp + 1) = *(namp + 1);
 		*(*fp++) = tgetflag(tmp);
 #ifdef DEBUG
-		__TRACE("2.2s = %s\n", namp, *fp[-1] ? "TRUE" : "FALSE");
+		__CTRACE("2.2s = %s\n", namp, *fp[-1] ? "TRUE" : "FALSE");
 #endif
 		namp += 2;
 		
@@ -192,11 +192,11 @@ zap()
 		*(tmp + 1) = *(namp + 1);
 		*(*sp++) = tgetstr(tmp, &aoftspace);
 #ifdef DEBUG
-		__TRACE("2.2s = %s", namp, *sp[-1] == NULL ? "NULL\n" : "\"");
+		__CTRACE("2.2s = %s", namp, *sp[-1] == NULL ? "NULL\n" : "\"");
 		if (*sp[-1] != NULL) {
 			for (cp = *sp[-1]; *cp; cp++)
-				__TRACE("%s", unctrl(*cp));
-			__TRACE("\"\n");
+				__CTRACE("%s", unctrl(*cp));
+			__CTRACE("\"\n");
 		}
 #endif
 		namp += 2;
