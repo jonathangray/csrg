@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_pageout.c	8.4 (Berkeley) 01/12/94
+ *	@(#)vm_pageout.c	8.5 (Berkeley) 02/14/94
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
@@ -209,7 +209,7 @@ vm_pageout_scan()
 		 * queue (due to potential blocking in the pager with the
 		 * queues unlocked).  If it isn't, we just start over.
 		 */
-		if ((next->flags & PG_INACTIVE) == 0)
+		if (next && (next->flags & PG_INACTIVE) == 0)
 			next = vm_page_queue_inactive.tqh_first;
 	}
 	
