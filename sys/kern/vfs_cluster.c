@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_cluster.c	7.36 (Berkeley) 04/15/91
+ *	@(#)vfs_cluster.c	7.37 (Berkeley) 04/19/91
  */
 
 #include "param.h"
@@ -619,6 +619,8 @@ mntflushbuf(mountp, flags)
 		panic("mntflushbuf: not busy");
 loop:
 	for (vp = mountp->mnt_mounth; vp; vp = vp->v_mountf) {
+		if (VOP_ISLOCKED(vp))
+			continue;
 		if (vget(vp))
 			goto loop;
 		vflushbuf(vp, flags);
