@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_socket.c	7.25 (Berkeley) 03/09/92
+ *	@(#)nfs_socket.c	7.26 (Berkeley) 03/13/92
  */
 
 /*
@@ -471,6 +471,7 @@ nfs_receive(rep, aname, mp)
 	u_long len;
 	struct mbuf **getnam;
 	int error, sotype, rcvflg;
+	struct proc *p = curproc;	/* XXX */
 
 	/*
 	 * Set up arguments for soreceive()
@@ -533,6 +534,7 @@ tryagain:
 			auio.uio_rw = UIO_READ;
 			auio.uio_offset = 0;
 			auio.uio_resid = sizeof(u_long);
+			auio.uio_procp = p;
 			do {
 			   rcvflg = MSG_WAITALL;
 			   error = soreceive(so, (struct mbuf **)0, &auio,
@@ -592,6 +594,7 @@ tryagain:
 			 * on.
 			 */
 			auio.uio_resid = len = 100000000; /* Anything Big */
+			auio.uio_procp = p;
 			do {
 			    rcvflg = 0;
 			    error =  soreceive(so, (struct mbuf **)0,
@@ -633,6 +636,7 @@ errout:
 		else
 			getnam = aname;
 		auio.uio_resid = len = 1000000;
+		auio.uio_procp = p;
 		do {
 			rcvflg = 0;
 			error =  soreceive(so, getnam, &auio, mp,
@@ -1749,6 +1753,7 @@ nfsrv_rcv(so, arg, waitflag)
 		slp->ns_flag |= SLP_NEEDQ; goto dorecs;
 	}
 #endif
+	auio.uio_procp = NULL;
 	if (so->so_type == SOCK_STREAM) {
 		/*
 		 * If there are already records on the queue, defer soreceive()
