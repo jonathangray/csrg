@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pm.c	8.1 (Berkeley) 06/10/93
+ *	@(#)pm.c	8.2 (Berkeley) 06/02/95
  */
 
 /* 
@@ -198,6 +198,7 @@ pmclose(dev, flag)
 /*ARGSUSED*/
 pmioctl(dev, cmd, data, flag, p)
 	dev_t dev;
+	u_long cmd;
 	caddr_t data;
 	struct proc *p;
 {
