@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef NAMED_BIND
-static char sccsid[] = "@(#)domain.c	8.1 (Berkeley) 06/07/93 (with name server)";
+static char sccsid[] = "@(#)domain.c	8.2 (Berkeley) 07/16/93 (with name server)";
 #else
-static char sccsid[] = "@(#)domain.c	8.1 (Berkeley) 06/07/93 (without name server)";
+static char sccsid[] = "@(#)domain.c	8.2 (Berkeley) 07/16/93 (without name server)";
 #endif
 #endif /* not lint */
 
@@ -96,18 +96,20 @@ getmxrr(host, mxhosts, droplocalhost, rcode)
 {
 	extern int h_errno;
 	register u_char *eom, *cp;
-	register int i, j, n, nmx;
+	register int i, j, n;
+	int nmx = 0;
 	register char *bp;
 	HEADER *hp;
 	querybuf answer;
 	int ancount, qdcount, buflen;
-	bool seenlocal;
+	bool seenlocal = FALSE;
 	u_short pref, localpref, type;
 	char *fallbackMX = FallBackMX;
 	static bool firsttime = TRUE;
 	STAB *st;
 	u_short prefer[MAXMXHOSTS];
 	int weight[MAXMXHOSTS];
+	extern bool getcanonname();
 
 	if (fallbackMX != NULL)
 	{
@@ -167,8 +169,6 @@ getmxrr(host, mxhosts, droplocalhost, rcode)
 	for (qdcount = ntohs(hp->qdcount); qdcount--; cp += n + QFIXEDSZ)
 		if ((n = dn_skipname(cp, eom)) < 0)
 			goto punt;
-	nmx = 0;
-	seenlocal = FALSE;
 	buflen = sizeof(MXHostBuf) - 1;
 	bp = MXHostBuf;
 	ancount = ntohs(hp->ancount);
@@ -216,58 +216,68 @@ getmxrr(host, mxhosts, droplocalhost, rcode)
 		*bp++ = '\0';
 		buflen -= n + 1;
 	}
+
+	/* sort the records */
+	for (i = 0; i < nmx; i++)
+	{
+		for (j = i + 1; j < nmx; j++)
+		{
+			if (prefer[i] > prefer[j] ||
+			    (prefer[i] == prefer[j] && weight[i] > weight[j]))
+			{
+				register int temp;
+				register char *temp1;
+
+				temp = prefer[i];
+				prefer[i] = prefer[j];
+				prefer[j] = temp;
+				temp1 = mxhosts[i];
+				mxhosts[i] = mxhosts[j];
+				mxhosts[j] = temp1;
+				temp = weight[i];
+				weight[i] = weight[j];
+				weight[j] = temp;
+			}
+		}
+		if (seenlocal && prefer[i] >= localpref)
+		{
+			/* truncate higher preference part of list */
+			nmx = i;
+		}
+	}
+
 	if (nmx == 0)
 	{
 punt:
-		mxhosts[0] = strcpy(MXHostBuf, host);
-		bp = &MXHostBuf[strlen(MXHostBuf)];
-		if (bp[-1] != '.')
+		if (seenlocal &&
+		    (!TryNullMXList || gethostbyname(host) == NULL))
 		{
-			*bp++ = '.';
-			*bp = '\0';
+			/*
+			**  If we have deleted all MX entries, this is
+			**  an error -- we should NEVER send to a host that
+			**  has an MX, and this should have been caught
+			**  earlier in the config file.
+			**
+			**  Some sites prefer to go ahead and try the
+			**  A record anyway; that case is handled by
+			**  setting TryNullMXList.  I believe this is a
+			**  bad idea, but it's up to you....
+			*/
+
+			*rcode = EX_CONFIG;
+			return -1;
+		}
+		mxhosts[0] = strcpy(MXHostBuf, host);
+		if (getcanonname(MXHostBuf, sizeof MXHostBuf - 1, FALSE))
+		{
+			bp = &MXHostBuf[strlen(MXHostBuf)];
+			if (bp[-1] != '.')
+			{
+				*bp++ = '.';
+				*bp = '\0';
+			}
 		}
 		nmx = 1;
-	}
-	else
-	{
-		/* sort the records */
-		for (i = 0; i < nmx; i++)
-		{
-			for (j = i + 1; j < nmx; j++)
-			{
-				if (prefer[i] > prefer[j] ||
-				    (prefer[i] == prefer[j] && weight[i] > weight[j]))
-				{
-					register int temp;
-					register char *temp1;
-
-					temp = prefer[i];
-					prefer[i] = prefer[j];
-					prefer[j] = temp;
-					temp1 = mxhosts[i];
-					mxhosts[i] = mxhosts[j];
-					mxhosts[j] = temp1;
-					temp = weight[i];
-					weight[i] = weight[j];
-					weight[j] = temp;
-				}
-			}
-			if (seenlocal && prefer[i] >= localpref)
-			{
-				/*
-				 * truncate higher pref part of list; if we're
-				 * the best choice left, we should have realized
-				 * awhile ago that this was a local delivery.
-				 */
-				if (i == 0)
-				{
-					*rcode = EX_CONFIG;
-					return (-1);
-				}
-				nmx = i;
-				break;
-			}
-		}
 	}
 
 	/* if we have a default lowest preference, include that */
@@ -348,6 +358,7 @@ mxrand(host)
 **		host -- a buffer containing the name of the host.
 **			This is a value-result parameter.
 **		hbsize -- the size of the host buffer.
+**		trymx -- if set, try MX records as well as A and CNAME.
 **
 **	Returns:
 **		TRUE -- if the host matched.
@@ -355,9 +366,10 @@ mxrand(host)
 */
 
 bool
-getcanonname(host, hbsize)
+getcanonname(host, hbsize, trymx)
 	char *host;
 	int hbsize;
+	bool trymx;
 {
 	extern int h_errno;
 	register u_char *eom, *ap;
@@ -452,7 +464,7 @@ cnameloop:
 					qtype = T_A;
 					continue;
 				}
-				else if (qtype == T_A && !gotmx)
+				else if (qtype == T_A && !gotmx && trymx)
 				{
 					qtype = T_MX;
 					continue;
@@ -571,7 +583,7 @@ cnameloop:
 
 		if (qtype == T_ANY)
 			qtype = T_A;
-		else if (qtype == T_A && !gotmx)
+		else if (qtype == T_A && !gotmx && trymx)
 			qtype = T_MX;
 		else
 		{
@@ -722,9 +734,10 @@ retry:
 #include <netdb.h>
 
 bool
-getcanonname(host, hbsize)
+getcanonname(host, hbsize, trymx)
 	char *host;
 	int hbsize;
+	bool trymx;
 {
 	struct hostent *hp;
 
