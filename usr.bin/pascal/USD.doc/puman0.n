@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)puman0.n	8.1 (Berkeley) 06/08/93
+.\"	@(#)puman0.n	8.2 (Berkeley) 05/25/94
 .\"
 .so tmac.p
 .EH 'PSD:7-%''Berkeley Pascal User\'s Manual'
@@ -57,9 +57,10 @@ W. N. Joy, S. L. Graham, C. B. Haley, M. K. McKusick, P. B. Kessler
 .FE
 .FS
 \(ddAuthor's current addresses:
-William Joy: Sun Microsystems, 2550 Garcia Ave., Mountain View, CA 94043;
+William Joy and Peter Kessler:
+Sun Microsystems, 2550 Garcia Ave., Mountain View, CA 94043;
 Charles Haley: S & B Associates, 1110 Centennial Ave., Piscataway, NJ  08854;
-Peter Kessler: Xerox Research Park, Palo Alto, CA
+Marshall Kirk McKusick: 1614 Oxford St, Berkeley, CA 94709-1608
 .FE
 .PP
 Berkeley
