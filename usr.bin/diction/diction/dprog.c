@@ -1,6 +1,12 @@
+/*-
+ * This module is believed to contain source code proprietary to AT&T.
+ * Use and redistribution is subject to the Berkeley Software License
+ * Agreement and your Software Agreement with AT&T (Western Electric).
+ */
+
 #ifndef lint
-static char sccsid[] = "@(#)dprog.c	4.4	(Berkeley)	91/03/01";
-#endif not lint
+static char sccsid[] = "@(#)dprog.c	4.5 (Berkeley) 04/17/91";
+#endif /* not lint */
 
 /*
  * diction -- print all sentences containing one of default phrases
