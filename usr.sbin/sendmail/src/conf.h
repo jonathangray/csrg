@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	6.23 (Berkeley) 04/27/93
+ *	@(#)conf.h	6.24 (Berkeley) 04/27/93
  */
 
 /*
@@ -142,6 +142,17 @@
 **  primarily to provide back compatibility for older systems -- for
 **  example, it includes some POSIX compatibility definitions
 */
+
+/* System 5 compatibility */
+#ifndef S_ISREG
+#define S_ISREG(foo)	((foo & S_IFREG) == S_IFREG)
+#endif
+#ifndef S_IWGRP
+#define S_IWGRP		020
+#endif
+#ifndef S_IWOTH
+#define S_IWOTH		002
+#endif
 
 /*
 **  Older systems don't have this error code -- it should be in
