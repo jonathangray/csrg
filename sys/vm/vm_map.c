@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_map.c	8.4 (Berkeley) 01/09/95
+ *	@(#)vm_map.c	8.5 (Berkeley) 04/12/95
  *
  *
  * Copyright (c) 1987, 1990 Carnegie-Mellon University.
