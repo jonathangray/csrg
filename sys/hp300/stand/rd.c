@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: rd.c 1.17 92/06/18$
  *
- *	@(#)rd.c	7.4 (Berkeley) 06/18/92
+ *	@(#)rd.c	7.5 (Berkeley) 08/14/92
  */
 
 /*
@@ -224,6 +224,7 @@ rdopen(io)
 		return (EPART);
 	ri = &rdinfo[rs->sc_type];
 	io->i_boff = ri->cyloff[part] * ri->nbpc;
+	return (0);
 }
 
 rdstrategy(io, func)
@@ -234,6 +235,9 @@ rdstrategy(io, func)
 	register int unit = io->i_ctlr;
 	register struct rd_softc *rs = &rd_softc[ctlr][unit];
 	char stat;
+
+	if (io->i_cc == 0)
+		return(0);
 
 	rs->sc_retry = 0;
 	rd_ioc.c_unit = C_SUNIT(0);
