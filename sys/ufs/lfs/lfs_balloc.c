@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_balloc.c	7.40 (Berkeley) 11/17/92
+ *	@(#)lfs_balloc.c	7.41 (Berkeley) 12/10/92
  */
 #include <sys/param.h>
 #include <sys/buf.h>
@@ -126,7 +126,7 @@ lfs_balloc(vp, iosize, lbn, bpp)
 			bp->b_blkno = daddr;		/* Skip the I/O */
 		else  {
 			bp->b_blkno = daddr;
-			bp->b_flags != B_READ;
+			bp->b_flags |= B_READ;
 			VOP_STRATEGY(bp);
 			return(biowait(bp));
 		}
