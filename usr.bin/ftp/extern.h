@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)extern.h	8.1 (Berkeley) 04/02/94
+ *	@(#)extern.h	8.2 (Berkeley) 04/03/94
  */
 
 struct timeval;
@@ -61,7 +61,6 @@ void	doproxy __P((int, char **));
 char   *dotrans __P((char *));
 int     empty __P((struct fd_set *, int));
 void	fatal __P((char *));
-char  **ftpglob __P((char *));
 void	get __P((int, char **));
 struct cmd *getcmd __P((char *));
 int	getit __P((int, char **, int, char *));
@@ -145,7 +144,6 @@ extern int	abrtflag;
 extern struct	cmd cmdtab[];
 extern FILE	*cout;
 extern int	data;
-extern char    *globerr;
 extern char    *home;
 extern jmp_buf	jabort;
 extern int	proxy;
