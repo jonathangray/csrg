@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ioctl.h	8.3 (Berkeley) 01/07/94
+ *	@(#)ioctl.h	8.4 (Berkeley) 01/11/94
  */
 
 #ifndef	_SYS_IOCTL_H_
