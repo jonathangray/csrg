@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_proc.c	8.5 (Berkeley) 08/22/94
+ *	@(#)kern_proc.c	8.6 (Berkeley) 01/09/95
  */
 
 #include <sys/param.h>
@@ -74,6 +74,7 @@ struct proclist zombproc;
 /*
  * Initialize global process hashing structures.
  */
+void
 procinit()
 {
 
@@ -261,6 +262,7 @@ leavepgrp(p)
 /*
  * delete a process group
  */
+void
 pgdelete(pgrp)
 	register struct pgrp *pgrp;
 {
@@ -286,6 +288,7 @@ static void orphanpg();
  * entering == 0 => p is leaving specified group.
  * entering == 1 => p is entering specified group.
  */
+void
 fixjobc(p, pgrp, entering)
 	register struct proc *p;
 	register struct pgrp *pgrp;
