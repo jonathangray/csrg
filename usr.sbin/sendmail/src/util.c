@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)util.c	8.42 (Berkeley) 07/23/94";
+static char sccsid[] = "@(#)util.c	8.43 (Berkeley) 08/07/94";
 #endif /* not lint */
 
 # include "sendmail.h"
@@ -897,9 +897,6 @@ xfclose(fp, a, b)
 
 static jmp_buf	CtxReadTimeout;
 static int	readtimeout();
-static EVENT	*GlobalTimeout = NULL;
-static bool	EnableTimeout = FALSE;
-static int	ReadProgress;
 
 char *
 sfgets(buf, siz, fp, timeout, during)
@@ -937,10 +934,7 @@ sfgets(buf, siz, fp, timeout, during)
 #endif
 			return (NULL);
 		}
-		if (GlobalTimeout == NULL)
-			ev = setevent(timeout, readtimeout, 0);
-		else
-			EnableTimeout = TRUE;
+		ev = setevent(timeout, readtimeout, 0);
 	}
 
 	/* try to read */
@@ -955,10 +949,7 @@ sfgets(buf, siz, fp, timeout, during)
 	}
 
 	/* clear the event if it has not sprung */
-	if (GlobalTimeout == NULL)
-		clrevent(ev);
-	else
-		EnableTimeout = FALSE;
+	clrevent(ev);
 
 	/* clean up the books and exit */
 	LineNumber++;
@@ -990,44 +981,11 @@ sfgets(buf, siz, fp, timeout, during)
 	return (buf);
 }
 
-void
-sfgetset(timeout)
-	time_t timeout;
-{
-	/* cancel pending timer */
-	if (GlobalTimeout != NULL)
-	{
-		clrevent(GlobalTimeout);
-		GlobalTimeout = NULL;
-	}
-
-	/* schedule fresh one if so requested */
-	if (timeout != 0)
-	{
-		ReadProgress = LineNumber;
-		GlobalTimeout = setevent(timeout, readtimeout, timeout);
-	}
-}
-
 static
 readtimeout(timeout)
 	time_t timeout;
 {
-	/* terminate if ordinary timeout */
-	if (GlobalTimeout == NULL)
-		longjmp(CtxReadTimeout, 1);
-
-	/* terminate if no progress was made -- reset state */
-	if (EnableTimeout && (LineNumber <= ReadProgress))
-	{
-		EnableTimeout = FALSE;
-		GlobalTimeout = NULL;
-		longjmp(CtxReadTimeout, 2);
-	}
-
-	/* schedule a new timeout */
-	GlobalTimeout = NULL;
-	sfgetset(timeout);
+	longjmp(CtxReadTimeout, 1);
 }
 /*
 **  FGETFOLDED -- like fgets, but know about folded lines.
