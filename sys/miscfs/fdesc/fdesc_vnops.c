@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)fdesc_vnops.c	8.13 (Berkeley) 03/29/95
+ *	@(#)fdesc_vnops.c	8.14 (Berkeley) 04/03/95
  *
  * $Id: fdesc_vnops.c,v 1.12 1993/04/06 16:17:17 jsp Exp $
  */
@@ -868,6 +868,7 @@ fdesc_badop()
 #define fdesc_close ((int (*) __P((struct  vop_close_args *)))nullop)
 #define fdesc_access ((int (*) __P((struct  vop_access_args *)))nullop)
 #define fdesc_mmap ((int (*) __P((struct  vop_mmap_args *)))eopnotsupp)
+#define	fdesc_revoke vop_revoke
 #define fdesc_fsync ((int (*) __P((struct  vop_fsync_args *)))nullop)
 #define fdesc_seek ((int (*) __P((struct  vop_seek_args *)))nullop)
 #define fdesc_remove ((int (*) __P((struct  vop_remove_args *)))eopnotsupp)
@@ -910,6 +911,7 @@ struct vnodeopv_entry_desc fdesc_vnodeop_entries[] = {
 	{ &vop_write_desc, fdesc_write },	/* write */
 	{ &vop_ioctl_desc, fdesc_ioctl },	/* ioctl */
 	{ &vop_select_desc, fdesc_select },	/* select */
+	{ &vop_revoke_desc, fdesc_revoke },	/* revoke */
 	{ &vop_mmap_desc, fdesc_mmap },		/* mmap */
 	{ &vop_fsync_desc, fdesc_fsync },	/* fsync */
 	{ &vop_seek_desc, fdesc_seek },		/* seek */
