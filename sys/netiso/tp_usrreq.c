@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tp_usrreq.c	7.23 (Berkeley) 08/30/91
+ *	@(#)tp_usrreq.c	7.24 (Berkeley) 10/02/91
  */
 
 /***********************************************************
@@ -507,8 +507,6 @@ tp_usrreq(so, req, m, nam, controlp)
 			(tpcb->tp_nlproto->nlp_getsufx)(tpcb->tp_npcb, &tpcb->tp_fsuffixlen,
 				tpcb->tp_fsuffix, TP_FOREIGN);
 		}
-		(void) (tpcb->tp_nlproto->nlp_mtu)(so, tpcb->tp_npcb,
-					&tpcb->tp_l_tpdusize, &tpcb->tp_tpdusize, 0);
 		if (tpcb->tp_state == TP_CLOSED) {
 			soisconnecting(so);  
 			error = DoEvent(T_CONN_req);
