@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)a2.t	1.2 (Berkeley) 10/14/90
+.\"	@(#)a2.t	5.1 (Berkeley) 04/17/91
 .\"
 .SH
 run (shell script)
