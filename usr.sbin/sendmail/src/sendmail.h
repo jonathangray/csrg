@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	8.92 (Berkeley) 03/05/95
+ *	@(#)sendmail.h	8.93 (Berkeley) 03/05/95
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	8.92		03/05/95";
+static char SmailSccsId[] =	"@(#)sendmail.h	8.93		03/05/95";
 # endif
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -1092,7 +1092,7 @@ extern char		*hvalue __P((char *, HDR *));
 extern char		*defcharset __P((ENVELOPE *));
 extern bool		emptyaddr __P((ADDRESS *));
 extern int		sendtolist __P((char *, ADDRESS *, ADDRESS **, int, ENVELOPE *));
-extern bool		wordinclass __P((char *, char));
+extern bool		wordinclass __P((char *, int));
 extern char		*denlstring __P((char *, int, int));
 extern void		printaddr __P((ADDRESS *, bool));
 extern void		makelower __P((char *));
