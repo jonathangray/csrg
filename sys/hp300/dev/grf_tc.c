@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: grf_tc.c 1.20 93/08/13$
  *
- *	@(#)grf_tc.c	8.3 (Berkeley) 01/04/94
+ *	@(#)grf_tc.c	8.4 (Berkeley) 01/12/94
  */
 
 #include "grf.h"
@@ -125,6 +125,7 @@ tc_init(gp, addr)
 /*ARGSUSED*/
 tc_mode(gp, cmd, data)
 	struct grf_softc *gp;
+	int cmd;
 	caddr_t data;
 {
 	int error = 0;
