@@ -1,4 +1,4 @@
-SCCSID = "@(#)Makefile 1.22 05/30/85"
+SCCSID = "@(#)Makefile 1.23 06/19/87"
 
 CFLAGS = -O
 
