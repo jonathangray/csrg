@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_socket.c	7.43 (Berkeley) 04/27/93
+ *	@(#)nfs_socket.c	8.1 (Berkeley) 06/10/93
  */
 
 /*
