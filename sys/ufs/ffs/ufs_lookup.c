@@ -89,11 +89,15 @@ int	dirchk = 0;
  * NOTE: (LOOKUP | LOCKPARENT) currently returns the parent inode unlocked.
  */
 int
-ufs_lookup(dvp, vpp, cnp)
-	struct vnode *dvp;
-	struct vnode **vpp;
-	struct componentname *cnp;
+ufs_lookup (ap)
+	struct vop_lookup_args *ap;
+#define dvp (ap->a_dvp)
+#define vpp (ap->a_vpp)
+#define cnp (ap->a_cnp)
 {
+	USES_VOP_ACCESS;
+	USES_VOP_BLKATOFF;
+	USES_VOP_VGET;
 	register struct inode *dp;	/* the directory we are searching */
 	struct buf *bp;			/* a buffer of directory entries */
 	register struct direct *ep;	/* the current directory entry */
@@ -127,7 +131,7 @@ ufs_lookup(dvp, vpp, cnp)
 	 */
 	if ((dp->i_mode & IFMT) != IFDIR)
 		return (ENOTDIR);
-	if (error = ufs_access(dvp, VEXEC, cnp->cn_cred, cnp->cn_proc))
+	if (error = VOP_ACCESS(dvp, VEXEC, cnp->cn_cred, cnp->cn_proc))
 		return (error);
 
 	/*
@@ -355,7 +359,7 @@ searchloop:
 		 * Access for write is interpreted as allowing
 		 * creation of files in the directory.
 		 */
-		if (error = ufs_access(dvp, VWRITE, cnp->cn_cred, cnp->cn_proc))
+		if (error = VOP_ACCESS(dvp, VWRITE, cnp->cn_cred, cnp->cn_proc))
 			return (error);
 		/*
 		 * Return an indication of where the new directory
@@ -435,7 +439,7 @@ found:
 		/*
 		 * Write access to directory required to delete files.
 		 */
-		if (error = ufs_access(dvp, VWRITE, cnp->cn_cred, cnp->cn_proc))
+		if (error = VOP_ACCESS(dvp, VWRITE, cnp->cn_cred, cnp->cn_proc))
 			return (error);
 		/*
 		 * Return pointer to current entry in dp->i_offset,
@@ -481,7 +485,7 @@ found:
 	 */
 	if (cnp->cn_nameiop == RENAME && wantparent &&
 	    (cnp->cn_flags & ISLASTCN)) {
-		if (error = ufs_access(dvp, VWRITE, cnp->cn_cred, cnp->cn_proc))
+		if (error = VOP_ACCESS(dvp, VWRITE, cnp->cn_cred, cnp->cn_proc))
 			return (error);
 		/*
 		 * Careful about locking second inode.
@@ -545,6 +549,9 @@ found:
 		cache_enter(dvp, *vpp, cnp);
 	return (0);
 }
+#undef dvp
+#undef vpp
+#undef cnp
 
 void
 ufs_dirbad(ip, offset, how)
@@ -610,6 +617,10 @@ ufs_direnter(ip, dvp, cnp)
 	struct vnode *dvp;
 	register struct componentname *cnp;
 {
+	USES_VOP_BLKATOFF;
+	USES_VOP_BWRITE;
+	USES_VOP_TRUNCATE;
+	USES_VOP_WRITE;
 	register struct direct *ep, *nep;
 	register struct inode *dp;
 	struct buf *bp;
@@ -748,6 +759,8 @@ ufs_dirremove(dvp, cnp)
 	struct vnode *dvp;
 	struct componentname *cnp;
 {
+	USES_VOP_BLKATOFF;
+	USES_VOP_BWRITE;
 	register struct inode *dp;
 	struct direct *ep;
 	struct buf *bp;
@@ -788,6 +801,8 @@ ufs_dirrewrite(dp, ip, cnp)
 	struct inode *dp, *ip;
 	struct componentname *cnp;
 {
+	USES_VOP_BLKATOFF;
+	USES_VOP_BWRITE;
 	struct buf *bp;
 	struct direct *ep;
 	int error;
@@ -866,6 +881,7 @@ ufs_checkpath(source, target, cred)
 	struct inode *source, *target;
 	struct ucred *cred;
 {
+	USES_VOP_VGET;
 	struct dirtemplate dirbuf;
 	register struct inode *ip;
 	struct vnode *vp;
