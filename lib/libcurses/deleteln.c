@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)deleteln.c	5.9 (Berkeley) 09/21/92";
+static char sccsid[] = "@(#)deleteln.c	5.10 (Berkeley) 10/01/92";
 #endif	/* not lint */
 
 #include <curses.h>
@@ -55,6 +55,7 @@ wdeleteln(win)
 	temp = win->lines[win->cury];
 	for (y = win->cury; y < win->maxy - 1; y++) {
 		win->lines[y]->flags &= ~__ISPASTEOL;
+		win->lines[y + 1]->flags &= ~__ISPASTEOL;
 		if (win->orig == NULL)
 			win->lines[y] = win->lines[y + 1];
 		else
