@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)floor.c	5.7 (Berkeley) 10/09/90";
+static char sccsid[] = "@(#)floor.c	5.8 (Berkeley) 10/01/92";
 #endif /* not lint */
 
 #include "mathimpl.h"
@@ -45,10 +45,6 @@ ic(L, 4503599627370496.0E0, 52, 1.0)			  /* 2**52 */
 #define	L	vccast(L)
 #endif
 
-
-double ceil();
-double floor();
-
 /*
  * floor(x) := the largest integer no larger than x;
  * ceil(x) := -floor(-x), for all real x.
@@ -60,7 +56,7 @@ double
 floor(x)
 double x;
 {
-	double y;
+	volatile double y;
 
 	if (
 #if !defined(vax)&&!defined(tahoe)
@@ -81,7 +77,7 @@ double
 ceil(x)
 double x;
 {
-	double y;
+	volatile double y;
 
 	if (
 #if !defined(vax)&&!defined(tahoe)
@@ -98,7 +94,7 @@ double x;
 	}
 }
 
-#ifndef national			/* rint() is in ./NATIONAL/support.s */
+#ifndef ns32000			/* rint() is in ./NATIONAL/support.s */
 /*
  * algorithm for rint(x) in pseudo-pascal form ...
  *
@@ -124,7 +120,8 @@ double
 rint(x)
 double x;
 {
-	double s,t;
+	double s;
+	volatile double t;
 	const double one = 1.0;
 
 #if !defined(vax)&&!defined(tahoe)
