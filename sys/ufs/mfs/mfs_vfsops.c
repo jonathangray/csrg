@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mfs_vfsops.c	7.27 (Berkeley) 09/22/92
+ *	@(#)mfs_vfsops.c	7.28 (Berkeley) 10/02/92
  */
 
 #include <sys/param.h>
@@ -255,7 +255,7 @@ mfs_start(mp, flags, p)
 	base = mfsp->mfs_baseoff;
 	while (mfsp->mfs_buflist != (struct buf *)(-1)) {
 		while (bp = mfsp->mfs_buflist) {
-			mfsp->mfs_buflist = bp->av_forw;
+			mfsp->mfs_buflist = bp->b_actf;
 			mfs_doio(bp, base);
 			wakeup((caddr_t)bp);
 		}
