@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)trap.c	7.6 (Berkeley) 11/20/91
+ *	@(#)trap.c	7.7 (Berkeley) 03/13/92
  */
 
 /*
@@ -99,7 +99,7 @@ if(cold) goto we_re_toast;
 	syst = p->p_stime;
 	if (ISPL(frame.tf_cs) == SEL_UPL) {
 		type |= T_USER;
-		p->p_regs = (int *)&frame;
+		p->p_md.md_regs = (int *)&frame;
 		curpcb->pcb_flags |= FM_TRAP;	/* used by sendsig */
 	}
 
@@ -359,7 +359,7 @@ syscall(frame)
 		panic("syscall");
 
 	code = frame.sf_eax;
-	p->p_regs = (int *)&frame;
+	p->p_md.md_regs = (int *)&frame;
 	curpcb->pcb_flags &= ~FM_TRAP;	/* used by sendsig */
 	params = (caddr_t)frame.sf_esp + sizeof (int) ;
 
