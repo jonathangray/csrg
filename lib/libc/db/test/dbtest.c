@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)dbtest.c	5.6 (Berkeley) 12/04/92";
+static char sccsid[] = "@(#)dbtest.c	5.7 (Berkeley) 01/10/93";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -76,6 +76,8 @@ void *infop;
 u_long lineno;
 u_int flags;
 int ofd = STDOUT_FILENO;
+
+DB *XXdbp;				/* Global for gdb. */
 
 int
 main(argc, argv)
@@ -131,6 +133,7 @@ main(argc, argv)
 	if ((dbp = dbopen(BACKINGFILE,
 	    O_CREAT | O_RDWR, S_IRUSR | S_IWUSR, type, infop)) == NULL)
 		err("dbopen: %s", strerror(errno));
+	XXdbp = dbp;
 
 	state = COMMAND;
 	for (lineno = 1;
@@ -309,6 +312,8 @@ get(dbp, kp)
 		/* NOTREACHED */
 	case 1:
 		(void)write(ofd, NOSUCHKEY, sizeof(NOSUCHKEY) - 1);
+		(void)fprintf(stderr, "%d: %.*s: %s\n", 
+		    lineno, kp->size, kp->data, NOSUCHKEY);
 		break;
 	}
 }
@@ -499,6 +504,10 @@ setinfo(type, s)
 		}
 		if (!strcmp("lorder", s)) {
 			ib.lorder = strtoul(eq, NULL, 0);
+			return (&ib);
+		}
+		if (!strcmp("psize", s)) {
+			ib.psize = strtoul(eq, NULL, 0);
 			return (&ib);
 		}
 		break;
