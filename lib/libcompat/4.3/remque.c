@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)remque.c	5.4 (Berkeley) 02/23/91";
+static char sccsid[] = "@(#)remque.c	5.5 (Berkeley) 03/19/91";
 #endif /* LIBC_SCCS and not lint */
 
 /*
