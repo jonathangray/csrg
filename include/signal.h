@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)signal.h	5.3 (Berkeley) 11/11/91
+ *	@(#)signal.h	5.4 (Berkeley) 11/12/91
  */
 
 #ifndef _USER_SIGNAL_H
@@ -44,12 +44,6 @@
 extern char *sys_signame[NSIG];
 extern char *sys_siglist[NSIG];
 #endif
-
-#define	sigaddset(set, signo)	(*(set) |= 1 << ((signo) - 1), 0)
-#define	sigdelset(set, signo)	(*(set) &= ~(1 << ((signo) - 1)), 0)
-#define	sigemptyset(set)	(*(set) = 0)
-#define	sigfillset(set)		(*(set) = ~(sigset_t)0, 0)
-#define	sigismember(set, signo)	((*(set) & (1 << ((signo) - 1))) != 0)
 
 __BEGIN_DECLS
 int	raise __P((int));
@@ -77,5 +71,12 @@ void	psignal __P((unsigned int, const char *));
 #endif	/* !_POSIX_SOURCE */
 #endif	/* !_ANSI_SOURCE */
 __END_DECLS
+
+/* List definitions after function declarations, or Reiser cpp gets upset. */
+#define	sigaddset(set, signo)	(*(set) |= 1 << ((signo) - 1), 0)
+#define	sigdelset(set, signo)	(*(set) &= ~(1 << ((signo) - 1)), 0)
+#define	sigemptyset(set)	(*(set) = 0)
+#define	sigfillset(set)		(*(set) = ~(sigset_t)0, 0)
+#define	sigismember(set, signo)	((*(set) & (1 << ((signo) - 1))) != 0)
 
 #endif	/* !_USER_SIGNAL_H */
