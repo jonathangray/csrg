@@ -39,7 +39,7 @@ static char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	8.120 (Berkeley) 05/29/95";
+static char sccsid[] = "@(#)main.c	8.121 (Berkeley) 05/30/95";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -92,7 +92,6 @@ ENVELOPE	BlankEnvelope;	/* a "blank" envelope */
 ENVELOPE	MainEnvelope;	/* the envelope around the basic letter */
 ADDRESS		NullAddress =	/* a null address */
 		{ "", "", NULL, "" };
-char		RealUserName[256];	/* the actual user id on this host */
 char		*CommandLineArgs;	/* command line args for pid file */
 bool		Warn_Q_option = FALSE;	/* warn about Q option use */
 char		**SaveArgv;	/* argument vector for re-execing */
@@ -139,6 +138,7 @@ main(argc, argv, envp)
 	struct stat stb;
 	struct hostent *hp;
 	char jbuf[MAXHOSTNAMELEN];	/* holds MyHostName */
+	static char rnamebuf[MAXNAME];	/* holds RealUserName */
 	extern int DtableSize;
 	extern int optind;
 	extern time_t convtime();
@@ -234,9 +234,10 @@ main(argc, argv, envp)
 
 	pw = sm_getpwuid(RealUid);
 	if (pw != NULL)
-		(void) strcpy(RealUserName, pw->pw_name);
+		(void) strcpy(rnamebuf, pw->pw_name);
 	else
-		(void) sprintf(RealUserName, "Unknown UID %d", RealUid);
+		(void) sprintf(rnamebuf, "Unknown UID %d", RealUid);
+	RealUserName = rnamebuf;
 
 	/* save command line arguments */
 	i = 0;
