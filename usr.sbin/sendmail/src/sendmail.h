@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	5.43 (Berkeley) 11/16/92
+ *	@(#)sendmail.h	5.44 (Berkeley) 12/09/92
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	5.43		11/16/92";
+static char SmailSccsId[] =	"@(#)sendmail.h	5.44		12/09/92";
 # endif lint
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -463,7 +463,7 @@ MAP
 # define MF_VALID	00001		/* this entry is valid */
 # define MF_INCLNULL	00002		/* include null byte in key */
 # define MF_OPTIONAL	00004		/* don't complain if map not found */
-# define MF_FOLDCASE	00010		/* fold case in keys */
+# define MF_NOFOLDCASE	00010		/* don't fold case in keys */
 /*
 **  Symbol table definitions
 */
