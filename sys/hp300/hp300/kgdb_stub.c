@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kgdb_stub.c	7.13 (Berkeley) 07/24/92
+ *	@(#)kgdb_stub.c	7.14 (Berkeley) 10/11/92
  */
 
 /*
@@ -44,18 +44,20 @@
 static char rcsid[] = "$Header: kgdb_stub.c,v 1.2 92/07/23 19:37:50 mccanne Exp $";
 #endif
 
-#include "param.h"
-#include "systm.h"
-#include "../include/trap.h"
-#include "../include/cpu.h"
-#include "../include/psl.h"
-#include "../include/reg.h"
-#include "../include/frame.h"
-#include "buf.h"
-#include "hp/dev/cons.h"
+#include <sys/param.h>
+#include <sys/systm.h>
 
-#include "kgdb_proto.h"
-#include "machine/remote-sl.h"
+#include <machine/trap.h>
+#include <machine/cpu.h>
+#include <machine/psl.h>
+#include <machine/reg.h>
+#include <machine/frame.h>
+
+#include <sys/buf.h>
+#include <hp/dev/cons.h>
+
+#include <hp300/hp300/kgdb_proto.h>
+#include <machine/remote-sl.h>
 
 extern int kernacc();
 extern void chgkprot();
