@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	5.52 (Berkeley) 07/12/92";
+static char sccsid[] = "@(#)main.c	5.53 (Berkeley) 07/12/92";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -537,7 +537,7 @@ main(argc, argv, envp)
 	*/
 
 	if (OpMode == MD_FREEZE || readconfig)
-		readcf(ConfFile, safecf);
+		readcf(ConfFile, safecf, CurEnv);
 
 	if (ConfigLevel > MAXCONFIGLEVEL)
 	{
@@ -617,7 +617,7 @@ main(argc, argv, envp)
 
 	  case MD_INITALIAS:
 		/* initialize alias database */
-		initaliases(AliasFile, TRUE);
+		initaliases(AliasFile, TRUE, CurEnv);
 		exit(EX_OK);
 
 	  case MD_DAEMON:
@@ -626,7 +626,7 @@ main(argc, argv, envp)
 
 	  default:
 		/* open the alias database */
-		initaliases(AliasFile, FALSE);
+		initaliases(AliasFile, FALSE, CurEnv);
 		break;
 	}
 
@@ -726,7 +726,7 @@ main(argc, argv, envp)
 
 	if (queuemode && OpMode != MD_DAEMON && QueueIntvl == 0)
 	{
-		runqueue(FALSE);
+		runqueue(FALSE, CurEnv);
 		finis();
 	}
 # endif QUEUE
@@ -761,7 +761,7 @@ main(argc, argv, envp)
 # ifdef QUEUE
 		if (queuemode)
 		{
-			runqueue(TRUE);
+			runqueue(TRUE, CurEnv);
 			if (OpMode != MD_DAEMON)
 				for (;;)
 					pause();
@@ -786,14 +786,14 @@ main(argc, argv, envp)
 	*/
 
 	if (OpMode == MD_SMTP)
-		smtp();
+		smtp(CurEnv);
 # endif SMTP
 
 	/*
 	**  Do basic system initialization and set the sender
 	*/
 
-	initsys();
+	initsys(CurEnv);
 	setsender(from, CurEnv);
 
 	if (*av == NULL && !GrabTo)
@@ -802,7 +802,7 @@ main(argc, argv, envp)
 
 		/* collect body for UUCP return */
 		if (OpMode != MD_VERIFY)
-			collect(FALSE);
+			collect(FALSE, CurEnv);
 		finis();
 	}
 	if (OpMode == MD_VERIFY)
@@ -812,7 +812,7 @@ main(argc, argv, envp)
 	**  Scan argv and deliver the message to everyone.
 	*/
 
-	sendtoargv(av);
+	sendtoargv(av, CurEnv);
 
 	/* if we have had errors sofar, arrange a meaningful exit stat */
 	if (Errors > 0 && ExitStat == EX_OK)
@@ -824,7 +824,7 @@ main(argc, argv, envp)
 
 	CurEnv->e_to = NULL;
 	if (OpMode != MD_VERIFY || GrabTo)
-		collect(FALSE);
+		collect(FALSE, CurEnv);
 	errno = 0;
 
 	/* collect statistics */
