@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_socket.c	7.37 (Berkeley) 10/11/92
+ *	@(#)uipc_socket.c	7.38 (Berkeley) 02/27/93
  */
 
 #include <sys/param.h>
@@ -481,6 +481,7 @@ soreceive(so, paddr, uio, mp0, controlp, flagsp)
 	struct protosw *pr = so->so_proto;
 	struct mbuf *nextrecord;
 	int moff, type;
+	int orig_resid = uio->uio_resid;
 
 	mp = mp0;
 	if (paddr)
@@ -582,6 +583,7 @@ restart:
 		if (m->m_type != MT_SONAME)
 			panic("receive 1a");
 #endif
+		orig_resid = 0;
 		if (flags & MSG_PEEK) {
 			if (paddr)
 				*paddr = m_copy(m, 0, m->m_len);
@@ -620,8 +622,10 @@ restart:
 				m = so->so_rcv.sb_mb;
 			}
 		}
-		if (controlp)
+		if (controlp) {
+			orig_resid = 0;
 			controlp = &(*controlp)->m_next;
+		}
 	}
 	if (m) {
 		if ((flags & MSG_PEEK) == 0)
@@ -729,18 +733,27 @@ restart:
 			}
 		}
 	}
+
+	if (m && pr->pr_flags & PR_ATOMIC) {
+		flags |= MSG_TRUNC;
+		if ((flags & MSG_PEEK) == 0)
+			(void) sbdroprecord(&so->so_rcv);
+	}
 	if ((flags & MSG_PEEK) == 0) {
 		if (m == 0)
 			so->so_rcv.sb_mb = nextrecord;
-		else if (pr->pr_flags & PR_ATOMIC) {
-			flags |= MSG_TRUNC;
-			(void) sbdroprecord(&so->so_rcv);
-		}
 		if (pr->pr_flags & PR_WANTRCVD && so->so_pcb)
 			(*pr->pr_usrreq)(so, PRU_RCVD, (struct mbuf *)0,
 			    (struct mbuf *)flags, (struct mbuf *)0,
 			    (struct mbuf *)0);
 	}
+	if (orig_resid == uio->uio_resid && orig_resid &&
+	    (flags & MSG_EOR) == 0 && (so->so_state & SS_CANTRCVMORE) == 0) {
+		sbunlock(&so->so_rcv);
+		splx(s);
+		goto restart;
+	}
+		
 	if (flagsp)
 		*flagsp |= flags;
 release:
