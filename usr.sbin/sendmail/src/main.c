@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	6.1 (Berkeley) 12/21/92";
+static char sccsid[] = "@(#)main.c	6.2 (Berkeley) 01/01/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -697,6 +697,7 @@ main(argc, argv, envp)
 			register char **pvp;
 			char *q;
 			extern char *DelimChar;
+			extern bool invalidaddr();
 
 			if (terminal)
 				printf("> ");
@@ -713,8 +714,16 @@ main(argc, argv, envp)
 			while (*p != '\0' && !isspace(*p))
 				p++;
 			if (*p == '\0')
+			{
+				printf("No address!\n");
 				continue;
+			}
 			*p = '\0';
+			if (invalidaddr(p + 1))
+			{
+				printf("Invalid control characters in address\n");
+				continue;
+			}
 			do
 			{
 				extern char **prescan();
