@@ -33,7 +33,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)headers.c	6.28 (Berkeley) 04/01/93";
+static char sccsid[] = "@(#)headers.c	6.29 (Berkeley) 04/04/93";
 #endif /* not lint */
 
 # include <errno.h>
@@ -422,9 +422,12 @@ eatheader(e, full)
 		char *name;
 		char hbuf[MAXNAME];
 		char sbuf[MAXLINE];
+		extern char *macvalue();
 
 		if (bitset(EF_RESPONSE, e->e_flags))
 			name = "[RESPONSE]";
+		else if ((name = macvalue('_', e)) != NULL)
+			;
 		else if (RealHostName[0] == '[')
 			name = RealHostName;
 		else
