@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	8.119 (Berkeley) 08/29/94
+ *	@(#)conf.h	8.120 (Berkeley) 09/09/94
  */
 
 /*
@@ -81,7 +81,6 @@
 # define UGLYUUCP	1	/* output ugly UUCP From lines */
 # define NETUNIX	1	/* include unix domain support */
 # define NETINET	1	/* include internet support */
-# define SETPROCTITLE	1	/* munge argv to display current status */
 # define MATCHGECOS	1	/* match user names from gecos field */
 # define XDEBUG		1	/* enable extended debugging */
 # ifdef NEWDB
@@ -173,6 +172,7 @@ extern int	syslog(int, char *, ...);
 # define HASGETUSERSHELL 0	/* does not have getusershell(3) call */
 # define FORK		fork	/* no vfork primitive available */
 # define SFS_TYPE	SFS_STATFS	/* use <sys/statfs.h> statfs() impl */
+# define SPT_PADCHAR	'\0'	/* pad process title with nulls */
 #endif
 
 
@@ -290,7 +290,7 @@ extern char		*getenv();
 # ifndef IDENTPROTO
 #  define IDENTPROTO	0	/* TCP/IP implementation is broken */
 # endif
-# undef SETPROCTITLE
+# define SPT_TYPE	SPT_NONE	/* don't use setproctitle */
 # define SFS_TYPE	SFS_4ARGS	/* four argument statfs() call */
 
 /* these include files must be included early on DG/UX */
@@ -399,6 +399,7 @@ typedef int		pid_t;
 #  define LA_TYPE	LA_SUBR
 # endif
 # define SFS_TYPE	SFS_MOUNT	/* use <sys/mount.h> statfs() impl */
+# define SPT_TYPE	SPT_PSSTRINGS	/* use PS_STRINGS pointer */
 #endif
 
 
@@ -418,13 +419,14 @@ typedef int		pid_t;
 # endif
 # if defined(_BSDI_VERSION) && _BSDI_VERSION >= 199312
 			/* version 1.1 or later */
-#  define HASSETPROCTITLE 1	/* setproctitle is in libc */
-#  undef SETPROCTITLE		/* so don't redefine it in conf.c */
+#  undef SPT_TYPE
+#  define SPT_TYPE	SPT_BUILTIN	/* setproctitle is in libc */
 # else
 			/* version 1.0 or earlier */
 #  ifndef OLD_NEWDB
 #   define OLD_NEWDB	1	/* old version of newdb library */
 #  endif
+#  define SPT_PADCHAR	'\0'	/* pad process title with nulls */
 # endif
 #endif
 
@@ -786,7 +788,7 @@ typedef int		pid_t;
 # define GIDSET_T	gid_t
 # define LA_TYPE	LA_INT
 # define SFS_TYPE	SFS_STATFS	/* use <sys/statfs.h> statfs() impl */
-# undef SETPROCTITLE
+# define SPT_TYPE	SPT_NONE	/* don't use setproctitle */
 # ifndef IDENTPROTO
 #  define IDENTPROTO	0	/* TCP/IP implementation is broken */
 # endif
@@ -826,7 +828,7 @@ typedef int		pid_t;
 #ifdef apollo
 # define HASSETREUID	1	/* has setreuid(2) call */
 # define HASINITGROUPS	1	/* has initgroups(2) call */
-# undef  SETPROCTITLE
+# define SPT_TYPE	SPT_NONE	/* don't use setproctitle */
 # define LA_TYPE	LA_SUBR		/* use getloadavg.c */
 # define SFS_TYPE	SFS_4ARGS	/* four argument statfs() call */
 # ifndef _PATH_SENDMAILCF
