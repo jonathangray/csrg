@@ -37,7 +37,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)parse.c	5.17 (Berkeley) 01/10/91";
+static char sccsid[] = "@(#)parse.c	5.18 (Berkeley) 02/19/91";
 #endif /* not lint */
 
 /*-
@@ -1630,7 +1630,7 @@ ParseDoInclude (file)
 	/*
 	 * Pop to previous file
 	 */
-	(void) ParseEOF();
+	(void) ParseEOF(0);
     }
 }
 
@@ -1650,7 +1650,8 @@ ParseDoInclude (file)
  *---------------------------------------------------------------------
  */
 static int
-ParseEOF ()
+ParseEOF (opened)
+    int opened;
 {
     IFile     *ifile;	/* the state on the top of the includes stack */
 
@@ -1662,7 +1663,8 @@ ParseEOF ()
     free (fname);
     fname = ifile->fname;
     lineno = ifile->lineno;
-    fclose (curFILE);
+    if (opened)
+	(void) fclose (curFILE);
     curFILE = ifile->F;
     free ((Address)ifile);
     return (CONTINUE);
@@ -2125,7 +2127,7 @@ Parse_File(name, stream)
 	/*
 	 * Reached EOF, but it may be just EOF of an include file... 
 	 */
-    } while (ParseEOF() == CONTINUE);
+    } while (ParseEOF(1) == CONTINUE);
 
     /*
      * Make sure conditionals are clean
