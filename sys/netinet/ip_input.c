@@ -3,7 +3,7 @@
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
  *
- *	@(#)ip_input.c	7.2 (Berkeley) 02/03/87
+ *	@(#)ip_input.c	7.3 (Berkeley) 04/18/87
  */
 
 #include "param.h"
