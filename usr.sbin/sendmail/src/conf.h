@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)conf.h	5.19 (Berkeley) 07/26/91
+ *	@(#)conf.h	5.20 (Berkeley) 07/26/91
  */
 
 /*
@@ -63,8 +63,9 @@
 **	#define these if they are available; comment them out otherwise.
 */
 
-# define DBM		1	/* use DBM library (requires -ldbm) */
-# define NDBM		1	/* new DBM library available (requires DBM) */
+/* # define DBM		1	/* use DBM library (requires -ldbm) */
+/* # define NDBM	1	/* new DBM library available (requires DBM) */
+# define NEWDB		1	/* use new 4.4bsd database package db(3) */
 # define LOG		1	/* enable logging */
 # define SMTP		1	/* enable user and server SMTP */
 # define QUEUE		1	/* enable queueing */
