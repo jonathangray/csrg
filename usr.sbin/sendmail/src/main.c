@@ -15,7 +15,7 @@ char copyright[] =
 #endif not lint
 
 #ifndef lint
-static char	SccsId[] = "@(#)main.c	5.13 (Berkeley) 03/24/87";
+static char	SccsId[] = "@(#)main.c	5.14 (Berkeley) 12/21/87";
 #endif not lint
 
 # define  _DEFINE
@@ -927,7 +927,7 @@ thaw(freezefile)
 {
 	int f;
 	union frz fhdr;
-	extern char edata;
+	extern char edata, end;
 	extern char Version[];
 	extern caddr_t brk();
 
