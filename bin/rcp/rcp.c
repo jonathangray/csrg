@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)rcp.c	5.35 (Berkeley) 10/17/92";
+static char sccsid[] = "@(#)rcp.c	5.35.1.1 (Berkeley) 12/02/92";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -824,15 +824,9 @@ void
 usage()
 {
 #ifdef KERBEROS
-#ifdef CRYPT
-	(void)fprintf(stderr, "%s\n\t%s\n",
-	    "usage: rcp [-Kpx] [-k realm] f1 f2",
-	    "or: rcp [-Kprx] [-k realm] f1 ... fn directory");
-#else
 	(void)fprintf(stderr, "%s\n\t%s\n",
 	    "usage: rcp [-Kp] [-k realm] f1 f2",
 	    "or: rcp [-Kpr] [-k realm] f1 ... fn directory");
-#endif
 #else
 	(void)fprintf(stderr,
 	    "usage: rcp [-p] f1 f2; or: rcp [-pr] f1 ... fn directory\n");
