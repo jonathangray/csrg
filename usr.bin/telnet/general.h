@@ -30,13 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)general.h	1.4 (Berkeley) 06/01/90
+ *	@(#)general.h	1.5 (Berkeley) 06/28/90
  */
 
 /*
  * Some general definitions.
- *
- * @(#)general.h	3.1 (Berkeley) 8/11/87
  */
 
 
