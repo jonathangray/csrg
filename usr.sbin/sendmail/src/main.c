@@ -39,7 +39,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)main.c	6.49 (Berkeley) 03/29/93";
+static char sccsid[] = "@(#)main.c	6.50 (Berkeley) 03/30/93";
 #endif /* not lint */
 
 #define	_DEFINE
@@ -480,9 +480,10 @@ main(argc, argv, envp)
 				break;
 			}
 			from = newstr(optarg);
-			auth_warning(CurEnv,
-				"%s set sender to %s using -%c",
-				realuser, from, j);
+			if (strcmp(realuser, from) != 0)
+				auth_warning(CurEnv,
+					"%s set sender to %s using -%c",
+					realuser, from, j);
 			break;
 
 		  case 'F':	/* set full name */
