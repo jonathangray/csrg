@@ -1,4 +1,8 @@
-.\"	@(#)make.ms	6.1 (Berkeley) 05/04/86
+.\" This module is believed to contain source code proprietary to AT&T.
+.\" Use and redistribution is subject to the Berkeley Software License
+.\" Agreement and your Software Agreement with AT&T (Western Electric).
+.\"
+.\"	@(#)make.ms	6.2 (Berkeley) 04/17/91
 .\"
 .EH 'PS1:12-%''Make \(em A Program for Maintaining Computer Programs'
 .OH 'Make \(em A Program for Maintaining Computer Programs''PS1:12-%'
