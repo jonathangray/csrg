@@ -37,7 +37,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)targ.c	8.1 (Berkeley) 06/06/93";
+static char sccsid[] = "@(#)targ.c	8.2 (Berkeley) 03/19/94";
 #endif /* not lint */
 
 /*-
@@ -149,7 +149,7 @@ Targ_NewGN (name)
     gn->preds =     	Lst_Init(FALSE);
     gn->context =   	Lst_Init (FALSE);
     gn->commands =  	Lst_Init (FALSE);
-    gn->suffix = 	NULL;
+    gn->suffix =	NULL;
 
     return (gn);
 }
