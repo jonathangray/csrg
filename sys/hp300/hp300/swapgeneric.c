@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)swapgeneric.c	7.1 (Berkeley) 05/08/90
+ *	@(#)swapgeneric.c	7.2 (Berkeley) 12/05/90
  */
 
 #include "pte.h"
@@ -38,7 +38,6 @@
 #include "param.h"
 #include "conf.h"
 #include "buf.h"
-#include "vm.h"
 #include "systm.h"
 #include "reboot.h"
 
