@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_subr.c	8.10 (Berkeley) 06/16/94
+ *	@(#)union_subr.c	8.11 (Berkeley) 06/17/94
  */
 
 #include <sys/param.h>
@@ -267,7 +267,7 @@ int
 union_allocvp(vpp, mp, undvp, dvp, cnp, uppervp, lowervp)
 	struct vnode **vpp;
 	struct mount *mp;
-	struct vnode *undvp;
+	struct vnode *undvp;		/* parent union vnode */
 	struct vnode *dvp;		/* may be null */
 	struct componentname *cnp;	/* may be null */
 	struct vnode *uppervp;		/* may be null */
@@ -472,6 +472,9 @@ loop:
 	un->un_uppersz = VNOVAL;
 	un->un_lowervp = lowervp;
 	un->un_lowersz = VNOVAL;
+	un->un_pvp = undvp;
+	if (undvp != NULLVP)
+		VREF(undvp);
 	un->un_openl = 0;
 	un->un_flags = UN_LOCKED;
 	if (un->un_uppervp)
@@ -518,6 +521,8 @@ union_freevp(vp)
 		LIST_REMOVE(un, un_cache);
 	}
 
+	if (un->un_pvp != NULLVP)
+		vrele(un->un_pvp);
 	if (un->un_uppervp != NULLVP)
 		vrele(un->un_uppervp);
 	if (un->un_lowervp != NULLVP)
