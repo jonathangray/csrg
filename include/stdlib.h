@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stdlib.h	5.27 (Berkeley) 05/26/93
+ *	@(#)stdlib.h	5.28 (Berkeley) 05/28/93
  */
 
 #ifndef _STDLIB_H_
@@ -44,7 +44,9 @@ typedef	_BSD_SIZE_T_	size_t;
 #endif
 
 #ifdef	_BSD_WCHAR_T_
+#ifndef _ANSI_SOURCE
 typedef	_BSD_WCHAR_T_	rune_t;
+#endif
 typedef	_BSD_WCHAR_T_	wchar_t;
 #undef	_BSD_WCHAR_T_
 #endif
