@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)os-bsd44.h	5.4 (Berkeley) 02/09/92
+ *	@(#)os-bsd44.h	5.5 (Berkeley) 05/22/93
  *
  * $Id: os-bsd44.h,v 5.2.2.1 1992/02/09 15:10:11 jsp beta $
  *
@@ -71,6 +71,11 @@
  * 4.4 doesn't provide NIS.
  */
 #undef HAS_NIS_MAPS
+
+/*
+ * OS provides strerror()
+ */
+#define HAS_STRERROR
 
 /*
  * The mount table is obtained from the kernel
