@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode_pager.c	7.9 (Berkeley) 05/13/92
+ *	@(#)vnode_pager.c	7.10 (Berkeley) 05/13/92
  */
 
 /*
