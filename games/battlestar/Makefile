@@ -4,7 +4,7 @@
 # the terms of the Berkeley Software License Agreement.
 #
 
-# @(#)Makefile	1.8 05/31/87
+# @(#)Makefile	1.9 06/03/87
 
 CFLAGS=		-O
 OBJS=		battlestar.o com1.o com2.o com3.o com4.o com5.o com6.o com7.o \
