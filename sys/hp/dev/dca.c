@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)dca.c	7.14 (Berkeley) 02/05/92
+ *	@(#)dca.c	7.15 (Berkeley) 02/15/92
  */
 
 #include "dca.h"
@@ -42,8 +42,8 @@
 #include "sys/param.h"
 #include "sys/systm.h"
 #include "sys/ioctl.h"
-#include "sys/tty.h"
 #include "sys/proc.h"
+#include "sys/tty.h"
 #include "sys/conf.h"
 #include "sys/file.h"
 #include "sys/uio.h"
@@ -553,11 +553,7 @@ dcastart(tp)
 			tp->t_state &= ~TS_ASLEEP;
 			wakeup((caddr_t)&tp->t_outq);
 		}
-		if (tp->t_wsel) {
-			selwakeup(tp->t_wsel, tp->t_state & TS_WCOLL);
-			tp->t_wsel = 0;
-			tp->t_state &= ~TS_WCOLL;
-		}
+		selwakeup(&tp->t_wsel);
 	}
 	if (tp->t_outq.c_cc == 0)
 		goto out;
