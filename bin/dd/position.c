@@ -36,7 +36,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)position.c	5.2 (Berkeley) 07/27/91";
+static char sccsid[] = "@(#)position.c	5.3 (Berkeley) 08/05/91";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -73,15 +73,16 @@ pos_in()
 	 * blocks for other devices.
 	 */
 	for (bcnt = in.dbsz, cnt = in.offset, warned = 0; cnt;) {
-		if ((nr = read(in.fd, in.db, bcnt)) > 0)
+		if ((nr = read(in.fd, in.db, bcnt)) > 0) {
 			if (in.flags & ISPIPE) {
 				if (!(bcnt -= nr)) {
 					bcnt = in.dbsz;
 					--cnt;
 				}
-				continue;
 			} else
 				--cnt;
+			continue;
+		}
 
 		if (nr == 0) {
 			if (files_cnt > 1) {
