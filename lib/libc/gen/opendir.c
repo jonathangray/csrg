@@ -32,14 +32,15 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)opendir.c	5.10 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)opendir.c	5.11 (Berkeley) 02/23/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/param.h>
 #include <dirent.h>
 #include <fcntl.h>
+#include <stdlib.h>
+#include <unistd.h>
 
-char *malloc();
 long _rewinddir;
 
 /*
@@ -47,7 +48,7 @@ long _rewinddir;
  */
 DIR *
 opendir(name)
-	char *name;
+	const char *name;
 {
 	register DIR *dirp;
 	register int fd;
