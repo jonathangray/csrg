@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_cons.c	7.12 (Berkeley) 10/11/92
+ *	@(#)if_cons.c	7.13 (Berkeley) 05/25/93
  */
 
 /***********************************************************
@@ -73,9 +73,9 @@ SOFTWARE.
 #ifdef ARGO_DEBUG
 #define Static  
 unsigned LAST_CALL_PCB;
-#else ARGO_DEBUG
+#else /* ARGO_DEBUG */
 #define Static static
-#endif ARGO_DEBUG
+#endif /* ARGO_DEBUG */
 
 #ifndef SOCK_STREAM
 #include <sys/param.h>
@@ -116,7 +116,7 @@ unsigned LAST_CALL_PCB;
 #define MT_XCONFIRM	MT_DATA
 #define MT_XDATA	MT_DATA
 #define MT_XHEADER	MT_HEADER
-#endif ARGO_DEBUG
+#endif /* ARGO_DEBUG */
 
 #define DONTCLEAR	 -1
 
@@ -167,7 +167,7 @@ Static 	int				issue_clear_req();
 
 #ifndef	PHASEONE
 extern	struct ifaddr	*ifa_ifwithnet();
-#endif	PHASEONE
+#endif	/* PHASEONE */
 
 extern	struct ifaddr	*ifa_ifwithaddr();
 
@@ -513,7 +513,7 @@ done:
 
 
 
-#endif KERNEL
+#endif /* KERNEL */
 
 /*
  * NAME:	make_partial_x25_packet()
@@ -542,9 +542,9 @@ done:
 
 #ifdef X25_1984 
 int cons_use_facils = 1;
-#else X25_1984 
+#else /* X25_1984  */
 int cons_use_facils = 0;
-#endif X25_1984 
+#endif /* X25_1984  */
 
 int cons_use_udata = 1; /* KLUDGE FOR DEBUGGING */
 
@@ -957,4 +957,4 @@ parse_facil(lcp, isop, buf, buf_len)
 	return 0;
 }
 
-#endif TPCONS
+#endif /* TPCONS */
