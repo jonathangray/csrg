@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_vnops.c	7.104 (Berkeley) 03/30/93
+ *	@(#)nfs_vnops.c	7.105 (Berkeley) 04/17/93
  */
 
 /*
@@ -945,6 +945,7 @@ nfs_mknod(ap)
 	register caddr_t cp;
 	register long t1, t2;
 	struct vnode *newvp;
+	struct vattr vattr;
 	char *cp2;
 	caddr_t bpos, dpos;
 	int error = 0, isnq;
@@ -963,6 +964,11 @@ nfs_mknod(ap)
 		vput(dvp);
 		return (EOPNOTSUPP);
 	}
+	if (error = VOP_GETATTR(dvp, &vattr, cnp->cn_cred, cnp->cn_proc)) {
+		VOP_ABORTOP(dvp, cnp);
+		vput(dvp);
+		return (error);
+	}
 	nfsstats.rpccnt[NFSPROC_CREATE]++;
 	nfsm_reqhead(dvp, NFSPROC_CREATE,
 	  NFSX_FH+NFSX_UNSIGNED+nfsm_rndup(cnp->cn_namelen)+NFSX_SATTR(isnq));
@@ -971,7 +977,7 @@ nfs_mknod(ap)
 	nfsm_build(sp, struct nfsv2_sattr *, NFSX_SATTR(isnq));
 	sp->sa_mode = vtonfs_mode(vap->va_type, vap->va_mode);
 	sp->sa_uid = txdr_unsigned(cnp->cn_cred->cr_uid);
-	sp->sa_gid = txdr_unsigned(cnp->cn_cred->cr_gid);
+	sp->sa_gid = txdr_unsigned(vattr.va_gid);
 	if (isnq) {
 		sp->sa_nqrdev = rdev;
 		sp->sa_nqflags = 0;
@@ -1015,7 +1021,13 @@ nfs_create(ap)
 	caddr_t bpos, dpos, cp2;
 	int error = 0, isnq;
 	struct mbuf *mreq, *mrep, *md, *mb, *mb2;
+	struct vattr vattr;
 
+	if (error = VOP_GETATTR(dvp, &vattr, cnp->cn_cred, cnp->cn_proc)) {
+		VOP_ABORTOP(dvp, cnp);
+		vput(dvp);
+		return (error);
+	}
 	nfsstats.rpccnt[NFSPROC_CREATE]++;
 	isnq = (VFSTONFS(dvp->v_mount)->nm_flag & NFSMNT_NQNFS);
 	nfsm_reqhead(dvp, NFSPROC_CREATE,
@@ -1025,7 +1037,7 @@ nfs_create(ap)
 	nfsm_build(sp, struct nfsv2_sattr *, NFSX_SATTR(isnq));
 	sp->sa_mode = vtonfs_mode(vap->va_type, vap->va_mode);
 	sp->sa_uid = txdr_unsigned(cnp->cn_cred->cr_uid);
-	sp->sa_gid = txdr_unsigned(cnp->cn_cred->cr_gid);
+	sp->sa_gid = txdr_unsigned(vattr.va_gid);
 	if (isnq) {
 		u_quad_t qval = 0;
 
@@ -1386,7 +1398,13 @@ nfs_mkdir(ap)
 	caddr_t bpos, dpos, cp2;
 	int error = 0, firsttry = 1, isnq;
 	struct mbuf *mreq, *mrep, *md, *mb, *mb2;
+	struct vattr vattr;
 
+	if (error = VOP_GETATTR(dvp, &vattr, cnp->cn_cred, cnp->cn_proc)) {
+		VOP_ABORTOP(dvp, cnp);
+		vput(dvp);
+		return (error);
+	}
 	len = cnp->cn_namelen;
 	isnq = (VFSTONFS(dvp->v_mount)->nm_flag & NFSMNT_NQNFS);
 	nfsstats.rpccnt[NFSPROC_MKDIR]++;
@@ -1397,7 +1415,7 @@ nfs_mkdir(ap)
 	nfsm_build(sp, struct nfsv2_sattr *, NFSX_SATTR(isnq));
 	sp->sa_mode = vtonfs_mode(VDIR, vap->va_mode);
 	sp->sa_uid = txdr_unsigned(cnp->cn_cred->cr_uid);
-	sp->sa_gid = txdr_unsigned(cnp->cn_cred->cr_gid);
+	sp->sa_gid = txdr_unsigned(vattr.va_gid);
 	if (isnq) {
 		quad_t qval = -1;
 
