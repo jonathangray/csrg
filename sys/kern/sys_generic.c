@@ -30,12 +30,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sys_generic.c	7.26 (Berkeley) 03/17/91
+ *	@(#)sys_generic.c	7.27 (Berkeley) 04/12/91
  */
 
 #include "param.h"
 #include "systm.h"
-#include "user.h"
 #include "filedesc.h"
 #include "ioctl.h"
 #include "file.h"
@@ -71,7 +70,7 @@ read(p, uap, retval)
 #endif
 
 	if (((unsigned)uap->fdes) >= fdp->fd_nfiles ||
-	    (fp = OFILE(fdp, uap->fdes)) == NULL ||
+	    (fp = fdp->fd_ofiles[uap->fdes]) == NULL ||
 	    (fp->f_flag & FREAD) == 0)
 		return (EBADF);
 	aiov.iov_base = (caddr_t)uap->cbuf;
@@ -128,7 +127,7 @@ readv(p, uap, retval)
 #endif
 
 	if (((unsigned)uap->fdes) >= fdp->fd_nfiles ||
-	    (fp = OFILE(fdp, uap->fdes)) == NULL ||
+	    (fp = fdp->fd_ofiles[uap->fdes]) == NULL ||
 	    (fp->f_flag & FREAD) == 0)
 		return (EBADF);
 	/* note: can't use iovlen until iovcnt is validated */
@@ -211,7 +210,7 @@ write(p, uap, retval)
 #endif
 
 	if (((unsigned)uap->fdes) >= fdp->fd_nfiles ||
-	    (fp = OFILE(fdp, uap->fdes)) == NULL ||
+	    (fp = fdp->fd_ofiles[uap->fdes]) == NULL ||
 	    (fp->f_flag & FWRITE) == 0)
 		return (EBADF);
 	aiov.iov_base = (caddr_t)uap->cbuf;
@@ -271,7 +270,7 @@ writev(p, uap, retval)
 #endif
 
 	if (((unsigned)uap->fdes) >= fdp->fd_nfiles ||
-	    (fp = OFILE(fdp, uap->fdes)) == NULL ||
+	    (fp = fdp->fd_ofiles[uap->fdes]) == NULL ||
 	    (fp->f_flag & FWRITE) == 0)
 		return (EBADF);
 	/* note: can't use iovlen until iovcnt is validated */
@@ -358,18 +357,18 @@ ioctl(p, uap, retval)
 	caddr_t data = stkbuf;
 
 	if ((unsigned)uap->fdes >= fdp->fd_nfiles ||
-	    (fp = OFILE(fdp, uap->fdes)) == NULL)
+	    (fp = fdp->fd_ofiles[uap->fdes]) == NULL)
 		return (EBADF);
 	if ((fp->f_flag & (FREAD|FWRITE)) == 0)
 		return (EBADF);
 	com = uap->cmd;
 
 	if (com == FIOCLEX) {
-		OFILEFLAGS(fdp, uap->fdes) |= UF_EXCLOSE;
+		fdp->fd_ofileflags[uap->fdes] |= UF_EXCLOSE;
 		return (0);
 	}
 	if (com == FIONCLEX) {
-		OFILEFLAGS(fdp, uap->fdes) &= ~UF_EXCLOSE;
+		fdp->fd_ofileflags[uap->fdes] &= ~UF_EXCLOSE;
 		return (0);
 	}
 
@@ -558,7 +557,7 @@ selscan(p, ibits, obits, nfd, retval)
 			bits = ibits[which].fds_bits[i/NFDBITS];
 			while ((j = ffs(bits)) && i + --j < nfd) {
 				bits &= ~(1 << j);
-				fp = OFILE(fdp, i + j);
+				fp = fdp->fd_ofiles[i + j];
 				if (fp == NULL) {
 					error = EBADF;
 					break;
@@ -575,10 +574,14 @@ selscan(p, ibits, obits, nfd, retval)
 }
 
 /*ARGSUSED*/
+#ifdef __STDC__
+seltrue(dev_t dev, int which, struct proc *p)
+#else
 seltrue(dev, flag, p)
 	dev_t dev;
 	int flag;
 	struct proc *p;
+#endif
 {
 
 	return (1);
