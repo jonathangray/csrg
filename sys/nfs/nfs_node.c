@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_node.c	7.47 (Berkeley) 04/27/93
+ *	@(#)nfs_node.c	7.48 (Berkeley) 05/03/93
  */
 
 #include <sys/param.h>
@@ -180,7 +180,8 @@ nfs_inactive(ap)
 		free((caddr_t)sp, M_NFSREQ);
 #endif
 	}
-	np->n_flag &= (NMODIFIED | NFLUSHINPROG | NFLUSHWANT | NQNFSEVICTED);
+	np->n_flag &= (NMODIFIED | NFLUSHINPROG | NFLUSHWANT | NQNFSEVICTED |
+		NQNFSNONCACHE | NQNFSWRITE);
 	return (0);
 }
 
