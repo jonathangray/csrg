@@ -34,7 +34,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)mount_procfs.8	8.2 (Berkeley) 03/27/94
+.\"	@(#)mount_procfs.8	8.3 (Berkeley) 06/01/94
 .\"
 .\"
 .Dd 
@@ -136,6 +136,7 @@ defined in
 .Pa <machine/reg.h> .
 .Pa regs
 can only be written when the process is stopped.
+.ne 1i
 .It Pa fpregs
 The floating point registers as defined by
 .Dv "struct fpregs"
