@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)clrtoeol.c	5.7 (Berkeley) 10/20/92";
+static char sccsid[] = "@(#)clrtoeol.c	5.8 (Berkeley) 10/26/92";
 #endif	/* not lint */
 
 #include <curses.h>
@@ -46,7 +46,7 @@ wclrtoeol(win)
 	register WINDOW *win;
 {
 	register int minx, x, y;
-	register char *end, *maxx, *sp;
+	register __LDATA *end, *maxx, *sp;
 
 	y = win->cury;
 	x = win->curx;
@@ -54,12 +54,12 @@ wclrtoeol(win)
 	minx = -1;
 	maxx = &win->lines[y]->line[x];
 	for (sp = maxx; sp < end; sp++)
-		if (*sp != ' ' || *(sp + win->maxx) & __STANDOUT) {
+		if (sp->ch != ' ' || sp->attr != 0) {
 			maxx = sp;
 			if (minx == -1)
 				minx = sp - win->lines[y]->line;
-			*sp = ' ';
-			*(sp + win->maxx) &= ~__STANDOUT;
+			sp->ch = ' ';
+			sp->attr = 0;
 		}
 #ifdef DEBUG
 	__TRACE("CLRTOEOL: minx = %d, maxx = %d, firstch = %d, lastch = %d\n",
@@ -69,3 +69,8 @@ wclrtoeol(win)
 	/* Update firstch and lastch for the line. */
 	return (touchline(win, y, win->curx, win->maxx - 1));
 }
+
+
+
+
+
