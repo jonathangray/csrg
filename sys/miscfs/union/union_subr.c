@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)union_subr.c	8.19 (Berkeley) 05/14/95
+ *	@(#)union_subr.c	8.20 (Berkeley) 05/20/95
  */
 
 #include <sys/param.h>
@@ -1039,9 +1039,14 @@ union_dircache(vp, p)
 	int cnt;
 	struct vnode *nvp;
 	struct vnode **vpp;
-	struct vnode **dircache = VTOUNION(vp)->un_dircache;
+	struct vnode **dircache;
 	struct union_node *un;
 	int error;
+
+	vn_lock(vp, LK_EXCLUSIVE | LK_RETRY, p);
+	dircache = VTOUNION(vp)->un_dircache;
+
+	nvp = NULLVP;
 
 	if (dircache == 0) {
 		cnt = 0;
@@ -1063,16 +1068,19 @@ union_dircache(vp, p)
 	}
 
 	if (*vpp == NULLVP)
-		return (NULLVP);
+		goto out;
 
 	vn_lock(*vpp, LK_EXCLUSIVE | LK_RETRY, p);
 	VREF(*vpp);
 	error = union_allocvp(&nvp, vp->v_mount, NULLVP, NULLVP, 0, *vpp, NULLVP, 0);
 	if (error)
-		return (NULLVP);
+		goto out;
+
 	VTOUNION(vp)->un_dircache = 0;
 	un = VTOUNION(nvp);
 	un->un_dircache = dircache;
 
+out:
+	VOP_UNLOCK(vp, 0, p);
 	return (nvp);
 }
