@@ -5,7 +5,7 @@
 /*
  *	This routine writes win1 on win2 destructively.
  *
- * 02/16/82 (Berkeley) @(#)overwrite.c	1.2
+ * 02/16/82 (Berkeley) @(#)overwrite.c	1.3
  */
 overwrite(win1, win2)
 reg WINDOW	*win1, *win2; {
