@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ffs_vfsops.c	7.79 (Berkeley) 09/24/92
+ *	@(#)ffs_vfsops.c	7.80 (Berkeley) 10/07/92
  */
 
 #include <sys/param.h>
@@ -339,6 +339,9 @@ ffs_mountfs(devvp, mp, p)
 	ump->um_mountp = mp;
 	ump->um_dev = dev;
 	ump->um_devvp = devvp;
+	ump->um_nindir = fs->fs_nindir;
+	ump->um_bptrtodb = fs->fs_fsbtodb;
+	ump->um_seqinc = fs->fs_frag;
 	for (i = 0; i < MAXQUOTAS; i++)
 		ump->um_quotas[i] = NULLVP;
 	devvp->v_specflags |= SI_MOUNTEDON;
