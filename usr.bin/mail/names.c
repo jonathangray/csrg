@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)names.c	5.16 (Berkeley) 06/25/90";
+static char sccsid[] = "@(#)names.c	5.17 (Berkeley) 06/26/92";
 #endif /* not lint */
 
 /*
@@ -42,6 +42,8 @@ static char sccsid[] = "@(#)names.c	5.16 (Berkeley) 06/25/90";
  */
 
 #include "rcv.h"
+#include <fcntl.h>
+#include "extern.h"
 
 /*
  * Allocate a single element of a name list,
@@ -51,6 +53,7 @@ static char sccsid[] = "@(#)names.c	5.16 (Berkeley) 06/25/90";
 struct name *
 nalloc(str, ntype)
 	char str[];
+	int ntype;
 {
 	register struct name *np;
 
@@ -87,6 +90,7 @@ tailof(name)
 struct name *
 extract(line, ntype)
 	char line[];
+	int ntype;
 {
 	register char *cp;
 	register struct name *top, *np, *t;
@@ -115,6 +119,7 @@ extract(line, ntype)
 char *
 detract(np, ntype)
 	register struct name *np;
+	int ntype;
 {
 	register int s;
 	register char *cp, *top;
@@ -340,6 +345,7 @@ cant:
  * If any of the network metacharacters precedes any slashes, it can't
  * be a filename.  We cheat with .'s to allow path names like ./...
  */
+int
 isfileaddr(name)
 	char *name;
 {
@@ -402,6 +408,7 @@ struct name *
 gexpand(nlist, gh, metoo, ntype)
 	struct name *nlist;
 	struct grouphead *gh;
+	int metoo, ntype;
 {
 	struct group *gp;
 	struct grouphead *ngh;
@@ -623,6 +630,7 @@ put(list, node)
  * Determine the number of undeleted elements in
  * a name list and return it.
  */
+int
 count(np)
 	register struct name *np;
 {
@@ -669,6 +677,7 @@ delname(np, name)
  */
 
 /*
+void
 prettyprint(name)
 	struct name *name;
 {
