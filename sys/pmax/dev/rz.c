@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)rz.c	7.4 (Berkeley) 06/20/92
+ *	@(#)rz.c	7.5 (Berkeley) 07/27/92
  */
 
 /*
@@ -388,7 +388,7 @@ rzlblkstrat(bp, bsize)
 
 		if (boff || resid < bsize) {
 			rz_softc[rzunit(bp->b_dev)].sc_stats.rzpartials++;
-			count = MIN(resid, bsize - boff);
+			count = min(resid, bsize - boff);
 			cbp->b_flags = B_BUSY | B_PHYS | B_READ;
 			cbp->b_blkno = bn - btodb(boff);
 			cbp->b_un.b_addr = cbuf;
