@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_cache.c	7.11 (Berkeley) 03/14/92
+ *	@(#)vfs_cache.c	7.12 (Berkeley) 07/13/92
  */
 
 #include "param.h"
@@ -197,6 +197,10 @@ cache_enter(dvp, vp, cnp)
 	register struct namecache *ncp;
 	union nchash *nhp;
 
+#ifdef DIAGNOSTIC
+	if (cnp->cn_namelen > NCHNAMLEN)
+		panic("cache_enter: name too long");
+#endif
 	if (!doingcache)
 		return;
 	/*
