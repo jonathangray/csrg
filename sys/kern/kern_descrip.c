@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kern_descrip.c	7.39 (Berkeley) 12/01/92
+ *	@(#)kern_descrip.c	7.40 (Berkeley) 03/12/93
  */
 
 #include <sys/param.h>
@@ -127,7 +127,8 @@ dup2(p, uap, retval)
 
 	if (old >= fdp->fd_nfiles ||
 	    (fp = fdp->fd_ofiles[old]) == NULL ||
-	    new >= p->p_rlimit[RLIMIT_NOFILE].rlim_cur)
+	    new >= p->p_rlimit[RLIMIT_NOFILE].rlim_cur ||
+	    new > maxfiles)
 		return (EBADF);
 	*retval = new;
 	if (old == new)
