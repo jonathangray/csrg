@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_extern.h	7.5 (Berkeley) 12/14/91
+ *	@(#)lfs_extern.h	7.6 (Berkeley) 12/31/91
  */
 
 struct fid;
@@ -43,6 +43,7 @@ struct uio;
 
 __BEGIN_DECLS
 u_long	 cksum __P((void *, size_t));				/* XXX */
+int	 lfs_balloc __P((struct vnode *, u_long, daddr_t, struct buf **));
 int	 lfs_blkatoff __P((struct vnode *, off_t, char **, struct buf **));
 int	 lfs_bmap __P((VNODE *, daddr_t, VNODE **, daddr_t *));
 int	 lfs_bmaparray __P((VNODE *, daddr_t, daddr_t *, INDIR *, int *));
