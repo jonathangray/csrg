@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)raw_ip.c	7.11 (Berkeley) 01/08/93
+ *	@(#)raw_ip.c	7.12 (Berkeley) 02/12/93
  */
 
 #include <sys/param.h>
