@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sd.c	8.5 (Berkeley) 05/19/94
+ *	@(#)sd.c	8.6 (Berkeley) 01/09/95
  */
 
 /*
@@ -1022,7 +1022,7 @@ sdwrite(dev, uio, flags)
 int
 sdioctl(dev, cmd, data, flag, p)
 	dev_t dev;
-	int cmd;
+	u_long cmd;
 	caddr_t data;
 	int flag;
 	struct proc *p;
