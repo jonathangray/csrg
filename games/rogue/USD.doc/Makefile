@@ -1,4 +1,4 @@
-#	@(#)Makefile	6.3 (Berkeley) 06/30/90
+#	@(#)Makefile	8.1 (Berkeley) 06/08/93
 
 DIR=	usd/33.rogue
 SRCS=	rogue.me
