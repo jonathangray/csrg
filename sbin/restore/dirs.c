@@ -72,13 +72,13 @@ struct modeinfo {
  */
 #undef DIRBLKSIZ
 #define DIRBLKSIZ 1024
-struct dirdesc {
+struct rstdirdesc {
 	int	dd_fd;
 	long	dd_loc;
 	long	dd_size;
 	char	dd_buf[DIRBLKSIZ];
 };
-extern DIR *opendirfile();
+extern RST_DIR *opendirfile();
 extern off_t rst_telldir();
 extern void rst_seekdir();
 
@@ -87,7 +87,7 @@ extern void rst_seekdir();
  */
 static daddr_t	seekpt;
 static FILE	*df, *mf;
-static DIR	*dirp;
+static RST_DIR	*dirp;
 static char	dirfile[32] = "#";	/* No file */
 static char	modefile[32] = "#";	/* No file */
 static char	dot[2] = ".";		/* So it can be modified */
@@ -410,7 +410,7 @@ dcvt(odp, ndp)
  */
 void
 rst_seekdir(dirp, loc, base)
-	register DIR *dirp;
+	register RST_DIR *dirp;
 	daddr_t loc, base;
 {
 
@@ -430,7 +430,7 @@ rst_seekdir(dirp, loc, base)
  */
 struct direct *
 rst_readdir(dirp)
-	register DIR *dirp;
+	register RST_DIR *dirp;
 {
 	register struct direct *dp;
 
@@ -469,7 +469,7 @@ rst_readdir(dirp)
 /*
  * Simulate the opening of a directory
  */
-DIR *
+RST_DIR *
 rst_opendir(name)
 	char *name;
 {
@@ -489,7 +489,7 @@ rst_opendir(name)
  */
 off_t
 rst_telldir(dirp)
-	DIR *dirp;
+	RST_DIR *dirp;
 {
 	off_t lseek();
 
@@ -499,16 +499,16 @@ rst_telldir(dirp)
 /*
  * Open a directory file.
  */
-DIR *
+RST_DIR *
 opendirfile(name)
 	char *name;
 {
-	register DIR *dirp;
+	register RST_DIR *dirp;
 	register int fd;
 
 	if ((fd = open(name, 0)) == -1)
 		return NULL;
-	if ((dirp = (DIR *)malloc(sizeof(DIR))) == NULL) {
+	if ((dirp = (RST_DIR *)malloc(sizeof(RST_DIR))) == NULL) {
 		close (fd);
 		return NULL;
 	}
