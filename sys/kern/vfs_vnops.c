@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vfs_vnops.c	7.40 (Berkeley) 05/31/92
+ *	@(#)vfs_vnops.c	7.41 (Berkeley) 06/19/92
  */
 
 #include "param.h"
@@ -355,12 +355,9 @@ vn_stat(vp, sb, p)
 	sb->st_gid = vap->va_gid;
 	sb->st_rdev = vap->va_rdev;
 	sb->st_size = vap->va_size;
-	sb->st_atimespec.ts_sec = vap->va_atime.tv_sec;
-	sb->st_atimespec.ts_nsec = vap->va_atime.tv_usec * 1000;
-	sb->st_mtimespec.ts_sec = vap->va_mtime.tv_sec;
-	sb->st_mtimespec.ts_nsec = vap->va_mtime.tv_usec * 1000;
-	sb->st_ctimespec.ts_sec = vap->va_ctime.tv_sec;
-	sb->st_ctimespec.ts_nsec = vap->va_ctime.tv_usec * 1000;
+	sb->st_atimespec = vap->va_atime;
+	sb->st_mtimespec= vap->va_mtime;
+	sb->st_ctimespec = vap->va_ctime;
 	sb->st_blksize = vap->va_blocksize;
 	sb->st_flags = vap->va_flags;
 	sb->st_gen = vap->va_gen;
