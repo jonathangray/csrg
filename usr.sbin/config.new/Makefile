@@ -1,4 +1,4 @@
-#	@(#)Makefile	8.1 (Berkeley) 06/06/93
+#	@(#)Makefile	8.2 (Berkeley) 04/19/94
 
 PROG=	config
 SRCS=	files.c gram.y hash.c main.c mkheaders.c mkioconf.c mkmakefile.c \
