@@ -30,12 +30,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sys_generic.c	7.24 (Berkeley) 08/24/90
+ *	@(#)sys_generic.c	7.25 (Berkeley) 01/10/91
  */
 
 #include "param.h"
 #include "systm.h"
 #include "user.h"
+#include "filedesc.h"
 #include "ioctl.h"
 #include "file.h"
 #include "proc.h"
@@ -61,6 +62,7 @@ read(p, uap, retval)
 	int *retval;
 {
 	register struct file *fp;
+	register struct filedesc *fdp = p->p_fd;
 	struct uio auio;
 	struct iovec aiov;
 	long cnt, error = 0;
@@ -68,8 +70,8 @@ read(p, uap, retval)
 	struct iovec ktriov;
 #endif
 
-	if (((unsigned)uap->fdes) >= NOFILE ||
-	    (fp = u.u_ofile[uap->fdes]) == NULL ||
+	if (((unsigned)uap->fdes) >= fdp->fd_maxfiles ||
+	    (fp = OFILE(fdp, uap->fdes)) == NULL ||
 	    (fp->f_flag & FREAD) == 0)
 		return (EBADF);
 	aiov.iov_base = (caddr_t)uap->cbuf;
@@ -114,6 +116,7 @@ readv(p, uap, retval)
 	int *retval;
 {
 	register struct file *fp;
+	register struct filedesc *fdp = p->p_fd;
 	struct uio auio;
 	register struct iovec *iov;
 	struct iovec *saveiov;
@@ -124,8 +127,8 @@ readv(p, uap, retval)
 	struct iovec *ktriov = NULL;
 #endif
 
-	if (((unsigned)uap->fdes) >= NOFILE ||
-	    (fp = u.u_ofile[uap->fdes]) == NULL ||
+	if (((unsigned)uap->fdes) >= fdp->fd_maxfiles ||
+	    (fp = OFILE(fdp, uap->fdes)) == NULL ||
 	    (fp->f_flag & FREAD) == 0)
 		return (EBADF);
 	/* note: can't use iovlen until iovcnt is validated */
@@ -199,6 +202,7 @@ write(p, uap, retval)
 	int *retval;
 {
 	register struct file *fp;
+	register struct filedesc *fdp = p->p_fd;
 	struct uio auio;
 	struct iovec aiov;
 	long cnt, error = 0;
@@ -206,8 +210,8 @@ write(p, uap, retval)
 	struct iovec ktriov;
 #endif
 
-	if (((unsigned)uap->fdes) >= NOFILE ||
-	    (fp = u.u_ofile[uap->fdes]) == NULL ||
+	if (((unsigned)uap->fdes) >= fdp->fd_maxfiles ||
+	    (fp = OFILE(fdp, uap->fdes)) == NULL ||
 	    (fp->f_flag & FWRITE) == 0)
 		return (EBADF);
 	aiov.iov_base = (caddr_t)uap->cbuf;
@@ -255,6 +259,7 @@ writev(p, uap, retval)
 	int *retval;
 {
 	register struct file *fp;
+	register struct filedesc *fdp = p->p_fd;
 	struct uio auio;
 	register struct iovec *iov;
 	struct iovec *saveiov;
@@ -265,8 +270,8 @@ writev(p, uap, retval)
 	struct iovec *ktriov = NULL;
 #endif
 
-	if (((unsigned)uap->fdes) >= NOFILE ||
-	    (fp = u.u_ofile[uap->fdes]) == NULL ||
+	if (((unsigned)uap->fdes) >= fdp->fd_maxfiles ||
+	    (fp = OFILE(fdp, uap->fdes)) == NULL ||
 	    (fp->f_flag & FWRITE) == 0)
 		return (EBADF);
 	/* note: can't use iovlen until iovcnt is validated */
@@ -344,6 +349,7 @@ ioctl(p, uap, retval)
 	int *retval;
 {
 	register struct file *fp;
+	register struct filedesc *fdp = p->p_fd;
 	register int com, error;
 	register u_int size;
 	caddr_t memp = 0;
@@ -351,19 +357,19 @@ ioctl(p, uap, retval)
 	char stkbuf[STK_PARAMS];
 	caddr_t data = stkbuf;
 
-	if ((unsigned)uap->fdes >= NOFILE ||
-	    (fp = u.u_ofile[uap->fdes]) == NULL)
+	if ((unsigned)uap->fdes >= fdp->fd_maxfiles ||
+	    (fp = OFILE(fdp, uap->fdes)) == NULL)
 		return (EBADF);
 	if ((fp->f_flag & (FREAD|FWRITE)) == 0)
 		return (EBADF);
 	com = uap->cmd;
 
 	if (com == FIOCLEX) {
-		u.u_pofile[uap->fdes] |= UF_EXCLOSE;
+		OFILEFLAGS(fdp, uap->fdes) |= UF_EXCLOSE;
 		return (0);
 	}
 	if (com == FIONCLEX) {
-		u.u_pofile[uap->fdes] &= ~UF_EXCLOSE;
+		OFILEFLAGS(fdp, uap->fdes) &= ~UF_EXCLOSE;
 		return (0);
 	}
 
@@ -450,8 +456,8 @@ select(p, uap, retval)
 
 	bzero((caddr_t)ibits, sizeof(ibits));
 	bzero((caddr_t)obits, sizeof(obits));
-	if (uap->nd > NOFILE)
-		uap->nd = NOFILE;	/* forgiving, if slightly wrong */
+	if (uap->nd > p->p_fd->fd_maxfiles)
+		uap->nd = p->p_fd->fd_maxfiles;	/* forgiving; slightly wrong */
 	ni = howmany(uap->nd, NFDBITS);
 
 #define	getbits(name, x) \
@@ -482,7 +488,7 @@ select(p, uap, retval)
 retry:
 	ncoll = nselcoll;
 	p->p_flag |= SSEL;
-	error = selscan(ibits, obits, uap->nd, retval);
+	error = selscan(p->p_fd, ibits, obits, uap->nd, retval);
 	if (error || *retval)
 		goto done;
 	s = splhigh();
@@ -524,7 +530,8 @@ done:
 	return (error);
 }
 
-selscan(ibits, obits, nfd, retval)
+selscan(fdp, ibits, obits, nfd, retval)
+	register struct filedesc *fdp;
 	fd_set *ibits, *obits;
 	int nfd, *retval;
 {
@@ -550,7 +557,7 @@ selscan(ibits, obits, nfd, retval)
 			bits = ibits[which].fds_bits[i/NFDBITS];
 			while ((j = ffs(bits)) && i + --j < nfd) {
 				bits &= ~(1 << j);
-				fp = u.u_ofile[i + j];
+				fp = OFILE(fdp, i + j);
 				if (fp == NULL) {
 					error = EBADF;
 					break;
