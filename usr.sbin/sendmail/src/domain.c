@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef NAMED_BIND
-static char sccsid[] = "@(#)domain.c	6.7 (Berkeley) 02/26/93 (with name server)";
+static char sccsid[] = "@(#)domain.c	6.8 (Berkeley) 03/03/93 (with name server)";
 #else
-static char sccsid[] = "@(#)domain.c	6.7 (Berkeley) 02/26/93 (without name server)";
+static char sccsid[] = "@(#)domain.c	6.8 (Berkeley) 03/03/93 (without name server)";
 #endif
 #endif /* not lint */
 
@@ -328,6 +328,7 @@ getcanonname(host, hbsize)
 	char **dp;
 	char *mxmatch;
 	bool amatch;
+	int qtype;
 	char nbuf[MAX(PACKETSZ, MAXDNAME*2+2)];
 	char *searchlist[MAXDNSRCH+2];
 
@@ -367,12 +368,13 @@ getcanonname(host, hbsize)
 
 	dp = searchlist;
 	mxmatch = NULL;
+	qtype = T_ANY;
 
-	for (dp = searchlist; *dp != NULL; dp++)
+	for (dp = searchlist; *dp != NULL; )
 	{
 		if (tTd(8, 5))
 			printf("getcanonname: trying %s.%s\n", host, *dp);
-		ret = res_querydomain(host, *dp, C_IN, T_ANY,
+		ret = res_querydomain(host, *dp, C_IN, qtype,
 				      &answer, sizeof(answer));
 		if (ret <= 0)
 		{
@@ -387,6 +389,14 @@ getcanonname(host, hbsize)
 				return FALSE;
 			}
 
+			if (h_errno == HOST_NOT_FOUND)
+			{
+				/* definitely no data for this address */
+				dp++;
+				qtype = T_ANY; 		/* just in case */
+				continue;
+			}
+
 			if (mxmatch != NULL)
 			{
 				/* we matched before -- use that one */
@@ -394,7 +404,7 @@ getcanonname(host, hbsize)
 			}
 			continue;
 		}
-		if (tTd(8, 8))
+		else if (tTd(8, 8))
 			printf("\tYES\n");
 
 		/*
@@ -471,6 +481,22 @@ getcanonname(host, hbsize)
 			/* got an A record and no CNAME */
 			mxmatch = *dp;
 			break;
+		}
+
+		/*
+		**  If this was a T_ANY query, we may have the info but
+		**  need an explicit query.  Try T_A, then T_MX.
+		*/
+
+		if (qtype == T_ANY)
+			qtype = T_A;
+		else if (qtype = T_A)
+			qtype = T_MX;
+		else
+		{
+			/* really nothing in this domain; try the next */
+			qtype = T_ANY;
+			dp++;
 		}
 	}
 
