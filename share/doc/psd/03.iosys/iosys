@@ -2,10 +2,10 @@
 .\" Use and redistribution is subject to the Berkeley Software License
 .\" Agreement and your Software Agreement with AT&T (Western Electric).
 .\"
-.\"	@(#)iosys	6.2 (Berkeley) 04/17/91
+.\"	@(#)iosys	6.3 (Berkeley) 06/05/93
 .\"
-.EH 'PS2:5-%''The UNIX I/O System'
-.OH 'The UNIX I/O System''PS2:5-%'
+.EH 'PSD:3-%''The UNIX I/O System'
+.OH 'The UNIX I/O System''PSD:3-%'
 .TL
 The UNIX I/O System
 .AU
