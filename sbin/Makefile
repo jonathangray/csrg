@@ -1,4 +1,4 @@
-#	@(#)Makefile	5.4.1.1 (Berkeley) 05/07/91
+#	@(#)Makefile	5.5 (Berkeley) 10/28/91
 
 # Missing: icheck, init, ncheck
 
