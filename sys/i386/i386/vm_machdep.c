@@ -1,7 +1,6 @@
 /*-
  * Copyright (c) 1982, 1986, 1993
  *	The Regents of the University of California.  All rights reserved.
- * All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * the Systems Programming Group of the University of Utah Computer
@@ -35,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vm_machdep.c	8.2 (Berkeley) 09/23/93
+ *	@(#)vm_machdep.c	8.3 (Berkeley) 01/21/94
  *	Utah $Hdr: vm_machdep.c 1.16.1.1 89/06/23$
  */
 
