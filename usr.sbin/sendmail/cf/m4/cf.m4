@@ -88,7 +88,7 @@ define(`MASQUERADE_AS', `define(`MASQUERADE_NAME', $1)')
 
 m4wrap(`include(`../m4/proto.m4')')
 
-# define default values for options
+# set up default values for options
 define(`confMAILER_NAME', ``MAILER-DAEMON'')
 define(`confFROM_LINE', `From $?<$<$|$g$.  $d')
 define(`confOPERATORS', `.:%@!^/[]')
@@ -124,4 +124,4 @@ define(`confREFUSE_LA', `12')
 define(`confSEPARATE_PROC', `False')
 
 divert(0)dnl
-VERSIONID(`@(#)cf.m4	6.6 (Berkeley) 02/21/93')
+VERSIONID(`@(#)cf.m4	6.7 (Berkeley) 02/24/93')
