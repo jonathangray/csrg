@@ -37,7 +37,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)buf.c	5.4 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)buf.c	5.5 (Berkeley) 12/28/90";
 #endif /* not lint */
 
 /*-
@@ -47,13 +47,6 @@ static char sccsid[] = "@(#)buf.c	5.4 (Berkeley) 06/01/90";
 
 #include    "sprite.h"
 #include    "buf.h"
-
-typedef struct {
-    int	    size; 	/* Current size of the buffer */
-    Byte    *buffer;	/* The buffer itself */
-    Byte    *inPtr;	/* Place to write to */
-    Byte    *outPtr;	/* Place to read from */
-} Buf, *BufPtr;
 
 #ifndef max
 #define max(a,b)  ((a) > (b) ? (a) : (b))
@@ -67,7 +60,7 @@ typedef struct {
  *	buffer in case it holds a string.
  */
 #define BufExpand(bp,nb) \
- 	if (((bp)->size - ((bp)->inPtr - (bp)->buffer)) < (nb)+1) {\
+ 	if (bp->left < (nb)+1) {\
 	    int newSize = (bp)->size + max((nb)+1,BUF_ADD_INC); \
 	    Byte  *newBuf = (Byte *) realloc((bp)->buffer, newSize); \
 	    \
@@ -75,6 +68,7 @@ typedef struct {
 	    (bp)->outPtr = newBuf + ((bp)->outPtr - (bp)->buffer);\
 	    (bp)->buffer = newBuf;\
 	    (bp)->size = newSize;\
+	    (bp)->left = newSize - ((bp)->inPtr - (bp)->buffer);\
 	}
 
 #define BUF_DEF_SIZE	256 	/* Default buffer size */
@@ -83,8 +77,8 @@ typedef struct {
 
 /*-
  *-----------------------------------------------------------------------
- * Buf_AddByte --
- *	Add a single byte to the buffer.
+ * Buf_OvAddByte --
+ *	Add a single byte to the buffer.  left is zero or negative.
  *
  * Results:
  *	None.
@@ -95,16 +89,16 @@ typedef struct {
  *-----------------------------------------------------------------------
  */
 void
-Buf_AddByte (buf, byte)
-    Buffer  buf;
+Buf_OvAddByte (bp, byte)
+    register Buffer bp;
     Byte    byte;
 {
-    register BufPtr  bp = (BufPtr) buf;
 
+    bp->left = 0;
     BufExpand (bp, 1);
 
-    *bp->inPtr = byte;
-    bp->inPtr += 1;
+    *bp->inPtr++ = byte;
+    bp->left--;
 
     /*
      * Null-terminate
@@ -126,17 +120,17 @@ Buf_AddByte (buf, byte)
  *-----------------------------------------------------------------------
  */
 void
-Buf_AddBytes (buf, numBytes, bytesPtr)
-    Buffer  buf;
+Buf_AddBytes (bp, numBytes, bytesPtr)
+    register Buffer bp;
     int	    numBytes;
     Byte    *bytesPtr;
 {
-    register BufPtr  bp = (BufPtr) buf;
 
     BufExpand (bp, numBytes);
 
     bcopy (bytesPtr, bp->inPtr, numBytes);
     bp->inPtr += numBytes;
+    bp->left -= numBytes;
 
     /*
      * Null-terminate
@@ -158,18 +152,18 @@ Buf_AddBytes (buf, numBytes, bytesPtr)
  *-----------------------------------------------------------------------
  */
 void
-Buf_UngetByte (buf, byte)
-    Buffer  buf;
+Buf_UngetByte (bp, byte)
+    register Buffer bp;
     Byte    byte;
 {
-    register BufPtr	bp = (BufPtr) buf;
 
     if (bp->outPtr != bp->buffer) {
-	bp->outPtr -= 1;
+	bp->outPtr--;
 	*bp->outPtr = byte;
     } else if (bp->outPtr == bp->inPtr) {
 	*bp->inPtr = byte;
-	bp->inPtr += 1;
+	bp->inPtr++;
+	bp->left--;
 	*bp->inPtr = 0;
     } else {
 	/*
@@ -182,13 +176,14 @@ Buf_UngetByte (buf, byte)
 	Byte	  *newBuf;
 
 	newBuf = (Byte *)emalloc(bp->size + BUF_UNGET_INC);
-	bcopy ((Address)bp->outPtr,
-			(Address)(newBuf+BUF_UNGET_INC), numBytes+1);
+	bcopy ((char *)bp->outPtr,
+			(char *)(newBuf+BUF_UNGET_INC), numBytes+1);
 	bp->outPtr = newBuf + BUF_UNGET_INC;
 	bp->inPtr = bp->outPtr + numBytes;
-	free ((Address)bp->buffer);
+	free ((char *)bp->buffer);
 	bp->buffer = newBuf;
 	bp->size += BUF_UNGET_INC;
+	bp->left = bp->size - (bp->inPtr - bp->buffer);
 	bp->outPtr -= 1;
 	*bp->outPtr = byte;
     }
@@ -208,32 +203,32 @@ Buf_UngetByte (buf, byte)
  *-----------------------------------------------------------------------
  */
 void
-Buf_UngetBytes (buf, numBytes, bytesPtr)
-    Buffer  buf;
+Buf_UngetBytes (bp, numBytes, bytesPtr)
+    register Buffer bp;
     int	    numBytes;
     Byte    *bytesPtr;
 {
-    register BufPtr	bp = (BufPtr) buf;
 
     if (bp->outPtr - bp->buffer >= numBytes) {
 	bp->outPtr -= numBytes;
 	bcopy (bytesPtr, bp->outPtr, numBytes);
     } else if (bp->outPtr == bp->inPtr) {
-	Buf_AddBytes (buf, numBytes, bytesPtr);
+	Buf_AddBytes (bp, numBytes, bytesPtr);
     } else {
 	int 	  curNumBytes = bp->inPtr - bp->outPtr;
 	Byte	  *newBuf;
 	int 	  newBytes = max(numBytes,BUF_UNGET_INC);
 
 	newBuf = (Byte *)emalloc (bp->size + newBytes);
-	bcopy((Address)bp->outPtr, (Address)(newBuf+newBytes), curNumBytes+1);
+	bcopy((char *)bp->outPtr, (char *)(newBuf+newBytes), curNumBytes+1);
 	bp->outPtr = newBuf + newBytes;
 	bp->inPtr = bp->outPtr + curNumBytes;
-	free ((Address)bp->buffer);
+	free ((char *)bp->buffer);
 	bp->buffer = newBuf;
 	bp->size += newBytes;
+	bp->left = bp->size - (bp->inPtr - bp->buffer);
 	bp->outPtr -= numBytes;
-	bcopy ((Address)bytesPtr, (Address)bp->outPtr, numBytes);
+	bcopy ((char *)bytesPtr, (char *)bp->outPtr, numBytes);
     }
 }
 
@@ -253,10 +248,9 @@ Buf_UngetBytes (buf, numBytes, bytesPtr)
  *-----------------------------------------------------------------------
  */
 int
-Buf_GetByte (buf)
-    Buffer  buf;
+Buf_GetByte (bp)
+    register Buffer bp;
 {
-    BufPtr  bp = (BufPtr) buf;
     int	    res;
 
     if (bp->inPtr == bp->outPtr) {
@@ -266,7 +260,8 @@ Buf_GetByte (buf)
 	bp->outPtr += 1;
 	if (bp->outPtr == bp->inPtr) {
 	    bp->outPtr = bp->inPtr = bp->buffer;
-	    bp->inPtr = 0;
+	    bp->left = bp->size;
+	    *bp->inPtr = 0;
 	}
 	return (res);
     }
@@ -286,12 +281,11 @@ Buf_GetByte (buf)
  *-----------------------------------------------------------------------
  */
 int
-Buf_GetBytes (buf, numBytes, bytesPtr)
-    Buffer  buf;
+Buf_GetBytes (bp, numBytes, bytesPtr)
+    register Buffer bp;
     int	    numBytes;
     Byte    *bytesPtr;
 {
-    BufPtr  bp = (BufPtr) buf;
     
     if (bp->inPtr - bp->outPtr < numBytes) {
 	numBytes = bp->inPtr - bp->outPtr;
@@ -301,6 +295,7 @@ Buf_GetBytes (buf, numBytes, bytesPtr)
 
     if (bp->outPtr == bp->inPtr) {
 	bp->outPtr = bp->inPtr = bp->buffer;
+	bp->left = bp->size;
 	*bp->inPtr = 0;
     }
     return (numBytes);
@@ -320,11 +315,10 @@ Buf_GetBytes (buf, numBytes, bytesPtr)
  *-----------------------------------------------------------------------
  */
 Byte *
-Buf_GetAll (buf, numBytesPtr)
-    Buffer  buf;
+Buf_GetAll (bp, numBytesPtr)
+    register Buffer bp;
     int	    *numBytesPtr;
 {
-    BufPtr  bp = (BufPtr)buf;
 
     if (numBytesPtr != (int *)NULL) {
 	*numBytesPtr = bp->inPtr - bp->outPtr;
@@ -347,14 +341,14 @@ Buf_GetAll (buf, numBytesPtr)
  *-----------------------------------------------------------------------
  */
 void
-Buf_Discard (buf, numBytes)
-    Buffer  buf;
+Buf_Discard (bp, numBytes)
+    register Buffer bp;
     int	    numBytes;
 {
-    register BufPtr	bp = (BufPtr) buf;
 
     if (bp->inPtr - bp->outPtr <= numBytes) {
 	bp->inPtr = bp->outPtr = bp->buffer;
+	bp->left = bp->size;
 	*bp->inPtr = 0;
     } else {
 	bp->outPtr += numBytes;
@@ -379,7 +373,7 @@ int
 Buf_Size (buf)
     Buffer  buf;
 {
-    return (((BufPtr)buf)->inPtr - ((BufPtr)buf)->outPtr);
+    return (buf->inPtr - buf->outPtr);
 }
 
 /*-
@@ -401,19 +395,19 @@ Buffer
 Buf_Init (size)
     int	    size; 	/* Initial size for the buffer */
 {
-    BufPtr  bp;	  	/* New Buffer */
+    Buffer bp;	  	/* New Buffer */
 
-    bp = (Buf *)emalloc(sizeof(Buf));
+    bp = (Buffer)emalloc(sizeof(*bp));
 
     if (size <= 0) {
 	size = BUF_DEF_SIZE;
     }
-    bp->size = size;
-    bp->buffer = (Byte *)emalloc (size);
+    bp->left = bp->size = size;
+    bp->buffer = (Byte *)emalloc(size);
     bp->inPtr = bp->outPtr = bp->buffer;
     *bp->inPtr = 0;
 
-    return ((Buffer) bp);
+    return (bp);
 }
 
 /*-
@@ -434,10 +428,9 @@ Buf_Destroy (buf, freeData)
     Buffer  buf;  	/* Buffer to destroy */
     Boolean freeData;	/* TRUE if the data should be destroyed as well */
 {
-    BufPtr  bp = (BufPtr) buf;
     
     if (freeData) {
-	free ((Address)bp->buffer);
+	free ((char *)buf->buffer);
     }
-    free ((Address)bp);
+    free ((char *)buf);
 }
