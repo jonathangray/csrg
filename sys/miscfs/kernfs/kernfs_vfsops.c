@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kernfs_vfsops.c	8.2 (Berkeley) 01/04/94
+ *	@(#)kernfs_vfsops.c	8.3 (Berkeley) 01/04/94
  */
 
 /*
@@ -227,7 +227,6 @@ kernfs_root(mp, vpp)
 	struct vnode **vpp;
 {
 	struct vnode *vp;
-	int error;
 
 #ifdef KERNFS_DIAGNOSTIC
 	printf("kernfs_root(mp = %x)\n", mp);
