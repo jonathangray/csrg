@@ -32,7 +32,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)makeinfo.sh	8.4 (Berkeley) 03/04/94
+#	@(#)makeinfo.sh	8.5 (Berkeley) 04/21/95
 #
 
 usewhoami=0
@@ -75,3 +75,4 @@ else
 fi
 echo '#####' built by $user@$host on `date`
 echo '#####' in `pwd` | sed 's/\/tmp_mnt//'
+echo "define(\`__HOST__', $host)dnl"
