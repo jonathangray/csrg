@@ -39,7 +39,7 @@
  * from: Utah $Hdr: trap.c 1.35 91/12/26$
  * from: hp300/hp300/trap.c	7.26 (Berkeley) 12/27/92
  *
- *	@(#)trap.c	7.5 (Berkeley) 05/12/93
+ *	@(#)trap.c	8.1 (Berkeley) 06/10/93
  */
 
 #include <sys/param.h>
