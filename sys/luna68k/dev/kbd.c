@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)kbd.c	7.4 (Berkeley) 12/29/92
+ *	@(#)kbd.c	7.5 (Berkeley) 02/02/93
  */
 
 /*
@@ -153,9 +153,11 @@ kbdclose(dev, flag, mode, p)
 	int flag, mode;
 	struct proc *p;
 {
+	register struct siodevice *sio = kbd_pc->pc_addr;
 	register struct	sio_portc *pc;
 	register struct tty *tp;
 	register int unit, s;
+	int  code, rr;
 
 	unit = kbdunit(dev);
 
@@ -167,6 +169,12 @@ kbdclose(dev, flag, mode, p)
 
 	if (kbd_state == 0) {
 		s = splhigh();
+
+		while((rr = siogetreg(sio)) & RR_RXRDY) {
+			code = sio->sio_data;
+			DELAY(100);
+		}
+
 		pc = &kbd_sport;
 		(void) sio_port_assign(1, pc->pc_major, pc->pc_unit, pc->pc_intr);
 		splx(s);
@@ -224,6 +232,7 @@ kbdioctl(dev, cmd, data, flag, p)
 	register struct tty *tp;
 	register int unit = kbdunit(dev);
 	register int error;
+	int code, rr, s;
 
 	tp = &kbd_tty[unit];
 	error = (*linesw[tp->t_line].l_ioctl)(tp, cmd, data, flag, p);
@@ -239,7 +248,13 @@ kbdioctl(dev, cmd, data, flag, p)
 		if (*((int *) data)) {
 			sio->sio_data = 0x60;	/* enable  mouse tracking */
 		} else {
+			s = splhigh();
 			sio->sio_data = 0x20;	/* disable mouse tracking */
+			while((rr = siogetreg(sio)) & RR_RXRDY) {
+				code = sio->sio_data;
+				DELAY(100);
+			}
+			splx(s);
 		}
 		break;
 
