@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)gprof.h	5.9 (Berkeley) 06/01/90
+ *	@(#)gprof.h	5.10 (Berkeley) 04/24/91
  */
 
 #include <sys/types.h>
@@ -47,6 +47,12 @@
 #endif
 #if tahoe
 #   include "tahoe.h"
+#endif
+#if hp300
+#   include "hp300.h"
+#endif
+#if i386
+#   include "i386.h"
 #endif
 
 
