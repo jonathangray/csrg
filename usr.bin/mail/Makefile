@@ -3,7 +3,7 @@
 # All rights reserved.  The Berkeley software License Agreement
 # specifies the terms and conditions for redistribution.
 #
-#	@(#)Makefile	5.3 (Berkeley) 01/11/86
+#	@(#)Makefile	5.4 (Berkeley) 05/18/87
 #
 # Berkeley Mail
 #
