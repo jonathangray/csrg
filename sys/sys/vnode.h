@@ -30,12 +30,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode.h	7.68 (Berkeley) 03/19/93
+ *	@(#)vnode.h	7.69 (Berkeley) 05/07/93
  */
 
-#ifndef KERNEL
-#include <machine/endian.h>
-#endif
 #include <sys/queue.h>
 
 /*
