@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)mpool.h	5.1 (Berkeley) 09/04/91
+ *	@(#)mpool.h	5.2 (Berkeley) 02/14/93
  */
 
 /*
@@ -73,7 +73,7 @@ typedef struct MPOOL {
 	pgno_t	curcache;		/* Current number of cached pages. */
 	pgno_t	maxcache;		/* Max number of cached pages. */
 	pgno_t	npages;			/* Number of pages in the file. */
-	index_t	pagesize;		/* File page size. */
+	indx_t	pagesize;		/* File page size. */
 	int	fd;			/* File descriptor. */
 					/* Page in conversion routine. */
 	void    (*pgin) __P((void *, pgno_t, void *));
