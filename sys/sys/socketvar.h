@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)socketvar.h	7.17 (Berkeley) 05/05/91
+ *	@(#)socketvar.h	7.18 (Berkeley) 06/21/91
  */
 
 /*
