@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)local.h	8.1 (Berkeley) 06/04/93
+ *	@(#)local.h	8.2 (Berkeley) 01/02/94
  */
 
 /*
@@ -78,7 +78,7 @@ extern int __sdidinit;
 }
 
 /*
- * test for an fgetline() buffer.
+ * test for an fgetln() buffer.
  */
 #define	HASLB(fp) ((fp)->_lb._base != NULL)
 #define	FREELB(fp) { \
