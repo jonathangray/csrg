@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ufs_lookup.c	7.39 (Berkeley) 02/04/92
+ *	@(#)ufs_lookup.c	7.40 (Berkeley) 02/21/92
  */
 
 #include <sys/param.h>
@@ -152,8 +152,8 @@ ufs_lookup(dvp, vpp, cnp)
 		 * an explaination of the locking protocol.
 		 */
 		/*
-		 * NEEDSWORK: The borrowing of variables
-		 * here is quite confusing.  Usually, dvp/dp
+		 * The borrowing of variables
+		 * here is somewhat confusing.  Usually, dvp/dp
 		 * is the directory being searched.
 		 * Here it's the target returned from the cache.
 		 */
