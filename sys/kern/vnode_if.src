@@ -30,7 +30,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	@(#)vnode_if.src	8.2 (Berkeley) 09/05/93
+#	@(#)vnode_if.src	8.3 (Berkeley) 02/03/94
 #
 vop_lookup {
 	IN struct vnode *dvp;
@@ -262,6 +262,11 @@ vop_valloc {
 	IN int mode;
 	IN struct ucred *cred;
 	OUT struct vnode **vpp;
+};
+
+vop_reallocblks {
+	IN struct vnode *vp;
+	IN struct cluster_save *buflist;
 };
 
 vop_vfree {
