@@ -56,12 +56,16 @@ ERROR: DBM is no longer supported -- use NDBM instead.
 
 #ifndef lint
 #ifdef NEWDB
-static char sccsid[] = "@(#)alias.c	6.4 (Berkeley) 01/14/93 (with NEWDB)";
+#ifdef NDBM
+static char sccsid[] = "@(#)alias.c	6.5 (Berkeley) 01/28/93 (with NEWDB and NDBM)";
+#else
+static char sccsid[] = "@(#)alias.c	6.5 (Berkeley) 01/28/93 (with NEWDB)";
+#endif
 #else
 #ifdef NDBM
-static char sccsid[] = "@(#)alias.c	6.4 (Berkeley) 01/14/93 (with NDBM)";
+static char sccsid[] = "@(#)alias.c	6.5 (Berkeley) 01/28/93 (with NDBM)";
 #else
-static char sccsid[] = "@(#)alias.c	6.4 (Berkeley) 01/14/93 (without NDBM)";
+static char sccsid[] = "@(#)alias.c	6.5 (Berkeley) 01/28/93 (without NEWDB or NDBM)";
 #endif
 #endif
 #endif /* not lint */
@@ -599,7 +603,7 @@ readaliases(aliasfile, init, e)
 		/*
 		**  Process the LHS
 		**
-		**	Find the final colon, and parse the address.
+		**	Find the colon separator, and parse the address.
 		**	It should resolve to a local name.
 		**
 		**	Alternatively, it can be "@hostname" for host
