@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)refresh.c	5.44 (Berkeley) 05/17/93";
+static char sccsid[] = "@(#)refresh.c	5.45 (Berkeley) 05/30/93";
 #endif /* not lint */
 
 #include <curses.h>
@@ -721,5 +721,3 @@ scrolln(win, starts, startw, curs, bot, top)
 		__mvcur(top, 0, oy, ox, 1);
 	}		
 }
-
-
