@@ -37,26 +37,26 @@
  *
  * from: Utah $Hdr: vm_mmap.c 1.6 91/10/21$
  *
- *	@(#)vm_mmap.c	7.9 (Berkeley) 10/21/91
+ *	@(#)vm_mmap.c	7.10 (Berkeley) 05/04/92
  */
 
 /*
  * Mapped file (mmap) interface to VM
  */
 
-#include "param.h"
-#include "systm.h"
-#include "filedesc.h"
-#include "proc.h"
-#include "vnode.h"
-#include "specdev.h"
-#include "file.h"
-#include "mman.h"
-#include "conf.h"
+#include <sys/param.h>
+#include <sys/systm.h>
+#include <sys/filedesc.h>
+#include <sys/proc.h>
+#include <sys/vnode.h>
+#include <sys/specdev.h>
+#include <sys/file.h>
+#include <sys/mman.h>
+#include <sys/conf.h>
 
-#include "vm.h"
-#include "vm_pager.h"
-#include "vm_prot.h"
+#include <vm/vm.h>
+#include <vm/vm_pager.h>
+#include <vm/vm_prot.h>
 
 #ifdef DEBUG
 int mmapdebug = 0;
@@ -66,6 +66,7 @@ int mmapdebug = 0;
 #endif
 
 /* ARGSUSED */
+int
 getpagesize(p, uap, retval)
 	struct proc *p;
 	void *uap;
@@ -77,6 +78,7 @@ getpagesize(p, uap, retval)
 }
 
 /* ARGSUSED */
+int
 sbrk(p, uap, retval)
 	struct proc *p;
 	struct args {
@@ -90,6 +92,7 @@ sbrk(p, uap, retval)
 }
 
 /* ARGSUSED */
+int
 sstk(p, uap, retval)
 	struct proc *p;
 	struct args {
@@ -102,6 +105,7 @@ sstk(p, uap, retval)
 	return (EOPNOTSUPP);
 }
 
+int
 smmap(p, uap, retval)
 	struct proc *p;
 	register struct args {
@@ -210,6 +214,7 @@ smmap(p, uap, retval)
 	return(error);
 }
 
+int
 msync(p, uap, retval)
 	struct proc *p;
 	struct args {
@@ -282,6 +287,7 @@ msync(p, uap, retval)
 	return(0);
 }
 
+int
 munmap(p, uap, retval)
 	register struct proc *p;
 	register struct args {
@@ -313,6 +319,7 @@ munmap(p, uap, retval)
 	return(0);
 }
 
+void
 munmapfd(fd)
 {
 #ifdef DEBUG
@@ -326,6 +333,7 @@ munmapfd(fd)
 	curproc->p_fd->fd_ofileflags[fd] &= ~UF_MAPPED;
 }
 
+int
 mprotect(p, uap, retval)
 	struct proc *p;
 	struct args {
@@ -371,6 +379,7 @@ mprotect(p, uap, retval)
 }
 
 /* ARGSUSED */
+int
 madvise(p, uap, retval)
 	struct proc *p;
 	struct args {
@@ -386,6 +395,7 @@ madvise(p, uap, retval)
 }
 
 /* ARGSUSED */
+int
 mincore(p, uap, retval)
 	struct proc *p;
 	struct args {
@@ -407,6 +417,7 @@ mincore(p, uap, retval)
  *	MAP_FILE: a vnode pointer
  *	MAP_ANON: NULL or a file pointer
  */
+int
 vm_mmap(map, addr, size, prot, flags, handle, foff)
 	register vm_map_t map;
 	register vm_offset_t *addr;
@@ -665,6 +676,7 @@ out:
  * Given address and size it returns map attributes as well
  * as the (locked) object mapped at that location. 
  */
+int
 vm_region(map, addr, size, prot, max_prot, inheritance, shared, object, objoff)
 	vm_map_t	map;
 	vm_offset_t	*addr;		/* IN/OUT */
@@ -740,6 +752,7 @@ vm_region(map, addr, size, prot, max_prot, inheritance, shared, object, objoff)
 /*
  * Yet another bastard routine.
  */
+int
 vm_allocate_with_pager(map, addr, size, fitit, pager, poffset, internal)
 	register vm_map_t	map;
 	register vm_offset_t	*addr;
