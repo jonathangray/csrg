@@ -32,7 +32,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)newfs.c	6.21 (Berkeley) 06/01/90";
+static char sccsid[] = "@(#)newfs.c	6.22 (Berkeley) 06/19/90";
 #endif /* not lint */
 
 #ifndef lint
@@ -165,6 +165,7 @@ int	mntflags;		/* flags to be passed to mount */
 u_long	memleft;		/* virtual memory available */
 caddr_t	membase;		/* start address of memory based filesystem */
 #ifdef COMPAT
+char	*disktype;
 int	unlabelled;
 #endif
 
@@ -225,6 +226,15 @@ main(argc, argv)
 				if (sectorsize <= 0)
 					fatal("%s: bad sector size", *argv);
 				goto next;
+
+#ifdef COMPAT
+			case 'T':
+				if (argc < 1)
+					fatal("-T: missing disk type");
+				argc--, argv++;
+				disktype = *argv;
+				goto next;
+#endif
 
 			case 'a':
 				if (argc < 1)
@@ -423,6 +433,9 @@ next:
 		fprintf(stderr, "where fsoptions are:\n");
 		fprintf(stderr, "\t-N do not create file system, %s\n",
 			"just print out parameters");
+#ifdef COMPAT
+		fprintf(stderr, "\t-T disktype\n");
+#endif
 		fprintf(stderr, "\t-b block size\n");
 		fprintf(stderr, "\t-f frag size\n");
 		fprintf(stderr, "\t-m minimum free space %%\n");
@@ -452,7 +465,14 @@ next:
 	cp = rindex(special, '/');
 	if (cp != 0)
 		special = cp + 1;
-	if (*special == 'r' && special[1] != 'a' && special[1] != 'b')
+	if (*special == 'r'
+#if defined(vax) || defined(tahoe)
+	    && special[1] != 'a' && special[1] != 'b'
+#endif
+#if defined(hp300)
+	    && special[1] != 'd'
+#endif
+	   )
 		special++;
 	(void)sprintf(device, "%s/r%s", _PATH_DEV, special);
 	special = device;
@@ -479,10 +499,10 @@ next:
 	if (cp == 0 || (*cp < 'a' || *cp > 'h') && !isdigit(*cp))
 		fatal("%s: can't figure out file system partition", argv[0]);
 #ifdef COMPAT
-	lp = getdisklabel(special, fsi, argv[1]);
-#else
-	lp = getdisklabel(special, fsi);
+	if (!mfs && disktype == NULL)
+		disktype = argv[1];
 #endif
+	lp = getdisklabel(special, fsi);
 	if (isdigit(*cp))
 		pp = &lp->d_partitions[0];
 	else
@@ -601,26 +621,11 @@ next:
 }
 
 #ifdef COMPAT
-struct disklabel *
-getdisklabel(s, fd, type)
-	char *s, *type;
-	int fd;
-{
-	static struct disklabel lab;
-	struct disklabel *getdiskbyname();
-
-	if (ioctl(fd, DIOCGDINFO, (char *)&lab) < 0) {
-		if (type == NULL) {
-			perror("ioctl (GDINFO)");
-			fatal(
-		   "%s: can't read disk label; disk type must be specified", s);
-		}
-		unlabelled++;
-		return (getdiskbyname(type));
-	}
-	return (&lab);
-}
+char lmsg[] = "%s: can't read disk label; disk type must be specified";
 #else
+char lmsg[] = "%s: can't read disk label";
+#endif
+
 struct disklabel *
 getdisklabel(s, fd)
 	char *s;
@@ -629,12 +634,19 @@ getdisklabel(s, fd)
 	static struct disklabel lab;
 
 	if (ioctl(fd, DIOCGDINFO, (char *)&lab) < 0) {
+#ifdef COMPAT
+		if (disktype) {
+			struct disklabel *getdiskbyname();
+
+			unlabelled++;
+			return (getdiskbyname(disktype));
+		}
+#endif
 		perror("ioctl (GDINFO)");
-		fatal("%s: can't read disk label", s);
+		fatal(lmsg, s);
 	}
 	return (&lab);
 }
-#endif
 
 rewritelabel(s, fd, lp)
 	char *s;
