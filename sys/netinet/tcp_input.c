@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)tcp_input.c	8.11 (Berkeley) 05/24/95
+ *	@(#)tcp_input.c	8.12 (Berkeley) 05/24/95
  */
 
 #ifndef TUBA_INCLUDE
