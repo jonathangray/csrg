@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)nfs_srvcache.c	7.19 (Berkeley) 10/11/92
+ *	@(#)nfs_srvcache.c	7.20 (Berkeley) 03/02/93
  */
 
 /*
@@ -352,5 +352,7 @@ nfsrv_cleancache()
 		free(rp, M_NFSD);
 	}
 	bzero((char *)rheadhtbl, (rheadhash + 1) * sizeof(void *));
+	nfsrvlruhead = NULL;
+	nfsrvlrutail = &nfsrvlruhead;
 	numnfsrvcache = 0;
 }
