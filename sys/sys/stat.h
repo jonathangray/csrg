@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)stat.h	8.1 (Berkeley) 06/02/93
+ *	@(#)stat.h	8.2 (Berkeley) 09/05/93
  */
 
 #include <sys/time.h>
@@ -126,6 +126,10 @@ struct stat {
 #endif
 
 #ifndef _POSIX_SOURCE
+							/* 0777 */
+#define	ACCESSPERMS	(S_IRWXU|S_IRWXG|S_IRWXO)
+							/* 7777 */
+#define	ALLPERMS	(S_ISUID|S_ISGID|S_ISTXT|S_IRWXU|S_IRWXG|S_IRWXO)
 							/* 0666 */
 #define	DEFFILEMODE	(S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)
 
