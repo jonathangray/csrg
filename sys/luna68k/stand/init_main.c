@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)init_main.c	7.3 (Berkeley) 01/18/93
+ *	@(#)init_main.c	7.4 (Berkeley) 01/20/93
  */
 
 #include <sys/param.h>
@@ -49,13 +49,13 @@ extern int dipsw1, dipsw2;
 
 extern char default_file[];
 
-#define	VERS_LOCAL	"Phase-27"
+#define	VERS_LOCAL	"Phase-28"
 
 extern int howto;
 extern int devtype;
+       int nplane;
 
 /* KIFF */
-
 
 struct KernInter  KIFF;
 struct KernInter *kiff = &KIFF;
@@ -82,12 +82,15 @@ main()
 	 */
 	cpuspeed = MHZ_25;				/* for DELAY() macro */
 
+	nplane   = get_plane_numbers();
+
 	cninit();
 
 	printf("\n\nStinger ver 0.0 [%s]\n\n", VERS_LOCAL);
 
 	kiff->maxaddr = (caddr_t) (ROM_memsize -1);
 	kiff->dipsw   = ~((dipsw2 << 8) | dipsw1) & 0xFFFF;
+	kiff->plane   = nplane;
 
 	i = (int) kiff->maxaddr + 1;
 	printf("Physical Memory = 0x%x  ", i);
@@ -139,6 +142,19 @@ main()
 }
 
 int
+get_plane_numbers()
+{
+	register int r = ROM_plane;
+	register int n = 0;
+
+	for (; r ; r >>= 1)
+		if (r & 0x1)
+			n++;
+
+	return(n);
+}
+
+int
 reorder_dipsw(dipsw)
 	int dipsw;
 {
@@ -157,11 +173,3 @@ reorder_dipsw(dipsw)
 
 	return(sw);
 }
-
-/*
-int
-exit()
-{
-	ROM_abort();
-}
-*/
