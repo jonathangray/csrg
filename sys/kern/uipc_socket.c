@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)uipc_socket.c	7.40 (Berkeley) 05/12/93
+ *	@(#)uipc_socket.c	7.41 (Berkeley) 06/02/93
  */
 
 #include <sys/param.h>
@@ -392,7 +392,7 @@ restart:
 #ifdef	MAPPED_MBUFS
 				len = min(MCLBYTES, resid);
 #else
-				if (top == 0) {
+				if (atomic && top == 0) {
 					len = min(MCLBYTES - max_hdr, resid);
 					m->m_data += max_hdr;
 				} else
