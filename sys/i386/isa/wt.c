@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)wt.c	7.1 (Berkeley) 05/09/91
+ *	@(#)wt.c	7.2 (Berkeley) 10/11/92
  */
 
 /*
@@ -91,15 +91,13 @@
  *	Support Bell Tech QIC-02 and WANGTEK QIC-36 or QIC-02
  */
 
-/*#include <sys/errno.h>
-#include <sys/signal.h>
-#include <sys/types.h>*/
-#include "sys/param.h"
-#include "sys/buf.h"
-#include "sys/file.h"
-#include "sys/proc.h"
-#include "sys/user.h"
-#include "i386/isa/wtreg.h"
+#include <sys/param.h>
+#include <sys/buf.h>
+#include <sys/file.h>
+#include <sys/proc.h>
+#include <sys/user.h>
+
+#include <i386/isa/wtreg.h>
 
 #ifdef	ORC
 unsigned wtport = 0x288;	/* base I/O port of controller	*/
@@ -1169,8 +1167,8 @@ wtdump()
 {
 }
 
-#include "i386/isa/isa_device.h"
-#include "i386/isa/icu.h"
+#include <i386/isa/isa_device.h>
+#include <i386/isa/icu.h>
 
 int	wtprobe(), wtattach();
 struct	isa_driver wtdriver = {
