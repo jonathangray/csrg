@@ -36,9 +36,9 @@
 
 #ifndef lint
 #ifdef SMTP
-static char sccsid[] = "@(#)usersmtp.c	8.51 (Berkeley) 04/29/95 (with SMTP)";
+static char sccsid[] = "@(#)usersmtp.c	8.52 (Berkeley) 05/15/95 (with SMTP)";
 #else
-static char sccsid[] = "@(#)usersmtp.c	8.51 (Berkeley) 04/29/95 (without SMTP)";
+static char sccsid[] = "@(#)usersmtp.c	8.52 (Berkeley) 05/15/95 (without SMTP)";
 #endif
 #endif /* not lint */
 
@@ -379,6 +379,7 @@ smtpmailfrom(m, mci, e)
 	{
 		/* just pass it through */
 	}
+#if MIME8TO7
 	else if (bitset(MM_CVTMIME, MimeMode) &&
 		 (!bitset(MM_PASS8BIT, MimeMode) ||
 		  bitset(EF_IS_MIME, e->e_flags)))
@@ -386,6 +387,7 @@ smtpmailfrom(m, mci, e)
 		/* must convert from 8bit MIME format to 7bit encoded */
 		mci->mci_flags |= MCIF_CVT8TO7;
 	}
+#endif
 	else if (!bitset(MM_PASS8BIT, MimeMode))
 	{
 		/* cannot just send a 8-bit version */
