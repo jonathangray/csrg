@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)sendmail.h	5.40 (Berkeley) 11/14/92
+ *	@(#)sendmail.h	5.41 (Berkeley) 11/15/92
  */
 
 /*
@@ -41,7 +41,7 @@
 # ifdef _DEFINE
 # define EXTERN
 # ifndef lint
-static char SmailSccsId[] =	"@(#)sendmail.h	5.40		11/14/92";
+static char SmailSccsId[] =	"@(#)sendmail.h	5.41		11/15/92";
 # endif lint
 # else /*  _DEFINE */
 # define EXTERN extern
@@ -455,10 +455,12 @@ MAP
 	MAPCLASS	*map_class;	/* the class of this map */
 	int		map_flags;	/* flags, see below */
 	char		*map_file;	/* the (nominal) filename */
+	void		*map_db;	/* the open database ptr */
 };
 
 /* bit values for map_flags */
 # define MF_VALID	00001		/* this entry is valid */
+# define MF_INCLNULL	00002		/* include null byte in key */
 /*
 **  Symbol table definitions
 */
