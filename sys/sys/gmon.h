@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)gmon.h	7.6 (Berkeley) 04/20/93
+ *	@(#)gmon.h	7.7 (Berkeley) 04/29/93
  */
 
 #ifndef _GMON_H_
