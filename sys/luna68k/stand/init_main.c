@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)init_main.c	7.2 (Berkeley) 01/12/93
+ *	@(#)init_main.c	7.3 (Berkeley) 01/18/93
  */
 
 #include <sys/param.h>
@@ -49,7 +49,7 @@ extern int dipsw1, dipsw2;
 
 extern char default_file[];
 
-#define	VERS_LOCAL	"Phase-26"
+#define	VERS_LOCAL	"Phase-27"
 
 extern int howto;
 extern int devtype;
@@ -87,8 +87,7 @@ main()
 	printf("\n\nStinger ver 0.0 [%s]\n\n", VERS_LOCAL);
 
 	kiff->maxaddr = (caddr_t) (ROM_memsize -1);
-	kiff->argc = 0;
-	kiff->argv = (char **) 0;
+	kiff->dipsw   = ~((dipsw2 << 8) | dipsw1) & 0xFFFF;
 
 	i = (int) kiff->maxaddr + 1;
 	printf("Physical Memory = 0x%x  ", i);
