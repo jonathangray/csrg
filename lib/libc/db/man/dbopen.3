@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\"	@(#)dbopen.3	5.17 (Berkeley) 09/04/91
+.\"	@(#)dbopen.3	5.18 (Berkeley) 09/04/91
 .\"
 .TH DB 3 ""
 .UC 7
@@ -162,6 +162,9 @@ The address and length of the data associated with the specified
 .I key
 are returned in the structure referenced by
 .IR data .
+The address and length of the key used to enter the data into the database
+are returned in the structure referenced by
+.IR key .
 .I Get
 routines return -1 on error (setting
 .IR errno ),
