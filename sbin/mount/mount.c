@@ -38,7 +38,7 @@ char copyright[] =
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)mount.c	5.43 (Berkeley) 12/04/90";
+static char sccsid[] = "@(#)mount.c	5.44 (Berkeley) 02/26/91";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -76,6 +76,7 @@ static char sccsid[] = "@(#)mount.c	5.43 (Berkeley) 12/04/90";
 int fake, verbose, updateflg, mnttype;
 char *mntname, **envp;
 char **vfslist, **makevfslist();
+static void prmount();
 
 #ifdef NFS
 int xdr_dir(), xdr_fh();
@@ -326,7 +327,7 @@ mountfs(spec, name, flags, type, options, mntopts)
 				perror("mount: vfork starting file system");
 				return (1);
 			}
-			if (waitpid(pid, &status, 0) != -1 &&
+			if (waitpid(pid, (int *)&status, 0) != -1 &&
 			    WIFEXITED(status) &&
 			    WEXITSTATUS(status) != 0)
 				return (WEXITSTATUS(status));
@@ -374,7 +375,7 @@ out:
 	return(0);
 }
 
-static
+static void
 prmount(spec, name, flags)
 	char *spec, *name;
 	register short flags;
