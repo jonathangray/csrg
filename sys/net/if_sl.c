@@ -9,7 +9,7 @@
  * software without specific prior written permission. This software
  * is provided ``as is'' without express or implied warranty.
  *
- *	@(#)if_sl.c	7.5 (Berkeley) 12/30/87
+ *	@(#)if_sl.c	7.6 (Berkeley) 03/15/88
  */
 
 /*
