@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)vnode.h	8.3 (Berkeley) 12/13/93
+ *	@(#)vnode.h	8.4 (Berkeley) 12/14/93
  */
 
 #include <sys/queue.h>
@@ -368,7 +368,7 @@ int	vinvalbuf __P((struct vnode *vp, int save, struct ucred *cred,
 	    struct proc *p, int slpflag, int slptimeo));
 void 	vattr_null __P((struct vattr *vap));
 int 	vcount __P((struct vnode *vp));
-int 	vget __P((struct vnode *vp));
+int 	vget __P((struct vnode *vp, int lockflag));
 void 	vgone __P((struct vnode *vp));
 void 	vgoneall __P((struct vnode *vp));
 int	vn_bwrite __P((struct vop_bwrite_args *ap));
