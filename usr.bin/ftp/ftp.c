@@ -16,7 +16,7 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)ftp.c	5.24.1.2 (Berkeley) 03/01/89";
+static char sccsid[] = "@(#)ftp.c	5.24.1.3 (Berkeley) 03/01/89";
 #endif /* not lint */
 
 #include <sys/param.h>
