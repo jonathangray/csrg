@@ -35,7 +35,7 @@
  *
  * from: $Hdr: fb_sub.c,v 4.300 91/06/27 20:43:09 root Rel41 $ SONY
  *
- *	@(#)fb_sub.c	8.1 (Berkeley) 06/11/93
+ *	@(#)fb_sub.c	8.2 (Berkeley) 09/23/93
  */
 
 #include "fb.h"
@@ -293,7 +293,7 @@ fbdolock()
 	}
 
 	/* lock */
-	curproc->p_flag |= SPHYSIO;
+	curproc->p_flag |= P_PHYSIO;
 	for (i = 0; i < segind; i++)
 		if (mseg[i].len && mseg[i].adrs && mseg[i].adrs
 		    < (caddr_t)KERNBASE)
@@ -321,7 +321,7 @@ fbunlock()
 #endif
 		}
 	}
-	curproc->p_flag &= ~SPHYSIO;
+	curproc->p_flag &= ~P_PHYSIO;
 	splx(s);
 
 	/* for 'fbinitlock() o wasureru ukkariyasan'... */
