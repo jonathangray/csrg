@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)lfs_vfsops.c	7.88 (Berkeley) 11/14/92
+ *	@(#)lfs_vfsops.c	7.89 (Berkeley) 12/10/92
  */
 
 #include <sys/param.h>
@@ -237,9 +237,6 @@ lfs_mountfs(devvp, mp, p)
 		error = EINVAL;		/* XXX needs translation */
 		goto out;
 	}
-#ifdef DEBUG
-	lfs_dump_super(fs);
-#endif
 
 	/* Allocate the mount structure, copy the superblock into it. */
 	ump = (struct ufsmount *)malloc(sizeof *ump, M_UFSMNT, M_WAITOK);
@@ -405,7 +402,7 @@ lfs_sync(mp, waitfor, cred, p)
 	int error;
 
 	/* All syncs must be checkpoints until roll-forward is implemented. */
-	error = lfs_segwrite(mp, 1);
+	error = lfs_segwrite(mp, SEGM_CKP | (waitfor ? SEGM_SYNC : 0));
 #ifdef QUOTA
 	qsync(mp);
 #endif
